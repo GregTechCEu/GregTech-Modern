@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -16,9 +14,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
@@ -33,7 +29,6 @@ import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.ToggleEnergyConsumerBehavior;
@@ -59,9 +54,7 @@ import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -73,12 +66,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -102,15 +93,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.MissingMappingsEvent;
 
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnderscore;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
@@ -502,164 +486,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void remapIds(MissingMappingsEvent event) {
-        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get());
-            }
-            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
-                mapping.remap(GTMachines.STEAM_MINER.first().getBlock());
-            }
-        });
-        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
-            }
-            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
-                mapping.remap(GTMachines.STEAM_MINER.first().getItem());
-            }
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_fluid_cell"))) {
-                mapping.remap(GTItems.FLUID_CELL_LARGE_TUNGSTEN_STEEL.get().asItem());
-            }
-            if (mapping.getKey().equals(GTCEu.id("avanced_nanomuscle_chestplate"))) {
-                mapping.remap(GTItems.NANO_CHESTPLATE_ADVANCED.get());
-            }
-            String path = mapping.getKey().getPath();
-            if (path.matches("[lhi]v_.+_wirecutter")) {
-                String suffix = "_wirecutter";
-                String typeString = path.substring(0, 2) + suffix; // [lhi]v_wirecutter -- tooltype name
-                String matString = path.substring(3, path.length() - suffix.length()); // material name
-
-                GTToolType type = GTToolType.getTypes().get(typeString);
-                Material material = GTMaterials.get(matString);
-                if (type == null || material.isNull()) {
-                    mapping.warn();
-                    return;
-                }
-                var tool = GTMaterialItems.TOOL_ITEMS.get(material, type);
-                if (tool == null) {
-                    mapping.warn();
-                    return;
-                }
-                mapping.remap(tool.asItem());
-            }
-        });
-        event.getMappings(Registries.BLOCK_ENTITY_TYPE, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
-                mapping.remap(GTMachines.STEAM_MINER.first().getBlockEntityType());
-            }
-        });
-
-        event.getMappings(Registries.BLOCK, "gregiceng").forEach(mapping -> {
-            String path = mapping.getKey().getPath();
-            switch (path) {
-                case "stocking_bus", "adv_stocking_bus" -> mapping
-                        .remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlock());
-                case "stocking_hatch", "adv_stocking_hatch" -> mapping
-                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlock());
-                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getBlock());
-                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlock());
-            }
-            if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlock());
-                }
-            } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getBlock());
-                }
-            }
-        });
-        event.getMappings(Registries.BLOCK_ENTITY_TYPE, "gregiceng").forEach(mapping -> {
-            String path = mapping.getKey().getPath();
-            switch (path) {
-                case "stocking_bus", "adv_stocking_bus" -> mapping
-                        .remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getBlockEntityType());
-                case "stocking_hatch", "adv_stocking_hatch" -> mapping
-                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getBlockEntityType());
-                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getBlockEntityType());
-                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getBlockEntityType());
-            }
-            if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getBlockEntityType());
-                }
-            } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getBlockEntityType());
-                }
-            }
-        });
-        event.getMappings(Registries.ITEM, "gregiceng").forEach(mapping -> {
-            String path = mapping.getKey().getPath();
-            switch (path) {
-                case "stocking_bus", "adv_stocking_bus" -> mapping.remap(GTAEMachines.STOCKING_IMPORT_BUS_ME.getItem());
-                case "stocking_hatch", "adv_stocking_hatch" -> mapping
-                        .remap(GTAEMachines.STOCKING_IMPORT_HATCH_ME.getItem());
-                case "crafting_io_buffer" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER.getItem());
-                case "crafting_io_slave" -> mapping.remap(GTAEMachines.ME_PATTERN_BUFFER_PROXY.getItem());
-            }
-            if (path.contains("input_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("input_buffer", "dual_input_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_IMPORT_HATCH[GTValues.LuV].getItem());
-                }
-            } else if (path.contains("output_buffer")) {
-                ResourceLocation newName = GTCEu.id(path.replace("output_buffer", "dual_output_hatch"));
-                if (mapping.getRegistry().containsKey(newName)) {
-                    mapping.remap(mapping.getRegistry().getValue(newName));
-                } else {
-                    mapping.remap(GTMachines.DUAL_EXPORT_HATCH[GTValues.LuV].getItem());
-                }
-            }
-        });
-
-        for (TagPrefix prefix : TagPrefix.values()) {
-            String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
-            String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
-            Pattern idPattern = Pattern.compile(first + "_" + last);
-            event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
-                Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
-                if (matcher.matches()) {
-                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                    if (block != null && block.isPresent()) {
-                        mapping.remap(block.get());
-                    }
-                }
-            });
-            event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
-                Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
-                if (matcher.matches()) {
-                    BlockEntry<? extends Block> block = GTMaterialBlocks.MATERIAL_BLOCKS.get(prefix,
-                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                    if (block != null && block.isPresent()) {
-                        mapping.remap(block.asItem());
-                    } else {
-                        ItemEntry<? extends Item> item = GTMaterialItems.MATERIAL_ITEMS.get(prefix,
-                                GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
-                        if (item != null && item.isPresent()) {
-                            mapping.remap(item.asItem());
-                        }
-                    }
-                }
-            });
-        }
-    }
+    public static void remapIds(MissingMappingsEvent event) {}
 
     @SubscribeEvent
     public static void breakSpeed(PlayerEvent.BreakSpeed event) {

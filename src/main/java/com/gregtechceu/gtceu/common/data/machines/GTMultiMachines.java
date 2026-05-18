@@ -445,9 +445,9 @@ public class GTMultiMachines {
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
-                if (GTCEu.Mods.isAE2Loaded()) {
-                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
-                }
+                // if (GTCEu.Mods.isAE2Loaded()) {
+                // exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                // }
                 exportPredicate.setMaxLayerLimited(1);
                 TraceabilityPredicate maint = autoAbilities(true, false, false)
                         .setMaxGlobalLimited(1);

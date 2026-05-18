@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.storage.CreativeTankMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +27,6 @@ import snownee.jade.api.view.ViewGroup;
 import snownee.jade.util.FluidTextHelper;
 import snownee.jade.util.JadeForgeUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -64,20 +61,6 @@ public enum GTFluidStorageProvider implements IServerExtensionProvider<MetaMachi
             tag.putBoolean("special", true);
             tag.putLong("amount", qtm.getStoredAmount());
             return List.of(new ViewGroup<>(List.of(tag)));
-        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferPartMachine buffer) {
-            var tank = buffer.getShareTank();
-            List<CompoundTag> list = new ArrayList<>(tank.getTanks());
-            for (var storage : tank.getStorages()) {
-                var stack = storage.getFluid();
-                if (stack.isEmpty()) continue;
-                int capacity = storage.getCapacity();
-                list.add(JadeForgeUtils.fromFluidStack(stack, capacity));
-            }
-            return list.isEmpty() ? List.of() : List.of(new ViewGroup<>(list));
-        } else if (GTCEu.Mods.isAE2Loaded() && machine instanceof MEPatternBufferProxyPartMachine proxy) {
-            var buffer = proxy.getBuffer();
-            if (buffer == null) return Collections.emptyList();
-            return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, buffer.holder, b);
         }
 
         return FluidStorageProvider.INSTANCE.getGroups(serverPlayer, serverLevel, mmbe, b);
