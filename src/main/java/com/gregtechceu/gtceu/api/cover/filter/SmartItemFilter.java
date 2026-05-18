@@ -131,6 +131,7 @@ public class SmartItemFilter implements ItemFilter {
                                             return new ToggleButton()
                                                     .overlay(SmartFilteringMode.getTextures()[w])
                                                     .background(GuiTextures.MC_BUTTON)
+                                                    .selectedBackground(GuiTextures.MC_BUTTON)
                                                     .value(bsv)
                                                     .tooltip(r -> r.add(Text.str(SmartFilteringMode.VALUES[w].localeName)));
                                         })
