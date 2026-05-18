@@ -3982,6 +3982,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Registering classes with the sync system">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-of-isyncmanaged-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example of ISyncManaged usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4276,6 +4293,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Registering classes with the sync system">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-of-isyncmanaged-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example of ISyncManaged usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4348,28 +4382,57 @@
 
 <h2 id="usage">Usage</h2>
 <h3 id="registering-classes-with-the-sync-system">Registering classes with the sync system</h3>
-<p>At the core of the system is the interface <code>ISyncManaged</code>, which represents a class that to be synchronised with the client or saved.
+<p>At the core of the system are the <code>ISyncManaged</code> and <code>ISyncAnnotated</code> interfaces, which allow for their fields to have sync annotations..
 All block entities which should be synchronised or saved must extend the abstract class <code>ManagedSyncBlockEntity</code>.</p>
+<p><code>ISyncManaged</code> should be used for classes with any form of persistent state, and cannot be instantiated or reassigned.<br>
+<code>ISyncAnnotated</code> should be used for record-like classes that hold data, and must define a no-args constructor.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 </div>
 <p>Block entities that inherit <code>ManagedSyncBlockEntity</code> must call <code>ManagedSyncBlockEntity::updateTick</code><strong><em>every tick</em></strong> within their ticker, or they will not be saved.</p>
+<h4 id="example-of-isyncmanaged-usage">Example of <code>ISyncManaged</code> usage</h4>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">class</span> <span class="nc">MySyncObject</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ISyncManaged</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="c1">// Any class that directly implements ISyncManaged must have the following:</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">     </span><span class="nd">@Getter</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">     </span><span class="kd">protected</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">SyncDataHolder</span><span class="w"> </span><span class="n">syncDataHolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SyncDataHolder</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="c1">// Any class that directly implements ISyncManaged must have a SyncDataHolder:</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">     </span><span class="nd">@Getter</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">     </span><span class="kd">protected</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">SyncDataHolder</span><span class="w"> </span><span class="n">syncDataHolder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">SyncDataHolder</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="cm">/**</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="cm">     * Function called when the SyncDataHolder requests a rerender</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="cm">     */</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">scheduleRenderUpdate</span><span class="p">();</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="cm">/**</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="cm">     * Function called to notify the server that this object has been updated and must be synced to clients</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="cm">     */</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="kt">void</span><span class="w"> </span><span class="nf">markAsChanged</span><span class="p">();</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span><span class="c1">// ISyncManaged objects should be attached to a parent sync managed object,</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span><span class="c1">// unless the sync managed object is a blockentity</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="c1">// ISyncManaged classes must implement a getter for their parent sync object</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="nd">@Getter</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">MetaMachine</span><span class="w"> </span><span class="n">parentSyncObject</span><span class="p">;</span><span class="w"> </span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="nd">@SaveField</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="w">    </span><span class="nd">@SyncToClient</span>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">BlockPos</span><span class="w"> </span><span class="n">syncPos</span><span class="p">;</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="nd">@SaveField</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="nd">@SyncToClient</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ExampleSyncAnnotated</span><span class="w"> </span><span class="n">syncAnnotatedField</span><span class="p">;</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MySyncObject</span><span class="p">(</span><span class="n">MetaMachine</span><span class="w"> </span><span class="n">machine</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="na">parentSyncObject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">machine</span><span class="p">;</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">doChanges</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">      </span><span class="n">syncPos</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BlockPos</span><span class="p">.</span><span class="na">ZERO</span><span class="p">;</span>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">        </span><span class="c1">// Client sync fields do not update automatically.</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">      </span><span class="n">getSyncDataHolder</span><span class="p">().</span><span class="na">markClientSyncFieldDirty</span><span class="p">(</span><span class="s">&quot;syncPos&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">      </span><span class="n">syncAnnotatedField</span><span class="p">.</span><span class="na">someValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="w">      </span><span class="cm">/*</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="cm">       * Because ISyncAnnotated classes do not manage their own sync state, </span>
+<a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="cm">       * updating a field in an ISyncAnnotated class requires the parent field to be marked as changed.</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="cm">       */</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="w">      </span><span class="n">getSyncDataHolder</span><span class="p">().</span><span class="na">markClientSyncFieldDirty</span><span class="p">(</span><span class="s">&quot;syncAnnotatedField&quot;</span><span class="p">);</span><span class="w">        </span>
+<a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
+<a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleSyncAnnotated</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">ISyncAnnotated</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="w">        </span><span class="kd">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">someValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="registering-fields-to-be-managed-by-the-system">Registering fields to be managed by the system</h3>
 <p>See <a href="../Annotations/">Annotations</a></p>
