@@ -201,8 +201,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return ActionResult.SUCCESS;
     }
 
-    private ActionResult consumeAll(@NotNull GTRecipe recipe, boolean isTick,
-                                    Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+    private ActionResult consumeAll(@NotNull GTRecipe recipe, boolean isTick) {
         GTRecipe copyWithItems = recipe.copy();
         copyWithItems.inputs.clear();
         copyWithItems.tickInputs.clear();
@@ -239,8 +238,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             result = consumeItemContents(copyWithItems, isTick);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN, chanceCaches) :
-                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN, chanceCaches);
+                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN) :
+                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN);
         }
         if (!result.isSuccess()) return result;
 
@@ -248,14 +247,14 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             result = consumeFluidContents(copyWithFluids, isTick);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN, chanceCaches) :
-                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN, chanceCaches);
+                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN) :
+                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN);
         }
         if (!result.isSuccess()) return result;
 
         return isTick ?
-                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches) :
-                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches);
+                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN) :
+                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN);
     }
 
     class AsslineRecipeLogic extends RecipeLogic {
@@ -267,17 +266,17 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         @Override
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return consumeAll(recipe, false, this.getChanceCaches());
+                return consumeAll(recipe, false);
             }
-            return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
+            return RecipeHelper.handleRecipeIO(machine, recipe, io);
         }
 
         @Override
         protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
             if (io.equals(IO.IN)) {
-                return consumeAll(recipe, true, this.getChanceCaches());
+                return consumeAll(recipe, true);
             }
-            return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
+            return RecipeHelper.handleTickRecipeIO(machine, recipe, io);
         }
 
         @Override

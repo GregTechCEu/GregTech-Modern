@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
@@ -82,11 +81,6 @@ public class GTRecipeBuilder {
     public final Map<RecipeCapability<?>, List<Content>> output = new IdentityHashMap<>();
     public final Map<RecipeCapability<?>, List<Content>> tickOutput = new IdentityHashMap<>();
 
-    public final Map<RecipeCapability<?>, ChanceLogic> inputChanceLogic = new IdentityHashMap<>();
-    public final Map<RecipeCapability<?>, ChanceLogic> outputChanceLogic = new IdentityHashMap<>();
-    public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogic = new IdentityHashMap<>();
-    public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogic = new IdentityHashMap<>();
-
     public final List<RecipeCondition<?>> conditions = new ArrayList<>();
 
     @NotNull
@@ -99,9 +93,9 @@ public class GTRecipeBuilder {
     @Setter
     public boolean perTick;
     @Setter
-    public int chance = ChanceLogic.getMaxChancedValue();
+    public int chance = 10000;
     @Setter
-    public int maxChance = ChanceLogic.getMaxChancedValue();
+    public int maxChance = 10000;
     @Setter
     public int tierChanceBoost = 0;
     private boolean itemMaterialInfo = false;
@@ -134,10 +128,6 @@ public class GTRecipeBuilder {
         toCopy.outputs.forEach((k, v) -> this.output.put(k, new ArrayList<>(v)));
         toCopy.tickInputs.forEach((k, v) -> this.tickInput.put(k, new ArrayList<>(v)));
         toCopy.tickOutputs.forEach((k, v) -> this.tickOutput.put(k, new ArrayList<>(v)));
-        this.inputChanceLogic.putAll(toCopy.inputChanceLogics);
-        this.outputChanceLogic.putAll(toCopy.outputChanceLogics);
-        this.tickInputChanceLogic.putAll(toCopy.tickInputChanceLogics);
-        this.tickOutputChanceLogic.putAll(toCopy.tickOutputChanceLogics);
         this.conditions.addAll(toCopy.conditions);
         this.data = toCopy.data.copy();
         this.duration = toCopy.duration;
@@ -162,10 +152,6 @@ public class GTRecipeBuilder {
         this.output.forEach((k, v) -> copy.output.put(k, new ArrayList<>(v)));
         this.tickInput.forEach((k, v) -> copy.tickInput.put(k, new ArrayList<>(v)));
         this.tickOutput.forEach((k, v) -> copy.tickOutput.put(k, new ArrayList<>(v)));
-        copy.inputChanceLogic.putAll(this.inputChanceLogic);
-        copy.outputChanceLogic.putAll(this.outputChanceLogic);
-        copy.tickInputChanceLogic.putAll(this.tickInputChanceLogic);
-        copy.tickOutputChanceLogic.putAll(this.tickOutputChanceLogic);
         copy.conditions.addAll(this.conditions);
         copy.data = this.data.copy();
         copy.duration = this.duration;
@@ -740,18 +726,18 @@ public class GTRecipeBuilder {
             return this;
         }
 
-        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+        if (0 >= chance || chance > 10000) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                    10000, chance, new Throwable());
             return this;
         }
-        if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
+        if (chance >= maxChance || maxChance > 10000) {
             GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                    ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+                    10000, maxChance, new Throwable());
             return this;
         }
 
-        int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
+        int scalar = Math.floorDiv(10000, maxChance);
         chance *= scalar;
         maxChance *= scalar;
 
@@ -809,18 +795,18 @@ public class GTRecipeBuilder {
             return this;
         }
 
-        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+        if (0 >= chance || chance > 10000) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                    10000, chance, new Throwable());
             return this;
         }
-        if (chance >= maxChance || maxChance > ChanceLogic.getMaxChancedValue()) {
+        if (chance >= maxChance || maxChance > 10000) {
             GTCEu.LOGGER.error("Max Chance cannot be less or equal to Chance or more than {}. Actual: {}.",
-                    ChanceLogic.getMaxChancedValue(), maxChance, new Throwable());
+                    10000, maxChance, new Throwable());
             return this;
         }
 
-        int scalar = Math.floorDiv(ChanceLogic.getMaxChancedValue(), maxChance);
+        int scalar = Math.floorDiv(10000, maxChance);
         chance *= scalar;
         maxChance *= scalar;
 
@@ -835,50 +821,6 @@ public class GTRecipeBuilder {
         this.maxChance = lastMaxChance;
         this.tierChanceBoost = lastTierChanceBoost;
 
-        return this;
-    }
-
-    /**
-     * Set a chanced output logic for a specific capability.
-     * all capabilities default to OR logic if not set.
-     *
-     * @param cap   the {@link RecipeCapability} to set the logic for
-     * @param logic the {@link ChanceLogic} to use
-     * @return this builder
-     */
-    public GTRecipeBuilder chancedOutputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
-        this.outputChanceLogic.put(cap, logic);
-        return this;
-    }
-
-    public GTRecipeBuilder chancedItemOutputLogic(ChanceLogic logic) {
-        return chancedOutputLogic(ItemRecipeCapability.CAP, logic);
-    }
-
-    public GTRecipeBuilder chancedFluidOutputLogic(ChanceLogic logic) {
-        return chancedOutputLogic(FluidRecipeCapability.CAP, logic);
-    }
-
-    public GTRecipeBuilder chancedInputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
-        this.inputChanceLogic.put(cap, logic);
-        return this;
-    }
-
-    public GTRecipeBuilder chancedItemInputLogic(ChanceLogic logic) {
-        return chancedInputLogic(ItemRecipeCapability.CAP, logic);
-    }
-
-    public GTRecipeBuilder chancedFluidInputLogic(ChanceLogic logic) {
-        return chancedInputLogic(FluidRecipeCapability.CAP, logic);
-    }
-
-    public GTRecipeBuilder chancedTickOutputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
-        this.tickOutputChanceLogic.put(cap, logic);
-        return this;
-    }
-
-    public GTRecipeBuilder chancedTickInputLogic(RecipeCapability<?> cap, ChanceLogic logic) {
-        this.tickInputChanceLogic.put(cap, logic);
         return this;
     }
 
@@ -1528,16 +1470,6 @@ public class GTRecipeBuilder {
         return jsonObject;
     }
 
-    public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
-        JsonObject jsonObject = new JsonObject();
-        chanceLogics.forEach((cap, logic) -> {
-            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap);
-            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic);
-            jsonObject.addProperty(capId, logicId);
-        });
-        return jsonObject;
-    }
-
     public FinishedRecipe build() {
         return new FinishedRecipe() {
 
@@ -1716,7 +1648,6 @@ public class GTRecipeBuilder {
     public GTRecipe buildRawRecipe() {
         return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
                 input, output, tickInput, tickOutput,
-                inputChanceLogic, outputChanceLogic, tickInputChanceLogic, tickOutputChanceLogic,
                 conditions, data, duration, recipeCategory);
     }
 
@@ -1750,9 +1681,9 @@ public class GTRecipeBuilder {
     }
 
     protected boolean checkChanceAndPrintError(int chance) {
-        if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
+        if (0 >= chance || chance > 10000) {
             GTCEu.LOGGER.error("Chance cannot be less or equal to 0 or more than {}. Actual: {}.",
-                    ChanceLogic.getMaxChancedValue(), chance, new Throwable());
+                    10000, chance, new Throwable());
             return true;
         }
         return false;

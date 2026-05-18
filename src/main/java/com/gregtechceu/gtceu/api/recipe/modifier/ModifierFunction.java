@@ -180,8 +180,6 @@ public interface ModifierFunction {
                         outputModifier.applyContents(recipe.outputs),
                         applyAllButEU(tickInputModifier, recipe.tickInputs),
                         applyAllButEU(tickOutputModifier, recipe.tickOutputs),
-                        new HashMap<>(recipe.inputChanceLogics), new HashMap<>(recipe.outputChanceLogics),
-                        new HashMap<>(recipe.tickInputChanceLogics), new HashMap<>(recipe.tickOutputChanceLogics),
                         newConditions,
                         recipe.data, recipe.duration, recipe.recipeCategory);
                 copied.parallels = recipe.parallels * parallels;

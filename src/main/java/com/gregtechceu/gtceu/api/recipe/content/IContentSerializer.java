@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -68,9 +67,9 @@ public interface IContentSerializer<T> {
     default Content fromJsonContent(JsonElement json) {
         JsonObject jsonObject = json.getAsJsonObject();
         T inner = fromJson(jsonObject.get("content"));
-        int chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsInt() : ChanceLogic.getMaxChancedValue();
+        int chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsInt() : 10000;
         int maxChance = jsonObject.has("maxChance") ? jsonObject.get("maxChance").getAsInt() :
-                ChanceLogic.getMaxChancedValue();
+                10000;
         int tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsInt() : 0;
         return new Content(inner, chance, maxChance, tierChanceBoost);
     }

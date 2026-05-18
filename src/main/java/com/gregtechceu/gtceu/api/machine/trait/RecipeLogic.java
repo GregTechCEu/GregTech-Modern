@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.common.cover.MachineControllerCover;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -26,10 +24,8 @@ import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -37,7 +33,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -64,8 +59,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public static final EnumProperty<RecipeLogic.Status> STATUS_PROPERTY = GTMachineModelProperties.RECIPE_LOGIC_STATUS;
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RecipeLogic.class);
+
     public final IRecipeLogicMachine machine;
-    public @Nullable List<GTRecipe> lastFailedMatches;
+    public List<GTRecipe> lastFailedMatches;
 
     @Getter
     @Persisted
@@ -131,8 +128,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Setter
     @Getter
     protected boolean suspendAfterFinish = false;
-    @Getter
-    protected final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches = makeChanceCaches();
     protected TickableSubscription subscription;
     protected Object workingSound;
 
@@ -351,9 +346,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         recipeDirty = false;
     }
 
-    protected void handleSearchingRecipes(Iterator<GTRecipe> matches) {
+    protected void handleSearchingRecipes(@NotNull Iterator<GTRecipe> matches) {
         while (matches.hasNext()) {
             GTRecipe match = matches.next();
+            if (match == null) continue;
 
             // If a new recipe was found, cache found recipe.
             if (checkMatchedRecipeAvailable(match))
@@ -395,9 +391,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);
         if (handledIO.isSuccess()) {
-            if (lastRecipe != null && !recipe.equals(lastRecipe)) {
-                chanceCaches.clear();
-            }
             failureReasonMap.clear();
             failureReasons.clear();
             recipeDirty = false;
@@ -548,11 +541,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleRecipeIO(machine, recipe, io);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(machine, recipe, io, this.chanceCaches);
+        return RecipeHelper.handleTickRecipeIO(machine, recipe, io);
     }
 
     /**
@@ -569,6 +562,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     // Remains for legacy + for subclasses
     public void inValid() {}
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
 
     //////////////////////////////////////
     // ******** MISC *********//
@@ -619,65 +617,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Override
     public boolean showFancyTooltip() {
         return waitingReason != null || !failureReasons.isEmpty();
-    }
-
-    protected Map<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
-        Map<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
-            map.put(cap, cap.makeChanceCache());
-        }
-        return map;
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        CompoundTag chanceCache = new CompoundTag();
-        this.chanceCaches.forEach((cap, cache) -> {
-            ListTag cacheTag = new ListTag();
-            for (var entry : cache.object2IntEntrySet()) {
-                CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.contentToNbt(entry.getKey());
-                compoundTag.put("entry", obj);
-                compoundTag.putInt("cached_chance", entry.getIntValue());
-                cacheTag.add(compoundTag);
-            }
-            chanceCache.put(cap.name, cacheTag);
-        });
-        tag.put("chance_cache", chanceCache);
-    }
-
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        CompoundTag chanceCache = tag.getCompound("chance_cache");
-        for (String key : chanceCache.getAllKeys()) {
-            RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
-            if (cap == null) continue; // Necessary since we removed a RecipeCapability when nuking Create
-            // noinspection rawtypes
-            Object2IntMap map = this.chanceCaches.computeIfAbsent(cap, RecipeCapability::makeChanceCache);
-
-            ListTag chanceTag = chanceCache.getList(key, Tag.TAG_COMPOUND);
-            for (int i = 0; i < chanceTag.size(); ++i) {
-                CompoundTag chanceKey = chanceTag.getCompound(i);
-                var entry = cap.serializer.fromNbt(chanceKey.get("entry"));
-                int value = chanceKey.getInt("cached_chance");
-                // noinspection unchecked
-                map.put(entry, value);
-            }
-        }
-        this.chanceCaches.forEach((cap, cache) -> {
-            ListTag cacheTag = new ListTag();
-            for (var entry : cache.object2IntEntrySet()) {
-                CompoundTag compoundTag = new CompoundTag();
-                var obj = cap.contentToNbt(entry.getKey());
-                compoundTag.put("entry", obj);
-                compoundTag.putInt("cached_chance", entry.getIntValue());
-                cacheTag.add(compoundTag);
-            }
-            chanceCache.put(cap.name, cacheTag);
-        });
-        tag.put("chance_cache", chanceCache);
     }
 
     public static void putFailureReason(Object machine, GTRecipe recipe, Component reason) {

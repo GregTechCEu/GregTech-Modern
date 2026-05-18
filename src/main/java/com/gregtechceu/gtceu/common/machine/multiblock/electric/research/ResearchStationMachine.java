@@ -24,7 +24,6 @@ import net.minecraft.world.item.ItemStack;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -165,15 +164,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
             if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-            return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, Collections.emptyMap(), false,
-                    true);
+            return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, false, true);
         }
 
         protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
             if (recipe.hasTick()) {
                 if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-                return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.tickInputs, Collections.emptyMap(),
-                        false, true);
+                return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.tickInputs, false, true);
             }
             return ActionResult.SUCCESS;
         }

@@ -473,7 +473,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 slot.setXEIChance(chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
                             tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
                     // spotless:off
                     if (this.of(content.content) instanceof IntProviderIngredient ingredient) {
@@ -565,11 +564,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             return ItemTagList.of(((TagValueAccessor) tagValue).getTag(), amount, null);
         }
         return null;
-    }
-
-    @Override
-    public Object2IntMap<Ingredient> makeChanceCache() {
-        return new Object2IntOpenCustomHashMap<>(IngredientEquality.IngredientHashStrategy.INSTANCE);
     }
 
     public interface ICustomParallel {

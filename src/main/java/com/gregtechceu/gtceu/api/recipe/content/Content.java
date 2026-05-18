@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -46,9 +45,9 @@ public class Content {
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
         return RecordCodecBuilder.create(instance -> instance.group(
                 capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
-                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", 10000)
                         .forGetter(val -> val.chance),
-                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
+                ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", 10000)
                         .forGetter(val -> val.maxChance),
                 Codec.INT.optionalFieldOf("tierChanceBoost", 0)
                         .forGetter(val -> val.tierChanceBoost))
@@ -90,7 +89,7 @@ public class Content {
 
     /**
      * Attempts to fix and round the given chance boost due to potential differences
-     * between the max chance and {@link ChanceLogic#getMaxChancedValue()}.
+     * between the max chance and
      * <br />
      * The worst case would be {@code 5,001 / 10,000} , meaning the boost would
      * have to be halved to have the intended effect.
@@ -99,7 +98,7 @@ public class Content {
      * @return the fixed chance boost
      */
     private int fixBoost(int chanceBoost) {
-        float error = (float) ChanceLogic.getMaxChancedValue() / maxChance;
+        float error = (float) 10000 / maxChance;
         int fixed = Math.round(Math.abs(chanceBoost) / error);
         return chanceBoost < 0 ? -fixed : fixed;
     }
@@ -174,7 +173,7 @@ public class Content {
     @OnlyIn(Dist.CLIENT)
     public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
                            int chanceTier, @Nullable ChanceBoostFunction function) {
-        if (chance == ChanceLogic.getMaxChancedValue()) return;
+        if (chance == 10000) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
@@ -203,7 +202,7 @@ public class Content {
         int color = 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
-                (int) ((y + (height / 3f) + 6) * 2 - height + (chance == ChanceLogic.getMaxChancedValue() ? 0 : 10)),
+                (int) ((y + (height / 3f) + 6) * 2 - height + (chance == 10000 ? 0 : 10)),
                 color);
         graphics.pose().popPose();
     }

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -38,11 +37,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
     public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
 
-    public final Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics;
-    public final Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics;
-    public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics;
-    public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
-
     public final List<RecipeCondition<?>> conditions;
     @NotNull
     public CompoundTag data;
@@ -64,10 +58,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, List<Content>> outputs,
                     Map<RecipeCapability<?>, List<Content>> tickInputs,
                     Map<RecipeCapability<?>, List<Content>> tickOutputs,
-                    Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
-                    Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
+
                     List<RecipeCondition<?>> conditions,
                     @NotNull CompoundTag data,
                     int duration,
@@ -79,11 +70,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.outputs = outputs;
         this.tickInputs = tickInputs;
         this.tickOutputs = tickOutputs;
-
-        this.inputChanceLogics = inputChanceLogics;
-        this.outputChanceLogics = outputChanceLogics;
-        this.tickInputChanceLogics = tickInputChanceLogics;
-        this.tickOutputChanceLogics = tickOutputChanceLogics;
 
         this.conditions = conditions;
         this.data = data;
@@ -103,8 +89,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         var copied = new GTRecipe(recipeType, id,
                 modifier.applyContents(inputs), modifier.applyContents(outputs),
                 modifier.applyContents(tickInputs), modifier.applyContents(tickOutputs),
-                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
-                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions), data, duration, recipeCategory);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
@@ -164,30 +148,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean hasTick() {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
-    }
-
-    /**
-     * Get the chance logic for a recipe capability + io + tick io combination
-     *
-     * @param cap the recipe capability to get the chance logic for
-     * @param io  the {@link IO} of the chanche per-tick logic or the normal one
-     * @return the chance logic for the aforementioned combination. Defaults to {@link ChanceLogic#OR}.
-     */
-    public ChanceLogic getChanceLogicForCapability(RecipeCapability<?> cap, IO io, boolean isTick) {
-        if (io == IO.OUT) {
-            if (isTick) {
-                return tickOutputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            } else {
-                return outputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            }
-        } else if (io == IO.IN) {
-            if (isTick) {
-                return tickInputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            } else {
-                return inputChanceLogics.getOrDefault(cap, ChanceLogic.OR);
-            }
-        }
-        return ChanceLogic.OR;
     }
 
     // Technically should account for overflow but realistically not an issue.

@@ -162,9 +162,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
 
     private static GTRecipe modifyOutputs(GTRecipe recipe, ContentModifier cm) {
         return new GTRecipe(recipe.recipeType, recipe.id, recipe.inputs, cm.applyContents(recipe.outputs),
-                recipe.tickInputs, cm.applyContents(recipe.tickOutputs), recipe.inputChanceLogics,
-                recipe.outputChanceLogics,
-                recipe.tickInputChanceLogics, recipe.tickOutputChanceLogics, recipe.conditions,
+                recipe.tickInputs, cm.applyContents(recipe.tickOutputs), recipe.conditions,
                 recipe.data, recipe.duration, recipe.recipeCategory);
     }
 
@@ -206,14 +204,13 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
-                    Collections.emptyMap(), false, true);
+            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, Collections.emptyMap(), false, true);
+                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, false, true);
                 if (!result.isSuccess()) return result;
             }
 
@@ -257,7 +254,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
+                RecipeHelper.handleRecipe(this.machine, recipe, io, out, false, false);
             }
 
             if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {

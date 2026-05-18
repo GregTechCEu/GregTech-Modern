@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockPreviewHighlightRegistry;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
@@ -153,7 +152,6 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init();
-        ChanceLogic.init();
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         AddonFinder.getAddons()

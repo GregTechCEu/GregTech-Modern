@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -7,12 +8,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import net.minecraft.network.chat.Component;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,10 +29,11 @@ import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMa
 
 public class RecipeRunner {
 
+    private static final int GAUSSIAN_ROLL_THRESHOLD = 16;
+
     private final GTRecipe recipe;
     private final IO io;
     private final boolean isTick;
-    private final Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches;
     private final Map<IO, List<RecipeHandlerList>> capabilityProxies;
     private final boolean simulated;
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
@@ -40,12 +41,11 @@ public class RecipeRunner {
     private final Predicate<RecipeCapability<?>> outputVoid;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
-                        IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
-                        boolean simulated) {
+                        IRecipeCapabilityHolder holder, boolean simulated) {
         this.recipe = recipe;
         this.io = io;
         this.isTick = isTick;
-        this.chanceCaches = chanceCaches;
+
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
@@ -76,7 +76,6 @@ public class RecipeRunner {
             if (!cap.doMatchInRecipe()) continue;
             if (simulated && io == IO.OUT && outputVoid.test(cap)) continue;
 
-            ChanceLogic logic = recipe.getChanceLogicForCapability(cap, this.io, this.isTick);
             List<Content> chancedContents = new ArrayList<>();
             // skip if empty
             if (entry.getValue().isEmpty()) continue;
@@ -100,8 +99,7 @@ public class RecipeRunner {
 
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
-                var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache,
+                chancedContents = rollIndependent(cap, chancedContents, function, recipeTier, chanceTier,
                         recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
@@ -111,6 +109,39 @@ public class RecipeRunner {
 
             if (contentList.isEmpty()) recipeContents.remove(cap);
         }
+    }
+
+    private List<Content> rollIndependent(RecipeCapability<?> cap, List<Content> chancedContents,
+                                          ChanceBoostFunction function, int recipeTier, int chanceTier, int times) {
+        List<Content> rolled = new ArrayList<>();
+        for (Content entry : chancedContents) {
+            int maxChance = entry.maxChance;
+            int chance = function.getBoostedChance(entry, recipeTier, chanceTier);
+            int successes = rollSuccesses(times, chance, maxChance);
+            if (successes > 0) {
+                rolled.add(entry.copyChanced(cap, ContentModifier.multiplier(successes)));
+            }
+        }
+        return rolled;
+    }
+
+    private static int rollSuccesses(int times, int chance, int maxChance) {
+        if (times <= 0 || chance <= 0) return 0;
+        if (chance >= maxChance) return times;
+
+        if (times <= GAUSSIAN_ROLL_THRESHOLD) {
+            int successes = 0;
+            for (int i = 0; i < times; i++) {
+                if (GTValues.RNG.nextInt(maxChance) < chance) successes++;
+            }
+            return successes;
+        }
+
+        double probability = (double) chance / maxChance;
+        double mean = times * probability;
+        double deviation = Math.sqrt(times * probability * (1.0 - probability));
+        int successes = (int) Math.round(mean + GTValues.RNG.nextGaussian() * deviation);
+        return Math.max(0, Math.min(times, successes));
     }
 
     private ActionResult handleContents() {

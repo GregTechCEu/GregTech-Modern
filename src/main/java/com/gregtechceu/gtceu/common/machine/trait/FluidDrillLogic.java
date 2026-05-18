@@ -108,7 +108,7 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT);
         }
         depleteVein();
         // try it again

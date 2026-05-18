@@ -20,8 +20,6 @@ import net.minecraft.network.chat.MutableComponent;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -201,15 +199,6 @@ public abstract class RecipeCapability<T> {
                                 @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {}
-
-    /**
-     * Create a cache map for chanced outputs
-     *
-     * @return a map of this capability's content type -> integer
-     */
-    public Object2IntMap<T> makeChanceCache() {
-        return new Object2IntOpenHashMap<>();
-    }
 
     public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();

@@ -20,7 +20,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -186,27 +185,21 @@ public class RecipeHelper {
     private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
         if (!holder.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
 
-        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs,
-                Collections.emptyMap(), tick, true);
+        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs, tick, true);
         if (!result.isSuccess()) return result;
 
-        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs,
-                Collections.emptyMap(), tick, true);
+        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs, tick, true);
         return result;
     }
 
-    public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
-                                              Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+    public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, chanceCaches, false,
-                false);
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, false, false);
     }
 
-    public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
-                                                  Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+    public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
         if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, chanceCaches,
-                true, false);
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, true, false);
     }
 
     /**
@@ -217,9 +210,8 @@ public class RecipeHelper {
      */
     public static ActionResult handleRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
                                             Map<RecipeCapability<?>, List<Content>> contents,
-                                            Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                                             boolean isTick, boolean simulated) {
-        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
+        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, simulated);
         var result = runner.handle(contents);
 
         if (result.isSuccess() || result.capability() == null) return result;

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -47,15 +46,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             }
         }
         return capabilities;
-    }
-
-    public Map<RecipeCapability<?>, ChanceLogic> chanceLogicsFromJson(JsonObject json) {
-        Map<RecipeCapability<?>, ChanceLogic> chanceLogics = new IdentityHashMap<>();
-        for (String key : json.keySet()) {
-            String value = json.get(key).getAsString();
-            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(key), GTRegistries.CHANCE_LOGICS.get(value));
-        }
-        return chanceLogics;
     }
 
     @Override
@@ -107,19 +97,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
 
-        Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-        Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
-
         List<RecipeCondition<?>> conditions = buf.readCollection(c -> new ArrayList<>(),
                 GTRecipeSerializer::conditionReader);
         CompoundTag data = buf.readNbt();
@@ -133,7 +110,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
         GTRecipe recipe = new GTRecipe(type, id,
                 inputs, outputs, tickInputs, tickOutputs,
-                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                 conditions, data, duration, category);
 
         recipe.recipeCategory.addRecipe(recipe);
@@ -159,19 +135,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
 
-        buf.writeMap(recipe.inputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.outputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.tickInputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-        buf.writeMap(recipe.tickOutputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
-
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
         buf.writeNbt(recipe.data);
         buf.writeResourceLocation(recipe.recipeCategory.registryKey);
@@ -185,24 +148,14 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                         RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
                         RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
                         RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
-                        Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
-                                .optionalFieldOf("inputChanceLogics", Map.of()).forGetter(val -> val.inputChanceLogics),
-                        Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
-                                .optionalFieldOf("outputChanceLogics", Map.of()).forGetter(val -> val.outputChanceLogics),
-                        Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
-                                .optionalFieldOf("tickInputChanceLogics", Map.of()).forGetter(val -> val.tickInputChanceLogics),
-                        Codec.unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.codec())
-                                .optionalFieldOf("tickOutputChanceLogics", Map.of()).forGetter(val -> val.tickOutputChanceLogics),
                         RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
                         CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
                         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
                         GTRegistries.RECIPE_CATEGORIES.codec().optionalFieldOf("category", GTRecipeCategory.DEFAULT).forGetter(val -> val.recipeCategory))
                 .apply(instance, (type,
                                   inputs, outputs, tickInputs, tickOutputs,
-                                  inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                                   conditions, data, duration, recipeCategory) ->
                         new GTRecipe(type, null, inputs, outputs, tickInputs, tickOutputs,
-                                inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
                                 conditions, data, duration, recipeCategory)));
 
         // spotless:on
