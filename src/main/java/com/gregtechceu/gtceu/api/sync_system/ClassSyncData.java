@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -21,7 +20,6 @@ import java.util.*;
 /**
  * Static data for {@link ISyncManaged} classes.
  */
-@ApiStatus.Internal
 public final class ClassSyncData {
 
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
@@ -48,12 +46,13 @@ public final class ClassSyncData {
     private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
 
     private ClassSyncData(Class<?> clazz) {
-
         var isManaged = ISyncManaged.class.isAssignableFrom(clazz);
         var isAnnotated = ISyncAnnotated.class.isAssignableFrom(clazz);
 
-        if (!isManaged && !isAnnotated) throw new IllegalArgumentException("Cannot create class sync data for non-sync class");
-        if (isManaged && isAnnotated) throw new IllegalArgumentException("Class %s cannot inherit both ISyncAnnotated and ISyncManaged".formatted(clazz.getName()));
+        if (!isManaged && !isAnnotated)
+            throw new IllegalArgumentException("Cannot create class sync data for non-sync class");
+        if (isManaged && isAnnotated) throw new IllegalArgumentException(
+                "Class %s cannot inherit both ISyncAnnotated and ISyncManaged".formatted(clazz.getName()));
 
         MethodHandles.Lookup privateLookup;
         try {
@@ -115,7 +114,7 @@ public final class ClassSyncData {
         }
 
         Class<?> parent = clazz.getSuperclass();
-        if (parent != Object.class) {
+        if (ISyncManaged.class.isAssignableFrom(parent) || ISyncAnnotated.class.isAssignableFrom(parent)) {
             ClassSyncData parentHandles = CACHE.get(parent);
             managedFields.addAll(parentHandles.managedFields);
             clientSyncFields.addAll(parentHandles.clientSyncFields);

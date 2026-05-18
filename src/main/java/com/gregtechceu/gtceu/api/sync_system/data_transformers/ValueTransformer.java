@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
 import net.minecraft.nbt.Tag;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**

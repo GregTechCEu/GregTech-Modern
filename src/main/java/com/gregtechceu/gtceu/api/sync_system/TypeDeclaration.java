@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 
 @ApiStatus.Internal
@@ -32,6 +33,10 @@ public class TypeDeclaration {
             this.classValue = null;
             this.arrayComponentType = new TypeDeclaration(genericArrayType.getGenericComponentType());
             this.genericTypeArgs = new TypeDeclaration[0];
+        } else if (type instanceof WildcardType) {
+            this.classValue = null;
+            this.genericTypeArgs = new TypeDeclaration[0];
+            this.arrayComponentType = null;
         } else {
             this.classValue = (Class<?>) type;
             this.genericTypeArgs = new TypeDeclaration[0];

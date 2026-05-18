@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.api.sync_system.ClassSyncData;
 import com.gregtechceu.gtceu.api.sync_system.FieldSyncData;
 import com.gregtechceu.gtceu.api.sync_system.FieldSyncHandler;
 import com.gregtechceu.gtceu.api.sync_system.ISyncAnnotated;
-import lombok.SneakyThrows;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -16,7 +18,6 @@ public class SyncAnnotatedTransformer implements ValueTransformer<ISyncAnnotated
 
     @Override
     public Tag serializeNBT(ISyncAnnotated value, TransformerContext<ISyncAnnotated> context) {
-
         var syncData = ClassSyncData.getClassData(value.getClass());
 
         Set<FieldSyncData> fieldsToSerialize = context.isClientSync() ? syncData.getClientSyncFields() :
@@ -34,7 +35,6 @@ public class SyncAnnotatedTransformer implements ValueTransformer<ISyncAnnotated
     @Override
     @SneakyThrows
     public @Nullable ISyncAnnotated deserializeNBT(Tag tag, TransformerContext<ISyncAnnotated> context) {
-
         if (!(tag instanceof CompoundTag compound)) return null;
 
         var typeData = Objects.requireNonNull(context.type().getClassValue());

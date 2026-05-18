@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.sync_system;
 
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
+
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**

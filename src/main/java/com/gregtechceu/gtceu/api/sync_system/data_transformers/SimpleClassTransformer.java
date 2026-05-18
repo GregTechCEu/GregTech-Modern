@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
 import net.minecraft.nbt.Tag;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.function.Function;
 
 public class SimpleClassTransformer<T, TagType extends Tag> implements ValueTransformer<T> {

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.sync_system;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
-import lombok.SneakyThrows;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
@@ -68,7 +67,8 @@ public class SyncDataHolder {
     }
 
     private boolean shouldSerializeField(FieldSyncData field, boolean writeClient, boolean fullSync) {
-        return !writeClient || fullSync || dirtySyncFields.contains(field.fieldName) || (field.type.getClassValue() != null && ISyncManaged.class.isAssignableFrom(field.type.getClassValue()));
+        return !writeClient || fullSync || dirtySyncFields.contains(field.fieldName) ||
+                (field.type.getClassValue() != null && ISyncManaged.class.isAssignableFrom(field.type.getClassValue()));
     }
 
     public void deserializeNBT(CompoundTag tag, boolean readingClientFields) {
@@ -99,7 +99,6 @@ public class SyncDataHolder {
             }
         }
     }
-
 
     public static class SyncManagedTransformer implements ValueTransformer<ISyncManaged> {
 

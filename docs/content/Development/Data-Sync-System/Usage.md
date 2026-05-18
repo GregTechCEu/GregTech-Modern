@@ -6,11 +6,15 @@ title: "Usage"
 
 ### Registering classes with the sync system
 
-At the core of the system is the interface `ISyncManaged`, which represents a class that to be synchronised with the client or saved.
+At the core of the system are the `ISyncManaged` and `ISyncAnnotated` interfaces, which allow for their fields to have sync annotations..
 All block entities which should be synchronised or saved must extend the abstract class `ManagedSyncBlockEntity`.
+
+`ISyncManaged` should be used for classes with any form of persistent state, while `ISyncAnnotated` should be used for record-like classes that hold data.
+
 
 !!! warning 
   Block entities that inherit `ManagedSyncBlockEntity` must call `ManagedSyncBlockEntity::updateTick`***every tick*** within their ticker, or they will not be saved.
+
 
 ```java
 class MySyncObject implements ISyncManaged {
@@ -18,7 +22,14 @@ class MySyncObject implements ISyncManaged {
      @Getter
      protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
     
+    @SaveField
+    @SyncToClient
+    private BlockPos syncPos;
     
+    @SaveField
+    @SyncToClient
+    private ISyncAnnotated syncAnnotatedField;
+     
     /**
      * Function called when the SyncDataHolder requests a rerender
      */
@@ -28,6 +39,20 @@ class MySyncObject implements ISyncManaged {
      * Function called to notify the server that this object has been updated and must be synced to clients
      */
     void markAsChanged();
+    
+    public void doChanges() {
+        
+      syncPos = BlockPos.ZERO;
+        // Client sync fields do not update automatically.
+      getSyncDataHolder().markClientSyncFieldDirty("syncPos")
+                
+      syncAnnotatedField.someValue = 10;
+      /*
+       * Because ISyncAnnotated classes do not manage their own sync state, 
+       * updating a field in an ISyncAnnotated class requires the parent field to be marked as changed.
+       */
+      getSyncDataHolder().markClientSyncFieldDirty("syncAnnotatedField");        
+    }
 }
 ```
 
