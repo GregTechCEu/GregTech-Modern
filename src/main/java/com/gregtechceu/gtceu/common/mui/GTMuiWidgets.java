@@ -390,8 +390,8 @@ public class GTMuiWidgets {
 
         DynamicSyncHandler filterButtonSyncHandler = new DynamicSyncHandler()
                 .widgetProvider((sm, buf) -> {
-                    ItemStack stack = buf.readItem();
-                    if (stack.isEmpty()) {
+                    boolean empty = buf.readBoolean();
+                    if (empty) {
                         if (panelHandler.isPanelOpen()) {
                             panelHandler.closePanel();
                         }
@@ -411,12 +411,9 @@ public class GTMuiWidgets {
                 .singletonSlotGroup(0)
                 .changeListener((stack, amount, client, init) -> {
                     if (client) {
-                        filterButtonSyncHandler.notifyUpdate(packet -> packet.writeItem(stack));
+                        filterButtonSyncHandler.notifyUpdate(packet -> packet.writeBoolean(stack.isEmpty()));
                     }
                 });
-        filterButtonSyncHandler.notifyUpdate(buf -> {
-            buf.writeItem(filterSlot.getStackInSlot(0));
-        });
         return existingRow
                 .child(new ItemSlot().slot(modSlot))
                 .child(new DynamicSyncedWidget<>()
