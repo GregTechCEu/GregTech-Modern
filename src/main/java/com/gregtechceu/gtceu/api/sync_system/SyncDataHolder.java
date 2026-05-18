@@ -172,7 +172,7 @@ public class SyncDataHolder {
             }
         } catch (Exception e) {
             GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName);
-            GTCEu.LOGGER.error(e);
+            GTCEu.LOGGER.error(e.getStackTrace());
         }
     }
 

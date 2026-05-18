@@ -21,10 +21,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.utils.GTStringUtils.COMMA_SEPERATOR_LITERAL;
 
-public class PatternError implements ISyncManaged {
-
-    @Getter
-    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
+public class PatternError {
     /**
      * Return this for your pattern errors if you want them to be a default error with the pos of the BlockWorldState
      * and candidates of the simple predicate's error.
@@ -38,8 +35,6 @@ public class PatternError implements ISyncManaged {
     public PatternError(BlockPos pos, List<List<ItemStack>> candidates) {
         this.pos = pos;
         this.candidates = candidates;
-        getSyncDataHolder().markClientSyncFieldDirty("pos");
-        getSyncDataHolder().markClientSyncFieldDirty("candidates");
     }
 
     public PatternError(BlockPos pos, PatternPredicate predicate) {
@@ -72,13 +67,5 @@ public class PatternError implements ISyncManaged {
         lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
                 pos.getZ()));
         return lines;
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {}
-
-    @Override
-    public void markAsChanged() {
-
     }
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.SetTr
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.CoverBehaviorTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.GTRecipeTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.MonitorGroupTransformer;
+import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.PatternErrorTransformer;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
@@ -198,5 +200,6 @@ public final class ValueTransformers {
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
+        registerTransformer(PatternError.class, new PatternErrorTransformer());
     }
 }
