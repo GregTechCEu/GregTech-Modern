@@ -154,14 +154,13 @@ public class MultiblockControllerMachine extends MetaMachine {
             PatternState patternState = getPatternState(name);
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
             if (!formed || patternState.hasError() || patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
-                var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                 if (!patternState.getState().isValid()) {
                     checkStructurePattern(name);
                 }
                 if (patternState.getState().isValid()) {
                     formStructure(name);
                 }
-                mwsd.addMapping(patternState);
+                MultiblockWorldSavedData.getOrCreate(serverLevel).addMapping(patternState);
 
             }
         }
@@ -250,6 +249,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         patternState.setFormed(true);
         if (substructureName.equals(DEFAULT_STRUCTURE)) {
             isFormed = true;
+            getSyncDataHolder().markClientSyncFieldDirty("isFormed");
         }
 
         if (!patternState.getState().isValid()) {
@@ -287,6 +287,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                 patternState.setFormed(true);
                 if (substructureName.equals(DEFAULT_STRUCTURE)) {
                     this.isFormed = true;
+                    getSyncDataHolder().markClientSyncFieldDirty("isFormed");
                 }
                 setFlipped(patternState.isFlipped(), patternState);
             }
@@ -305,6 +306,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         patternState.setFormed(true);
         if (substructureName.equals(DEFAULT_STRUCTURE)) {
             isFormed = true;
+            getSyncDataHolder().markClientSyncFieldDirty("isFormed");
             MachineRenderState renderState = getRenderState();
             if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
@@ -325,6 +327,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void invalidateStructure() {
         invalidateStructure(DEFAULT_STRUCTURE);
         isFormed = false;
+        getSyncDataHolder().markClientSyncFieldDirty("isFormed");
     }
 
     public void invalidateStructure(String name) {
@@ -346,6 +349,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         if (name.equals(DEFAULT_STRUCTURE)) {
             isFormed = false;
             parallelHatch = null;
+            getSyncDataHolder().markClientSyncFieldDirty("isFormed");
         }
         updatePartPositions();
     }

@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 
 import net.minecraft.core.BlockPos;
@@ -29,7 +31,10 @@ import java.util.Set;
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
-public class PatternState {
+public class PatternState implements ISyncManaged {
+
+    @Getter
+    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     @Getter
     protected BlockPos controllerPos;
@@ -48,12 +53,12 @@ public class PatternState {
     protected boolean actualFlipped = false;
     @Setter
     protected boolean shouldUpdate = true;
-    @Setter
     @Getter
+    @SyncToClient
     // TODO sync this
     protected PatternError error;
     @Getter
-    @Setter(AccessLevel.PROTECTED)
+    @SyncToClient
     protected CheckState state = CheckState.UNINITIALIZED;
     @Getter
     protected Set<BlockPos> posCache = new HashSet<>();
@@ -113,6 +118,22 @@ public class PatternState {
                 }
             }
         }
+    }
+
+    @Override
+    public void scheduleRenderUpdate() {}
+
+    @Override
+    public void markAsChanged() {}
+
+    public void setError(PatternError error) {
+        this.error = error;
+        getSyncDataHolder().markClientSyncFieldDirty("error");
+    }
+
+    protected void setState(CheckState state) {
+        this.state = state;
+        getSyncDataHolder().markClientSyncFieldDirty("state");
     }
 
     public enum CheckState {
