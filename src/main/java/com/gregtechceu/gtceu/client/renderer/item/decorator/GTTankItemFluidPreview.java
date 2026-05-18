@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
-import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -12,6 +11,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
+import brachy.modularui.drawable.GuiDraw;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
@@ -99,13 +99,13 @@ public class GTTankItemFluidPreview implements IItemDecorator {
                 renderedCount < getMaxRenderCount(); index++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(index);
             if (!fluidInTank.isEmpty()) {
-                RenderUtil.drawFluidForGui(
+                GuiDraw.drawFluidTexture(
                         guiGraphics,
                         fluidInTank,
                         x + OFFSET[renderedCount][0],
                         y + OFFSET[renderedCount][1],
                         8.0F,
-                        8.0F);
+                        8.0F, 0);
                 renderedCount++;
             }
         }

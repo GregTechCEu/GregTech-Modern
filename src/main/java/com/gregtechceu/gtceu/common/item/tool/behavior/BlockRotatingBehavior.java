@@ -96,15 +96,18 @@ public class BlockRotatingBehavior implements IToolBehavior {
 
         Vec3 startVec = new Vec3(d0, d1, d2);
 
+        // If you want someone to blame for these variables, blame
+        // https://github.com/Creators-of-Create/Create/blob/mc1.21.1/dev/src/main/java/com/simibubi/create/foundation/utility/RaycastHelper.java
         double range = ToolHelper.getPlayerBlockReach(player);
         float f = player.getXRot();
         float f1 = player.getYRot();
-        float f2 = Mth.cos(-f1 * 0.017453292F - (float) Math.PI);
-        float f3 = Mth.sin(-f1 * 0.017453292F - (float) Math.PI);
-        float f4 = -Mth.cos(-f * 0.017453292F);
-        float f5 = Mth.sin(-f * 0.017453292F);
+        float f2 = Mth.cos(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
+        float f3 = Mth.sin(-f1 * ((float) Math.PI / 180F) - (float) Math.PI);
+        float f4 = -Mth.cos(-f * ((float) Math.PI / 180F));
+        float f5 = Mth.sin(-f * ((float) Math.PI / 180F));
         float f6 = f3 * f4;
         float f7 = f2 * f4;
+
         Vec3 endVec = startVec.add((double) f6 * range, (double) f5 * range, (double) f7 * range);
 
         BlockState state = level.getBlockState(pos);
