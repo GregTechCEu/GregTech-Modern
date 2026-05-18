@@ -27,6 +27,12 @@ public interface ISyncManaged {
 
     SyncDataHolder getSyncDataHolder();
 
+    /**
+     * Gets the parent sync object of this sync object
+     * 
+     * @return The parent sync object, can only return null if this object does not have a parent sync object and both
+     *         {@link #scheduleRenderUpdate()} and {@link #markAsChanged()} are overriden
+     */
     @Nullable
     ISyncManaged getParentSyncObject();
 
