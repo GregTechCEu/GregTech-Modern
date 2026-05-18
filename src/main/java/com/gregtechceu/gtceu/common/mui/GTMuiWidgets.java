@@ -385,39 +385,26 @@ public class GTMuiWidgets {
                                                                               UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
 
-        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
-
-        DynamicSyncHandler filterButtonSyncHandler = new DynamicSyncHandler()
-                .widgetProvider((sm, buf) -> {
-                    boolean empty = buf.readBoolean();
-                    if (empty) {
-                        if (panelHandler.isPanelOpen()) {
-                            panelHandler.closePanel();
-                        }
-                        return new EmptyWidget();
-                    }
-
-                    return new ButtonWidget<>()
-                            .background(GuiTextures.MC_BUTTON)
-                            .size(16)
-                            .onMousePressed((c, b) -> {
-                                panelHandler.openPanel();
-                                return true;
-                            });
-                });
-
         ModularSlot modSlot = new ModularSlot(filterSlot, 0)
-                .singletonSlotGroup(0)
-                .changeListener((stack, amount, client, init) -> {
-                    if (client) {
-                        filterButtonSyncHandler.notifyUpdate(packet -> packet.writeBoolean(stack.isEmpty()));
-                    }
-                });
+                .singletonSlotGroup(0);
+
+        ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
+        syncManager.syncValue("filterSlotHandler", filterSlotHandler);
+
+        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
+                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm, settings));
+
+
         return existingRow
-                .child(new ItemSlot().slot(modSlot))
-                .child(new DynamicSyncedWidget<>()
-                        .syncHandler(filterButtonSyncHandler));
+                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ButtonWidget<>()
+                        .background(GuiTextures.MC_BUTTON)
+                        .size(16)
+                        .onMousePressed((c, b) -> {
+                            panelHandler.togglePanel();
+                            return true;
+                        })
+                        .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
