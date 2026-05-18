@@ -119,7 +119,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
                         }));
 
         column.child(coverUIRow().child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
-
+        column.child(getItemFilter().getFilterUI(data, syncManager, settings));
         column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
                 .value(filterMode)
                 .overlay(16, GTGuiTextures.FILTER_MODE_OVERLAY)

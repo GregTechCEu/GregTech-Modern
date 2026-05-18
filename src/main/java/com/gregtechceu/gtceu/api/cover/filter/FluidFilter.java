@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.widgets.layout.Flow;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -57,6 +58,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
 
         @Override
         public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+            return null;
+        }
+
+        @Override
+        public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
             return null;
         }
 

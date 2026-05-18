@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -83,22 +84,28 @@ public class SmartItemFilter implements ItemFilter {
 
     @Override
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
-                this::getFilterMode, this::setFilterMode);
 
-        syncManager.syncValue("mode", mode);
 
         return new Dialog<>("smart_item_filter")
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
                 .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
-                        .value(mode)
-                        .overlay(16, SmartFilteringMode.getTextures())
-                        .lang(Text.dynamic(() -> Component.translatable(filterMode.localeName)))
-                        .build().margin(7))
+                .child(getFilterUI(data, syncManager, settings))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
+    @Override
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
+                this::getFilterMode, this::setFilterMode);
+
+        syncManager.syncValue("mode", mode);
+        return new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
+                .value(mode)
+                .overlay(16, SmartFilteringMode.getTextures())
+                .lang(Text.dynamic(() -> Component.translatable(filterMode.localeName)))
+                .build().margin(7);
     }
 
     @Override

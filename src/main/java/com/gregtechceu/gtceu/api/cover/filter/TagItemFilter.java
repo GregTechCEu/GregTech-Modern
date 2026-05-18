@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
@@ -37,6 +41,10 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     public void setFilterString(String oreDict) {
         cache.clear();
         super.setFilterString(oreDict);
+    }
+    @Override
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return null;
     }
 
     @Override

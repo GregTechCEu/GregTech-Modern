@@ -107,6 +107,9 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
                             panelHandler.openPanel();
                             return true;
                         }));
+        column.coverChildrenHeight();
+        column.child(getFluidFilter().getFilterUI(data, syncManager, settings));
+
 
         column.child(coverUIRow().child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
 

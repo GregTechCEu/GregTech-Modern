@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.widgets.layout.Flow;
 import net.minecraft.nbt.CompoundTag;
 
 import brachy.modularui.factory.GuiData;
@@ -16,6 +17,8 @@ public interface Filter<T, S extends Filter<T, S>> extends Predicate<T> {
      * @return Filter panel when opened by itself (including the player inventory)
      */
     ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
+
+    Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
 
     CompoundTag saveFilter();
 
