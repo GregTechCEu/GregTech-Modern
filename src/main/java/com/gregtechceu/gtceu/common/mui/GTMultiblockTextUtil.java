@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.widgets.ListWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
+import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -34,6 +36,7 @@ import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -43,20 +46,51 @@ public class GTMultiblockTextUtil {
                                                    PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
+        BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() != null));
+        GenericListSyncHandler<Component> structureErrors = syncManager.getOrCreateSyncHandler("structureErrors", GenericListSyncHandler.class,
+                () -> GenericListSyncHandler.<Component>builder()
+                        .getter(() -> {
+                            var error = weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError();
+                            if(error == null) { return new ArrayList<>();
+                            } else {
+                                return error.getErrorInfo();
+                            }
+                        })
+                        .setter((errors) -> {})
+                        .adapter(GTByteBufAdapters.COMPONENT)
+                        .copy(Component::copy)
+                        .build());
 
-        Flow unformed = Flow.col().coverChildren();
+
+        Flow unformed = Flow.col().coverChildrenHeight()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .widthRel(1);
+
         unformed
                 .child(Text.lang("gtceu.multiblock.invalid_structure")
                 .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> !isFormed.getBoolValue()));
-//        unformed.childIf(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() != null,
-//                    () -> Text.comp(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE)
-//                            .getError()
-//                            .getErrorInfo()
-//                            .toArray(new Component[0]))
-//                            .asWidget()
-//                );
+
+
+
+        DynamicLinkedSyncHandler<GenericListSyncHandler<Component>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(structureErrors)
+                .widgetProvider((widgetSyncManager, listSyncHandler) -> {
+                    var list = new ListWidget<>()
+                            .widthRel(1)
+                            .coverChildrenHeight()
+                            .crossAxisAlignment(Alignment.CrossAxis.START);
+                    for(var comp : listSyncHandler.getValue()) {
+                        list.child(Text.comp(comp).asWidget());
+                    }
+                    return list;
+                });
+
+        unformed.child(new DynamicSyncedWidget<>()
+                .widthRel(1)
+                .coverChildrenHeight()
+                .syncHandler(dynamicLinkedSyncHandler));
         return unformed;
     }
 

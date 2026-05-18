@@ -31,10 +31,7 @@ import java.util.Set;
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
-public class PatternState implements ISyncManaged {
-
-    @Getter
-    protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
+public class PatternState {
 
     @Getter
     protected BlockPos controllerPos;
@@ -42,22 +39,19 @@ public class PatternState implements ISyncManaged {
     protected MultiblockControllerMachine controller;
     @Getter
     @Setter
-    // TODO proper syncing
-    @SyncToClient
     protected boolean isFormed = false;
     @Getter
-    @SyncToClient
     protected volatile boolean isFlipped = false;
     @Setter
     @Getter
     protected boolean actualFlipped = false;
     @Setter
     protected boolean shouldUpdate = true;
+    @Setter
     @Getter
-    @SyncToClient
     protected PatternError error;
+    @Setter
     @Getter
-    @SyncToClient
     protected CheckState state = CheckState.UNINITIALIZED;
     @Getter
     protected Set<BlockPos> posCache = new HashSet<>();
@@ -117,24 +111,6 @@ public class PatternState implements ISyncManaged {
                 }
             }
         }
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {}
-
-    @Override
-    public void markAsChanged() {
-        controller.markAsChanged();
-    }
-
-    public void setError(PatternError error) {
-        this.error = error;
-        getSyncDataHolder().markClientSyncFieldDirty("error");
-    }
-
-    public void setState(CheckState state) {
-        this.state = state;
-        getSyncDataHolder().markClientSyncFieldDirty("state");
     }
 
     @Getter

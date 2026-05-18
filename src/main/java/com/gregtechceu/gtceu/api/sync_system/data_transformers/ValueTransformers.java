@@ -198,7 +198,5 @@ public final class ValueTransformers {
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());
-        registerTransformer(PatternState.class, new PatternStateTransformer());
-        registerTransformer(PatternError.class, new PatternErrorTransformer());
     }
 }
