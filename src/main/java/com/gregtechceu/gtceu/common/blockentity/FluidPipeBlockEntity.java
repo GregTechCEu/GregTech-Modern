@@ -31,7 +31,6 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -510,7 +509,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     public void setInsulated(boolean insulated) {
         this.insulated = insulated;
-        setChanged();
         syncDataHolder.markClientSyncFieldDirty("insulated");
     }
 
