@@ -87,6 +87,13 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         isDirty = true;
     }
 
+    @Override
+    public void setChanged() {
+        if (getLevel() != null) {
+            getLevel().blockEntityChanged(getBlockPos());
+        }
+    }
+
     public final void updateTick() {
         setChanged();
         if (isDirty) {
