@@ -155,7 +155,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 }
                 if (lastRecipe != null && getStatus() == Status.WORKING) {
                     lastOriginRecipe = match;
-                    lastFailedMatches = null;
                     return true;
                 }
             }

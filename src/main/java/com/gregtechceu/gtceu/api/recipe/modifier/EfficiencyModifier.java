@@ -64,7 +64,7 @@ public class EfficiencyModifier implements RecipeModifier {
             return RecipeModifier.nullWrongType(IRecipeLogicMachine.class, machine);
         }
         if (recipe.duration <= 1) return ModifierFunction.IDENTITY;
-        int runs = rlm.getRecipeLogic().getConsecutiveRecipes();
+        int runs = 0; // TODO: add this back
         double mult;
         // Heuristic to not do insane floating point math - if you need more than this to get to the cap, seek help
         if (runs > heuristic) mult = hardCap;
