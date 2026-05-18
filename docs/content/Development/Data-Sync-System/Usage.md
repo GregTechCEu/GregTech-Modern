@@ -20,7 +20,7 @@ All block entities which should be synchronised or saved must extend the abstrac
 ```java
 class MySyncObject implements ISyncManaged {
     
-    // Any class that directly implements ISyncManaged have a SyncDataHolder:
+    // Any class that directly implements ISyncManaged must have a SyncDataHolder:
      @Getter
      protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
      
