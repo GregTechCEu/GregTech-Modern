@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.sync_system;
 
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.GenericArrayType;
@@ -8,6 +9,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 
+@ApiStatus.Internal
 public class TypeDeclaration {
 
     @Getter

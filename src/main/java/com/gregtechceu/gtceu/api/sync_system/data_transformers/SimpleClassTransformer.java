@@ -21,7 +21,7 @@ public class SimpleClassTransformer<T, TagType extends Tag> implements ValueTran
     }
 
     @Override
-    public @NotNull Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
+    public Tag serializeNBT(T value, ValueTransformer.TransformerContext<T> context) {
         return write.apply(value);
     }
 
