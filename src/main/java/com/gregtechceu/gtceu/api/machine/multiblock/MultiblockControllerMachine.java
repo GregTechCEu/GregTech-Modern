@@ -67,7 +67,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel) {
+        if (!isRemote()) {
             // run a structure check on the first tick
             checkAndFormStructure();
         }
@@ -146,29 +146,23 @@ public class MultiblockControllerMachine extends MetaMachine {
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
-    @Getter
-    private final Lock patternLock = new ReentrantLock();
 
     public void checkAndFormStructure() {
+        if (!(getLevel() instanceof ServerLevel serverLevel)) return;
         for (var entry : patternStates.entrySet()) {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
             if (!formed || patternState.hasError() || patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.getServer().execute(() -> {
-                        patternLock.lock();
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        if (!patternState.getState().isValid()) {
-                            checkStructurePattern(name);
-                        }
-                        if (patternState.getState().isValid()) {
-                            formStructure(name);
-                        }
-                        mwsd.addMapping(patternState);
-                        patternLock.unlock();
-                    });
+                var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                if (!patternState.getState().isValid()) {
+                    checkStructurePattern(name);
                 }
+                if (patternState.getState().isValid()) {
+                    formStructure(name);
+                }
+                mwsd.addMapping(patternState);
+
             }
         }
     }
