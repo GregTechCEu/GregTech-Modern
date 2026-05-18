@@ -37,8 +37,7 @@ public class FieldSyncHandler {
             }
 
         } catch (Exception e) {
-            GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName);
-            GTCEu.LOGGER.error(e);
+            GTCEu.LOGGER.error("Sync: Failed to serialize field {}", field.fieldName, e);
         }
 
         return new CompoundTag();
@@ -79,8 +78,7 @@ public class FieldSyncHandler {
                         field.fieldName);
                 return;
             }
-            GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName);
-            GTCEu.LOGGER.error(e);
+            GTCEu.LOGGER.error("Sync: Failed to deserialize field {}", field.fieldName, e);
         }
     }
 }

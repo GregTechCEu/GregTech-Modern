@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -45,6 +46,7 @@ public final class ClassSyncData {
     @Getter
     private final Set<FieldSyncData> serverSaveFields = new ObjectOpenHashSet<>();
 
+    @SneakyThrows
     private ClassSyncData(Class<?> clazz) {
         var isManaged = ISyncManaged.class.isAssignableFrom(clazz);
         var isAnnotated = ISyncAnnotated.class.isAssignableFrom(clazz);
@@ -59,8 +61,7 @@ public final class ClassSyncData {
             privateLookup = MethodHandles.privateLookupIn(clazz, LOOKUP);
         } catch (IllegalAccessException e) {
             GTCEu.LOGGER.error("Sync: Failed to create method handle lookup for class {}", clazz);
-            GTCEu.LOGGER.error(e.getMessage());
-            return;
+            throw e;
         }
 
         Map<String, List<MethodHandle>> changeListeners = new HashMap<>();
@@ -102,8 +103,7 @@ public final class ClassSyncData {
             } catch (IllegalAccessException e) {
                 GTCEu.LOGGER.error("Sync: Failed to acquire variable handle for field {} {}", field.getName(),
                         clazz.getName());
-                GTCEu.LOGGER.error(e.getMessage());
-                continue;
+                throw e;
             }
 
             FieldSyncData syncData = new FieldSyncData(field, handle, ValueTransformers.get(field.getGenericType()),

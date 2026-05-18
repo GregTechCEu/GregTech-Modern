@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraftforge.common.util.INBTSerializable;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Represents a class with fields that have sync annotations. <br>
  * Differs from {@link ISyncAnnotated} in that more control is provided over syncing. <br>
@@ -25,13 +27,20 @@ public interface ISyncManaged {
 
     SyncDataHolder getSyncDataHolder();
 
+    @Nullable
+    ISyncManaged getParentSyncObject();
+
     /**
      * Function called when a synced field requests a rerender
      */
-    void scheduleRenderUpdate();
+    default void scheduleRenderUpdate() {
+        if (getParentSyncObject() != null) getParentSyncObject().scheduleRenderUpdate();
+    }
 
     /**
      * Function called to notify the server that this object has been updated and must be synced to clients
      */
-    void markAsChanged();
+    default void markAsChanged() {
+        if (getParentSyncObject() != null) getParentSyncObject().markAsChanged();
+    }
 }

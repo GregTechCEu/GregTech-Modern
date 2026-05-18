@@ -41,6 +41,11 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     IGregtechBlockEntity getHolder();
 
+    @Override
+    default ISyncManaged getParentSyncObject() {
+        return getHolder();
+    }
+
     default Level getLevel() {
         return getHolder().getLevel();
     }
@@ -65,16 +70,8 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         getHolder().notifyBlockUpdate();
     }
 
-    default void scheduleRenderUpdate() {
-        getHolder().notifyBlockUpdate();
-    }
-
     default void scheduleNeighborShapeUpdate() {
         getHolder().scheduleNeighborShapeUpdate();
-    }
-
-    default void markAsChanged() {
-        getHolder().markAsChanged();
     }
 
     @Nullable

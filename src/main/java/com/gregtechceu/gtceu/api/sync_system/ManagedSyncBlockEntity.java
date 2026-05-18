@@ -83,6 +83,11 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     @Override
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return null;
+    }
+
+    @Override
     public final void markAsChanged() {
         isDirty = true;
     }
