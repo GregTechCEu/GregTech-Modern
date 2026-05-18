@@ -68,7 +68,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(getFilterItem(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> getFilterItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(inputRow)
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }

@@ -92,7 +92,7 @@ public class SmartItemFilter implements ItemFilter {
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
                 .child(new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
                         .value(mode)
                         .overlay(16, SmartFilteringMode.getTextures())

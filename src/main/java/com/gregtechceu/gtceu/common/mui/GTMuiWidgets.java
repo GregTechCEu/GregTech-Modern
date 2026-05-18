@@ -68,10 +68,11 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        return createTitleBar(definition.asStack(), panelWidth, background);
+        return createTitleBar(() -> definition.asStack(), panelWidth, background);
     }
 
-    public static Flow createTitleBar(ItemStack stack, int panelWidth, UITexture background) {
+    public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
+        ItemStack stack = stackSupplier.get();
         var name = stack.getHoverName().getString();
         name = name.replaceAll("§.", "").trim();
         return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);

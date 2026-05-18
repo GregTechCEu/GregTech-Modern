@@ -143,7 +143,7 @@ public class SimpleFluidFilter implements FluidFilter {
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.row()
                         .top(10)
                         .coverChildrenHeight()

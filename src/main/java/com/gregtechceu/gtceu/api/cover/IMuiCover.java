@@ -47,7 +47,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     default ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel<?> panel = ModularPanel.defaultPanel(this.self().coverDefinition.getId().getPath(), 176, 192 + 18);
 
-        panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+        panel.child(GTMuiWidgets.createTitleBar(() -> this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 
         Flow column = Flow.column()
                 .top(7).margin(7, 0)

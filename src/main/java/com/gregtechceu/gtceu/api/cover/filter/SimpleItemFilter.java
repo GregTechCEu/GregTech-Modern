@@ -137,7 +137,7 @@ public class SimpleItemFilter implements ItemFilter {
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.row()
                         .top(10)
                         .coverChildrenHeight()

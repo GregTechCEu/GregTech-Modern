@@ -345,7 +345,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+                .child(GTMuiWidgets.createTitleBar(() -> getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
                 .getter(this::getVirtualEntries)
