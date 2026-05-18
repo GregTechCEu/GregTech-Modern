@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import brachy.modularui.api.drawable.IDrawable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -108,10 +109,7 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
                             return true;
                         }));
         column.coverChildrenHeight();
-        column.child(getFluidFilter().getFilterUI(data, syncManager, settings));
-
-
-        column.child(coverUIRow().child(new DynamicSyncedWidget<>().syncHandler(filterButton)));
+        column.child(getFluidFilter().getFilterUI(data, syncManager, settings).marginBottom(4));
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
                 .value(filterMode)

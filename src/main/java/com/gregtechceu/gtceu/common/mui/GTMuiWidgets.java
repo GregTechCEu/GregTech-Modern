@@ -378,42 +378,57 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(ParentWidget<?> existingRow,
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
                                                                               FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
-        // TODO get the panel to use the right sync handler when swapping from one item filter to the next
-        var panelHandler = syncManager.syncedPanel("filterPanel", true,
+
+        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> filterHandler.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
 
-        DynamicSyncHandler filterButton = new DynamicSyncHandler()
+        DynamicSyncHandler filterButtonSyncHandler = new DynamicSyncHandler()
                 .widgetProvider((sm, buf) -> {
                     ItemStack stack = buf.readItem();
-                    if (stack.isEmpty()) return new EmptyWidget();
-                    stack = filterSlot.getStackInSlot(0);
-                    S filter = filterHandler.loadFilter(stack);
+                    if (stack.isEmpty()) {
+                        if (panelHandler.isPanelOpen()) {
+                            panelHandler.closePanel();
+                        }
+                        return new EmptyWidget();
+                    }
 
                     return new ButtonWidget<>()
-                            .onMousePressed((context, b) -> {
+                            .background(GuiTextures.MC_BUTTON)
+                            .size(16)
+                            .onMousePressed((c, b) -> {
                                 panelHandler.openPanel();
                                 return true;
                             });
                 });
-        return existingRow.child(new ItemSlot()
-                .slot(new ModularSlot(filterSlot, 0)
-                        .changeListener((stack, amount, client, init) -> filterButton
-                                .notifyUpdate(packet -> packet.writeItem(stack)))))
-                .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
+
+        ModularSlot modSlot = new ModularSlot(filterSlot, 0)
+                .singletonSlotGroup(0)
+                .changeListener((stack, amount, client, init) -> {
+                    if (client) {
+                        filterButtonSyncHandler.notifyUpdate(packet -> packet.writeItem(stack));
+                    }
+                });
+        filterButtonSyncHandler.notifyUpdate(buf -> {
+            buf.writeItem(filterSlot.getStackInSlot(0));
+        });
+        return existingRow
+                .child(new ItemSlot().slot(modSlot))
+                .child(new DynamicSyncedWidget<>()
+                        .syncHandler(filterButtonSyncHandler));
     }
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
-        return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager,
-                settings);
+        Flow row = Flow.row().coverChildrenHeight().childPadding(2);
+        return createFilterRow(row, filterHandler, data, syncManager, settings);
     }
 
     private static int getIncrementValue(MouseData data, int step) {

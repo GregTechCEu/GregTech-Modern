@@ -1,6 +1,15 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.api.value.IBoolValue;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.menu.Menu;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -84,8 +93,6 @@ public class SmartItemFilter implements ItemFilter {
 
     @Override
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-
         return new Dialog<>("smart_item_filter")
                 .disablePanelsBelow(false)
                 .draggable(true)
@@ -101,11 +108,41 @@ public class SmartItemFilter implements ItemFilter {
                 this::getFilterMode, this::setFilterMode);
 
         syncManager.syncValue("mode", mode);
-        return new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
+
+        return Flow.row()
+                .childPadding(2)
+                .child(Text.str("Recipe Type:").asWidget())
+                .child(new ContextMenuButton<>("smart_filter")
+                        .size(20)
+                        .requiresClick()
+                        .tooltip(r -> r.add(Text.str("Set Machine Recipe Type")))
+                        .openRightDown()
+                        .overlay(new DynamicDrawable(() -> SmartFilteringMode.getTextures()[mode.getIntValue()]))
+                        .menu(new Menu<>()
+                                .width(20)
+                                .coverChildrenHeight()
+                                .padding(2)
+                                .child(new ListWidget<>()
+                                        .maxSize(SmartFilteringMode.VALUES.length * 20)
+                                        .widthRel(1.f)
+                                        .children(SmartFilteringMode.VALUES.length, w -> {
+                                            IBoolValue<?> bsv = new BoolValue.Dynamic(() -> mode.getIntValue() == w, bool -> mode.setIntValue(w));
+
+                                            return new ToggleButton()
+                                                    .overlay(SmartFilteringMode.getTextures()[w])
+                                                    .background(GuiTextures.MC_BUTTON)
+                                                    .value(bsv)
+                                                    .tooltip(r -> r.add(Text.str(SmartFilteringMode.VALUES[w].localeName)));
+                                        })
+                                )
+                        )
+                );
+
+        /*return new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
                 .value(mode)
                 .overlay(16, SmartFilteringMode.getTextures())
                 .lang(Text.dynamic(() -> Component.translatable(filterMode.localeName)))
-                .build().margin(7);
+                .build().margin(7);*/
     }
 
     @Override
