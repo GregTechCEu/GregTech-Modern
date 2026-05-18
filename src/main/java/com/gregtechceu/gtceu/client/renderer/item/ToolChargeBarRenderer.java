@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 
+import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.FastColor;
@@ -40,6 +42,7 @@ public final class ToolChargeBarRenderer {
 
         GuiDraw.drawRect(graphics, x, y, 13, shadow ? 2 : 1, colorShadow);
         GuiDraw.drawHorizontalGradientRect(graphics, x, y, level, 1, left, right);
+        ((GuiGraphicsAccessor)graphics).callFlushIfUnmanaged();
     }
 
     public static void renderBarsTool(GuiGraphics graphics, IGTTool tool, ItemStack stack, int xPosition,
