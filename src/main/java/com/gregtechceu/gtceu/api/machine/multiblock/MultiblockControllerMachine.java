@@ -67,11 +67,9 @@ public class MultiblockControllerMachine extends MetaMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            if (isFormed) {
-                // run a structure check on the first tick
-                checkAndFormStructure();
-            }
+        if (getLevel() instanceof ServerLevel) {
+            // run a structure check on the first tick
+            checkAndFormStructure();
         }
     }
 
@@ -153,66 +151,25 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void checkAndFormStructure() {
         for (var entry : patternStates.entrySet()) {
-            var name = entry.getKey();
-            var patternState = entry.getValue();
+            String name = entry.getKey();
+            PatternState patternState = getPatternState(name);
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
-            if ((patternState.hasError() || !formed ||
-                    patternState.getState() == PatternState.CheckState.UNINITIALIZED) /*&&
-                    (getOffset() % 4 == 0) &&
-                    checkPatternWithTryLock(name)*/) { // per second
+            if (!formed || patternState.hasError() || patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
                 if (getLevel() instanceof ServerLevel serverLevel) {
                     serverLevel.getServer().execute(() -> {
                         patternLock.lock();
                         var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        if (checkPatternWithLock(name)) { // formed
+                        if (!patternState.getState().isValid()) {
+                            checkStructurePattern(name);
+                        }
+                        if (patternState.getState().isValid()) {
                             formStructure(name);
                         }
-
                         mwsd.addMapping(patternState);
-
                         patternLock.unlock();
                     });
                 }
             }
-        }
-    }
-
-    /**
-     * Check pattern with a lock.
-     */
-    public boolean checkPatternWithLock(String name) {
-        var lock = getPatternLock();
-        lock.lock();
-        try {
-            var patternCheckState = getPatternState(name).getState();
-            if (patternCheckState == null || !patternCheckState.isValid()) {
-                checkStructurePattern(name);
-            }
-            return getPatternState(name).getState().isValid();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * Check pattern with a try lock
-     *
-     * @return false - checking failed or cant get the lock.
-     */
-    public boolean checkPatternWithTryLock(String name) {
-        var lock = getPatternLock();
-        if (lock.tryLock()) {
-            try {
-                var patternCheckState = getPatternState(name).getState();
-                if (patternCheckState == null || !patternCheckState.isValid()) {
-                    checkStructurePattern(name);
-                }
-                return getPatternState(name).getState() != PatternState.CheckState.UNINITIALIZED;
-            } finally {
-                lock.unlock();
-            }
-        } else {
-            return false;
         }
     }
 
