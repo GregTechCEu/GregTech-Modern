@@ -50,13 +50,13 @@ public class GTMultiblockTextUtil {
                 .withStyle(ChatFormatting.RED)
                 .asWidget()
                 .setEnabledIf(w -> !isFormed.getBoolValue()));
-        unformed.childIf(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() != null,
-                    () -> Text.comp(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE)
-                            .getError()
-                            .getErrorInfo()
-                            .toArray(new Component[0]))
-                            .asWidget()
-                );
+//        unformed.childIf(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() != null,
+//                    () -> Text.comp(weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE)
+//                            .getError()
+//                            .getErrorInfo()
+//                            .toArray(new Component[0]))
+//                            .asWidget()
+//                );
         return unformed;
     }
 

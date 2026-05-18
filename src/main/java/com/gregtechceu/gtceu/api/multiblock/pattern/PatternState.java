@@ -132,7 +132,7 @@ public class PatternState implements ISyncManaged {
         getSyncDataHolder().markClientSyncFieldDirty("error");
     }
 
-    protected void setState(CheckState state) {
+    public void setState(CheckState state) {
         this.state = state;
         getSyncDataHolder().markClientSyncFieldDirty("state");
     }

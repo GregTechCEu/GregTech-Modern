@@ -27,6 +27,7 @@ public class PatternError {
      * and candidates of the simple predicate's error.
      */
     public static final PatternError PLACEHOLDER = new PatternError(BlockPos.ZERO, Collections.emptyList());
+    @Getter
     protected BlockPos pos;
     @Getter
     protected List<List<ItemStack>> candidates;
@@ -47,10 +48,6 @@ public class PatternError {
 
     public Level getWorld() {
         return blockInfo.getLevel();
-    }
-
-    public BlockPos getPos() {
-        return blockInfo.getBlockPos();
     }
 
     public List<Component> getErrorInfo() {
