@@ -83,33 +83,32 @@ public class PatternState {
         return error != null;
     }
 
-    public void onBlockStateChanged(BlockPos pos, BlockState state) {
-        if (cbi.getLevel() instanceof ServerLevel serverLevel) {
-            if (pos.equals(controllerPos)) {
-                if (controller != null) {
-                    if (!state.is(controller.self().getBlockState().getBlock())) {
-                        controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
-                        var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                        mwsd.removeMapping(this);
-                    }
-                }
-            } else {
-                if (controller != null) {
-                    if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
-                        return;
-                    }
+    public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
+        if (!(cbi.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (pos.equals(controllerPos)) {
+            if (controller != null && !newState.is(controller.self().getBlockState().getBlock())) {
+                controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
+            }
+            // block other than controller changed
+        } else if (controller != null) {
+            // if the blocks that changed where active blocks changing state, don't bother rechecking
+            if ((oldState.getBlock() == newState.getBlock()) &&
+                    newState.getBlock() instanceof IStructureChangeIgnored &&
+                    oldState.getBlock() instanceof IStructureChangeIgnored) {
+                return;
+            }
 
-                    for (var name : controller.getStructureNames()) {
-                        if (!controller.checkStructurePattern(name).hasError()) {
-                            controller.formStructure(name);
-                        } else {
-                            controller.invalidateStructure(name);
-                            if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
-                                var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
-                                mwsd.removeMapping(this);
-                                mwsd.addAsyncLogic(controller);
-                            }
-                        }
+            for (var name : controller.getStructureNames()) {
+                PatternState patternState = controller.checkStructurePattern(name);
+                if (!patternState.hasError()) {
+                    controller.formStructure(name);
+                } else {
+                    controller.invalidateStructure(name);
+                    if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
+                        MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
+                        // controller.formStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+                        controller.checkAndFormStructure();
                     }
                 }
             }

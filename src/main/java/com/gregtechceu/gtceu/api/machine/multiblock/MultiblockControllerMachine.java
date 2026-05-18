@@ -68,10 +68,9 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void onLoad() {
         super.onLoad();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
             if (isFormed) {
                 // run a structure check on the first tick
-                asyncCheckPattern(getOffset() % 4);
+                checkAndFormStructure();
             }
         }
     }
@@ -80,7 +79,6 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void onUnload() {
         super.onUnload();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            MultiblockWorldSavedData.getOrCreate(serverLevel).removeAsyncLogic(this);
             for (var pattern : patternStates.values()) {
                 MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(pattern);
             }
@@ -153,27 +151,21 @@ public class MultiblockControllerMachine extends MetaMachine {
     @Getter
     private final Lock patternLock = new ReentrantLock();
 
-    public void asyncCheckPattern(long periodID) {
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            if (getMachine(serverLevel, getBlockPos()) != this) {
-                MultiblockWorldSavedData.getOrCreate(serverLevel).removeAsyncLogic(this);
-            }
-        }
+    public void checkAndFormStructure() {
         for (var entry : patternStates.entrySet()) {
             var name = entry.getKey();
             var patternState = entry.getValue();
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
             if ((patternState.hasError() || !formed ||
-                    patternState.getState() == PatternState.CheckState.UNINITIALIZED) &&
-                    (getOffset() + periodID) % 4 == 0 &&
-                    checkPatternWithTryLock(name)) { // per second
+                    patternState.getState() == PatternState.CheckState.UNINITIALIZED) /*&&
+                    (getOffset() % 4 == 0) &&
+                    checkPatternWithTryLock(name)*/) { // per second
                 if (getLevel() instanceof ServerLevel serverLevel) {
                     serverLevel.getServer().execute(() -> {
                         patternLock.lock();
                         var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
                         if (checkPatternWithLock(name)) { // formed
                             formStructure(name);
-                            mwsd.removeAsyncLogic(this);
                         }
 
                         mwsd.addMapping(patternState);
@@ -225,7 +217,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     /**
-     * should add part to the part list.
+     * Whether the specific part should be added to the part list
      */
     public boolean shouldAddPartToController(IMultiPart part) {
         return true;
@@ -424,7 +416,6 @@ public class MultiblockControllerMachine extends MetaMachine {
                 if (!action.test(part)) return false;
             }
         }
-
         return true;
     }
 
@@ -458,14 +449,14 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void onRotated(Direction oldFacing, Direction newFacing) {
         if (oldFacing != newFacing && getLevel() instanceof ServerLevel serverLevel) {
             // invalid structure
-            // this.onStructureInvalid();
             invalidateStructureCaches();
             var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
             for (var patternState : patternStates.values()) {
-                // var state = structure.getPatternState();
                 mwsd.removeMapping(patternState);
             }
-            mwsd.addAsyncLogic(this);
+            // TODO structure check
+            checkAndFormStructure();
+            //mwsd.addAsyncLogic(this);
         }
     }
 
@@ -501,27 +492,6 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
         }
     }
-
-    /*protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                              BlockHitResult hitResult) {
-        if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            var newUp = getUpwardsFacing().getClockWise(getFrontFacing().getAxis());
-            if (playerIn.isShiftKeyDown()) newUp = newUp.getOpposite();
-            setUpwardsFacing(newUp);
-            playerIn.swing(hand);
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-        if (playerIn.isShiftKeyDown()) {
-            if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
-                return InteractionResult.FAIL;
-            }
-            if (!isRemote()) {
-                setFrontFacing(gridSide);
-            }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
-    }*/
 
     @Override
     public void setFrontFacing(Direction facing) {
