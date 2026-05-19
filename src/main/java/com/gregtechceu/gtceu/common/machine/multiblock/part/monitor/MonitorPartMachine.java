@@ -29,7 +29,8 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
 
     public Vector2d getMousePos(HitResult hitResult) {
         if (hitResult instanceof BlockHitResult hit) {
-            Direction direction = RelativeDirection.RIGHT.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), false);
+            Direction direction = RelativeDirection.RIGHT.getRelativeFacing(getFrontFacing(), getUpwardsFacing(),
+                    false);
             double x = hit.getLocation().get(direction.getAxis());
             if (direction.getAxisDirection().getStep() == 1) {
                 x = 1 - x;

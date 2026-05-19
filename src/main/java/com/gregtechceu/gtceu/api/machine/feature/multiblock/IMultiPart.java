@@ -51,6 +51,7 @@ public interface IMultiPart extends IMachineFeature {
 
     /**
      * Gets the name of the main substructure this multiblock part is attached to.
+     * 
      * @return
      */
     String getSubstructureName();

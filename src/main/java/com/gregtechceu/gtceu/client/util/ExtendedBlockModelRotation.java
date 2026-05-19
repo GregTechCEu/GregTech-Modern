@@ -61,7 +61,7 @@ public enum ExtendedBlockModelRotation {
     }
 
     public static ExtendedBlockModelRotation get(Direction frontFacing) {
-        return switch(frontFacing) {
+        return switch (frontFacing) {
             case NORTH -> NORTH_UP;
             case SOUTH -> SOUTH_UP;
             case EAST -> EAST_UP;
@@ -76,42 +76,42 @@ public enum ExtendedBlockModelRotation {
      */
     public static ExtendedBlockModelRotation getExtended(Direction frontFacing, Direction upwardsFacing) {
         return switch (frontFacing) {
-            case UP -> switch(upwardsFacing) {
+            case UP -> switch (upwardsFacing) {
                 case NORTH -> UP_NORTH;
                 case SOUTH -> UP_SOUTH;
                 case WEST -> UP_WEST;
                 case EAST -> UP_EAST;
                 default -> NORTH_UP;
             };
-            case DOWN -> switch(upwardsFacing) {
+            case DOWN -> switch (upwardsFacing) {
                 case NORTH -> DOWN_NORTH;
                 case SOUTH -> DOWN_SOUTH;
                 case WEST -> DOWN_WEST;
                 case EAST -> DOWN_EAST;
                 default -> NORTH_UP;
             };
-            case NORTH -> switch(upwardsFacing) {
+            case NORTH -> switch (upwardsFacing) {
                 case UP -> NORTH_UP;
                 case DOWN -> NORTH_DOWN;
                 case WEST -> NORTH_WEST;
                 case EAST -> NORTH_EAST;
                 default -> NORTH_UP;
             };
-            case SOUTH -> switch(upwardsFacing) {
+            case SOUTH -> switch (upwardsFacing) {
                 case UP -> SOUTH_UP;
-                case DOWN-> SOUTH_DOWN;
+                case DOWN -> SOUTH_DOWN;
                 case WEST -> SOUTH_WEST;
                 case EAST -> SOUTH_EAST;
                 default -> NORTH_UP;
             };
-            case WEST -> switch(upwardsFacing) {
+            case WEST -> switch (upwardsFacing) {
                 case UP -> WEST_UP;
                 case DOWN -> WEST_DOWN;
                 case NORTH -> WEST_NORTH;
                 case SOUTH -> WEST_SOUTH;
                 default -> NORTH_UP;
             };
-            case EAST -> switch(upwardsFacing) {
+            case EAST -> switch (upwardsFacing) {
                 case UP -> EAST_UP;
                 case DOWN -> EAST_DOWN;
                 case NORTH -> EAST_NORTH;

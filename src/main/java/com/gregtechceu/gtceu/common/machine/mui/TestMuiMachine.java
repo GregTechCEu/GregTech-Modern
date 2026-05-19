@@ -65,12 +65,12 @@ import static brachy.modularui.drawable.GuiTextures.MUI_LOGO;
 public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
     private static final Object2IntMap<Item> handlerSizeMap = Util.make(new Object2IntOpenHashMap<>(), map -> {
-            map.put(Items.DIAMOND, 9);
-            map.put(Items.EMERALD, 9);
-            map.put(Items.GOLD_INGOT, 7);
-            map.put(Items.IRON_INGOT, 6);
-            map.put(Items.CLAY_BALL, 2);
-            map.defaultReturnValue(3);
+        map.put(Items.DIAMOND, 9);
+        map.put(Items.EMERALD, 9);
+        map.put(Items.GOLD_INGOT, 7);
+        map.put(Items.IRON_INGOT, 6);
+        map.put(Items.CLAY_BALL, 2);
+        map.defaultReturnValue(3);
     });
 
     private final FluidTank fluidTank = new FluidTank(10000);

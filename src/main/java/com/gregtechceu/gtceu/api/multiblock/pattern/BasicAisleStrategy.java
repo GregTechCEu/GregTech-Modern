@@ -24,7 +24,8 @@ public class BasicAisleStrategy extends AisleStrategy {
         public int endExclusive = -1;
         public int actualRepeats = -1;
 
-        public MultiblockAisle(int minRepeats, int maxRepeats, int startInclusive, int endExclusive, int actualRepeats) {
+        public MultiblockAisle(int minRepeats, int maxRepeats, int startInclusive, int endExclusive,
+                               int actualRepeats) {
             this.minRepeats = minRepeats;
             this.maxRepeats = maxRepeats;
             this.startInclusive = startInclusive;

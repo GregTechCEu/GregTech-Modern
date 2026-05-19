@@ -684,7 +684,6 @@ public class GTUtil {
                 a.getStepX() * b.getStepY() - a.getStepY() * b.getStepX());
     }
 
-
     public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
         level.removeBlock(pos, false);
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,

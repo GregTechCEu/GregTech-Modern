@@ -155,19 +155,15 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public void load(CompoundTag tag) {
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
 
-        if (!GTCEu.isClientSide()) {
-            Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(), this.getUpwardsFacing(), tag);
-            if (upwardsGlobal != null) {
-                // force the global upwards direction
-                var blockState = getBlockState();
-                if (blockState.getBlock() instanceof MetaMachineBlock &&
-                        blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal) {
-                    getLevel().setBlockAndUpdate(getBlockPos(),
-                            blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal));
-                    if (getLevel() != null && !getLevel().isClientSide) {
-                        notifyBlockUpdate();
-                    }
-                }
+        Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(),
+                this.getUpwardsFacing(), tag);
+        if (upwardsGlobal != null) {
+            // force the global upwards direction
+            var blockState = getBlockState();
+            boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
+            if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
+                blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal);
+
             }
         }
 

@@ -17,8 +17,8 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -156,7 +156,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          */
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;
         }

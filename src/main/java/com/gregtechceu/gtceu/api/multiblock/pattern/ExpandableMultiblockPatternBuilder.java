@@ -27,7 +27,8 @@ public class ExpandableMultiblockPatternBuilder {
     }
 
     public static ExpandableMultiblockPatternBuilder start() {
-        return new ExpandableMultiblockPatternBuilder(RelativeDirection.BACK, RelativeDirection.UP, RelativeDirection.RIGHT);
+        return new ExpandableMultiblockPatternBuilder(RelativeDirection.BACK, RelativeDirection.UP,
+                RelativeDirection.RIGHT);
     }
 
     public ExpandableMultiblockPatternBuilder boundsFunction(ExpandablePattern.BoundsFunction boundsFunc) {

@@ -60,7 +60,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         for (IMultiPart part : getParts()) {
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
-                    pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
+                    pState.setError(new PatternStringError(
+                            Component.translatable("gtceu.predicate_error.object_holder.direction")));
                     invalidateStructure(substructureName);
                     return;
                 }
@@ -74,12 +75,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         // should never happen, but would rather do this than have an obscure NPE
         if (computationProvider == null) {
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.research.missing_computation")));
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.research.missing_computation")));
             invalidateStructure(substructureName);
         }
 
         if (objectHolder == null) {
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
             invalidateStructure(substructureName);
         }
     }
@@ -96,7 +99,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             }
         }
         if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
-            patternState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
+            patternState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
             invalidateStructure(name);
         }
         return patternState;

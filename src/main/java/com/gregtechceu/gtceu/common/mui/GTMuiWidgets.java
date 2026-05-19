@@ -702,7 +702,7 @@ public class GTMuiWidgets {
                         .verticalCenter()
                         .rightRel(0.f)
                         .height(18);
-                if(this.langTooltip != null) {
+                if (this.langTooltip != null) {
                     text.tooltip(r -> r.addLine(langTooltip));
                 }
                 row.child(text);

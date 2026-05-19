@@ -94,7 +94,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         EnumSyncValue<Filter> filterSync = new EnumSyncValue<>(Filter.class,
                 () -> Filter.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
-                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal())).allowC2S();
+                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()))
+                .allowC2S();
 
         PagedWidget<?> pages = new PagedWidget<>()
                 .left((176 - 80) / 2)

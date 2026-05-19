@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -100,7 +99,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
         updateDimensions();
 
-        return ExpandableMultiblockPatternBuilder.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+        return ExpandableMultiblockPatternBuilder
+                .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
                 .boundsFunction((l, b, f, u) -> bounds)
                 .predicateFunction((bp, b) -> {
                     if (bp.equals(BlockPos.ZERO))
@@ -135,10 +135,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private PatternPredicate wallPredicate() {
         return new PatternPredicate("Wall Blocks",
                 multiblockState -> {
-            BlockPos p = multiblockState.getBlockPos();
-            return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ()));
-        }, null);
+                    BlockPos p = multiblockState.getBlockPos();
+                    return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
+                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
+                                    p.getX(), p.getY(), p.getZ()));
+                }, null);
     }
 
     private PatternPredicate logPredicate() {

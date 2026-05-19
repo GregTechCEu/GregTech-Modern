@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +26,7 @@ import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -38,6 +38,7 @@ public class ExpandablePattern implements IBlockPattern {
 
     @FunctionalInterface
     public interface BoundsFunction {
+
         int[] apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
     }
 

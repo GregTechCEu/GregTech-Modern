@@ -153,12 +153,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         forEachFormed(substructureName, (info, pos) -> {
             BlockEntity be = info.getBlockEntity();
             // todo check if be and if it has the cleanroom trait
-            //if (!(be instanceof ICleanroomReceiver receiver)) return;
+            // if (!(be instanceof ICleanroomReceiver receiver)) return;
 
-            /*if (receiver.getCleanroom() != this) {
-                receiver.setCleanroomProvider(cleanroomProviderTrait);
-                cleanroomReceivers.add(receiver);
-            }*/
+            /*
+             * if (receiver.getCleanroom() != this) {
+             * receiver.setCleanroomProvider(cleanroomProviderTrait);
+             * cleanroomReceivers.add(receiver);
+             * }
+             */
         });
 
         // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
@@ -252,13 +254,15 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         int d = findFloorPos(Direction.DOWN, getBlockPos().mutable());
 
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
             invalidateStructure();
             return;
         }
 
         if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
         }
@@ -381,7 +385,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         var innerPredicate = innerPredicate();
         var verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
 
-        return ExpandableMultiblockPatternBuilder.start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+        return ExpandableMultiblockPatternBuilder
+                .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
                 .boundsFunction((l, bp, f, u) -> bounds)
                 .predicateFunction((bp, b) -> {
                     if (bp.equals(BlockPos.ZERO))
@@ -603,7 +608,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         GenericSyncValue<Component> distComponent = GenericSyncValue.builder(Component.class)
                 .adapter(COMPONENT)
-                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds[3] + bounds[4] + 1, bounds[1] + 1,
+                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds[3] + bounds[4] + 1,
+                        bounds[1] + 1,
                         bounds[4] + bounds[5] + 1))
                 .build();
         syncManager.syncValue("distComponent", distComponent);
@@ -675,10 +681,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return widgets;
 
         /*
-        if (state.hasError()) {
-            var comp = state.getError().getErrorInfo();
-            textList.addAll(comp);
-        }
+         * if (state.hasError()) {
+         * var comp = state.getError().getErrorInfo();
+         * textList.addAll(comp);
+         * }
          */
     }
 

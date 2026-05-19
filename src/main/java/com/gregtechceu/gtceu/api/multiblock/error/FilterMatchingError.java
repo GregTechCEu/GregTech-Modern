@@ -20,7 +20,8 @@ public class FilterMatchingError extends PatternError {
 
     @Override
     public List<Component> getErrorInfo() {
-        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils", type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
+        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils",
+                type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
                 pos.getX(), pos.getY(), pos.getZ()));
     }
 }

@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BasicAisleStrategy;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -1216,7 +1215,8 @@ public class GTMultiMachines {
                     .where('D', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('E', blocks(CASING_TITANIUM_GEARBOX.get()))
                     .where('F', blocks(GOLD_DRUM.getBlock()))
-                    .where('G', blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.ore, GTMaterials.Bentonite).get()))
+                    .where('G',
+                            blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.ore, GTMaterials.Bentonite).get()))
                     .where('H', Predicates.cleanroomFilters())
                     .build())
             .allowExtendedFacing(true)

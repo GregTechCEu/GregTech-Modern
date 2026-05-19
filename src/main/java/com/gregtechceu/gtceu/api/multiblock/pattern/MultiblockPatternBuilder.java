@@ -19,7 +19,8 @@ import java.util.List;
  * When the multiblock is placed, its facings are concrete. Then, the {@link RelativeDirection}s passed into
  * {@link MultiblockPatternBuilder#start(RelativeDirection, RelativeDirection, RelativeDirection)} are ways in which the
  * pattern progresses. It can be thought like this, where startPos() is either defined via
- * {@link MultiblockPatternBuilder#startOffset(OriginOffset)}, or automatically detected(for legacy compat only, you should
+ * {@link MultiblockPatternBuilder#startOffset(OriginOffset)}, or automatically detected(for legacy compat only, you
+ * should
  * use {@link MultiblockPatternBuilder#startOffset(OriginOffset)} always for new code):
  *
  * <pre>
@@ -52,7 +53,8 @@ public class MultiblockPatternBuilder {
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
-    private MultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir, RelativeDirection charDir) {
+    private MultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
+                                     RelativeDirection charDir) {
         directions[0] = aisleDir;
         directions[1] = stringDir;
         directions[2] = charDir;
@@ -97,7 +99,8 @@ public class MultiblockPatternBuilder {
 
     /**
      * Start a new multiblock pattern builder, this is equivalent to
-     * {@link MultiblockPatternBuilder#start(RelativeDirection aisle, RelativeDirection string, RelativeDirection char) FactoryBlockPattern.start(BACK, UP, RIGHT)}
+     * {@link MultiblockPatternBuilder#start(RelativeDirection aisle, RelativeDirection string, RelativeDirection char)
+     * FactoryBlockPattern.start(BACK, UP, RIGHT)}
      *
      */
     public static MultiblockPatternBuilder start() {
@@ -107,7 +110,8 @@ public class MultiblockPatternBuilder {
     /**
      * Starts the builder, each pair of {@link RelativeDirection} must be used at exactly once!
      *
-     * @param aisleDir  The direction aisles progress in, each successive {@link MultiblockPatternBuilder#aisle(String...)}
+     * @param aisleDir  The direction aisles progress in, each successive
+     *                  {@link MultiblockPatternBuilder#aisle(String...)}
      *                  progresses in this direction
      * @param stringDir The direction strings progress in, each successive string in an aisle progresses by this
      *                  direction

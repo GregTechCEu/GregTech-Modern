@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.fluids.FluidType;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

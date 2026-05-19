@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
 public class OriginOffset {
+
     private int x, y, z;
 
     public static final OriginOffset ZERO = new OriginOffset();
@@ -39,7 +40,7 @@ public class OriginOffset {
 
     public OriginOffset move(RelativeDirection dir, int amount) {
         amount *= dir.ordinal() % 2 == 0 ? 1 : -1;
-        switch(dir.ordinal()) {
+        switch (dir.ordinal()) {
             case 0, 1 -> y += amount;
             case 2, 3 -> x += amount;
             case 4, 5 -> z += amount;
@@ -54,7 +55,7 @@ public class OriginOffset {
     }
 
     public int get(RelativeDirection dir) {
-        return switch(dir.ordinal()) {
+        return switch (dir.ordinal()) {
             case 0, 1 -> y * (dir.ordinal() == 0 ? 1 : -1);
             case 2, 3 -> x * (dir.ordinal() == 2 ? 1 : -1);
             case 4, 5 -> z * (dir.ordinal() == 4 ? 1 : -1);
@@ -64,10 +65,11 @@ public class OriginOffset {
 
     /**
      * Applies this offset to {@code pos} based on the front, up and flip values
-     * @param pos BlockPos to modify
+     * 
+     * @param pos   BlockPos to modify
      * @param front front facing direction
-     * @param up upwards facing direction
-     * @param flip whether to flip orientation
+     * @param up    upwards facing direction
+     * @param flip  whether to flip orientation
      */
     public void apply(BlockPos.MutableBlockPos pos, Direction front, Direction up, boolean flip) {
         pos.move(RelativeDirection.LEFT.getRelativeFacing(front, up, flip), x);

@@ -437,7 +437,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     private void loadControllerFormed(Collection<BlockPos> positions, MultiblockControllerMachine controllerBase) {
         IBlockPattern pattern = controllerBase.createStructurePattern();
         if (pattern != null /* && pattern.checkPatternAt(controllerBase.getMultiblockState(), true) */) {
-            //controllerBase.checkAndFormStructurePatterns();
+            // controllerBase.checkAndFormStructurePatterns();
         }
         if (controllerBase.isFormed()) {
             /*

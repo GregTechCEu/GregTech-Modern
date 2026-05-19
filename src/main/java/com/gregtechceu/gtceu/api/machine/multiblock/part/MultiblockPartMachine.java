@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListen
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -181,5 +181,4 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         }
         return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
-
 }

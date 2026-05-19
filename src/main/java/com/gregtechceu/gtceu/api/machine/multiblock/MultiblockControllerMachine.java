@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -20,20 +18,22 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
+
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -70,8 +70,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         super.onLoad();
         if (!isRemote()) {
             // run a structure check on the first tick
-            ServerLevel level = (ServerLevel)getLevel();
-            level.getServer().tell(new TickTask(2, this::checkAndFormStructure));
+            scheduleForNextServerTick(this::checkAndFormStructure);
         }
     }
 
@@ -155,7 +154,8 @@ public class MultiblockControllerMachine extends MetaMachine {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
-            if (!formed || patternState.hasError() || patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
+            if (!formed || patternState.hasError() ||
+                    patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
                 if (!patternState.getState().isValid()) {
                     checkStructurePattern(name);
                 }
@@ -177,6 +177,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     /**
      * Returns a list of all substructures this multiblock has.
+     * 
      * @return set of substructures used by controller
      */
     public Set<String> getStructureNames() {
@@ -414,7 +415,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             }
             // TODO structure check
             checkAndFormStructure();
-            //mwsd.addAsyncLogic(this);
+            // mwsd.addAsyncLogic(this);
         }
     }
 
@@ -468,6 +469,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public boolean isBatchEnabled() {
         return false;
     }
+
     // TODO move to recipe logic
     public void setBatchEnabled(boolean batch) {}
 

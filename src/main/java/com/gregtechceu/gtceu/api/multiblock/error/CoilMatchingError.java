@@ -20,7 +20,8 @@ public class CoilMatchingError extends PatternError {
 
     @Override
     public List<Component> getErrorInfo() {
-        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils", coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
+        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils",
+                coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
                 pos.getX(), pos.getY(), pos.getZ()));
     }
 }

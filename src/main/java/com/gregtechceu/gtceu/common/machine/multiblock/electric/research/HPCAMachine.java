@@ -100,7 +100,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            //IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
+            // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;

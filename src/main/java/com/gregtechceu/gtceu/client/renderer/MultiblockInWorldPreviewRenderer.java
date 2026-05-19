@@ -1,12 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
-
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternAisle;
@@ -16,6 +11,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateFluids;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateStates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.scene.forge.WorldSceneRendererImpl;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
@@ -31,7 +27,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
@@ -119,17 +114,17 @@ public class MultiblockInWorldPreviewRenderer {
 
         IBlockPattern pattern = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
 
-        //MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
+        // MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
 
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
         MultiblockControllerMachine controllerBase = null;
         LEVEL = new TrackedDummyWorld();
 
-        //BlockInfo[][][] blocks = pattern.
+        // BlockInfo[][][] blocks = pattern.
 
-        //var blocks = shapeInfo.getBlocks();
-        //BlockPos controllerPatternPos = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE)
-        //        .getOffset().toBlockPos();
+        // var blocks = shapeInfo.getBlocks();
+        // BlockPos controllerPatternPos = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE)
+        // .getOffset().toBlockPos();
         BlockPos controllerPos = controller.getBlockPos();
         BlockPos patternControllerPos = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE)
                 .getOffset().toBlockPos();
@@ -144,7 +139,6 @@ public class MultiblockInWorldPreviewRenderer {
             LAST_LAYER = -1;
         }
         LAST_POS = pos;
-
 
         if (pattern instanceof BlockPattern blockPattern) {
             var predicateMapping = blockPattern.getPredicates();
@@ -172,52 +166,54 @@ public class MultiblockInWorldPreviewRenderer {
             }
         }
 
-        /*for (int x = 0; x < pattern.; x++) {
-            BlockInfo[][] aisle = blocks[x];
-            for (int y = 0; y < aisle.length; y++) {
-                BlockInfo[] column = aisle[y];
-                if (LAST_LAYER != -1 && LAST_LAYER != y) {
-                    continue;
-                }
-                for (int z = 0; z < column.length; z++) {
-                    var blockState = column[z].getBlockState();
-                    //var offset = new BlockPos(x, y, z).subtract(patternControllerPos);
-                    BlockPos offset = RelativeDirection.offsetPos(controllerPos, front, up, false, y, x, z);
+        /*
+         * for (int x = 0; x < pattern.; x++) {
+         * BlockInfo[][] aisle = blocks[x];
+         * for (int y = 0; y < aisle.length; y++) {
+         * BlockInfo[] column = aisle[y];
+         * if (LAST_LAYER != -1 && LAST_LAYER != y) {
+         * continue;
+         * }
+         * for (int z = 0; z < column.length; z++) {
+         * var blockState = column[z].getBlockState();
+         * //var offset = new BlockPos(x, y, z).subtract(patternControllerPos);
+         * BlockPos offset = RelativeDirection.offsetPos(controllerPos, front, up, false, y, x, z);
+         * 
+         * if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
+         * var rotationState = machineBlock.getRotationState();
+         * if (rotationState != RotationState.NONE) {
+         * var face = blockState.getValue(rotationState.property);
+         * if (face.getAxis() != Direction.Axis.Y) {
+         * face = switch (front) {
+         * case NORTH, UP, DOWN -> front;
+         * case SOUTH -> face.getOpposite();
+         * case WEST -> face.getCounterClockWise();
+         * case EAST -> face.getClockWise();
+         * };
+         * }
+         * if (rotationState.test(face)) {
+         * blockState = blockState.setValue(rotationState.property, face);
+         * }
+         * }
+         * }
+         * 
+         * if (column[z].getBlockEntity(offset) instanceof MultiblockControllerMachine cont) {
+         * cont.self().setLevel(LEVEL);
+         * controllerBase = cont;
+         * } else {
+         * blockMap.put(offset, BlockInfo.fromBlockState(blockState));
+         * }
+         * }
+         * }
+         * }
+         */
 
-                    if (blockState.getBlock() instanceof MetaMachineBlock machineBlock) {
-                        var rotationState = machineBlock.getRotationState();
-                        if (rotationState != RotationState.NONE) {
-                            var face = blockState.getValue(rotationState.property);
-                            if (face.getAxis() != Direction.Axis.Y) {
-                                face = switch (front) {
-                                    case NORTH, UP, DOWN -> front;
-                                    case SOUTH -> face.getOpposite();
-                                    case WEST -> face.getCounterClockWise();
-                                    case EAST -> face.getClockWise();
-                                };
-                            }
-                            if (rotationState.test(face)) {
-                                blockState = blockState.setValue(rotationState.property, face);
-                            }
-                        }
-                    }
+        // LEVEL.addBlocks(blockMap);
+        // if (controllerBase != null) {
+        // LEVEL.setInnerBlockEntity(controllerBase.self());
+        // }
 
-                    if (column[z].getBlockEntity(offset) instanceof MultiblockControllerMachine cont) {
-                        cont.self().setLevel(LEVEL);
-                        controllerBase = cont;
-                    } else {
-                        blockMap.put(offset, BlockInfo.fromBlockState(blockState));
-                    }
-                }
-            }
-        }*/
-
-        //LEVEL.addBlocks(blockMap);
-        //if (controllerBase != null) {
-        //    LEVEL.setInnerBlockEntity(controllerBase.self());
-        //}
-
-       // prepareBuffers(LEVEL, blockMap.keySet(), duration);
+        // prepareBuffers(LEVEL, blockMap.keySet(), duration);
     }
 
     public static void onClientTick() {

@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.data.GTBlocks.CASING_GRATE;
@@ -62,17 +63,19 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
         super.formStructure(substructureName);
     }
 
-    /*@Override
-    public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-        var coolerState = patternStates.get("cooler");
-
-        if (coolerState.isFormed()) {
-            textList.add(Component.literal("Has Substructure"));
-        } else if (coolerState.hasError()) {
-            textList.add(Component.literal("Has no Substructure"));
-            var c = coolerState.getError().getErrorInfo();
-            textList.addAll(c);
-        }
-    }*/
+    /*
+     * @Override
+     * public void addDisplayText(List<Component> textList) {
+     * super.addDisplayText(textList);
+     * var coolerState = patternStates.get("cooler");
+     * 
+     * if (coolerState.isFormed()) {
+     * textList.add(Component.literal("Has Substructure"));
+     * } else if (coolerState.hasError()) {
+     * textList.add(Component.literal("Has no Substructure"));
+     * var c = coolerState.getError().getErrorInfo();
+     * textList.addAll(c);
+     * }
+     * }
+     */
 }

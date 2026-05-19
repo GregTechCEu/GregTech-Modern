@@ -1,11 +1,6 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
@@ -21,6 +16,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 

@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
@@ -35,7 +36,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +92,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
             }
         }
         if (steamEnergy == null) { // No steam hatch found
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.steam.missing_steam_hatch")));
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.steam.missing_steam_hatch")));
             invalidateStructure(substructureName);
         }
     }
@@ -157,10 +158,10 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         mainWidget.child(listWidget.left(3).top(3));
 
         /*
-
-        else if (pState.hasError()) {
-            textList.addAll(pState.getError().getErrorInfo());
-        }
+         * 
+         * else if (pState.hasError()) {
+         * textList.addAll(pState.getError().getErrorInfo());
+         * }
          */
     }
 }
