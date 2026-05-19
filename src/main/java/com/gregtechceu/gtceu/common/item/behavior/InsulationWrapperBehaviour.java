@@ -59,11 +59,11 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
             return InteractionResult.FAIL;
         }
 
-        int needed = Math.min(available, toInsulate.size());
+        int needed = toInsulate.size();
 
         // insulate all pipes
-        for (int i = 0; i < needed; i++) {
-            if (level.getBlockEntity(toInsulate.get(i)) instanceof FluidPipeBlockEntity pipe) {
+        for (BlockPos blockPos : toInsulate) {
+            if (level.getBlockEntity(blockPos) instanceof FluidPipeBlockEntity pipe) {
                 pipe.setInsulated(true);
             }
         }
@@ -75,13 +75,9 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
                     needed, player.inventoryMenu.getCraftSlots());
         }
 
-        // inform if its fully insulated or partially insulated; if partial, return uninsulated amount
-        int remaining = toInsulate.size() - needed;
-        if (remaining > 0) {
-            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.partial", needed, remaining), true);
-        } else {
-            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.success", needed), true);
-        }
+        // it always insulates pipes matching amount of available wrappers so partial insulation message is no longer possible
+        player.displayClientMessage(Component.translatable(
+                "item.gtceu.insulation_wrapper.message.success", needed), true);
         return InteractionResult.SUCCESS;
     }
 

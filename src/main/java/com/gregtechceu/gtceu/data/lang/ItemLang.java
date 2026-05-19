@@ -238,7 +238,6 @@ public class ItemLang {
         provider.add("item.gtceu.simple_soc.tooltip", "§7Simple System on Chip");
         provider.add("item.gtceu.insulation_wrapper.message.already_insulated", "§eAll pipes in this network are already insulated");
         provider.add("item.gtceu.insulation_wrapper.message.invalid_pipe", "§eNot a fluid pipe");
-        provider.add("item.gtceu.insulation_wrapper.message.partial", "§aInsulated §f%s pipe(s)§a, §f%s pipe(s) §eremain uninsulated");
         provider.add("item.gtceu.insulation_wrapper.message.success", "§aInsulated §f%s pipe(s)");
         provider.add("item.gtceu.insulation_wrapper.message.removed", "§cRemoved Insulation");
         provider.add("item.gtceu.insulation_wrapper.desc", "§bNullify damage from thermogenics/cryogenics");
