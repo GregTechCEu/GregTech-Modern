@@ -26,6 +26,7 @@ public class LangHandler {
         IntegrationLang.init(provider);
         ItemLang.init(provider);
         MachineLang.init(provider);
+        MultiblockLang.init(provider);
         ToolLang.init(provider);
         ConfigurationLang.init(provider);
         RecipeLogicLang.init(provider);

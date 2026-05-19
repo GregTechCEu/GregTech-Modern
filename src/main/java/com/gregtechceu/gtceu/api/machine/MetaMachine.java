@@ -45,6 +45,7 @@ import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
@@ -151,6 +152,23 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Override
     public void load(CompoundTag tag) {
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
+
+        if (!GTCEu.isClientSide()) {
+            Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(), this.getUpwardsFacing(), tag);
+            if (upwardsGlobal != null) {
+                // force the global upwards direction
+                var blockState = getBlockState();
+                if (blockState.getBlock() instanceof MetaMachineBlock &&
+                        blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal) {
+                    getLevel().setBlockAndUpdate(getBlockPos(),
+                            blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal));
+                    if (getLevel() != null && !getLevel().isClientSide) {
+                        notifyBlockUpdate();
+                    }
+                }
+            }
+        }
+
         super.load(tag);
     }
 
@@ -452,8 +470,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var player = context.getPlayer();
         var gridSide = context.getGridSide();
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            setUpwardsFacing(player.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
-                    getUpwardsFacing().getClockWise());
+            Direction newUpwards = GTUtil.cross(getFrontFacing(), getUpwardsFacing());
+            setUpwardsFacing(player.isShiftKeyDown() ? newUpwards : newUpwards.getOpposite());
             return InteractionResult.sidedSuccess(isRemote());
         }
         if (player.isShiftKeyDown()) {
@@ -742,7 +760,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var oldFacing = getFrontFacing();
         if (oldFacing == facing) return;
 
-        if (allowExtendedFacing()) {
+        if (getUpwardsFacing().getAxis() == facing.getAxis()) {
             var newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
             setUpwardsFacing(newUpwardsFacing);
         }
@@ -776,10 +794,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
-        if (upwardsFacing.getAxis() == Direction.Axis.Y) {
-            GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
-            return;
-        }
+
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {

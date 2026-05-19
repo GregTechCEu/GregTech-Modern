@@ -52,7 +52,8 @@ public class GTMultiblockTextUtil {
                 () -> GenericListSyncHandler.<Component>builder()
                         .getter(() -> {
                             var error = weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError();
-                            if(error == null) { return new ArrayList<>();
+                            if (error == null) {
+                                return new ArrayList<>();
                             } else {
                                 return error.getErrorInfo();
                             }

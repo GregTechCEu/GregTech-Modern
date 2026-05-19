@@ -26,9 +26,9 @@ public enum ExtendedBlockModelRotation {
     UP_WEST(270, 0, 270),
 
     NORTH_UP(0, 0, 0), // Default
-    NORTH_WEST(0, 0, 90),
+    NORTH_EAST(0, 0, 90),
     NORTH_DOWN(0, 0, 180),
-    NORTH_EAST(0, 0, 270),
+    NORTH_WEST(0, 0, 270),
 
     SOUTH_UP(0, 180, 0),
     SOUTH_WEST(0, 180, 90),
@@ -41,9 +41,9 @@ public enum ExtendedBlockModelRotation {
     WEST_SOUTH(0, 270, 270),
 
     EAST_UP(0, 90, 0),
-    EAST_NORTH(0, 90, 90),
+    EAST_SOUTH(0, 90, 90),
     EAST_DOWN(0, 90, 180),
-    EAST_SOUTH(0, 90, 270);
+    EAST_NORTH(0, 90, 270);
 
     public static final ExtendedBlockModelRotation[] VALUES = values();
 

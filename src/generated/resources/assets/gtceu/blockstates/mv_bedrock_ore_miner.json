@@ -9,12 +9,12 @@
       "model": "gtceu:block/machine/mv_bedrock_ore_miner"
     },
     "facing=east,upwards_facing=north": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/mv_bedrock_ore_miner",
       "y": 90
     },
     "facing=east,upwards_facing=south": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/mv_bedrock_ore_miner",
       "y": 90
     },
@@ -30,7 +30,7 @@
       "model": "gtceu:block/machine/mv_bedrock_ore_miner"
     },
     "facing=north,upwards_facing=east": {
-      "gtceu:z": 270,
+      "gtceu:z": 90,
       "model": "gtceu:block/machine/mv_bedrock_ore_miner"
     },
     "facing=north,upwards_facing=north": {
@@ -43,7 +43,7 @@
       "model": "gtceu:block/machine/mv_bedrock_ore_miner"
     },
     "facing=north,upwards_facing=west": {
-      "gtceu:z": 90,
+      "gtceu:z": 270,
       "model": "gtceu:block/machine/mv_bedrock_ore_miner"
     },
     "facing=south,upwards_facing=down": {

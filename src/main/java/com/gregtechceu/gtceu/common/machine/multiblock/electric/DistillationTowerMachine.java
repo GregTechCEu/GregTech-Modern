@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -100,16 +101,17 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else if (part.self().getBlockPos().getY() > y) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                 } else {
-                    pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.unexpected_hatch")));
-                    GTCEu.LOGGER.error(
-                            "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
-                            getBlockPos());
+                    BlockPos p = part.self().getBlockPos();
+                    pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
+                    //GTCEu.LOGGER.error(
+                    //        "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
+                    //        getBlockPos());
                     invalidateStructure(substructureName);
                     return;
                 }
             }
         } else {
-            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillation.missing_outputs")));
+            pState.setError(new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.missing_outputs")));
             invalidateStructure(substructureName);
         }
     }

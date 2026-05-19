@@ -134,9 +134,11 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private PatternPredicate wallPredicate() {
         return new PatternPredicate("Wall Blocks",
-                multiblockState -> multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                        null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls")),
-                null);
+                multiblockState -> {
+            BlockPos p = multiblockState.getBlockPos();
+            return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
+                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls", p.getX(), p.getY(), p.getZ()));
+        }, null);
     }
 
     private PatternPredicate logPredicate() {

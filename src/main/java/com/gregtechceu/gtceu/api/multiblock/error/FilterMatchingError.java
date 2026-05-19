@@ -10,17 +10,17 @@ import java.util.List;
 
 public class FilterMatchingError extends PatternError {
 
-    IFilterType coilType1, coilType2;
+    IFilterType type1, type2;
 
     public FilterMatchingError(BlockPos pos, IFilterType type1, IFilterType type2) {
         super(pos, Collections.emptyList());
-        coilType1 = type1;
-        coilType2 = type2;
+        this.type1 = type1;
+        this.type2 = type2;
     }
 
     @Override
     public List<Component> getErrorInfo() {
-        return List.of(Component.literal("Mismatched filters: " + coilType1.getCleanroomType().getName() + " vs \n" +
-                coilType2.getCleanroomType().getName() + " at: " + pos.getX() + " " + pos.getY() + " " + pos.getZ()));
+        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils", type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
+                pos.getX(), pos.getY(), pos.getZ()));
     }
 }
