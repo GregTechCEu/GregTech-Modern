@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -69,7 +70,8 @@ public class MultiblockControllerMachine extends MetaMachine {
         super.onLoad();
         if (!isRemote()) {
             // run a structure check on the first tick
-            checkAndFormStructure();
+            ServerLevel level = (ServerLevel)getLevel();
+            level.getServer().tell(new TickTask(2, this::checkAndFormStructure));
         }
     }
 
