@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.sync_system;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 
 import net.minecraft.core.BlockPos;
@@ -53,7 +52,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
 
     /**
      * Loads BE data from world save.<br>
-     * Override this to add logic for modifying saved data before it is loaded (e.g. for cross-version compatibility).<br>
+     * Override this to add logic for modifying saved data before it is loaded (e.g. for cross-version
+     * compatibility).<br>
      * When overriding, {@code super.load(tag)} must be called <b>AFTER</b> any custom logic.
      *
      * @param tag The tag to load
