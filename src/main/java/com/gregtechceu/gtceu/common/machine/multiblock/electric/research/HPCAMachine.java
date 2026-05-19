@@ -431,6 +431,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             this.controller = controller;
         }
 
+        @Override
+        public @Nullable ISyncManaged getParentSyncObject() {
+            return controller;
+        }
+
         public void onStructureForm(Collection<HPCAComponentTrait> components) {
             reset();
             for (var component : components) {
@@ -787,16 +792,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void clearClientComponents() {
             components.clear();
-        }
-
-        @Override
-        public void markAsChanged() {
-            controller.markAsChanged();
-        }
-
-        @Override
-        public void scheduleRenderUpdate() {
-            controller.scheduleRenderUpdate();
         }
     }
 }
