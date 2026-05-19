@@ -389,12 +389,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
-                    pTile.setChanged();
                     if (pTile instanceof MetaMachine metaMachine) {
                         metaMachine.serverTick();
-                    }
-                    if (pTile instanceof ManagedSyncBlockEntity syncObj) {
-                        syncObj.updateTick();
                     }
                 };
             } else {

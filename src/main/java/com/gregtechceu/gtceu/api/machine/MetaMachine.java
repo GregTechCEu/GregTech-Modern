@@ -237,6 +237,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @ApiStatus.Internal
     public final void serverTick() {
+        super.serverTick();
         executeTick();
     }
 
