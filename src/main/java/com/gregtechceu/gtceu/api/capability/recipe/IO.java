@@ -8,19 +8,26 @@ import lombok.Getter;
  */
 public enum IO {
 
-    IN("gtceu.io.import", "import"),
-    OUT("gtceu.io.export", "export"),
-    BOTH("gtceu.io.both", "both"),
-    NONE("gtceu.io.none", "none");
+    IN("import"),
+    OUT("export"),
+    BOTH("both"),
+    NONE("none");
 
-    @Getter
-    public final String tooltip;
+    public final String localeName;
     @Getter
     public final UITexture uiTexture;
 
-    IO(String tooltip, String textureName) {
-        this.tooltip = tooltip;
-        this.uiTexture = UITexture.fullImage("gtceu:textures/gui/icon/io_mode/" + textureName + ".png");
+    IO(String localeName) {
+        this.localeName = localeName;
+        this.uiTexture = UITexture.fullImage("gtceu:textures/gui/icon/io_mode/" + localeName + ".png");
+    }
+
+    public static String getTitle() {
+        return "gtceu.io.title";
+    }
+
+    public String getTooltip() {
+        return "gtceu.io." + localeName;
     }
 
     public boolean support(IO io) {

@@ -138,10 +138,10 @@ public class SimpleFluidFilter implements FluidFilter {
                 .coverChildren()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new FluidSlot().syncHandler("filter_slot_" + i));
 
-        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList);
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
         syncManager.syncValue("blacklist", blacklist);
 
-        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt);
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt).allowC2S();
         syncManager.syncValue("ignoreNBT", ignoreNBT);
 
         Flow filterConfigButtons = Flow.col()

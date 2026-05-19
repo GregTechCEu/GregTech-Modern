@@ -13,6 +13,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
+import net.minecraft.network.chat.Component;
 
 import java.util.function.DoubleSupplier;
 
@@ -55,7 +56,7 @@ public class GTRecipeTypeMachineWidget extends Flow {
             return true;
         });
 
-        child(progressWidget.tooltip(r -> r.addLine(Text.lang("gtceu.recipe_type.show_recipes"))));
+        child(progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes")))));
         child(outputColumn);
 
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {

@@ -105,15 +105,13 @@ public class SmartItemFilter implements ItemFilter {
     @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
-                this::getFilterMode, this::setFilterMode);
+                this::getFilterMode, this::setFilterMode).allowC2S();
 
         syncManager.syncValue("mode", mode);
 
         return Flow.row()
-                .childPadding(2)
-                .child(Text.str("Recipe Type:").asWidget())
                 .child(new ContextMenuButton<>("smart_filter")
-                        .size(20)
+                        .size(18)
                         .requiresClick()
                         .tooltip(r -> r.add(Text.str("Set Machine Recipe Type")))
                         .openRightDown()
@@ -133,17 +131,12 @@ public class SmartItemFilter implements ItemFilter {
                                                     .background(GuiTextures.MC_BUTTON)
                                                     .selectedBackground(GuiTextures.MC_BUTTON)
                                                     .value(bsv)
-                                                    .tooltip(r -> r.add(Text.str(SmartFilteringMode.VALUES[w].localeName)));
+                                                    .tooltip(r -> r.add(Text.comp(Component.translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
                                         })
                                 )
                         )
-                );
-
-        /*return new GTMuiWidgets.EnumRowBuilder<>(SmartFilteringMode.class)
-                .value(mode)
-                .overlay(16, SmartFilteringMode.getTextures())
-                .lang(Text.dynamic(() -> Component.translatable(filterMode.localeName)))
-                .build().margin(7);*/
+                )
+                .child(Text.str("Recipe Type").asWidget().verticalCenter().rightRel(0.f));
     }
 
     @Override

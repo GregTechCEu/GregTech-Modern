@@ -17,11 +17,13 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -69,12 +71,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     @Getter
     @RerenderOnChanged
     protected IO io;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected DistributionMode distributionMode;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @SaveField
@@ -123,11 +125,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 .resolve().orElse(null);
     }
 
-    public void setDistributionMode(DistributionMode mode) {
-        distributionMode = mode;
-        syncDataHolder.markClientSyncFieldDirty("distributionMode");
-    }
-
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
@@ -148,10 +145,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             this.io = io;
         }
         subscriptionHandler.updateSubscription();
-    }
-
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
     }
 
     @Override
@@ -440,25 +433,15 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                             .coverChildrenHeight()
                             .widthRel(1.0f)
                     .child(GTMuiWidgets.createIOCycleButton(ioSync, false).left(0))
-                    .child(Text.dynamic(() -> Component.translatable(getIo().tooltip)).asWidget().verticalCenter().rightRel(0.f)));
+                    .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
             column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));
         }
 
         if (createDistributionModeRow()) {
-            column.child(new GTMuiWidgets.EnumRowBuilder<>(DistributionMode.class)
-                    .value(distMode)
-                    .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
-                    .lang(Text.dynamic(() -> Component.translatable(distributionMode.localeName)))
-                    .build());
+            GTMuiCoverUtil.addDistributionModeRow(column, distMode);
         }
-
         if (createManualIOModeRow()) {
-            column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
-                    .value(manualMode)
-                    .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                    .lang(Text.dynamic(() -> Component.translatable(manualIOMode.localeName)))
-                    .build());
-
+            GTMuiCoverUtil.addManualIORow(column, manualMode);
         }
     }
 

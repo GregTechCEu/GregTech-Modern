@@ -66,11 +66,12 @@ public class StorageCover extends CoverBehavior implements IMuiCover {
     public void createCoverUIRows(Flow parent, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         parent.child(SlotGroupWidget.builder()
-                .matrix("IIIIII", "IIIIII", "IIIIII")
-                .key('I', i -> new ItemSlot()
+                    .matrix("IIIIII", "IIIIII", "IIIIII")
+                    .key('I', i -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, i).singletonSlotGroup(i)))
-                .build())
-                .rightRel(0.5F)
+                    .build())
+                .horizontalCenter()
+                .paddingTop(20)
                 .margin(3)
                 .coverChildren();
     }

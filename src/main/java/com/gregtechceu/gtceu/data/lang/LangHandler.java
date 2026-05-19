@@ -67,6 +67,7 @@ public class LangHandler {
         provider.add("recipe.condition.quest.completed.tooltip", "Requires %s completed");
         provider.add("recipe.condition.quest.not_completed.tooltip", "Requires %s not completed");
 
+        provider.add("gtceu.io.title", "IO Mode");
         provider.add("gtceu.io.import", "Import");
         provider.add("gtceu.io.export", "Export");
         provider.add("gtceu.io.both", "Both");
@@ -404,7 +405,7 @@ public class LangHandler {
         provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
         provider.add("gui.widget.incrementButton.default_tooltip",
                 "Hold Shift, Ctrl or both to change the amount");
-        provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
+        provider.add("gtceu.recipe_type.show_recipes", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip",
                 "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
         provider.add("cover.filter.blacklist.disabled", "Whitelist");
@@ -436,9 +437,14 @@ public class LangHandler {
         provider.add("cover.fluid_filter.mode.filter_both", "Filter Fill & Drain");
         provider.add("cover.item_filter.title", "Item Filter");
         provider.add("cover.storage.title", "Storage Cover");
+        provider.add("cover.filter.mode.title", "Filter Mode");
         provider.add("cover.filter.mode.filter_insert", "Filter Insert");
         provider.add("cover.filter.mode.filter_extract", "Filter Extract");
         provider.add("cover.filter.mode.filter_both", "Filter Insert/Extract");
+        provider.add("cover.manual.mode.title", "Manual I/O");
+        provider.add("cover.manual.mode.disabled", "§bDisabled§r");
+        provider.add("cover.manual.mode.filtered", "§bFiltered§r");
+        provider.add("cover.manual.mode.unfiltered", "§bUnfiltered§r");
         provider.add("cover.item_filter.ignore_damage.enabled", "Ignore Damage");
         provider.add("cover.item_filter.ignore_damage.disabled", "Respect Damage");
         provider.add("cover.item_filter.ignore_nbt.enabled", "Ignore NBT");
@@ -468,6 +474,10 @@ public class LangHandler {
         provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
+        provider.add("cover.distribution.mode.title", "Distribution Mode");
+        provider.add("cover.distribution.mode.round_robin_global", "Round Robin");
+        provider.add("cover.distribution.mode.round_robin_prio", "Round Robin with Restriction");
+        provider.add("cover.distribution.mode.insert_first", "Priority");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         multilineLang(provider, "cover.conveyor.distribution.round_robin_prio",
@@ -478,6 +488,8 @@ public class LangHandler {
                 "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§aEnabled");
         multilineLang(provider, "cover.conveyor.blocks_input.disabled",
                 "If enabled, items will not be inserted when cover is set to pull items from the inventory into pipe.\n§cDisabled");
+
+        // TODO edit to be descriptions
         provider.add("cover.universal.manual_import_export.mode.disabled",
                 "Manual I/O: §bDisabled\n§7Items / Fluids will only move as specified by the cover and its filter.");
         provider.add("cover.universal.manual_import_export.mode.filtered",
@@ -486,10 +498,11 @@ public class LangHandler {
                 "Manual I/O: §bUnfiltered\n§7Items / Fluids can be moved independently of the cover mode. The filter only applies to what is inserted or extracted by this cover itself.");
         multilineLang(provider, "cover.universal.manual_import_export.mode.description",
                 "§eDisabled§r - Items/fluids will only move as specified by the cover and its filter. \n§eAllow Filtered§r - Items/fluids can be extracted and inserted independently of the cover mode, as long as its filter matches (if any). \n§eAllow Unfiltered§r - Items/fluids can be moved independently of the cover mode. Filter applies to the items inserted or extracted by this cover");
+
         provider.add("cover.conveyor.item_filter.title", "Item Filter");
         multiLang(provider, "cover.conveyor.tag.title", "Tag Name",
                 "(use * for wildcard)");
-        provider.add("cover.robotic_arm.title", "Robotic Arm Settings (%s)");
+        provider.add("cover.robotic_arm.transfer_mode.title", "Transfer Mode");
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
@@ -524,6 +537,10 @@ public class LangHandler {
         provider.add("cover.machine_controller.mode.cover_north", "Control Cover (North)");
         provider.add("cover.machine_controller.mode.cover_east", "Control Cover (East)");
         provider.add("cover.machine_controller.mode.cover_west", "Control Cover (West)");
+        provider.add("cover.machine_controller.cover_not_controllable", "Cover not controllable");
+        provider.add("cover.machine_controller.this_cover", "This cover");
+        provider.add("cover.enable_with_redstone", "Enable with Redstone");
+        provider.add("cover.disable_with_redstone", "Disable with Redstone");
         provider.add("cover.machine_controller.mode.null", "Control Nothing");
 
         provider.add("cover.ender_link.tooltip.channel_description", "Channel description");

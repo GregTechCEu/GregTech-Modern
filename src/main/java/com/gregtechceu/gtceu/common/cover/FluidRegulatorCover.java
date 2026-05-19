@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -40,12 +41,11 @@ public class FluidRegulatorCover extends PumpCover {
     private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
 
     @SaveField
-    @SyncToClient
     @Getter
     private TransferMode transferMode = TransferMode.TRANSFER_ANY;
 
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
     @SaveField
@@ -156,16 +156,10 @@ public class FluidRegulatorCover extends PumpCover {
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private void setTransferBucketMode(BucketMode transferBucketMode) {
-        this.transferBucketMode = transferBucketMode;
-        syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
-    }
-
     private void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
         if (!this.isRemote()) {
-            syncDataHolder.markClientSyncFieldDirty("transferMode");
             configureFilter();
         }
     }
@@ -193,19 +187,15 @@ public class FluidRegulatorCover extends PumpCover {
                                   UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
-        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
-        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit);
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode).allowC2S();
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
         var transferBucketMode = new EnumSyncValue<>(BucketMode.class, this::getTransferBucketMode,
-                this::setTransferBucketMode);
+                this::setTransferBucketMode).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
-                .value(transferMode)
-                .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
-                .lang(Text.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
-                .build());
+        GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
         column.child(GTMuiWidgets.createIntInputWithBucketMode(transferSize, transferBucketMode,
                 () -> maxFluidTransferRate));

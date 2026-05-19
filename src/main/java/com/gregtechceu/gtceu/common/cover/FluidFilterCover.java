@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -43,23 +44,18 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FluidFilterCover extends CoverBehavior implements IMuiCover {
 
     protected FluidFilter fluidFilter;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredFluidHandlerWrapper fluidFilterWrapper;
-    @SaveField
     @Setter
+    @SaveField
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
 
     public FluidFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-    }
-
-    public void setFilterMode(FilterMode filterMode) {
-        this.filterMode = filterMode;
-        syncDataHolder.markClientSyncFieldDirty("filterMode");
     }
 
     @Override
@@ -91,37 +87,20 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
-                this::getFilterMode, this::setFilterMode);
+                this::getFilterMode, this::setFilterMode).allowC2S();
 
         EnumSyncValue<ManualIOMode> ioMode = new EnumSyncValue<>(ManualIOMode.class,
-                this::getAllowFlow, this::setAllowFlow);
+                this::getAllowFlow, this::setAllowFlow).allowC2S();
 
         syncManager.syncValue("filterMode", filterMode);
         syncManager.syncValue("ioMode", ioMode);
 
-        var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> fluidFilter.getPanel(data, sm, settings));
 
-        DynamicSyncHandler filterButton = new DynamicSyncHandler()
-                .widgetProvider((sm, buf) -> new ButtonWidget<>()
-                        .onMousePressed((context, b) -> {
-                            panelHandler.openPanel();
-                            return true;
-                        }));
         column.coverChildrenHeight();
         column.child(getFluidFilter().getFilterUI(data, syncManager, settings).marginBottom(4));
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(FilterMode.class)
-                .value(filterMode)
-                .overlay(16, GTGuiTextures.FILTER_MODE_OVERLAY)
-                .lang(Text.dynamic(() -> Component.translatable(getFilterMode().getTooltip())))
-                .build());
-
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
-                .value(ioMode)
-                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                .lang(Text.dynamic(() -> Component.translatable(getAllowFlow().getTooltip())))
-                .build());
+        GTMuiCoverUtil.addFilterModeRow(column, filterMode);
+        GTMuiCoverUtil.addManualIORow(column, ioMode);
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

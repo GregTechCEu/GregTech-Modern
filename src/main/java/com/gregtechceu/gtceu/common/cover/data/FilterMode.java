@@ -22,6 +22,10 @@ public enum FilterMode {
         this.localeName = localeName;
     }
 
+    public static String getTitle() {
+        return "cover.filter.mode.title";
+    }
+
     public String getTooltip() {
         return "cover.filter.mode." + this.localeName;
     }

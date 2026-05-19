@@ -18,9 +18,11 @@ import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +47,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,12 +70,12 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     @Getter
     @RerenderOnChanged
     protected IO io = IO.OUT;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
@@ -179,16 +182,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         this.transferRate = Math.min(Math.max(milliBucketsPerTick, 0), maxFluidTransferRate);
     }
 
-    public void setBucketMode(BucketMode bucketMode) {
-        this.bucketMode = bucketMode;
-        syncDataHolder.markClientSyncFieldDirty("bucketMode");
-    }
-
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
-        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
-    }
-
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0)
@@ -282,15 +275,14 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         column.child(GTMuiWidgets.createIntInputWithBucketMode(transferRateSync, bucketModeSync,
                 () -> maxFluidTransferRate));
 
-        column.child(GTMuiWidgets.createIOCycleButton(ioSync, false));
+        column.child(Flow.row()
+                .coverChildrenHeight()
+                .widthRel(1.0f)
+                .child(GTMuiWidgets.createIOCycleButton(ioSync, false)).left(0)
+                .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
         column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
-                .value(manualIOModeSync)
-                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                .lang(Text.dynamic(() -> Component.translatable(manualIOMode.localeName)))
-                .langTooltip(Text.comp(Component.translatable("cover.universal.manual_import_export.mode.description")))
-                .build());
+        GTMuiCoverUtil.addManualIORow(column, manualIOModeSync);
     }
 
     protected void configureFilter() {

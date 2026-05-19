@@ -49,6 +49,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.*;
 
@@ -621,7 +623,8 @@ public class GTMuiWidgets {
         private @Nullable EnumSyncValue<T> syncValue;
         private final Class<T> enumValue;
         private @Nullable Component lang;
-        private @Nullable Component langTooltip;
+        private @Nullable List<Component> langTooltip;
+        private @Nullable Function<T, Supplier<Component>> buttonTooltipSupplier;
         private IDrawable @Nullable [] background;
         private @Nullable IDrawable selectedBackground;
         private IDrawable @Nullable [] overlay;
@@ -641,7 +644,17 @@ public class GTMuiWidgets {
         }
 
         public EnumRowBuilder<T> langTooltip(Component tooltip) {
-            this.langTooltip = tooltip;
+            this.langTooltip = Collections.singletonList(tooltip);
+            return this;
+        }
+
+        public EnumRowBuilder<T> multiLangTooltip(Component... tooltips) {
+            this.langTooltip = List.of(tooltips);
+            return this;
+        }
+
+        public EnumRowBuilder<T> multiLangTooltip(List<Component> tooltips) {
+            this.langTooltip = tooltips;
             return this;
         }
 
@@ -665,6 +678,11 @@ public class GTMuiWidgets {
             for (int i = 0; i < overlay.length; i++) {
                 this.overlay[i] = overlay[i].asIcon().size(size);
             }
+            return this;
+        }
+
+        public EnumRowBuilder<T> buttonTooltipSupplier(Function<T, Supplier<Component>> buttonTooltipSupplier) {
+            this.buttonTooltipSupplier = buttonTooltipSupplier;
             return this;
         }
 
@@ -692,7 +710,9 @@ public class GTMuiWidgets {
                     if (this.overlay != null)
                         button.overlay(this.overlay[enumVal.ordinal()]);
 
-                    if (enumVal instanceof StringRepresentable serializable) {
+                    if (this.buttonTooltipSupplier != null) {
+                        button.addTooltipLine(Text.lang(buttonTooltipSupplier.apply(enumVal).get().getString()));
+                    } else if (enumVal instanceof StringRepresentable serializable) {
                         button.addTooltipLine(Text.lang(serializable.getSerializedName()));
                     }
                     row.child(button);
@@ -706,7 +726,7 @@ public class GTMuiWidgets {
                         .rightRel(0.f)
                         .height(18);
                 if(this.langTooltip != null) {
-                    text.tooltip(r -> r.addLine(langTooltip));
+                    text.tooltip(r -> langTooltip.forEach(r::addLine));
                 }
                 row.child(text);
             }

@@ -61,7 +61,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     private int minRedstoneStrength = 1;
 
     @SaveField
-    @SyncToClient
     @Getter
     @Nullable
     private ControllerMode controllerMode = ControllerMode.MACHINE;
@@ -111,7 +110,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         resetCurrentControllable();
 
         this.controllerMode = controllerMode;
-        syncDataHolder.markClientSyncFieldDirty("filterMode");
 
         updateInput();
     }
@@ -198,7 +196,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     @Override
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
-                this::getControllerMode, this::setControllerMode);
+                this::getControllerMode, this::setControllerMode).allowC2S();
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
@@ -212,15 +210,15 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true)))
+                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true)).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
-                                .child(Text.lang("cover.enable_with_redstone").asWidget()
+                                .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> !this.isInverted(),
-                                                ($) -> this.setInverted(false)))
+                                                ($) -> this.setInverted(false)).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
                                 .child(Text.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
@@ -228,7 +226,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                 .child(new ToggleButton()
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> preventPowerFail,
-                                                bool -> preventPowerFail = bool))
+                                                bool -> preventPowerFail = bool).allowC2S())
                                         .overlay(GTGuiTextures.CIRCUIT_OVERLAY))
                                 .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
                                         .heightRel(1.0f).left(20)))
@@ -247,7 +245,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .bounds(0, 15)
                                         .stopper(1.0)
                                         .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
-                                                v -> redstoneSignalOutput = (int) v))))
+                                                v -> redstoneSignalOutput = (int) v).allowC2S())))
                         // Separating line
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
@@ -292,7 +290,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
 
             return GuiTextures.MC_BUTTON.asWidget().size(18)
                     .overlay(GTGuiTextures.BUTTON_CROSS)
-                    .tooltip(t -> t.addLine(Text.lang(mode.localeName)).addLine(detail.getFormatted()));
+                    .tooltip(t -> t.addLine(Text.lang(mode.getTooltip())).addLine(detail.getFormatted()));
         }
 
         ItemStack stack;
@@ -311,7 +309,7 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         return new ToggleButton().size(18)
                 .value(boolValueOf(syncValue, mode))
                 .overlay(new ItemDrawable(stack).asIcon().size(16))
-                .tooltip(t -> t.addLine(Text.lang(mode.localeName))
+                .tooltip(t -> t.addLine(Text.lang(mode.getTooltip()))
                         .addLine(stack.getHoverName()));
     }
 

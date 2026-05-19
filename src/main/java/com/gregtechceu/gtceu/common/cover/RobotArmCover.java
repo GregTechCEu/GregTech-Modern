@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 
@@ -40,13 +41,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RobotArmCover extends ConveyorCover {
 
     @SaveField
-    @SyncToClient
     @Getter
     protected TransferMode transferMode;
-
+    @Setter
     @SaveField
     @Getter
-    @Setter
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
@@ -168,16 +167,12 @@ public class RobotArmCover extends ConveyorCover {
 
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
                 .allowC2S();
-        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v).allowC2S();
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
-                .value(transferMode)
-                .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
-                .lang(Text.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
-                .build());
+        GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
@@ -187,7 +182,6 @@ public class RobotArmCover extends ConveyorCover {
         this.transferMode = transferMode;
 
         if (!this.isRemote()) {
-            syncDataHolder.markClientSyncFieldDirty("transferMode");
             configureFilter();
         }
     }
