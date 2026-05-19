@@ -68,10 +68,15 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     /**
      * Loads BE data from client update packet
      */
+    @MustBeInvokedByOverriders
+    public void clientLoad(CompoundTag tag) {
+        getSyncDataHolder().deserializeNBT(tag, true);
+    }
+
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+    public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         var compound = pkt.getTag();
-        if (compound != null) getSyncDataHolder().deserializeNBT(compound, true);
+        if (compound != null) clientLoad(compound);
     }
 
     /**
