@@ -19,8 +19,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.widget.IWidget;
@@ -87,10 +85,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
             invalidateStructure(substructureName);
             return;
         }
-
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        updateTickSubscription();
     }
 
     protected int calculateEnergyUsage() {
@@ -125,9 +120,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (this.isFormed() && getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override

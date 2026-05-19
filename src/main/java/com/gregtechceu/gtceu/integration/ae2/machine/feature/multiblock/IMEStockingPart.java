@@ -8,9 +8,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
 import com.gregtechceu.gtceu.integration.ae2.slot.IConfigurableSlotList;
 
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-
 import appeng.api.stacks.GenericStack;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
@@ -35,11 +32,9 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
         // that we have in our own bus.
         setAutoPullTest(stack -> !this.testConfiguredInOtherPart(stack));
         // also ensure that our current config is valid given other inputs
-        if (self().getLevel() instanceof ServerLevel serverLevel) {
-            // wait for 1 tick
-            // we should not access the part list at this time
-            serverLevel.getServer().tell(new TickTask(0, this::validateConfig));
-        }
+        // wait for 1 tick
+        // we should not access the part list at this time
+        controller.scheduleForNextServerTick(this::validateConfig);
     }
 
     @Override

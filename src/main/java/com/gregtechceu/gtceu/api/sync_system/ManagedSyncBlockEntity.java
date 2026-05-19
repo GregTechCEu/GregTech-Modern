@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.sync_system;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -51,16 +51,32 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     /**
-     * Loads BE data from world save or from a client update packet.
-     * Override this to add logic for modifying saved data before it is loaded (e.g. for cross-version compatibility).
-     * When overriding, {@code super.load(tag)} must be called AFTER any custom logic.
+     * Loads BE data from world save.<br>
+     * Override this to add logic for modifying saved data before it is loaded (e.g. for cross-version
+     * compatibility).<br>
+     * When overriding, {@code super.load(tag)} must be called <b>AFTER</b> any custom logic.
+     *
+     * @param tag The tag to load
      */
     @Override
     @MustBeInvokedByOverriders
     public void load(CompoundTag tag) {
         super.load(tag);
-        getSyncDataHolder().deserializeNBT(tag,
-                (getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide));
+        getSyncDataHolder().deserializeNBT(tag, false);
+    }
+
+    /**
+     * Loads BE data from client update packet
+     */
+    @MustBeInvokedByOverriders
+    public void clientLoad(CompoundTag tag) {
+        getSyncDataHolder().deserializeNBT(tag, true);
+    }
+
+    @Override
+    public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        var compound = pkt.getTag();
+        if (compound != null) clientLoad(compound);
     }
 
     /**
@@ -99,7 +115,8 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         }
     }
 
-    public final void updateTick() {
+    @MustBeInvokedByOverriders
+    public void serverTick() {
         setChanged();
         if (isDirty) {
             Objects.requireNonNull(getLevel()).sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(),

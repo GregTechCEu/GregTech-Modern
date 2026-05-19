@@ -83,17 +83,13 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     @Override
     public void formStructure(@NotNull String substructureName) {
         super.formStructure(substructureName);
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
-        }
+        updateSteamSubscription();
     }
 
     @Override
     public void invalidateStructure(String name) {
         super.invalidateStructure(name);
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
-        }
+        updateSteamSubscription();
     }
 
     @Override

@@ -102,10 +102,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Override
     public void onLoad() {
         super.onLoad();
+        scheduleForNextServerTick(this::updateAutoOutputSubscription);
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-            }
             exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
         }
     }

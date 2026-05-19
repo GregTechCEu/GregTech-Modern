@@ -184,6 +184,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
