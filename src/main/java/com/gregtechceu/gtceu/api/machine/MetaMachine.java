@@ -138,6 +138,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
+    // If this machine data needs to be migrated from 7.x to 8.x
+    private boolean isOldMachineData = false;
+
     public MetaMachine(BlockEntityCreationInfo info) {
         super(info);
         this.renderState = getDefinition().defaultRenderState();
@@ -153,19 +156,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public void load(CompoundTag tag) {
+        isOldMachineData = tag.contains("traitHolder");
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
 
-        Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(),
-                this.getUpwardsFacing(), tag);
-        if (upwardsGlobal != null) {
-            // force the global upwards direction
-            var blockState = getBlockState();
-            boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
-            if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
-                blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal);
-
-            }
-        }
 
         super.load(tag);
     }
@@ -179,6 +172,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @MustBeInvokedByOverriders
     public void onLoad() {
         getAllTraits().forEach(MachineTrait::onMachineLoad);
+
+        if (isOldMachineData) {
+            Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(),
+                    this.getUpwardsFacing());
+            if (upwardsGlobal != null) {
+                // force the global upwards direction
+                var blockState = getBlockState();
+                boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
+                if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
+                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal);
+                }
+            }
+        }
 
         // update the painted model property if the machine is painted
         MachineRenderState renderState = getRenderState();

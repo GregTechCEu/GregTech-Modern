@@ -29,76 +29,72 @@ public final class TagCompatibilityFixer {
         }
     }
 
-    public static Direction fixUpwardsFacing(Direction frontfacing, Direction upwardsFacing, CompoundTag machineTag) {
-        if (!machineTag.contains("globalUpwards")) {
-            Direction newUpwards;
-            switch (frontfacing) {
-                case NORTH: {
-                    if (upwardsFacing == Direction.NORTH) {
-                        newUpwards = Direction.UP;
-                    } else if (upwardsFacing == Direction.EAST) {
-                        newUpwards = Direction.WEST;
-                    } else if (upwardsFacing == Direction.SOUTH) {
-                        newUpwards = Direction.DOWN;
-                    } else if (upwardsFacing == Direction.WEST) {
-                        newUpwards = Direction.EAST;
-                    } else {
-                        newUpwards = Direction.UP;
-                    }
-                    break;
+    public static Direction fixUpwardsFacing(Direction frontfacing, Direction upwardsFacing) {
+        Direction newUpwards;
+        switch (frontfacing) {
+            case NORTH: {
+                if (upwardsFacing == Direction.NORTH) {
+                    newUpwards = Direction.UP;
+                } else if (upwardsFacing == Direction.EAST) {
+                    newUpwards = Direction.WEST;
+                } else if (upwardsFacing == Direction.SOUTH) {
+                    newUpwards = Direction.DOWN;
+                } else if (upwardsFacing == Direction.WEST) {
+                    newUpwards = Direction.EAST;
+                } else {
+                    newUpwards = Direction.UP;
                 }
-                case EAST: {
-                    if (upwardsFacing == Direction.NORTH) {
-                        newUpwards = Direction.UP;
-                    } else if (upwardsFacing == Direction.EAST) {
-                        newUpwards = Direction.NORTH;
-                    } else if (upwardsFacing == Direction.SOUTH) {
-                        newUpwards = Direction.DOWN;
-                    } else if (upwardsFacing == Direction.WEST) {
-                        newUpwards = Direction.SOUTH;
-                    } else {
-                        newUpwards = Direction.UP;
-                    }
-                    break;
-                }
-                case SOUTH: {
-                    if (upwardsFacing == Direction.NORTH) {
-                        newUpwards = Direction.UP;
-                    } else if (upwardsFacing == Direction.EAST) {
-                        newUpwards = Direction.EAST;
-                    } else if (upwardsFacing == Direction.SOUTH) {
-                        newUpwards = Direction.DOWN;
-                    } else if (upwardsFacing == Direction.WEST) {
-                        newUpwards = Direction.WEST;
-                    } else {
-                        newUpwards = Direction.UP;
-                    }
-                    break;
-                }
-                case WEST: {
-                    if (upwardsFacing == Direction.NORTH) {
-                        newUpwards = Direction.UP;
-                    } else if (upwardsFacing == Direction.EAST) {
-                        newUpwards = Direction.SOUTH;
-                    } else if (upwardsFacing == Direction.SOUTH) {
-                        newUpwards = Direction.DOWN;
-                    } else if (upwardsFacing == Direction.WEST) {
-                        newUpwards = Direction.NORTH;
-                    } else {
-                        newUpwards = Direction.UP;
-                    }
-                    break;
-                }
-                case DOWN:
-                case UP:
-                default: {
-                    newUpwards = upwardsFacing;
-                }
+                break;
             }
-            machineTag.putBoolean("globalUpwards", true);
-            return newUpwards;
+            case EAST: {
+                if (upwardsFacing == Direction.NORTH) {
+                    newUpwards = Direction.UP;
+                } else if (upwardsFacing == Direction.EAST) {
+                    newUpwards = Direction.NORTH;
+                } else if (upwardsFacing == Direction.SOUTH) {
+                    newUpwards = Direction.DOWN;
+                } else if (upwardsFacing == Direction.WEST) {
+                    newUpwards = Direction.SOUTH;
+                } else {
+                    newUpwards = Direction.UP;
+                }
+                break;
+            }
+            case SOUTH: {
+                if (upwardsFacing == Direction.NORTH) {
+                    newUpwards = Direction.UP;
+                } else if (upwardsFacing == Direction.EAST) {
+                    newUpwards = Direction.EAST;
+                } else if (upwardsFacing == Direction.SOUTH) {
+                    newUpwards = Direction.DOWN;
+                } else if (upwardsFacing == Direction.WEST) {
+                    newUpwards = Direction.WEST;
+                } else {
+                    newUpwards = Direction.UP;
+                }
+                break;
+            }
+            case WEST: {
+                if (upwardsFacing == Direction.NORTH) {
+                    newUpwards = Direction.UP;
+                } else if (upwardsFacing == Direction.EAST) {
+                    newUpwards = Direction.SOUTH;
+                } else if (upwardsFacing == Direction.SOUTH) {
+                    newUpwards = Direction.DOWN;
+                } else if (upwardsFacing == Direction.WEST) {
+                    newUpwards = Direction.NORTH;
+                } else {
+                    newUpwards = Direction.UP;
+                }
+                break;
+            }
+            case DOWN:
+            case UP:
+            default: {
+                newUpwards = upwardsFacing;
+            }
         }
-        return null;
+        return newUpwards;
     }
 
     public static Tag stripLDLibPayloadWrapper(Tag t) {
