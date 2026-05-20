@@ -135,6 +135,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
+    @SaveField
+    @SyncToClient
     protected final MachineTraitHolder traitHolder;
 
     private final List<TickableSubscription> serverTicks;
