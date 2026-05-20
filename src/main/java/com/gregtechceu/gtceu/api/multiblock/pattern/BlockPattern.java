@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -289,7 +289,7 @@ public class BlockPattern implements IBlockPattern {
     }
 
     @Override
-    public void autobuild(Reference2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    public void autobuild(Object2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, tag);
 

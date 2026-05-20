@@ -16,12 +16,14 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BasicAisleStrategy;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -1192,6 +1194,21 @@ public class GTMultiMachines {
                                  */Predicates.blocks(CASING_GRATE.get()).setMinGlobalLimited(12))
                     .where('S', Predicates.controller(Predicates.blocks(def.getBlock())))
                     .where('B', Predicates.frames(GTMaterials.Steel))
+                    .build())
+            .pattern("cooler", (def) -> MultiblockPatternBuilder
+                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+                    .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
+                    .aisle("BBBBBBB", "B#####B", "#######", "#######")
+                    .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
+                    .aisle("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
+                    .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
+                    .aisle("BBBBBBB", "B#####B", "#######", "#######")
+                    .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
+                    .where('#', PatternPredicate.AIR)
+                    .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
+                    .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))
+                    .startOffset(OriginOffset.of(RelativeDirection.FRONT, 10))
+                    .anchorOffset(OriginOffset.of(RelativeDirection.FRONT, 3).move(RelativeDirection.LEFT, 3))
                     .build())
             .allowExtendedFacing(false)
             .allowFlip(false)

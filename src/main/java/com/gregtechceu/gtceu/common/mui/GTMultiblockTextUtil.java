@@ -36,6 +36,7 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -53,13 +54,17 @@ public class GTMultiblockTextUtil {
                 GenericListSyncHandler.class,
                 () -> GenericListSyncHandler.<Component>builder()
                         .getter(() -> {
-                            var error = weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE)
-                                    .getError();
-                            if (error == null) {
-                                return new ArrayList<>();
-                            } else {
-                                return error.getErrorInfo();
+                            List<Component> comps = new ArrayList<>();
+                            for (String structureName : weMachine.getStructurePatterns().keySet()) {
+                                var error = weMachine.getPatternState(structureName)
+                                        .getError();
+                                if (error != null) {
+                                    comps.add(Text.str(structureName));
+                                    comps.addAll(error.getErrorInfo());
+                                    // comps.add(CommonComponents.NEW_LINE);
+                                }
                             }
+                            return comps;
                         })
                         .setter((errors) -> {})
                         .adapter(GTByteBufAdapters.COMPONENT)
@@ -67,6 +72,7 @@ public class GTMultiblockTextUtil {
                         .build());
 
         Flow unformed = Flow.col().coverChildrenHeight()
+                .collapseDisabledChildren()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .widthRel(1);
 
@@ -92,7 +98,8 @@ public class GTMultiblockTextUtil {
         unformed.child(new DynamicSyncedWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
-                .syncHandler(dynamicLinkedSyncHandler));
+                .syncHandler(dynamicLinkedSyncHandler))
+                .setEnabledIf(w -> !isFormed.getBoolValue());
         return unformed;
     }
 

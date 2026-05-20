@@ -87,12 +87,12 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     @Override
     public PatternState checkStructurePattern(String name) {
-        createStructurePattern();
+        getDefaultStructurePattern();
         return super.checkStructurePattern(name);
     }
 
     @Override
-    public IBlockPattern createStructurePattern() {
+    public IBlockPattern getDefaultStructurePattern() {
         var floor = Predicates.blocks(Blocks.BRICKS);
         var logs = PatternPredicate.AIR.or(logPredicate());
         var walls = wallPredicate();

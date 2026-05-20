@@ -2,14 +2,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.testmultis;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +19,7 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
     }
 
     @Override
-    public IBlockPattern createStructurePattern() {
+    public IBlockPattern getDefaultStructurePattern() {
         return MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
                 .aisle("CCC", "CCC")
                 .aisle("CCC", "CBC")
@@ -40,22 +36,22 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
     @Override
     public void createStructurePatterns() {
         super.createStructurePatterns();
-        patternStates.put("cooler", new PatternState());
-        structures.put("cooler",
-                MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-                        .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
-                        .aisle("BBBBBBB", "B#####B", "#######", "#######")
-                        .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
-                        .aisle("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
-                        .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
-                        .aisle("BBBBBBB", "B#####B", "#######", "#######")
-                        .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
-                        .where('#', PatternPredicate.AIR)
-                        .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
-                        .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))
-                        .startOffset(OriginOffset.of(RelativeDirection.FRONT, 10))
-                        .anchorOffset(OriginOffset.of(RelativeDirection.FRONT, 3).move(RelativeDirection.LEFT, 3))
-                        .build());
+        // patternStates.put("cooler", new PatternState());
+        // structures.put("cooler",
+        // MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
+        // .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
+        // .aisle("BBBBBBB", "B#####B", "#######", "#######")
+        // .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
+        // .aisle("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
+        // .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
+        // .aisle("BBBBBBB", "B#####B", "#######", "#######")
+        // .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
+        // .where('#', PatternPredicate.AIR)
+        // .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
+        // .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))
+        // .startOffset(OriginOffset.of(RelativeDirection.FRONT, 10))
+        // .anchorOffset(OriginOffset.of(RelativeDirection.FRONT, 3).move(RelativeDirection.LEFT, 3))
+        // .build());
     }
 
     @Override

@@ -216,7 +216,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public IBlockPattern createStructurePattern() {
+    public IBlockPattern getDefaultStructurePattern() {
         updateStructureDimensions();
         if (leftDist + rightDist < 1 || upDist + downDist < 1) {
             leftDist = 3;

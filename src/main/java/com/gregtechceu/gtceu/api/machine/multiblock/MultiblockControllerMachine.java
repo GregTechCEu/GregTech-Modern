@@ -26,8 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,8 +56,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     @SyncToClient
     protected boolean isFlipped;
 
-    protected final Reference2ObjectMap<String, IBlockPattern> structures = new Reference2ObjectOpenHashMap<>();
-    protected final Reference2ObjectMap<String, PatternState> patternStates = new Reference2ObjectOpenHashMap<>();
+    protected final Object2ObjectMap<String, IBlockPattern> structures = new Object2ObjectOpenHashMap<>();
+    protected final Object2ObjectMap<String, PatternState> patternStates = new Object2ObjectOpenHashMap<>();
 
     public MultiblockControllerMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -93,7 +93,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         return this.controllerBlockInfo;
     }
 
-    public Reference2ObjectMap<String, IBlockPattern> getStructurePatterns() {
+    public Object2ObjectMap<String, IBlockPattern> getStructurePatterns() {
         return structures;
     }
 
@@ -197,20 +197,19 @@ public class MultiblockControllerMachine extends MetaMachine {
      * Get structure pattern.
      * You can override it to create dynamic patterns.
      */
-    public IBlockPattern createStructurePattern() {
-        return getDefinition().getPatternFactory().get();
+    public IBlockPattern getDefaultStructurePattern() {
+        return getDefinition().getStructurePatterns().get(DEFAULT_STRUCTURE).get();
     }
 
     /**
      * Creates the default pattern and pattern state and populates the state maps
      */
     public void createStructurePatterns() {
-        var defaultPattern = createStructurePattern();
-        var defaultPatternState = new PatternState();
-        patternStates.put(DEFAULT_STRUCTURE, defaultPatternState);
+        getDefinition().getStructurePatterns().forEach((name, pattern) -> {
+            patternStates.put(name, new PatternState());
+            structures.put(name, pattern.get());
+        });
         getSyncDataHolder().markClientSyncFieldDirty("patternStates");
-        // defaultPattern.setActivePatternState(defaultPatternState);
-        structures.put(DEFAULT_STRUCTURE, defaultPattern);
     }
 
     public void checkAndFormStructurePatterns() {
@@ -240,10 +239,10 @@ public class MultiblockControllerMachine extends MetaMachine {
         state.setController(this, getBlockPos());
         pattern.checkPatternFastAt(getLevel(), state, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                 allowFlip());
-        // patternStates.put(name, pState);
-        // pattern.setActivePatternState(pState);
+
         // GTCEu.LOGGER.info("Structure check for {} took {} ns", self().getDefinition().getName(),
         // (System.nanoTime() - time));
+
         return state;
     }
 

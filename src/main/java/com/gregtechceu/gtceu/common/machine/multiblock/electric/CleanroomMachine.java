@@ -361,12 +361,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public PatternState checkStructurePattern(String name) {
-        createStructurePattern();
+        getDefaultStructurePattern();
         return super.checkStructurePattern(name);
     }
 
     @Override
-    public IBlockPattern createStructurePattern() {
+    public IBlockPattern getDefaultStructurePattern() {
         // return the default structure, even if there is no valid size found
         // this means auto-build will still work, and prevents terminal crashes.
         // if (getLevel() == null)

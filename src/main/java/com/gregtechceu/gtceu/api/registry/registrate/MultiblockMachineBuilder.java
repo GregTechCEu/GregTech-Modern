@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
@@ -39,7 +40,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         TYPE extends MultiblockMachineBuilder<DEFINITION, TYPE>> extends MachineBuilder<DEFINITION, TYPE> {
 
     private boolean generator;
-    private Function<MultiblockMachineDefinition, BlockPattern> pattern;
+    private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
     /**
      * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
@@ -58,6 +59,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
                 blockFactory,
                 itemFactory, blockEntityFactory);
+        patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
         // always add the formed property to multi controllers
@@ -69,8 +71,13 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
-        this.pattern = pattern;
+    public TYPE pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+        this.patterns.put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
+        return getThis();
+    }
+
+    public TYPE pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+        this.patterns.put(structureName, pattern);
         return getThis();
     }
 
@@ -126,10 +133,13 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     public DEFINITION register() {
         var definition = super.register();
         definition.setGenerator(generator);
-        if (pattern == null) {
-            throw new IllegalStateException("missing pattern while creating multiblock " + name);
+        if (patterns.isEmpty()) {
+            throw new IllegalStateException("Missing default structure pattern for " + name);
         }
-        definition.setPatternFactory(GTMemoizer.memoize(() -> pattern.apply(definition)));
+        for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : patterns.entrySet()) {
+            definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));
+        }
+
         definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
                 .flatMap(Collection::stream).toList());
         definition.setAllowFlip(allowFlip);

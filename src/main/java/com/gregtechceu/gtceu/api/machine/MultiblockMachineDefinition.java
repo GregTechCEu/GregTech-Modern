@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,10 +29,9 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Getter
     @Setter
     private boolean generator;
-    @Setter
     @Getter
     @NonNull
-    private Supplier<BlockPattern> patternFactory;
+    private Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
     @Setter
     @Getter
     private Supplier<List<MultiblockShapeInfo>> shapes;
@@ -60,10 +60,14 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         super(id);
     }
 
+    public void setPattern(String structureName, Supplier<IBlockPattern> pattern) {
+        structurePatterns.put(structureName, pattern);
+    }
+
     public List<MultiblockShapeInfo> getMatchingShapes() {
         var designs = shapes.get();
         if (!designs.isEmpty()) return designs;
-        var structurePattern = patternFactory.get();
+        // var structurePattern = patternFactory.get();
         return new ArrayList<>();
         // return null;
         // int[][] aisleRepetitions = structurePattern.aisleRepetitions;
