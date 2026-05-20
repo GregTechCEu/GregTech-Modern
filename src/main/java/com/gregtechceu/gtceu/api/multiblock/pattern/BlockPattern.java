@@ -139,8 +139,8 @@ public class BlockPattern implements IBlockPattern {
         if (allowsFlip) {
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
-        if (!valid) { // dont store a partial formed cache
-            patternState.getCache().clear();
+        if (!valid) {
+            // maybe empty the block info part of the cache?
             patternState.setState(PatternState.CheckState.INVALID_UNCACHED);
             return;
         }
@@ -171,7 +171,8 @@ public class BlockPattern implements IBlockPattern {
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
             if (entry.getIntValue() < entry.getKey().minCount) {
                 patternState
-                        .setError(new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_COUNT));
+                        .setError(new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_COUNT,
+                                entry.getIntValue()));
                 return false;
             }
         }
@@ -218,7 +219,6 @@ public class BlockPattern implements IBlockPattern {
                     BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
                     BlockState state = patternState.cbi.retrieveCurrentBlockState();
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, be));
-                    patternState.posCache.add(charPos.immutable());
                 }
 
                 PatternError res = pred.test(patternState.cbi, patternState.globalCount, patternState.layerCount);
@@ -237,7 +237,8 @@ public class BlockPattern implements IBlockPattern {
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
             if (entry.getIntValue() < entry.getKey().minLayerCount) {
                 patternState.setError(
-                        new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_LAYER_COUNT));
+                        new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_LAYER_COUNT,
+                                entry.getIntValue()));
                 return false;
             }
         }

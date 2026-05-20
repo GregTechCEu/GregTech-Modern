@@ -1210,13 +1210,13 @@ public class LangHandler {
         provider.add("gtceu.multiblock.preview.zoom", "Use mousewheel or right-click + drag to zoom");
         provider.add("gtceu.multiblock.preview.rotate", "Click and drag to rotate");
         provider.add("gtceu.multiblock.preview.select", "Right-click to check candidates");
-        multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components (%s) at:\n  %s, %s, %s.");
+        multilineLang(provider, "gtceu.multiblock.pattern.error", "Expected components at:\n  %s, %s, %s.");
         provider.add("gtceu.multiblock.pattern.error.limited.exact", "§cExactly: %d§r");
         provider.add("gtceu.multiblock.pattern.error.limited.range", "§cBetween %d and %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum: %d§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum: %d per layer§r");
-        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum: %d per layer§r");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_count", "§cMaximum:§r %d has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_count", "§cMinimum:§r %d has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.max_layer_count", "§cMaximum:§r %d per layer, has %d");
+        provider.add("gtceu.multiblock.pattern.error.limited.min_layer_count", "§cMinimum:§r %d per layer, has %d");
         provider.add("gtceu.multiblock.pattern.error.coils", "§cAll heating coils must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.filters", "§cAll filters must be the same§r");
         provider.add("gtceu.multiblock.pattern.error.batteries", "§cAll batteries must be the same§r");

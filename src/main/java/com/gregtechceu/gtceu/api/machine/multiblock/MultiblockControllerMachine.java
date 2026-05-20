@@ -21,7 +21,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMac
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -336,7 +335,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void invalidateStructure(String name) {
         var pState = patternStates.get(name);
-        if (!pState.isFormed()) return;
+        // if (!pState.isFormed()) return;
 
         MachineRenderState renderState = getRenderState();
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
@@ -360,7 +359,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     protected void invalidateStructureCaches() {
         for (var pState : patternStates.values()) {
-            pState.getPosCache().clear();
+            pState.getCache().clear();
         }
     }
 

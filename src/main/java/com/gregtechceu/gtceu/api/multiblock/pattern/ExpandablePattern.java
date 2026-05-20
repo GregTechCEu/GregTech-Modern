@@ -157,7 +157,7 @@ public class ExpandablePattern implements IBlockPattern {
                 var bstate = patternState.cbi.retrieveCurrentBlockState();
                 BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
                 patternState.cache.put(mPos.asLong(), new BlockInfo(bstate, be));
-                patternState.posCache.add(mPos.immutable());
+                // patternState.posCache.add(mPos.immutable());
             }
 
             PatternError res = pred.test(patternState.cbi, patternState.globalCount, null);
@@ -170,7 +170,7 @@ public class ExpandablePattern implements IBlockPattern {
         for (var entry : patternState.globalCount.object2IntEntrySet()) {
             if (entry.getIntValue() < entry.getKey().minCount) {
                 patternState.setError(new SinglePredicateError(entry.getKey(),
-                        SinglePredicateError.ErrorType.MIN_COUNT));
+                        SinglePredicateError.ErrorType.MIN_COUNT, entry.getIntValue()));
                 return false;
             }
         }

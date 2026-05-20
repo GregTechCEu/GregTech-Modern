@@ -19,9 +19,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
@@ -47,8 +44,6 @@ public class PatternState {
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
-    @Getter
-    protected Set<BlockPos> posCache = new HashSet<>();
     @Getter
     @NotNull
     protected CurrentBlockInfo cbi = new CurrentBlockInfo();
@@ -119,7 +114,7 @@ public class PatternState {
         /**
          * The cache matches the structure's data.
          */
-        VALID_CACHED(true, false),
+        VALID_CACHED(true, true),
 
         /**
          * The cache doesn't match with the structure's data. The structure has been rechecked from scratch, is invalid,

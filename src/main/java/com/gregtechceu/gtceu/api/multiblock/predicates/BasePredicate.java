@@ -158,7 +158,7 @@ public class BasePredicate {
         int count = globalCache.getInt(this);
         // int count = layerCache.put(this, layerCache.getInt(this) + 1) + 1 + globalCache.getInt(this);
         if (maxCount == -1 || count <= maxCount) return null;
-        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT);
+        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
     }
 
     public PatternError testLayer(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> layerCache) {
@@ -167,7 +167,7 @@ public class BasePredicate {
         layerCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
         if ((minLayerCount == -1 && maxLayerCount == -1) || res != null) return res;
         if (maxLayerCount == -1 || layerCache.getInt(this) <= maxLayerCount) return null;
-        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT);
+        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
     }
 
     public List<ItemStack> getCandidates() {

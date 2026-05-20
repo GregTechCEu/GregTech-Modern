@@ -133,6 +133,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
+    @SaveField
+    @SyncToClient
     protected final MachineTraitHolder traitHolder;
 
     private final List<TickableSubscription> serverTicks;
@@ -159,7 +161,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         isOldMachineData = !tag.contains("traitHolder");
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
 
-
         super.load(tag);
     }
 
@@ -181,7 +182,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                 var blockState = getBlockState();
                 boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
                 if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
-                    blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal);
+                    getLevel().setBlock(getBlockPos(),
+                            blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal),
+                            Block.UPDATE_IMMEDIATE);
                 }
             }
         }

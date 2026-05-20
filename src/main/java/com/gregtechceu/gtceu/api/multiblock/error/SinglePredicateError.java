@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,11 +15,13 @@ public class SinglePredicateError extends PatternError {
 
     public final BasePredicate predicate;
     public final ErrorType type;
+    public final int actualCount;
 
-    public SinglePredicateError(BasePredicate failingPredicate, ErrorType type) {
+    public SinglePredicateError(BasePredicate failingPredicate, ErrorType type, int actualCount) {
         super(null, failingPredicate);
         this.predicate = failingPredicate;
         this.type = type;
+        this.actualCount = actualCount;
     }
 
     @Override
@@ -28,14 +31,34 @@ public class SinglePredicateError extends PatternError {
 
     @Override
     public List<Component> getErrorInfo() {
-        int number = switch (type) {
-            case MAX_COUNT -> predicate.maxCount;
-            case MIN_COUNT -> predicate.minCount;
-            case MAX_LAYER_COUNT -> predicate.maxLayerCount;
-            case MIN_LAYER_COUNT -> predicate.minLayerCount;
+        Component predName = predicate.getCandidates().get(0).getHoverName();
+        switch (type) {
+            case MAX_COUNT -> {
+                return List.of(
+                        Component.translatable("gtceu.multiblock.pattern.error.limited.max_count", predicate.maxCount,
+                                actualCount),
+                        predName);
+            }
+            case MIN_COUNT -> {
+                return List.of(
+                        Component.translatable("gtceu.multiblock.pattern.error.limited.min_count", predicate.minCount,
+                                actualCount),
+                        predName);
+            }
+            case MAX_LAYER_COUNT -> {
+                return List.of(
+                        Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
+                                predicate.maxLayerCount, actualCount),
+                        predName);
+            }
+            case MIN_LAYER_COUNT -> {
+                return List.of(
+                        Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
+                                predicate.minLayerCount, actualCount),
+                        predName);
+            }
         };
-
-        return List.of(Component.translatable("gtceu.multiblock.pattern.error.limited." + type.getName(), number));
+        return Collections.singletonList(CommonComponents.EMPTY);
     }
 
     public enum ErrorType {
@@ -46,7 +69,7 @@ public class SinglePredicateError extends PatternError {
         MIN_LAYER_COUNT("min_layer_count");
 
         @Getter
-        String name;
+        final String name;
 
         ErrorType(String name) {
             this.name = name;

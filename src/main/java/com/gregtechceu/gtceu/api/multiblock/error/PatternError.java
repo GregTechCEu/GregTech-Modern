@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -15,8 +14,6 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.gregtechceu.gtceu.utils.GTStringUtils.COMMA_SEPERATOR_LITERAL;
 
 public class PatternError {
 
@@ -49,18 +46,20 @@ public class PatternError {
     }
 
     public List<Component> getErrorInfo() {
-        StringBuilder builder = new StringBuilder();
-        for (List<ItemStack> candidate : candidates) {
-            if (!candidate.isEmpty()) {
-                builder.append(candidate.get(0));
-                builder.append(COMMA_SEPERATOR_LITERAL);
-            }
-        }
-        builder.append(CommonComponents.ELLIPSIS);
         List<Component> lines = new ArrayList<>();
-        lines.add(Component.translatable("gtceu.multiblock.pattern.error.0", builder.toString()));
+        lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
         lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
                 pos.getZ()));
+        for (List<ItemStack> candidate : candidates) {
+            if (!candidate.isEmpty()) {
+                Component c = candidate.get(0).getHoverName();
+                lines.add(c);
+                // builder.append(c.toString());
+                // builder.append(COMMA_SEPERATOR_LITERAL);
+            }
+        }
+        // builder.append(CommonComponents.ELLIPSIS);
+
         return lines;
     }
 }
