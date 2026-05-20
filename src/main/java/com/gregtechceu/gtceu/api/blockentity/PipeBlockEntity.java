@@ -185,6 +185,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -307,13 +308,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void setChanged() {
-        if (getLevel() != null) {
-            getLevel().blockEntityChanged(getBlockPos());
-        }
     }
 
     //////////////////////////////////////

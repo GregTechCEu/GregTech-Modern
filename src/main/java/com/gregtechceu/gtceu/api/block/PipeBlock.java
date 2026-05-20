@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -446,9 +445,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 return (pLevel, pPos, pState, pTile) -> {
                     if (pTile instanceof IPipeNode<?, ?> pipeNode) {
                         pipeNode.serverTick();
-                    }
-                    if (pTile instanceof ManagedSyncBlockEntity syncObj) {
-                        syncObj.updateTick();
                     }
                 };
             }
