@@ -18,11 +18,11 @@ import net.minecraft.server.packs.resources.IoSupplier;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
@@ -67,46 +67,50 @@ public class GTDynamicDataPack implements PackResources {
 
     public static void addRecipe(FinishedRecipe recipe) {
         JsonObject recipeJson = recipe.serializeRecipe();
-        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
+        byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
+        Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
         ResourceLocation recipeId = recipe.getId();
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(recipeId, "recipes", parent, recipeJson);
+            writeJson(recipeId, "recipes", parent, recipeBytes);
         }
-        addToData(getRecipeLocation(recipeId), recipeJson.toString().getBytes(StandardCharsets.UTF_8));
+        addToData(getRecipeLocation(recipeId), recipeBytes);
+
         if (recipe.serializeAdvancement() != null) {
             JsonObject advancement = recipe.serializeAdvancement();
+            byte[] advancementBytes = advancement.toString().getBytes(StandardCharsets.UTF_8);
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-                writeJson(recipe.getAdvancementId(), "advancements", parent, advancement);
+                writeJson(recipe.getAdvancementId(), "advancements", parent, advancementBytes);
             }
             addToData(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())),
-                    advancement.toString().getBytes(StandardCharsets.UTF_8));
+                    advancementBytes);
         }
     }
 
     /**
      * if subdir is null, no file ending is appended.
-     * 
+     *
      * @param id     the resource location of the file to be written.
      * @param subdir a nullable subdirectory for the data.
      * @param parent the parent folder where to write data to.
      * @param json   the json to write.
      */
     @ApiStatus.Internal
-    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, JsonElement json) {
+    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, byte[] json) {
         try {
             Path file;
             if (subdir != null) {
-                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json"); // assume JSON
+                // assume JSON
+                file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".json");
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
-                                                                                // if a full path is given.
+                // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath());
             }
             Files.createDirectories(file.getParent());
             try (OutputStream output = Files.newOutputStream(file)) {
-                output.write(json.toString().getBytes());
+                output.write(json);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            GTCEu.LOGGER.error("Failed to write JSON export for file {}", id, e);
         }
     }
 
@@ -118,9 +122,13 @@ public class GTDynamicDataPack implements PackResources {
     @Nullable
     @Override
     public IoSupplier<InputStream> getRootResource(String... elements) {
+        if (elements.length > 0 && elements[0].equals("pack.png")) {
+            return () -> GTCEu.class.getResourceAsStream("/icon.png");
+        }
         return null;
     }
 
+    @Nullable
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
@@ -164,8 +172,12 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     @Override
-    public String packId() {
+    public @NotNull String packId() {
         return this.name;
+    }
+
+    public boolean isBuiltin() {
+        return true;
     }
 
     @Override

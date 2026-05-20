@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.block.LampBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -25,11 +26,13 @@ import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
+import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -37,6 +40,9 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties.ACTIVE;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.BORDERLESS_LAMPS;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.LAMPS;
 import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
@@ -49,8 +55,8 @@ public class Predicates {
         var candidates = new ArrayList<BlockState>();
         for (BlockState state : allowedStates) {
             candidates.add(state);
-            if (state.getBlock() instanceof ActiveBlock block) {
-                candidates.add(block.changeActive(state, !block.isActive(state)));
+            if (state.hasProperty(ACTIVE)) {
+                candidates.add(state.setValue(ACTIVE, !state.getValue(ACTIVE)));
             }
         }
         return new TraceabilityPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));
@@ -60,9 +66,19 @@ public class Predicates {
         return new TraceabilityPredicate(new PredicateBlocks(blocks));
     }
 
-    public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
+    public static TraceabilityPredicate blocks(MetaMachineBlock... blocks) {
         return new TraceabilityPredicate(
-                new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+                new PredicateBlocks(Arrays.stream(blocks).toArray(Block[]::new)));
+    }
+
+    public static TraceabilityPredicate machines(MachineDefinition... definitions) {
+        ArrayList<MetaMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
+        for (var definition : definitions) {
+            if (definition != null) {
+                machineBlocks.add(definition.get());
+            }
+        }
+        return blocks(machineBlocks.toArray(MetaMachineBlock[]::new));
     }
 
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {
@@ -87,6 +103,32 @@ public class Predicates {
 
     public static TraceabilityPredicate air() {
         return new TraceabilityPredicate(SimplePredicate.AIR);
+    }
+
+    @SafeVarargs
+    public static TraceabilityPredicate lamps(BlockEntry<LampBlock>... lampEntries) {
+        return new TraceabilityPredicate(blockWorldState -> {
+            BlockState state = blockWorldState.getBlockState();
+            for (BlockEntry<LampBlock> entry : lampEntries) {
+                if (state.is(entry.get())) return true;
+            }
+            return false;
+        }, () -> Arrays.stream(lampEntries)
+                .map(entry -> new BlockInfo(entry.get().defaultBlockState(), null))
+                .toArray(BlockInfo[]::new));
+    }
+
+    public static TraceabilityPredicate anyLamp() {
+        List<BlockEntry<LampBlock>> all = new ArrayList<>();
+        all.addAll(LAMPS.values());
+        all.addAll(BORDERLESS_LAMPS.values());
+        return lamps(all.toArray(BlockEntry[]::new));
+    }
+
+    private static final Map<DyeColor, TraceabilityPredicate> LAMPS_BY_COLOR = new EnumMap<>(DyeColor.class);
+
+    public static TraceabilityPredicate lampsByColor(DyeColor color) {
+        return LAMPS_BY_COLOR.computeIfAbsent(color, c -> lamps(LAMPS.get(c), BORDERLESS_LAMPS.get(c)));
     }
 
     public static TraceabilityPredicate abilities(PartAbility... abilities) {
@@ -272,8 +314,8 @@ public class Predicates {
                 .toArray(Block[]::new);
         return blocks(frameBlocks)
                 .or(new TraceabilityPredicate(blockWorldState -> {
-                    BlockEntity tileEntity = blockWorldState.getTileEntity();
-                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                    BlockEntity blockEntity = blockWorldState.getBlockEntity();
+                    if (!(blockEntity instanceof IPipeNode<?, ?> pipeNode)) {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());

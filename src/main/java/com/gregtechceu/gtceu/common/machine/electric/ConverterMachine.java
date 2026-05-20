@@ -1,26 +1,27 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.common.machine.trait.ConverterTrait;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
@@ -30,28 +31,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class ConverterMachine extends TieredEnergyMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterMachine.class,
-            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+    public static final BooleanProperty FE_TO_EU_PROPERTY = GTMachineModelProperties.IS_FE_TO_EU;
 
-    public ConverterMachine(IMachineBlockEntity holder, int tier, int amps, Object... args) {
-        super(holder, tier, args, amps);
+    public ConverterMachine(BlockEntityCreationInfo info, int tier, int amps) {
+        super(info, tier, t -> new ConverterTrait((ConverterMachine) t, tier, amps));
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        if (args.length > 0 && args[args.length - 1] instanceof Integer ampsValue) {
-            return new ConverterTrait(this, ampsValue);
-        }
-        throw new IllegalArgumentException("ConverterMachine need args [amps] for initialization");
-    }
 
     public ConverterTrait getConverterTrait() {
         return (ConverterTrait) energyContainer;
@@ -69,12 +57,11 @@ public class ConverterMachine extends TieredEnergyMachine {
     // ****** Interaction ******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction facing,
-                                               BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         if (!isRemote()) {
             if (getConverterTrait().isFeToEu()) {
                 setFeToEu(false);
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("machine.gtceu.energy_converter.message_conversion_eu",
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
                                 FeCompat.toFeLong(
@@ -82,7 +69,7 @@ public class ConverterMachine extends TieredEnergyMachine {
                                         FeCompat.ratio(false))));
             } else {
                 setFeToEu(true);
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("machine.gtceu.energy_converter.message_conversion_native",
                                 FeCompat.toFeLong(
                                         getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
@@ -107,8 +94,8 @@ public class ConverterMachine extends TieredEnergyMachine {
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
+    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                              Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return this.isFeToEu() ? GuiTextures.TOOL_SWITCH_CONVERTER_NATIVE : GuiTextures.TOOL_SWITCH_CONVERTER_EU;
         }

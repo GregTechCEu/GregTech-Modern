@@ -1,22 +1,20 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.RotorHolderPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -41,16 +39,16 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     @Getter
     private final int tier;
 
-    public LargeTurbineMachine(IMachineBlockEntity holder, int tier) {
-        super(holder);
+    public LargeTurbineMachine(BlockEntityCreationInfo info, int tier) {
+        super(info);
         this.tier = tier;
         this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
     }
 
     @Nullable
-    private IRotorHolderMachine getRotorHolder() {
+    private RotorHolderPartMachine getRotorHolder() {
         for (IMultiPart part : getParts()) {
-            if (part instanceof IRotorHolderMachine rotorHolder) {
+            if (part instanceof RotorHolderPartMachine rotorHolder) {
                 return rotorHolder;
             }
         }
@@ -79,6 +77,48 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         return 0;
     }
 
+    public boolean hasRotor() {
+        var rotorHolder = getRotorHolder();
+        return rotorHolder != null && rotorHolder.hasRotor();
+    }
+
+    public int getRotorSpeed() {
+        var rotorHolder = getRotorHolder();
+        if (rotorHolder != null && rotorHolder.hasRotor()) {
+            return rotorHolder.getRotorSpeed();
+        }
+        return 0;
+    }
+
+    public int getMaxRotorHolderSpeed() {
+        var rotorHolder = getRotorHolder();
+        if (rotorHolder != null && rotorHolder.hasRotor()) {
+            return rotorHolder.getMaxRotorHolderSpeed();
+        }
+        return 0;
+    }
+
+    public int getTotalEfficiency() {
+        var rotorHolder = getRotorHolder();
+        if (rotorHolder != null && rotorHolder.hasRotor()) {
+            return rotorHolder.getTotalEfficiency();
+        }
+        return -1;
+    }
+
+    public long getCurrentProduction() {
+        return isActive() && recipeLogic.getLastRecipe() != null ?
+                recipeLogic.getLastRecipe().getOutputEUt().voltage() : 0;
+    }
+
+    public int getRotorDurabilityPercent() {
+        var rotorHolder = getRotorHolder();
+        if (rotorHolder != null && rotorHolder.hasRotor()) {
+            return rotorHolder.getRotorDurabilityPercent();
+        }
+        return -1;
+    }
+
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
@@ -88,7 +128,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
      * Recipe is fast parallelized up to {@code (baseEUt * power) / recipeEUt} times.
      * Duration is then multiplied by the holder efficiency.
      * </p>
-     * 
+     *
      * @param machine a {@link LargeTurbineMachine}
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Turbine Multiblock and recipe
@@ -101,16 +141,22 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         var rotorHolder = turbineMachine.getRotorHolder();
         if (rotorHolder == null) return ModifierFunction.NULL;
 
-        long EUt = RecipeHelper.getOutputEUt(recipe);
+        EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        if (EUt <= 0 || turbineMaxVoltage <= EUt || holderEfficiency <= 0) return ModifierFunction.NULL;
+        if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0) return ModifierFunction.NULL;
 
         // get the amount of parallel required to match the desired output voltage
-        int maxParallel = (int) (turbineMaxVoltage / EUt);
+        // Max Parallel is Ceilinged not Floored to ensure the output voltage is actually met,
+        // at the cost of slightly increased fuel
+        int maxParallel = (int) (turbineMaxVoltage / EUt.getTotalEU());
+        if (turbineMaxVoltage % EUt.getTotalEU() != 0) maxParallel++;
+
         int actualParallel = ParallelLogic.getParallelAmountFast(turbineMachine, recipe, maxParallel);
-        double eutMultiplier = turbineMachine.productionBoost() * actualParallel;
+        double eutMultiplier = (maxParallel == actualParallel) ?
+                turbineMachine.productionBoost() * turbineMaxVoltage / EUt.voltage() :
+                turbineMachine.productionBoost() * actualParallel;
 
         return ModifierFunction.builder()
                 .inputModifier(ContentModifier.multiplier(actualParallel))
@@ -128,7 +174,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
     @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return capability != EURecipeCapability.CAP;
+        // void both eu and fluid tick outputs
+        return true;
     }
 
     //////////////////////////////////////
@@ -149,9 +196,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                         rotorHolder.getTotalEfficiency()));
 
                 long maxProduction = getOverclockVoltage();
-                long currentProduction = isActive() && recipeLogic.getLastRecipe() != null ?
-                        RecipeHelper.getOutputEUt(recipeLogic.getLastRecipe()) : 0;
-                String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
+                long currentProduction = getCurrentProduction();
 
                 if (isActive()) {
                     textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",

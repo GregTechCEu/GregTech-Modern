@@ -1,0 +1,75 @@
+{
+  "parent": "minecraft:block/block",
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uxv_gas_collector",
+  "variants": {
+    "recipe_logic_status=idle": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uxv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/gas_collector/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/gas_collector/overlay_back_emissive",
+          "overlay_bottom": "gtceu:block/machines/gas_collector/overlay_bottom",
+          "overlay_bottom_emissive": "gtceu:block/machines/gas_collector/overlay_bottom_emissive",
+          "overlay_front": "gtceu:block/machines/gas_collector/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/gas_collector/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/gas_collector/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/gas_collector/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/gas_collector/overlay_top",
+          "overlay_top_emissive": "gtceu:block/machines/gas_collector/overlay_top_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=suspend": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uxv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/gas_collector/overlay_back",
+          "overlay_back_emissive": "gtceu:block/machines/gas_collector/overlay_back_emissive",
+          "overlay_bottom": "gtceu:block/machines/gas_collector/overlay_bottom",
+          "overlay_bottom_emissive": "gtceu:block/machines/gas_collector/overlay_bottom_emissive",
+          "overlay_front": "gtceu:block/machines/gas_collector/overlay_front",
+          "overlay_front_emissive": "gtceu:block/machines/gas_collector/overlay_front_emissive",
+          "overlay_side": "gtceu:block/machines/gas_collector/overlay_side",
+          "overlay_side_emissive": "gtceu:block/machines/gas_collector/overlay_side_emissive",
+          "overlay_top": "gtceu:block/machines/gas_collector/overlay_top_paused",
+          "overlay_top_emissive": "gtceu:block/machines/gas_collector/overlay_top_paused_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=waiting": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uxv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/gas_collector/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/gas_collector/overlay_back_active_emissive",
+          "overlay_bottom": "gtceu:block/machines/gas_collector/overlay_bottom_active",
+          "overlay_bottom_emissive": "gtceu:block/machines/gas_collector/overlay_bottom_active_emissive",
+          "overlay_front": "gtceu:block/machines/gas_collector/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/gas_collector/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/gas_collector/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/gas_collector/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/gas_collector/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/gas_collector/overlay_top_active_emissive"
+        }
+      }
+    },
+    "recipe_logic_status=working": {
+      "model": {
+        "parent": "gtceu:block/casings/voltage/uxv",
+        "textures": {
+          "overlay_back": "gtceu:block/machines/gas_collector/overlay_back_active",
+          "overlay_back_emissive": "gtceu:block/machines/gas_collector/overlay_back_active_emissive",
+          "overlay_bottom": "gtceu:block/machines/gas_collector/overlay_bottom_active",
+          "overlay_bottom_emissive": "gtceu:block/machines/gas_collector/overlay_bottom_active_emissive",
+          "overlay_front": "gtceu:block/machines/gas_collector/overlay_front_active",
+          "overlay_front_emissive": "gtceu:block/machines/gas_collector/overlay_front_active_emissive",
+          "overlay_side": "gtceu:block/machines/gas_collector/overlay_side_active",
+          "overlay_side_emissive": "gtceu:block/machines/gas_collector/overlay_side_active_emissive",
+          "overlay_top": "gtceu:block/machines/gas_collector/overlay_top_active",
+          "overlay_top_emissive": "gtceu:block/machines/gas_collector/overlay_top_active_emissive"
+        }
+      }
+    }
+  }
+}

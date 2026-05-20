@@ -104,7 +104,7 @@ public class ArmorUtils {
         }
 
         if (isPossibleToCharge(offHand) && offHandItem.getTier() <= tier) {
-            inventorySlotMap.add(Pair.of(player.getInventory().offhand, IntList.of(0)));
+            inventorySlotMap.add(Pair.of(player.getInventory().offhand, new IntArrayList(new int[] { 0 })));
         }
 
         return inventorySlotMap;

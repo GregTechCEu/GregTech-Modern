@@ -1,24 +1,30 @@
 package com.gregtechceu.gtceu.api.cosmetics;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketNotifyCapeChange;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
+import com.gregtechceu.gtceu.integration.kjs.events.RegisterCapesEventJS;
 
 import net.minecraft.nbt.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import lombok.SneakyThrows;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@SuppressWarnings("DeprecatedIsStillUsed")
+import static com.gregtechceu.gtceu.common.commands.GTCommands.ERROR_NO_SUCH_CAPE;
+
 public class CapeRegistry extends SavedData {
 
     /**
@@ -39,7 +45,12 @@ public class CapeRegistry extends SavedData {
     private CapeRegistry() {}
 
     private static void initCapes() {
-        MinecraftForge.EVENT_BUS.post(new RegisterGTCapesEvent());
+        RegisterGTCapesEvent event = new RegisterGTCapesEvent();
+        MinecraftForge.EVENT_BUS.post(event);
+        if (GTCEu.Mods.isKubeJSLoaded()) {
+            KJSCallWrapper.fireKJSEvent(event);
+        }
+
         save();
     }
 
@@ -146,70 +157,84 @@ public class CapeRegistry extends SavedData {
     }
 
     /**
-     * Makes a cape available to the {@code /gtceu cape} command, allowing it to be used in advancements etc.
+     * Registers a cape.<br>
+     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * directly.
      *
-     * @param id   An identifier for giving the cape with commands etc.
-     * @param cape The ResourceLocation that points to the cape that can be unlocked through the advancement.
+     * @param id      An identifier for the cape
+     * @param texture The full path to the cape's texture in a resource pack
      *
-     * @deprecated use the {@link com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent} event.
+     * @see RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)
      */
     @ApiStatus.Internal
-    public static void registerCape(ResourceLocation id, ResourceLocation cape) {
-        ALL_CAPES.put(id, cape);
+    public static void registerCape(ResourceLocation id, ResourceLocation texture) {
+        ALL_CAPES.put(id, texture);
     }
 
     /**
-     * Adds a cape that will always be unlocked for all players.
+     * Registers a cape that will always be unlocked for all players.<br>
+     * use {@link RegisterGTCapesEvent#registerCape(ResourceLocation, ResourceLocation)} instead of calling this
+     * directly.
      *
-     * @param id   An identifier for giving the cape with commands etc.
-     * @param cape A ResourceLocation pointing to the cape texture.
+     * @param id      An identifier for the cape
+     * @param texture The full path to the cape's texture in a resource pack
      *
-     * @deprecated use the {@link com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent} event.
+     * @see RegisterGTCapesEvent#registerFreeCape(ResourceLocation, ResourceLocation)
      */
     @ApiStatus.Internal
-    public static void registerFreeCape(ResourceLocation id, ResourceLocation cape) {
-        registerCape(id, cape);
+    public static void registerFreeCape(ResourceLocation id, ResourceLocation texture) {
+        registerCape(id, texture);
         FREE_CAPES.add(id);
     }
 
     /**
-     * Automatically gives a cape to a player. may be used for a reward etc.
-     * <br>
-     * DOES NOT SAVE AUTOMATICALLY; PLEASE CALL SAVE AFTER THIS FUNCTION IS USED IF THIS DATA IS MEANT TO PERSIST.
+     * Automatically makes a cape available to a player.<br>
+     * <strong>DOES NOT SAVE AUTOMATICALLY;
+     * PLEASE CALL SAVE AFTER THIS FUNCTION IS USED IF THIS DATA IS MEANT TO PERSIST.</strong>
      *
-     * @param owner  The UUID of the player to be given the cape.
-     * @param capeId The ResourceLocation that holds the cape used here.
+     * @param owner The UUID of the player to give the cape to
+     * @param cape  The cape to give
+     * @see #removeCape(UUID, ResourceLocation)
      */
-    public static boolean unlockCape(UUID owner, ResourceLocation capeId) {
+    @SneakyThrows(CommandSyntaxException.class)
+    public static boolean unlockCape(UUID owner, @NotNull ResourceLocation cape) {
+        if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
+            throw ERROR_NO_SUCH_CAPE.create(cape.toString());
+        }
         Set<ResourceLocation> capes = UNLOCKED_CAPES.computeIfAbsent(owner, CapeRegistry::makeSet);
-        if (capes.contains(capeId)) {
+        if (capes.contains(cape)) {
             return false;
         }
-        capes.add(capeId);
+        capes.add(cape);
         UNLOCKED_CAPES.put(owner, capes);
         return true;
     }
 
     /**
-     * Automatically removes a cape from a player
-     * <br>
-     * DOES NOT SAVE AUTOMATICALLY; PLEASE CALL SAVE AFTER THIS FUNCTION IS USED IF THIS DATA IS MEANT TO PERSIST.
+     * Automatically removes a cape from a player.<br>
+     * <strong>DOES NOT SAVE AUTOMATICALLY;
+     * PLEASE CALL SAVE AFTER THIS FUNCTION IS USED IF THIS DATA IS MEANT TO PERSIST.</strong>
      *
-     * @param uuid The UUID of the player to be given the cape.
-     * @param cape The ResourceLocation that holds the cape used here.
+     * @param owner The UUID of the player to take the cape from
+     * @param cape  The cape to take
+     * @see #unlockCape(UUID, ResourceLocation)
      */
-    public static boolean removeCape(UUID uuid, ResourceLocation cape) {
+    @SneakyThrows(CommandSyntaxException.class)
+    public static boolean removeCape(UUID owner, @NotNull ResourceLocation cape) {
+        if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
+            throw ERROR_NO_SUCH_CAPE.create(cape.toString());
+        }
         if (FREE_CAPES.contains(cape)) {
             return false;
         }
-        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
+        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(owner);
         if (capes == null || !capes.contains(cape)) {
             return false;
         }
         capes.remove(cape);
-        UNLOCKED_CAPES.put(uuid, capes);
-        if (cape.equals(getPlayerCapeId(uuid))) {
-            setActiveCape(uuid, null);
+        UNLOCKED_CAPES.put(owner, capes);
+        if (cape.equals(getPlayerCapeId(owner))) {
+            setActiveCape(owner, null);
         }
         return true;
     }
@@ -219,52 +244,55 @@ public class CapeRegistry extends SavedData {
         CURRENT_CAPES.clear();
     }
 
-    public static void giveRawCape(UUID uuid, ResourceLocation cape) {
+    @SneakyThrows(CommandSyntaxException.class)
+    public static void giveRawCape(UUID uuid, @NotNull ResourceLocation cape) {
+        if (!CapeRegistry.ALL_CAPES.containsKey(cape)) {
+            throw ERROR_NO_SUCH_CAPE.create(cape.toString());
+        }
         CURRENT_CAPES.put(uuid, cape);
     }
 
     /**
-     * Sets the current cape for a player.
+     * Sets a player's current cape.
      *
-     * @param uuid The UUID of the player to be given the cape.
-     * @param cape The ResourceLocation that holds the cape used here. {@code null} to remove cape.
+     * @param player The UUID of the player
+     * @param cape   The cape to set, or {@code null} to remove the current cape.
      */
-    public static boolean setActiveCape(UUID uuid, @Nullable ResourceLocation cape) {
-        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(uuid);
+    @SneakyThrows(CommandSyntaxException.class)
+    public static boolean setActiveCape(UUID player, @Nullable ResourceLocation cape) {
+        if (cape != null && !CapeRegistry.ALL_CAPES.containsKey(cape)) {
+            throw ERROR_NO_SUCH_CAPE.create(cape.toString());
+        }
+        Set<ResourceLocation> capes = UNLOCKED_CAPES.get(player);
         if (capes == null || cape != null && !capes.contains(cape)) {
             return false;
         }
-        CURRENT_CAPES.put(uuid, cape);
-        GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(uuid, cape));
+        CURRENT_CAPES.put(player, cape);
+        GTNetwork.sendToAll(new SPacketNotifyCapeChange(player, cape));
         save();
         return true;
     }
 
     // For loading capes when the player logs in, so that it's synced to the clients.
-    public static void loadCurrentCapesOnLogin(Player player) {
-        if (player instanceof ServerPlayer serverPlayer) {
-            UUID uuid = player.getUUID();
-            // sync to others
-            GTNetwork.NETWORK.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
-            // sync to the one who's logging in
-            for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
-                uuid = otherPlayer.getUUID();
-                GTNetwork.NETWORK.sendToPlayer(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)),
-                        serverPlayer);
-            }
+    public static void loadCurrentCapesOnLogin(ServerPlayer serverPlayer) {
+        UUID uuid = serverPlayer.getUUID();
+        // sync to others
+        GTNetwork.sendToAll(new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
+        // sync to the one who's logging in
+        for (ServerPlayer otherPlayer : serverPlayer.getServer().getPlayerList().getPlayers()) {
+            uuid = otherPlayer.getUUID();
+            GTNetwork.sendToPlayer(serverPlayer, new SPacketNotifyCapeChange(uuid, CURRENT_CAPES.get(uuid)));
         }
     }
 
     // Runs on login and gives the player all free capes & capes they've already unlocked.
-    public static void detectNewCapes(Player player) {
-        if (player instanceof ServerPlayer) {
-            var playerCapes = UNLOCKED_CAPES.get(player.getUUID());
-            if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
-                for (ResourceLocation cape : FREE_CAPES) {
-                    unlockCape(player.getUUID(), cape);
-                }
-                save();
+    public static void detectNewCapes(ServerPlayer serverPlayer) {
+        var playerCapes = UNLOCKED_CAPES.get(serverPlayer.getUUID());
+        if (playerCapes == null || !new HashSet<>(playerCapes).containsAll(FREE_CAPES)) {
+            for (ResourceLocation cape : FREE_CAPES) {
+                unlockCape(serverPlayer.getUUID(), cape);
             }
+            save();
         }
     }
 
@@ -284,5 +312,12 @@ public class CapeRegistry extends SavedData {
 
     private static Set<ResourceLocation> makeSet(UUID ignored) {
         return new TreeSet<>(SET_COMPARATOR);
+    }
+
+    private static class KJSCallWrapper {
+
+        public static void fireKJSEvent(RegisterGTCapesEvent event) {
+            GTCEuServerEvents.REGISTER_CAPES.post(ScriptType.SERVER, new RegisterCapesEventJS(event));
+        }
     }
 }

@@ -3,15 +3,14 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemStackHandler;
+import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -31,6 +30,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -62,7 +62,8 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private boolean isLoaded;
     private static TrackedDummyWorld LEVEL;
-    private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
+    private static final int REGION_SIZE = 512;
+    private static int LAST_OFFSET_INDEX = 0;
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
     private final SceneWidget sceneWidget;
     private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
@@ -211,18 +212,14 @@ public class PatternPreviewWidget extends WidgetGroup {
         Stream<BlockPos> stream = pattern.blockMap.keySet().stream()
                 .filter(pos -> layer == -1 || layer + pattern.minY == pos.getY());
         if (pattern.controllerBase.isFormed()) {
-            LongSet set = pattern.controllerBase.getMultiblockState().getMatchContext().getOrDefault("renderMask",
+            LongSet modelDisabled = pattern.controllerBase.getMultiblockState().getMatchContext().getOrDefault(
+                    "renderMask",
                     LongSets.EMPTY_SET);
-            Set<BlockPos> modelDisabled = set.stream().map(BlockPos::of).collect(Collectors.toSet());
             if (!modelDisabled.isEmpty()) {
-                sceneWidget.setRenderedCore(
-                        stream.filter(pos -> !modelDisabled.contains(pos)).collect(Collectors.toList()), null);
-            } else {
-                sceneWidget.setRenderedCore(stream.toList(), null);
+                stream = stream.filter(pos -> !modelDisabled.contains(pos.asLong()));
             }
-        } else {
-            sceneWidget.setRenderedCore(stream.toList(), null);
         }
+        sceneWidget.setRenderedCore(stream.toList(), null);
     }
 
     public static PatternPreviewWidget getPatternWidget(MultiblockMachineDefinition controllerDefinition) {
@@ -248,18 +245,29 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
-        var itemHandler = new CycleItemStackHandler(pattern.parts);
+        CycleItemEntryHandler itemHandler = CycleItemEntryHandler.fromStacks(pattern.parts);
+        int xOffset = 0;
         for (int i = 0; i < slotWidgets.length; i++) {
-            slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
+            int padding = 1;
+            if (itemHandler.getStackInSlot(i).getCount() / 100_000 >= 1) {
+                padding = 10;
+            } else if (itemHandler.getStackInSlot(i).getCount() / 10_000 >= 1) {
+                padding = 7;
+            } else if (itemHandler.getStackInSlot(i).getCount() / 1_000 >= 1) {
+                padding = 4;
+            }
+
+            slotWidgets[i] = new PatternPreviewSlotWidget(itemHandler, i, (4 + xOffset + padding), 0, false, false)
                     .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
                     .setIngredientIO(IngredientIO.INPUT);
+            xOffset += 18 + (2 * padding);
             scrollableWidgetGroup.addWidget(slotWidgets[i]);
         }
     }
 
     private void onFormedSwitch(boolean isFormed) {
         MBPattern pattern = patterns[index];
-        IMultiController controllerBase = pattern.controllerBase;
+        MultiblockControllerMachine controllerBase = pattern.controllerBase;
         if (isFormed) {
             this.layer = -1;
             loadControllerFormed(pattern.blockMap.keySet(), controllerBase);
@@ -292,7 +300,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 }
             }
             candidates = new SlotWidget[candidateStacks.size()];
-            CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
+            CycleItemEntryHandler itemHandler = CycleItemEntryHandler.fromStacks(candidateStacks);
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
@@ -306,10 +314,43 @@ public class PatternPreviewWidget extends WidgetGroup {
         }
     }
 
-    public static BlockPos locateNextRegion(int range) {
-        BlockPos pos = LAST_POS;
-        LAST_POS = LAST_POS.offset(range, 0, range);
-        return pos;
+    /**
+     * Finds the next section of the dummy preview level to place a multiblock at in a spiral pattern.
+     * <p>
+     * This results in positions that are considerably closer to the world origin than
+     * the one it replaces, which did {@code prevPos.offset(500, 0, 500)},
+     * which results in absurdly high offsets for the later multiblocks.
+     * </p>
+     * The regions being closer to {@code (0,0)} means that Z-fighting should be less likely,
+     * since floating point inaccuracies won't be as large of a factor.
+     *
+     * @return the area to place the current multiblock at
+     */
+    public static BlockPos locateNextRegion() {
+        int currentIndex = LAST_OFFSET_INDEX++;
+
+        // Origin coordinates scaled back to the offset value, from global
+        int x = 0, z = 0;
+        if (currentIndex > 0) {
+            int v = (int) (Mth.sqrt(currentIndex + 0.25f) - 0.5f);
+            int nextV = v + 1;
+            int spiralBaseIndex = v * nextV;
+            // this is 1 or -1 depending on if v is odd or even
+            int flipFlop = (v & 1) * 2 - 1;
+
+            int offset = flipFlop * nextV / 2;
+            x += offset;
+            z += offset;
+
+            int cornerIndex = spiralBaseIndex + nextV;
+            if (currentIndex < cornerIndex) {
+                x -= flipFlop * (currentIndex - spiralBaseIndex + 1);
+            } else {
+                x -= flipFlop * nextV;
+                z -= flipFlop * (currentIndex - cornerIndex + 1);
+            }
+        }
+        return new BlockPos(x * REGION_SIZE, 50, z * REGION_SIZE);
     }
 
     @Override
@@ -334,8 +375,8 @@ public class PatternPreviewWidget extends WidgetGroup {
 
     private MBPattern initializePattern(MultiblockShapeInfo shapeInfo, HashSet<ItemStackKey> blockDrops) {
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
-        IMultiController controllerBase = null;
-        BlockPos multiPos = locateNextRegion(500);
+        MultiblockControllerMachine controllerBase = null;
+        BlockPos multiPos = locateNextRegion();
 
         BlockInfo[][][] blocks = shapeInfo.getBlocks();
         for (int x = 0; x < blocks.length; x++) {
@@ -345,9 +386,8 @@ public class PatternPreviewWidget extends WidgetGroup {
                 for (int z = 0; z < column.length; z++) {
                     BlockState blockState = column[z].getBlockState();
                     BlockPos pos = multiPos.offset(x, y, z);
-                    if (column[z].getBlockEntity(pos) instanceof IMachineBlockEntity holder &&
-                            holder.getMetaMachine() instanceof IMultiController controller) {
-                        holder.getSelf().setLevel(LEVEL);
+                    if (column[z].getBlockEntity(pos) instanceof MultiblockControllerMachine controller) {
+                        controller.setLevel(LEVEL);
                         controllerBase = controller;
                     }
                     blockMap.put(pos, BlockInfo.fromBlockState(blockState));
@@ -357,7 +397,7 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         LEVEL.addBlocks(blockMap);
         if (controllerBase != null) {
-            LEVEL.setInnerBlockEntity(controllerBase.self().holder.getSelf());
+            LEVEL.setInnerBlockEntity(controllerBase);
         }
 
         Map<ItemStackKey, PartInfo> parts = gatherBlockDrops(blockMap);
@@ -379,21 +419,19 @@ public class PatternPreviewWidget extends WidgetGroup {
                 controllerBase);
     }
 
-    private void loadControllerFormed(Collection<BlockPos> poses, IMultiController controllerBase) {
+    private void loadControllerFormed(Collection<BlockPos> positions, MultiblockControllerMachine controllerBase) {
         BlockPattern pattern = controllerBase.getPattern();
         if (pattern != null && pattern.checkPatternAt(controllerBase.getMultiblockState(), true)) {
             controllerBase.onStructureFormed();
         }
         if (controllerBase.isFormed()) {
-            LongSet set = controllerBase.getMultiblockState().getMatchContext().getOrDefault("renderMask",
+            LongSet modelDisabled = controllerBase.getMultiblockState().getMatchContext().getOrDefault("renderMask",
                     LongSets.EMPTY_SET);
-            Set<BlockPos> modelDisabled = set.stream().map(BlockPos::of).collect(Collectors.toSet());
             if (!modelDisabled.isEmpty()) {
-                sceneWidget.setRenderedCore(
-                        poses.stream().filter(pos -> !modelDisabled.contains(pos)).collect(Collectors.toList()), null);
-            } else {
-                sceneWidget.setRenderedCore(poses, null);
+                positions = new HashSet<>(positions);
+                positions.removeIf(pos -> modelDisabled.contains(pos.asLong()));
             }
+            sceneWidget.setRenderedCore(positions, null);
         } else {
             GTCEu.LOGGER.warn("Pattern formed checking failed: {}", controllerBase.self().getDefinition());
         }
@@ -403,7 +441,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         Map<ItemStackKey, PartInfo> partsMap = new Object2ObjectOpenHashMap<>();
         for (Map.Entry<BlockPos, BlockInfo> entry : blocks.entrySet()) {
             BlockPos pos = entry.getKey();
-            BlockState blockState = ((Level) PatternPreviewWidget.LEVEL).getBlockState(pos);
+            BlockState blockState = PatternPreviewWidget.LEVEL.getBlockState(pos);
             ItemStack itemStack = blockState.getBlock().getCloneItemStack(PatternPreviewWidget.LEVEL, pos, blockState);
 
             if (itemStack.isEmpty() && !blockState.getFluidState().isEmpty()) {
@@ -438,15 +476,13 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         public List<ItemStack> getItemStack() {
             return Arrays.stream(itemStackKey.getItemStack())
-                    .map(itemStack -> {
-                        var item = itemStack.copy();
-                        item.setCount(amount);
-                        return item;
-                    }).filter(item -> !item.isEmpty()).toList();
+                    .map(stack -> stack.copyWithCount(amount))
+                    .filter(item -> !item.isEmpty())
+                    .toList();
         }
     }
 
-    private static class MBPattern {
+    public static class MBPattern {
 
         @NotNull
         final List<List<ItemStack>> parts;
@@ -455,12 +491,12 @@ public class PatternPreviewWidget extends WidgetGroup {
         @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
         @NotNull
-        final IMultiController controllerBase;
+        final MultiblockControllerMachine controllerBase;
         final int maxY, minY;
 
         public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts,
                          @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap,
-                         @NotNull IMultiController controllerBase) {
+                         @NotNull MultiblockControllerMachine controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

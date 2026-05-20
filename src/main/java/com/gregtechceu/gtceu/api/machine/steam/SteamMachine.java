@@ -1,51 +1,49 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+/**
+ * A singleblock machine with a steam tank.
+ */
 public abstract class SteamMachine extends MetaMachine implements ITieredMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
+    public static final BooleanProperty STEEL_PROPERTY = GTMachineModelProperties.IS_STEEL_MACHINE;
 
     @Getter
     public final boolean isHighPressure;
-    @Persisted
+    @SaveField
     public final NotifiableFluidTank steamTank;
 
-    public SteamMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
-        super(holder);
+    public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure,
+                        NotifiableFluidTank steamTank) {
+        super(info);
         this.isHighPressure = isHighPressure;
-        this.steamTank = createSteamTank(args);
-        this.steamTank.setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        this.steamTank = attachTrait(steamTank);
+        this.steamTank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
+    }
+
+    public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
+        this(info, isHighPressure, new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.IN));
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public int getTier() {
         return isHighPressure ? 1 : 0;
     }
-
-    protected abstract NotifiableFluidTank createSteamTank(Object... args);
 }

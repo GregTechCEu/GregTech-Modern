@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -13,54 +12,49 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import static net.minecraft.ChatFormatting.*;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
+@ParametersAreNonnullByDefault
+public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic> {
 
     public RecipeLogicProvider() {
-        super(GTCEu.id("recipe_logic_provider"));
-    }
-
-    @Nullable
-    @Override
-    protected RecipeLogic getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return GTCapabilityHelper.getRecipeLogic(level, pos, side);
+        super(GTCEu.id("recipe_logic_provider"), RecipeLogic.TYPE);
     }
 
     @Override
-    protected void write(CompoundTag data, RecipeLogic capability) {
+    protected void write(CompoundTag data, BlockAccessor blockAccessor, RecipeLogic capability) {
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
         var recipe = capability.getLastRecipe();
         if (recipe != null) {
-            var EUt = RecipeHelper.getInputEUt(recipe);
-            var isInput = true;
-            if (EUt == 0) {
-                isInput = false;
-                EUt = RecipeHelper.getOutputEUt(recipe);
-            }
+            var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 
-            recipeInfo.putLong("EUt", EUt);
-            recipeInfo.putBoolean("isInput", isInput);
+            recipeInfo.putLong("EUt", EUt.getTotalEU());
+            recipeInfo.putLong("voltage", getVoltage(capability));
+            recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+    }
+
+    public static long getVoltage(RecipeLogic capability) {
+        long voltage = capability.getRLMachine().getDisplayRecipeVoltage();
+
+        // default display as LV, this shouldn't happen because a machine is either electric or steam
+        return voltage == -1 ? GTValues.V[GTValues.LV] : voltage;
     }
 
     @Override
@@ -73,44 +67,46 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
 
-                if (blockEntity instanceof MetaMachineBlockEntity mbe) {
-                    var machine = mbe.getMetaMachine();
-                    if (machine instanceof SimpleSteamMachine ssm) {
-                        EUt = (long) (EUt * ssm.getConversionRate());
+                if (EUt > 0) {
+                    if (blockEntity instanceof SimpleSteamMachine ssm) {
+                        EUt = (long) Math.ceil(EUt * ssm.getConversionRate());
                         isSteam = true;
-                    } else if (machine instanceof SteamParallelMultiblockMachine smb) {
-                        EUt = (long) (EUt * smb.getConversionRate());
+                    } else if (blockEntity instanceof SteamParallelMultiblockMachine smb) {
+                        EUt = (long) Math.ceil(EUt * smb.getConversionRate());
                         isSteam = true;
                     }
-                }
 
-                if (EUt > 0) {
                     MutableComponent text;
 
                     if (isSteam) {
-                        text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.GREEN)
-                                .append(Component.literal(" mB/t").withStyle(ChatFormatting.RESET));
+                        text = Component.translatable("gtceu.jade.fluid_use", FormattingUtil.formatNumbers(EUt))
+                                .withStyle(ChatFormatting.GREEN);
                     } else {
-                        var tier = GTUtil.getOCTierByVoltage(EUt);
+                        var voltage = recipeInfo.getLong("voltage");
+                        var tier = GTUtil.getTierByVoltage(voltage);
+                        float minAmperage = (float) EUt / voltage;
 
-                        text = Component.literal(FormattingUtil.formatNumbers(EUt)).withStyle(ChatFormatting.RED)
-                                .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
-                                        .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)));
+                        text = Component
+                                .translatable("gtceu.jade.amperage_use",
+                                        FormattingUtil.formatNumber2Places(minAmperage))
+                                .withStyle(ChatFormatting.RED)
+                                .append(Component.translatable("gtceu.jade.at").withStyle(ChatFormatting.GREEN));
                         if (tier < GTValues.TIER_COUNT) {
                             text = text.append(Component.literal(GTValues.VNF[tier])
                                     .withStyle(style -> style.withColor(GTValues.VC[tier])));
                         } else {
-                            int speed = tier - 14;
-                            text = text.append(Component
-                                    .literal("MAX")
+                            int speed = Mth.clamp(tier - GTValues.TIER_COUNT - 1, 0, GTValues.TIER_COUNT);
+                            text = text.append(Component.literal("MAX")
                                     .withStyle(style -> style.withColor(TooltipHelper.rainbowColor(speed)))
                                     .append(Component.literal("+")
                                             .withStyle(style -> style.withColor(GTValues.VC[speed]))
-                                            .append(Component.literal(FormattingUtil.formatNumbers(tier - 14)))
-                                            .withStyle(style -> style.withColor(GTValues.VC[speed]))));
+                                            .append(FormattingUtil.formatNumbers(speed))));
 
                         }
-                        text = text.append(Component.literal(")").withStyle(ChatFormatting.GREEN));
+                        text.append(Component.translatable("gtceu.universal.padded_parentheses",
+                                (Component.translatable("gtceu.recipe.eu.total",
+                                        FormattingUtil.formatNumbers(EUt))))
+                                .withStyle(ChatFormatting.WHITE));
                     }
 
                     if (isInput) {
@@ -118,6 +114,19 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     } else {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
                     }
+                }
+            }
+        } else {
+            if (blockEntity instanceof IRecipeLogicMachine rlm) {
+                var logic = rlm.getRecipeLogic();
+
+                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
+                    Component status = logic.isWaiting() ?
+                            Component.translatable("gtceu.recipe_logic.recipe_waiting")
+                                    .withStyle(ChatFormatting.YELLOW) :
+                            Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
+                    tooltip.add(status);
+                    logic.getFancyTooltip().forEach(tooltip::add);
                 }
             }
         }

@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -11,25 +12,22 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
-import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
+import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,16 +36,20 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -56,7 +58,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IForgeShearable;
@@ -67,13 +68,15 @@ import it.unimi.dsi.fastutil.chars.Char2ReferenceMap;
 import it.unimi.dsi.fastutil.chars.Char2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class ToolHelper {
@@ -103,6 +106,7 @@ public class ToolHelper {
     public static final String ATTACK_SPEED_KEY = "AttackSpeed";
     public static final String ENCHANTABILITY_KEY = "Enchantability";
     public static final String HARVEST_LEVEL_KEY = "HarvestLevel";
+    public static final String DEFAULT_ENCHANTMENTS_KEY = "DefaultEnchantments";
     public static final String LAST_CRAFTING_USE_KEY = "LastCraftingUse";
 
     // Keys that resides in behaviours tag
@@ -172,6 +176,16 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
+        if (material.hasProperty(PropertyKey.ARMOR)) {
+            var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
+            if (entry != null) {
+                return entry.get().getDefaultInstance();
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static boolean is(ItemStack stack, GTToolType toolType) {
         return getToolTypes(stack).contains(toolType);
     }
@@ -203,7 +217,7 @@ public class ToolHelper {
                                 "Electric tool does not have an attached electric item capability.");
                     }
                 }
-                int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, stack);
+                int unbreakingLevel = stack.getEnchantmentLevel(Enchantments.UNBREAKING);
                 int negated = 0;
                 for (int k = 0; unbreakingLevel > 0 && k < damage; k++) {
                     if (DigDurabilityEnchantment.shouldIgnoreDurabilityDrop(stack, unbreakingLevel, random)) {
@@ -226,6 +240,8 @@ public class ToolHelper {
                     }
                     if (user != null) {
                         user.breakItem(stack);
+                        user.broadcastBreakEvent(
+                                user.isUsingItem() ? user.getUsedItemHand() : InteractionHand.MAIN_HAND);
                     }
                     stack.shrink(1);
                 }
@@ -233,7 +249,7 @@ public class ToolHelper {
         }
     }
 
-    public static void playToolSound(GTToolType toolType, ServerPlayer player) {
+    public static void playToolSound(@Nullable GTToolType toolType, ServerPlayer player) {
         if (toolType != null && toolType.soundEntry != null) {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
@@ -263,18 +279,32 @@ public class ToolHelper {
         return stack;
     }
 
+    public static Map<Enchantment, Integer> joinEnchantments(ItemStack stack, Map<Enchantment, Integer> enchantments) {
+        // this returns the enchantments stored in the normal NBT tag, so it won't be an infinite loop
+        var original = EnchantmentHelper.getEnchantments(stack);
+        if (enchantments.isEmpty()) {
+            return original;
+        } else if (original.isEmpty()) {
+            return enchantments;
+        }
+        Object2IntMap<Enchantment> joined = new Object2IntLinkedOpenHashMap<>(original);
+        for (var entry : enchantments.entrySet()) {
+            joined.mergeInt(entry.getKey(), entry.getValue(), Integer::max);
+        }
+        return joined;
+    }
+
     /**
      * AoE Block Breaking Routine.
      */
-    public static boolean areaOfEffectBlockBreakRoutine(ItemStack stack, ServerPlayer player) {
+    public static boolean areaOfEffectBlockBreakRoutine(ItemStack stack, ServerPlayer player, BlockPos targeted) {
         int currentDurability = stack.getDamageValue();
         int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
-        Set<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
+        var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
-            int blocksBroken = 0;
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos, blocksBroken++ == 0)) {
+                if (!breakBlockRoutine(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
 
@@ -292,12 +322,6 @@ public class ToolHelper {
         return false;
     }
 
-    @FunctionalInterface
-    public interface AOEFunction {
-
-        boolean apply(ItemStack stack, Level level, Player player, BlockPos start, UseOnContext context);
-    }
-
     public static AoESymmetrical getMaxAoEDefinition(ItemStack stack) {
         return AoESymmetrical.readMax(getBehaviorsTag(stack));
     }
@@ -306,80 +330,69 @@ public class ToolHelper {
         return AoESymmetrical.read(getBehaviorsTag(stack), getMaxAoEDefinition(stack));
     }
 
-    public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                           Player player, HitResult rayTraceResult,
-                                           AOEFunction function) {
-        if (aoeDefinition != AoESymmetrical.none() && rayTraceResult instanceof BlockHitResult blockHit &&
-                blockHit.getDirection() != null) {
-            int column = aoeDefinition.column;
-            int row = aoeDefinition.row;
-            int layer = aoeDefinition.layer;
-            Direction playerFacing = player.getDirection();
-            Direction.Axis playerAxis = playerFacing.getAxis();
-            Direction.Axis sideHitAxis = blockHit.getDirection().getAxis();
-            Direction.AxisDirection sideHitAxisDir = blockHit.getDirection().getAxisDirection();
-            Set<BlockPos> validPositions = new ObjectOpenHashSet<>();
-            if (sideHitAxis.isVertical()) {
-                boolean isX = playerAxis == Direction.Axis.X;
-                boolean isDown = sideHitAxisDir == Direction.AxisDirection.NEGATIVE;
-                for (int y = 0; y <= layer; y++) {
-                    for (int x = isX ? -row : -column; x <= (isX ? row : column); x++) {
-                        for (int z = isX ? -column : -row; z <= (isX ? column : row); z++) {
-                            if (!(x == 0 && y == 0 && z == 0)) {
-                                BlockPos pos = blockHit.getBlockPos().offset(x, isDown ? y : -y, z);
-                                if (player.mayUseItemAt(pos.relative(blockHit.getDirection()), blockHit.getDirection(),
-                                        stack)) {
-                                    if (function.apply(stack, world, player, pos, new UseOnContext(player.level(),
-                                            player, player.getUsedItemHand(), stack, blockHit))) {
-                                        validPositions.add(pos);
-                                    }
-                                }
-                            }
-                        }
+    public static List<BlockPos> iterateAoE(AoESymmetrical aoeDefinition, Predicate<UseOnContext> predicate,
+                                            UseOnContext context) {
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        Direction hitFace = context.getClickedFace();
+        ItemStack stack = context.getItemInHand();
+        Direction playerFacing = player != null ? player.getDirection() : Direction.NORTH;
+
+        Direction depthDirection = hitFace.getOpposite();
+        Direction topDirection = Direction.UP;
+        Direction sideDirection = hitFace;
+        // Special case for any additional row > 1: https://i.imgur.com/Dvcx7Vg.png
+        // Same behaviour as the Flux Bore
+        int aoeRowStart = aoeDefinition.row == 0 ? 0 : -1;
+        int aoeRowEnd = aoeDefinition.row == 0 ? 0 : aoeDefinition.row * 2 - 1;
+
+        if (hitFace.getAxis().isVertical()) {
+            topDirection = playerFacing;
+            sideDirection = playerFacing;
+            aoeRowStart = -aoeDefinition.row;
+            aoeRowEnd = aoeDefinition.row;
+        }
+        sideDirection = sideDirection.getClockWise();
+
+        List<BlockPos> validPositions = new ArrayList<>();
+        for (int depth = 0; depth <= aoeDefinition.layer; depth++) {
+            for (int top = aoeRowEnd; top >= aoeRowStart; top--) {
+                for (int side = -aoeDefinition.column; side <= aoeDefinition.column; side++) {
+                    var pos = context.getClickedPos()
+                            .relative(depthDirection, depth)
+                            .relative(topDirection, top)
+                            .relative(sideDirection, side);
+                    if (player != null && !player.mayUseItemAt(pos.relative(hitFace), hitFace, stack)) {
+                        continue;
                     }
-                }
-            } else {
-                boolean isX = sideHitAxis == Direction.Axis.X;
-                boolean isNegative = sideHitAxisDir == Direction.AxisDirection.NEGATIVE;
-                for (int x = 0; x <= layer; x++) {
-                    // Special case for any additional column > 1: https://i.imgur.com/Dvcx7Vg.png
-                    // Same behaviour as the Flux Bore
-                    for (int y = (row == 0 ? 0 : -1); y <= (row == 0 ? 0 : row * 2 - 1); y++) {
-                        for (int z = -column; z <= column; z++) {
-                            if (!(x == 0 && y == 0 && z == 0)) {
-                                BlockPos pos = blockHit.getBlockPos().offset(
-                                        isX ? (isNegative ? x : -x) : (isNegative ? z : -z), y,
-                                        isX ? (isNegative ? z : -z) : (isNegative ? x : -x));
-                                if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player,
-                                        player.getUsedItemHand(), stack, blockHit))) {
-                                    validPositions.add(pos);
-                                }
-                            }
-                        }
+                    UseOnContext posContext = new UseOnContext(level, player, context.getHand(), stack,
+                            context.getHitResult().withPosition(pos));
+                    if (predicate.test(posContext)) {
+                        validPositions.add(pos);
                     }
                 }
             }
-            return validPositions;
         }
-        return Collections.emptySet();
+        return validPositions;
     }
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                     Player player, HitResult rayTraceResult) {
-        return iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, ToolHelper::isBlockAoEHarvestable);
+    public static List<BlockPos> getHarvestableBlocks(AoESymmetrical aoeDefinition, UseOnContext context) {
+        return iterateAoE(aoeDefinition, ToolHelper::isBlockAoEHarvestable, context);
     }
 
-    private static boolean isBlockAoEHarvestable(ItemStack stack, Level world, Player player, BlockPos pos,
-                                                 UseOnContext context) {
-        if (world.getBlockState(pos).isAir()) return false;
+    private static boolean isBlockAoEHarvestable(UseOnContext context) {
+        Level level = context.getLevel();
+        ItemStack stack = context.getItemInHand();
+        BlockPos pos = context.getClickedPos();
+        if (level.getBlockState(pos).isAir()) return false;
 
-        BlockState state = world.getBlockState(pos);
+        BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof LiquidBlock) return false;
 
         BlockPos hitBlockPos = context.getClickedPos();
-        BlockState hitBlockState = world.getBlockState(hitBlockPos);
-        if (state.getDestroySpeed(world, pos) < 0 ||
-                state.getDestroySpeed(world, pos) - hitBlockState.getDestroySpeed(world, hitBlockPos) > 8) {
+        BlockState hitBlockState = level.getBlockState(hitBlockPos);
+        if (state.getDestroySpeed(level, pos) < 0 ||
+                state.getDestroySpeed(level, pos) - hitBlockState.getDestroySpeed(level, hitBlockPos) > 8) {
             // If mining a block takes significantly longer than the center block, do not mine it.
             // Originally this was just a check for if it is at all harder of a block, however that
             // would cause some annoyances, like Grass Block not being broken if a Dirt Block was the
@@ -396,34 +409,28 @@ public class ToolHelper {
     public static void applyHammerDropConversion(ServerLevel world, BlockPos pos, ItemStack tool, BlockState state,
                                                  List<ItemStack> drops, int fortune, float dropChance,
                                                  RandomSource random) {
-        if (is(tool, GTToolType.HARD_HAMMER) || /*
-                                                 * EnchantmentHelper.getEnchantmentLevel(EnchantmentHardHammer.INSTANCE,
-                                                 * tool)
-                                                 */ -1 > 0) {
+        if (is(tool, GTToolType.HARD_HAMMER)) {
             List<ItemStack> silktouchDrops = getSilkTouchDrop(world, pos, state);
             for (ItemStack silktouchDrop : silktouchDrops) {
                 if (silktouchDrop.isEmpty()) continue;
                 // Stack lists can be immutable going into Recipe#matches barring no rewrites
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
-                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
-                        Collections.emptyList());
                 RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-                        new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
-                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
+                        new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
+                        new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silktouchDrop)));
 
                 RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
-                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+                        new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
+                DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
+                        dummyInputs, dummyOutputs);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
-                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
+                        r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN,
-                        be.getMetaMachine().recipeLogic.getChanceCaches()).isSuccess()) {
+                if (hammerRecipe != null &&
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances())
+                                .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {
@@ -527,8 +534,7 @@ public class ToolHelper {
 
         boolean successful = world.removeBlock(pos, false);
 
-        if (playSound)
-            world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+        if (playSound) world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 
         if (successful) {
             state.getBlock().destroy(world, pos, state);
@@ -536,25 +542,42 @@ public class ToolHelper {
         return successful;
     }
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Level world, Player player,
-                                                     HitResult rayTraceResult) {
-        return getHarvestableBlocks(stack, getAoEDefinition(stack), world, player, rayTraceResult);
-    }
+    /**
+     * Calculates the harvestable blocks, used for tool AoE harvesting
+     *
+     * @param player the player clicking the item
+     * @param stack  the item that was used
+     *
+     * @return listOfBlockPositions or empty list if none
+     */
+    public static List<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
+        final List<BlockPos> NO_BLOCKS = List.of();
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsTag(stack)) return Collections.emptySet();
+        if (!hasBehaviorsTag(stack)) return NO_BLOCKS;
 
-        AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
-        if (aoeDefiniton == AoESymmetrical.none()) {
-            return Collections.emptySet();
+        var aoeDefinition = getAoEDefinition(stack);
+        if (aoeDefinition.isZero()) {
+            return NO_BLOCKS;
         }
 
-        HitResult rayTraceResult = getPlayerDefaultRaytrace(player);
-        return getHarvestableBlocks(stack, aoeDefiniton, player.level(), player, rayTraceResult);
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        BlockHitResult hitResult = getPlayerDefaultRaytrace(player);
+        UseOnContext context = new UseOnContext(player, hand, hitResult);
+        return getHarvestableBlocks(aoeDefinition, context);
     }
 
-    public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
-        return player.pick(getPlayerBlockReach(player), 1.0f, false);
+    public static BlockHitResult getPlayerDefaultRaytrace(@NotNull Player player) {
+        return entityPickBlock(player, getPlayerBlockReach(player), 1.0f, false);
+    }
+
+    public static BlockHitResult entityPickBlock(Entity entity, double hitDistance, float partialTicks,
+                                                 boolean hitFluids) {
+        Vec3 eyePos = entity.getEyePosition(partialTicks);
+        Vec3 lookVec = entity.getViewVector(partialTicks);
+        Vec3 maxDistance = eyePos.add(lookVec.x * hitDistance, lookVec.y * hitDistance, lookVec.z * hitDistance);
+        ClipContext context = new ClipContext(eyePos, maxDistance, ClipContext.Block.OUTLINE,
+                hitFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, entity);
+        return entity.level().clip(context);
     }
 
     /**
@@ -583,7 +606,19 @@ public class ToolHelper {
             return gtTool.getToolClasses(tool);
         }
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) types.add(toolType);
+            if (toolType.matchTags.stream().anyMatch(tool::is)) types.add(toolType);
+        }
+        return types;
+    }
+
+    @NotNull
+    public static Set<GTToolType> getCraftingToolTypes(ItemStack tool) {
+        Set<GTToolType> types = new HashSet<>();
+        if (tool.getItem() instanceof IGTTool gtTool) {
+            return gtTool.getToolClasses(tool);
+        }
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            if (toolType.craftingTags.stream().anyMatch(tool::is)) types.add(toolType);
         }
         return types;
     }
@@ -593,7 +628,7 @@ public class ToolHelper {
      */
     public static boolean isTool(ItemStack tool, GTToolType... toolClasses) {
         for (GTToolType toolType : toolClasses) {
-            if (toolType.itemTags.stream().anyMatch(tool::is)) return true;
+            if (toolType.matchTags.stream().anyMatch(tool::is)) return true;
         }
 
         if (tool.getItem() instanceof IGTTool igtTool) {

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import net.minecraft.client.Minecraft;
@@ -20,6 +22,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -35,6 +38,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.function.Function;
 
 public final class GTRegistries {
 
@@ -61,12 +66,17 @@ public final class GTRegistries {
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
     public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(
             GTCEu.id("dimension_marker"));
+    public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(
+            GTCEu.id("medical_condition"));
+
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister
             .create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister
             .create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
+    public static final GTRegistry<String, Function<FriendlyByteBuf, FluidIngredient>> FLUID_SERIALIZERS = new GTRegistry.String<>(
+            GTCEu.id("fluid_serializers"));
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
@@ -110,11 +120,20 @@ public final class GTRegistries {
     }
 
     public static RegistryAccess builtinRegistry() {
-        if (FROZEN == BLANK && GTCEu.isClientThread()) {
-            if (Minecraft.getInstance().getConnection() != null) {
-                return Minecraft.getInstance().getConnection().registryAccess();
-            }
+        if (GTCEu.isClientThread()) {
+            return ClientHelpers.getClientRegistries();
         }
         return FROZEN;
+    }
+
+    private static class ClientHelpers {
+
+        private static RegistryAccess getClientRegistries() {
+            if (Minecraft.getInstance().getConnection() != null) {
+                return Minecraft.getInstance().getConnection().registryAccess();
+            } else {
+                return FROZEN;
+            }
+        }
     }
 }

@@ -8,15 +8,12 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
@@ -24,14 +21,14 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class BiomeCondition extends RecipeCondition {
+public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
-    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome))
-                    .apply(instance, BiomeCondition::new));
+    // spotless:off
+    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            ResourceKey.codec(Registries.BIOME).fieldOf("biome").forGetter(val -> val.biome)
+    ).apply(instance, BiomeCondition::new));
+    // spotless:on
 
-    public final static BiomeCondition INSTANCE = new BiomeCondition();
     @Getter
     private ResourceKey<Biome> biome = ResourceKey.create(Registries.BIOME, new ResourceLocation("dummy"));
 
@@ -45,7 +42,7 @@ public class BiomeCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<BiomeCondition> getType() {
         return GTRecipeConditions.BIOME;
     }
 
@@ -63,43 +60,13 @@ public class BiomeCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.machine.self().getLevel();
-        if (level == null) return false;
-        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
+        Level level = recipeLogic.getLevel();
+        Holder<Biome> biome = level.getBiome(recipeLogic.getBlockPos());
         return biome.is(this.biome);
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public BiomeCondition createTemplate() {
         return new BiomeCondition();
-    }
-
-    @NotNull
-    @Override
-    public JsonObject serialize() {
-        JsonObject config = super.serialize();
-        config.addProperty("biome", biome.location().toString());
-        return config;
-    }
-
-    @Override
-    public RecipeCondition deserialize(@NotNull JsonObject config) {
-        super.deserialize(config);
-        biome = ResourceKey.create(Registries.BIOME,
-                new ResourceLocation(GsonHelper.getAsString(config, "biome", "dummy")));
-        return this;
-    }
-
-    @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
-        super.fromNetwork(buf);
-        biome = buf.readResourceKey(Registries.BIOME);
-        return this;
-    }
-
-    @Override
-    public void toNetwork(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
-        buf.writeResourceKey(biome);
     }
 }

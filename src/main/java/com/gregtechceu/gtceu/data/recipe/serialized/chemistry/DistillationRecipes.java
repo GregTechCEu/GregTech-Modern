@@ -21,8 +21,8 @@ public class DistillationRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_dilute_hcl")
                 .inputFluids(DilutedHydrochloricAcid.getFluid(2000))
-                .outputFluids(Water.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(1000))
+                .outputFluids(Water.getFluid(1000))
                 .duration(600).EUt(64).save(provider);
 
         DISTILLATION_RECIPES.recipeBuilder("distill_dilute_sulfuric")

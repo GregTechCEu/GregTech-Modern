@@ -319,14 +319,14 @@ public class MachineRecipeLoader {
         AUTOCLAVE_RECIPES.recipeBuilder("silicon_dioxide_to_quartzite_gem")
                 .inputItems(dust, SiliconDioxide)
                 .inputFluids(DistilledWater.getFluid(250))
-                .chancedOutput(ChemicalHelper.get(gem, Quartzite), 1000, 1000)
+                .chancedOutput(ChemicalHelper.get(gem, Quartzite), 4500, 0)
                 .duration(1200).EUt(24).save(provider);
 
         // todo find UU-Matter replacement
         // AUTOCLAVE_RECIPES.recipeBuilder()
         // .inputItems(dust, NetherStar)
         // .inputFluids(UUMatter.getFluid(576))
-        // .chancedOutput(new ItemStack(Items.NETHER_STAR), 3333, 3333)
+        // .chancedOutput(new ItemStack(Items.NETHER_STAR), 3333, 0)
         // .duration(72000).EUt(VA[HV]).save(provider);
 
         MIXER_RECIPES.recipeBuilder("indium_concentrate")
@@ -625,6 +625,30 @@ public class MachineRecipeLoader {
                 .addMaterialInfo(true, true)
                 .save(provider);
 
+        ASSEMBLER_RECIPES.recipeBuilder("cover_ender_item_link")
+                .inputItems(plate, EnderPearl, 9)
+                .inputItems(plateDouble, StainlessSteel)
+                .inputItems(SENSOR_HV)
+                .inputItems(EMITTER_HV)
+                .inputItems(CONVEYOR_MODULE_HV)
+                .inputFluids(Polytetrafluoroethylene, L * 2)
+                .outputItems(COVER_ENDER_ITEM_LINK)
+                .EUt(VA[HV]).duration(320)
+                .addMaterialInfo(true, true)
+                .save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("cover_ender_redstone_link")
+                .inputItems(plate, EnderPearl, 4)
+                .inputItems(plateDouble, Aluminium)
+                .inputItems(SENSOR_MV)
+                .inputItems(EMITTER_MV)
+                .inputItems(CustomTags.MV_CIRCUITS)
+                .inputFluids(SolderingAlloy, L * 2)
+                .outputItems(COVER_ENDER_REDSTONE_LINK)
+                .EUt(VA[MV]).duration(320)
+                .addMaterialInfo(true, true)
+                .save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("cover_storage")
                 .inputItems(Tags.Blocks.CHESTS_WOODEN)
                 .inputItems(ELECTRIC_PISTON_LV)
@@ -759,7 +783,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Bronze, 3)
                 .inputItems(frameGt, Bronze)
                 .inputItems(plate, Bronze, 3)
-                .outputItems(GTBlocks.FIREBOX_BRONZE, 2)
+                .outputItems(GTBlocks.FIREBOX_BRONZE, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(100)
                 .EUt(VA[LV])
                 .save(provider);
@@ -767,7 +792,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Steel, 3)
                 .inputItems(frameGt, Steel)
                 .inputItems(plate, Steel, 3)
-                .outputItems(GTBlocks.FIREBOX_STEEL, 2)
+                .outputItems(GTBlocks.FIREBOX_STEEL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(200)
                 .EUt(VA[LV])
                 .save(provider);
@@ -775,7 +801,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, Titanium, 3)
                 .inputItems(frameGt, Titanium)
                 .inputItems(plate, Titanium, 3)
-                .outputItems(GTBlocks.FIREBOX_TITANIUM, 2)
+                .outputItems(GTBlocks.FIREBOX_TITANIUM, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(300)
                 .EUt(VA[HV])
                 .save(provider);
@@ -783,7 +810,8 @@ public class MachineRecipeLoader {
                 .inputItems(rod, TungstenSteel, 3)
                 .inputItems(frameGt, TungstenSteel)
                 .inputItems(plate, TungstenSteel, 3)
-                .outputItems(GTBlocks.FIREBOX_TUNGSTENSTEEL, 2)
+                .outputItems(GTBlocks.FIREBOX_TUNGSTENSTEEL, ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+                .addMaterialInfo(true, true)
                 .duration(400)
                 .EUt(VA[EV])
                 .save(provider);
@@ -1217,14 +1245,14 @@ public class MachineRecipeLoader {
         MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
-                .chancedOutput(dust, Tungstate, 130, 30)
+                .chancedOutput(dust, Tungstate, 330, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_netherrack")
                 .inputItems(new ItemStack(Blocks.NETHERRACK))
                 .outputItems(dust, Netherrack)
-                .chancedOutput(nugget, Gold, 500, 120)
+                .chancedOutput(nugget, Gold, 750, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -1239,7 +1267,7 @@ public class MachineRecipeLoader {
         // MACERATOR_RECIPES.recipeBuilder()
         // .inputItems(stone, Soapstone)
         // .outputItems(dustImpure, Talc)
-        // .chancedOutput(dust, Chromite, "1/90", 30)
+        // .chancedOutput(dust, Chromite, "1/90", 0)
         // .duration(150).EUt(2)
         // .save(provider);
 
@@ -1247,63 +1275,63 @@ public class MachineRecipeLoader {
         // MACERATOR_RECIPES.recipeBuilder()
         // .inputItems(stone, Redrock)
         // .outputItems(dust, Redrock)
-        // .chancedOutput(dust, Redrock, 1000, 380)
+        // .chancedOutput(dust, Redrock, 1000, 0)
         // .duration(150).EUt(2)
         // .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_marble")
                 .inputItems(rock, Marble)
                 .outputItems(dust, Marble)
-                .chancedOutput(dust, Marble, 1000, 380)
+                .chancedOutput(dust, Marble, 1500, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_basalt")
                 .inputItems(Blocks.BASALT.asItem())
                 .outputItems(dust, Basalt)
-                .chancedOutput(dust, Basalt, 1000, 380)
+                .chancedOutput(dust, Basalt, 1500, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_deepslate")
                 .inputItems(Blocks.DEEPSLATE.asItem())
                 .outputItems(dust, Deepslate)
-                .chancedOutput(dust, Thorium, 100, 40)
+                .chancedOutput(dust, Thorium, 150, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
                 .inputItems(rock, GraniteRed)
                 .outputItems(dust, GraniteRed)
-                .chancedOutput(dust, Uranium238, 10, 5)
+                .chancedOutput(dust, Uranium238, 25, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .chancedOutput(dust, Stone, 25, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .chancedOutput(dust, Stone, 25, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .chancedOutput(dust, Stone, 25, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_calcite")
                 .inputItems(Blocks.CALCITE.asItem())
                 .outputItems(dust, Calcite)
-                .chancedOutput(dust, Stone, 10, 5)
+                .chancedOutput(dust, Stone, 25, 0)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -1323,7 +1351,7 @@ public class MachineRecipeLoader {
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))
                 .outputItems(dust, Meat)
-                .chancedOutput(dust, Meat, 5000, 0)
+                .chancedOutput(dust, Meat, 6500, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 

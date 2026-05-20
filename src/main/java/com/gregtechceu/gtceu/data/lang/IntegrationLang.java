@@ -101,7 +101,7 @@ public class IntegrationLang {
         provider.add("gtceu.rei.group.potion_fluids", "Potion Fluids");
     }
 
-    /** Jade, TheOneProbe, WTHIT */
+    /** Jade */
     private static void initWailaLikeLang(GTLangProvider provider) {
         provider.add("gtceu.top.working_disabled", "Working Disabled");
         provider.add("gtceu.top.energy_consumption", "Using");
@@ -188,6 +188,17 @@ public class IntegrationLang {
 
         // Hazard Provider
         provider.add("gtceu.jade.cleaned_this_second", "Cleaned hazard: %s/s");
+        provider.add("gtceu.jade.fluid_use", "%s mB/t");
+        provider.add("gtceu.jade.amperage_use", "%s A");
+        provider.add("gtceu.jade.at", " @ ");
+        provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
+        provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
+        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("gtceu.jade.seconds", "%s seconds");
+        provider.add("gtceu.jade.minutes", "%s minutes");
+        provider.add("gtceu.jade.hours", "%s hours");
+        provider.add("gtceu.jade.days", "%s days");
+        provider.add("gtceu.jade.years", "%s years");
 
         // Plugin Names
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
@@ -210,6 +221,16 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+
+        provider.add("gtceu.top.energy_stored", " / %d EU");
+        provider.add("gtceu.top.progress_computation", " / %s CWU");
+        provider.add("gtceu.top.progress_sec", " / %s s");
+        provider.add("gtceu.top.progress_tick", " / %s t");
+
+        provider.add("gtceu.top.ldp_endpoint.is_formed", "§aPipeline Formed§r");
+        provider.add("gtceu.top.ldp_endpoint.not_formed", "§cPipeline Incomplete§r");
+        provider.add("gtceu.top.ldp_endpoint.io_type", "IO Type: %s");
+        provider.add("gtceu.top.ldp_endpoint.output_direction", "Output Direction: %s");
     }
 
     private static void initMinimapLang(GTLangProvider provider) {

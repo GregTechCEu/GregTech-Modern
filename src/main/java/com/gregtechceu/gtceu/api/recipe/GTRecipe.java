@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -42,7 +43,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics;
     public final Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics;
 
-    public final List<RecipeCondition> conditions;
+    public final List<RecipeCondition<?>> conditions;
     // for KubeJS. actual type is List<IngredientAction>.
     // Must be List<?> to not cause crashes without KubeJS.
     public final List<?> ingredientActions;
@@ -50,8 +51,16 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public CompoundTag data;
     public int duration;
     public int parallels = 1;
+    public int subtickParallels = 1;
+    public int batchParallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
+    // Lazy fields, since we need the recipe EUt very often
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
+    @Getter(lazy = true)
+    private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
+    public int groupColor = -1;
 
     public GTRecipe(GTRecipeType recipeType,
                     Map<RecipeCapability<?>, List<Content>> inputs,
@@ -62,14 +71,15 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition> conditions,
+                    List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
+                    @NotNull GTRecipeCategory recipeCategory,
+                    int groupColor) {
         this(recipeType, null, inputs, outputs, tickInputs, tickOutputs,
                 inputChanceLogics, outputChanceLogics, tickInputChanceLogics, tickOutputChanceLogics,
-                conditions, ingredientActions, data, duration, recipeCategory);
+                conditions, ingredientActions, data, duration, recipeCategory, groupColor);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -82,11 +92,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics,
                     Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics,
-                    List<RecipeCondition> conditions,
+                    List<RecipeCondition<?>> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
+                    @NotNull GTRecipeCategory recipeCategory, int groupColor) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -105,6 +115,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.data = data;
         this.duration = duration;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
+        this.groupColor = groupColor;
     }
 
     public GTRecipe copy() {
@@ -122,12 +133,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
                 new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
                 new ArrayList<>(conditions),
-                new ArrayList<>(ingredientActions), data, duration, recipeCategory);
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration);
         }
         copied.ocLevel = ocLevel;
         copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
+        copied.subtickParallels = subtickParallels;
         return copied;
     }
 
@@ -203,6 +216,23 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
         }
         return ChanceLogic.OR;
+    }
+
+    // Technically should account for overflow but realistically not an issue.
+    protected @NotNull EnergyStack calculateEUt(Map<RecipeCapability<?>, List<Content>> contents) {
+        var outputs = contents.get(EURecipeCapability.CAP);
+        if (outputs == null) return EnergyStack.EMPTY;
+        long v = 0, a = 0;
+        for (var content : outputs) {
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content);
+            v += stack.voltage();
+            a += stack.amperage();
+        }
+        return new EnergyStack(v, a);
+    }
+
+    public int getTotalRuns() {
+        return parallels * subtickParallels * batchParallels;
     }
 
     // Just check id as there *should* only ever be 1 instance of a recipe with this id.

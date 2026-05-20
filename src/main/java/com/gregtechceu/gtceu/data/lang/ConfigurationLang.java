@@ -1,30 +1,36 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import dev.toma.configuration.Configuration;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import dev.toma.configuration.config.value.IConfigValue;
 import dev.toma.configuration.config.value.IHierarchical;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConfigurationLang {
 
-    public static void init(GTLangProvider provider) {
-        recurseGenerateConfigLang(provider, Configuration.getConfig(GTCEu.MOD_ID).get().values());
+    public static void init(final RegistrateLangProvider provider) {
+        provider.add("config.screen.gtceu", GTCEu.NAME + " Configuration");
+
+        final Set<String> added = new HashSet<>();
+        ConfigHolder.INTERNAL_INSTANCE.values()
+                .forEach((value) -> addTranslation(provider, added, value));
     }
 
-    private static void recurseGenerateConfigLang(GTLangProvider provider,
-                                                  Collection<? extends IConfigValue<?>> values) {
-        for (var entry : values) {
-            provider.add("config.gtceu.option." + entry.getPath(), entry.getId());
-            if (entry instanceof IHierarchical hierarchical) {
-                var children = hierarchical.getChildrenKeys().stream()
-                        .map(hierarchical::getChildById)
-                        .filter(Objects::nonNull)
-                        .toList();
-                recurseGenerateConfigLang(provider, children);
+    private static void addTranslation(RegistrateLangProvider provider, Set<String> added, IConfigValue<?> value) {
+        var id = value.getId();
+        if (added.add(id)) {
+            provider.add("config.gtceu.option." + id, id);
+        }
+        if (value instanceof IHierarchical hierarchical) {
+            for (String childKey : value.getChildrenKeys()) {
+                IConfigValue<?> child = hierarchical.getChildById(childKey);
+                if (child != null) {
+                    addTranslation(provider, added, child);
+                }
             }
         }
     }

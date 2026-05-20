@@ -11,19 +11,18 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeChemicalBathRenderer;
-import com.gregtechceu.gtceu.client.renderer.machine.gcym.LargeMixerRenderer;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.LargeChemicalBathMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.LargeMacerationTowerMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.LargeMixerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -40,6 +39,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.multiblock.PartAbility.*;
+import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
@@ -47,8 +47,10 @@ import static com.gregtechceu.gtceu.common.data.GCYMRecipeTypes.ALLOY_BLAST_RECI
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
+import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.registerTieredMachines;
+import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GCYMMachines {
@@ -67,7 +69,13 @@ public class GCYMMachines {
                     } + " Parallel Control Hatch")
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
-                    .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                    .modelProperty(IS_FORMED, false)
+                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                    .model(createWorkableTieredHullMachineModel(
+                            GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
+                            .andThen((ctx, prov, model) -> {
+                                model.addReplaceableTextures("bottom", "top", "side");
+                            }))
                     .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"),
                             Component.translatable("gtceu.part_sharing.disabled"))
                     .register(),
@@ -80,8 +88,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(MACERATOR_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(MACERATOR_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SECURE_MACERATION)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX")
@@ -96,7 +103,7 @@ public class GCYMMachines {
                     .where('G', Predicates.blocks(CRUSHING_WHEELS.get()))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/secure_maceration_casing"),
                     GTCEu.id("block/multiblock/gcym/large_maceration_tower"))
             .register();
 
@@ -107,11 +114,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ORE_WASHER_RECIPES, CHEMICAL_BATH_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
-            .renderer(() -> new LargeChemicalBathRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_chemical_bath")))
-            .hasTESR(true)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX")
@@ -128,6 +131,11 @@ public class GCYMMachines {
                     .where(' ', Predicates.air())
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
+            .hasBER(true)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/watertight_casing"),
+                    GTCEu.id("block/multiblock/gcym/large_chemical_bath"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
@@ -137,8 +145,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "XXXXX", "#XXX#")
@@ -154,7 +161,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_centrifuge"))
             .register();
 
@@ -165,11 +172,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(MIXER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(MIXER_RECIPES)
-            .renderer(() -> new LargeMixerRenderer(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
-                    GTCEu.id("block/multiblock/gcym/large_mixer")))
-            .hasTESR(true)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_REACTION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
@@ -187,6 +190,11 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
+            .hasBER(true)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
+                    GTCEu.id("block/multiblock/gcym/large_mixer"))
+                    .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE
@@ -196,8 +204,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ELECTROLYZER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(ELECTROLYZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX")
@@ -210,7 +217,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .register();
 
@@ -221,8 +228,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX")
@@ -235,7 +241,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('C', blocks(ELECTROLYTIC_CELL.get()))
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/nonconducting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/nonconducting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_electrolyzer"))
             .register();
 
@@ -246,8 +252,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(PACKER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.PACKER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -262,7 +267,7 @@ public class GCYMMachines {
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
                     GTCEu.id("block/multiblock/gcym/large_packer"))
             .register();
 
@@ -276,8 +281,8 @@ public class GCYMMachines {
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
+                    BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX")
@@ -293,7 +298,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_assembler"))
             .register();
 
@@ -307,8 +312,8 @@ public class GCYMMachines {
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
+                    BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
@@ -328,7 +333,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/large_scale_assembling_casing"),
                     GTCEu.id("block/multiblock/gcym/large_circuit_assembler"))
             .register();
 
@@ -339,8 +344,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(ARC_FURNACE_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(ARC_FURNACE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
@@ -357,7 +361,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_arc_smelter"))
             .register();
 
@@ -370,8 +374,8 @@ public class GCYMMachines {
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
             .recipeType(LASER_ENGRAVER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(DEFAULT_ENVIRONMENT_REQUIREMENT, GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK,
+                    BATCH_MODE)
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXGXX", "XXGXX", "XXXXX")
@@ -388,7 +392,7 @@ public class GCYMMachines {
                     .where('K', blocks(CASING_GRATE.get()))
                     .where('A', Predicates.air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/laser_safe_engraving_casing"),
                     GTCEu.id("block/multiblock/gcym/large_engraving_laser"))
             .register();
 
@@ -399,8 +403,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(SIFTER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(SIFTER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#X#X#", "#X#X#", "#XXX#", "XXXXX", "#XXX#")
@@ -416,7 +419,7 @@ public class GCYMMachines {
                     .where('A', Predicates.air())
                     .where('#', Predicates.any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/vibration_safe_casing"),
                     GTCEu.id("block/multiblock/gcym/large_sifting_funnel"))
             .register();
 
@@ -471,7 +474,7 @@ public class GCYMMachines {
                                 coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
@@ -494,8 +497,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(AUTOCLAVE_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(AUTOCLAVE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -510,7 +512,7 @@ public class GCYMMachines {
                     .where('T', blocks(CASING_STEEL_PIPE.get()))
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_autoclave"))
             .register();
 
@@ -522,8 +524,7 @@ public class GCYMMachines {
                     FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
@@ -537,7 +538,7 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_material_press"))
             .register();
 
@@ -548,8 +549,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_CORROSION_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
@@ -566,7 +566,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/corrosion_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_brewer"))
             .register();
 
@@ -577,8 +577,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(CUTTER_RECIPES, LATHE_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SHOCK_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX", "##XXXXX")
@@ -594,7 +593,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/shock_proof_cutting_casing"),
                     GTCEu.id("block/multiblock/gcym/large_cutter"))
             .register();
 
@@ -605,8 +604,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(DISTILLATION_RECIPES, DISTILLERY_RECIPES))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(DISTILLATION_RECIPES, DISTILLERY_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
@@ -618,7 +616,7 @@ public class GCYMMachines {
                         .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
                         .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
                         .aisle("##X##", "#XAX#", "XAPAX", "#XAX#", "##X##").setRepeatable(1, 12)
-                        .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
+                        .aisle("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
                                 .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
@@ -628,7 +626,6 @@ public class GCYMMachines {
                         .where('X', casingPredicate.or(exportPredicate))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
-                        .where('C', abilities(MUFFLER))
                         .where('A', air())
                         .where('#', any())
                         .build();
@@ -638,7 +635,6 @@ public class GCYMMachines {
                 var builder = MultiblockShapeInfo.builder()
                         .where('S', definition, Direction.NORTH)
                         .where('C', CASING_WATERTIGHT.getDefaultState())
-                        .where('M', MUFFLER_HATCH[IV], Direction.UP)
                         .where('X', PARALLEL_HATCH[IV], Direction.NORTH)
                         .where('H', FLUID_IMPORT_HATCH[IV], Direction.NORTH)
                         .where('B', ITEM_EXPORT_BUS[IV], Direction.NORTH)
@@ -658,7 +654,7 @@ public class GCYMMachines {
                 List<String> aisle3 = new ArrayList<>(16);
                 aisle3.add("CCCCC");
                 aisle3.add("C###C");
-                aisle3.add("#CMC#");
+                aisle3.add("#CCC#");
                 List<String> aisle4 = new ArrayList<>(16);
                 aisle4.add("CCCCC");
                 aisle4.add("C###C");
@@ -684,8 +680,8 @@ public class GCYMMachines {
                 return shapeInfos;
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getPos().getY()))
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();
 
@@ -696,8 +692,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(EXTRACTOR_RECIPES, CANNER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX")
@@ -710,7 +705,7 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_STEEL_PIPE.get()))
                     .where('A', air())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extractor"))
             .register();
 
@@ -721,8 +716,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(EXTRUDER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(EXTRUDER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("##XXX", "##XXX", "##XXX")
@@ -739,7 +733,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_extruder"))
             .register();
 
@@ -750,8 +744,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(FLUID_SOLIDFICATION_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(FLUID_SOLIDFICATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
@@ -767,7 +760,7 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_solidifier"))
             .register();
 
@@ -778,8 +771,7 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(WIREMILL_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(WIREMILL_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXX##")
@@ -792,10 +784,11 @@ public class GCYMMachines {
                     .where('C', blocks(CASING_TITANIUM_GEARBOX.get()))
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/stress_proof_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/stress_proof_casing"),
                     GTCEu.id("block/multiblock/gcym/large_wiremill"))
             .register();
 
+    // spotless:off
     public final static MultiblockMachineDefinition MEGA_BLAST_FURNACE = REGISTRATE
             .multiblock("mega_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Rotary Hearth Furnace")
@@ -806,64 +799,24 @@ public class GCYMMachines {
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
             .rotationState(RotationState.ALL)
             .recipeType(BLAST_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers::ebfOverclock)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
                 TraceabilityPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return FactoryBlockPattern.start()
-                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#",
-                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
-                                "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
-                                "###PTAAATP###", "##TPPPMPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
+                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPMPPPT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                         .where('S', controller(blocks(definition.get())))
                         .where('X', casing.or(autoAbilities(definition.getRecipeTypes()))
                                 .or(Predicates.autoAbilities(true, false, true)))
@@ -883,58 +836,19 @@ public class GCYMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
-                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
-                                "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
-                                "###PTAAATP###", "##TPPPHPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
+                        .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPHPPPT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                         .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
                         .where('S', definition, Direction.NORTH)
                         .where('A', Blocks.AIR.defaultBlockState())
@@ -953,21 +867,17 @@ public class GCYMMachines {
                         .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
+                        .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
-            .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
+            .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
-                            Component
-                                    .translatable(
-                                            FormattingUtil
-                                                    .formatNumbers(coilMachine.getCoilType().getCoilTemperature() +
-                                                            100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) +
-                                                    "K")
+                            Component.translatable(
+                                    FormattingUtil.formatNumbers(coilMachine.getCoilType().getCoilTemperature() +
+                                            100L * Math.max(0, coilMachine.getTier() - GTValues.MV)) + "K")
                                     .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))));
                 }
             })
@@ -980,22 +890,15 @@ public class GCYMMachines {
             .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(VACUUM_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeType(VACUUM_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
-                    GTRecipeModifiers.OC_NON_PERFECT_SUBTICK)
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPXAVPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####",
-                            "XXXXXXX####")
-                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####",
-                            "XXXXXXX####")
-                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####",
-                            "###########")
+                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPX#VPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####", "XXXXXXX####")
+                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -1007,7 +910,8 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/gcym/mega_vacuum_freezer"))
             .register();
+    // spotless:on
 }

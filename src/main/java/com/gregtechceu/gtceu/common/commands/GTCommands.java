@@ -38,11 +38,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -56,6 +58,9 @@ public class GTCommands {
     public static final SuggestionProvider<CommandSourceStack> NOT_OWNED_CAPES = (ctx, builder) -> {
         return SharedSuggestionProvider.suggestResource(findNotOwnedCapesFor(ctx), builder);
     };
+    public static final DynamicCommandExceptionType ERROR_NO_SUCH_CAPE = new DynamicCommandExceptionType(
+            id -> Component.translatable("command.gtceu.cape.failure.does_not_exist", id));
+
     private static final SimpleCommandExceptionType ERROR_GIVE_FAILED = new SimpleCommandExceptionType(
             Component.translatable("command.gtceu.cape.give.failed"));
     private static final SimpleCommandExceptionType ERROR_TAKE_FAILED = new SimpleCommandExceptionType(
@@ -91,7 +96,7 @@ public class GTCommands {
                                                 GTOreDefinition.FULL_CODEC,
                                                 GTOreLoader.FOLDER))))
                         .then(literal("place_vein")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
+                                .requires(ctx -> ctx.hasPermission(LEVEL_GAMEMASTERS))
                                 .then(argument("vein", GTRegistryArgument.registry(GTRegistries.ORE_VEINS, ResourceLocation.class))
                                         .executes(context -> {
                                             return GTCommands.placeVein(context, BlockPos.containing(context.getSource().getPosition()));
@@ -164,12 +169,12 @@ public class GTCommands {
     public static Collection<ServerPlayer> findPlayersFrom(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         // go through all variants of the used player target selectors to find the targeted players
         try {
-            return Collections.singleton(ctx.getSource().getPlayerOrException());
-        } catch (CommandSyntaxException ignored) {
+            return EntityArgument.getPlayers(ctx, "targets");
+        } catch (IllegalArgumentException | CommandSyntaxException e) {
             try {
-                return EntityArgument.getPlayers(ctx, "targets");
-            } catch (CommandSyntaxException e) {
                 return EntityArgument.getPlayers(ctx, "target");
+            } catch (IllegalArgumentException | CommandSyntaxException ignored) {
+                return Collections.singleton(ctx.getSource().getPlayerOrException());
             }
         }
     }
@@ -273,7 +278,7 @@ public class GTCommands {
         if (CapeRegistry.setActiveCape(player.getUUID(), cape)) {
             if (cape != null) {
                 source.sendSuccess(() -> Component.translatable(
-                        "command.gtceu.cape.use.success", player.getDisplayName(), cape),
+                        "command.gtceu.cape.use.success", player.getDisplayName(), cape.toString()),
                         true);
             } else {
                 source.sendSuccess(() -> Component.translatable(
@@ -288,13 +293,13 @@ public class GTCommands {
 
     private static <T> int dumpDataRegistry(CommandContext<CommandSourceStack> context,
                                             GTRegistry<ResourceLocation, T> registry, Codec<T> codec, String folder) {
-        Path parent = GTCEu.getGameDir().resolve("gtceu/dumped/data");
+        Path parent = GTCEu.GTCEU_FOLDER.resolve("dumped/data");
         var ops = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
         int dumpedCount = 0;
         for (ResourceLocation id : registry.keys()) {
             T entry = registry.get(id);
             JsonElement json = codec.encodeStart(ops, entry).getOrThrow(false, GTCEu.LOGGER::error);
-            GTDynamicDataPack.writeJson(id, folder, parent, json);
+            GTDynamicDataPack.writeJson(id, folder, parent, json.toString().getBytes(StandardCharsets.UTF_8));
             dumpedCount++;
         }
         final int result = dumpedCount;

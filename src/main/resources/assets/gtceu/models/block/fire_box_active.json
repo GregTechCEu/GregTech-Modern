@@ -1,34 +1,32 @@
 {
   "parent": "block/block",
   "textures": {
-    "top": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-    "bottom": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-    "side": "gtceu:block/casings/firebox/machine_casing_firebox_bronze",
     "active_side": "gtceu:block/casings/firebox/machine_casing_firebox_bloom",
-    "particle": "#bottom"
+    "particle": "#side"
   },
   "elements": [
     {
-      "from": [-0.001, -0.001, -0.001],
-      "to":   [ 16.001, 16.001, 16.001 ],
+      "from": [  0,  0,  0 ],
+      "to":   [ 16, 16, 16 ],
       "faces": {
-        "up":    { "texture": "#top", "cullface": "up" },
-        "down":  { "texture": "#bottom", "cullface": "down" },
-        "north": { "texture": "#side", "cullface": "north" },
-        "south": { "texture": "#side", "cullface": "south" },
-        "west":  { "texture": "#side", "cullface": "west" },
-        "east":  { "texture": "#side", "cullface": "east" }
+        "up":    { "texture": "#top",    "cullface": "up"    },
+        "down":  { "texture": "#bottom", "cullface": "down"  },
+        "north": { "texture": "#side",   "cullface": "north" },
+        "south": { "texture": "#side",   "cullface": "south" },
+        "west":  { "texture": "#side",   "cullface": "west"  },
+        "east":  { "texture": "#side",   "cullface": "east"  }
       }
     },
     {
-      "from": [-0.002, -0.002, -0.002],
-      "to":   [ 16.002, 16.002, 16.002 ],
+      "from": [ -0.001,  0, -0.001 ],
+      "to":   [ 16.001, 16, 16.001 ],
+      "forge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "north": { "texture": "#active_side", "cullface": "north", "tintindex": -101, "emissivity":  15},
-        "south": { "texture": "#active_side", "cullface": "south", "tintindex": -101, "emissivity":  15},
-        "west":  { "texture": "#active_side", "cullface": "west", "tintindex": -101, "emissivity":  15},
-        "east":  { "texture": "#active_side", "cullface": "east", "tintindex": -101, "emissivity":  15}
+        "north": { "texture": "#active_side", "cullface": "north", "tintindex": -101 },
+        "south": { "texture": "#active_side", "cullface": "south", "tintindex": -101 },
+        "west":  { "texture": "#active_side", "cullface": "west",  "tintindex": -101 },
+        "east":  { "texture": "#active_side", "cullface": "east",  "tintindex": -101 }
       }
     }
   ]

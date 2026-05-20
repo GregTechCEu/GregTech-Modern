@@ -1,30 +1,28 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
@@ -34,9 +32,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -56,42 +51,38 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMachineLife, IMaintenanceMachine, IInteractedMachine {
+                                         implements IMaintenanceMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
 
     @Getter
     private final boolean isConfigurable;
-    @Persisted
+    @SaveField
     private final NotifiableItemStackHandler itemStackHandler;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
-    @RequireRerender
+    @SaveField
+    @SyncToClient
     private boolean isTaped;
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     protected int timeActive;
     @Getter
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected byte maintenanceProblems = startProblems();
     @Getter
-    @Persisted
+    @SaveField
     private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
 
-    public MaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId, boolean isConfigurable) {
-        super(metaTileEntityId, isConfigurable ? 3 : 1);
+    public MaintenanceHatchPartMachine(BlockEntityCreationInfo info, boolean isConfigurable) {
+        super(info, isConfigurable ? GTValues.HV : GTValues.LV);
         this.isConfigurable = isConfigurable;
-        this.itemStackHandler = createInventory();
+        this.itemStackHandler = attachTrait(createInventory());
         this.itemStackHandler.setFilter(itemStack -> itemStack.is(GTItems.DUCT_TAPE.get()));
     }
 
@@ -99,17 +90,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     // ****** Initialization ******//
     //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.BOTH);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(itemStackHandler);
+        return new NotifiableItemStackHandler(1, IO.BOTH, IO.BOTH);
     }
 
     @Override
@@ -124,6 +105,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public void setMaintenanceProblems(byte problems) {
         this.maintenanceProblems = problems;
         updateMaintenanceSubscription();
+        syncDataHolder.markClientSyncFieldDirty("maintenanceProblems");
     }
 
     @Override
@@ -131,6 +113,13 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
         super.onLoad();
         if (!isRemote()) {
             updateMaintenanceSubscription();
+
+            // fix the model being invalid after the tape property rename
+            MachineRenderState renderState = getRenderState();
+            if (renderState.hasProperty(GTMachineModelProperties.IS_TAPED) &&
+                    this.isTaped != renderState.getValue(GTMachineModelProperties.IS_TAPED)) {
+                setRenderState(renderState.setValue(GTMachineModelProperties.IS_TAPED, this.isTaped));
+            }
         }
     }
 
@@ -219,7 +208,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
      * @param entityPlayer Target Player which their inventory would be scanned for tools to fix
      */
     private void fixProblemsWithTools(byte problems, Player entityPlayer) {
-        List<GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
+        List<@Nullable GTToolType> toolsToMatch = Arrays.asList(new GTToolType[6]);
         boolean proceed = false;
         for (byte index = 0; index < 6; index++) {
             if (((problems >> index) & 1) == 0) {
@@ -299,6 +288,14 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     }
 
     @Override
+    public void setTaped(boolean isTaped) {
+        if (this.isTaped != isTaped) {
+            this.isTaped = isTaped;
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
+        }
+    }
+
+    @Override
     public float getTimeMultiplier() {
         var result = 1f;
         if (durationMultiplier < 1.0)
@@ -313,17 +310,17 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ******* INTERACTION *******//
     //////////////////////////////////////
+
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (hasMaintenanceProblems()) {
-            if (consumeDuctTape(player, hand)) {
+            if (consumeDuctTape(context.getPlayer(), context.getHand())) {
                 fixAllMaintenanceProblems();
                 setTaped(true);
-                return InteractionResult.CONSUME;
+                return InteractionResult.SUCCESS;
             }
         }
-        return InteractionResult.PASS;
+        return super.onUseWithItem(context);
     }
 
     //////////////////////////////////////

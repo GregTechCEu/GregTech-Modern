@@ -10,6 +10,9 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 
@@ -19,13 +22,11 @@ import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -34,11 +35,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -47,29 +48,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class MachineControllerCover extends CoverBehavior implements IUICover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
     private CustomItemStackHandler sideCoverSlot;
     private ButtonWidget modeButton;
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @Persisted
+    @SaveField
     @Getter
     private boolean isInverted = false;
 
-    @Persisted
+    @SaveField
     @Getter
     private int minRedstoneStrength = 1;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     @Nullable
     private ControllerMode controllerMode = ControllerMode.MACHINE;
+
+    @Getter
+    @Accessors(fluent = true)
+    @SaveField
+    private boolean preventPowerFail = false;
 
     public MachineControllerCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -81,7 +80,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public void onAttached(ItemStack itemStack, ServerPlayer player) {
+    public void onAttached(ItemStack itemStack, @Nullable ServerPlayer player) {
         super.onAttached(itemStack, player);
 
         var allowedModes = getAllowedModes();
@@ -111,6 +110,8 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         resetCurrentControllable();
 
         this.controllerMode = controllerMode;
+        syncDataHolder.markClientSyncFieldDirty("filterMode");
+
         updateAll();
     }
 
@@ -136,7 +137,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     @Nullable
     private IControllable getControllable(@Nullable Direction side) {
         if (side == null) {
-            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getPos(), null);
+            return GTCapabilityHelper.getControllable(coverHolder.getLevel(), coverHolder.getBlockPos(), null);
         }
 
         if (coverHolder.getCoverAtSide(side) instanceof IControllable cover) {
@@ -189,7 +190,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
     private int getInputSignal() {
         Level level = coverHolder.getLevel();
-        BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
+        BlockPos sourcePos = coverHolder.getBlockPos().relative(attachedSide);
 
         return level.getSignal(sourcePos, attachedSide);
     }
@@ -203,7 +204,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         if (controllerMode != null && getControllable(controllerMode.side) == null) {
             setControllerMode(null);
         }
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 75);
+        WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
 
         group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
         group.addWidget(new IntInputWidget(10, 20, 131, 20,
@@ -220,6 +221,12 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                 GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
                 .isMultiLang()
                 .setTooltipText("cover.machine_controller.invert"));
+
+        group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
+        group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
+                this::preventPowerFail, (data) -> {
+                    preventPowerFail = data;
+                }));
 
         sideCoverSlot = new CustomItemStackHandler(1);
         group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
@@ -267,19 +274,38 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
             return;
         }
 
-        Optional.ofNullable(controllerMode)
-                .map(mode -> mode.side)
-                .map(coverHolder::getCoverAtSide)
-                .map(CoverBehavior::getAttachItem)
-                .map(ItemStack::copy)
-                .ifPresentOrElse(
-                        item -> {
-                            sideCoverSlot.setStackInSlot(0, item);
-                            sideCoverSlot.onContentsChanged(0);
-                        },
-                        () -> {
-                            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
-                            sideCoverSlot.onContentsChanged(0);
-                        });
+        if (controllerMode == null) {
+            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
+            sideCoverSlot.onContentsChanged(0);
+        } else {
+            var side = controllerMode.side;
+            if (side == null && coverHolder instanceof MachineCoverContainer coverContainer) {
+                sideCoverSlot.setStackInSlot(0, coverContainer.getMachine().getDefinition().asStack());
+            } else {
+                var cover = coverHolder.getCoverAtSide(side);
+                if (cover != null) {
+                    sideCoverSlot.setStackInSlot(0, cover.getAttachItem().copy());
+                } else {
+                    sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
+                }
+            }
+            sideCoverSlot.onContentsChanged(0);
+        }
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putBoolean("inverted", isInverted);
+        tag.putInt("redstoneLvl", minRedstoneStrength);
+        tag.putBoolean("preventPowerfail", preventPowerFail);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setInverted(tag.getBoolean("inverted"));
+        setMinRedstoneStrength(tag.getInt("redstoneLvl"));
+        preventPowerFail = tag.getBoolean("preventPowerfail");
+        super.pasteConfig(player, tag);
     }
 }

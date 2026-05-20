@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -71,7 +73,7 @@ public class TooltipsHandler {
             }
         }
 
-        Material material = HazardProperty.getValidHazardMaterial(stack);
+        Material material = HazardProperty.getValidHazardMaterial(stack).material();
         if (material.isNull()) {
             return;
         }
@@ -121,7 +123,8 @@ public class TooltipsHandler {
             tooltips.accept(Component.translatable(key));
         }
 
-        tooltips.accept(Component.translatable("tooltip.gtceu.fluid_property.temperature", fluidType.getTemperature()));
+        tooltips.accept(Component.translatable("tooltip.gtceu.fluid_property.temperature",
+                FormattingUtil.formatTemperature(fluidType.getTemperature())));
         if (fluidType.getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD) {
             tooltips.accept(Component.translatable("tooltip.gtceu.fluid_property.cryogenic"));
         }

@@ -39,7 +39,7 @@ public class MachineLang {
         makeSteamMachineTooltip(provider, "gtceu", "steam_extractor",
                 "Extracting your first Rubber", "Extracting your first Rubber");
         makeSteamMachineTooltip(provider, "gtceu", "steam_macerator",
-                "Macerating your Ores", "Macerating your Ores");
+                "Macerating your Ores", "Macerating your Ores without Byproducts");
         makeSteamMachineTooltip(provider, "gtceu", "steam_compressor",
                 "Compressing Items", "Compressing Items");
         makeSteamMachineTooltip(provider, "gtceu", "steam_forge_hammer",
@@ -75,7 +75,7 @@ public class MachineLang {
         // Steam Boilers
         provider.add("machine.gtceu.boiler.info.heating.up", "§cHeating up§r%s");
         provider.add("machine.gtceu.boiler.info.cooling.down", "§9Cooling down§r%s");
-        provider.add("machine.gtceu.boiler.info.producing.steam", " §a(boiling water)");
+        provider.add("machine.gtceu.boiler.info.production.data", "§aProducing %s§a mB/t");
         provider.add("machine.gtceu.boiler.heat_info", "Heat Capacity: %s %%");
 
         // Generators
@@ -794,6 +794,7 @@ public class MachineLang {
         provider.add("gtceu.machine.miner.minez", "mZ: %d");
         provider.add("gtceu.machine.miner.radius", "Radius: %d");
         provider.add("gtceu.machine.miner.chunkradius", "Chunk Radius: %d");
+        provider.add("gtceu.machine.miner.progress", "Progress: %d/%d");
         provider.add("gtceu.multiblock.large_miner.done", "Done!");
         provider.add("gtceu.multiblock.large_miner.working", "Working...");
         provider.add("gtceu.multiblock.large_miner.invfull", "Inventory Full!");
@@ -1090,6 +1091,22 @@ public class MachineLang {
                 "Auto-Pull Enabled");
         provider.add("gtceu.machine.me.stocking_auto_pull_disabled",
                 "Auto-Pull Disabled");
+
+        // ME Adv Stocking
+        provider.add("gtceu.gui.title.adv_stocking_config.min_item_count",
+                "Min. Item Count");
+        provider.add("gtceu.gui.title.adv_stocking_config.min_fluid_count",
+                "Min. Fluid Count");
+        provider.add("gtceu.gui.adv_stocking_config.min_item_count",
+                "Minimum Item Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.adv_stocking_config.min_fluid_count",
+                "Minimum Fluid Stack Size for Automated Pulling");
+        provider.add("gtceu.gui.title.adv_stocking_config.ticks_per_cycle",
+                "Ticks Per Cycle");
+        provider.add("gtceu.gui.adv_stocking_config.ticks_per_cycle",
+                "Delay between item list updates");
+        provider.add("gtceu.gui.adv_stocking_config.title",
+                "Configure Automatic Stocking");
 
         // ME Data Stick Behavior
         provider.add("gtceu.machine.me.copy_paste.tooltip",

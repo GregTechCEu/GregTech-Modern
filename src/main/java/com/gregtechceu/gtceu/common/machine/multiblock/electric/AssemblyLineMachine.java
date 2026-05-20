@@ -1,69 +1,65 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
     @Accessors(fluent = true)
     @Getter
-    @Persisted
+    @SaveField
     protected boolean allowCircuitSlots;
 
-    public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
-        super(holder);
+    public AssemblyLineMachine(BlockEntityCreationInfo info, boolean allowCircuitSlots) {
+        super(info, new AsslineRecipeLogic());
         this.allowCircuitSlots = allowCircuitSlots;
     }
 
-    public AssemblyLineMachine(IMachineBlockEntity holder) {
-        this(holder, false);
-    }
-
-    @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        if (recipe == null) return false;
-        if (!super.beforeWorking(recipe)) return false;
-
-        var config = ConfigHolder.INSTANCE.machines;
-        if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return true;
-        if (!checkItemInputs(recipe)) return false;
-
-        if (!config.orderedAssemblyLineFluids) return true;
-        return checkFluidInputs(recipe);
+    public AssemblyLineMachine(BlockEntityCreationInfo info) {
+        this(info, false);
     }
 
     public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {
-        return Comparator.comparing(p -> p.self().getPos(),
+        return Comparator.comparing(p -> p.self().getBlockPos(),
                 RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
-    private boolean checkItemInputs(@NotNull GTRecipe recipe) {
-        var itemInputs = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
+    private boolean checkItemInputs(GTRecipe recipe, boolean isTick) {
+        var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
+                Collections.emptyList());
         if (itemInputs.isEmpty()) return true;
         int inputsSize = itemInputs.size();
         var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
@@ -76,7 +72,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                         .map(ItemStack.class::cast)
                         .filter(s -> !s.isEmpty())
                         .findFirst())
-                .dropWhile(Optional::isEmpty)
                 .limit(inputsSize)
                 .map(o -> o.orElse(ItemStack.EMPTY))
                 .toList();
@@ -94,8 +89,48 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         return true;
     }
 
-    private boolean checkFluidInputs(@NotNull GTRecipe recipe) {
-        var fluidInputs = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
+    private ActionResult consumeItemContents(GTRecipe recipe, boolean isTick) {
+        var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
+                Collections.emptyList());
+        if (itemInputs.isEmpty()) return ActionResult.SUCCESS;
+        int inputsSize = itemInputs.size();
+        var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
+        if (itemHandlers.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
+
+        var itemInventory = itemHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent).toList();
+
+        if (itemInventory.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
+
+        for (int i = 0; i < inputsSize; i++) {
+            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
+            var currentBus = itemInventory.get(i);
+            if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
+                    "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
+            var left = itemBus.handleRecipeInner(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true);
+            if (!(left == null || left.isEmpty())) return ActionResult.FAIL_NO_REASON;
+        }
+        // If we get here, the recipe should be consumable
+
+        for (int i = 0; i < inputsSize; i++) {
+            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
+            var currentBus = itemInventory.get(i);
+            if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
+                    "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
+            var left = itemBus.handleRecipeInner(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false);
+            if (!(left == null || left.isEmpty())) {
+                GTCEu.LOGGER.error(
+                        "Recipe in Assline.consumeItemContents was true when simulating, but false when consuming.");
+                return ActionResult.FAIL_NO_REASON;
+            }
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    private boolean checkFluidInputs(GTRecipe recipe, boolean isTick) {
+        var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
+                Collections.emptyList());
         if (fluidInputs.isEmpty()) return true;
         int inputsSize = fluidInputs.size();
         var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
@@ -108,7 +143,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                         .map(FluidStack.class::cast)
                         .filter(f -> !f.isEmpty())
                         .findFirst())
-                .dropWhile(Optional::isEmpty)
                 .limit(inputsSize)
                 .map(o -> o.orElse(FluidStack.EMPTY))
                 .toList();
@@ -123,5 +157,151 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             }
         }
         return true;
+    }
+
+    private ActionResult consumeFluidContents(GTRecipe recipe, boolean isTick) {
+        var fluidInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(FluidRecipeCapability.CAP,
+                Collections.emptyList());
+        if (fluidInputs.isEmpty()) return ActionResult.SUCCESS;
+        int fluidsSize = fluidInputs.size();
+        var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
+        if (fluidHandlers.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
+
+        var fluidInventory = fluidHandlers.stream()
+                .filter(IRecipeHandler::shouldSearchContent).toList();
+
+        if (fluidInventory.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
+
+        for (int i = 0; i < fluidsSize; i++) {
+            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            var currentBus = fluidInventory.get(i);
+            if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
+                    "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
+            var left = fluidTank.handleRecipeInner(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true);
+            if (!(left == null || left.isEmpty())) return ActionResult.FAIL_NO_REASON;
+        }
+        // If we get here, the recipe should be consumable
+
+        for (int i = 0; i < fluidsSize; i++) {
+            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            var currentBus = fluidInventory.get(i);
+            if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
+                    "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
+            var left = fluidTank.handleRecipeInner(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false);
+            if (!(left == null || left.isEmpty())) {
+                GTCEu.LOGGER.error(
+                        "Recipe in Assline.consumeFluidContents was true when simulating, but false when consuming.");
+                return ActionResult.FAIL_NO_REASON;
+            }
+        }
+
+        return ActionResult.SUCCESS;
+    }
+
+    private ActionResult consumeAll(GTRecipe recipe, boolean isTick,
+                                    Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        GTRecipe copyWithItems = recipe.copy();
+        copyWithItems.inputs.clear();
+        copyWithItems.tickInputs.clear();
+
+        GTRecipe copyWithFluids = recipe.copy();
+        copyWithFluids.inputs.clear();
+        copyWithFluids.tickInputs.clear();
+
+        GTRecipe copyWithoutItemsFluids = recipe.copy();
+        copyWithoutItemsFluids.inputs.clear();
+        copyWithoutItemsFluids.tickInputs.clear();
+
+        for (var entry : recipe.inputs.entrySet()) {
+            if (entry.getKey().equals(FluidRecipeCapability.CAP)) {
+                copyWithFluids.inputs.put(entry.getKey(), entry.getValue());
+            } else if (entry.getKey().equals(ItemRecipeCapability.CAP)) {
+                copyWithItems.inputs.put(entry.getKey(), entry.getValue());
+            } else {
+                copyWithoutItemsFluids.inputs.put(entry.getKey(), entry.getValue());
+            }
+        }
+        for (var entry : recipe.tickInputs.entrySet()) {
+            if (entry.getKey().equals(FluidRecipeCapability.CAP)) {
+                copyWithFluids.tickInputs.put(entry.getKey(), entry.getValue());
+            } else if (entry.getKey().equals(ItemRecipeCapability.CAP)) {
+                copyWithItems.tickInputs.put(entry.getKey(), entry.getValue());
+            } else {
+                copyWithoutItemsFluids.tickInputs.put(entry.getKey(), entry.getValue());
+            }
+        }
+        var config = ConfigHolder.INSTANCE.machines;
+        ActionResult result;
+        if (config.orderedAssemblyLineItems) {
+            result = consumeItemContents(copyWithItems, isTick);
+        } else {
+            result = isTick ?
+                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN, chanceCaches) :
+                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN, chanceCaches);
+        }
+        if (!result.isSuccess()) return result;
+
+        if (config.orderedAssemblyLineFluids) {
+            result = consumeFluidContents(copyWithFluids, isTick);
+        } else {
+            result = isTick ?
+                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN, chanceCaches) :
+                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN, chanceCaches);
+        }
+        if (!result.isSuccess()) return result;
+
+        return isTick ?
+                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches) :
+                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN, chanceCaches);
+    }
+
+    private static class AsslineRecipeLogic extends RecipeLogic {
+
+        public AsslineRecipeLogic() {
+            super();
+        }
+
+        @Override
+        public AssemblyLineMachine getMachine() {
+            return (AssemblyLineMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(AssemblyLineMachine.class);
+        }
+
+        @Override
+        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
+            if (io.equals(IO.IN)) {
+                return getMachine().consumeAll(recipe, false, this.getChanceCaches());
+            }
+            return RecipeHelper.handleRecipeIO(getMachine(), recipe, io, this.chanceCaches);
+        }
+
+        @Override
+        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
+            if (io.equals(IO.IN)) {
+                return getMachine().consumeAll(recipe, true, this.getChanceCaches());
+            }
+            return RecipeHelper.handleTickRecipeIO(getMachine(), recipe, io, this.chanceCaches);
+        }
+
+        @Override
+        protected ActionResult matchRecipe(GTRecipe recipe) {
+            // Match by normal inputs first
+            ActionResult normalMatch = RecipeHelper.matchContents(getMachine(), recipe);
+            if (!normalMatch.isSuccess()) return normalMatch;
+
+            var config = ConfigHolder.INSTANCE.machines;
+            if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
+            if (!getMachine().checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+
+            if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
+            if (!getMachine().checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
+            if (!getMachine().checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            return ActionResult.SUCCESS;
+        }
     }
 }

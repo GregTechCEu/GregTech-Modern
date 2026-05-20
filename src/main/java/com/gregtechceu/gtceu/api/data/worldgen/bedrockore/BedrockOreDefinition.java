@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.utils.RegistryUtil;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -20,13 +19,16 @@ import net.minecraft.world.level.biome.Biome;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
@@ -146,6 +148,7 @@ public class BedrockOreDefinition {
         return new Builder(name);
     }
 
+    @RemapPrefixForJS("kjs$")
     @Accessors(chain = true, fluent = true)
     public static class Builder {
 
@@ -192,12 +195,14 @@ public class BedrockOreDefinition {
             return this.yield(UniformInt.of(min, max));
         }
 
+        @HideFromJS
         public Builder biomes(int weight, TagKey<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> GTRegistries.builtinRegistry()
                     .registryOrThrow(Registries.BIOME).getOrCreateTag(biomes), weight));
             return this;
         }
 
+        @HideFromJS
         @SafeVarargs
         public final Builder biomes(int weight, ResourceKey<Biome>... biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> HolderSet.direct(GTRegistries.builtinRegistry()
@@ -205,6 +210,7 @@ public class BedrockOreDefinition {
             return this;
         }
 
+        @HideFromJS
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> biomes, weight));
             return this;
@@ -216,9 +222,36 @@ public class BedrockOreDefinition {
             return this;
         }
 
-        public Builder dimensions(String... dimensions) {
-            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
+        // region KubeJS versions of the above methods
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings("unused")
+        @ApiStatus.Internal
+        public Builder kjs$biomeTag(int weight, ResourceLocation biomeTag) {
+            return this.biomes(weight, TagKey.create(Registries.BIOME, biomeTag));
         }
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings({ "unused", "unchecked" })
+        @ApiStatus.Internal
+        public Builder kjs$biomes(int weight, ResourceLocation... biomes) {
+            ResourceKey<Biome>[] resourceKeys = new ResourceKey[biomes.length];
+            for (int i = 0; i < biomes.length; i++) {
+                resourceKeys[i] = ResourceKey.create(Registries.BIOME, biomes[i]);
+            }
+            return this.biomes(weight, resourceKeys);
+        }
+
+        /// This method should <b>only</b> be used in KubeJS.
+        @SuppressWarnings("unused")
+        @ApiStatus.Internal
+        public Builder kjs$dimensions(ResourceLocation... dimensions) {
+            return this.dimensions(Arrays.stream(dimensions)
+                    .map(id -> ResourceKey.create(Registries.DIMENSION, id))
+                    .collect(Collectors.toSet()));
+        }
+
+        // endregion
 
         public BedrockOreDefinition register() {
             var definition = new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance,

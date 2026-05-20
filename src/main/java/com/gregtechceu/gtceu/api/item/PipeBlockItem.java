@@ -78,8 +78,8 @@ public class PipeBlockItem extends BlockItem {
                 selfTile.setConnection(side.getOpposite(), true, false);
             }
             for (Direction facing : GTUtil.DIRECTIONS) {
-                BlockEntity te = selfTile.getNeighbor(facing);
-                if (te instanceof IPipeNode otherPipe) {
+                BlockEntity be = selfTile.getNeighbor(facing);
+                if (be instanceof IPipeNode otherPipe) {
                     if (otherPipe.isConnected(facing.getOpposite())) {
                         if (otherPipe.getPipeBlock().canPipesConnect(otherPipe, facing.getOpposite(), selfTile)) {
                             selfTile.setConnection(facing, true, true);
@@ -88,7 +88,7 @@ public class PipeBlockItem extends BlockItem {
                         }
                     }
                 } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables &&
-                        selfTile.getPipeBlock().canPipeConnectToBlock(selfTile, facing, te)) {
+                        selfTile.getPipeBlock().canPipeConnectToBlock(selfTile, facing, be)) {
                             selfTile.setConnection(facing, true, false);
                         }
             }

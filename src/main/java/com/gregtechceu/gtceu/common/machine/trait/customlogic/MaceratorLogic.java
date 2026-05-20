@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -21,10 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustSmall;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustTiny;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeCategories.MACERATOR_RECYCLING;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MACERATOR_RECIPES;
 
@@ -36,7 +33,6 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
     public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
         var recipeHandlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         for (var handler : recipeHandlers) {
-            if (!handler.shouldSearchContent()) continue;
             for (var content : handler.getContents()) {
                 if (!(content instanceof ItemStack stack)) continue;
                 if (stack.isEmpty()) continue;
@@ -47,7 +43,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         return null;
     }
 
-    private @Nullable GTRecipe search(ItemStack stack) {
+    public @Nullable GTRecipe search(ItemStack stack) {
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         if (turbineBehaviour != null) {
             float durability = 1.f - (float) turbineBehaviour.getPartDamage(stack) /

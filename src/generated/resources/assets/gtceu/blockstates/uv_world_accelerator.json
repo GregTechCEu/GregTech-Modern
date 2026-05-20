@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtceu:block/machine/uv_world_accelerator"
+    }
+  }
+}

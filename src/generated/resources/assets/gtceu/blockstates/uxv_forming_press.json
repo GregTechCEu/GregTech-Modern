@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/uxv_forming_press",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/uxv_forming_press"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/uxv_forming_press",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/uxv_forming_press",
+      "y": 270
+    }
+  }
+}

@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 
 public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceMachine {
 
-    public AutoMaintenanceHatchPartMachine(IMachineBlockEntity blockEntity) {
-        super(blockEntity, 3);
+    public AutoMaintenanceHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, GTValues.HV);
     }
 
     @Override

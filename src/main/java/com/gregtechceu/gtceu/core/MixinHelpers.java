@@ -28,10 +28,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagEntry;
-import net.minecraft.tags.TagKey;
-import net.minecraft.tags.TagLoader;
+import net.minecraft.tags.*;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -51,6 +48,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.versions.forge.ForgeVersion;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -74,8 +72,11 @@ public class MixinHelpers {
                 if (material.isNull()) return;
                 var entries = itemLikes.stream().map(MixinHelpers::makeItemEntry).collect(toArrayList());
 
-                var materialTags = entry.tagPrefix().getAllItemTags(material);
-                for (TagKey<Item> materialTag : materialTags) {
+                var prefixTagKeys = entry.tagPrefix().getAllItemTags(material);
+                for (TagKey<Item> prefixTag : prefixTagKeys) {
+                    tagMap.computeIfAbsent(prefixTag.location(), path -> new ArrayList<>()).addAll(entries);
+                }
+                for (TagKey<Item> materialTag : material.getItemTags()) {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
 
@@ -97,6 +98,23 @@ public class MixinHelpers {
                     var entry = makeItemEntry(item);
                     for (TagKey<Item> tag : item.get().getToolType().itemTags) {
                         tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
+                    }
+                });
+            });
+
+            GTMaterialItems.ARMOR_ITEMS.rowMap().forEach((material, map) -> {
+                map.forEach((type, item) -> {
+                    if (item != null) {
+                        var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()),
+                                GTValues.CUSTOM_TAG_SOURCE);
+                        tagMap.computeIfAbsent(ItemTags.TRIMMABLE_ARMOR.location(), $ -> new ArrayList<>())
+                                .add(entry);
+                        tagMap.computeIfAbsent(switch (type) {
+                            case HELMET -> Tags.Items.ARMORS_HELMETS.location();
+                            case CHESTPLATE -> Tags.Items.ARMORS_CHESTPLATES.location();
+                            case LEGGINGS -> Tags.Items.ARMORS_LEGGINGS.location();
+                            case BOOTS -> Tags.Items.ARMORS_BOOTS.location();
+                        }, $ -> new ArrayList<>()).add(entry);
                     }
                 });
             });
@@ -132,17 +150,41 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
                 // Add tool tags
-                if (!entry.tagPrefix().miningToolTag().isEmpty()) {
+                if (!entry.isIgnored() && !entry.tagPrefix().miningToolTag().isEmpty()) {
                     tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
-                        tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
-                                .addAll(entries);
+                        // Wood blocks with this tag always allow a Wrench, but only allow an Axe if the config is
+                        // not set. Pickaxe is never allowed (special case)
+                        if (entry.tagPrefix().miningToolTag()
+                                .contains(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
+                            tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(),
+                                    path -> new ArrayList<>()).addAll(entries);
+                            if (!ConfigHolder.INSTANCE.machines.requireGTToolsForBlocks) {
+                                tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(),
+                                        path -> new ArrayList<>())
+                                        .addAll(entries);
+                            }
+                        } else {
+                            // Other wood stuff should still get the Axe tag
+                            tagMap.computeIfAbsent(BlockTags.MINEABLE_WITH_AXE.location(), path -> new ArrayList<>())
+                                    .addAll(entries);
+                        }
                     } else {
                         for (var tag : entry.tagPrefix().miningToolTag()) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).addAll(entries);
                         }
                     }
+                }
+
+                if (entry.tagPrefix() == TagPrefix.oreEndstone) {
+                    // Make endstone-based ores dragon-immune
+                    tagMap.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
+                }
+
+                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                            .addAll(entries);
                 }
             });
 
@@ -237,11 +279,6 @@ public class MixinHelpers {
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
-                        block = ChemicalHelper.getBlock(orePrefix, material);
-                    }
-
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
@@ -252,8 +289,8 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
-                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for
-                    // balance reasons. (for now, until we can think of a better solution.)
+                    // disable fortune for balance reasons. (for now, until we can think of a better solution.)
+                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
@@ -263,7 +300,6 @@ public class MixinHelpers {
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
                                     .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
                             isEmpty = false;

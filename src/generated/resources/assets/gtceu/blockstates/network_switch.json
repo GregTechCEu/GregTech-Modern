@@ -1,0 +1,76 @@
+{
+  "variants": {
+    "facing=east,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 90
+    },
+    "facing=east,upwards_facing=north": {
+      "model": "gtceu:block/machine/network_switch",
+      "y": 90
+    },
+    "facing=east,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 90
+    },
+    "facing=east,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 90
+    },
+    "facing=north,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/network_switch"
+    },
+    "facing=north,upwards_facing=north": {
+      "model": "gtceu:block/machine/network_switch"
+    },
+    "facing=north,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/network_switch"
+    },
+    "facing=north,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/network_switch"
+    },
+    "facing=south,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 180
+    },
+    "facing=south,upwards_facing=north": {
+      "model": "gtceu:block/machine/network_switch",
+      "y": 180
+    },
+    "facing=south,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 180
+    },
+    "facing=south,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 180
+    },
+    "facing=west,upwards_facing=east": {
+      "gtceu:z": 270,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 270
+    },
+    "facing=west,upwards_facing=north": {
+      "model": "gtceu:block/machine/network_switch",
+      "y": 270
+    },
+    "facing=west,upwards_facing=south": {
+      "gtceu:z": 180,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 270
+    },
+    "facing=west,upwards_facing=west": {
+      "gtceu:z": 90,
+      "model": "gtceu:block/machine/network_switch",
+      "y": 270
+    }
+  }
+}

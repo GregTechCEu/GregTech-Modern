@@ -1,40 +1,34 @@
 package com.gregtechceu.gtceu.integration.ae2.slot;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Supplier;
 
 public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements IConfigurableSlotList {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class,
-            NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     @Getter
     protected ExportOnlyAEItemSlot[] inventory;
 
-    private CustomItemStackHandler itemHandler;
+    private @Nullable CustomItemStackHandler itemHandler;
 
-    public ExportOnlyAEItemList(MetaMachine holder, int slots) {
-        this(holder, slots, ExportOnlyAEItemSlot::new);
+    public ExportOnlyAEItemList(int slots) {
+        this(slots, ExportOnlyAEItemSlot::new);
     }
 
-    public ExportOnlyAEItemList(MetaMachine holder, int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
-        super(holder, 0, IO.IN, IO.NONE);
+    public ExportOnlyAEItemList(int slots, Supplier<ExportOnlyAEItemSlot> slotFactory) {
+        super(0, IO.IN, IO.NONE);
         this.inventory = new ExportOnlyAEItemSlot[slots];
         for (int i = 0; i < slots; i++) {
             this.inventory[i] = slotFactory.get();
@@ -62,11 +56,10 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
     }
 
     @Override
-    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+    public void setStackInSlot(int slot, ItemStack stack) {
         // NO-OP
     }
 
-    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot >= 0 && slot < inventory.length) {
@@ -75,13 +68,11 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         return ItemStack.EMPTY;
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         return stack;
     }
 
-    @NotNull
     @Override
     public ItemStack extractItemInternal(int slot, int amount, boolean simulate) {
         if (slot >= 0 && slot < inventory.length) {
@@ -114,11 +105,6 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         return false;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     private static class ItemStackHandlerDelegate extends CustomItemStackHandler {
 
         private final ExportOnlyAEItemSlot[] inventory;
@@ -144,13 +130,11 @@ public class ExportOnlyAEItemList extends NotifiableItemStackHandler implements 
         }
 
         @Override
-        @NotNull
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             return stack;
         }
 
         @Override
-        @NotNull
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (amount == 0) return ItemStack.EMPTY;
             validateSlotIndex(slot);

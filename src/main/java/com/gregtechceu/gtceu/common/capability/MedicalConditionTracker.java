@@ -1,123 +1,160 @@
 package com.gregtechceu.gtceu.common.capability;
 
-import com.gregtechceu.gtceu.api.capability.IMedicalConditionTracker;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition.IdleProgressionType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom.ConfiguredSymptom;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
-public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSerializable<CompoundTag> {
+public class MedicalConditionTracker implements ICapabilitySerializable<CompoundTag> {
 
     @Getter
-    private final Object2FloatMap<MedicalCondition> medicalConditions = new Object2FloatOpenHashMap<>();
-    private final Set<MedicalCondition> permanentConditions = new HashSet<>();
-    private final Object2IntMap<Symptom.ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
-    private final Object2IntMap<MobEffect> activeMobEffects = new Object2IntOpenHashMap<>();
+    @VisibleForTesting
+    final Reference2FloatOpenHashMap<MedicalCondition> medicalConditions = new Reference2FloatOpenHashMap<>();
+    private final Set<MedicalCondition> permanentConditions = new ReferenceOpenHashSet<>();
+    @Getter
+    private final Object2IntMap<ConfiguredSymptom> activeSymptoms = new Object2IntOpenHashMap<>();
+    private final Reference2IntMap<MobEffect> activeMobEffects = new Reference2IntOpenHashMap<>();
 
-    private final Set<MedicalCondition> flaggedForRemoval = new HashSet<>();
-
-    @Setter
-    private int maxAirSupply = -1;
+    private final Set<MedicalCondition> flaggedForRemoval = new ReferenceOpenHashSet<>();
 
     @Getter
     private final Player player;
+
+    private final LazyOptional<MedicalConditionTracker> holder = LazyOptional.of(() -> this);
 
     public MedicalConditionTracker(Player player) {
         this.player = player;
     }
 
-    @Override
     public void tick() {
         if (player.isCreative()) return;
 
-        for (var entry : activeMobEffects.object2IntEntrySet()) {
+        for (var entry : activeMobEffects.reference2IntEntrySet()) {
             player.addEffect(new MobEffectInstance(entry.getKey(), 100, entry.getIntValue()));
         }
 
-        if (player.level().getGameTime() % 20 == 0) { // apply idle progression every second
-            for (MedicalCondition condition : medicalConditions.keySet()) {
-                if (condition.idleProgressionType == MedicalCondition.IdleProgressionType.NONE) {
-                    continue;
-                }
-                if (permanentConditions.contains(condition) &&
-                        condition.idleProgressionType == MedicalCondition.IdleProgressionType.HEAL) {
-                    // can't automatically heal permanent conditions.
-                    continue;
-                }
-                int multiplier = (condition.idleProgressionType == MedicalCondition.IdleProgressionType.HEAL) ? -1 : 1;
-                medicalConditions.replace(condition,
-                        medicalConditions.getFloat(condition) + condition.idleProgressionRate * multiplier);
-                evaluateMedicalCondition(condition);
+        for (MedicalCondition condition : medicalConditions.keySet()) {
+            if (condition.idleProgressionType == IdleProgressionType.NONE ||
+                    condition.idleProgressionRate == 0.0f) {
+                continue;
             }
-            if (!medicalConditions.isEmpty()) {
-                updateActiveSymptoms();
+            if (permanentConditions.contains(condition) &&
+                    condition.idleProgressionType == IdleProgressionType.HEAL) {
+                // can't automatically heal permanent conditions.
+                continue;
             }
+            int multiplier = (condition.idleProgressionType == IdleProgressionType.HEAL) ? -1 : 1;
+            medicalConditions.addTo(condition, condition.idleProgressionRate * multiplier);
+            evaluateMedicalCondition(condition);
+        }
+        if (!medicalConditions.isEmpty()) {
+            updateActiveSymptoms();
         }
     }
 
-    public void progressCondition(@NotNull MedicalCondition condition, float strength) {
-        if (player.isCreative()) return;
+    public void progressRelatedCondition(@NotNull MaterialEntry materialEntry, int count) {
+        HazardProperty materialHazard = materialEntry.material().getProperty(PropertyKey.HAZARD);
+        float strength = (float) (materialEntry.getMaterialAmount() / GTValues.M) * count *
+                materialHazard.progressionMultiplier;
+        progressCondition(materialHazard.condition, strength);
+    }
 
-        medicalConditions.put(condition, medicalConditions.getOrDefault(condition, 0) + strength);
+    /**
+     * Progress a condition {@code condition} by {@code progression} counts.<br>
+     * This is invoked with negative values on antidote/cure consumption.
+     *
+     * @param condition   MedicalCondition to heal
+     * @param progression amount of progression to decrease
+     */
+    public void progressCondition(@NotNull MedicalCondition condition, float progression) {
+        // if progression is negative, remove zeroed conditions as well
+        if (progression < 0.0f && -progression >= medicalConditions.getFloat(condition)) {
+            removeMedicalCondition(condition);
+        } else {
+            if (player.isCreative()) return;
 
+            medicalConditions.addTo(condition, progression);
+        }
         updateActiveSymptoms();
     }
 
-    private void updateActiveSymptoms() {
+    public void removeMedicalCondition(MedicalCondition condition) {
+        flaggedForRemoval.add(condition);
+        permanentConditions.remove(condition);
+    }
+
+    @VisibleForTesting
+    void updateActiveSymptoms() {
         for (MedicalCondition condition : medicalConditions.keySet()) {
+            if (flaggedForRemoval.contains(condition)) {
+                continue;
+            }
             if (medicalConditions.getFloat(condition) >= condition.maxProgression * 2) {
                 // If condition has been applied for 2x the maximum time, make it permanent.
                 permanentConditions.add(condition);
             }
 
-            for (Symptom.ConfiguredSymptom symptom : condition.symptoms) {
-                int stage = calculateStage(condition, symptom);
-                if (stage <= 0) {
-                    continue;
-                }
-                symptom.symptom.tick(this, condition, symptom, stage);
+            for (ConfiguredSymptom configured : condition.symptoms) {
+                int stage = Math.max(calculateStage(condition, configured), 0);
+                Symptom symptom = configured.getSymptom();
+                symptom.tick(this, condition, configured, stage);
 
-                Optional<Symptom.ConfiguredSymptom> currentSymptomOptional = activeSymptoms.keySet()
+                Optional<ConfiguredSymptom> maybeExisting = activeSymptoms.keySet()
                         .stream()
-                        .filter(symptom1 -> symptom1.symptom == symptom.symptom)
+                        .filter(s -> s.getSymptom() == symptom)
                         .findFirst();
-                if (currentSymptomOptional.isEmpty()) {
-                    activeSymptoms.put(symptom, stage);
-                    symptom.symptom.applyProgression(this, condition, null, stage);
+                if (maybeExisting.isEmpty() || maybeExisting.get() == configured) {
+                    if (stage == 0) {
+                        activeSymptoms.removeInt(configured);
+                    } else {
+                        activeSymptoms.put(configured, stage);
+                    }
+
+                    symptom.applyProgression(this, condition, configured, stage);
                     continue;
                 }
-                Symptom.ConfiguredSymptom currentSymptom = currentSymptomOptional.get();
-                if (currentSymptom == symptom && stage > activeSymptoms.getOrDefault(symptom, 0)) {
-                    symptom.symptom.applyProgression(this, condition, symptom,
-                            activeSymptoms.getOrDefault(symptom, 0));
-                    activeSymptoms.replace(symptom, stage);
-                    symptom.symptom.applyProgression(this, condition, symptom, stage);
+                if (stage == 0) {
+                    // if stage == 0, the last check can't ever be true. In that case, just skip it.
                     continue;
                 }
-                if (symptom.relativeHarshness * stage >
-                        currentSymptom.relativeHarshness * activeSymptoms.getOrDefault(currentSymptom, 0)) {
-                    currentSymptom.symptom.applyProgression(this, condition, symptom,
-                            activeSymptoms.getOrDefault(currentSymptom, 0));
-                    activeSymptoms.removeInt(currentSymptom);
-                    activeSymptoms.put(symptom, stage);
-                    symptom.symptom.applyProgression(this, condition, symptom, stage);
+
+                ConfiguredSymptom existing = maybeExisting.get();
+                int existingStage = activeSymptoms.getInt(existing);
+                if (configured.getRelativeHarshness() * stage > existing.getRelativeHarshness() * existingStage) {
+                    activeSymptoms.removeInt(existing);
+                    activeSymptoms.put(configured, stage);
+
+                    symptom.applyProgression(this, condition, configured, stage);
+                    continue;
                 }
             }
         }
@@ -126,25 +163,36 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
             return;
         }
         for (MedicalCondition condition : flaggedForRemoval) {
-            for (Symptom.ConfiguredSymptom configuredSymptom : activeSymptoms.keySet().stream()
-                    .filter(condition.symptoms::contains).toList()) {
-                // reset all symptom effects for this condition
-                configuredSymptom.symptom.applyProgression(this, condition, configuredSymptom, 0);
+            Set<ConfiguredSymptom> toRemove = new HashSet<>();
+            activeSymptoms.keySet().stream()
+                    .filter(condition.symptoms::contains)
+                    .forEach(symptom -> {
+                        // reset all symptom effects for this condition
+                        symptom.getSymptom().applyProgression(this, condition, symptom, 0);
+                        toRemove.add(symptom);
+                    });
+            for (ConfiguredSymptom symptom : toRemove) {
+                activeSymptoms.removeInt(symptom);
             }
+
             medicalConditions.removeFloat(condition);
         }
         flaggedForRemoval.clear();
     }
 
-    @Override
-    public void removeMedicalCondition(MedicalCondition condition) {
-        flaggedForRemoval.add(condition);
-        permanentConditions.remove(condition);
-    }
+    private int calculateStage(MedicalCondition condition, ConfiguredSymptom symptom) {
+        float minThreshold = symptom.getMinThreshold();
+        float maxThreshold = symptom.getMaxThreshold();
+        float progression = medicalConditions.getFloat(condition);
 
-    private int calculateStage(MedicalCondition condition, Symptom.ConfiguredSymptom symptom) {
-        return (int) Math.floor(Math.min(medicalConditions.getFloat(condition), condition.maxProgression) /
-                (symptom.progressionThreshold * condition.maxProgression * symptom.stages));
+        if (progression < minThreshold) {
+            return 0;
+        }
+        if (progression >= maxThreshold) {
+            return symptom.getStages();
+        }
+        float delta = Mth.inverseLerp(Math.min(progression, condition.maxProgression), minThreshold, maxThreshold);
+        return (int) (delta * symptom.getStages());
     }
 
     // removes MedicalConditions without progression
@@ -157,34 +205,12 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         }
     }
 
-    /**
-     * called on antidote/cure consumption
-     *
-     * @param condition   MedicalCondition to heal
-     * @param progression amount of progression to decrease
-     */
-    @Override
-    public void heal(MedicalCondition condition, int progression) {
-        if (progression >= medicalConditions.getOrDefault(condition, 0)) {
-            medicalConditions.removeFloat(condition);
-            permanentConditions.remove(condition);
-            return;
-        }
-        medicalConditions.replace(condition, medicalConditions.getOrDefault(condition, 0) - progression);
-    }
-
-    @Override
-    public int getMaxAirSupply() {
-        return maxAirSupply;
-    }
-
-    @Override
     public void setMobEffect(MobEffect effect, int amplifier) {
         if (amplifier <= 0) {
             activeMobEffects.removeInt(effect);
-        } else if (amplifier >= activeMobEffects.getOrDefault(effect, -1)) {
-            activeMobEffects.put(effect, amplifier);
+            return;
         }
+        activeMobEffects.mergeInt(effect, amplifier, Math::max);
     }
 
     @Override
@@ -192,9 +218,9 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
         CompoundTag tag = new CompoundTag();
 
         ListTag effectsTag = new ListTag();
-        for (var entry : medicalConditions.object2FloatEntrySet()) {
+        for (var entry : medicalConditions.reference2FloatEntrySet()) {
             CompoundTag medicalConditionTag = new CompoundTag();
-            medicalConditionTag.putString("condition", entry.getKey().name);
+            medicalConditionTag.putString("condition", entry.getKey().id.toString());
             medicalConditionTag.putFloat("progression", entry.getFloatValue());
             effectsTag.add(medicalConditionTag);
         }
@@ -202,7 +228,7 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
         ListTag permanentsTag = new ListTag();
         for (MedicalCondition condition : permanentConditions) {
-            permanentsTag.add(StringTag.valueOf(condition.name));
+            permanentsTag.add(StringTag.valueOf(condition.id.toString()));
         }
         tag.put("permanent_conditions", permanentsTag);
 
@@ -211,10 +237,19 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
     @Override
     public void deserializeNBT(CompoundTag arg) {
+        // ensure the medical condition map(s) is actually empty before loading.
+        // IDK if this actually happens, but better be safe than sorry.
+        medicalConditions.clear();
+        permanentConditions.clear();
+
         ListTag medicalConditionsTag = arg.getList("medical_conditions", Tag.TAG_COMPOUND);
         for (int i = 0; i < medicalConditionsTag.size(); ++i) {
             CompoundTag compoundTag = medicalConditionsTag.getCompound(i);
-            MedicalCondition condition = MedicalCondition.CONDITIONS.get(compoundTag.getString("condition"));
+            ResourceLocation id = GTCEu.id(compoundTag.getString("condition"));
+            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+                continue;
+            }
+            MedicalCondition condition = GTRegistries.MEDICAL_CONDITIONS.get(id);
             float progression = compoundTag.getFloat("progression");
 
             medicalConditions.put(condition, progression);
@@ -222,7 +257,16 @@ public class MedicalConditionTracker implements IMedicalConditionTracker, INBTSe
 
         ListTag permanentConditionsTag = arg.getList("permanent_conditions", Tag.TAG_STRING);
         for (int i = 0; i < permanentConditionsTag.size(); ++i) {
-            permanentConditions.add(MedicalCondition.CONDITIONS.get(permanentConditionsTag.getString(i)));
+            ResourceLocation id = GTCEu.id(permanentConditionsTag.getString(i));
+            if (!GTRegistries.MEDICAL_CONDITIONS.containKey(id)) {
+                continue;
+            }
+            permanentConditions.add(GTRegistries.MEDICAL_CONDITIONS.get(id));
         }
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        return GTCapability.CAPABILITY_MEDICAL_CONDITION_TRACKER.orEmpty(cap, this.holder);
     }
 }

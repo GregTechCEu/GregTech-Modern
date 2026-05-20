@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,10 +31,11 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.IV];
 
-    private final MultipleComputationHandler computationHandler = new MultipleComputationHandler(this);
+    private final MultipleComputationHandler computationHandler;
 
-    public NetworkSwitchMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public NetworkSwitchMachine(BlockEntityCreationInfo info) {
+        super(info);
+        computationHandler = attachTrait(new MultipleComputationHandler());
     }
 
     @Override
@@ -98,20 +97,20 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return isActive() && !getRecipeLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return isFormed() ? computationHandler.getMaxCWUt(seen) : 0;
     }
 
     // allows chaining Network Switches together
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return true;
     }
@@ -141,7 +140,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
      */
 
     /** Handles computation load across multiple receivers and to multiple transmitters. */
-    private static class MultipleComputationHandler extends NotifiableComputationContainer {
+    private class MultipleComputationHandler extends NotifiableComputationContainer {
 
         // providers in the NS provide distributable computation to the NS
         private final Set<IOpticalComputationHatch> providers = new ObjectOpenHashSet<>();
@@ -152,8 +151,11 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         @Getter(value = AccessLevel.PRIVATE)
         private int EUt;
 
-        public MultipleComputationHandler(MetaMachine machine) {
-            super(machine, IO.IN, false);
+        private boolean tickSaturated;
+        private long timerCWUt = -1;
+
+        public MultipleComputationHandler() {
+            super(IO.IN, false);
         }
 
         private void onStructureForm(Collection<IOpticalComputationHatch> providers,
@@ -171,10 +173,25 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+        public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
+
+            if (cwut == 0) return 0;
+
+            // Exit early if this Network Switch has already provided all available CWUt on its subnetwork for this tick
+            long timer = NetworkSwitchMachine.this.getOffsetTimer();
+            if (timerCWUt == timer) {
+                if (tickSaturated) {
+                    return 0;
+                }
+            } else {
+                // First call this tick, reset saturation
+                timerCWUt = timer;
+                tickSaturated = false;
+            }
+
             Collection<IOpticalComputationProvider> bridgeSeen = new ArrayList<>(seen);
             int allocatedCWUt = 0;
             for (var provider : providers) {
@@ -184,6 +201,12 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 cwut -= allocated;
                 if (cwut == 0) break;
             }
+
+            if (!simulate && allocatedCWUt == 0) {
+                // No computation left to give, remember this for subsequent calls this tick
+                tickSaturated = true;
+            }
+
             return allocatedCWUt;
         }
 
@@ -200,7 +223,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
             return maximumCWUt;
         }
 
-        public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
@@ -214,7 +237,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return false;
             seen.add(this);
             for (var provider : providers) {

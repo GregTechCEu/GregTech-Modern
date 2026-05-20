@@ -43,7 +43,7 @@ public class CoilBlock extends ActiveBlock {
             tooltip.add(
                     Component.translatable("block.gtceu.wire_coil.tooltip.parallel_smelter", coilType.getLevel() * 32));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.energy_smelter",
-                    Math.max(1, 16 / coilType.getEnergyDiscount())));
+                    Math.max(1, (4 * coilType.getLevel() * 32 / (8 * coilType.getEnergyDiscount())))));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.pyro"));
             tooltip.add(Component.translatable("block.gtceu.wire_coil.tooltip.speed_pyro",
                     coilTier == 0 ? 75 : 50 * (coilTier + 1)));

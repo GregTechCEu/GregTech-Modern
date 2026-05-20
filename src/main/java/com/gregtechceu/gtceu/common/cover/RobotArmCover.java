@@ -7,20 +7,22 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -32,16 +34,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class,
-            ConveyorCover.MANAGED_FIELD_HOLDER);
-
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected TransferMode transferMode;
 
-    @Persisted
+    @SaveField
     @Getter
+    @Setter
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
@@ -55,11 +55,6 @@ public class RobotArmCover extends ConveyorCover {
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         this(definition, coverHolder, attachedSide, tier, CONVEYOR_SCALING.applyAsInt(tier));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override
@@ -182,12 +177,13 @@ public class RobotArmCover extends ConveyorCover {
         group.addWidget(this.stackSizeInput);
     }
 
-    private void setTransferMode(TransferMode transferMode) {
+    public void setTransferMode(TransferMode transferMode) {
         this.transferMode = transferMode;
 
         configureStackSizeInput();
 
         if (!this.isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("transferMode");
             configureFilter();
         }
     }
@@ -218,5 +214,19 @@ public class RobotArmCover extends ConveyorCover {
             return true;
 
         return !this.filterHandler.getFilter().supportsAmounts();
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putInt("transferMode", transferMode.ordinal());
+        tag.putInt("transferLimit", globalTransferLimit);
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferMode(TransferMode.values()[tag.getInt("transferMode")]);
+        setGlobalTransferLimit(tag.getInt("transferLimit"));
+        super.pasteConfig(player, tag);
     }
 }

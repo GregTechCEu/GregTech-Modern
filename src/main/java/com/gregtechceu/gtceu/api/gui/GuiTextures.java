@@ -107,6 +107,8 @@ public class GuiTextures {
             "gtceu:textures/gui/widget/button_distinct_buses.png");
     public static final ResourceTexture BUTTON_POWER = new ResourceTexture(
             "gtceu:textures/gui/widget/button_power.png");
+    public static final ResourceTexture BUTTON_BATCH = new ResourceTexture(
+            "gtceu:textures/gui/widget/button_batch.png");
     public static final ResourceTexture BUTTON_FILTER_NBT = new ResourceTexture(
             "gtceu:textures/gui/widget/button_filter_nbt.png");
     public static final ResourceTexture BUTTON_FLUID_OUTPUT = new ResourceTexture(
@@ -494,7 +496,7 @@ public class GuiTextures {
 
     // Covers
     public static final ResourceTexture COVER_MACHINE_CONTROLLER = new ResourceTexture(
-            "gtceu:textures/items/metaitems/cover.controller.png");
+            "gtceu:textures/items/machine_controller_cover.png");
 
     // Terminal
     public static final ResourceTexture ICON_REMOVE = new ResourceTexture(

@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
-import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidStackHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.editor.annotation.Configurable;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -133,8 +134,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidTank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidTank;
-        this.tank = 0;
+        setFluidTank(fluidTank, 0);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -149,8 +149,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public TankWidget(@Nullable IFluidHandler fluidHandler, int tank, int x, int y, int width, int height,
                       boolean allowClickContainerFilling, boolean allowClickContainerEmptying) {
         super(new Position(x, y), new Size(width, height));
-        this.fluidTank = fluidHandler;
-        this.tank = tank;
+        setFluidTank(fluidHandler, tank);
         this.showAmount = true;
         this.allowClickFilled = allowClickContainerFilling;
         this.allowClickDrained = allowClickContainerEmptying;
@@ -158,17 +157,17 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     }
 
     public TankWidget setFluidTank(IFluidHandler fluidTank) {
-        this.fluidTank = fluidTank;
-        this.tank = 0;
-        if (isClientSideWidget) {
-            setClientSideWidget();
-        }
-        return this;
+        return setFluidTank(fluidTank, 0);
     }
 
     public TankWidget setFluidTank(IFluidHandler fluidTank, int tank) {
-        this.fluidTank = fluidTank;
-        this.tank = tank;
+        if (fluidTank instanceof NotifiableFluidTank notifiable) {
+            this.fluidTank = notifiable.getStorages()[tank];
+            this.tank = 0;
+        } else {
+            this.fluidTank = fluidTank;
+            this.tank = tank;
+        }
         if (isClientSideWidget) {
             setClientSideWidget();
         }
@@ -220,9 +219,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
         if (self().isMouseOverElement(mouseX, mouseY)) {
             if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return null;
 
-            if (fluidTank instanceof CycleFluidStackHandler stackHandler) {
-                return getXEIIngredientsClickable(stackHandler, tank).get(0);
-            } else if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
+            if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
                 return getXEIIngredientsClickable(entryHandler, tank).get(0);
             }
 
@@ -241,9 +238,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
     public List<Object> getXEIIngredients() {
         if (lastFluidInTank == null || lastFluidInTank.isEmpty()) return Collections.emptyList();
 
-        if (fluidTank instanceof CycleFluidStackHandler stackHandler) {
-            return getXEIIngredientsClickable(stackHandler, tank);
-        } else if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
+        if (fluidTank instanceof CycleFluidEntryHandler entryHandler) {
             return getXEIIngredientsClickable(entryHandler, tank);
         }
 
@@ -255,30 +250,6 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             return List.of(ForgeEmiStack.of(lastFluidInTank).setChance(XEIChance));
         }
         return List.of(lastFluidInTank);
-    }
-
-    private List<Object> getXEIIngredients(CycleFluidStackHandler handler, int index) {
-        FluidStackList stackList = handler.getStackList(index);
-        if (GTCEu.Mods.isJEILoaded()) {
-            return JEICallWrapper.getJEIIngredients(stackList);
-        } else if (GTCEu.Mods.isREILoaded()) {
-            return REICallWrapper.getREIIngredients(stackList);
-        } else if (GTCEu.Mods.isEMILoaded()) {
-            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance());
-        }
-        return Collections.emptyList();
-    }
-
-    private List<Object> getXEIIngredientsClickable(CycleFluidStackHandler handler, int index) {
-        FluidStackList stackList = handler.getStackList(index);
-        if (GTCEu.Mods.isJEILoaded()) {
-            return JEICallWrapper.getJEIIngredientsClickable(stackList, getPosition(), getSize());
-        } else if (GTCEu.Mods.isREILoaded()) {
-            return REICallWrapper.getREIIngredients(stackList);
-        } else if (GTCEu.Mods.isEMILoaded()) {
-            return EMICallWrapper.getEMIIngredients(stackList, getXEIChance());
-        }
-        return Collections.emptyList();
     }
 
     private List<Object> getXEIIngredients(CycleFluidEntryHandler handler, int index) {
@@ -533,7 +504,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (filledResult.isEmpty()) {
                     filledResult = remainingStack.copy();
-                } else if (ItemStack.isSameItemSameTags(filledResult, remainingStack)) {
+                } else if (GTUtil.isSameItemSameTags(filledResult, remainingStack)) {
                     if (filledResult.getCount() < filledResult.getMaxStackSize())
                         filledResult.grow(1);
                     else
@@ -579,7 +550,7 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
 
                 if (drainedResult.isEmpty()) {
                     drainedResult = remainingStack.copy();
-                } else if (ItemStack.isSameItemSameTags(drainedResult, remainingStack)) {
+                } else if (GTUtil.isSameItemSameTags(drainedResult, remainingStack)) {
                     if (drainedResult.getCount() < drainedResult.getMaxStackSize())
                         drainedResult.grow(1);
                     else

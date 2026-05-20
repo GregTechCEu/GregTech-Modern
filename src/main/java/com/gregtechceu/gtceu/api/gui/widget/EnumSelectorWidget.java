@@ -37,12 +37,12 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
         IGuiTexture getIcon();
     }
 
-    private final CycleButtonWidget buttonWidget;
+    public final CycleButtonWidget buttonWidget;
 
-    private final List<T> values;
-    private final Consumer<T> onChanged;
+    public final List<T> values;
+    public final Consumer<T> onChanged;
 
-    private int selected = 0;
+    public int selected = 0;
 
     private BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier = (value, texture) -> new GuiTextureGroup(
             GuiTextures.VANILLA_BUTTON, texture);
@@ -85,7 +85,7 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
         return values.get(selected);
     }
 
-    private IGuiTexture getTexture(int selected) {
+    public IGuiTexture getTexture(int selected) {
         var selectedValue = values.get(selected);
         return textureSupplier.apply(selectedValue, selectedValue.getIcon());
     }

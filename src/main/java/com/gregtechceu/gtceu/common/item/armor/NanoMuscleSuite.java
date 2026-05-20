@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -51,23 +51,38 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             return;
         }
         CompoundTag data = itemStack.getOrCreateTag();
-        byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
-        int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
-                ArmorUtils.NIGHTVISION_DURATION;
+
+        byte toggleStepTimer = data.getByte("toggleStepTimer");
+        if (type == ArmorItem.Type.BOOTS) {
+            boolean stepAssist = data.contains("stepAssist") && data.getBoolean("stepAssist");
+            if (toggleStepTimer == 0 && SyncedKeyMappings.STEP_ASSIST_ENABLE.isKeyDown(player)) {
+                stepAssist = !stepAssist;
+                toggleStepTimer = 5;
+                if (world.isClientSide()) player.displayClientMessage(Component
+                        .translatable("metaarmor.nms.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                data.putBoolean("stepAssist", stepAssist);
+            }
+
+            if (toggleStepTimer > 0) toggleStepTimer--;
+            data.putInt("toggleStepTimer", toggleStepTimer);
+        }
+
         if (type == ArmorItem.Type.HELMET) {
+            byte toggleTimer = data.contains("toggleTimer") ? data.getByte("toggleTimer") : 0;
+            int nightVisionTimer = data.contains("nightVisionTimer") ? data.getInt("nightVisionTimer") :
+                    ArmorUtils.NIGHTVISION_DURATION;
             boolean nightVision = data.contains("nightVision") && data.getBoolean("nightVision");
-            if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+            if (toggleTimer == 0 && SyncedKeyMappings.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 nightVision = !nightVision;
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(
-                            Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                    if (world.isClientSide())
+                        player.displayClientMessage(Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
                 } else {
-                    player.displayClientMessage(Component
+                    if (world.isClientSide()) player.displayClientMessage(Component
                             .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
-                                    (nightVision ? "enabled" : "disabled")),
-                            true);
+                                    (nightVision ? "enabled" : "disabled")), true);
                 }
             }
 
@@ -84,14 +99,11 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 player.removeEffect(MobEffects.NIGHT_VISION);
             }
             data.putBoolean("nightVision", nightVision);
-
+            if (nightVisionTimer > 0) nightVisionTimer--;
+            if (toggleTimer > 0) toggleTimer--;
+            data.putInt("nightVisionTimer", nightVisionTimer);
+            data.putByte("toggleTimer", toggleTimer);
         }
-
-        if (nightVisionTimer > 0) nightVisionTimer--;
-        if (toggleTimer > 0) toggleTimer--;
-
-        data.putInt("nightVisionTimer", nightVisionTimer);
-        data.putByte("toggleTimer", toggleTimer);
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
@@ -167,8 +179,9 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
+        CompoundTag nbtData = itemStack.getOrCreateTag();
         if (type == ArmorItem.Type.HELMET) {
-            CompoundTag nbtData = itemStack.getOrCreateTag();
+
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
                 lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
@@ -176,7 +189,9 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
-            lines.add(Component.translatable("armor.gtceu.tooltip.stepassist"));
+            if (nbtData.getBoolean("stepAssist"))
+                lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.enabled"));
+            else lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.disabled"));
             lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
         }
     }

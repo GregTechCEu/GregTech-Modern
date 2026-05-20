@@ -1,40 +1,21 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.syncdata.ISubscription;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -42,72 +23,57 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropSaveMachine, IInteractedMachine {
+public class DrumMachine extends MetaMachine implements IDropSaveMachine {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DrumMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
-
-    @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    protected boolean autoOutputFluids;
     @Getter
     private final int maxStoredFluids;
-    @Persisted
+    @SaveField
     protected final NotifiableFluidTank cache;
     @Nullable
-    protected TickableSubscription autoOutputSubs;
-    @Nullable
     protected ISubscription exportFluidSubs;
-    @Persisted(key = "Fluid")
-    @DescSynced
+    @SaveField(nbtKey = "Fluid")
+    @SyncToClient
     @Getter
-    @DropSaved // rename "Fluid" for Item capability
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
     protected final Material material;
 
-    public DrumMachine(IMachineBlockEntity holder, Material material, int maxStoredFluids, Object... args) {
-        super(holder);
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
+
+    public DrumMachine(BlockEntityCreationInfo info, Material material, int maxStoredFluids) {
+        super(info);
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = attachTrait(new NotifiableFluidTank(1, maxStoredFluids, IO.BOTH)
+                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE)));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(), List.of(cache), false));
+        autoOutput.setFluidOutputDirection(Direction.DOWN);
+        autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
-                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
-    }
 
     @Override
     public void onLoad() {
         super.onLoad();
         updateStoredFluidFromCache();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
         this.exportFluidSubs = cache.addChangedListener(this::onFluidChanged);
     }
 
     private void onFluidChanged() {
         if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("stored");
             updateStoredFluidFromCache();
-            updateAutoOutputSubscription();
         }
     }
 
@@ -130,8 +96,12 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     //////////////////////////////////////
 
     @Override
+    public void saveToItem(CompoundTag tag) {
+        tag.put("Fluid", stored.writeToNBT(new CompoundTag()));
+    }
+
+    @Override
     public void loadFromItem(CompoundTag tag) {
-        IDropSaveMachine.super.loadFromItem(tag);
         if (!tag.contains("Fluid")) {
             stored = FluidStack.EMPTY;
         }
@@ -145,98 +115,23 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     }
 
     @Override
-    public void setAutoOutputFluids(boolean allow) {
-        this.autoOutputFluids = allow;
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public boolean isAllowInputFromOutputSideFluids() {
-        return false;
-    }
-
-    // always is facing down, and can never accept fluids from output side
-    @Override
-    public void setAllowInputFromOutputSideFluids(boolean allow) {}
-
-    @Override
-    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public @Nullable Direction getOutputFacingFluids() {
-        return Direction.DOWN;
-    }
-
-    @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    protected void updateAutoOutputSubscription() {
-        var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
-    }
-
-    @SuppressWarnings("resource")
-    @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
         if (!isRemote()) {
-            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
                 return InteractionResult.SUCCESS;
             }
         }
-        return world.isClientSide ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        return super.onUseWithItem(context);
+    }
+
+    @Override
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
+        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public boolean saveBreak() {
         return !stored.isEmpty();
-    }
-
-    @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
-        if (!isRemote()) {
-            if (!playerIn.isShiftKeyDown()) {
-                setAutoOutputFluids(!isAutoOutputFluids());
-                playerIn.sendSystemMessage(Component
-                        .translatable("machine.gtceu.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
-                return InteractionResult.SUCCESS;
-            }
-        }
-        return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    Direction side) {
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (side == getOutputFacingFluids()) {
-                return isAutoOutputFluids() ? GuiTextures.TOOL_DISABLE_AUTO_OUTPUT : GuiTextures.TOOL_AUTO_OUTPUT;
-            }
-        }
-        return super.sideTips(player, pos, state, toolTypes, side);
     }
 }

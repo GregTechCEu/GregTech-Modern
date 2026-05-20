@@ -1,6 +1,13 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
 public interface IPaintable {
+
+    BooleanProperty IS_PAINTED_PROPERTY = GTMachineModelProperties.IS_PAINTED;
+    int UNPAINTED_COLOR = 0xffffffff;
 
     /**
      * Get painting color.
@@ -21,7 +28,7 @@ public interface IPaintable {
      * If the block is painted.
      */
     default boolean isPainted() {
-        return getPaintingColor() != -1 && getPaintingColor() != getDefaultPaintingColor();
+        return getPaintingColor() != UNPAINTED_COLOR && getPaintingColor() != getDefaultPaintingColor();
     }
 
     /**
