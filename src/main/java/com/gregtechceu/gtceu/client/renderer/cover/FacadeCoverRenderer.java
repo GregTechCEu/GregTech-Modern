@@ -57,17 +57,16 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             // the second row of pixels of the block's texture and to combat Z-fighting.
             AABB facadePlane = switch (dir) {
                 case DOWN -> FACADE_PLANE.setMaxY(FACADE_PLANE_BACK);
-                case UP -> FACADE_PLANE.setMinY(FACADE_PLANE_BACK);
+                case UP -> FACADE_PLANE.setMinY(1.0 - FACADE_PLANE_BACK);
                 case NORTH -> FACADE_PLANE.setMaxZ(FACADE_PLANE_BACK);
-                case SOUTH -> FACADE_PLANE.setMinZ(FACADE_PLANE_BACK);
+                case SOUTH -> FACADE_PLANE.setMinZ(1.0 - FACADE_PLANE_BACK);
                 case WEST -> FACADE_PLANE.setMaxX(FACADE_PLANE_BACK);
-                case EAST -> FACADE_PLANE.setMinX(FACADE_PLANE_BACK);
+                case EAST -> FACADE_PLANE.setMinX(1.0 - FACADE_PLANE_BACK);
             };
 
             map.put(dir, GTQuadTransformers.clamp(facadePlane));
         }
     });
-    private static final IQuadTransformer FACADE_ITEM_PLANE_TRANSFORMER = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
     // spotless:on
 
     public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
@@ -169,7 +168,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 quad = GTQuadTransformers.copy(quad);
             }
 
-            // clamp the quad's vertex positions to fit into the facade plane
+            // clamp the quad's vertices into the facade plane
             clamper.processInPlace(quad);
 
             quads.add(quad);
@@ -293,6 +292,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             ModelData facadeData = modelData.get(GTModelProperties.CHILD_MODEL_DATA);
             if (facadeData == null) facadeData = ModelData.EMPTY;
 
+            IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
             for (var model : facadeModel.getRenderPasses(this.facadeStack, true)) {
@@ -326,8 +326,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         quad = GTQuadTransformers.copy(quad);
                     }
 
-                    // clamp the quad's vertex positions to fit into the facade plane
-                    FACADE_ITEM_PLANE_TRANSFORMER.processInPlace(quad);
+                    // clamp the quad's vertices into the facade plane
+                    clamper.processInPlace(quad);
 
                     quads.add(quad);
                 }
