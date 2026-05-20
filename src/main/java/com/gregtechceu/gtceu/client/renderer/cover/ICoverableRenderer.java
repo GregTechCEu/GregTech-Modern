@@ -48,6 +48,13 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
         double thickness = coverable.getCoverPlateThickness();
 
+        byte coverMask = 0;
+        for (Direction face : GTUtil.DIRECTIONS) {
+            if (coverable.hasCover(face)) {
+                coverMask |= 1 << face.ordinal();
+            }
+        }
+
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
             if (cover != null) {
@@ -70,7 +77,8 @@ public interface ICoverableRenderer {
                     if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                         if (side == null) { // render back
                             quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
-                        } else if (side != face.getOpposite()) { // render sides
+                        } else if (side != face.getOpposite() &&
+                                (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
                             quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
                         }
                     }
