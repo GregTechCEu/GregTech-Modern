@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -101,9 +100,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
-            }
+            scheduleForNextServerTick(this::updateBreakerSubscription);
             energySubs = energyContainer.addChangedListener(this::updateBreakerSubscription);
         }
     }

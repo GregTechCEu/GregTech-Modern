@@ -37,8 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -130,17 +128,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentTraits);
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override
@@ -431,6 +425,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
             this.controller = controller;
+        }
+
+        @Override
+        public @Nullable ISyncManaged getParentSyncObject() {
+            return controller;
         }
 
         public void onStructureForm(Collection<HPCAComponentTrait> components) {
@@ -787,16 +786,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void clearClientComponents() {
             components.clear();
-        }
-
-        @Override
-        public void markAsChanged() {
-            if (controller != null) controller.markAsChanged();
-        }
-
-        @Override
-        public void scheduleRenderUpdate() {
-            if (controller != null) controller.scheduleRenderUpdate();
         }
     }
 }
