@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -142,6 +142,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
+        QuadReInterpolator interpolator = new QuadReInterpolator();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
         // always add unculled faces
@@ -158,6 +159,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         for (BakedQuad quad : facadeQuads) {
+            interpolator.setInputQuad(quad);
+
             // bake the quad's colors into its vertices
             if (quad.isTinted()) {
                 // if the quad has a tint index set, bake the tint into the vertex
@@ -170,6 +173,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
             // clamp the quad's vertices into the facade plane
             clamper.processInPlace(quad);
+            // fix the quad's UVs based on the original & clamped vertices
+            interpolator.processInPlace(quad);
 
             quads.add(quad);
         }
@@ -293,6 +298,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             if (facadeData == null) facadeData = ModelData.EMPTY;
 
             IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
+            QuadReInterpolator interpolator = new QuadReInterpolator();
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
             for (var model : facadeModel.getRenderPasses(this.facadeStack, true)) {
@@ -315,6 +321,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
                 // clamp all 'facaded' quads into a box and bake their tint color into the vertices
                 for (BakedQuad quad : facadeQuads) {
+                    interpolator.setInputQuad(quad);
+
                     // bake the quad's colors into its vertices
                     if (quad.isTinted()) {
                         // if the quad has a tint index set, bake the tint into the vertex color
@@ -328,6 +336,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
                     // clamp the quad's vertices into the facade plane
                     clamper.processInPlace(quad);
+                    // fix the quad's UVs based on the original & clamped vertices
+                    interpolator.processInPlace(quad);
 
                     quads.add(quad);
                 }
