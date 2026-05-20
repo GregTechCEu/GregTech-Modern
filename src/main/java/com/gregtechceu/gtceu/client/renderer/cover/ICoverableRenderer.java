@@ -33,8 +33,6 @@ public interface ICoverableRenderer {
 
     @OnlyIn(Dist.CLIENT)
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
-    double THIN_OFFSET = 0.002;
-    AABB COVER_PLATE_BOX = StaticFaceBakery.BLOCK.deflate(THIN_OFFSET);
 
     @OnlyIn(Dist.CLIENT)
     static void initSprites(TextureAtlas atlas) {
@@ -67,12 +65,12 @@ public interface ICoverableRenderer {
                 // All faces are slightly under a full block's size to never show the beginning of
                 // the second row of pixels of the block's texture and to combat Z-fighting.
                 AABB cube = switch (face) {
-                    case DOWN -> COVER_PLATE_BOX.setMaxY(thickness);
-                    case UP -> COVER_PLATE_BOX.setMinY(1.0 - thickness);
-                    case NORTH -> COVER_PLATE_BOX.setMaxZ(thickness);
-                    case SOUTH -> COVER_PLATE_BOX.setMinZ(1.0 - thickness);
-                    case WEST -> COVER_PLATE_BOX.setMaxX(thickness);
-                    case EAST -> COVER_PLATE_BOX.setMinX(1.0 - thickness);
+                    case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(thickness);
+                    case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - thickness);
+                    case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(thickness);
+                    case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - thickness);
+                    case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(thickness);
+                    case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - thickness);
                 };
 
                 if (side == null) { // render back

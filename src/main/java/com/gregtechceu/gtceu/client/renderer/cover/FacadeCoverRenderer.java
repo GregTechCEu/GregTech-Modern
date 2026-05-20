@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
@@ -48,23 +49,21 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
-    private static final AABB FACADE_PLANE = ICoverableRenderer.COVER_PLATE_BOX;
-
     // spotless:off
     private static final Map<Direction, IQuadTransformer> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
             // All faces are slightly under a full block's size to never show the beginning of
             // the second row of pixels of the block's texture and to combat Z-fighting.
             AABB facadePlane = switch (dir) {
-                case DOWN -> FACADE_PLANE.setMaxY(FACADE_PLANE_BACK);
-                case UP -> FACADE_PLANE.setMinY(1.0 - FACADE_PLANE_BACK);
-                case NORTH -> FACADE_PLANE.setMaxZ(FACADE_PLANE_BACK);
-                case SOUTH -> FACADE_PLANE.setMinZ(1.0 - FACADE_PLANE_BACK);
-                case WEST -> FACADE_PLANE.setMaxX(FACADE_PLANE_BACK);
-                case EAST -> FACADE_PLANE.setMinX(1.0 - FACADE_PLANE_BACK);
+                case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(FACADE_PLANE_BACK);
+                case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - FACADE_PLANE_BACK);
+                case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(FACADE_PLANE_BACK);
+                case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - FACADE_PLANE_BACK);
+                case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(FACADE_PLANE_BACK);
+                case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - FACADE_PLANE_BACK);
             };
 
-            map.put(dir, GTQuadTransformers.clamp(facadePlane));
+            map.put(dir, GTQuadTransformers.forcePositionTo(facadePlane));
         }
     });
     // spotless:on
