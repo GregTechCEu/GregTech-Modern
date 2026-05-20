@@ -28,7 +28,6 @@ public class PipeNet {
         this.networkType = netType;
     }
 
-
     public ServerLevel getLevel() {
         return worldData.getWorld();
     }
@@ -36,5 +35,4 @@ public class PipeNet {
     public void onNeighbourUpdate(BlockPos fromPos) {
         routePaths.clear();
     }
-
 }

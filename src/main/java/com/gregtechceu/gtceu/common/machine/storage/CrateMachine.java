@@ -14,34 +14,23 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLife,
-                          IDropSaveMachine, IInteractedMachine {
-
-    public static final BooleanProperty TAPED_PROPERTY = GTMachineModelProperties.IS_TAPED;
+public class CrateMachine extends MetaMachine implements IUIMachine, IDropSaveMachine {
 
     @Getter
     private final Material material;
@@ -60,7 +49,7 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
         super(info);
         this.material = material;
         this.inventorySize = inventorySize;
-        this.inventory = new NotifiableItemStackHandler(this, inventorySize, IO.BOTH);
+        this.inventory = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH));
     }
 
     @Override
@@ -89,34 +78,22 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.isCrouching() && !isTaped) {
-            if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var stack = context.getItemInHand();
+        var player = context.getPlayer();
+        if (stack.is(GTItems.DUCT_TAPE.asItem()) || stack.is(GTItems.BASIC_TAPE.asItem())) {
+            if (player != null && player.isCrouching() && !isTaped) {
                 if (!player.isCreative()) {
                     stack.shrink(1);
                 }
                 isTaped = true;
+                inventory.shouldDropInventoryInWorld(false);
                 setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
                 syncDataHolder.markClientSyncFieldDirty("isTaped");
-                return InteractionResult.sidedSuccess(world.isClientSide);
+                return InteractionResult.sidedSuccess(context.getLevel().isClientSide);
             }
         }
-        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
-    }
-
-    @Override
-    public void onMachinePlaced(@Nullable LivingEntity player, ItemStack stack) {
-        super.onMachinePlaced(player, stack);
-        CompoundTag tag = stack.getTag();
-        if (tag != null) {
-            if (tag.contains("taped") && tag.getBoolean("taped")) {
-                this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
-            }
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_TAPED, isTaped));
-            syncDataHolder.markClientSyncFieldDirty("isTaped");
-        }
+        return super.onUseWithItem(context);
     }
 
     @Override
@@ -126,16 +103,13 @@ public class CrateMachine extends MetaMachine implements IUIMachine, IMachineLif
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+        if (tag.contains("inventory")) {
+            this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
+        }
     }
 
     @Override
     public boolean saveBreak() {
         return isTaped;
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        if (!isTaped) clearInventory(inventory.storage);
     }
 }

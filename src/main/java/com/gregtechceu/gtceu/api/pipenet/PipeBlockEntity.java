@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.*;
 import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -21,6 +19,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -36,13 +35,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -60,7 +57,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType>
                                      extends ManagedSyncBlockEntity
-                                     implements IGregtechBlockEntity, IToolGridHighlight, ITickSubscription, IToolable, ICopyable, IPaintable, IDebugOverlayTextSupplier {
+                                     implements IGregtechBlockEntity, IToolGridHighlight, ITickSubscription, ICopyable,
+                                     IPaintable, IDebugOverlayTextSupplier {
 
     private final long offset = GTValues.RNG.nextInt(20);
 
@@ -202,7 +200,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Nullable
     public PipeNode getNode() {
-        if (!isRemote()) return LevelPipeNet.getLevelPipeNet((ServerLevel)getLevel(), networkType).getNodeFromPos(getBlockPos());
+        if (!isRemote())
+            return LevelPipeNet.getLevelPipeNet((ServerLevel) getLevel(), networkType).getNodeFromPos(getBlockPos());
         return null;
     }
 
@@ -227,11 +226,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!attachedToNet) {
             LevelPipeNet.getLevelPipeNet((ServerLevel) level, networkType).addNode(getBlockPos(), this);
             attachedToNet = true;
         }
-
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -306,8 +305,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
-        // fix desync between two connections. Can happen if a pipe side is blocked, and a new pipe is placed next to
-        // it.
+        // fix desync between two connections.
+        // Can happen if a pipe side is blocked, and a new pipe is placed next to it.
+        if (getLevel() == null) {
+            return;
+        }
         if (!getLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;
@@ -363,8 +365,20 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         }
     }
 
+    @Override
     public void notifyBlockUpdate() {
         getLevel().updateNeighborsAt(getBlockPos(), getPipeBlock());
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int para) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
     }
 
     //////////////////////////////////////
@@ -401,56 +415,41 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return null;
     }
 
-    @Override
-    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack,
-                                                           UseOnContext context) {
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         // the side hit from the machine grid
-        var playerIn = context.getPlayer();
-        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
+        var player = context.getPlayer();
+        var toolType = context.getToolType();
+        var gridSide = context.getGridSide();
 
-        var hand = context.getHand();
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
-                context.getClickedPos(), false);
-        Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
-        if (gridSide == null) gridSide = hitResult.getDirection();
+        if (player == null) return Pair.of(null, InteractionResult.PASS);
 
-        // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolTypes.isEmpty() && playerIn.isShiftKeyDown()) {
-            if (coverBehavior != null) {
-                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+        // Prioritize covers
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
+        if (cover != null) {
+            var result = cover.onToolClick(context);
+            if (result.getSecond() != InteractionResult.PASS) return result;
+
+            if (toolType.contains(GTToolType.CROWBAR)) {
+                getCoverContainer().removeCover(context.getGridSide(), player);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (coverBehavior != null) {
-                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
-            }
-        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            if (coverBehavior != null) {
-                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
-            }
-        } else if (toolTypes.contains(getPipeTuneTool())) {
-            if (playerIn.isShiftKeyDown() && this.canHaveBlockedFaces()) {
+
+        if (toolType.contains(getPipeTuneTool())) {
+            if (player.isShiftKeyDown() && this.canHaveBlockedFaces()) {
                 boolean isBlocked = this.isBlocked(gridSide);
                 this.setBlocked(gridSide, !isBlocked);
             } else {
                 boolean isOpen = this.isConnected(gridSide);
                 this.setConnection(gridSide, !isOpen, false);
             }
-            return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-        } else if (toolTypes.contains(GTToolType.CROWBAR)) {
-            if (coverBehavior != null) {
-                if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide, playerIn);
-                    return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-                }
-            } else {
-                if (!frameMaterial.isNull()) {
-                    Block.popResource(getLevel(), getBlockPos(),
-                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                    frameMaterial = GTMaterials.NULL;
-                    return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-                }
+            return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
+        } else if (toolType.contains(GTToolType.CROWBAR)) {
+            if (!frameMaterial.isNull()) {
+                Block.popResource(context.getLevel(), this.getBlockPos(),
+                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                frameMaterial = GTMaterials.NULL;
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 
@@ -508,10 +507,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         leftLines.accept("");
         leftLines.accept(ChatFormatting.UNDERLINE + "Pipe Network");
         leftLines.accept(getNetworkType().toString());
-        leftLines.accept(getPipeNet() != null ? getPipeNet().toString(): "<no network>");
+        leftLines.accept(getPipeNet() != null ? getPipeNet().toString() : "<no network>");
         leftLines.accept("");
         leftLines.accept(ChatFormatting.UNDERLINE + "Pipe Segment");
-        for (var p: getPipeBlock().defaultSegmentProperties.getProperties().entrySet()) {
+        for (var p : getPipeBlock().defaultSegmentProperties.getProperties().entrySet()) {
             leftLines.accept(p.getKey().getId().toString() + "=" + p.getValue().toString() + ",");
         }
     }

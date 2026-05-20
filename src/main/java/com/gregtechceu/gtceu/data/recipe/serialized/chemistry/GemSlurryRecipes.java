@@ -14,8 +14,14 @@ public class GemSlurryRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         // Ruby
-        MIXER_RECIPES.recipeBuilder("ruby_slurry").duration(280).EUt(VA[EV])
+        MIXER_RECIPES.recipeBuilder("ruby_slurry_from_crushed_ruby").duration(280).EUt(VA[EV])
                 .inputItems(crushed, Ruby, 2)
+                .inputFluids(AquaRegia.getFluid(3000))
+                .outputFluids(RubySlurry.getFluid(3000))
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("ruby_slurry_from_washed_ruby").duration(280).EUt(VA[EV])
+                .inputItems(crushedPurified, Ruby, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(RubySlurry.getFluid(3000))
                 .save(provider);
@@ -31,8 +37,14 @@ public class GemSlurryRecipes {
                 .save(provider);
 
         // Sapphire
-        MIXER_RECIPES.recipeBuilder("sapphire_slurry").duration(280).EUt(VA[EV])
+        MIXER_RECIPES.recipeBuilder("sapphire_slurry_from_crushed_sapphire").duration(280).EUt(VA[EV])
                 .inputItems(crushed, Sapphire, 2)
+                .inputFluids(AquaRegia.getFluid(3000))
+                .outputFluids(SapphireSlurry.getFluid(3000))
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("sapphire_slurry_from_washed_sapphire").duration(280).EUt(VA[EV])
+                .inputItems(crushedPurified, Sapphire, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(SapphireSlurry.getFluid(3000))
                 .save(provider);
@@ -47,8 +59,14 @@ public class GemSlurryRecipes {
                 .save(provider);
 
         // Green Sapphire
-        MIXER_RECIPES.recipeBuilder("green_sapphire_slurry").duration(280).EUt(VA[EV])
+        MIXER_RECIPES.recipeBuilder("green_sapphire_slurry_from_crushed_green_sapphire").duration(280).EUt(VA[EV])
                 .inputItems(crushed, GreenSapphire, 2)
+                .inputFluids(AquaRegia.getFluid(3000))
+                .outputFluids(GreenSapphireSlurry.getFluid(3000))
+                .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("green_sapphire_slurry_from_washed_green_sapphire").duration(280).EUt(VA[EV])
+                .inputItems(crushedPurified, GreenSapphire, 2)
                 .inputFluids(AquaRegia.getFluid(3000))
                 .outputFluids(GreenSapphireSlurry.getFluid(3000))
                 .save(provider);

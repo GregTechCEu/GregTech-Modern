@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.pipenet.property.BoolSegmentProperty;
 import com.gregtechceu.gtceu.api.pipenet.property.IntSegmentProperty;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-
 import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
+
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -85,18 +85,23 @@ public enum FluidPipeType implements IMaterialPipeType {
 
     @Override
     public PipeSegmentPropertyHolder buildSegmentProperties(@Nullable Material material) {
-        if (material == null || material.getProperty(PropertyKey.FLUID_PIPE) == null) throw new IllegalArgumentException(
-                "Attempted to build fluid pipe properties for null material or material without PropertyKey.FLUID_PIPE");
+        if (material == null || material.getProperty(PropertyKey.FLUID_PIPE) == null)
+            throw new IllegalArgumentException(
+                    "Attempted to build fluid pipe properties for null material or material without PropertyKey.FLUID_PIPE");
         var segmentProperties = new PipeSegmentPropertyHolder();
         var materialProperties = material.getProperty(PropertyKey.FLUID_PIPE);
 
-        segmentProperties.setProperty(SegmentPropertyTypes.FLUID_THROUGHPUT, new IntSegmentProperty(materialProperties.getThroughput() * capacityMultiplier))
-                .setProperty(SegmentPropertyTypes.MAX_TEMPERATURE, new IntSegmentProperty(materialProperties.getMaxFluidTemperature()))
+        segmentProperties
+                .setProperty(SegmentPropertyTypes.FLUID_THROUGHPUT,
+                        new IntSegmentProperty(materialProperties.getThroughput() * capacityMultiplier))
+                .setProperty(SegmentPropertyTypes.MAX_TEMPERATURE,
+                        new IntSegmentProperty(materialProperties.getMaxFluidTemperature()))
                 .setProperty(SegmentPropertyTypes.CHANNELS, new IntSegmentProperty(channels))
                 .setProperty(SegmentPropertyTypes.GAS_PROOF, new BoolSegmentProperty(materialProperties.isGasProof()))
                 .setProperty(SegmentPropertyTypes.ACID_PROOF, new BoolSegmentProperty(materialProperties.isAcidProof()))
                 .setProperty(SegmentPropertyTypes.CRYO_PROOF, new BoolSegmentProperty(materialProperties.isCryoProof()))
-                .setProperty(SegmentPropertyTypes.PLASMA_PROOF, new BoolSegmentProperty(materialProperties.isPlasmaProof()));
+                .setProperty(SegmentPropertyTypes.PLASMA_PROOF,
+                        new BoolSegmentProperty(materialProperties.isPlasmaProof()));
 
         return segmentProperties;
     }

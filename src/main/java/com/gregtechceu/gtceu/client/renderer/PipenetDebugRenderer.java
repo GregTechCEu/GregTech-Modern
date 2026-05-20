@@ -1,15 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -24,6 +15,16 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent.Stage;
+
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexBuffer.Usage;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import org.joml.Matrix4f;
 
 import static com.gregtechceu.gtceu.client.util.RenderBufferHelper.*;
@@ -38,7 +39,6 @@ public class PipenetDebugRenderer extends RenderType {
     private final RenderType QUADS_RENDER;
 
     public PipenetDebugRenderer() {
-
         super("", DefaultVertexFormat.POSITION_COLOR_NORMAL, Mode.LINES, 0, false, false, () -> {}, () -> {});
 
         TransparencyStateShard STO = new TransparencyStateShard("sto", () -> {
@@ -49,15 +49,16 @@ public class PipenetDebugRenderer extends RenderType {
             RenderSystem.defaultBlendFunc();
         });
 
-        this.QUADS_RENDER = create("gt_pipe_debug_quads", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256, false, false, CompositeState.builder()
-                .setTransparencyState(STO)
-                .setDepthTestState(NO_DEPTH_TEST)
-                .setCullState(NO_CULL)
-                .setShaderState(POSITION_COLOR_SHADER)
-                .setLightmapState(NO_LIGHTMAP)
-                .setWriteMaskState(COLOR_DEPTH_WRITE)
-                .setTextureState(NO_TEXTURE)
-                .createCompositeState(true));
+        this.QUADS_RENDER = create("gt_pipe_debug_quads", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256, false,
+                false, CompositeState.builder()
+                        .setTransparencyState(STO)
+                        .setDepthTestState(NO_DEPTH_TEST)
+                        .setCullState(NO_CULL)
+                        .setShaderState(POSITION_COLOR_SHADER)
+                        .setLightmapState(NO_LIGHTMAP)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
+                        .setTextureState(NO_TEXTURE)
+                        .createCompositeState(true));
     }
 
     public static void hook(RenderLevelStageEvent event) {
@@ -65,10 +66,10 @@ public class PipenetDebugRenderer extends RenderType {
             LocalPlayer player = Minecraft.getInstance().player;
 
             if (player != null && player.getMainHandItem().getItem() == GTItems.PIPENET_DEBUG_VIEWER.get()) {
-                INSTANCE.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource(), event.getProjectionMatrix(), event.getCamera());
+                INSTANCE.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource(),
+                        event.getProjectionMatrix(), event.getCamera());
             }
         }
-
     }
 
     public void createVBO() {
@@ -120,9 +121,7 @@ public class PipenetDebugRenderer extends RenderType {
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
         }
-
     }
-
 
     private void drawQuads(PoseStack stack, BufferBuilder buf) {
         renderCube(buf, stack, BlockPos.ZERO, 2, WHITE);
@@ -130,6 +129,7 @@ public class PipenetDebugRenderer extends RenderType {
     }
 
     private void drawText(PoseStack stack, MultiBufferSource.BufferSource multiBuf, Matrix4f pro, Camera camera) {
-        renderInWorldText(multiBuf, stack, camera, "rendering is so cool", WHITE, getCenter(BlockPos.ZERO, BlockPos.ZERO.atY(3)), camera.getPosition().reverse());
+        renderInWorldText(multiBuf, stack, camera, "rendering is so cool", WHITE,
+                getCenter(BlockPos.ZERO, BlockPos.ZERO.atY(3)), camera.getPosition().reverse());
     }
 }

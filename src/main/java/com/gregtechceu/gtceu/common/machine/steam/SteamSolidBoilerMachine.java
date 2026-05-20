@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -36,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMachineLife {
+public class SteamSolidBoilerMachine extends SteamBoilerMachine {
 
     public static final Object2BooleanMap<Item> FUEL_CACHE = new Object2BooleanOpenHashMap<>();
 
@@ -45,7 +44,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
 
     public SteamSolidBoilerMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.fuelHandler = createFuelHandler().setFilter(itemStack -> {
+        this.fuelHandler = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.IN));
+        fuelHandler.setFilter(itemStack -> {
             if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;
             }
@@ -61,20 +61,12 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
                 });
             });
         });
-        this.ashHandler = createAshHandler();
+        this.ashHandler = attachTrait(new NotifiableItemStackHandler(1, IO.OUT, IO.OUT));
     }
 
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createFuelHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createAshHandler() {
-        return new NotifiableItemStackHandler(this, 1, IO.OUT, IO.OUT);
-    }
 
     @Override
     protected long getBaseSteamOutput() {
@@ -135,11 +127,5 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
                                 GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
                                 GuiTextures.PROGRESS_BAR_BOILER_FUEL.get(isHighPressure).getSubTexture(0, 0.5, 1, 0.5))
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP));
-    }
-
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(fuelHandler.storage);
-        clearInventory(ashHandler.storage);
     }
 }

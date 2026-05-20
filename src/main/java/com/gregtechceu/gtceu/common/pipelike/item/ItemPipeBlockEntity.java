@@ -38,7 +38,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType> {
 
     public static void onBlockEntityRegister(BlockEntityType<ItemPipeBlockEntity> itemPipeBlockEntityBlockEntityType) {}
 
-
     public boolean canAttachTo(Direction side) {
         if (level == null) return false;
         if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {

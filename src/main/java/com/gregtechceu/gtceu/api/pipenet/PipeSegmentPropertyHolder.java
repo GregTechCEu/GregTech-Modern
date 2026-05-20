@@ -17,7 +17,7 @@ public class PipeSegmentPropertyHolder {
 
     @SuppressWarnings("unchecked")
     public <T extends PipeSegmentProperty<?>> T getProperty(SegmentPropertyType<T> prop) {
-        return (T)properties.get(prop);
+        return (T) properties.get(prop);
     }
 
     public <T> T getPropertyValue(SegmentPropertyType<? extends PipeSegmentProperty<T>> prop) {
@@ -35,7 +35,7 @@ public class PipeSegmentPropertyHolder {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PipeSegmentPropertyHolder other)) return false;
-        for (var prop: properties.keySet()) {
+        for (var prop : properties.keySet()) {
             if (!other.properties.containsKey(prop)) return false;
             if (!getProperties().get(prop).equals(other.getProperties().get(prop))) return false;
         }

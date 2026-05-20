@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
@@ -20,7 +20,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
@@ -140,8 +140,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType>
             }
         } else if (capability == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
-        } else if (capability == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(capability, LazyOptional.of(() -> this));
         }
         return super.getCapability(capability, facing);
     }
@@ -286,16 +284,19 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType>
     }
 
     public boolean canContain(@NotNull FluidAttribute attribute) {
-         if (attribute == FluidAttributes.ACID) return getPipeBlock().defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.ACID_PROOF);
-         return true;
+        if (attribute == FluidAttributes.ACID)
+            return getPipeBlock().defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.ACID_PROOF);
+        return true;
     }
 
     public void checkAndDestroy(@NotNull FluidStack stack) {
         Fluid fluid = stack.getFluid();
 
         var props = getPipeBlock().defaultSegmentProperties;
-        boolean burning = props.getPropertyValue(SegmentPropertyTypes.MAX_TEMPERATURE) < fluid.getFluidType().getTemperature(stack);
-        boolean leaking = !props.getPropertyValue(SegmentPropertyTypes.GAS_PROOF) && fluid.getFluidType().getDensity(stack) < 0;
+        boolean burning = props.getPropertyValue(SegmentPropertyTypes.MAX_TEMPERATURE) <
+                fluid.getFluidType().getTemperature(stack);
+        boolean leaking = !props.getPropertyValue(SegmentPropertyTypes.GAS_PROOF) &&
+                fluid.getFluidType().getDensity(stack) < 0;
         boolean shattering = !props.getPropertyValue(SegmentPropertyTypes.CRYO_PROOF) &&
                 fluid.getFluidType().getTemperature(stack) < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
         boolean corroding = false;
@@ -443,8 +444,10 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType>
     }
 
     private void createTanksList() {
-        fluidTanks = new CustomFluidTank[getPipeBlock().defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS)];
-        for (int i = 0; i < getPipeBlock().defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS); i++) {
+        fluidTanks = new CustomFluidTank[getPipeBlock().defaultSegmentProperties
+                .getPropertyValue(SegmentPropertyTypes.CHANNELS)];
+        for (int i = 0; i <
+                getPipeBlock().defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS); i++) {
             fluidTanks[i] = new CustomFluidTank(getCapacityPerTank());
         }
         pipeTankList = new PipeTankList(this, null, fluidTanks);
@@ -556,5 +559,4 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType>
             this.amount = amount;
         }
     }
-
 }

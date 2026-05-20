@@ -44,12 +44,12 @@ public abstract class MachineTraitProvider<T extends MachineTrait>
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         var be = blockAccessor.getBlockEntity();
         if (be instanceof MetaMachine machine) {
-            var t = machine.getTraitHolder().getTrait(traitType);
-            if (t != null) write(compoundTag.getCompound(uid.toString()), t);
+            T t = machine.getTrait(traitType);
+            if (t != null) write(compoundTag.getCompound(uid.toString()), blockAccessor, t);
         }
     }
 
-    protected abstract void write(CompoundTag data, T trait);
+    protected abstract void write(CompoundTag data, BlockAccessor blockAccessor, T trait);
 
     protected abstract void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
                                        BlockEntity blockEntity, IPluginConfig config);

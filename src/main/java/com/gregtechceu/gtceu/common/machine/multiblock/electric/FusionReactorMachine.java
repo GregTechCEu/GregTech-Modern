@@ -84,20 +84,13 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = attachTrait(new NotifiableEnergyContainer(0, 0, 0, 0, 0));
+        energyContainer.setCapabilityValidator(Objects::isNull);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    public NotifiableEnergyContainer createEnergyContainer() {
-        // create an internal energy container for temp storage. its capacity is decided when the structure formed.
-        // it doesn't provide any capability of all sides, but null for the goggles mod to check it storages.
-        var container = new NotifiableEnergyContainer(this, 0, 0, 0, 0, 0);
-        container.setCapabilityValidator(Objects::isNull);
-        return container;
-    }
 
     @Override
     public void onLoad() {
@@ -177,7 +170,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
-            return ModifierFunction.NULL;
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -187,7 +181,9 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
         }
         // if the remaining energy needed is more than stored, do not run
-        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff) return ModifierFunction.NULL;
+        if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
+            return ModifierFunction
+                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);

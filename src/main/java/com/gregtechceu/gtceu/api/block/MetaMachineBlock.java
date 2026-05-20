@@ -4,22 +4,19 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.locale.Language;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -56,7 +53,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -123,7 +119,16 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (!pLevel.isClientSide) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
-                machine.onMachinePlaced(player, pStack);
+                if (player instanceof ServerPlayer sPlayer) {
+                    machine.setOwnerUUID(sPlayer.getUUID());
+                }
+
+                if (machine instanceof IDropSaveMachine dropSaveMachine) {
+                    CompoundTag tag = pStack.getTag();
+                    if (tag != null) {
+                        dropSaveMachine.loadFromItem(tag);
+                    }
+                }
             }
         }
     }
@@ -214,12 +219,11 @@ public class MetaMachineBlock extends Block implements EntityBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-        BlockEntity tileEntity = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         var drops = super.getDrops(state, builder);
-        if (tileEntity instanceof MetaMachine machine) {
-            if (machine instanceof IMachineModifyDrops machineModifyDrops) {
-                machineModifyDrops.onDrops(drops);
-            }
+
+        BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
+        if (be instanceof MetaMachine machine) {
+            machine.modifyDrops(drops);
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
@@ -239,7 +243,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
                 if (machine != null) {
-                    machine.onRemoved();
+                    machine.onMachineDestroyed();
                 }
 
                 pLevel.updateNeighbourForOutputSignal(pPos, this);
@@ -269,38 +273,18 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
-        if (!types.isEmpty() && ToolHelper.canUse(itemStack) || types.isEmpty() && player.isShiftKeyDown()) {
-            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
-            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
-                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
+        InteractionResult machineInteractResult = InteractionResult.PASS;
 
-                if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
-                }
-            }
-            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
-        }
-
-        if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
-            return itemStack.getItem().use(world, player, hand).getResult();
-        }
+        if (!itemStack.isEmpty())
+            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
+        machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
+        if (machineInteractResult != InteractionResult.PASS) return machineInteractResult;
 
         if (itemStack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-        for (var trait : machine.getTraitHolder().getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                InteractionResult result = interactionTrait.onUse(state, world, pos, player, hand, hit);
-                if (result != InteractionResult.PASS) return result;
-            }
-        }
-
-        if (machine instanceof IInteractedMachine interactedMachine) {
-            var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
-            if (result != InteractionResult.PASS) return result;
-        }
         if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
                 MachineOwner.canOpenOwnerMachine(player, machine)) {
             return uiMachine.tryToOpenUI(player, hand, hit);
@@ -313,31 +297,42 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     //////////////////////////////////////
 
     public boolean canConnectRedstone(BlockGetter level, BlockPos pos, Direction side) {
-        return MetaMachine.getMachine(level, pos).canConnectRedstone(side);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return false;
+        return machine.canConnectRedstone(side);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return MetaMachine.getMachine(level, pos).getOutputSignal(direction);
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputSignal(direction);
+    }
+
+    @Override
+    public int getDirectSignal(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getOutputDirectSignal(direction);
     }
 
     @Override
     @SuppressWarnings("deprecation") // This is fine to override, just not to be called.
     public int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
-        return MetaMachine.getMachine(level, pos).getAnalogOutputSignal();
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine == null) return 0;
+        return machine.getAnalogOutputSignal();
     }
 
-    /////////
-
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-                                boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
+                                boolean movedByPiston) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine != null) {
-            machine.onNeighborChanged(block, fromPos, isMoving);
+            machine.onNeighborChanged(neighborBlock, neighborPos, movedByPiston);
         }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
     }
 
     @Override
@@ -384,12 +379,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
-                    pTile.setChanged();
                     if (pTile instanceof MetaMachine metaMachine) {
                         metaMachine.serverTick();
-                    }
-                    if (pTile instanceof ManagedSyncBlockEntity syncObj) {
-                        syncObj.updateTick();
                     }
                 };
             } else {

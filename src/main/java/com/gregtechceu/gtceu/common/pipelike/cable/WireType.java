@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.api.pipenet.PipeSegmentPropertyHolder;
 import com.gregtechceu.gtceu.api.pipenet.property.BoolSegmentProperty;
 import com.gregtechceu.gtceu.api.pipenet.property.IntSegmentProperty;
 import com.gregtechceu.gtceu.api.pipenet.property.LongSegmentProperty;
-import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -119,7 +119,8 @@ public enum WireType implements IMaterialPipeType {
         segmentProperties.setProperty(SegmentPropertyTypes.MAX_VOLTAGE, new LongSegmentProperty(voltage))
                 .setProperty(SegmentPropertyTypes.MAX_AMPS, new IntSegmentProperty(amps))
                 .setProperty(SegmentPropertyTypes.LOSS_PER_BLOCK, new IntSegmentProperty(lossPerBlock))
-                .setProperty(SegmentPropertyTypes.IS_SUPERCONDUCTOR, new BoolSegmentProperty(materialProperties.isSuperconductor()));
+                .setProperty(SegmentPropertyTypes.IS_SUPERCONDUCTOR,
+                        new BoolSegmentProperty(materialProperties.isSuperconductor()));
 
         return segmentProperties;
     }

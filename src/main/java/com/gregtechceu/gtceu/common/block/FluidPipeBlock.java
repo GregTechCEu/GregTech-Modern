@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -76,12 +76,15 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
 
-        tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", defaultSegmentProperties.getProperty(SegmentPropertyTypes.FLUID_THROUGHPUT)));
+        tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                defaultSegmentProperties.getProperty(SegmentPropertyTypes.FLUID_THROUGHPUT)));
         tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",
-                FormattingUtil.formatTemperature(defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.MAX_TEMPERATURE))));
+                FormattingUtil.formatTemperature(
+                        defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.MAX_TEMPERATURE))));
 
         if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS) > 1) {
-            tooltip.add(Component.translatable("gtceu.fluid_pipe.channels", defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS)));
+            tooltip.add(Component.translatable("gtceu.fluid_pipe.channels",
+                    defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CHANNELS)));
         }
 
         if (!GTUtil.isShiftDown()) {
@@ -94,9 +97,12 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         else
             tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
 
-        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.ACID_PROOF)) tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
-        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CRYO_PROOF)) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
-        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.PLASMA_PROOF)) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
+        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.ACID_PROOF))
+            tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
+        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.CRYO_PROOF))
+            tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
+        if (defaultSegmentProperties.getPropertyValue(SegmentPropertyTypes.PLASMA_PROOF))
+            tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
     }
 
     @Override

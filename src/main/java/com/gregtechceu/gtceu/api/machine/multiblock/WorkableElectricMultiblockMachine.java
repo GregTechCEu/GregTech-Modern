@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -35,8 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -45,20 +45,24 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                                                IDisplayUIMachine, ITieredMachine, IOverclockMachine {
 
     // runtime
-    protected EnergyContainerList energyContainer;
+    protected @Nullable EnergyContainerList energyContainer;
     @Getter
     protected int tier;
     @SaveField
     @Getter
     protected boolean batchEnabled;
 
-    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info,
-                                             Function<WorkableMultiblockMachine, RecipeLogic> recipeLogicSupplier) {
-        super(info, recipeLogicSupplier);
+    public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic) {
+        super(info, recipeLogic);
     }
 
     public WorkableElectricMultiblockMachine(BlockEntityCreationInfo info) {
         super(info);
+    }
+
+    @Override
+    public WorkableElectricMultiblockMachine self() {
+        return this;
     }
 
     //////////////////////////////////////
@@ -109,7 +113,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             exact = true;
         } else {
             numParallels = getParallelHatch()
-                    .map(IParallelHatch::getCurrentParallel)
+                    .map(ParallelHatchPartMachine::getCurrentParallel)
                     .orElse(0);
             subtickParallels = 0;
             batchParallels = 0;
@@ -127,6 +131,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .addBatchModeLine(isBatchEnabled(), batchParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic)
+                .addRecipeFailReasonLine(recipeLogic)
                 .addOutputLines(recipeLogic.getLastRecipe());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);

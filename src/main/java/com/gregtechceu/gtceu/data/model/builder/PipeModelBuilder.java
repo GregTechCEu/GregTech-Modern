@@ -21,17 +21,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.function.BiFunction;
 
 import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelListToJSON;
 import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.configuredModelToJSON;
@@ -40,23 +38,28 @@ import static com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder.confi
 @SuppressWarnings("UnusedReturnValue")
 public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T> {
 
-    public static <T extends ModelBuilder<T>> PipeModelBuilder<T> begin(T parent,
-                                                                        ExistingFileHelper existingFileHelper) {
-        return new PipeModelBuilder<>(parent, existingFileHelper);
+    // spotless:off
+    public static <T extends ModelBuilder<T>> BiFunction<T, ExistingFileHelper, PipeModelBuilder<T>> begin(@Range(from = 0, to = 16) float thickness,
+                                                                                                           GTBlockstateProvider provider) {
+        return (parent, existingFileHelper) -> new PipeModelBuilder<>(parent, existingFileHelper, thickness, provider);
     }
+    // spotless:on
 
     @Accessors(fluent = false)
     @Getter
-    private final Map<Direction, ConfiguredModelList> parts = new IdentityHashMap<>();
-    @Setter
-    @Range(from = 0, to = 16)
-    private float thickness = Float.MIN_VALUE;
-    @Setter
-    private @NotNull GTBlockstateProvider provider;
-    private BlockModelBuilder[] restrictors = null;
+    private final Map<@Nullable Direction, ConfiguredModelList> parts = new IdentityHashMap<>();
+    private final float thickness;
+    private final GTBlockstateProvider provider;
+    private BlockModelBuilder @Nullable [] restrictors = null;
 
-    protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper) {
+    protected PipeModelBuilder(T parent, ExistingFileHelper existingFileHelper,
+                               float thickness, GTBlockstateProvider provider) {
         super(PipeModelLoader.ID, parent, existingFileHelper);
+
+        Preconditions.checkArgument(thickness > 0.0f && thickness <= 16.0f,
+                "Thickness must be between 0 (exclusive) and 16 (inclusive). It is %s", thickness);
+        this.thickness = thickness;
+        this.provider = provider;
     }
 
     /**
@@ -289,12 +292,6 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
 
     @Override
     public JsonObject toJson(JsonObject json) {
-        Preconditions.checkState(thickness != Float.MIN_VALUE, "A thickness value must be set!");
-        Preconditions.checkState(thickness > 0.0f || thickness <= 16.0f,
-                "Thickness must be between 0 (exclusive) and 16 (inclusive). is %s", thickness);
-        // noinspection ConstantValue
-        Preconditions.checkState(provider != null, "You must pass in a GTBlockStateProvider!");
-
         json = super.toJson(json);
 
         if (!getParts().isEmpty()) {
@@ -326,49 +323,12 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     }
 
     private static final ResourceLocation PIPE_BLOCKED_OVERLAY = GTCEu.id("block/pipe/blocked/pipe_blocked");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UP = GTCEu.id("block/pipe/blocked/pipe_blocked_up");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DOWN = GTCEu.id("block/pipe/blocked/pipe_blocked_down");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_LEFT = GTCEu.id("block/pipe/blocked/pipe_blocked_left");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_RIGHT = GTCEu
-            .id("block/pipe/blocked/pipe_blocked_right");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NU = GTCEu.id("block/pipe/blocked/pipe_blocked_nu");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_ND = GTCEu.id("block/pipe/blocked/pipe_blocked_nd");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NL = GTCEu.id("block/pipe/blocked/pipe_blocked_nl");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_NR = GTCEu.id("block/pipe/blocked/pipe_blocked_nr");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UD = GTCEu.id("block/pipe/blocked/pipe_blocked_ud");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UL = GTCEu.id("block/pipe/blocked/pipe_blocked_ul");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_UR = GTCEu.id("block/pipe/blocked/pipe_blocked_ur");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DL = GTCEu.id("block/pipe/blocked/pipe_blocked_dl");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_DR = GTCEu.id("block/pipe/blocked/pipe_blocked_dr");
-    private static final ResourceLocation PIPE_BLOCKED_OVERLAY_LR = GTCEu.id("block/pipe/blocked/pipe_blocked_lr");
-
-    private static final Int2ObjectMap<ResourceLocation> RESTRICTOR_MAP = Util.make(() -> {
-        Int2ObjectMap<ResourceLocation> map = new Int2ObjectOpenHashMap<>();
-
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UP, Border.TOP);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DOWN, Border.BOTTOM);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UD, Border.TOP, Border.BOTTOM);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_LEFT, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UL, Border.TOP, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DL, Border.BOTTOM, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NR, Border.TOP, Border.BOTTOM, Border.LEFT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_RIGHT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_UR, Border.TOP, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_DR, Border.BOTTOM, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NL, Border.TOP, Border.BOTTOM, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_LR, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_ND, Border.TOP, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY_NU, Border.BOTTOM, Border.LEFT, Border.RIGHT);
-        addRestrictor(map, PIPE_BLOCKED_OVERLAY, Border.TOP, Border.BOTTOM, Border.LEFT, Border.RIGHT);
-
-        return map;
-    });
 
     private static BlockModelBuilder[] getOrCreateRestrictorModels(BlockModelProvider provider, float thickness) {
         return RESTRICTOR_MODEL_CACHE.apply(provider, thickness);
     }
 
-    private static final MemoizedBiFunction<BlockModelProvider, @NotNull Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
+    private static final MemoizedBiFunction<BlockModelProvider, Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
 
     private static BlockModelBuilder[] makeRestrictorModels(BlockModelProvider provider, float thickness) {

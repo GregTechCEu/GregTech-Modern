@@ -42,25 +42,19 @@ public class LevelPipeNet extends SavedData {
         if (list != null && list.isEmpty()) this.pipeNetsByChunk.remove(chunkPos);
     }
 
-
-
     public <T extends PipeNet> T getNetFromPos(BlockPos blockPos) {
         return null;
     }
 
-    public void addNode(BlockPos nodePos, PipeBlockEntity<?> pipe) {
-    }
+    public void addNode(BlockPos nodePos, PipeBlockEntity<?> pipe) {}
 
-    public void removeNode(BlockPos nodePos) {
-    }
+    public void removeNode(BlockPos nodePos) {}
 
-    public void updateConnections(BlockPos nodePos, int connections, int blocked) {
-    }
+    public void updateConnections(BlockPos nodePos, int connections, int blocked) {}
 
     public @Nullable PipeNode getNodeFromPos(BlockPos pos) {
         return null;
     }
-
 
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag compound) {

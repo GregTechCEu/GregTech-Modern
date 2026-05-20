@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 public class ImageModuleBehaviour implements IMonitorModuleItem {
 
     @Override
-    public IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group) {
+    public IMonitorRenderer getRenderer(ItemStack stack) {
         return new MonitorImageRenderer(getUrl(stack));
     }
 

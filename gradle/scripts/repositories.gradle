@@ -7,6 +7,8 @@ repositories {
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
         }
     }
 
@@ -25,6 +27,7 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
+
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
@@ -32,6 +35,13 @@ repositories {
             includeGroup("com.simibubi.create")
             includeGroup("dev.engine-room.flywheel")
         }
+    }
+    exclusiveContent { // Configuration
+        forRepositories(
+                maven { url = "https://repo.repsy.io/mvn/toma/public/" },
+                maven { url = "https://api.repsy.io/mvn/toma/public" },
+        )
+        filter { includeGroup("dev.toma.configuration")}
     }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
@@ -79,5 +89,9 @@ repositories {
     exclusiveContent { // CC: Tweaked
         forRepository { maven { url = "https://maven.squiddev.cc" } }
         filter { includeGroup("cc.tweaked") }
+    }
+    exclusiveContent { // Xaero's
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupAndSubgroups("xaero") }
     }
 }

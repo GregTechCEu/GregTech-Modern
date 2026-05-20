@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class BoolSegmentProperty extends PipeSegmentProperty<Boolean> {
+
     @Getter
     @Setter
     Boolean value;

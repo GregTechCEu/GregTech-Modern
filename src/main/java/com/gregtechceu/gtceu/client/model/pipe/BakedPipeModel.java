@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
-import com.gregtechceu.gtceu.api.pipenet.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.pipenet.PipeBlockEntity;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -23,15 +24,13 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer,
                             IBlockEntityRendererBakedModel<PipeBlockEntity<?>> {
@@ -56,12 +55,16 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         Integer connectionMask = modelData.get(GTModelProperties.PIPE_CONNECTION_MASK);
         Integer blockedMask = modelData.get(GTModelProperties.PIPE_BLOCKED_MASK);
 
-        if (level == null || pos == null || state == null) {
+        if (state == null) {
             connectionMask = ITEM_CONNECTIONS;
             blockedMask = PipeBlockEntity.ALL_CLOSED;
         }
         if (connectionMask == null || connectionMask != PipeBlockEntity.ALL_OPENED) {
-            quads.addAll(parts.get(null).getQuads(state, side, rand, modelData, renderType));
+            BakedModel centerModel = parts.get(null);
+            if (renderType == null ||
+                    state != null && centerModel.getRenderTypes(state, rand, modelData).contains(renderType)) {
+                quads.addAll(centerModel.getQuads(state, side, rand, modelData, renderType));
+            }
             if (connectionMask == null) {
                 // return unconnected base model if the model property isn't set
                 return quads;
@@ -69,9 +72,17 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         }
         for (Direction dir : GTUtil.DIRECTIONS) {
             if (PipeBlockEntity.isConnected(connectionMask, dir)) {
-                quads.addAll(parts.get(dir).getQuads(state, side, rand, modelData, renderType));
+                BakedModel model = parts.get(dir);
+                if (renderType == null ||
+                        (state != null && model.getRenderTypes(state, rand, modelData).contains(renderType))) {
+                    quads.addAll(model.getQuads(state, side, rand, modelData, renderType));
+                }
                 if (blockedMask != null && PipeBlockEntity.isFaceBlocked(blockedMask, dir)) {
-                    quads.addAll(restrictors.get(dir).getQuads(state, side, rand, modelData, renderType));
+                    model = restrictors.get(dir);
+                    if (renderType == null ||
+                            (state != null && model.getRenderTypes(state, rand, modelData).contains(renderType))) {
+                        quads.addAll(model.getQuads(state, side, rand, modelData, renderType));
+                    }
                 }
             }
         }
@@ -81,7 +92,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
                 modelData, renderType);
 
-        if (pipeNode.getFrameMaterial().isNull() || (renderType != null && renderType != RenderType.translucent())) {
+        if (pipeNode.getFrameMaterial().isNull()) {
             return quads;
         }
         var frameBlockEntry = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial());
@@ -121,16 +132,48 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
     @Override
     public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
-        ModelData.Builder builder = modelData.derive()
-                .with(GTModelProperties.LEVEL, level)
-                .with(GTModelProperties.POS, pos);
-
-        if (!(level.getBlockEntity(pos) instanceof PipeBlockEntity<?> blockEntity)) {
-            return builder.build();
+        for (BakedModel part : this.parts.values()) {
+            modelData = part.getModelData(level, pos, state, modelData);
         }
-        return builder.with(GTModelProperties.PIPE_CONNECTION_MASK, blockEntity.getVisualConnections())
-                .with(GTModelProperties.PIPE_BLOCKED_MASK, blockEntity.getBlockedConnections())
-                .build();
+        for (BakedModel restrictor : this.restrictors.values()) {
+            modelData = restrictor.getModelData(level, pos, state, modelData);
+        }
+
+        var builder = modelData.derive();
+
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeNode) {
+            Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
+            for (Direction side : GTUtil.DIRECTIONS) {
+                CoverBehavior coverBehavior = pipeNode.getCoverContainer().getCoverAtSide(side);
+                if (coverBehavior == null) continue;
+
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                ModelData data = coverBehavior.getCoverRenderer().get()
+                        .getModelData(coverBehavior, pos, level, modelData);
+
+                coverModelData.put(side, data);
+            }
+            builder.with(GTModelProperties.COVER_MODEL_DATA, coverModelData);
+        }
+
+        return builder.build();
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData modelData) {
+        ChunkRenderTypeSet renderTypes = super.getRenderTypes(state, rand, modelData);
+
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
+
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeNode)) {
+            return renderTypes;
+        }
+
+        ChunkRenderTypeSet coverRenderTypes = ICoverableRenderer.super.getCoverRenderTypes(pipeNode.getCoverContainer(),
+                pos, level, rand, modelData);
+        return ChunkRenderTypeSet.union(renderTypes, coverRenderTypes);
     }
 
     @SuppressWarnings("deprecation")

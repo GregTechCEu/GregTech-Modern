@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -13,10 +13,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListen
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -27,15 +27,14 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
+/**
+ * The base class for all multiblock parts
+ */
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
-    protected final SortedSet<IMultiController> controllers = new ReferenceLinkedOpenHashSet<>(8);
+    protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
 
     private @Nullable RecipeHandlerList handlerList;
 
@@ -58,12 +57,11 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     // Not sure if necessary, but added to match the Controller class
-    @SuppressWarnings("unused")
     @ClientFieldChangeListener(fieldName = "controllerPositions")
     public void onControllersUpdated() {
         controllers.clear();
         for (BlockPos blockPos : controllerPositions) {
-            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof IMultiController controller) {
+            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
                 controllers.add(controller);
             }
         }
@@ -71,7 +69,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @Override
     @UnmodifiableView
-    public SortedSet<IMultiController> getControllers() {
+    public SortedSet<MultiblockControllerMachine> getControllers() {
         // Necessary to rebuild the set of controllers on client-side
         if (controllers.size() != controllerPositions.size()) {
             onControllersUpdated();
@@ -87,7 +85,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (handlerList == null) {
             List<IRecipeHandler<?>> handlers = new ArrayList<>();
             IO handlerIO = null;
-            for (var trait : traitHolder.getAllTraits()) {
+            for (var trait : getAllTraits()) {
                 if (trait instanceof IRecipeHandlerTrait<?> rht) {
                     if (handlerIO == null) handlerIO = rht.getHandlerIO();
                     handlers.add(rht);
@@ -108,8 +106,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         super.onUnload();
         if (getLevel() instanceof ServerLevel serverLevel) {
             // Need to copy if > 1 so that we can call removedFromController safely without CME
-            Set<IMultiController> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) : controllers;
-            for (IMultiController controller : toIter) {
+            Set<MultiblockControllerMachine> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) :
+                    controllers;
+            for (MultiblockControllerMachine controller : toIter) {
                 if (serverLevel.isLoaded(controller.self().getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
@@ -126,7 +125,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void removedFromController(IMultiController controller) {
+    public void removedFromController(MultiblockControllerMachine controller) {
         controllerPositions.remove(controller.self().getBlockPos());
         controllers.remove(controller);
 
@@ -141,7 +140,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         controllerPositions.add(controller.self().getBlockPos());
         controllers.add(controller);
 
@@ -161,8 +160,19 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @Override
     @Nullable
-    public BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
+    public BlockState getFormedAppearance(@Nullable BlockState sourceState, @Nullable BlockPos sourcePos,
+                                          Direction side) {
         if (!replacePartModelWhenFormed()) return null;
         return IMultiPart.super.getFormedAppearance(sourceState, sourcePos, side);
+    }
+
+    @Override
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                         @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
+        if (isFormed()) {
+            var appearance = getFormedAppearance(sourceState, sourcePos, side);
+            if (appearance != null) return appearance;
+        }
+        return super.getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
     }
 }

@@ -163,7 +163,7 @@ public class ItemMaterialData {
         // Load new data
         TagsHandler.initExtraUnificationEntries();
         for (TagPrefix prefix : TagPrefix.values()) {
-            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(Arrays.asList(items), prefix, mat));
+            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(items, prefix, mat));
         }
         GTMaterialItems.toUnify
                 .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));

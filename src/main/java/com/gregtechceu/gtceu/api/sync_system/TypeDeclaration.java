@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.sync_system;
 
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 
+@ApiStatus.Internal
 public class TypeDeclaration {
 
     @Getter
@@ -30,6 +33,10 @@ public class TypeDeclaration {
             this.classValue = null;
             this.arrayComponentType = new TypeDeclaration(genericArrayType.getGenericComponentType());
             this.genericTypeArgs = new TypeDeclaration[0];
+        } else if (type instanceof WildcardType) {
+            this.classValue = null;
+            this.genericTypeArgs = new TypeDeclaration[0];
+            this.arrayComponentType = null;
         } else {
             this.classValue = (Class<?>) type;
             this.genericTypeArgs = new TypeDeclaration[0];
@@ -45,5 +52,10 @@ public class TypeDeclaration {
         if (arrayComponentType == null) throw new IllegalStateException(
                 "Attempted to get array component for non-array type %s".formatted(rawType));
         return arrayComponentType;
+    }
+
+    @Override
+    public String toString() {
+        return rawType.toString();
     }
 }

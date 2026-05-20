@@ -49,7 +49,6 @@ public abstract class MaterialPipeBlock<
         return index == 0 || index == 1 ? material.getMaterialRGB() : -1;
     }
 
-
     @Override
     public String getDescriptionId() {
         return pipeType.getTagPrefix().getUnlocalizedName(material);

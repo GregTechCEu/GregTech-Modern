@@ -12,18 +12,17 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -34,23 +33,15 @@ import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,37 +55,29 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine
-                          implements IMiner, IControllable, IFancyUIMachine, IDataInfoProvider, IAutoOutputItem {
+                          implements IControllable, IFancyUIMachine, IDataInfoProvider, IMiner {
 
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected Direction outputFacingItems;
-    @Getter
-    @SaveField
-    @SyncToClient
-    @RerenderOnChanged
-    protected boolean autoOutputItems;
-    @Getter
-    @Setter
-    @SaveField
-    protected boolean allowInputFromOutputSideItems;
     @Getter
     @SaveField
     protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable
-    protected TickableSubscription autoOutputSubs, batterySubs;
+    protected TickableSubscription batterySubs;
     @Nullable
-    protected ISubscription exportItemSubs, energySubs;
+    protected ISubscription energySubs;
+
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
     public MinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumRadius, int fortune) {
         super(info, tier,
-                (m) -> new MinerLogic(m, fortune, speed, maximumRadius),
+                new MinerLogic(fortune, speed, maximumRadius),
                 0, (tier + 1) * (tier + 1), 0, 0, ($) -> 0);
         this.energyPerTick = GTValues.V[tier - 1];
         this.chargerInventory = createChargerItemHandler();
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(exportItems));
+        autoOutput.setItemOutputDirectionValidator(d -> d != Direction.DOWN);
     }
 
     //////////////////////////////////////
@@ -110,11 +93,10 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         // Remove the miner pipes below this miner
-        getRecipeLogic().onRemove();
-        clearInventory(exportItems.storage);
-        clearInventory(chargerInventory);
+        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     @Override
@@ -123,20 +105,10 @@ public class MinerMachine extends WorkableTieredMachine
     }
 
     @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    @Override
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-            }
             updateBatterySubscription();
-            exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(this::updateBatterySubscription);
             chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         }
@@ -145,11 +117,6 @@ public class MinerMachine extends WorkableTieredMachine
     @Override
     public void onUnload() {
         super.onUnload();
-        if (exportItemSubs != null) {
-            exportItemSubs.unsubscribe();
-            exportItemSubs = null;
-        }
-
         if (energySubs != null) {
             energySubs.unsubscribe();
             energySubs = null;
@@ -159,48 +126,12 @@ public class MinerMachine extends WorkableTieredMachine
     //////////////////////////////////////
     // ********** LOGIC **********//
     //////////////////////////////////////
-    protected void updateAutoOutputSubscription() {
-        var outputFace = getOutputFacingItems();
-        if (isAutoOutputItems() && outputFace != null && !exportItems.isEmpty() &&
-                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), outputFace)) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
     protected void updateBatterySubscription() {
         if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true)) {
             batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
         } else if (batterySubs != null) {
             batterySubs.unsubscribe();
             batterySubs = null;
-        }
-    }
-
-    protected void autoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputItems() && getOutputFacingItems() != null) {
-                exportItems.exportToNearby(getOutputFacingItems());
-            }
-        }
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setAutoOutputItems(boolean allow) {
-        this.autoOutputItems = allow;
-        syncDataHolder.markClientSyncFieldDirty("autoOutputItems");
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingItems(@Nullable Direction outputFacing) {
-        if (outputFacing != Direction.DOWN) {
-            this.outputFacingItems = outputFacing;
-            syncDataHolder.markClientSyncFieldDirty("outputFacingItems");
-            updateAutoOutputSubscription();
         }
     }
 
@@ -280,9 +211,8 @@ public class MinerMachine extends WorkableTieredMachine
                     slot.setCanPutItems(false);
                 }
             });
-            WidgetUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class, panel -> {
-                panel.textSupplier(machine::addDisplayText);
-            });
+            WidgetUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class,
+                    panel -> panel.textSupplier(machine::addDisplayText));
         });
     }
 
@@ -303,7 +233,7 @@ public class MinerMachine extends WorkableTieredMachine
         });
     }
 
-    private void addDisplayText(@NotNull List<Component> textList) {
+    private void addDisplayText(List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
         textList.add(recipeLogic.getCustomProgressLine());
         textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ")
@@ -344,15 +274,14 @@ public class MinerMachine extends WorkableTieredMachine
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                   BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote()) return InteractionResult.SUCCESS;
 
         if (!this.isActive()) {
             int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
                 getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
-            else if (playerIn.isShiftKeyDown())
+            else if (context.getPlayer().isShiftKeyDown())
                 getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
                 getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));
@@ -360,10 +289,10 @@ public class MinerMachine extends WorkableTieredMachine
             getRecipeLogic().resetArea(true);
 
             int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-            playerIn.sendSystemMessage(
+            context.getPlayer().sendSystemMessage(
                     Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }

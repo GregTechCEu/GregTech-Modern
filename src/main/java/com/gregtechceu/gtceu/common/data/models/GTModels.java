@@ -82,49 +82,57 @@ public class GTModels {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
 
+    public static final ResourceLocation CUBE_ALL_EMISSIVE = GTCEu.id("block/cube/emissive/all");
+
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,
                                                                                                               boolean border) {
         return (ctx, prov) -> {
-            final String borderPart = (border ? "" : "_borderless");
-            ModelFile parentOn = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart));
-            ModelFile parentOff = prov.models().getExistingFile(prov.modLoc("block/lamp" + borderPart + "_off"));
+            final String textureBase = "block/lamps/" + color.getSerializedName() + (border ? "" : "_borderless");
+
+            var onModel = prov.models().withExistingParent(ctx.getName() + "_on", CUBE_ALL_EMISSIVE)
+                    .texture("all", prov.modLoc(textureBase + "_on"));
+            var offModel = prov.models().cubeAll(ctx.getName() + "_off", prov.modLoc(textureBase + "_off"));
+
+            var bloomModel = prov.models().withExistingParent(ctx.getName() + "_bloom",
+                    border ? GTCEu.id("block/cube_2_layer/all") : CUBE_ALL_EMISSIVE);
+            if (border) {
+                bloomModel.texture("bot_all", textureBase + "_on");
+                bloomModel.texture("top_all", textureBase + "_bloom");
+            } else {
+                bloomModel.texture("all", textureBase + "_bloom");
+            }
 
             prov.getVariantBuilder(ctx.getEntry())
-                    .forAllStates(state -> {
-                        if (state.getValue(LampBlock.LIGHT)) {
-                            ModelBuilder<?> model = prov.models()
-                                    .getBuilder(ctx.getName() +
-                                            (state.getValue(GTBlockStateProperties.BLOOM) ? "_bloom" : ""))
-                                    .parent(parentOn);
-                            if (border) {
-                                model.texture("active", "block/lamps/" + color.getName());
-                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName() + "_emissive");
-                                } else {
-                                    model.texture("active_overlay", "block/lamps/" + color.getName());
-                                }
-                            } else {
-                                if (state.getValue(GTBlockStateProperties.BLOOM)) {
-                                    model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless_emissive");
-                                } else {
-                                    model.texture("active",
-                                            "block/lamps/" + color.getName() + "_borderless");
-                                }
-                            }
-                            return ConfiguredModel.builder()
-                                    .modelFile(model)
-                                    .build();
-                        } else {
-                            return ConfiguredModel.builder()
-                                    .modelFile(prov.models()
-                                            .getBuilder(ctx.getName() + "_off")
-                                            .parent(parentOff)
-                                            .texture("inactive",
-                                                    "block/lamps/" + color.getName() + "_off" + borderPart))
-                                    .build();
-                        }
-                    });
+                    // spotless:off
+                    .partialState()
+                        .with(LampBlock.INVERTED, false).with(LampBlock.POWERED, false)
+                        .modelForState().modelFile(offModel)
+                        .addModel()
+                    .partialState()
+                        .with(LampBlock.INVERTED, true).with(LampBlock.POWERED, true)
+                        .modelForState().modelFile(offModel)
+                        .addModel()
+                    .partialState()
+                        .with(LampBlock.INVERTED, false).with(LampBlock.POWERED, true)
+                        .with(LampBlock.BLOOM, false)
+                        .modelForState().modelFile(onModel)
+                        .addModel()
+                    .partialState()
+                        .with(LampBlock.INVERTED, true).with(LampBlock.POWERED, false)
+                        .with(LampBlock.BLOOM, false)
+                        .modelForState().modelFile(onModel)
+                        .addModel()
+                    .partialState()
+                        .with(LampBlock.INVERTED, false).with(LampBlock.POWERED, true)
+                        .with(LampBlock.BLOOM, true)
+                        .modelForState().modelFile(bloomModel)
+                        .addModel()
+                    .partialState()
+                        .with(LampBlock.INVERTED, true).with(LampBlock.POWERED, false)
+                        .with(LampBlock.BLOOM, true)
+                        .modelForState().modelFile(bloomModel)
+                        .addModel();
+                    // spotless:on
         };
     }
 

@@ -1,6 +1,24 @@
 {
   "parent": "gtceu:block/material_sets/dull/frame_gt",
-  "textures": {
-    "top_all": "gtceu:block/material_sets/radioactive/frame_gt_secondary"
-  }
+  "loader": "forge:composite",
+  "children": {
+    "base": {
+      "parent": "gtceu:block/cube/tinted/all_0",
+      "render_type": "cutout",
+      "textures": {
+        "all": "gtceu:block/material_sets/dull/frame_gt"
+      }
+    },
+    "secondary": {
+      "parent": "gtceu:block/cube/tinted/all",
+      "render_type": "translucent",
+      "textures": {
+        "all": "gtceu:block/material_sets/radioactive/frame_gt_secondary"
+      }
+    }
+  },
+  "item_render_order": [
+    "base",
+    "secondary"
+  ]
 }

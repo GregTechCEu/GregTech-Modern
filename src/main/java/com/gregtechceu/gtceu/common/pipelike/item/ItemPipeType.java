@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.pipenet.PipeSegmentPropertyHolder;
 import com.gregtechceu.gtceu.api.pipenet.property.FloatSegmentProperty;
 import com.gregtechceu.gtceu.api.pipenet.property.IntSegmentProperty;
-import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+import com.gregtechceu.gtceu.common.pipelike.SegmentPropertyTypes;
 
 import net.minecraft.resources.ResourceLocation;
 

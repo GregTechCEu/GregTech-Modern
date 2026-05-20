@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.pipenet;
 
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Function;
-
 public class PipeNetworkType {
 
     public ResourceLocation networkID;

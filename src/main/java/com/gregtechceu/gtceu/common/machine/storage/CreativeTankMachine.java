@@ -4,36 +4,24 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class CreativeTankMachine extends QuantumTankMachine {
 
     @Getter
@@ -48,16 +36,13 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     protected FluidCache createCacheFluidHandler() {
-        return new InfiniteCache(this);
+        return new InfiniteCache();
     }
 
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % ticksPerCycle == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!isRemote()) autoOutput.setTicksPerCycle(ticksPerCycle);
     }
 
     @Override
@@ -84,30 +69,22 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public void saveToItem(@NotNull CompoundTag tag) {
+    public void saveToItem(CompoundTag tag) {
         tag.putInt("mBPerCycle", mBPerCycle);
         tag.putInt("ticksPerCycle", ticksPerCycle);
     }
 
     @Override
-    public void loadFromItem(@NotNull CompoundTag tag) {
+    public void loadFromItem(CompoundTag tag) {
         mBPerCycle = tag.getInt("mBPerCycle");
         ticksPerCycle = tag.getInt("ticksPerCycle");
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        var heldItem = player.getItemInHand(hand);
-        if (hit.getDirection() == getFrontFacing() && !isRemote()) {
-            // Clear fluid if empty + shift-rclick
-            if (heldItem.isEmpty()) {
-                if (player.isCrouching() && !stored.isEmpty()) {
-                    return updateStored(FluidStack.EMPTY);
-                }
-                return InteractionResult.PASS;
-            }
-
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        var heldItem = context.getItemInHand();
+        var player = context.getPlayer();
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
             // If no fluid set and held-item has fluid, set fluid
             if (stored.isEmpty()) {
                 return FluidUtil.getFluidContained(heldItem)
@@ -126,7 +103,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
             }
 
             if (!result.isEmpty()) {
-                player.setItemInHand(hand, result);
+                player.setItemInHand(context.getHand(), result);
                 return InteractionResult.SUCCESS;
             } else {
                 return FluidUtil.getFluidContained(heldItem)
@@ -134,7 +111,19 @@ public class CreativeTankMachine extends QuantumTankMachine {
                         .orElse(InteractionResult.PASS);
             }
         }
-        return InteractionResult.PASS;
+        return super.onUseWithItem(context);
+    }
+
+    @Override
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+            // Clear fluid if empty + shift-rclick
+            if (context.getPlayer().isCrouching() && !stored.isEmpty()) {
+                return updateStored(FluidStack.EMPTY);
+            }
+            return InteractionResult.PASS;
+        }
+        return super.onUse(context);
     }
 
     @Override
@@ -167,12 +156,12 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     private class InfiniteCache extends FluidCache {
 
-        public InfiniteCache(MetaMachine holder) {
-            super(holder);
+        public InfiniteCache() {
+            super();
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return stored;
         }
 
@@ -183,19 +172,19 @@ public class CreativeTankMachine extends QuantumTankMachine {
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (!stored.isEmpty()) return new FluidStack(stored, mBPerCycle);
             return FluidStack.EMPTY;
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!stored.isEmpty() && stored.isFluidEqual(resource)) return new FluidStack(resource, mBPerCycle);
             return FluidStack.EMPTY;
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 
