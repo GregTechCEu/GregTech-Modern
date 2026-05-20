@@ -162,8 +162,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
         for (BakedQuad quad : facadeQuads) {
             // skip quads that aren't oriented correctly
-            if (quad.getDirection() != attachedSide && coverBehavior.shouldRenderPlate() ||
-                    !coverBehavior.coverHolder.shouldRenderBackSide()) {
+            if (quad.getDirection() != attachedSide && (coverBehavior.shouldRenderPlate() ||
+                    !coverBehavior.coverHolder.shouldRenderBackSide())) {
                 continue;
             }
 
@@ -329,6 +329,11 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
                 // clamp all 'facaded' quads into a box and bake their tint color into the vertices
                 for (BakedQuad quad : facadeQuads) {
+                    // skip quads that aren't oriented correctly
+                    if (quad.getDirection() != Direction.NORTH) {
+                        continue;
+                    }
+
                     interpolator.setInputQuad(quad);
 
                     // bake the quad's colors into its vertices
