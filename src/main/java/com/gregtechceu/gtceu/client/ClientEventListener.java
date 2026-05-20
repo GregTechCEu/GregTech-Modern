@@ -14,14 +14,12 @@ import com.gregtechceu.gtceu.common.commands.GTClientCommands;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -119,7 +117,8 @@ public class ClientEventListener {
 
         double applied = base;
         for (AttributeModifier mod : attrib.getModifiers(AttributeModifier.Operation.MULTIPLY_BASE)) {
-            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange) continue;
+            if (mod.getId() == BlockAttributes.BLOCK_SPEED_BOOST || !ConfigHolder.INSTANCE.client.blockFovChange)
+                continue;
             applied += base * mod.getAmount();
         }
 
