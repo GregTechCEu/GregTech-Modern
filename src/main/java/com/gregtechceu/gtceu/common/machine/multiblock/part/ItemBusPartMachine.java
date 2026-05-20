@@ -18,6 +18,8 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -52,6 +54,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -136,8 +140,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
-        getHandlerList().setDistinct(isDistinct);
-        getHandlerList().setColor(getPaintingColor());
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
     }
 
@@ -152,13 +154,13 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     @Override
     public void onPaintingColorChanged(int color) {
-        getHandlerList().setColor(color, true);
+        // getHandlerList().setColor(color, true);
     }
 
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
-        getHandlerList().setDistinctAndNotify(isDistinct);
+        // getHandlerList().setDistinctAndNotify(isDistinct);
     }
 
     @Override
@@ -193,17 +195,26 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-        // todo: delete for 1.8
-        // fix to preserve distinctness from pre 1.7 versions
-        if (tag.contains("inventory")) {
-            var invTag = tag.getCompound("inventory");
-            if (invTag.contains("isDistinct")) {
-                this.isDistinct = invTag.getBoolean("isDistinct");
+    protected RecipeHandlerList getHandlerList() {
+        if (handlerList == null) {
+            List<NotifiableRecipeHandlerTrait<?>> handlers = new ArrayList<>();
+            IO handlerIO = null;
+            for (var trait : traits) {
+                if (trait instanceof NotifiableRecipeHandlerTrait<?> rht) {
+                    if (handlerIO == null) handlerIO = rht.getHandlerIO();
+                    handlers.add(rht);
+                }
+            }
+
+            if (handlers.isEmpty()) {
+                handlerList = RecipeHandlerList.NO_DATA;
+            } else {
+                handlerList = RecipeHandlerList.of(getPaintingColor(), isDistinct(), handlers);
             }
         }
+        return handlerList;
     }
+
 
     //////////////////////////////////////
     // ******** Auto IO *********//

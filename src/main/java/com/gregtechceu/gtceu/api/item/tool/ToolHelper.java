@@ -12,10 +12,11 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -420,21 +421,23 @@ public class ToolHelper {
 
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
                         GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachineUtils.defaultTankSizeFunction,
-                        Collections.emptyList());
-                RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
+                        RecipeHandlerGroup.EMPTY);
+
+                var group = new RecipeHandlerGroup();
+                group.addHandlers(List.of(
                         new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV],
                                 GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
                         new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
+                                (slots) -> new CustomItemStackHandler(silktouchDrop)),
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)
+                ));
 
-                RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT));
-                be.getMetaMachine().reinitializeHandlers(List.of(dummyInputs, dummyOutputs));
+                be.getMetaMachine().reinitializeHandlers(group);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine,
-                        r -> RecipeHelper.matchContents(be.metaMachine, r).isSuccess());
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(group,
+                        r -> RecipeHelper.matchContents(group, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(be.metaMachine, hammerRecipe, IO.IN)
+                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(group, hammerRecipe, IO.IN)
                         .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());

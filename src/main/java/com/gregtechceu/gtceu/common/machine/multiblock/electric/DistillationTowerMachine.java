@@ -194,7 +194,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var match = matchDTRecipe(recipe);
             if (!match.isSuccess()) return match;
 
-            return RecipeHelper.matchTickRecipe(this.machine, recipe);
+            return RecipeHelper.matchTickRecipe(lastGroup, recipe);
         }
 
         @Override
@@ -204,13 +204,13 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, false, true);
+            var result = RecipeHelper.handleRecipe(lastGroup, recipe, IO.IN, recipe.inputs, false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, false, true);
+                result = RecipeHelper.handleRecipe(lastGroup, recipe, IO.OUT, out, false, true);
                 if (!result.isSuccess()) return result;
             }
 
@@ -254,7 +254,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(this.machine, recipe, io, out, false, false);
+                RecipeHelper.handleRecipe(lastGroup, recipe, io, out, false, false);
             }
 
             if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {

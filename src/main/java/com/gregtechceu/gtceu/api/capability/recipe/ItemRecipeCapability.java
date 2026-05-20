@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.IGroupColor;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -305,7 +305,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
-        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
+        Map<IGroupColor, List<OldRecipeHandlerList>> handlerGroups = new HashMap<>();
         for (var handler : handlerLists) {
             if (!handler.hasCapability(ItemRecipeCapability.CAP)) continue;
             addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
@@ -313,12 +313,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
         final var strat = ItemStackHashStrategy.comparingAllButCount();
 
-        List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
+        List<OldRecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
         List<Object2LongMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
-        for (RecipeHandlerList handlerList : distinctHandlerLists) {
+        for (OldRecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
             Object2LongOpenCustomHashMap<ItemStack> distinctInv = new Object2LongOpenCustomHashMap<>(strat);
 
@@ -334,11 +334,11 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
         // Then handle other groups. The logic of undyed buses belonging to
         // everything has already been taken care of by addToRecipeMap()
-        for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
+        for (Map.Entry<IGroupColor, List<OldRecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
 
             Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
-            for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
+            for (OldRecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
                 for (var handler : handlers) {
                     for (var content : handler.getContents()) {

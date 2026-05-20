@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -61,9 +60,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Persisted
     private int activeRecipeType;
     @Getter
-    protected final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
-    @Getter
-    protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+    protected List<RecipeHandlerList> recipeHandlerLists;
     protected final List<ISubscription> traitSubscriptions;
     @Getter
     @Setter
@@ -85,8 +82,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.capabilitiesProxy = new EnumMap<>(IO.class);
-        this.capabilitiesFlat = new EnumMap<>(IO.class);
+        this.recipeHandlerLists = new ArrayList<>();
         this.traitSubscriptions = new ArrayList<>();
     }
 
@@ -114,37 +110,15 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         super.onStructureFormed();
         // attach parts' traits
         activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
-        capabilitiesProxy.clear();
-        capabilitiesFlat.clear();
+        recipeHandlerLists.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
-
-            var handlerLists = part.getRecipeHandlers();
-            for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
-                this.addHandlerList(handlerList);
-                traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
-            }
+            recipeHandlerLists.addAll(part.getRecipeHandlers());
         }
 
-        // attach self traits
-        Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
-        for (MachineTrait trait : getTraits()) {
-            if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-            }
-        }
-
-        for (var entry : ioTraits.entrySet()) {
-            var handlerList = RecipeHandlerList.of(entry.getKey(), entry.getValue());
-            this.addHandlerList(handlerList);
-            traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
-        }
         // schedule recipe logic
         recipeLogic.updateTickSubscription();
     }
@@ -154,8 +128,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         super.onStructureInvalid();
         updateActiveBlocks(false);
         activeBlocks = null;
-        capabilitiesProxy.clear();
-        capabilitiesFlat.clear();
+        recipeHandlerLists.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         // reset recipe Logic
@@ -167,8 +140,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         super.onPartUnload();
         updateActiveBlocks(false);
         activeBlocks = null;
-        capabilitiesProxy.clear();
-        capabilitiesFlat.clear();
+        recipeHandlerLists.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         // fine some parts invalid now.

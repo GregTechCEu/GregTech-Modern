@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -32,8 +33,8 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
     INSTANCE;
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var recipeHandlers = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
+    public @Nullable GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+        var recipeHandlers = holder.getInputHandlerMap().get(ItemRecipeCapability.CAP);
         for (var handler : recipeHandlers) {
             for (var content : handler.getContents()) {
                 if (!(content instanceof ItemStack stack)) continue;

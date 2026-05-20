@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -198,8 +199,18 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
-        if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
-        var iterator = db.iterator(holder, canHandle);
+        for(var group: holder.getRecipeHandlerGroups()) {
+            var iterator = searchRecipe(group, canHandle);
+            if(iterator.hasNext()) {
+                return iterator;
+            }
+        }
+        return Collections.emptyIterator();
+    }
+
+    public @NotNull Iterator<GTRecipe> searchRecipe(RecipeHandlerGroup group, Predicate<GTRecipe> canHandle) {
+        if (group.isEmpty()) return Collections.emptyIterator();
+        var iterator = db.iterator(group, canHandle);
         if (iterator == null) {
             return Collections.emptyIterator();
         }
@@ -217,7 +228,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         }
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {
-            GTRecipe recipe = logic.createCustomRecipe(holder);
+            GTRecipe recipe = logic.createCustomRecipe(group);
             if (recipe != null && canHandle.test(recipe)) return Collections.singleton(recipe).iterator();
         }
         return Collections.emptyIterator();
@@ -345,7 +356,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          *         recipe is not found to run. Return null if no recipe should be run by your logic.
          */
         @Nullable
-        GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder);
+        GTRecipe createCustomRecipe(RecipeHandlerGroup holder);
 
         /**
          * Build all representative recipes in this method, then add them to the appropriate recipe category.

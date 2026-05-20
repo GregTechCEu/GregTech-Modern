@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import lombok.Getter;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +23,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     private final NotifiableFluidTank steamTank;
     private final double conversionRate; // mB steam per EU
+    @Getter
+    IO handlerIO = IO.BOTH;
 
     public SteamEnergyRecipeHandler(NotifiableFluidTank steamTank, double conversionRate) {
         this.steamTank = steamTank;

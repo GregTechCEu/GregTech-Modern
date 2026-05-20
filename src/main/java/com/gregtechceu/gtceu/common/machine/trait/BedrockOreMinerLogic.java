@@ -59,7 +59,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             }
             var match = getOreMinerRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+                if (RecipeHelper.matchContents(lastGroup, match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -102,7 +102,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
                     .buildRawRecipe();
-            if (RecipeHelper.matchContents(getMachine(), recipe).isSuccess()) {
+            if (RecipeHelper.matchContents(lastGroup, recipe).isSuccess()) {
                 return recipe;
             }
         }
@@ -141,13 +141,13 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT);
+            RecipeHelper.handleRecipeIO(lastGroup, lastRecipe, IO.OUT);
         }
         depleteVein();
         // try it again
         var match = getOreMinerRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+            if (RecipeHelper.matchContents(lastGroup, match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

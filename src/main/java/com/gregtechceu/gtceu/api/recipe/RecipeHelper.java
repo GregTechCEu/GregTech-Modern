@@ -2,13 +2,11 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.IGroupColor;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -174,16 +172,16 @@ public class RecipeHelper {
                 .collect(Collectors.toList());
     }
 
-    public static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+    public static ActionResult matchRecipe(RecipeHandlerGroup holder, GTRecipe recipe) {
         return matchRecipe(holder, recipe, false);
     }
 
-    public static ActionResult matchTickRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+    public static ActionResult matchTickRecipe(RecipeHandlerGroup holder, GTRecipe recipe) {
         return recipe.hasTick() ? matchRecipe(holder, recipe, true) : ActionResult.SUCCESS;
     }
 
-    private static ActionResult matchRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, boolean tick) {
-        if (!holder.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
+    private static ActionResult matchRecipe(RecipeHandlerGroup holder, GTRecipe recipe, boolean tick) {
+        if (holder.isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
 
         var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs, tick, true);
         if (!result.isSuccess()) return result;
@@ -192,13 +190,13 @@ public class RecipeHelper {
         return result;
     }
 
-    public static ActionResult handleRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
+    public static ActionResult handleRecipeIO(RecipeHandlerGroup holder, GTRecipe recipe, IO io) {
+        if (holder.isEmpty() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, false, false);
     }
 
-    public static ActionResult handleTickRecipeIO(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io) {
-        if (!holder.hasCapabilityProxies() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
+    public static ActionResult handleTickRecipeIO(RecipeHandlerGroup holder, GTRecipe recipe, IO io) {
+        if (holder.isEmpty() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
         return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, true, false);
     }
 
@@ -208,7 +206,7 @@ public class RecipeHelper {
      * @param simulated checks that the recipe ingredients are in the holder if true,
      *                  process the recipe contents if false
      */
-    public static ActionResult handleRecipe(IRecipeCapabilityHolder holder, GTRecipe recipe, IO io,
+    public static ActionResult handleRecipe(RecipeHandlerGroup holder, GTRecipe recipe, IO io,
                                             Map<RecipeCapability<?>, List<Content>> contents,
                                             boolean isTick, boolean simulated) {
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, simulated);
@@ -225,7 +223,7 @@ public class RecipeHelper {
                 .append(": ").append(result.capability().getName()), result.capability(), io);
     }
 
-    public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {
+    public static ActionResult matchContents(RecipeHandlerGroup holder, GTRecipe recipe) {
         var match = matchRecipe(holder, recipe);
         if (!match.isSuccess()) return match;
 
@@ -339,8 +337,8 @@ public class RecipeHelper {
         return outputs;
     }
 
-    public static void addToRecipeHandlerMap(RecipeHandlerGroup key, RecipeHandlerList handler,
-                                             Map<RecipeHandlerGroup, List<RecipeHandlerList>> map) {
+    public static void addToRecipeHandlerMap(IGroupColor key, OldRecipeHandlerList handler,
+                                             Map<IGroupColor, List<OldRecipeHandlerList>> map) {
         // If they should bypass this system, add them to the BYPASS_DISTINCT group.
         if (handler.doesCapabilityBypassDistinct()) {
             map.computeIfAbsent(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT, $ -> new ArrayList<>()).add(handler);
@@ -358,7 +356,7 @@ public class RecipeHelper {
             }
         }
         // Add other RHL's to their own group, or create it (using the undyed group as base) if it does not exist.
-        List<RecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
+        List<OldRecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
 
         map.computeIfAbsent(key, $ -> new ArrayList<>(undyed)).add(handler);
     }

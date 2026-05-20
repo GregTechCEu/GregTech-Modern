@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
@@ -89,6 +90,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Persisted
     @DescSynced
     protected GTRecipe lastRecipe;
+
+    @Getter
+    protected RecipeHandlerGroup lastGroup;
     /**
      * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
      * which can be found
@@ -205,7 +209,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        return RecipeHelper.matchContents(machine, recipe);
+        return RecipeHelper.matchContents(lastGroup, recipe);
     }
 
     protected ActionResult checkRecipe(GTRecipe recipe) {
@@ -262,7 +266,14 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(machine, r -> true);
+        for(var group: machine.getRecipeHandlerGroups()){
+            var iterator = machine.getRecipeType().searchRecipe(group, r -> true);
+            if(iterator.hasNext()) {
+                lastGroup = group;
+                return iterator;
+            }
+        }
+        return Collections.emptyIterator();
     }
 
     public void findAndHandleRecipe() {
@@ -287,7 +298,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     public ActionResult handleTickRecipe(GTRecipe recipe) {
         if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
-        var result = RecipeHelper.matchTickRecipe(machine, recipe);
+        var result = RecipeHelper.matchTickRecipe(lastGroup, recipe);
         if (!result.isSuccess()) return result;
 
         result = handleTickRecipeIO(recipe, IO.IN);
@@ -449,11 +460,17 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleRecipeIO(machine, recipe, io);
+        if(lastGroup == null) {
+            lastGroup = machine.getRecipeHandlerGroups().get(0);
+        }
+        return RecipeHelper.handleRecipeIO(lastGroup, recipe, io);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        return RecipeHelper.handleTickRecipeIO(machine, recipe, io);
+        if(lastGroup == null) {
+            lastGroup = machine.getRecipeHandlerGroups().get(0);
+        }
+        return RecipeHelper.handleTickRecipeIO(lastGroup, recipe, io);
     }
 
     /**

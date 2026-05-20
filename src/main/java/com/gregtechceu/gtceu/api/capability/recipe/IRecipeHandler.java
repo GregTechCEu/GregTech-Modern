@@ -23,6 +23,8 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return Boolean.compare(empty1, empty2);
     };
 
+    IO getHandlerIO();
+
     /**
      * matching or handling the given recipe.
      *
@@ -35,13 +37,6 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
     List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);
-
-    /**
-     * container size, if it has one. otherwise -1.
-     */
-    default int getSize() {
-        return -1;
-    }
 
     @NotNull
     List<Object> getContents();

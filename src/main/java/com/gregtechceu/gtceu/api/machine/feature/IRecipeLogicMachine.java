@@ -172,4 +172,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default boolean isActive() {
         return getRecipeLogic().isActive();
     }
+
+
 }

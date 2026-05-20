@@ -101,24 +101,25 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
+            // TODO: Rewrite this
             var handlerLists = part.getRecipeHandlers();
-            for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
-
-                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
-                        .filter(IEnergyContainer.class::isInstance)
-                        .map(IEnergyContainer.class::cast)
-                        .toList();
-
-                if (handlerList.getHandlerIO().support(IO.IN)) {
-                    inputs.addAll(containers);
-                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
-                    outputs.addAll(containers);
-                }
-
-                traitSubscriptions
-                        .add(handlerList.subscribe(tickSubscription::updateSubscription, EURecipeCapability.CAP));
-            }
+//            for (var handlerList : handlerLists) {
+//                if (!handlerList.isValid(io)) continue;
+//
+//                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
+//                        .filter(IEnergyContainer.class::isInstance)
+//                        .map(IEnergyContainer.class::cast)
+//                        .toList();
+//
+//                if (handlerList.getHandlerIO().support(IO.IN)) {
+//                    inputs.addAll(containers);
+//                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
+//                    outputs.addAll(containers);
+//                }
+//
+//                traitSubscriptions
+//                        .add(handlerList.subscribe(tickSubscription::updateSubscription, EURecipeCapability.CAP));
+//            }
         }
         this.inputHatches = new EnergyContainerList(inputs);
         this.outputHatches = new EnergyContainerList(outputs);

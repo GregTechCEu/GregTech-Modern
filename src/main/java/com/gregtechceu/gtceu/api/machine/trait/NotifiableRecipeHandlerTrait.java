@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
@@ -12,7 +13,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait implements IRecipeHandlerTrait<T> {
+public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait implements IRecipeHandler<T> {
 
     protected List<Runnable> listeners = new ArrayList<>();
 
@@ -26,7 +27,6 @@ public abstract class NotifiableRecipeHandlerTrait<T> extends MachineTrait imple
         super(machine);
     }
 
-    @Override
     public ISubscription addChangedListener(Runnable listener) {
         listeners.add(listener);
         return () -> listeners.remove(listener);

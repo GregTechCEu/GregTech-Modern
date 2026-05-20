@@ -120,7 +120,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateTankSubscription));
         }
-        getHandlerList().setColor(getPaintingColor());
+
         tankSubs = tank.addChangedListener(this::updateTankSubscription);
     }
 
@@ -135,7 +135,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     @Override
     public void onPaintingColorChanged(int color) {
-        getHandlerList().setColor(color, true);
+        // getHandlerList().setColor(color, true);
     }
 
     @Override

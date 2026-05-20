@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.IGroupColor;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -279,18 +279,18 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         var handlerLists = holder.getCapabilitiesForIO(IO.IN);
         if (handlerLists.isEmpty()) return Collections.emptyList();
 
-        Map<RecipeHandlerGroup, List<RecipeHandlerList>> handlerGroups = new HashMap<>();
+        Map<IGroupColor, List<OldRecipeHandlerList>> handlerGroups = new HashMap<>();
         for (var handler : handlerLists) {
             if (!handler.hasCapability(FluidRecipeCapability.CAP)) continue;
             addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
         }
 
-        List<RecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
+        List<OldRecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
                 RecipeHandlerGroupDistinctness.BUS_DISTINCT,
                 Collections.emptyList());
         List<Object2LongMap<FluidStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
         // Handle distinct groups first, adding an inventory based on their contents individually.
-        for (RecipeHandlerList handlerList : distinctHandlerLists) {
+        for (OldRecipeHandlerList handlerList : distinctHandlerLists) {
             var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
             Object2LongOpenHashMap<FluidStack> distinctInv = new Object2LongOpenHashMap<>();
 
@@ -306,11 +306,11 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
         // Then handle other groups. The logic of undyed hatches belonging to
         // everything has already been taken care of by addToRecipeMap()
-        for (Map.Entry<RecipeHandlerGroup, List<RecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
+        for (Map.Entry<IGroupColor, List<OldRecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
             if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
 
             Object2LongOpenHashMap<FluidStack> inventory = new Object2LongOpenHashMap<>();
-            for (RecipeHandlerList handlerList : handlerListEntry.getValue()) {
+            for (OldRecipeHandlerList handlerList : handlerListEntry.getValue()) {
                 var handlers = handlerList.getCapability(FluidRecipeCapability.CAP);
                 for (var handler : handlers) {
                     for (var content : handler.getContents()) {

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
@@ -43,22 +44,22 @@ public final class RecipeDB {
     /**
      * Find a GT Recipe
      *
-     * @param holder the holder to search
+     * @param group the holder to search
      * @return the recipe
      */
-    public @Nullable GTRecipe find(@NotNull IRecipeCapabilityHolder holder) {
-        return find(holder, r -> RecipeHelper.matchRecipe(holder, r).isSuccess());
+    public @Nullable GTRecipe find(@NotNull RecipeHandlerGroup group) {
+        return find(group, r -> RecipeHelper.matchRecipe(group, r).isSuccess());
     }
 
     /**
      * Find a GT Recipe
      *
-     * @param holder    the holder to search
+     * @param group    the holder to search
      * @param predicate the predicate to determine recipe validity
      * @return the recipe
      */
-    public @Nullable GTRecipe find(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> predicate) {
-        List<List<AbstractMapIngredient>> list = fromHolder(holder);
+    public @Nullable GTRecipe find(@NotNull RecipeHandlerGroup group, @NotNull Predicate<GTRecipe> predicate) {
+        List<List<AbstractMapIngredient>> list = fromHolder(group);
         if (list == null) {
             return null;
         }
@@ -105,13 +106,13 @@ public final class RecipeDB {
     /**
      * Create an iterator for a search space
      *
-     * @param holder    the holder to search
+     * @param group    the group to search
      * @param predicate the predicate to determine recipe validity
      * @return an iterator
      */
-    public @Nullable RecipeDB.RecipeIterator iterator(@NotNull IRecipeCapabilityHolder holder,
+    public @Nullable RecipeDB.RecipeIterator iterator(@NotNull RecipeHandlerGroup group,
                                                       @NotNull Predicate<GTRecipe> predicate) {
-        List<List<AbstractMapIngredient>> list = fromHolder(holder);
+        List<List<AbstractMapIngredient>> list = fromHolder(group);
         if (list == null) {
             return null;
         }
@@ -121,11 +122,11 @@ public final class RecipeDB {
     /**
      * Converts a Recipe Capability holder's handlers into a list of {@link AbstractMapIngredient}
      *
-     * @param holder the capability holder to query handlers from
+     * @param group the capability holder to query handlers from
      * @return a list of all the AbstractMapIngredients in the handlers
      */
-    private @Nullable List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder holder) {
-        var handlerMap = holder.getCapabilitiesFlat().getOrDefault(IO.IN, Collections.emptyMap());
+    private @Nullable List<List<AbstractMapIngredient>> fromHolder(@NotNull RecipeHandlerGroup group) {
+        var handlerMap = group.getInputHandlerMap();
         if (handlerMap.isEmpty()) {
             return null;
         }

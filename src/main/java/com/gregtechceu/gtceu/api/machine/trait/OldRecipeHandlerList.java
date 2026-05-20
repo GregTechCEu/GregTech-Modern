@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class RecipeHandlerList {
+public class OldRecipeHandlerList {
 
-    public static final RecipeHandlerList NO_DATA = new RecipeHandlerList(IO.NONE);
+    public static final OldRecipeHandlerList NO_DATA = new OldRecipeHandlerList(IO.NONE);
 
-    public static final Comparator<RecipeHandlerList> COMPARATOR = (h1, h2) -> {
+    public static final Comparator<OldRecipeHandlerList> COMPARATOR = (h1, h2) -> {
         int cmp = Long.compare(h1.getPriority(), h2.getPriority());
         if (cmp != 0) return cmp;
         boolean b1 = h1.getTotalContentAmount() > 0;
@@ -40,33 +40,33 @@ public class RecipeHandlerList {
     @Setter
     @Getter
     @NotNull
-    private RecipeHandlerGroup group = RecipeHandlerGroupColor.UNDYED;
+    private IGroupColor group = RecipeHandlerGroupColor.UNDYED;
 
-    protected RecipeHandlerList(IO handlerIO) {
+    protected OldRecipeHandlerList(IO handlerIO) {
         this.handlerIO = handlerIO;
     }
 
-    public static RecipeHandlerList of(IO io, int color, IRecipeHandler<?>... handlers) {
-        RecipeHandlerList rhl = new RecipeHandlerList(io);
+    public static OldRecipeHandlerList of(IO io, int color, IRecipeHandler<?>... handlers) {
+        OldRecipeHandlerList rhl = new OldRecipeHandlerList(io);
         rhl.addHandlers(handlers);
         rhl.setColor(color);
         return rhl;
     }
 
-    public static RecipeHandlerList of(IO io, IRecipeHandler<?>... handlers) {
-        RecipeHandlerList rhl = new RecipeHandlerList(io);
+    public static OldRecipeHandlerList of(IO io, IRecipeHandler<?>... handlers) {
+        OldRecipeHandlerList rhl = new OldRecipeHandlerList(io);
         rhl.addHandlers(handlers);
         return rhl;
     }
 
-    public static RecipeHandlerList of(IO io, Iterable<IRecipeHandler<?>> handlers) {
-        RecipeHandlerList rhl = new RecipeHandlerList(io);
+    public static OldRecipeHandlerList of(IO io, Iterable<IRecipeHandler<?>> handlers) {
+        OldRecipeHandlerList rhl = new OldRecipeHandlerList(io);
         rhl.addHandlers(handlers);
         return rhl;
     }
 
-    public static RecipeHandlerList of(IO io, int color, Iterable<IRecipeHandler<?>> handlers) {
-        RecipeHandlerList rhl = new RecipeHandlerList(io);
+    public static OldRecipeHandlerList of(IO io, int color, Iterable<IRecipeHandler<?>> handlers) {
+        OldRecipeHandlerList rhl = new OldRecipeHandlerList(io);
         rhl.addHandlers(handlers);
         rhl.setColor(color);
         return rhl;
@@ -217,15 +217,15 @@ public class RecipeHandlerList {
         allHandlerTraits.forEach(rht -> subs.add(rht.addChangedListener(listener)));
         return new Subscription(subs);
     }
-
-    public ISubscription subscribe(Runnable listener, RecipeCapability<?> cap) {
-        var capList = getCapability(cap);
-        List<ISubscription> subs = new ArrayList<>(capList.size());
-        for (var handler : capList) {
-            if (handler instanceof IRecipeHandlerTrait<?> trait) {
-                subs.add(trait.addChangedListener(listener));
-            }
-        }
-        return new Subscription(subs);
-    }
+//
+//    public ISubscription subscribe(Runnable listener, RecipeCapability<?> cap) {
+//        var capList = getCapability(cap);
+//        List<ISubscription> subs = new ArrayList<>(capList.size());
+//        for (var handler : capList) {
+//            if (handler instanceof IRecipeHandlerTrait<?> trait) {
+//                subs.add(trait.addChangedListener(listener));
+//            }
+//        }
+//        return new Subscription(subs);
+//    }
 }

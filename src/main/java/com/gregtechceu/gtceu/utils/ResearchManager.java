@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -184,8 +185,8 @@ public final class ResearchManager {
         private static final int DURATION = 100;
 
         @Override
-        public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-            var itemInputs = holder.getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
+        public GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+            var itemInputs = holder.getInputHandlerMap().get(ItemRecipeCapability.CAP).stream()
                     .filter(IItemHandlerModifiable.class::isInstance)
                     .map(IItemHandlerModifiable.class::cast)
                     .toArray(IItemHandlerModifiable[]::new);

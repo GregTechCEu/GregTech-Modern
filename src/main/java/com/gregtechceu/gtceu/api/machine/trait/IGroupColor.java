@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-public interface RecipeHandlerGroup {
+public interface IGroupColor {
 
     @Override
     boolean equals(Object o);

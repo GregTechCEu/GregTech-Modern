@@ -7,12 +7,13 @@ import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -117,11 +118,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @Getter
     private boolean isInventoryFull;
     @Getter
-    private final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
+    private final Map<IO, List<OldRecipeHandlerList>> capabilitiesProxy;
     @Getter
     protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
     private final ItemRecipeHandler inputItemHandler, outputItemHandler;
     private final IgnoreEnergyRecipeHandler inputEnergyHandler;
+
+    @Getter
+    protected RecipeHandlerList recipeHandlerList;
     @Setter
     @Getter
     private Direction dir = Direction.DOWN;
@@ -151,11 +155,17 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
         this.inputEnergyHandler = new IgnoreEnergyRecipeHandler();
 
-        RecipeHandlerList inHandlers = RecipeHandlerList.of(IO.IN, inputItemHandler, inputEnergyHandler);
-        RecipeHandlerList outHandlers = RecipeHandlerList.of(IO.OUT, outputItemHandler);
+        this.recipeHandlerList = RecipeHandlerList.of(List.of(
 
-        addHandlerList(inHandlers);
-        addHandlerList(outHandlers);
+        ));
+        OldRecipeHandlerList inHandlers = OldRecipeHandlerList.of(IO.IN, inputItemHandler, inputEnergyHandler);
+        OldRecipeHandlerList outHandlers = OldRecipeHandlerList.of(IO.OUT, outputItemHandler);
+
+    }
+
+    @Override
+    public @NotNull List<RecipeHandlerList> getRecipeHandlerLists() {
+        return List.of(recipeHandlerList);
     }
 
     @Override
@@ -652,4 +662,5 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         return Component.translatable("gtceu.machine.miner.progress", blocksToMineOriginalCount - blocksToMine.size(),
                 blocksToMineOriginalCount);
     }
+
 }

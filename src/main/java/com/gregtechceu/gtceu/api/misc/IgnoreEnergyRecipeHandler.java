@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class IgnoreEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
+
+    @Getter
+    IO handlerIO = IO.BOTH;
 
     @Override
     public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {

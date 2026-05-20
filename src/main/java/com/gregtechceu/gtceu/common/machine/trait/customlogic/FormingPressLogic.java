@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -48,41 +46,12 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
-        var rhlList = holder.getCapabilitiesForIO(IO.IN);
-        if (rhlList.isEmpty()) return null;
-
-        List<RecipeHandlerList> distinct = new ArrayList<>();
-        List<IRecipeHandler<?>> indistinct = new ArrayList<>();
-
-        for (var rhl : rhlList) {
-            if (rhl.isDistinct() && rhl.hasCapability(ItemRecipeCapability.CAP)) {
-                distinct.add(rhl);
-            } else if (rhl.hasCapability(ItemRecipeCapability.CAP)) {
-                indistinct.addAll(rhl.getCapability(ItemRecipeCapability.CAP));
-            }
-        }
+    public @Nullable GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+        var itemHandlers = holder.getInputHandlerMap().getOrDefault(ItemRecipeCapability.CAP, List.of());
+        if (itemHandlers.isEmpty()) return null;
 
         RecipeData data = new RecipeData();
-
-        for (var rhl : distinct) {
-            var stacks = collect(rhl);
-            if (stacks.isEmpty()) continue;
-            data.mold = ItemStack.EMPTY;
-            data.item = ItemStack.EMPTY;
-            for (var stack : stacks) {
-                boolean isMold = GTItems.SHAPE_MOLD_NAME.isIn(stack);
-                if (data.mold.isEmpty() && isMold && stack.hasCustomHoverName()) {
-                    data.mold = stack;
-                } else if (data.item.isEmpty() && !(isMold && stack.hasCustomHoverName())) {
-                    data.item = stack;
-                }
-
-                if (data.found()) return data.buildRecipe();
-            }
-        }
-
-        var stacks = collect(indistinct);
+        var stacks = collect(itemHandlers);
         if (stacks.isEmpty()) return null;
         for (var stack : stacks) {
             if (data.mold.isEmpty() && GTItems.SHAPE_MOLD_NAME.isIn(stack) && stack.hasCustomHoverName()) {
@@ -97,11 +66,7 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
         return null;
     }
 
-    private static List<ItemStack> collect(RecipeHandlerList rhl) {
-        return collect(rhl.getCapability(ItemRecipeCapability.CAP));
-    }
-
-    private static List<ItemStack> collect(List<IRecipeHandler<?>> handlers) {
+    private static List<ItemStack> collect(List<? extends IRecipeHandler<?>> handlers) {
         if (handlers.isEmpty()) return Collections.emptyList();
         List<ItemStack> list = new ArrayList<>();
         for (var handler : handlers) {

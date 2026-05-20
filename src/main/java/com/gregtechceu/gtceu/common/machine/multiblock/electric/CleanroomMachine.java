@@ -458,7 +458,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         if (machine instanceof LargeCombustionEngineMachine) return true;
         if (machine instanceof LargeTurbineMachine) return true;
 
-        if (machine instanceof LargeMinerMachine) return true;
+        // if (machine instanceof LargeMinerMachine) return true;
         if (machine instanceof FluidDrillMachine) return true;
         if (machine instanceof BedrockOreMinerMachine) return true;
 

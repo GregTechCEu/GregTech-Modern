@@ -236,8 +236,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             result = consumeItemContents(copyWithItems, isTick);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithItems, IO.IN) :
-                    RecipeHelper.handleRecipeIO(this, copyWithItems, IO.IN);
+                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithItems, IO.IN) :
+                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithItems, IO.IN);
         }
         if (!result.isSuccess()) return result;
 
@@ -245,14 +245,14 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             result = consumeFluidContents(copyWithFluids, isTick);
         } else {
             result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(this, copyWithFluids, IO.IN) :
-                    RecipeHelper.handleRecipeIO(this, copyWithFluids, IO.IN);
+                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithFluids, IO.IN) :
+                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithFluids, IO.IN);
         }
         if (!result.isSuccess()) return result;
 
         return isTick ?
-                RecipeHelper.handleTickRecipeIO(this, copyWithoutItemsFluids, IO.IN) :
-                RecipeHelper.handleRecipeIO(this, copyWithoutItemsFluids, IO.IN);
+                RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN) :
+                RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN);
     }
 
     class AsslineRecipeLogic extends RecipeLogic {
@@ -266,7 +266,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (io.equals(IO.IN)) {
                 return consumeAll(recipe, false);
             }
-            return RecipeHelper.handleRecipeIO(machine, recipe, io);
+            return RecipeHelper.handleRecipeIO(lastGroup, recipe, io);
         }
 
         @Override
@@ -274,13 +274,13 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (io.equals(IO.IN)) {
                 return consumeAll(recipe, true);
             }
-            return RecipeHelper.handleTickRecipeIO(machine, recipe, io);
+            return RecipeHelper.handleTickRecipeIO(lastGroup, recipe, io);
         }
 
         @Override
         protected ActionResult matchRecipe(GTRecipe recipe) {
             // Match by normal inputs first
-            ActionResult normalMatch = RecipeHelper.matchContents(machine, recipe);
+            ActionResult normalMatch = RecipeHelper.matchContents(lastGroup, recipe);
             if (!normalMatch.isSuccess()) return normalMatch;
 
             var config = ConfigHolder.INSTANCE.machines;

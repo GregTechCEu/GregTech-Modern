@@ -155,7 +155,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
         if (runningTimer % 72 == 0) {
             // insufficient lubricant
-            if (!RecipeHelper.handleRecipeIO(this, getLubricantRecipe(), IO.IN)
+            if (!RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), getLubricantRecipe(), IO.IN)
                     .isSuccess()) {
                 recipeLogic.interruptRecipe();
                 return false;
@@ -164,8 +164,8 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // check boost fluid
         if (isBoostAllowed()) {
             var boosterRecipe = getBoostRecipe();
-            this.isOxygenBoosted = RecipeHelper.matchRecipe(this, boosterRecipe).isSuccess() &&
-                    RecipeHelper.handleRecipeIO(this, boosterRecipe, IO.IN)
+            this.isOxygenBoosted = RecipeHelper.matchRecipe(recipeLogic.getLastGroup(), boosterRecipe).isSuccess() &&
+                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), boosterRecipe, IO.IN)
                             .isSuccess();
         }
 
