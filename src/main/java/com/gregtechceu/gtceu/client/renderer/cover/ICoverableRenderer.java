@@ -74,10 +74,10 @@ public interface ICoverableRenderer {
                 };
 
                 if (side == null) { // render back
-                    quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
+                    quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));
                 } else if (side != face.getOpposite() &&
                         (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
-                    quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
+                    quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0], true));
                 }
             }
 
