@@ -62,7 +62,8 @@ public interface ICoverableRenderer {
             // noinspection DataFlowIssue
             ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
 
-            if (thickness > 0 && cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
+            if (renderType == RenderType.cutoutMipped() && thickness > 0 &&
+                    cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                 // All faces are slightly under a full block's size to never show the beginning of
                 // the second row of pixels of the block's texture and to combat Z-fighting.
                 AABB cube = switch (face) {
@@ -82,9 +83,12 @@ public interface ICoverableRenderer {
                 }
             }
 
-            coverRenderer.renderCover(quads, side, rand, cover, pos, level,
-                    coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY,
-                    renderType);
+            ModelData coverData = coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) :
+                    ModelData.EMPTY;
+            ChunkRenderTypeSet coverRenderTypes = coverRenderer.getRenderTypes(cover, pos, level, rand, coverData);
+            if (renderType == null || coverRenderTypes.contains(renderType)) {
+                coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverData, renderType);
+            }
         }
     }
 
@@ -112,6 +116,7 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
 
         Set<ChunkRenderTypeSet> renderTypeSets = new HashSet<>();
+        renderTypeSets.add(ChunkRenderTypeSet.of(RenderType.cutoutMipped()));
 
         for (Direction side : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(side);
