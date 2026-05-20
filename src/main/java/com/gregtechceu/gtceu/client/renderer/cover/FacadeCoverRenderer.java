@@ -48,7 +48,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
-    private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(ICoverableRenderer.THIN_OFFSET);
+    private static final AABB FACADE_PLANE = ICoverableRenderer.COVER_PLATE_BOX;
 
     // spotless:off
     private static final Map<Direction, IQuadTransformer> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {

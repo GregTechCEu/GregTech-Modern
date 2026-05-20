@@ -34,7 +34,7 @@ public interface ICoverableRenderer {
     @OnlyIn(Dist.CLIENT)
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
     double THIN_OFFSET = 0.002;
-    double LESS_THIN_OFFSET = 0.005;
+    AABB COVER_PLATE_BOX = StaticFaceBakery.BLOCK.deflate(THIN_OFFSET);
 
     @OnlyIn(Dist.CLIENT)
     static void initSprites(TextureAtlas atlas) {
@@ -63,16 +63,16 @@ public interface ICoverableRenderer {
                 ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
 
                 if (thickness > 0 && cover.shouldRenderPlate()) {
-                    double min = thickness + 0.01;
-                    double max = 0.99 - thickness;
-                    var normal = face.getNormal();
-                    var cube = new AABB(
-                            normal.getX() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getY() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getZ() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getX() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
-                            normal.getY() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
-                            normal.getZ() >= 0 ? 1.0 - LESS_THIN_OFFSET : min);
+                    // All faces are slightly under a full block's size to never show the beginning of
+                    // the second row of pixels of the block's texture and to combat Z-fighting.
+                    AABB cube = switch (face) {
+                        case DOWN -> COVER_PLATE_BOX.setMaxY(thickness);
+                        case UP -> COVER_PLATE_BOX.setMinY(1.0 - thickness);
+                        case NORTH -> COVER_PLATE_BOX.setMaxZ(thickness);
+                        case SOUTH -> COVER_PLATE_BOX.setMinZ(1.0 - thickness);
+                        case WEST -> COVER_PLATE_BOX.setMaxX(thickness);
+                        case EAST -> COVER_PLATE_BOX.setMinX(1.0 - thickness);
+                    };
 
                     if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
                         if (side == null) { // render back
