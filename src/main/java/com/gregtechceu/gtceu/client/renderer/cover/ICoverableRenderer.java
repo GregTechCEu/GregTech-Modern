@@ -56,37 +56,35 @@ public interface ICoverableRenderer {
         }
 
         for (Direction face : GTUtil.DIRECTIONS) {
-            var cover = coverable.getCoverAtSide(face);
-            if (cover != null) {
-                // it won't ever be null on the client
-                // noinspection DataFlowIssue
-                ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
+            CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (cover == null) continue;
+            // it won't ever be null on the client
+            // noinspection DataFlowIssue
+            ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
 
-                if (thickness > 0 && cover.shouldRenderPlate()) {
-                    // All faces are slightly under a full block's size to never show the beginning of
-                    // the second row of pixels of the block's texture and to combat Z-fighting.
-                    AABB cube = switch (face) {
-                        case DOWN -> COVER_PLATE_BOX.setMaxY(thickness);
-                        case UP -> COVER_PLATE_BOX.setMinY(1.0 - thickness);
-                        case NORTH -> COVER_PLATE_BOX.setMaxZ(thickness);
-                        case SOUTH -> COVER_PLATE_BOX.setMinZ(1.0 - thickness);
-                        case WEST -> COVER_PLATE_BOX.setMaxX(thickness);
-                        case EAST -> COVER_PLATE_BOX.setMinX(1.0 - thickness);
-                    };
+            if (thickness > 0 && cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
+                // All faces are slightly under a full block's size to never show the beginning of
+                // the second row of pixels of the block's texture and to combat Z-fighting.
+                AABB cube = switch (face) {
+                    case DOWN -> COVER_PLATE_BOX.setMaxY(thickness);
+                    case UP -> COVER_PLATE_BOX.setMinY(1.0 - thickness);
+                    case NORTH -> COVER_PLATE_BOX.setMaxZ(thickness);
+                    case SOUTH -> COVER_PLATE_BOX.setMinZ(1.0 - thickness);
+                    case WEST -> COVER_PLATE_BOX.setMaxX(thickness);
+                    case EAST -> COVER_PLATE_BOX.setMinX(1.0 - thickness);
+                };
 
-                    if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
-                        if (side == null) { // render back
-                            quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
-                        } else if (side != face.getOpposite() &&
-                                (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
-                            quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
-                        }
-                    }
+                if (side == null) { // render back
+                    quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
+                } else if (side != face.getOpposite() &&
+                        (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
+                    quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
                 }
-                coverRenderer.renderCover(quads, side, rand, cover, pos, level,
-                        coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY,
-                        renderType);
             }
+
+            coverRenderer.renderCover(quads, side, rand, cover, pos, level,
+                    coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY,
+                    renderType);
         }
     }
 
