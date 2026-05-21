@@ -1,15 +1,5 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import brachy.modularui.api.value.IBoolValue;
-import brachy.modularui.drawable.DynamicDrawable;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.ToggleButton;
-import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.menu.ContextMenuButton;
-import brachy.modularui.widgets.menu.Menu;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -26,15 +16,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.value.IBoolValue;
 import brachy.modularui.drawable.ColorType;
+import brachy.modularui.drawable.DynamicDrawable;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.menu.Menu;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
 
@@ -97,7 +96,8 @@ public class SmartItemFilter implements ItemFilter {
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176,
+                        GTGuiTextures.BACKGROUND))
                 .child(getFilterUI(data, syncManager, settings))
                 .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
@@ -124,18 +124,17 @@ public class SmartItemFilter implements ItemFilter {
                                         .maxSize(SmartFilteringMode.VALUES.length * 20)
                                         .widthRel(1.f)
                                         .children(SmartFilteringMode.VALUES.length, w -> {
-                                            IBoolValue<?> bsv = new BoolValue.Dynamic(() -> mode.getIntValue() == w, bool -> mode.setIntValue(w));
+                                            IBoolValue<?> bsv = new BoolValue.Dynamic(() -> mode.getIntValue() == w,
+                                                    bool -> mode.setIntValue(w));
 
                                             return new ToggleButton()
                                                     .overlay(SmartFilteringMode.getTextures()[w])
                                                     .background(GuiTextures.MC_BUTTON)
                                                     .selectedBackground(GuiTextures.MC_BUTTON)
                                                     .value(bsv)
-                                                    .tooltip(r -> r.add(Text.comp(Component.translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
-                                        })
-                                )
-                        )
-                )
+                                                    .tooltip(r -> r.add(Text.comp(Component
+                                                            .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
+                                        }))))
                 .child(Text.str("Recipe Type").asWidget().verticalCenter().rightRel(0.f));
     }
 

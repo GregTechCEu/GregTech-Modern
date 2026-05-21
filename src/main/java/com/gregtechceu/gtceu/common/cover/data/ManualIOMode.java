@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
-
 public enum ManualIOMode {
 
     DISABLED("disabled"),

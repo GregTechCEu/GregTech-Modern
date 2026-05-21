@@ -9,20 +9,17 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
-import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
@@ -187,7 +184,8 @@ public class FluidRegulatorCover extends PumpCover {
                                   UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
-        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode).allowC2S();
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
+                .allowC2S();
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
         var transferBucketMode = new EnumSyncValue<>(BucketMode.class, this::getTransferBucketMode,
                 this::setTransferBucketMode).allowC2S();

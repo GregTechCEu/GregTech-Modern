@@ -111,8 +111,6 @@ public class SimpleItemFilter implements ItemFilter {
 
     @Override
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-
-
         return new Dialog<>("simple_item_filter")
                 .disablePanelsBelow(false)
                 .draggable(true)

@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.network.chat.Component;
+
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
@@ -13,7 +15,6 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
-import net.minecraft.network.chat.Component;
 
 import java.util.function.DoubleSupplier;
 

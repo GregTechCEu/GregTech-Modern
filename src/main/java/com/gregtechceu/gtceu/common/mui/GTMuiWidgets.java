@@ -36,7 +36,6 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
-import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
@@ -394,8 +393,8 @@ public class GTMuiWidgets {
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm, settings));
-
+                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
+                        settings));
 
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))
@@ -614,8 +613,7 @@ public class GTMuiWidgets {
                         .value(bucketModeSyncValue)
                         .background(GTGuiTextures.BUTTON)
                         .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
-                        .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16))
-                );
+                        .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
     }
 
     public static class EnumRowBuilder<T extends Enum<T>> {
@@ -725,7 +723,7 @@ public class GTMuiWidgets {
                         .verticalCenter()
                         .rightRel(0.f)
                         .height(18);
-                if(this.langTooltip != null) {
+                if (this.langTooltip != null) {
                     text.tooltip(r -> langTooltip.forEach(r::addLine));
                 }
                 row.child(text);

@@ -16,14 +16,12 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +45,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -430,8 +429,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
 
         if (createFilterRow()) {
             column.child(Flow.row()
-                            .coverChildrenHeight()
-                            .widthRel(1.0f)
+                    .coverChildrenHeight()
+                    .widthRel(1.0f)
                     .child(GTMuiWidgets.createIOCycleButton(ioSync, false).left(0))
                     .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
             column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));

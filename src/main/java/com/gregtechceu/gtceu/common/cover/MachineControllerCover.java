@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -210,7 +209,8 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true)).allowC2S())
+                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true))
+                                                .allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
                                 .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
                                         .heightRel(1.0f).left(20)))

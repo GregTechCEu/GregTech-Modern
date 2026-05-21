@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.value.sync.EnumSyncValue;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+
 import net.minecraft.network.chat.Component;
+
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.widgets.layout.Flow;
 
 public class GTMuiCoverUtil {
 
