@@ -64,6 +64,8 @@
         "TagManagerMixin",
         "TagValueAccessor",
         "client.ItemEntityMixin",
+        "datafixer.DataFixTypesMixin",
+        "datafixer.NbtUtilsMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
         "emi.EmiRecipeFillerMixin",
