@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
@@ -117,10 +116,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private boolean isDone;
     @Getter
     private boolean isInventoryFull;
-    @Getter
-    private final Map<IO, List<OldRecipeHandlerList>> capabilitiesProxy;
-    @Getter
-    protected final Map<IO, Map<RecipeCapability<?>, List<IRecipeHandler<?>>>> capabilitiesFlat;
+
     private final ItemRecipeHandler inputItemHandler, outputItemHandler;
     private final IgnoreEnergyRecipeHandler inputEnergyHandler;
 
@@ -147,8 +143,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.maximumRadius = maximumRadius;
         this.isDone = false;
         this.pickaxeTool = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
-        this.capabilitiesProxy = new EnumMap<>(IO.class);
-        this.capabilitiesFlat = new EnumMap<>(IO.class);
+
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
@@ -156,10 +151,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.inputEnergyHandler = new IgnoreEnergyRecipeHandler();
 
         this.recipeHandlerList = RecipeHandlerList.of(List.of(
-
+            inputItemHandler, outputItemHandler, inputEnergyHandler
         ));
-        OldRecipeHandlerList inHandlers = OldRecipeHandlerList.of(IO.IN, inputItemHandler, inputEnergyHandler);
-        OldRecipeHandlerList outHandlers = OldRecipeHandlerList.of(IO.OUT, outputItemHandler);
 
     }
 
@@ -378,7 +371,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
         outputItemHandler.storage.clear();
 
-        var matches = machine.getRecipeType().searchRecipe(this, r -> RecipeHelper.matchContents(this, r).isSuccess());
+        var matches = searchRecipe();
 
         GTRecipe recipe = null; // attempt ore block that has a static gt recipe
         while (matches.hasNext()) {
@@ -391,7 +384,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         if (recipe != null) {
             long eut = recipe.getInputEUt().getTotalEU();
             if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
-                if (RecipeHelper.handleRecipeIO(this, recipe, IO.OUT).isSuccess()) {
+                if (RecipeHelper.handleRecipeIO(getLastGroup(), recipe, IO.OUT).isSuccess()) {
                     blockDrops.clear();
                     var result = new ArrayList<ItemStack>();
                     for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {

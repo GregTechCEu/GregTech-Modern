@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
@@ -93,33 +94,29 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         super.onStructureFormed();
         List<IEnergyContainer> inputs = new ArrayList<>();
         List<IEnergyContainer> outputs = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
+
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
-            // TODO: Rewrite this
+
             var handlerLists = part.getRecipeHandlers();
-//            for (var handlerList : handlerLists) {
-//                if (!handlerList.isValid(io)) continue;
-//
-//                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
-//                        .filter(IEnergyContainer.class::isInstance)
-//                        .map(IEnergyContainer.class::cast)
-//                        .toList();
-//
-//                if (handlerList.getHandlerIO().support(IO.IN)) {
-//                    inputs.addAll(containers);
-//                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
-//                    outputs.addAll(containers);
-//                }
-//
-//                traitSubscriptions
-//                        .add(handlerList.subscribe(tickSubscription::updateSubscription, EURecipeCapability.CAP));
-//            }
+            for (var handlerList : handlerLists) {
+
+                handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(IEnergyContainer.class::isInstance)
+                        .map(IEnergyContainer.class::cast)
+                        .forEach(c-> {
+                            if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.IN)) {
+                                inputs.add(c);
+                            } else if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.OUT)) {
+                                outputs.add(c);
+                            }
+                        });
+
+                traitSubscriptions
+                        .add(handlerList.subscribe(tickSubscription::updateSubscription, EURecipeCapability.CAP));
+            }
         }
         this.inputHatches = new EnergyContainerList(inputs);
         this.outputHatches = new EnergyContainerList(outputs);

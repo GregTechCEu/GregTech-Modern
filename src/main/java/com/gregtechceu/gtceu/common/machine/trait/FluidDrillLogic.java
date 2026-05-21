@@ -52,7 +52,7 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(lastGroup, match).isSuccess()) {
+                if (RecipeHelper.matchContents(getLastGroup(), match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -69,7 +69,7 @@ public class FluidDrillLogic extends RecipeLogic {
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .buildRawRecipe();
-            if (RecipeHelper.matchContents(lastGroup, recipe).isSuccess()) {
+            if (RecipeHelper.matchContents(getLastGroup(), recipe).isSuccess()) {
                 return recipe;
             }
         }
@@ -108,13 +108,13 @@ public class FluidDrillLogic extends RecipeLogic {
     public void onRecipeFinish() {
         machine.afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(lastGroup, lastRecipe, IO.OUT);
+            RecipeHelper.handleRecipeIO(getLastGroup(), lastRecipe, IO.OUT);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(lastGroup, match).isSuccess()) {
+            if (RecipeHelper.matchContents(getLastGroup(), match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

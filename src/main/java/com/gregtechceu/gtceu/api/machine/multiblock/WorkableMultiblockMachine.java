@@ -11,9 +11,11 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
@@ -60,7 +62,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Persisted
     private int activeRecipeType;
     @Getter
-    protected List<RecipeHandlerList> recipeHandlerLists;
+    protected final List<RecipeHandlerList> recipeHandlerLists;
     protected final List<ISubscription> traitSubscriptions;
     @Getter
     @Setter
@@ -111,13 +113,26 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         // attach parts' traits
         activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
         recipeHandlerLists.clear();
+        recipeLogic.resetLastGroup();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
+
         for (IMultiPart part : getParts()) {
-            recipeHandlerLists.addAll(part.getRecipeHandlers());
+            var handlerLists = part.getRecipeHandlers();
+            handlerLists.forEach(h -> traitSubscriptions.add(h.subscribe(recipeLogic::updateTickSubscription)));
+            recipeHandlerLists.addAll(handlerLists);
         }
+
+        // attach self traits
+        List<IRecipeHandler<?>> list = new ArrayList<>();
+        for (MachineTrait trait : getTraits()) {
+            if (trait instanceof IRecipeHandler<?> handlerTrait) {
+                list.add(handlerTrait);
+            }
+        }
+        var selfHandlerList = RecipeHandlerList.of(list);
+        recipeHandlerLists.add(selfHandlerList);
+        traitSubscriptions.add(selfHandlerList.subscribe(recipeLogic::updateTickSubscription));
 
         // schedule recipe logic
         recipeLogic.updateTickSubscription();
@@ -141,6 +156,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         updateActiveBlocks(false);
         activeBlocks = null;
         recipeHandlerLists.clear();
+        recipeLogic.resetLastGroup();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         // fine some parts invalid now.
@@ -166,17 +182,12 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
+    public final GTRecipe doModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
-        return getRealRecipe(recipe);
-    }
-
-    @Nullable
-    protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        return self().getDefinition().getRecipeModifier().applyModifier(self(), group, recipe);
     }
 
     public void updateActiveBlocks(boolean active) {

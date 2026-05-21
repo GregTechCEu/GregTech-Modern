@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -126,16 +127,17 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Combustion Engine
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
         EnergyStack EUt = recipe.getOutputEUt();
         // has lubricant
         if (!EUt.isEmpty() && !engineMachine.isIntakesObstructed() &&
-                RecipeHelper.matchRecipe(engineMachine, engineMachine.getLubricantRecipe()).isSuccess()) {
+                RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
-            int actualParallel = ParallelLogic.getParallelAmount(engineMachine, recipe, maxParallel);
+            int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
             double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
 
             return ModifierFunction.builder()

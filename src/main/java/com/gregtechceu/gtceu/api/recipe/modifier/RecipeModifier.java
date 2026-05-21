@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 @FunctionalInterface
 public interface RecipeModifier {
 
-    RecipeModifier NO_MODIFIER = (m, r) -> ModifierFunction.IDENTITY;
+    RecipeModifier NO_MODIFIER = (m, g, r) -> ModifierFunction.IDENTITY;
 
     /**
      * Get the ModifierFunction for the given state
@@ -28,7 +29,7 @@ public interface RecipeModifier {
      */
     @Contract(pure = true)
     @NotNull
-    ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe);
+    ModifierFunction getModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe);
 
     /**
      * Gets the ModifierFunction for the given state and immediately applies it to the passed recipe
@@ -39,8 +40,8 @@ public interface RecipeModifier {
      *         fails
      */
     @Contract(pure = true)
-    default @Nullable GTRecipe applyModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        return getModifier(machine, recipe).apply(recipe);
+    default @Nullable GTRecipe applyModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
+        return getModifier(machine, group, recipe).apply(recipe);
     }
 
     /**

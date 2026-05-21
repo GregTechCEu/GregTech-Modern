@@ -154,7 +154,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
             }
         }
         recipeHandlerList = RecipeHandlerList.of(list);
-
+        traitSubscriptions.add(recipeHandlerList.subscribe(recipeLogic::updateTickSubscription));
     }
 
     @Override

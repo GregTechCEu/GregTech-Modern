@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -92,19 +94,16 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
             if (io == IO.NONE) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
-
-                var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
+                handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
-                        .toList();
-
-                if (handlerList.getHandlerIO().support(IO.IN)) {
-                    powerInput.addAll(containers);
-                } else if (handlerList.getHandlerIO().support(IO.OUT)) {
-                    powerOutput.addAll(containers);
-                }
-
+                        .forEach(c-> {
+                            if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.IN)) {
+                                powerInput.add(c);
+                            } else if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.OUT)) {
+                                powerOutput.add(c);
+                            }
+                        });
                 traitSubscriptions
                         .add(handlerList.subscribe(converterSubscription::updateSubscription, EURecipeCapability.CAP));
             }

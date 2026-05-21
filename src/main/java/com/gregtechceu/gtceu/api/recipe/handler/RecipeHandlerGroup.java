@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -29,7 +30,18 @@ public class RecipeHandlerGroup {
 
     @Getter
     @Setter
-    private Predicate<RecipeCapability<?>> outputVoid;
+    @NotNull
+    private Predicate<RecipeCapability<?>> outputVoid = cap -> false;
+
+    @Getter
+    @Setter
+    private int color = RecipeHandlerList.UNDYED;
+
+    public static RecipeHandlerGroup of(int color) {
+        var group = new RecipeHandlerGroup();
+        group.color = color;
+        return group;
+    }
 
     public static RecipeHandlerGroup of(RecipeHandlerList handlerList) {
         var group = new RecipeHandlerGroup();

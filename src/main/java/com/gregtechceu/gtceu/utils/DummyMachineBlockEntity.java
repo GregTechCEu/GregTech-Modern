@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -21,8 +20,6 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
 /**
  * Dummy machine BE used for wrapping {@link DummyRecipeLogicMachine}s
  */
@@ -38,14 +35,13 @@ public class DummyMachineBlockEntity implements IMachineBlockEntity {
 
     // TODO: Fix the proxy parameter
     public DummyMachineBlockEntity(int tier, GTRecipeType type, Int2IntFunction tankScalingFunction,
-                                   RecipeHandlerGroup group,
-                                   Object... args) {
+                                   RecipeHandlerGroup group) {
         this.definition = new MachineDefinition(GTCEu.id("dummy"));
         this.definition.setRecipeTypes(new GTRecipeType[] { type });
         this.definition.setTier(tier);
 
         this.renderState = getDefinition().defaultRenderState();
-        this.metaMachine = new DummyRecipeLogicMachine(this, tier, tankScalingFunction, group, args);
+        this.metaMachine = new DummyRecipeLogicMachine(this, tier, tankScalingFunction, group);
     }
 
     @Override

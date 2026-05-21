@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -36,13 +37,13 @@ public class GTRecipeModifiers {
      * Given an {@link OverclockingLogic}, creates a {@link RecipeModifier} designed for an {@link IOverclockMachine}
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
-            .memoize(logic -> (machine, recipe) -> {
+            .memoize(logic -> (machine, group, recipe) -> {
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
                 if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
                     return ModifierFunction
                             .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
                 }
-                return logic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
+                return logic.getModifier(machine, group, recipe, overclockMachine.getOverclockVoltage());
             });
 
     // Shortcuts for common OC logics
@@ -52,7 +53,7 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
-            .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
+            .memoize((condition, maxAllowedStrength) -> (machine, group, recipe) -> {
                 if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
@@ -88,10 +89,10 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Parallel Multiblock
      */
-    public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
-                    .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
+                    .map(hatch -> ParallelLogic.getParallelAmount(group, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
 
             if (parallels == 1) return ModifierFunction.IDENTITY;
@@ -104,11 +105,11 @@ public class GTRecipeModifiers {
         return ModifierFunction.IDENTITY;
     }
 
-    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
-                parallel = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallel);
+                parallel = ParallelLogic.getParallelAmountWithoutEU(group, recipe, parallel);
 
                 if (parallel == 0) return ModifierFunction.NULL;
                 if (parallel == 1) return ModifierFunction.IDENTITY;
@@ -135,13 +136,14 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Cracker
      */
-    public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                             @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
 
-        var oc = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe,
+        var oc = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe,
                 coilMachine.getOverclockVoltage());
         if (coilMachine.getCoilTier() > 0) {
             var coilModifier = ModifierFunction.builder()
@@ -167,7 +169,8 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Blast Furnace
      */
-    public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                         @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -188,7 +191,7 @@ public class GTRecipeModifiers {
                 .build();
 
         OverclockingLogic logic = (p, v) -> OverclockingLogic.heatingCoilOC(p, v, recipeTemp, blastFurnaceTemperature);
-        var oc = logic.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+        var oc = logic.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
 
         return oc.compose(discount);
     }
@@ -206,6 +209,7 @@ public class GTRecipeModifiers {
      * @return A {@link ModifierFunction} for the given Pyrolyse Oven
      */
     public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
+                                                                  RecipeHandlerGroup group,
                                                                   @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
@@ -218,7 +222,7 @@ public class GTRecipeModifiers {
                 .durationMultiplier(durationMultiplier)
                 .build();
 
-        var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, recipe, coilMachine.getOverclockVoltage());
+        var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
         return oc.andThen(durationModifier);
     }
 
@@ -241,13 +245,14 @@ public class GTRecipeModifiers {
      * @return A {@link ModifierFunction} for the given Multi Smelter
      */
     public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
+                                                                 RecipeHandlerGroup group,
                                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();
-        int parallels = ParallelLogic.getParallelAmount(machine, recipe, maxParallel);
+        int parallels = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
         if (parallels == 0) return ModifierFunction.NULL;
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
@@ -260,7 +265,7 @@ public class GTRecipeModifiers {
         };
 
         GTRecipe copy = baseModifier.apply(recipe);
-        var ocModifier = NON_PERFECT_OVERCLOCK.getModifier(machine, copy, coilMachine.getOverclockVoltage());
+        var ocModifier = NON_PERFECT_OVERCLOCK.getModifier(machine, group, copy, coilMachine.getOverclockVoltage());
         var parallelModifier = ModifierFunction.builder()
                 .modifyAllContents(ContentModifier.multiplier(parallels))
                 .parallels(parallels)

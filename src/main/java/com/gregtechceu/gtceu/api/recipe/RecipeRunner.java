@@ -39,7 +39,7 @@ public class RecipeRunner {
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
         this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
-        this.outputVoid = group.getOutputVoid() == null ? cap -> false : group.getOutputVoid();
+        this.outputVoid = group.getOutputVoid();
     }
 
     @NotNull

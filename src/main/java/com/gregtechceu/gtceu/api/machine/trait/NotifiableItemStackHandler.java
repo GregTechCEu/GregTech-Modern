@@ -189,11 +189,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public int getSize() {
-        return getSlots();
-    }
-
-    @Override
     public @NotNull List<Object> getContents() {
         List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < getSlots(); ++i) {

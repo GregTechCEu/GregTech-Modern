@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
@@ -43,8 +44,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @NotNull
     RecipeLogic getRecipeLogic();
 
-    default GTRecipe fullModifyRecipe(GTRecipe recipe) {
-        return doModifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()));
+    default GTRecipe fullModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+        return doModifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()), group);
     }
 
     /**
@@ -55,8 +56,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+    default GTRecipe doModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+        return self().getDefinition().getRecipeModifier().applyModifier(self(), group, recipe);
     }
 
     /**

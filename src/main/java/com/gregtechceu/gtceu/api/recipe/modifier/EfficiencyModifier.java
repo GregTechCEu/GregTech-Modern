@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 
 import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +60,8 @@ public class EfficiencyModifier implements RecipeModifier {
      * @return Efficiency Modifier
      */
     @Override
-    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                 @NotNull GTRecipe recipe) {
         if (!(machine instanceof IRecipeLogicMachine rlm)) {
             return RecipeModifier.nullWrongType(IRecipeLogicMachine.class, machine);
         }

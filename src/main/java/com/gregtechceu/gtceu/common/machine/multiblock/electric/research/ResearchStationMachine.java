@@ -140,7 +140,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         @Override
         public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-            var modified = machine.fullModifyRecipe(match);
+            var modified = machine.fullModifyRecipe(match, getLastGroup());
             if (modified != null) {
                 // What is the point of this
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
@@ -162,14 +162,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
-            if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-            return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs, false, true);
+            if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
+            return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.inputs, false, true);
         }
 
         protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
             if (recipe.hasTick()) {
-                if (!machine.hasCapabilityProxies()) return ActionResult.FAIL_NO_CAPABILITIES;
-                return RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.tickInputs, false, true);
+                if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
+                return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.tickInputs, false, true);
             }
             return ActionResult.SUCCESS;
         }

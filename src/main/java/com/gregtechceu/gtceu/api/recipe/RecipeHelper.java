@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
-import com.gregtechceu.gtceu.api.machine.trait.IGroupColor;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -335,30 +334,6 @@ public class RecipeHelper {
         }
 
         return outputs;
-    }
-
-    public static void addToRecipeHandlerMap(IGroupColor key, OldRecipeHandlerList handler,
-                                             Map<IGroupColor, List<OldRecipeHandlerList>> map) {
-        // If they should bypass this system, add them to the BYPASS_DISTINCT group.
-        if (handler.doesCapabilityBypassDistinct()) {
-            map.computeIfAbsent(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT, $ -> new ArrayList<>()).add(handler);
-            return;
-        }
-        // Add undyed RHL's to every group that's not distinct, bypass, and also the undyed group itself.
-        if (key.equals(RecipeHandlerGroupColor.UNDYED)) {
-            for (var entry : map.entrySet()) {
-                if (entry.getKey().equals(RecipeHandlerGroupDistinctness.BUS_DISTINCT) ||
-                        entry.getKey().equals(RecipeHandlerGroupDistinctness.BYPASS_DISTINCT) ||
-                        entry.getKey().equals(RecipeHandlerGroupColor.UNDYED)) {
-                    continue;
-                }
-                entry.getValue().add(handler);
-            }
-        }
-        // Add other RHL's to their own group, or create it (using the undyed group as base) if it does not exist.
-        List<OldRecipeHandlerList> undyed = map.getOrDefault(RecipeHandlerGroupColor.UNDYED, Collections.emptyList());
-
-        map.computeIfAbsent(key, $ -> new ArrayList<>(undyed)).add(handler);
     }
 
     public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,

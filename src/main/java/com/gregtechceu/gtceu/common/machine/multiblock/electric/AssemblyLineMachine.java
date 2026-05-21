@@ -266,7 +266,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (io.equals(IO.IN)) {
                 return consumeAll(recipe, false);
             }
-            return RecipeHelper.handleRecipeIO(lastGroup, recipe, io);
+            return RecipeHelper.handleRecipeIO(getLastGroup(), recipe, io);
         }
 
         @Override
@@ -274,13 +274,13 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (io.equals(IO.IN)) {
                 return consumeAll(recipe, true);
             }
-            return RecipeHelper.handleTickRecipeIO(lastGroup, recipe, io);
+            return RecipeHelper.handleTickRecipeIO(getLastGroup(), recipe, io);
         }
 
         @Override
         protected ActionResult matchRecipe(GTRecipe recipe) {
             // Match by normal inputs first
-            ActionResult normalMatch = RecipeHelper.matchContents(lastGroup, recipe);
+            ActionResult normalMatch = RecipeHelper.matchContents(getLastGroup(), recipe);
             if (!normalMatch.isSuccess()) return normalMatch;
 
             var config = ConfigHolder.INSTANCE.machines;

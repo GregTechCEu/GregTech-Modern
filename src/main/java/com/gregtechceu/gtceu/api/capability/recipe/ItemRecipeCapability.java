@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.trait.IGroupColor;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.OldRecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -15,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
@@ -50,8 +48,6 @@ import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
 public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
@@ -148,15 +144,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     @Override
-    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if (holder instanceof ICustomParallel p) return p.limitItemParallel(recipe, multiplier, tick);
+    public int limitMaxParallelByOutput(RecipeHandlerGroup holder, GTRecipe recipe, int multiplier, boolean tick) {
         var outputContents = (tick ? recipe.tickOutputs : recipe.outputs).get(this);
         if (outputContents == null || outputContents.isEmpty()) return multiplier;
 
-        if (!holder.hasCapabilityProxies()) return 0;
-
-        var handlers = holder.getCapabilitiesFlat(IO.OUT, this);
-        if (handlers.isEmpty()) return 0;
+        var handlers = holder.getOutputHandlerMap().get(this);
+        if (handlers == null || handlers.isEmpty()) return 0;
 
         int minMultiplier = 0;
         int maxMultiplier = multiplier;
@@ -200,15 +193,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     @Override
-    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
-        if (!holder.hasCapabilityProxies()) return 0;
-
+    public int getMaxParallelByInput(RecipeHandlerGroup holder, GTRecipe recipe, int limit, boolean tick) {
         var inputs = (tick ? recipe.tickInputs : recipe.inputs).get(this);
         if (inputs == null || inputs.isEmpty()) return limit;
 
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        List<Object2LongMap<ItemStack>> inventoryGroups = getInputContents(holder);
-        if (inventoryGroups.isEmpty()) return 0;
+        Object2LongMap<ItemStack> inventory = getInputContents(holder);
+        if (inventory.isEmpty()) return 0;
 
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
         // notConsumable ingredients are not counted towards the max ratio
@@ -244,114 +235,62 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         // is this even possible
         if (consumables.isEmpty() && nonConsumables.isEmpty()) return limit;
 
-        int maxMultiplier = 0;
-        // Check every inventory group
-        for (var group : inventoryGroups) {
-            // Check for enough NC in inventory group
-            boolean satisfied = true;
-            for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
-                Ingredient ingredient = ncEntry.getKey();
-                long needed = ncEntry.getLongValue();
-                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
-                    if (ingredient.test(stackEntry.getKey())) {
-                        long count = stackEntry.getLongValue();
-                        long lesser = Math.min(needed, count);
-                        count -= lesser;
-                        needed -= lesser;
-                        stackEntry.setValue(count);
-                        if (needed == 0) break;
-                    }
-                }
-                if (needed > 0) {
-                    satisfied = false;
-                    break;
+        // Check for enough NC in inventory
+        for (var ncEntry : Object2LongMaps.fastIterable(nonConsumables)) {
+            Ingredient ingredient = ncEntry.getKey();
+            long needed = ncEntry.getLongValue();
+            for (var stackEntry : Object2LongMaps.fastIterable(inventory)) {
+                if (ingredient.test(stackEntry.getKey())) {
+                    long count = stackEntry.getLongValue();
+                    long lesser = Math.min(needed, count);
+                    count -= lesser;
+                    needed -= lesser;
+                    stackEntry.setValue(count);
+                    if (needed == 0) break;
                 }
             }
-            // Not enough NC -> skip this inventory
-            if (!satisfied) continue;
-            // Satisfied NC + no consumables -> early return
-            if (consumables.isEmpty()) return limit;
+            if (needed > 0) return 0;
+        }
+        // Satisfied NC + no consumables -> early return
+        if (consumables.isEmpty()) return limit;
 
-            int invMultiplier = Integer.MAX_VALUE;
-            // Loop over all consumables
-            for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
-                Ingredient ingredient = cEntry.getKey();
-                final long needed = cEntry.getLongValue();
-                final long maxNeeded = needed * limit;
-                long available = 0;
-                // Search stacks in our inventory group, summing them up
-                for (var stackEntry : Object2LongMaps.fastIterable(group)) {
-                    if (ingredient.test(stackEntry.getKey())) {
-                        available += stackEntry.getLongValue();
-                        // We can stop if we already have enough for max parallel
-                        if (available >= maxNeeded) break;
-                    }
+        int maxMultiplier = Integer.MAX_VALUE;
+        // Loop over all consumables
+        for (var cEntry : Object2LongMaps.fastIterable(consumables)) {
+            Ingredient ingredient = cEntry.getKey();
+            final long needed = cEntry.getLongValue();
+            final long maxNeeded = needed * limit;
+            long available = 0;
+            // Search stacks in our inventory, summing them up
+            for (var stackEntry : Object2LongMaps.fastIterable(inventory)) {
+                if (ingredient.test(stackEntry.getKey())) {
+                    available += stackEntry.getLongValue();
+                    // We can stop if we already have enough for max parallel
+                    if (available >= maxNeeded) break;
                 }
-                // ratio will equal 0 if available < needed
-                int ratio = GTMath.saturatedCast(Math.min(limit, available / needed));
-                invMultiplier = Math.min(invMultiplier, ratio);
-                // Not enough of this ingredient in this group -> skip inventory
-                if (ratio == 0) break;
             }
-            // We found an inventory group that can do max parallel -> early return
-            if (invMultiplier == limit) return limit;
-            maxMultiplier = Math.max(maxMultiplier, invMultiplier);
+            // ratio will equal 0 if available < needed
+            int ratio = GTMath.saturatedCast(Math.min(limit, available / needed));
+            maxMultiplier = Math.min(maxMultiplier, ratio);
+            if (ratio == 0) break;
         }
 
         return maxMultiplier;
     }
 
-    private static List<Object2LongMap<ItemStack>> getInputContents(IRecipeCapabilityHolder holder) {
-        var handlerLists = holder.getCapabilitiesForIO(IO.IN);
-        if (handlerLists.isEmpty()) return Collections.emptyList();
-
-        Map<IGroupColor, List<OldRecipeHandlerList>> handlerGroups = new HashMap<>();
-        for (var handler : handlerLists) {
-            if (!handler.hasCapability(ItemRecipeCapability.CAP)) continue;
-            addToRecipeHandlerMap(handler.getGroup(), handler, handlerGroups);
-        }
-
+    private static Object2LongMap<ItemStack> getInputContents(RecipeHandlerGroup holder) {
+        var handlers = holder.getInputHandlerMap().get(ItemRecipeCapability.CAP);
         final var strat = ItemStackHashStrategy.comparingAllButCount();
-
-        List<OldRecipeHandlerList> distinctHandlerLists = handlerGroups.getOrDefault(
-                RecipeHandlerGroupDistinctness.BUS_DISTINCT,
-                Collections.emptyList());
-        List<Object2LongMap<ItemStack>> invs = new ArrayList<>(distinctHandlerLists.size() + 1);
-        // Handle distinct groups first, adding an inventory based on their contents individually.
-        for (OldRecipeHandlerList handlerList : distinctHandlerLists) {
-            var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-            Object2LongOpenCustomHashMap<ItemStack> distinctInv = new Object2LongOpenCustomHashMap<>(strat);
-
-            for (IRecipeHandler<?> handler : handlers) {
-                for (var content : handler.getContents()) {
-                    if (content instanceof ItemStack stack && !stack.isEmpty()) {
-                        distinctInv.addTo(stack, stack.getCount());
-                    }
+        Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
+        if (handlers == null || handlers.isEmpty()) return inventory;
+        for (var handler : handlers) {
+            for (var content : handler.getContents()) {
+                if (content instanceof ItemStack stack && !stack.isEmpty()) {
+                    inventory.addTo(stack, stack.getCount());
                 }
             }
-            if (!distinctInv.isEmpty()) invs.add(distinctInv);
         }
-
-        // Then handle other groups. The logic of undyed buses belonging to
-        // everything has already been taken care of by addToRecipeMap()
-        for (Map.Entry<IGroupColor, List<OldRecipeHandlerList>> handlerListEntry : handlerGroups.entrySet()) {
-            if (handlerListEntry.getKey() == RecipeHandlerGroupDistinctness.BUS_DISTINCT) continue;
-
-            Object2LongOpenCustomHashMap<ItemStack> inventory = new Object2LongOpenCustomHashMap<>(strat);
-            for (OldRecipeHandlerList handlerList : handlerListEntry.getValue()) {
-                var handlers = handlerList.getCapability(ItemRecipeCapability.CAP);
-                for (var handler : handlers) {
-                    for (var content : handler.getContents()) {
-                        if (content instanceof ItemStack stack && !stack.isEmpty()) {
-                            inventory.addTo(stack, stack.getCount());
-                        }
-                    }
-                }
-            }
-            if (!inventory.isEmpty()) invs.add(inventory);
-        }
-
-        return invs;
+        return inventory;
     }
 
     @Override

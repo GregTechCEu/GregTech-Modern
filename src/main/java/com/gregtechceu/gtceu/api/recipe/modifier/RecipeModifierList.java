@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -32,11 +33,12 @@ public final class RecipeModifierList implements RecipeModifier {
      */
     @Override
     @Contract(pure = true)
-    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public @NotNull ModifierFunction getModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                 @NotNull GTRecipe recipe) {
         ModifierFunction result = ModifierFunction.IDENTITY;
         var runningRecipe = recipe;
         for (RecipeModifier modifier : modifiers) {
-            var func = modifier.getModifier(machine, runningRecipe);
+            var func = modifier.getModifier(machine, group, runningRecipe);
             runningRecipe = func.apply(runningRecipe);
             if (runningRecipe == null) {
                 RecipeLogic.putFailureReason(machine, recipe, func.getFailReason());

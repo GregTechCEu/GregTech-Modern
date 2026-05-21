@@ -262,10 +262,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return storages.length;
     }
 
-    @Override
-    public int getSize() {
-        return getTanks();
-    }
 
     @Override
     public @NotNull List<Object> getContents() {

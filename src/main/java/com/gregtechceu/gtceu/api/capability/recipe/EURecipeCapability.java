@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerEnergyStack;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -34,94 +33,67 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     }
 
     @Override
-    public int limitMaxParallelByOutput(IRecipeCapabilityHolder holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if (holder instanceof ICustomParallel p) return p.limitEUParallel(recipe, multiplier, tick);
-        if (tick) {
-            long recipeEUt = recipe.getOutputEUt().getTotalEU();
-            if (recipeEUt == 0) return multiplier;
+    public int limitMaxParallelByOutput(RecipeHandlerGroup holder, GTRecipe recipe, int multiplier, boolean tick) {
+        var outputs = tick ? recipe.getTickOutputContents(this) : recipe.getOutputContents(this);
+        if (outputs.isEmpty()) return multiplier;
 
-            long maxVoltage = Long.MAX_VALUE;
-            if (holder instanceof IOverclockMachine overclockMachine) {
-                maxVoltage = overclockMachine.getOverclockVoltage();
-            } else if (holder instanceof ITieredMachine tieredMachine) {
-                maxVoltage = tieredMachine.getMaxVoltage();
-            }
+        var handlers = holder.getOutputHandlerMap().get(this);
+        if (handlers == null || handlers.isEmpty()) return 0;
 
-            return Math.min(multiplier, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
-        } else {
-            var outputs = recipe.getOutputContents(this);
-            if (outputs.isEmpty()) return multiplier;
+        int minMultiplier = 0;
+        int maxMultiplier = multiplier;
 
-            if (!holder.hasCapabilityProxies()) return 0;
-            var handlers = holder.getCapabilitiesFlat(IO.OUT, this);
-            if (handlers.isEmpty()) return 0;
-
-            int minMultiplier = 0;
-            int maxMultiplier = multiplier;
-
-            long totalEU = 0L;
-            for (var content : outputs) totalEU += of(content.content).getTotalEU();
-            if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
-                maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
-            }
-
-            while (minMultiplier != maxMultiplier) {
-                List<Long> eu = LongList.of(totalEU * multiplier);
-                for (var handler : handlers) {
-                    // noinspection unchecked
-                    eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                    if (eu == null) break;
-                }
-                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
-                minMultiplier = bin[0];
-                multiplier = bin[1];
-                maxMultiplier = bin[2];
-            }
-
-            return multiplier;
+        long totalEU = 0L;
+        for (var content : outputs) totalEU += of(content.content).getTotalEU();
+        if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
+            maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
         }
+
+        while (minMultiplier != maxMultiplier) {
+            List<Long> eu = LongList.of(totalEU * multiplier);
+            for (var handler : handlers) {
+                // noinspection unchecked
+                eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
+                if (eu == null) break;
+            }
+            int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+            minMultiplier = bin[0];
+            multiplier = bin[1];
+            maxMultiplier = bin[2];
+        }
+
+        return multiplier;
     }
 
     @Override
-    public int getMaxParallelByInput(IRecipeCapabilityHolder holder, GTRecipe recipe, int limit, boolean tick) {
-        if (tick) {
-            long maxVoltage = Long.MAX_VALUE;
-            if (holder instanceof IOverclockMachine overclockMachine) {
-                maxVoltage = overclockMachine.getOverclockVoltage();
-            } else if (holder instanceof ITieredMachine tieredMachine) {
-                maxVoltage = tieredMachine.getMaxVoltage();
-            }
+    public int getMaxParallelByInput(RecipeHandlerGroup holder, GTRecipe recipe, int limit, boolean tick) {
+        var inputs = tick ? recipe.getTickInputContents(this) : recipe.getInputContents(this);
+        if (inputs.isEmpty()) return limit;
 
-            long recipeEUt = recipe.getInputEUt().getTotalEU();
-            if (recipeEUt == 0) return limit;
-            return Math.min(limit, Math.abs(GTMath.saturatedCast(maxVoltage / recipeEUt)));
-        } else {
-            if (!holder.hasCapabilityProxies()) return 0;
-            var inputs = recipe.getInputContents(this);
-            if (inputs.isEmpty()) return limit;
-
-            long nonConsumable = 0;
-            long consumable = 0;
-            for (Content content : inputs) {
-                EnergyStack s = of(content.content);
-                if (content.chance == 0) nonConsumable += s.getTotalEU();
-                else consumable += s.getTotalEU();
-            }
-
-            if (nonConsumable == 0 && consumable == 0) return limit;
-
-            long sum = 0;
-            for (var handler : holder.getCapabilitiesFlat(IO.IN, this)) {
-                for (var content : handler.getContents()) {
-                    if (content instanceof EnergyStack es) sum += es.getTotalEU();
-                    else if (content instanceof Long l) sum += l;
-                }
-            }
-
-            if (sum < nonConsumable) return 0;
-            sum -= nonConsumable;
-            return Math.min(GTMath.saturatedCast(sum / consumable), limit);
+        long nonConsumable = 0;
+        long consumable = 0;
+        for (Content content : inputs) {
+            EnergyStack s = of(content.content);
+            if (content.chance == 0) nonConsumable += s.getTotalEU();
+            else consumable += s.getTotalEU();
         }
+
+        if (nonConsumable == 0 && consumable == 0) return limit;
+
+        long sum = 0;
+        var handlers = holder.getInputHandlerMap().get(this);
+        if (handlers == null || handlers.isEmpty()) return 0;
+        for (var handler : handlers) {
+            for (var content : handler.getContents()) {
+                if (content instanceof EnergyStack es) sum += es.getTotalEU();
+                else if (content instanceof Long l) sum += l;
+            }
+        }
+
+        if (sum < nonConsumable) return 0;
+        if (consumable == 0) return limit;
+        sum -= nonConsumable;
+        return Math.min(GTMath.saturatedCast(sum / consumable), limit);
     }
 
     /**

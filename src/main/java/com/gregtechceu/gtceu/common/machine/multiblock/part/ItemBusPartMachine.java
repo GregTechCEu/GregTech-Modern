@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
@@ -14,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -154,13 +156,21 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     @Override
     public void onPaintingColorChanged(int color) {
-        // getHandlerList().setColor(color, true);
+        getControllers().forEach(controller -> {
+            if(controller instanceof IRecipeLogicMachine rlm) {
+                rlm.getRecipeLogic().resetLastGroup();
+            }
+        });
     }
 
     @Override
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
-        // getHandlerList().setDistinctAndNotify(isDistinct);
+        getControllers().forEach(controller -> {
+            if(controller instanceof IRecipeLogicMachine rlm) {
+                rlm.getRecipeLogic().resetLastGroup();
+            }
+        });
     }
 
     @Override
@@ -197,10 +207,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     protected RecipeHandlerList getHandlerList() {
         if (handlerList == null) {
-            List<NotifiableRecipeHandlerTrait<?>> handlers = new ArrayList<>();
+            List<IRecipeHandler<?>> handlers = new ArrayList<>();
             IO handlerIO = null;
             for (var trait : traits) {
-                if (trait instanceof NotifiableRecipeHandlerTrait<?> rht) {
+                if (trait instanceof IRecipeHandler<?> rht) {
                     if (handlerIO == null) handlerIO = rht.getHandlerIO();
                     handlers.add(rht);
                 }
@@ -209,7 +219,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
             } else {
-                handlerList = RecipeHandlerList.of(getPaintingColor(), isDistinct(), handlers);
+                handlerList = RecipeHandlerList.of(this::getPaintingColor, this::isDistinct, handlers);
             }
         }
         return handlerList;
@@ -296,7 +306,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
-        if (getLevel().getBlockEntity(blockPos) instanceof IMachineBlockEntity newHolder) {
+        if (getLevel().getBlockEntity(blockPos).getBlockPos() instanceof IMachineBlockEntity newHolder) {
             if (newHolder.getMetaMachine() instanceof ItemBusPartMachine newMachine) {
                 // We don't set the circuit or distinct busses, since
                 // that doesn't make sense on an output bus.

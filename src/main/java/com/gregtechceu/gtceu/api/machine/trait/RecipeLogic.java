@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
@@ -36,6 +37,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList.UNDYED;
 
 public class RecipeLogic extends MachineTrait implements IWorkable, IFancyTooltip {
 
@@ -91,13 +94,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @DescSynced
     protected GTRecipe lastRecipe;
 
-    @Getter
+    @Persisted
+    protected int lastGroupColor = UNDYED;
+
     protected RecipeHandlerGroup lastGroup;
-    /**
-     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
-     * which can be found
-     * from {@link RecipeManager}.
-     */
+
     @Nullable
     @Getter
     @Persisted
@@ -146,6 +147,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
+        lastGroup = null;
+        lastGroupColor= UNDYED;
         progress = 0;
         duration = 0;
         isActive = false;
@@ -209,7 +212,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     protected ActionResult matchRecipe(GTRecipe recipe) {
-        return RecipeHelper.matchContents(lastGroup, recipe);
+        return RecipeHelper.matchContents(getLastGroup(), recipe);
     }
 
     protected ActionResult checkRecipe(GTRecipe recipe) {
@@ -220,7 +223,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match);
+        var modified = machine.fullModifyRecipe(match, getLastGroup());
         if (modified != null) {
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
@@ -266,10 +269,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public @NotNull Iterator<GTRecipe> searchRecipe() {
-        for(var group: machine.getRecipeHandlerGroups()){
+        for(var group: machine.getRecipeHandlerGroups()) {
             var iterator = machine.getRecipeType().searchRecipe(group, r -> true);
             if(iterator.hasNext()) {
                 lastGroup = group;
+                if(group.getColor() != UNDYED) lastGroupColor = group.getColor();
                 return iterator;
             }
         }
@@ -295,10 +299,25 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         }
     }
 
+    public void resetLastGroup() {
+        lastGroup = null;
+    }
+
+    public RecipeHandlerGroup getLastGroup() {
+        if(lastGroup == null) {
+            var groups = machine.getRecipeHandlerGroups();
+            lastGroup = groups.stream()
+                    .filter(group -> group.getColor() == lastGroupColor)
+                    .findFirst()
+                    .orElse(groups.get(0));
+        }
+        return lastGroup;
+    }
+
     public ActionResult handleTickRecipe(GTRecipe recipe) {
         if (!recipe.hasTick()) return ActionResult.SUCCESS;
 
-        var result = RecipeHelper.matchTickRecipe(lastGroup, recipe);
+        var result = RecipeHelper.matchTickRecipe(getLastGroup(), recipe);
         if (!result.isSuccess()) return result;
 
         result = handleTickRecipeIO(recipe, IO.IN);
@@ -436,7 +455,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             }
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy());
+                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), getLastGroup());
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {
@@ -447,8 +466,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 }
             }
             // try it again
-            var recipeCheck = checkRecipe(lastRecipe);
-            if (!recipeDirty && recipeCheck.isSuccess()) {
+
+            if (!recipeDirty && checkRecipe(lastRecipe).isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
                 setStatus(Status.IDLE);
@@ -460,17 +479,11 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-        if(lastGroup == null) {
-            lastGroup = machine.getRecipeHandlerGroups().get(0);
-        }
-        return RecipeHelper.handleRecipeIO(lastGroup, recipe, io);
+        return RecipeHelper.handleRecipeIO(getLastGroup(), recipe, io);
     }
 
     protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-        if(lastGroup == null) {
-            lastGroup = machine.getRecipeHandlerGroups().get(0);
-        }
-        return RecipeHelper.handleTickRecipeIO(lastGroup, recipe, io);
+        return RecipeHelper.handleTickRecipeIO(getLastGroup(), recipe, io);
     }
 
     /**

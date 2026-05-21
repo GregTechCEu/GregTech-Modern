@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -92,7 +93,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Simple Generator
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
@@ -100,7 +102,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         if (EUt <= 0) return ModifierFunction.NULL;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
-        int parallels = ParallelLogic.getParallelAmountFast(generator, recipe, maxParallel);
+        int parallels = ParallelLogic.getParallelAmountFast(group, recipe, maxParallel);
 
         return ModifierFunction.builder()
                 .inputModifier(ContentModifier.multiplier(parallels))

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
@@ -67,8 +68,8 @@ public interface OverclockingLogic {
      * @param shouldParallel whether the OC Logic should parallel or not
      * @return A {@link ModifierFunction} describing how the OC application should modify the recipe
      */
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage,
-                                                  boolean shouldParallel) {
+    default @NotNull ModifierFunction getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
+                                                  long maxVoltage, boolean shouldParallel) {
         long EUt = RecipeHelper.getRealEUt(recipe).getTotalEU();
         if (EUt == 0) return ModifierFunction.IDENTITY;
 
@@ -92,7 +93,7 @@ public interface OverclockingLogic {
                 maxParallels = 16;
             } else {
                 int p = GTMath.saturatedCast((1L << (2 * (OCs - lg))) + 1);
-                maxParallels = ParallelLogic.getParallelAmount(machine, recipe, p);
+                maxParallels = ParallelLogic.getParallelAmount(group, recipe, p);
             }
         }
 
@@ -101,8 +102,9 @@ public interface OverclockingLogic {
         return result.toModifier();
     }
 
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage) {
-        return getModifier(machine, recipe, maxVoltage, true);
+    default @NotNull ModifierFunction getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
+                                                  long maxVoltage) {
+        return getModifier(machine, group, recipe, maxVoltage, true);
     }
 
     /**

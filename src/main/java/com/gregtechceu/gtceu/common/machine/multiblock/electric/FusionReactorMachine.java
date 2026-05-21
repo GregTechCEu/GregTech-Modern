@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
@@ -113,18 +114,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
+
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (io == IO.NONE || io == IO.OUT) continue;
+
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
-
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
+                        .filter(h -> h.getHandlerIO().support(IO.IN))
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
                         .forEach(energyContainers::add);
-                traitSubscriptions.add(handlerList.subscribe(this::updatePreHeatSubscription, EURecipeCapability.CAP));
+
+                 traitSubscriptions.add(handlerList.subscribe(this::updatePreHeatSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
@@ -169,7 +170,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Fusion Reactor and recipe
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                  @NotNull GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
@@ -184,7 +186,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
         // if the stored heat is >= required energy, recipe is okay to run
         if (heatDiff <= 0) {
-            return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
+            return FUSION_OC.getModifier(machine, group, recipe, fusionReactorMachine.getMaxVoltage(), false);
         }
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
@@ -196,7 +198,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         // increase the stored heat
         fusionReactorMachine.heat += heatDiff;
         fusionReactorMachine.updatePreHeatSubscription();
-        return FUSION_OC.getModifier(machine, recipe, fusionReactorMachine.getMaxVoltage(), false);
+        return FUSION_OC.getModifier(machine, group, recipe, fusionReactorMachine.getMaxVoltage(), false);
     }
 
     @Override
