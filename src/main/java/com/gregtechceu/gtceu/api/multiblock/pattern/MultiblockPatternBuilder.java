@@ -75,7 +75,6 @@ public class MultiblockPatternBuilder {
         if (minRepeats > maxRepeats) {
             throw new IllegalArgumentException("minRepeats must be smaller than maxRepeats");
         }
-        // PA returns in gtm :lets:
         PatternAisle pa = new PatternAisle(aisle);
         pa.minRepeats = minRepeats;
         pa.maxRepeats = maxRepeats;
@@ -133,7 +132,7 @@ public class MultiblockPatternBuilder {
         return this;
     }
 
-    public BlockPattern build() {
+    public IBlockPattern build() {
         checkMissingPredicates();
         this.dimensions[0] = aisles.size();
         if (aisleStrategy == null) aisleStrategy = new BasicAisleStrategy();

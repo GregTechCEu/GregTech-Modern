@@ -99,11 +99,11 @@ public class Predicates {
     }
 
     public static PatternPredicate any() {
-        return new PatternPredicate(PatternPredicate.ANY);
+        return PatternPredicate.ANY;
     }
 
     public static PatternPredicate air() {
-        return new PatternPredicate(PatternPredicate.AIR);
+        return PatternPredicate.AIR;
     }
 
     public static PatternPredicate abilities(PartAbility... abilities) {
