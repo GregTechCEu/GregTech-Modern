@@ -588,17 +588,11 @@ public class CommonEventListener {
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
         event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get());
-            }
             if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
                 mapping.remap(GTMachines.STEAM_MINER.first().getBlock());
             }
         });
         event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
-            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
-                mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
-            }
             if (mapping.getKey().equals(GTCEu.id("steam_miner"))) {
                 mapping.remap(GTMachines.STEAM_MINER.first().getItem());
             }
