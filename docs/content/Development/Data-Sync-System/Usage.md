@@ -6,28 +6,59 @@ title: "Usage"
 
 ### Registering classes with the sync system
 
-At the core of the system is the interface `ISyncManaged`, which represents a class that to be synchronised with the client or saved.
+At the core of the system are the `ISyncManaged` and `ISyncAnnotated` interfaces, which allow for their fields to have sync annotations..
 All block entities which should be synchronised or saved must extend the abstract class `ManagedSyncBlockEntity`.
+
+`ISyncManaged` should be used for classes with any form of persistent state, and cannot be instantiated or reassigned.<br>
+`ISyncAnnotated` should be used for record-like classes that hold data, and must define a no-args constructor.
+
 
 !!! warning 
   Block entities that inherit `ManagedSyncBlockEntity` must call `ManagedSyncBlockEntity::updateTick`***every tick*** within their ticker, or they will not be saved.
 
+#### Example of `ISyncManaged` usage
 ```java
 class MySyncObject implements ISyncManaged {
-    // Any class that directly implements ISyncManaged must have the following:
+    
+    // Any class that directly implements ISyncManaged must have a SyncDataHolder:
      @Getter
      protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
+     
+    // ISyncManaged objects should be attached to a parent sync managed object,
+    // unless the sync managed object is a blockentity
+    // ISyncManaged classes must implement a getter for their parent sync object
+    @Getter
+    private final MetaMachine parentSyncObject; 
     
+    @SaveField
+    @SyncToClient
+    private BlockPos syncPos;
     
-    /**
-     * Function called when the SyncDataHolder requests a rerender
-     */
-    void scheduleRenderUpdate();
-
-    /**
-     * Function called to notify the server that this object has been updated and must be synced to clients
-     */
-    void markAsChanged();
+    @SaveField
+    @SyncToClient
+    private ExampleSyncAnnotated syncAnnotatedField;
+     
+    public MySyncObject(MetaMachine machine) {
+        this.parentSyncObject = machine;
+    }
+    
+    public void doChanges() {
+        
+      syncPos = BlockPos.ZERO;
+        // Client sync fields do not update automatically.
+      getSyncDataHolder().markClientSyncFieldDirty("syncPos")
+                
+      syncAnnotatedField.someValue = 10;
+      /*
+       * Because ISyncAnnotated classes do not manage their own sync state, 
+       * updating a field in an ISyncAnnotated class requires the parent field to be marked as changed.
+       */
+      getSyncDataHolder().markClientSyncFieldDirty("syncAnnotatedField");        
+    }
+    
+    private static class ExampleSyncAnnotated implements ISyncAnnotated {
+        public int someValue = 0;
+    }
 }
 ```
 
