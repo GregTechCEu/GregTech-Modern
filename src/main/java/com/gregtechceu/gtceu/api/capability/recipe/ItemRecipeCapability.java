@@ -505,19 +505,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         return null;
     }
 
-    public interface ICustomParallel {
-
-        /**
-         * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
-         *
-         * @param recipe     Recipe
-         * @param multiplier Initial multiplier
-         * @param tick       Tick or not
-         * @return Limited multiplier
-         */
-        int limitItemParallel(GTRecipe recipe, int multiplier, boolean tick);
-    }
-
     // Items should be respected for distinct checks
     @Override
     public boolean shouldBypassDistinct() {

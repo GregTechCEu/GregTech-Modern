@@ -373,19 +373,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         }
     }
 
-    public interface ICustomParallel {
-
-        /**
-         * Custom impl of the parallel limiter used by ParallelLogic to limit by outputs
-         *
-         * @param recipe     Recipe
-         * @param multiplier Initial multiplier
-         * @param tick       Tick or not
-         * @return Limited multiplier
-         */
-        int limitFluidParallel(GTRecipe recipe, int multiplier, boolean tick);
-    }
-
     // Fluids should be respected for distinct checks
     @Override
     public boolean shouldBypassDistinct() {
