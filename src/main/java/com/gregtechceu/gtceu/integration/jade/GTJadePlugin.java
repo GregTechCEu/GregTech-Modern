@@ -89,7 +89,7 @@ public class GTJadePlugin implements IWailaPlugin {
     }
 
     @SafeVarargs
-    private void register(IWailaCommonRegistration reg, IServerDataProvider<BlockAccessor>... providers) {
+    public static void register(IWailaCommonRegistration reg, IServerDataProvider<BlockAccessor>... providers) {
         for (var provider : providers) {
             Class<? extends BlockEntity> clazz = BlockEntity.class;
 
@@ -101,7 +101,7 @@ public class GTJadePlugin implements IWailaPlugin {
         }
     }
 
-    private void register(IWailaClientRegistration reg, IBlockComponentProvider... providers) {
+    public static void register(IWailaClientRegistration reg, IBlockComponentProvider... providers) {
         for (var provider : providers) {
             Class<? extends Block> clazz = Block.class;
             if (provider instanceof MachineInfoProvider<?, ?> || provider instanceof MachineTraitProvider<?, ?>) {
