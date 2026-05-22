@@ -10,7 +10,6 @@ import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
-import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public class ToggleButtonWidget extends SwitchWidget {

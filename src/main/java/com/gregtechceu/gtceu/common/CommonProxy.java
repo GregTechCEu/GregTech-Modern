@@ -80,7 +80,12 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
 
+import com.google.common.collect.Multimaps;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateProvider;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+
+import java.util.List;
 
 public class CommonProxy {
 
@@ -164,7 +169,8 @@ public class CommonProxy {
                 // noinspection UnstableApiUsage
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
                         .get(ProviderType.LANG);
-                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLang.generate((GTLangProvider) provider, registry);
+                NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLang
+                        .generate((GTLangProvider) provider, registry);
                 if (providers == null) {
                     accessor.getDatagens().put(ProviderType.LANG, generator);
                 } else {

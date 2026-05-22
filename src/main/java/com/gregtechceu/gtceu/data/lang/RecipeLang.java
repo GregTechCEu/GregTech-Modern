@@ -41,7 +41,7 @@ public class RecipeLang {
         provider.add("recipe.condition.pos_y.tooltip", "Y Level: %d <= Y <= %d");
 
         provider.add("recipe.condition.steam_vent.tooltip", "Clean steam vent");
-        provider.add("recipe.condition.rock_breaker.tooltip", "Fluid blocks around");
+        provider.add("recipe.condition.adjacent_fluid.tooltip", "Fluid blocks around");
         provider.add("recipe.condition.adjacent_block.tooltip", "Blocks around");
         provider.add("recipe.condition.eu_to_start.tooltip", "EU to Start: %d%s");
 
@@ -59,15 +59,19 @@ public class RecipeLang {
         // Recipe Data
         provider.add("gtceu.recipe.total", "Total: %s EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
-        provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
-        provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
+        provider.add("gtceu.recipe.eu", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.eu_inverted", "Generation: %s A @ %s");
+        provider.add("gtceu.recipe.eu.total", "%s EU/t");
 
         provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
         provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
         provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
 
+        provider.add("gtceu.recipe.byproduct_tier", "Byproducts from %s§r+");
+
         provider.add("gtceu.recipe.duration", "Duration: %s secs");
-        provider.add("gtceu.recipe.amperage", "Amperage: %s");
+        provider.add("gtceu.recipe.voltage", "Usage: %s A @ %s");
+        provider.add("gtceu.recipe.total_eu", "Total Usage: %s EU/t");
 
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
@@ -86,7 +90,7 @@ public class RecipeLang {
 
         provider.add("gtceu.recipe.research", "Requires Research");
 
-        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.temperature", "Temp: %s");
         provider.add("gtceu.recipe.coil.tier", "Coil: %s");
     }
 

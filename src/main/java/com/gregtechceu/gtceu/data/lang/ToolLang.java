@@ -98,7 +98,13 @@ public class ToolLang {
         provider.add("item.gtceu.tool.behavior.crop_harvesting", "§aHarvester: §fHarvests Crops");
         provider.add("item.gtceu.tool.behavior.plunger", "§9Plumber: §fDrains Fluids");
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
+        provider.add("item.gtceu.tool.behavior.dowse_campfire", "§6Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
+        provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
+        provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
+        provider.add("item.gtceu.tool.behavior.prospecting.lava", "Found lava");
+        provider.add("item.gtceu.tool.behavior.prospecting.changing", "Detected material change");
 
         // AOE
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
@@ -167,6 +173,7 @@ public class ToolLang {
         provider.add("item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
         provider.add("item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
         provider.add("item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        provider.add("item.gtceu.tool.iv_chainsaw", "%s Chainsaw (IV)");
 
         provider.add("item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
         provider.add("item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
@@ -174,6 +181,8 @@ public class ToolLang {
 
         provider.add("item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
         provider.add("item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
+        provider.add("item.gtceu.tool.hv_screwdriver", "%s Screwdriver (HV)");
+        provider.add("item.gtceu.tool.iv_screwdriver", "%s Screwdriver (IV)");
         provider.add("item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.shears", "%s Shears");
     }
@@ -196,6 +205,8 @@ public class ToolLang {
         provider.add("item.gtceu.tool.iv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
         provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        provider.add("item.gtceu.tool.hv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
+        provider.add("item.gtceu.tool.iv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
 
         // Tool Stats Tooltips
@@ -214,6 +225,7 @@ public class ToolLang {
         // Repair Info
         provider.add("tool.gtceu.tooltip.show_repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("tool.gtceu.tooltip.repair_material", "§8Repair with: §f§a%s");
+        provider.add("item.gtceu.tool.tooltip.default_enchantments", "§5Default Enchantments:");
         provider.add("tool.gtceu.tooltip.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("tool.gtceu.tooltip.usable_as", "§8Usable as: §f%s");
 

@@ -98,10 +98,13 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 toggleTimer = 5;
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
-                    player.displayClientMessage(Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                    player.displayClientMessage(
+                            Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
+                                    (nightVision ? "enabled" : "disabled")),
+                            true);
                 }
             }
 
@@ -166,7 +169,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 boostedJump = !boostedJump;
                 toggleBootsTimer = JUMPING_TIMER;
                 player.displayClientMessage(Component
-                        .translatable("armor.gtceu.nano_muscle_suite.boosted_jump." + (boostedJump ? "enabled" : "disabled")), true);
+                        .translatable(
+                                "armor.gtceu.quark_tech_suite.boosted_jump." + (boostedJump ? "enabled" : "disabled")),
+                        true);
             }
             if (boostedJump) {
                 if (!world.isClientSide) {

@@ -31,6 +31,7 @@ public class GUILang {
         provider.add("gtceu.key.enable_boots", "Enable Boosted Jump");
         provider.add("gtceu.key.armor_charging", "Armor Charging to Inventory Toggle");
         provider.add("gtceu.key.tool_aoe_change", "Tool AoE Mode Switch");
+        provider.add("gtceu.key.enable_step_assist", "Enable StepAssist");
         provider.add("gtceu.debug.f3_h.enabled",
                 "GregTech has modified the debug info! For Developers: enable the misc:debug config option in the GregTech config file to see more");
     }
@@ -43,6 +44,11 @@ public class GUILang {
         // GUI Units
         provider.add("gtceu.universal.liters", "%s mB");
         provider.add("gtceu.universal.kiloliters", "%s B");
+
+        provider.add("gtceu.universal.parentheses", "(%s)");
+        provider.add("gtceu.universal.spaced_parentheses", "( %s )");
+        provider.add("gtceu.universal.padded_parentheses", " (%s) ");
+        provider.add("gtceu.universal.padded_spaced_parentheses", " ( %s ) ");
 
         // EU Tooltip
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
@@ -192,11 +198,11 @@ public class GUILang {
                 "Chunk Mode Disabled: Click to Enable.\n§7Switching requires an idle machine.");
 
         // Recipe Capability Voiding
-        provider.addMultiline("gtceu.gui.multiblock_item_voiding", "Voiding Mode\n§7Voiding §6Items");
-        provider.addMultiline("gtceu.gui.multiblock_fluid_voiding", "Voiding Mode\n§7Voiding §9Fluids");
-        provider.addMultiline("gtceu.gui.multiblock_item_fluid_voiding",
-                "Voiding Mode\n§7Voiding §6Items §7and §9Fluids");
-        provider.addMultiline("gtceu.gui.multiblock_no_voiding", "Voiding Mode\n§7Voiding Nothing");
+        provider.add("gtceu.gui.multiblock.voiding_mode", "Voiding Mode:");
+        provider.add("gtceu.gui.item_voiding", "§7Voiding §6Items");
+        provider.add("gtceu.gui.fluid_voiding", "§7Voiding §9Fluids");
+        provider.add("gtceu.gui.all_voiding", "§7Voiding §cAll");
+        provider.add("gtceu.gui.no_voiding", "§7Voiding Nothing");
 
         // Fisher
         provider.addMultiline("gtceu.gui.fisher_mode.tooltip",
@@ -225,11 +231,39 @@ public class GUILang {
                 "allow items input from the output side");
         provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
                 "disable items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.enabled", "Item Auto Output: §aEnabled");
+        provider.add("gtceu.gui.item_auto_output.disabled", "Item Auto Output: §cDisabled");
+        provider.addMultiLang("gtceu.gui.item_auto_output.unselected",
+                """
+                        Item Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        provider.addMultiLang("gtceu.gui.item_auto_output.other_direction",
+                """
+                        Item Auto Output: §6Other Direction
+                        §7The machine's item output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
                 "allow fluids input from the output side");
         provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
                 "disable fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.enabled", "Fluid Auto Output: §aEnabled");
+        provider.add("gtceu.gui.fluid_auto_output.disabled", "Fluid Auto Output: §cDisabled");
+        provider.addMultiLang("gtceu.gui.fluid_auto_output.unselected",
+                """
+                        Fluid Auto Output
+                        §7Select a side of the machine to configure its output.
+                        """);
+        provider.addMultiLang("gtceu.gui.fluid_auto_output.other_direction",
+                """
+                        Fluid Auto Output: §6Other Direction
+                        §7The machine's fluid output is set to another direction.
+                        §7Click to move the output to the currently selected side.
+                        """);
         provider.add("gtceu.gui.auto_output.name", "auto");
+        provider.add("gtceu.gui.directional_setting.title", "Directional Setting");
+        provider.add("gtceu.gui.directional_setting.tab_tooltip", "Change Directional Setting");
 
         // Overclocking Widget
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
@@ -265,11 +299,16 @@ public class GUILang {
         provider.add("gtceu.gui.content.chance_nc_short", "§cNC§r");
         provider.add("gtceu.gui.content.chance_base", "Base Chance: %s%%");
         provider.add("gtceu.gui.content.chance_base_logic", "Base Chance: %s%% (%s)");
+        provider.add("gtceu.gui.content.chance_no_boost", "Chance: %s%%");
+        provider.add("gtceu.gui.content.chance_no_boost_logic", "Chance: %s%% (%s)");
         provider.add("gtceu.gui.content.chance_tier_boost_plus", "Bonus Chance: +%s%%/tier");
         provider.add("gtceu.gui.content.chance_tier_boost_minus", "Bonus Chance: -%s%%/tier");
         provider.add("gtceu.gui.content.chance_boosted", "Chance at Tier: %s%%");
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
+        provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.content.range", "%s-%s");
+        provider.add("gtceu.gui.content.times_item", "x %s");
 
         provider.add("gtceu.chance_logic.or", "OR");
         provider.add("gtceu.chance_logic.and", "AND");

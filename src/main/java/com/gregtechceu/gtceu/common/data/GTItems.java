@@ -65,18 +65,15 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import com.google.common.base.Preconditions;
 import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.models.GTModels.*;

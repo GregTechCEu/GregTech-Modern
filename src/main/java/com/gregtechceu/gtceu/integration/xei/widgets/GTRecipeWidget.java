@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -186,8 +187,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
                     voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
                     cd -> setRecipeOC(cd.button, cd.isShiftClick))
-                    .setHoverTooltips(LangHandler.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])
-                            .toArray(Component[]::new)));
+                    .setHoverTooltips(LangUtil.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])));
             addWidget(this.voltageTextWidget = voltageTextWidget);
         }
     }

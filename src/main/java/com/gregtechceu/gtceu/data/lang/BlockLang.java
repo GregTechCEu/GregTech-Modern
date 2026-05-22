@@ -101,6 +101,10 @@ public class BlockLang {
 
         // Surface Rocks
         provider.add("block.surface_rock", "%s Surface Rock");
+
+        // Fluid blocks
+        provider.add("block.gtceu.oil", "Oil");
+        provider.add("block.gtceu.creosote", "Creosote");
     }
 
     private static void generateBlockTooltips(GTLangProvider provider) {
@@ -148,7 +152,7 @@ public class BlockLang {
 
         // Fluid Pipes
         provider.add("tooltip.gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
+        provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");

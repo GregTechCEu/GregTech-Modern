@@ -8,6 +8,11 @@ public class ArmorLang {
         generateArmorMessageKeys(provider);
         generateTooltipKeys(provider);
         generateHudKeys(provider);
+
+        provider.add("item.gtceu.armor.helmet", "%s Helmet");
+        provider.add("item.gtceu.armor.chestplate", "%s Chestplate");
+        provider.add("item.gtceu.armor.leggings", "%s Leggings");
+        provider.add("item.gtceu.armor.boots", "%s Boots");
     }
 
     private static void generateArmorMessageKeys(GTLangProvider provider) {
@@ -15,9 +20,8 @@ public class ArmorLang {
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.enabled", "NanoMuscle™ Suite: §aNightVision Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.disabled",
                 " NanoMuscle™ Suite: §cNightVision Disabled");
-        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.enabled", "NanoMuscle™ Suite: §aJump Boost Enabled");
-        provider.add("armor.gtceu.nano_muscle_suite.boosted_jump.disabled",
-                " NanoMuscle™ Suite: §cJump Boost Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.step_assist.disabled", "NanoMuscle™ Suite: StepAssist Disabled");
+        provider.add("armor.gtceu.nano_muscle_suite.step_assist.enabled", "NanoMuscle™ Suite: StepAssist Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.nightvision.error", "NanoMuscle™ Suite: §cNot enough power!");
         provider.add("armor.gtceu.nano_muscle_suite.charge.enabled", "NanoMuscle™ Suite: §aCharging Enabled");
         provider.add("armor.gtceu.nano_muscle_suite.charge.disabled", " NanoMuscle™ Suite: §cCharging Disabled");
@@ -31,6 +35,10 @@ public class ArmorLang {
         provider.add("armor.gtceu.quark_tech_suite.charge.enabled", "QuarkTech™ Suite: §aCharging Enabled");
         provider.add("armor.gtceu.quark_tech_suite.charge.disabled", "QuarkTech™ Suite: §cCharging Disabled");
         provider.add("armor.gtceu.quark_tech_suite.charge.error", "QuarkTech™ Suite: §cNot enough power for charging!");
+        provider.add("armor.gtceu.quark_tech_suite.step_assist.disabled", "QuarkTech™ Suite: StepAssist Disabled");
+        provider.add("armor.gtceu.quark_tech_suite.step_assist.enabled", "QuarkTech™ Suite: StepAssist Enabled");
+        provider.add("armor.gtceu.quark_tech_suite.boosted_jump.enabled", "QuarkTech™ Suite: Jump Boost Enabled");
+        provider.add("armor.gtceu.quark_tech_suite.boosted_jump.disabled", "QuarkTech™ Suite: Jump Boost Disabled");
 
         // Jetpacks
         provider.add("armor.gtceu.jetpack.flight.enabled", "Jetpack: §aFlight Enabled");
@@ -50,7 +58,8 @@ public class ArmorLang {
         provider.add("item.gtceu.liquid_fuel_jetpack.tooltip", "§7Uses Combustion Generator Fuels for Thrust");
 
         // Armor Abilities
-        provider.add("armor.gtceu.tooltip.stepassist", "§7Provides Step-Assist");
+        provider.add("armor.gtceu.tooltip.step_assist.enabled", "§bStep-Assist: §aOn");
+        provider.add("armor.gtceu.tooltip.step_assist.disabled", "§bStep-Assist: §cOff");
         provider.add("armor.gtceu.tooltip.speed", "§7Increases Running Speed");
         provider.add("armor.gtceu.tooltip.jump", "§7Increases Jump Height and Distance");
         provider.add("armor.gtceu.tooltip.falldamage", "§7Nullifies Fall Damage");

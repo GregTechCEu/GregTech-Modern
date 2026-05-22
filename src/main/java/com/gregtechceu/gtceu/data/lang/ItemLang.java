@@ -610,7 +610,7 @@ public class ItemLang {
         provider.add("behaviour.soft_hammer", "Activates and Deactivates Machines");
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
-        provider.add("behaviour.soft_hammer.idle_after_cycle", "Pause machine after current cycle");
+        provider.add("behaviour.soft_hammer.disabled_cycle", "Working disabled after current cycle");
 
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
@@ -655,13 +655,28 @@ public class ItemLang {
         provider.add("behaviour.paintspray.uses", "Remaining Uses: %d");
 
         // Copy/Paste Configuration
-        provider.add("behaviour.meta.machine.config.copy.tooltip", "§7Sneak + R-Click to copy machine configuration");
-        provider.add("behaviour.meta.machine.config.paste.tooltip", "§7R-Click to paste machine configuration");
-        provider.add("behaviour.setting.allow.input.from.output.tooltip", "%s input from output side is %s");
-        provider.add("behaviour.setting.output.direction.tooltip", "%s output direction: %s");
-        provider.add("behaviour.setting.item_auto_output.tooltip", "%s auto-output is %s");
-        provider.add("behaviour.setting.muffled.tooltip", "Muffling %s");
-        provider.add("item.toggle.advanced.info.tooltip", "§8<Sneak to view stored configuration>");
+        provider.add("behaviour.memory_card.tooltip.copy",
+                "§7Sneak + R-Click to copy configuration, or clear stored data if a block other than a machine or pipe is targeted.");
+        provider.add("behaviour.memory_card.tooltip.paste", "§7R-Click to paste machine configuration");
+        provider.add("behaviour.memory_card.tooltip.view_stored", "§8<Sneak to view stored configuration>");
+        provider.add("behaviour.memory_card.client_msg.cleared", "Stored configuration cleared");
+        provider.add("behaviour.memory_card.client_msg.copied", "Copied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.pasted", "Applied machine configuration");
+        provider.add("behaviour.memory_card.client_msg.missing_items", "Missing items required to paste configuration");
+        provider.add("behaviour.memory_card.tooltip.items_to_paste",
+                "The following items are needed to paste this configuration:");
+        provider.add("behaviour.memory_card.enabled", "§aEnabled§r");
+        provider.add("behaviour.memory_card.disabled", "§cDisabled§r");
+        provider.add("behaviour.memory_card.copy_target", "Copying: %s");
+        provider.add("behaviour.setting.tooltip.item_io", "Item Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.fluid_io", "Fluid Output: %s (%s)");
+        provider.add("behaviour.setting.tooltip.auto_output", "§2Auto Output§r");
+        provider.add("behaviour.setting.tooltip.allow_input", "§2Allow Input§r");
+        provider.add("behaviour.setting.tooltip.auto_output_allow_input", "§2Auto Output/Allow Input§r");
+        provider.add("behaviour.setting.tooltip.pipe_connections", "Pipe connections: %s");
+        provider.add("behaviour.setting.tooltip.pipe_blocked_connections", "Pipe shuttered sides: %s");
+        provider.add("behaviour.setting.tooltip.muffled", "Muffling %s");
+        provider.add("behaviour.setting.tooltip.circuit_config", "Programmed Circuit: ");
 
         // Prospector
         provider.add("behaviour.prospecting", "Usable for Prospecting");
@@ -698,8 +713,6 @@ public class ItemLang {
                 "Caused %s Lag Spike Warnings (anything taking longer than %sms) on the Server.");
         provider.add("behavior.portable_scanner.debug_machine", "Meta-ID: %s");
         provider.add("behavior.portable_scanner.debug_machine_invalid", " invalid!");
-        provider.add("behavior.portable_scanner.debug_machine_invalid_null=invalid! MetaTileEntity =",
-                " null!");
         provider.add("behavior.portable_scanner.debug_machine_valid", " valid");
 
         provider.add("behavior.portable_scanner.divider", "=========================");
@@ -743,15 +756,16 @@ public class ItemLang {
         provider.add("behavior.portable_scanner.workable_stored_energy", "Stored Energy: %s EU / %s EU");
 
         provider.add("behavior.portable_scanner.mode.caption", "Display mode: %s");
-        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info");
+        provider.add("behavior.portable_scanner.mode.show_all_info", "Show all info (excluding internal info)");
         provider.add("behavior.portable_scanner.mode.show_block_info", "Show block info");
         provider.add("behavior.portable_scanner.mode.show_machine_info", "Show machine info");
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.portable_scanner.mode.show_internal_info", "Show internal debugging info");
 
         // Data Stick
-        provider.add("behavior.data_item.assemblyline.title", "§nAssembly Line Construction Data:");
-        provider.add("behavior.data_item.assemblyline.data", "- §a%s");
+        provider.add("behavior.data_item.title", "§n%s Construction Data:");
+        provider.add("behavior.data_item.data", "- §a%s");
     }
 }

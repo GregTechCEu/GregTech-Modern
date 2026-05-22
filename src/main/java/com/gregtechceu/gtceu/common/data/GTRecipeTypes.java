@@ -28,9 +28,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
@@ -148,7 +145,7 @@ public class GTRecipeTypes {
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]));
+            .addDataInfo(data -> Component.translatable("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]));
 
     public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)

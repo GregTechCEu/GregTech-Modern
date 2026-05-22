@@ -203,6 +203,7 @@ public class IntegrationLang {
         // Plugin Names
         provider.add("config.jade.plugin_gtceu.controllable_provider", "[GTCEu] Controllable");
         provider.add("config.jade.plugin_gtceu.workable_provider", "[GTCEu] Workable");
+        provider.add("config.jade.plugin_gtceu.battery_info", "[GTCEu] Battery info");
         provider.add("config.jade.plugin_gtceu.electric_container_provider", "[GTCEu] Electric Container");
         provider.add("config.jade.plugin_gtceu.recipe_logic_provider", "[GTCEu] Recipe Logic");
         provider.add("config.jade.plugin_gtceu.hazard_cleaner_provider", "[GTCEu] Hazard Cleaner");
@@ -216,11 +217,13 @@ public class IntegrationLang {
         provider.add("config.jade.plugin_gtceu.multiblock_structure", "[GTCEu] MultiBlock Structure");
         provider.add("config.jade.plugin_gtceu.parallel_info", "[GTCEu] Parallel Info");
         provider.add("config.jade.plugin_gtceu.primitive_pump", "[GTCEu] Primitive Pump Info");
+        provider.add("config.jade.plugin_gtceu.data_bank", "[GTCEu] Data Bank Info");
         provider.add("config.jade.plugin_gtceu.transformer", "[GTCEu] Transformer Info");
         provider.add("config.jade.plugin_gtceu.stained_color", "[GTCEu] Stained Block Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer", "[GTCEu] Pattern Buffer Info");
         provider.add("config.jade.plugin_gtceu.me_pattern_buffer_proxy", "[GTCEu] Pattern Buffer Proxy Info");
         provider.add("config.jade.plugin_gtceu.energy_converter_provider", "[GTCEu] Energy Converter Mode");
+        provider.add("config.jade.plugin_gtceu.ldp_endpoint", "[GTCEu] Long Distance Pipeline Endpoint Info");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

@@ -59,6 +59,7 @@ public class GTLangProvider extends RegistrateLangProvider implements Registrate
      * Registers multiple values under the same key.
      * <p>
      * For example, a cumbersome way to add translations would be the following:
+     * 
      * <pre> {@code
      * provider.add("terminal.fluid_prospector.tier.0", "radius size 1");
      * provider.add("terminal.fluid_prospector.tier.1", "radius size 2");
@@ -67,6 +68,7 @@ public class GTLangProvider extends RegistrateLangProvider implements Registrate
      * </p>
      *
      * Instead, {@link #addMultiLang} can be used for the same result:
+     * 
      * <pre> {@code
      * provider.addMultiLang("terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");
      * } </pre>
@@ -74,17 +76,18 @@ public class GTLangProvider extends RegistrateLangProvider implements Registrate
      * In situations requiring a large number of generated translations, the
      * following could be used instead, which
      * generates translations for 100 tiers:
+     * 
      * <pre> {@code
      * provider.addMultiLang("terminal.fluid_prospector.tier", IntStream.of(100)
-     *                 .map(i -> i + 1)
-     *                 .mapToObj(Integer::toString)
-     *                 .map(i -> "radius size " + i)
-     *                 .toArray(String[]::new));
+     *         .map(i -> i + 1)
+     *         .mapToObj(Integer::toString)
+     *         .map(i -> "radius size " + i)
+     *         .toArray(String[]::new));
      * } </pre>
      *
-     * @param key    Base key of the translation. The real key for each translation will be appended by ".0" for
-     *               the first, ".1" for the second, etc. This ensures that the keys are unique.
-     * @param lines  All translation lines.
+     * @param key   Base key of the translation. The real key for each translation will be appended by ".0" for
+     *              the first, ".1" for the second, etc. This ensures that the keys are unique.
+     * @param lines All translation lines.
      */
     public void addMultiLang(String key, String... lines) {
         for (var i = 0; i < lines.length; i++) {
@@ -95,11 +98,13 @@ public class GTLangProvider extends RegistrateLangProvider implements Registrate
     /**
      * Adds one translation to the given lang provider per line in the given
      * multiline (a multiline is a String containing newline characters). For example,
+     * 
      * <pre> {@code
      * provider.addMultiline("gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");
      * } </pre>
      *
      * Results in the following translations:
+     * 
      * <pre> {@code
      * "gtceu.gui.overclock.enabled.0": "Overclocking Enabled.",
      * "gtceu.gui.overclock.enabled.1": "Click to Disable",

@@ -546,7 +546,8 @@ public class GCYMMachines {
             .multiblock("large_brewer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Brewing Vat")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES))
+            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(BREWING_RECIPES, FERMENTING_RECIPES,
+                    FLUID_HEATER_RECIPES))
             .rotationState(RotationState.ALL)
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)

@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -324,7 +325,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         ButtonWidget infoWidget = new ButtonWidget(200, 10, 20, 20, null);
         infoWidget.setButtonTexture(GuiTextures.INFO_ICON);
         infoWidget.setHoverTooltips(
-                GTStringUtils.toImmutable(LangHandler.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip")));
+                LangUtil.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip"));
         builder.addWidget(infoWidget);
         List<@Nullable MonitorGroup> configGroup = new ArrayList<>();
         configGroup.add(null);
@@ -346,8 +347,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }));
             for (int i = 0; i < 8; i++) {
                 SlotWidget slot = new SlotWidget(group.getPlaceholderSlotsHandler(), i, -38, 16 * i + 46);
-                slot.setHoverTooltips(GTStringUtils
-                        .toImmutable(LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1)));
+                slot.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1));
                 groupConfig.addWidget(slot);
             }
             SlotWidget slot = new SlotWidget(

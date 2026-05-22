@@ -93,7 +93,7 @@ public class CoverLang {
         provider.addMultiline("cover.conveyor.distribution.round_robin_global",
                 "Distribution Mode: §bRound Robin\n§7Splits items equally across connected inventories");
         provider.addMultiline("cover.conveyor.distribution.round_robin_prio",
-                "Distribution Mode: §bRound Robin with Priority\n§7Tries to split items across connected inventories and considers higher priorities first.\n§7Restrictive item pipes lower the priority of a path.");
+                "Distribution Mode: §bRound Robin with Restriction\n§7Tries to split items equally across connected inventories.\n§7Will not send items down Restrictive item pipes unless no other paths are available.");
         provider.addMultiline("cover.conveyor.distribution.insert_first",
                 "Distribution Mode: §bPriority\n§7Will insert into the first inventory with the highest priority it can find.\n§7Restrictive item pipes lower the priority of a path.");
         provider.addMultiline("cover.conveyor.blocks_input.enabled",
@@ -147,6 +147,7 @@ public class CoverLang {
         provider.addMultiline("cover.machine_controller.invert.disabled",
                 "§eNormal§r - in this mode, the cover will require a signal weaker than the set redstone level to run");
         provider.add("cover.machine_controller.redstone", "Min Redstone Strength: %d");
+        provider.add("cover.machine_controller.suspend_powerfail", "Prevent Power Failing:");
         provider.add("cover.machine_controller.mode.machine", "Control Machine");
         provider.add("cover.machine_controller.mode.cover_up", "Control Cover (Top)");
         provider.add("cover.machine_controller.mode.cover_down", "Control Cover (Bottom)");
@@ -158,6 +159,8 @@ public class CoverLang {
 
         // Ender fluid
         provider.add("cover.ender_fluid_link.title", "Ender Fluid Link");
+        provider.add("cover.ender_item_link.title", "Ender Item Link");
+        provider.add("cover.ender_redstone_link.title", "Ender Redstone Link");
         provider.add("cover.ender_fluid_link.iomode.enabled", "I/O Enabled");
         provider.add("cover.ender_fluid_link.iomode.disabled", "I/O Disabled");
         provider.add("cover.ender_fluid_link.tooltip.channel_description", "Set channel description with input text");

@@ -40,12 +40,15 @@ public class LangUtil {
      * E.g., given a multi lang
      * {@code provider.addMultiLang("terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");},<br>
      * The following code can be used to print out the translations:
+     * 
      * <pre> {@code
      * for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
      *     System.out.println(component.getString());
      * }
      * } </pre>
+     * 
      * And the output would be:
+     * 
      * <pre> {@code
      * radius size 1
      * radius size 2
@@ -75,12 +78,15 @@ public class LangUtil {
      * E.g., given a multi lang
      * {@code provider.addMultiLang("terminal.fluid_prospector.info", "prospection radius %s", "Can prospect %s");},<br>
      * The following code can be used to print out the translations:
+     * 
      * <pre> {@code
      * for (var component : getMultiLang("terminal.fluid_prospector.info", 5, "Ores")) {
      *     System.out.println(component.getString());
      * }
      * } </pre>
+     * 
      * And the output would be:
+     * 
      * <pre> {@code
      * prospection radius 5
      * Can prospect Ores
@@ -97,7 +103,7 @@ public class LangUtil {
     /**
      * A variation of {@link #getMultiLang(String, Object...)} )} that returns a list instead of an array.
      *
-     * @param key Base key of the multi lang. E.g. {@code "terminal.fluid_prospector.info"}
+     * @param key  Base key of the multi lang. E.g. {@code "terminal.fluid_prospector.info"}
      * @param args The arguments to pass to each {@link Component} of this multi lang
      * @return Returns all translation components from a multi lang's sub-keys
      * @see #getMultiLang(String, Object...)

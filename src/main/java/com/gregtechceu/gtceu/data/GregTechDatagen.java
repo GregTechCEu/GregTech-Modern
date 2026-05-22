@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data;
 
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.core.mixins.registrate.RegistrateDataProviderAccessor;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -15,7 +15,8 @@ public class GregTechDatagen {
     // we only register this so the class gets loaded. the key gets overwritten in #initPre.
     private static final ProviderType<GTBlockstateProvider> BLOCKSTATE_PROVIDER = ProviderType.register("ex_blockstate",
             GTBlockstateProvider::new);
-    private static final ProviderType<GTLangProvider> LANG_PROVIDER = ProviderType.register("ex_lang", GTLangProvider::new);
+    private static final ProviderType<GTLangProvider> LANG_PROVIDER = ProviderType.register("ex_lang",
+            GTLangProvider::new);
 
     public static void initPre() {
         // replace some default providers with ours

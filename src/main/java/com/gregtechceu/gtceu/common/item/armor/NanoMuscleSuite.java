@@ -78,11 +78,13 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     if (world.isClientSide())
-                        player.displayClientMessage(Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                        player.displayClientMessage(
+                                Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
                 } else {
                     if (world.isClientSide()) player.displayClientMessage(Component
                             .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
-                                    (nightVision ? "enabled" : "disabled")), true);
+                                    (nightVision ? "enabled" : "disabled")),
+                            true);
                 }
             }
 

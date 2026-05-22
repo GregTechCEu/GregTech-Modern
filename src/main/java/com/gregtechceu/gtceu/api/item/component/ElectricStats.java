@@ -222,11 +222,10 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
                 unitKey = "gui.hours";
             }
             tooltip.add(Component.translatable("item.gtceu.battery.charge_detailed",
-                            FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
-                            GTValues.VNF[tier],
-                            FormattingUtil.formatNumbers(currentChargeTime),
-                            Component.translatable(unitKey, FormattingUtil.formatNumbers(maxChargeTime))
-                    ).withStyle(color));
+                    FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),
+                    GTValues.VNF[tier],
+                    FormattingUtil.formatNumbers(currentChargeTime),
+                    Component.translatable(unitKey, FormattingUtil.formatNumbers(maxChargeTime))).withStyle(color));
         } else {
             tooltip.add(Component.translatable("item.generic.electric_item.tooltip",
                     FormattingUtil.formatNumbers(currentCharge), FormattingUtil.formatNumbers(maxCharge),

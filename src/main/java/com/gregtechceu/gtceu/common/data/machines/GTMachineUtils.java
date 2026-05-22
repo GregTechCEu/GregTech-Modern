@@ -320,7 +320,8 @@ public class GTMachineUtils {
                                                               Int2IntFunction tankScalingFunction,
                                                               float hazardStrengthPerOperation,
                                                               int... tiers) {
-        return registerSimpleGenerator(REGISTRATE, name, recipeType, addRecipeTooltip, tankScalingFunction, hazardStrengthPerOperation,
+        return registerSimpleGenerator(REGISTRATE, name, recipeType, addRecipeTooltip, tankScalingFunction,
+                hazardStrengthPerOperation,
                 tiers);
     }
 
@@ -957,7 +958,7 @@ public class GTMachineUtils {
     }
 
     public static Component getAvailableRecipeMapTooltip(GTRecipeType... recipeTypes) {
-        if(recipeTypes != null) {
+        if (recipeTypes != null) {
             String key = "machine.gtceu.available_recipe_map_" + recipeTypes.length + ".tooltip";
             return Component.translatable(key, Arrays.stream(recipeTypes)
                     .map(recipeType -> Component.translatable(recipeType.getCategory().getLanguageKey()))

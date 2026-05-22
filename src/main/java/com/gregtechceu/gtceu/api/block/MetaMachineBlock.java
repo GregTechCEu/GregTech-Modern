@@ -191,8 +191,10 @@ public class MetaMachineBlock extends Block implements EntityBlock {
                                 TooltipFlag flag) {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = definition.getId().toLanguageKey("machine", "tooltip");
-       /* String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
-                definition.getId().getPath());*/
+        /*
+         * String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
+         * definition.getId().getPath());
+         */
         if (GTUtil.isShiftDown()) {
             if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
                 var pattern = multiblockDefinition.getPatternFactory().get();
