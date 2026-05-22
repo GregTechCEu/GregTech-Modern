@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
@@ -30,7 +30,8 @@ public class LDPEndpointProvider extends MachineInfoProvider<LongDistanceEndpoin
     }
 
     @Override
-    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         boolean isFormed = data.getBoolean("isFormed");
         String ioType = data.getString("ioType");
         String outputDirection = data.getString("outputDirection");

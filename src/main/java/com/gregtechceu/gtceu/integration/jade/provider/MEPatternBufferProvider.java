@@ -42,13 +42,13 @@ public class MEPatternBufferProvider extends MachineInfoProvider<MEPatternBuffer
     }
 
     @Override
-    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (!data.getBoolean("formed")) return;
 
         tooltip.add(Component.translatable("gtceu.top.proxies_bound", data.getInt("proxies"))
                 .withStyle(TooltipHelper.RAINBOW_HSL_SLOW));
         readBufferTag(tooltip, data);
-
     }
 
     public static void writeBufferTag(CompoundTag compoundTag, MEPatternBufferPartMachine buffer) {

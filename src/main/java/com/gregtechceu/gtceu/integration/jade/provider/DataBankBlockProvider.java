@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.LongTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
@@ -21,14 +21,14 @@ public class DataBankBlockProvider extends MachineInfoProvider<DataBankMachine, 
         super(GTCEu.id("data_bank"), DataBankMachine.class);
     }
 
-
     @Override
     protected LongTag write(DataBankMachine machine) {
         return LongTag.valueOf(machine.getEnergyUsage());
     }
 
     @Override
-    protected void addTooltip(LongTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(LongTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         long energyUsage = data.getAsLong();
         String energyFormatted = FormattingUtil.formatNumbers(energyUsage);
         // wrap in text component to keep it from being formatted

@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
@@ -24,12 +24,12 @@ public class EnergyConverterModeProvider extends MachineInfoProvider<ConverterMa
     }
 
     @Override
-    protected void addTooltip(ByteTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(ByteTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (data.getAsByte() == 1) {
             tooltip.add(Component.translatable("gtceu.top.convert_fe"));
         } else {
             tooltip.add(Component.translatable("gtceu.top.convert_eu"));
         }
-
     }
 }

@@ -19,6 +19,12 @@ import snownee.jade.api.config.IPluginConfig;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * Jade provider which provides info for a machine trait.
+ * 
+ * @param <T>       Machine trait class
+ * @param <TagType> Info data tag type
+ */
 @ParametersAreNonnullByDefault
 public abstract class MachineTraitProvider<T extends MachineTrait, TagType extends Tag>
                                           implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {

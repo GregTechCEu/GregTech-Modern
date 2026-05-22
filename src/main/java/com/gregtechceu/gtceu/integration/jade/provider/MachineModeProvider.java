@@ -12,9 +12,9 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
@@ -48,7 +48,8 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
     }
 
     @Override
-    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (data.contains("RecipeTypes") && data.contains("CurrentRecipeType")) {
             int currentRecipeTypeIndex = data.getInt("CurrentRecipeType");
             ListTag recipeTypesTagList = data.getList("RecipeTypes", StringTag.TAG_STRING);
@@ -74,6 +75,5 @@ public class MachineModeProvider extends MachineInfoProvider<MetaMachine, Compou
             }
 
         }
-
     }
 }

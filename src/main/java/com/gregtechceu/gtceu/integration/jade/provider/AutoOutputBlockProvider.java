@@ -45,15 +45,17 @@ public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrai
         if (trait.supportsAutoOutputItems()) {
             var direction = trait.getItemOutputDirection();
             if (direction != null) {
-                data.put("autoOutputItem", writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
-                        trait.allowsItemInputFromOutputSide(), trait.isAutoOutputItems()));
+                data.put("autoOutputItem",
+                        writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
+                                trait.allowsItemInputFromOutputSide(), trait.isAutoOutputItems()));
             }
         }
         if (trait.supportsAutoOutputFluids()) {
             var direction = trait.getFluidOutputDirection();
             if (direction != null) {
-                data.put("autoOutputFluid", writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
-                        trait.allowsFluidInputFromOutputSide(), trait.isAutoOutputFluids()));
+                data.put("autoOutputFluid",
+                        writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
+                                trait.allowsFluidInputFromOutputSide(), trait.isAutoOutputFluids()));
             }
         }
         return data;

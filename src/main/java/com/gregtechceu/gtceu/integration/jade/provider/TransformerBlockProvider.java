@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
@@ -31,7 +31,8 @@ public class TransformerBlockProvider extends MachineInfoProvider<TransformerMac
     }
 
     @Override
-    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         boolean transformUp = data.getBoolean("transformUp");
         int voltage = data.getInt("baseVoltage");
         int amp = data.getInt("baseAmp");
