@@ -37,7 +37,7 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.factory.UIFactories;
@@ -94,7 +94,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         EnumSyncValue<Filter> filterSync = new EnumSyncValue<>(Filter.class,
                 () -> Filter.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
-                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()));
+                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()))
+                .allowC2S();
 
         PagedWidget<?> pages = new PagedWidget<>()
                 .left((176 - 80) / 2)
@@ -120,7 +121,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         return new ModularPanel<>("item_magnet")
                 .size(176, 157)
                 .background(GTGuiTextures.BACKGROUND)
-                .child(IKey.dynamic(() -> Component.translatable(filterSync.getValue().getTooltip()))
+                .child(Text.dynamic(() -> Component.translatable(filterSync.getValue().getTooltip()))
                         .asWidget()
                         .left(5)
                         .top(5))
@@ -130,9 +131,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         .size(20)
                         .value(filterSync)
                         .stateCount(Filter.values().length)
-                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()))
-                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()))
-                        .tooltipBuilder(r -> r.addLine(IKey.dynamic(
+                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()).asIcon().size(16))
+                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()).asIcon().size(16))
+                        .tooltipBuilder(r -> r.addLine(Text.dynamic(
                                 () -> Component.translatable(filterSync.getValue().getTooltip())))))
                 .child(pages)
                 .child(SlotGroupWidget.playerInventory(false).left(7).top(75).disableSortButtons());
@@ -143,15 +144,15 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         Grid filterGrid = new Grid()
                 .coverChildren()
-                .mapTo(3, 9, i -> new PhantomItemSlot()
+                .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
                                 .changeListener((stack, amount, client, init) -> handler.setStackInSlot(i, stack))
                                 .ignoreMaxStackSize(true).accessibility(true, false))));
 
-        BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList);
+        BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList).allowC2S();
 
-        BooleanSyncValue ignoreNBT = new BooleanSyncValue(filter::isIgnoreNbt, filter::setIgnoreNbt);
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(filter::isIgnoreNbt, filter::setIgnoreNbt).allowC2S();
 
         Flow filterButtons = Flow.col()
                 .coverChildren()
@@ -165,7 +166,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private ParentWidget<?> createTagFilterPage(TagItemFilter filter) {
-        StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString);
+        StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
 
         return new ParentWidget<>()

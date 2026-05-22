@@ -620,8 +620,9 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
     default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUseFirst(stack, context) == InteractionResult.SUCCESS) {
-                return InteractionResult.SUCCESS;
+            InteractionResult result = behavior.onItemUseFirst(stack, context);
+            if (result.consumesAction()) {
+                return result;
             }
         }
 

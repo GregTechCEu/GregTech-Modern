@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -34,7 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine implements IDataStickInteractable {
+public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
+                                             implements IMuiMachine, IDataStickInteractable {
 
     @Getter
     private final ProxySlotRecipeHandler proxySlotRecipeHandler;

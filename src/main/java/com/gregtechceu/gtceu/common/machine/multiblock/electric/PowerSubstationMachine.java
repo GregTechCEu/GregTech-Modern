@@ -28,7 +28,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraftforge.common.util.INBTSerializable;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
@@ -321,17 +321,18 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         syncManager.syncValue("outputPerSec", outputPerSec);
 
         // Generic machine lines
-        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.work_paused"))
+        listWidget.child(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> !power.getBoolValue()));
-        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.running"))
+        listWidget.child(Text.lang("gtceu.multiblock.running")
                 .asWidget()
                 .setEnabledIf((widget) -> active.getBoolValue()));
-        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
+        listWidget.child(Text.lang("gtceu.multiblock.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> !active.getBoolValue() && power.getBoolValue()));
-        listWidget.child(IKey.lang(Component.translatable("gtceu.multiblock.waiting")
-                .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
+        listWidget.child(Text
+                .of(Component.translatable("gtceu.multiblock.waiting")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> waiting.getBoolValue()));
 
@@ -342,7 +343,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
         var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));
             return Component.translatable("gtceu.multiblock.power_substation.stored",
@@ -351,7 +352,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var capacityComponent = Component.literal(FormattingUtil.formatNumbers(capacity.getValue()));
             return Component.translatable("gtceu.multiblock.power_substation.capacity",
@@ -360,7 +361,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(passiveDrain.getLongValue()));
             return Component.translatable("gtceu.multiblock.power_substation.passive_drain",
@@ -369,7 +370,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
             return Component
@@ -380,7 +381,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var avgOutComponent = Component
                     .literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20)));
@@ -393,7 +394,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() <= outputPerSec.getLongValue())
                 return Component.empty();
             BigInteger timeToFillSeconds = capacity.getValue().subtract(energyStored.getValue())
@@ -405,7 +406,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue() &&
                         inputPerSec.getLongValue() > outputPerSec.getLongValue()));
 
-        listWidget.child(IKey.dynamic(() -> {
+        listWidget.child(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() >= outputPerSec.getLongValue())
                 return Component.empty();
             BigInteger timeToDrainSeconds = energyStored.getValue()

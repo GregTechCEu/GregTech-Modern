@@ -46,7 +46,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.value.sync.GenericSyncValue;
@@ -269,9 +269,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<IWidget> widgets = new ArrayList<>();
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
-        widgets.add(new TextWidget<>(IKey.dynamic(text::getValue)));
+        widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));
         widgets.add(new Grid()
-                .mapTo(3, 9, i -> hpcaHandler.getComponentTexture(i).asWidget()
+                .gridOfSizeWidth(9, 3, (x, y, i) -> hpcaHandler.getComponentTexture(i).asWidget()
                         .tooltip(hpcaHandler.getComponentTooltip(i)))
                 .horizontalCenter());
         return widgets;

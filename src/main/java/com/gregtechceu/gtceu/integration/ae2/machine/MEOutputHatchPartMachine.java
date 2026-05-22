@@ -20,7 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
@@ -104,7 +104,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
 
         var flow = Flow.col().coverChildren();
 
-        flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
                 Component.translatable("gtceu.gui.me_network.online") :
                 Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
@@ -117,12 +117,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 .widgetProvider((sm, value) -> {
                     var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
                     var list = value.getValue();
-                    if (list.isEmpty()) return col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list_empty")));
-                    col.child(new TextWidget<>(IKey.lang("gtceu.gui.waiting_list")).margin(0, 2));
+                    if (list.isEmpty()) return col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list_empty")));
+                    col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list")).margin(0, 2));
                     col.child(new ScrollPreservingGrid(savedScroll)
                             .size(167, 80)
                             .scrollable(new VerticalScrollData())
-                            .mapTo(9, list, (index, stack) -> new AEStackDisplayWidget(list, index)));
+                            .gridOfSizeWidth(9, 1, (x, y, index) -> new AEStackDisplayWidget(list, index)));
                     return col;
                 });
 

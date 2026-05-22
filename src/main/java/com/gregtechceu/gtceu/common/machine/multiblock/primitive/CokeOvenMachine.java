@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.api.ITheme;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -45,7 +46,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).addTraitConfigurators(false)
+        return MachineUIPanelBuilder.panelBuilder(this).addTraitConfigurators(false)
                 .addDefaultConfigurators(false);
     }
 
@@ -70,7 +71,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
                 .child(new ProgressWidget()
                         .value(progressPercent)
                         .size(20, 15)
-                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, 18)
+                        .texture(GTGuiTextures.PRIMITIVE_BLAST_FURNACE_PROGRESS_BAR, ProgressDrawable.Direction.RIGHT)
                         .margin(4, 0))
 
                 .child(new ItemSlot().syncHandler(new ItemSlotSyncHandler(

@@ -21,12 +21,11 @@ import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.GuiData;
@@ -34,6 +33,7 @@ import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
@@ -273,27 +273,27 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .stateOverlay(Permissions.PUBLIC, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
                         .stateOverlay(Permissions.PROTECTED, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
                         .stateOverlay(Permissions.PRIVATE, GTGuiTextures.PRIVATE_MODE_BUTTON[1])
-                        .tooltip(0, t -> t.addLine(IKey.lang(Permissions.PUBLIC.tooltip)))
-                        .tooltip(1, t -> t.addLine(IKey.lang(Permissions.PROTECTED.tooltip)))
-                        .tooltip(2, t -> t.addLine(IKey.lang(Permissions.PRIVATE.tooltip)))
+                        .tooltip(0, t -> t.addLine(Text.lang(Permissions.PUBLIC.tooltip)))
+                        .tooltip(1, t -> t.addLine(Text.lang(Permissions.PROTECTED.tooltip)))
+                        .tooltip(2, t -> t.addLine(Text.lang(Permissions.PRIVATE.tooltip)))
                         .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
                                 this::setPermission)))
                 .child(new TextFieldWidget()
                         .value(new StringSyncValue(this::getColorStr, this::setColorStr))
                         .setMaxLength(8)
                         .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
-                        .addTooltipLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.channel_name"))))
+                        .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
                 .child(new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler))
-                .child(new ButtonWidget<>().onMousePressed((x, y, b) -> {
+                .child(new ButtonWidget<>().onMousePressed((GuiContext context, int button) -> {
                     channelManager.openPanel();
                     return true;
                 }).posRel(Alignment.CenterRight).tooltip(new RichTooltip()
-                        .addLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.list_button"))))));
+                        .addLine(Text.lang("cover.ender_link.tooltip.list_button")))));
 
         column.child(coverUIRow().child(new TextFieldWidget()
                 .setMaxLength(32)
                 .widthRel(1f)
-                .addTooltipLine(IKey.lang(Component.translatable("cover.ender_link.tooltip.channel_description")))
+                .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_description"))
                 .value(new StringSyncValue(this::getDescription, this::setDescription))));
 
         Flow bottomRow = coverUIRow();
@@ -307,10 +307,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
         TextWidget<?> str;
         if (entry.getDescription().isBlank()) {
-            str = IKey.lang(Component.translatable("cover.ender_link.description_empty")).asWidget().size(98, 12)
+            str = Text.lang("cover.ender_link.description_empty").asWidget().size(98, 12)
                     .color(Color.GREY.darker(1));
         } else {
-            str = IKey.str(entry.getDescription()).asWidget().size(98, 12);
+            str = Text.str(entry.getDescription()).asWidget().size(98, 12);
         }
         return coverUIRow()
                 .child(createColorBlock(entry::getColor, 18).asWidget()
@@ -318,7 +318,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                         .size(18, 18))
                 .child(str)
                 .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
-                .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((x, y, button) -> {
+                .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((context, button) -> {
                     MouseData mouseData = MouseData.create(button);
                     if (mouseData.mouseButton() == 1) {
                         syncManager.callSyncedAction("deleteEntry",
@@ -345,7 +345,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+                .child(GTMuiWidgets.createTitleBar(() -> getAttachItem(), 176, GTGuiTextures.BACKGROUND));
 
         var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
                 .getter(this::getVirtualEntries)

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -46,7 +47,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IMuiMachine, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
@@ -145,7 +146,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
             for (GTRecipe recipe : recipes) {
                 ItemStack stack = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content()).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
                     list.add(Component.translatable("behavior.data_item.data", stack.getDisplayName()));

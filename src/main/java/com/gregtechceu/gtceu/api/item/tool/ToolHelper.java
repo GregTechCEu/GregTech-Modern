@@ -436,14 +436,14 @@ public class ToolHelper {
                     if (prefix.isEmpty()) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
+                                drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content()))
                                         .getItems()[0]);
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
                         for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+                                ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
                                 // Only apply fortune on ore -> crushed forge hammer recipes
                                 if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
                                     output = output.copy();

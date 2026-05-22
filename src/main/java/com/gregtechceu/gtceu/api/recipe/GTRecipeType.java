@@ -2,22 +2,14 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
-import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUIs;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -55,9 +47,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     @Setter
     private ChanceBoostFunction chanceFunction = ChanceBoostFunction.NONE;
-    @Getter
-    @Setter
-    private GTRecipeTypeUI recipeUI = new GTRecipeTypeUI(this);
     @Setter
     @Getter
     private GTRecipeType smallRecipeMap;
@@ -100,6 +89,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     private int minRecipeConditions = 0;
 
+    @Getter
+    private GTRecipeTypeUILayout uiLayout;
+
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
         this.group = group;
@@ -141,50 +133,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeType UI(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
-        var recipeLayout = builder.apply(new GTRecipeTypeUILayout.Builder()).build();
-        recipeLayout.setRecipeType(this);
-        GTRecipeTypeUIs.addRecipeTypeUI(this, recipeLayout);
-        return this;
-    }
-
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, slotOverlay);
-        return this;
-    }
-
-    public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, IGuiTexture slotOverlay) {
-        this.recipeUI.setSlotOverlay(isOutput, isFluid, isLast, slotOverlay);
-        return this;
-    }
-
-    public GTRecipeType setProgressBar(ResourceTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setProgressBar(progressBar, moveType);
-        return this;
-    }
-
-    public GTRecipeType setSteamProgressBar(SteamTexture progressBar, ProgressTexture.FillDirection moveType) {
-        this.recipeUI.setSteamProgressBarTexture(progressBar);
-        this.recipeUI.setSteamMoveType(moveType);
-        return this;
-    }
-
-    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
-        this.recipeUI.setUiBuilder(uiBuilder);
+        uiLayout = builder.apply(new GTRecipeTypeUILayout.Builder(this)).build();
         return this;
     }
 
     public GTRecipeType setMaxTooltips(int maxTooltips) {
-        this.recipeUI.setMaxTooltips(maxTooltips);
         return this;
     }
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
         this.category.setXEIVisible(XEIVisible);
-        return this;
-    }
-
-    public GTRecipeType addDataInfo(Function<CompoundTag, String> dataInfo) {
-        this.dataInfos.add(dataInfo);
         return this;
     }
 
@@ -239,6 +197,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public int getMaxOutputs(RecipeCapability<?> cap) {
         return maxOutputs.getOrDefault(cap, 0);
+    }
+
+    public int getMaxSlots(RecipeCapability<?> cap, IO io) {
+        return io == IO.IN ? getMaxInputs(cap) : getMaxOutputs(cap);
     }
 
     //////////////////////////////////////

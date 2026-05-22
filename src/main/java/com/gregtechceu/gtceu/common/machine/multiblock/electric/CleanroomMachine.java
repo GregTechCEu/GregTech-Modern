@@ -56,7 +56,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.GenericSyncValue;
@@ -500,7 +500,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .build();
         syncManager.syncValue("distComponent", distComponent);
 
-        widgets.add(IKey.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                     .withStyle(ChatFormatting.GRAY);
             return Component.translatable("gtceu.multiblock.invalid_structure")
@@ -510,7 +510,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> !isFormed.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];
             return Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage.getLongValue(),
                     voltageName);
@@ -518,7 +518,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && maxVoltage.getLongValue() > 0));
 
-        widgets.add(IKey.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (cleanroomTypeIsNull.getBoolValue()) {
                 return Component.empty();
             } else {
@@ -528,39 +528,39 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomTypeIsNull.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused"))
+        widgets.add(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
         widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
+        widgets.add(Text.lang("gtceu.multiblock.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
-        widgets.add(IKey
-                .lang(Component.translatable("gtceu.multiblock.waiting")
+        widgets.add(Text
+                .of(Component.translatable("gtceu.multiblock.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && waiting.getBoolValue()));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.cleanroom.clean_state"))
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.clean_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && cleanroomProviderTraitIsActive.getBoolValue()));
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"))
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.cleanroom.dirty_state"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !cleanroomProviderTraitIsActive.getBoolValue()));
 
-        widgets.add(IKey.dynamic(
+        widgets.add(Text.dynamic(
                 () -> Component.translatable("gtceu.multiblock.cleanroom.clean_amount", cleanAmount.getIntValue()))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.dimensions.0"))
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.dimensions.0"))
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
-        widgets.add(IKey.dynamic(distComponent::getValue)
+        widgets.add(Text.dynamic(distComponent::getValue)
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue()));
 

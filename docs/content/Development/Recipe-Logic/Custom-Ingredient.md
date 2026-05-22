@@ -162,15 +162,13 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
     }
 
     @Override
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {
-        for (var content : contents) {
-            var bonkIngredient = BonkRecipeCapability.CAP.of(content);
-            if(isInput){
-                group.addWidget(new LabelWidget(3-xOffset, yOffset.addAndGet(10), "Bonk needed: " + bonkIngredient.getBonk()));
-            }
-            // Bonk output not supported for now
-        }
+    public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableBonkHandler.TYPE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NotifiableBonkHandler> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return (List<NotifiableBonkHandler>)super.getCapabilityHandlers(machine, io);
     }
 }
 ```
@@ -180,6 +178,8 @@ public class BonkRecipeCapability extends RecipeCapability<BonkIngredient> {
 public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngredient>
         implements ICapabilityTrait {
 
+    public static final MachineTraitType<NotifiableBonkHandler> TYPE = new MachineTraitType<>(NotifiableBonkHandler.class);
+    
     @Getter
     public final IO handlerIO;
     @Getter
@@ -196,6 +196,11 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
         super();
         this.handlerIO = handlerIO;
         this.capabilityIO = capabilityIO;
+    }
+
+    @Override
+    public MachineTraitType<NotifiableBonkHandler> getTraitType() {
+        return TYPE;
     }
 
     public boolean addBonk(int bonkToAdd, boolean simulate){
@@ -253,23 +258,23 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
 ```java title="BonkHatchPartMachine"
 public class BonkHatchPartMachine extends TieredIOPartMachine {
     
-    @Persisted
+    @SaveField
     public NotifiableBonkHandler bonkHandler;
 
 
-    public BonkHatchPartMachine(IMachineBlockEntity holder, int tier, IO io) {
-        super(holder, tier, io);
+    public BonkHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        super(info, tier, io);
         this.bonkHandler = attachTrait(new NotifiableBonkHandler(io));
     }
 
     @Override
-    protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onHardHammerClick(ExtendedUseOnContext context) {
         if(isRemote()) return InteractionResult.SUCCESS;
         if(bonkHandler.addBonk(1, false)){
-            playerIn.sendSystemMessage(Component.literal("Bonk! Total bonk stored: " + bonkHandler.getBonk()));
-            return InteractionResult.CONSUME;
+            context.getPlayer().sendSystemMessage(Component.literal("Bonk! Total bonk stored: " + bonkHandler.getBonk()));
+            return InteractionResult.SUCCESS;
         }
-        return super.onHardHammerClick(playerIn, hand, gridSide, hitResult);
+        return super.onHardHammerClick(context);
     }
 }
 ```

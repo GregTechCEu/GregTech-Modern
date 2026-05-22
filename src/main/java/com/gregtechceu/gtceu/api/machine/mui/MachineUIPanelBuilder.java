@@ -6,14 +6,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -28,6 +31,9 @@ public class MachineUIPanelBuilder {
      * Should the GregTech logo be drawn in the bottom right corner of the panel.
      */
     private boolean drawGTLogo = false;
+    /**
+     * The texture to use for the GregTech logo.
+     */
     private UITexture gtLogoTexture = GTGuiTextures.GREGTECH_LOGO;
     /**
      * Should the player inventory be attached to the bottom of the panel.
@@ -74,7 +80,7 @@ public class MachineUIPanelBuilder {
             if (machine instanceof IHasBatterySlot batterySlot) {
                 attachRight.child(GTMuiWidgets.createBatterySlot(batterySlot, syncManager));
             }
-            if (machine instanceof IVoidable voidable) {
+            if (machine instanceof IVoidable voidable && machine instanceof WorkableElectricMultiblockMachine) {
                 attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
             }
             if (machine instanceof IDistinctPart distinctPart) {
@@ -95,19 +101,23 @@ public class MachineUIPanelBuilder {
             }
         }
 
+        for (var cover : machine.getCoverContainer().getCovers()) {
+            attachLeft.child(new ButtonWidget<>()
+                    .overlay(new ItemDrawable(cover.getAttachItem()))
+                    .onMousePressed((context, button) -> {
+                        return true;
+                    }));
+        }
+
         return panel;
     }
 
-    public static MachineUIPanelBuilder defaultSimpleSingleblockPanelBuilder(MetaMachine machine) {
-        return new MachineUIPanelBuilder(machine).drawGTLogo(true);
-    }
-
-    public static MachineUIPanelBuilder defaultPanelBuilder(MetaMachine machine) {
+    public static MachineUIPanelBuilder panelBuilder(MetaMachine machine) {
         return new MachineUIPanelBuilder(machine);
     }
 
-    public static MachineUIPanelBuilder defaultSteamMachineBuilder(MetaMachine machine) {
-        return new MachineUIPanelBuilder(machine).drawGTLogo(true).addDefaultConfigurators(false)
+    public static MachineUIPanelBuilder defaultSteamMachinePanelBuilder(MetaMachine machine) {
+        return new MachineUIPanelBuilder(machine).addDefaultConfigurators(false)
                 .addTraitConfigurators(false);
     }
 }

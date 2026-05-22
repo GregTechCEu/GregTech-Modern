@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -57,7 +58,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                 return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
                     var list = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
                     if (!list.isEmpty()) {
-                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems())
+                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content()).getItems())
                                 .map(ItemStack::getItem).anyMatch(i -> i == item);
                     }
                     return false;
@@ -84,7 +85,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
             var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
-                var input = ItemRecipeCapability.CAP.of(inputs.get(0).content).getItems();
+                var input = ItemRecipeCapability.CAP.of(inputs.get(0).content()).getItems();
                 if (input.length > 0) {
                     var remaining = getBurningFuelRemainder(input[0]);
                     if (!remaining.isEmpty()) {
@@ -139,9 +140,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                         .slot(new ModularSlot(this.fuelHandler, 0)))
                 .child(new ProgressWidget()
                         .size(18)
-                        .texture(progressTexture, 18)
-                        .value(progressPercent)
-                        .direction(ProgressWidget.Direction.UP))
+                        .texture(progressTexture, ProgressDrawable.Direction.UP)
+                        .value(progressPercent))
                 .child(new ItemSlot()
                         .slot(new ModularSlot(this.ashHandler, 0))));
     }

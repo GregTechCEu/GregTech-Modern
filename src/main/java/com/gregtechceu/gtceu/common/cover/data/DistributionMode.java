@@ -14,4 +14,16 @@ public enum DistributionMode {
     DistributionMode(String localeName) {
         this.localeName = localeName;
     }
+
+    public static String getTitle() {
+        return "cover.distribution.mode.title";
+    }
+
+    public String getTooltip() {
+        return "cover.distribution.mode." + localeName;
+    }
+
+    public String getDescription() {
+        return "cover.distribution.mode." + localeName + ".description";
+    }
 }

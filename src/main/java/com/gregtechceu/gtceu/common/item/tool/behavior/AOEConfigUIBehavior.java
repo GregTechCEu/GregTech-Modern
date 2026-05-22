@@ -9,7 +9,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PlayerInventoryGuiData;
 import brachy.modularui.screen.ModularPanel;
@@ -107,9 +107,9 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                         .child(Flow.column()
                                 .childPadding(6)
                                 .coverChildren()
-                                .child(IKey.lang("item.gtceu.tool.aoe.columns").asWidget())
-                                .child(IKey.lang("item.gtceu.tool.aoe.rows").asWidget())
-                                .child(IKey.lang("item.gtceu.tool.aoe.layers").asWidget()))
+                                .child(Text.lang("item.gtceu.tool.aoe.columns").asWidget())
+                                .child(Text.lang("item.gtceu.tool.aoe.rows").asWidget())
+                                .child(Text.lang("item.gtceu.tool.aoe.layers").asWidget()))
                         .child(Flow.column()
                                 .childPadding(2)
                                 .coverChildren()
@@ -123,7 +123,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                                 .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
                                                         GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusCols))
-                                        .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
+                                        .child(new TextWidget<>(Text.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getColumn(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
@@ -142,7 +142,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                                 .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
                                                         GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusRows))
-                                        .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
+                                        .child(new TextWidget<>(Text.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getRow(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)
@@ -161,7 +161,7 @@ public class AOEConfigUIBehavior implements IToolUIBehavior {
                                                 .hoverBackground(GuiTextures.MC_BUTTON_HOVERED,
                                                         GuiTextures.REMOVE.asIcon().size(10))
                                                 .syncHandler(minusLayers))
-                                        .child(new TextWidget<>(IKey.dynamic(() -> Component.literal(Integer.toString(
+                                        .child(new TextWidget<>(Text.dynamic(() -> Component.literal(Integer.toString(
                                                 2 * AoESymmetrical.getLayer(tag, defaultDefinition) + 1)))))
                                         .child(new ButtonWidget<>()
                                                 .size(12)

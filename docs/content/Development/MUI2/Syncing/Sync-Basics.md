@@ -27,12 +27,12 @@ The first method is using dynamic widgets, which update every frame regardless o
 This method is easiest if you just need to sync some data over and display or edit it in a single widget. 
 Some examples are:
 
-- `IKey.dynamic(Supplier<Component>)` - Queries the supplier every frame to retrieve the component to display  
+- `Text.dynamic(Supplier<Component>)` - Queries the supplier every frame to retrieve the component to display  
 - `new DynamicDrawable(Supplier<IDrawable>)` - Queries the supplier every frame to retrieve the drawable to display  
 
 
 !!! Note
-    To convert IKeys or Drawables to Widgets, you need to chain `.asWidget()`
+    To convert Texts or Drawables to Widgets, you need to chain `.asWidget()`
 
 ```java
 public class MuiTestMachine extends MetaMachine implements IMuiMachine {
@@ -52,7 +52,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
 
         var column = Flow.column();
 
-        column.child(IKey.dynamic(() -> Component.literal("Ticks: " + this.ticks)) // note that this is a Supplier<Component> instead of a Component
+        column.child(Text.dynamic(() -> Component.literal("Ticks: " + this.ticks)) // note that this is a Supplier<Component> instead of a Component
                 .asWidget()
                 .margin(4));
 
@@ -112,7 +112,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
                     int tickValue = intSyncHandler.getValue(); // It is also possible to just reference this.ticks directly
                     int amountOfItems = 1 + (tickValue % 200) / 20;
                     for (int i = 0; i < amountOfItems; i++) {
-                        list.child(IKey.str("Value nr. " + (i + 1)).asWidget()); // No need for IKey.dynamic since we have the value as a variable here, inside the lambda
+                        list.child(Text.str("Value nr. " + (i + 1)).asWidget()); // No need for Text.dynamic since we have the value as a variable here, inside the lambda
                     }
                     return list;
                 });
@@ -159,7 +159,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
         var column = Flow.column().paddingTop(3);
 
         column.child(
-                IKey.dynamic(() -> Component.literal("Pressed: " + this.buttonPressed))
+                Text.dynamic(() -> Component.literal("Pressed: " + this.buttonPressed))
                     .asWidget());
 
         var buttonSyncValue = new BooleanSyncValue(() -> this.buttonPressed, (newValue) -> this.buttonPressed = newValue);
@@ -220,7 +220,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
             for (int rowNr = 0; rowNr < this.rows; rowNr++) {
                 Flow row = Flow.row();
                 for (int columnNr = 0; columnNr < this.columns; columnNr++) {
-                    row.child(IKey.str(rowNr + ", " + columnNr).asWidget().width(20));
+                    row.child(Text.str(rowNr + ", " + columnNr).asWidget().width(20));
                 }
                 grid.child(row);
             }

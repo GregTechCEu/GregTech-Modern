@@ -11,10 +11,11 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.util.Mth;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.sync.IntSyncValue;
@@ -65,19 +66,19 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                return IKey.str("/16");
+                                return Text.str("/16");
                             } else if (mouseData.ctrl()) {
-                                return IKey.str("/8");
+                                return Text.str("/8");
                             } else if (mouseData.shift()) {
-                                return IKey.str("/4");
+                                return Text.str("/4");
                             } else {
-                                return IKey.str("/2");
+                                return Text.str("/2");
                             }
                         }))
                         .width(32)
                         .height(16)
-                        .onMousePressed((a, b, c) -> {
-                            MouseData mouseData = MouseData.create(c);
+                        .onMousePressed((GuiContext context, int button) -> {
+                            MouseData mouseData = MouseData.create(button);
                             if (mouseData.ctrl() && mouseData.shift()) {
                                 parallels.setValue((int) GTMath.clamp(parallels.getValue() / 16, 1, this.maxParallel));
                             } else if (mouseData.ctrl()) {
@@ -104,19 +105,19 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if (mouseData.ctrl() && mouseData.shift()) {
-                                return IKey.str("x16");
+                                return Text.str("x16");
                             } else if (mouseData.ctrl()) {
-                                return IKey.str("x8");
+                                return Text.str("x8");
                             } else if (mouseData.shift()) {
-                                return IKey.str("x4");
+                                return Text.str("x4");
                             } else {
-                                return IKey.str("x2");
+                                return Text.str("x2");
                             }
                         }))
                         .width(32)
                         .height(16)
-                        .onMousePressed((a, b, c) -> {
-                            MouseData mouseData = MouseData.create(c);
+                        .onMousePressed((GuiContext context, int button) -> {
+                            MouseData mouseData = MouseData.create(button);
                             if (mouseData.ctrl() && mouseData.shift()) {
                                 parallels.setValue((int) GTMath.clamp(parallels.getValue() * 16, 1, this.maxParallel));
                             } else if (mouseData.ctrl()) {
@@ -130,7 +131,7 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IMuiM
                         })
                         .marginLeft(4)
                         .verticalCenter())
-                .child(IKey.lang("gtceu.machine.parallel_hatch.parallel_ui")
+                .child(Text.lang("gtceu.machine.parallel_hatch.parallel_ui")
                         .asWidget()
                         .marginLeft(4)
                         .marginRight(4)

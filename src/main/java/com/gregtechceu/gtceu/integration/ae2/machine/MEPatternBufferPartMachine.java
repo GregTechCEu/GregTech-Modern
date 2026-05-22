@@ -54,7 +54,7 @@ import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
 import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.DrawableStack;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.ItemDrawable;
@@ -281,7 +281,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 ((syncManager1, syncHandler) -> PopupPanel.createPopupPanel("renaming_panel", 110, 40)
                         .child(Flow.col()
                                 .coverChildren()
-                                .child(IKey.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
+                                .child(Text.lang("gtceu.gui.pattern_buffer.set_custom_name").asWidget())
                                 .child(new TextFieldWidget()
                                         .size(90, 20)
                                         .value(SyncHandlers.string(() -> this.customName, this::setCustomName)))
@@ -292,7 +292,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     SlotGroup sharedItemSlotGroup = new SlotGroup("shared_item_slots", 3, false);
 
                     return PopupPanel.createPopupPanel("shared_items_panel", 80, 86)
-                            .child(IKey.lang("gui.gtceu.share_inventory.title").asWidget().margin(4))
+                            .child(Text.lang("gui.gtceu.share_inventory.title").asWidget().margin(4))
                             .child(new Grid()
                                     .name("shared_item_grid")
                                     .top(26)
@@ -300,7 +300,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                     .minElementMargin(0, 0)
                                     .minColWidth(18).minRowHeight(18)
                                     .leftRel(0.5f)
-                                    .mapTo(3, 9, index -> new ItemSlot()
+                                    .gridOfSizeWidth(9, 3, (x, y, index) -> new ItemSlot()
                                             .slot(SyncHandlers.itemSlot(shareInventory, index)
                                                     .slotGroup(sharedItemSlotGroup)
                                                     .accessibility(true, true))));
@@ -308,7 +308,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         IPanelHandler sharedFluidsPanelHandler = syncManager.syncedPanel("shared_fluids", true,
                 (syncManager1, panelHandler) -> PopupPanel.createPopupPanel("shared_fluids_panel", 85, 86)
-                        .child(IKey.lang("gui.gtceu.share_tank.title").asWidget().margin(4))
+                        .child(Text.lang("gui.gtceu.share_tank.title").asWidget().margin(4))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(syncManager1, shareTank,
                                 "shared_fluid_slots", 9, 'F',
                                 GTMuiMachineUtil.createSquareMatrix(9, 'F'))
@@ -320,10 +320,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         syncManager.registerServerSyncedAction("refundButtonPressed", packet -> refundAll());
 
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).leftConfigurators(f -> {
+        return MachineUIPanelBuilder.panelBuilder(this).leftConfigurators(f -> {
             f.child(new ButtonWidget<>() // Shared items subpanel
                     .size(18)
-                    .onMousePressed((x, y, b) -> {
+                    .onMousePressed((context, b) -> {
                         if (b == InputConstants.MOUSE_BUTTON_LEFT) {
                             sharedItemsPanelHandler.openPanel();
                             return true;
@@ -332,11 +332,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                     })
                     .overlay(GTGuiTextures.BUTTON_ITEM_OUTPUT)
                     .tooltip(new RichTooltip()
-                            .addLine(IKey.lang("gui.gtceu.share_inventory.desc.0"))
-                            .addLine(IKey.lang("gui.gtceu.share_inventory.desc.1"))))
+                            .addLine(Text.lang("gui.gtceu.share_inventory.desc.0"))
+                            .addLine(Text.lang("gui.gtceu.share_inventory.desc.1"))))
                     .child(new ButtonWidget<>() // Shared fluids subpanel
                             .size(18)
-                            .onMousePressed((x, y, b) -> {
+                            .onMousePressed((context, b) -> {
                                 if (b == InputConstants.MOUSE_BUTTON_LEFT) {
                                     sharedFluidsPanelHandler.openPanel();
                                     return true;
@@ -345,11 +345,11 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                             })
                             .overlay(GTGuiTextures.BUTTON_FLUID_OUTPUT)
                             .tooltip(new RichTooltip()
-                                    .addLine(IKey.lang("gui.gtceu.share_tank.desc.0"))
-                                    .addLine(IKey.lang("gui.gtceu.share_inventory.desc.1"))))
+                                    .addLine(Text.lang("gui.gtceu.share_tank.desc.0"))
+                                    .addLine(Text.lang("gui.gtceu.share_inventory.desc.1"))))
                     .child(new ButtonWidget<>() // Refund button
                             .size(18)
-                            .onMousePressed((x, y, b) -> {
+                            .onMousePressed((context, b) -> {
                                 if (canRefundValue.getBoolValue() && b == InputConstants.MOUSE_BUTTON_LEFT) {
                                     syncManager.callSyncedAction("refundButtonPressed");
                                     return true;
@@ -367,21 +367,21 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                                 }
                             }))
                             .tooltip(new RichTooltip()
-                                    .addLine(IKey.lang("gui.gtceu.refund_all.desc"))))
+                                    .addLine(Text.lang("gui.gtceu.refund_all.desc"))))
                     .child(new ButtonWidget<>() // Renaming button
                             .size(18)
-                            .onMousePressed((x, y, b) -> {
+                            .onMousePressed((context, b) -> {
                                 if (b == InputConstants.MOUSE_BUTTON_LEFT) {
                                     renamingPanelHandler.openPanel();
                                     return true;
                                 }
                                 return false;
                             })
-                            .overlay(IKey.str("✎")
+                            .overlay(Text.str("✎")
                                     .asIcon()
                                     .size(16))
                             .tooltip(new RichTooltip()
-                                    .addLine(IKey.lang("gui.gtceu.rename.desc"))));
+                                    .addLine(Text.lang("gui.gtceu.rename.desc"))));
         });
     }
 
@@ -395,7 +395,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
         var flow = Flow.col().coverChildren();
 
-        flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
                 Component.translatable("gtceu.gui.me_network.online") :
                 Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));
@@ -405,7 +405,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 .minElementMargin(0, 0)
                 .minColWidth(18).minRowHeight(18)
                 .leftRel(0.5f)
-                .mapTo(9, MAX_PATTERN_COUNT, index -> new ItemSlot()
+                .gridOfSizeWidth(MAX_PATTERN_COUNT, 9, (x, y, index) -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(patternInventory, index)
                                 .slotGroup(patternSlotGroup)
                                 .accessibility(true, true)

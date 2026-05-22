@@ -39,22 +39,4 @@ public class TieredIOPartMachine extends TieredPartMachine implements IControlla
         this.workingEnabled = workingEnabled;
         syncDataHolder.markClientSyncFieldDirty("workingEnabled");
     }
-
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    /*
-     * @Nullable
-     *
-     * @Override
-     * public PageGroupingData getPageGroupingData() {
-     * return switch (this.io) {
-     * case IN -> new PageGroupingData("gtceu.multiblock.page_switcher.io.import", 1);
-     * case OUT -> new PageGroupingData("gtceu.multiblock.page_switcher.io.export", 2);
-     * case BOTH -> new PageGroupingData("gtceu.multiblock.page_switcher.io.both", 3);
-     * case NONE -> null;
-     * };
-     * }
-     */
 }

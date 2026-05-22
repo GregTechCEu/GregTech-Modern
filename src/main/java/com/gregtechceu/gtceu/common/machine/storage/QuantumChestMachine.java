@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.*;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,7 +33,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.PosGuiData;
@@ -257,14 +258,14 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(IKey.lang("gtceu.machine.quantum_chest.items_stored").asWidget()
+                        .child(Text.lang("gtceu.machine.quantum_chest.items_stored").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
-                        .child(IKey.dynamic(
+                        .child(Text.dynamic(
                                 () -> Component.literal(
-                                        FormattingUtil.formatNumbers(itemSyncer.getLongValue())))
+                                        FormattingUtil.formatNumbers(itemSyncer.getLongValue()))
+                                        .withStyle(ChatFormatting.WHITE))
                                 .asWidget()
-                                .color(0xffffff)
                                 .margin(8, 0, 18, 0))
                         .child(Flow.row()
                                 .margin(4, 0, 41, 0)

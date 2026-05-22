@@ -21,14 +21,14 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
         });
 
         Column contents = new Column();
-        contents.child(IKey.dynamic(() -> Component.literal("Number: " + number))
+        contents.child(Text.dynamic(() -> Component.literal("Number: " + number))
                 .asWidget()
                 .width(100)
                 .height(16)
                 .margin(4));
 
         contents.child(new ButtonWidget<>()
-                .onMousePressed((x, y, button) -> {
+                .onMousePressed((context,  button) -> {
                     if (button == 0) {
                         syncManager.callSyncedAction("randomButtonPressed");
                     }

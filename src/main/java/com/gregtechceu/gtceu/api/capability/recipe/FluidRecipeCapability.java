@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
@@ -14,36 +11,20 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.common.valueprovider.*;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidEntryList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidStackList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidTagList;
-import com.gregtechceu.gtceu.integration.recipeviewer.handlers.fluid.CycleFluidEntryHandler;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidEntryList;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidTagList;
 import it.unimi.dsi.fastutil.objects.*;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.addToRecipeHandlerMap;
 
@@ -146,7 +127,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         int maxAmount = 0;
         List<FluidIngredient> ingredients = new ArrayList<>(outputContents.size());
         for (var content : outputContents) {
-            var ing = this.of(content.content);
+            var ing = this.of(content.content());
             maxAmount = Math.max(maxAmount, ing.getAmount());
             ingredients.add(ing);
         }
@@ -191,13 +172,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         var nonConsumables = new Object2LongOpenHashMap<FluidIngredient>();
         var consumables = new Object2LongOpenHashMap<FluidIngredient>();
         for (Content content : inputs) {
-            FluidIngredient ing = of(content.content);
+            FluidIngredient ing = of(content.content());
 
             int amount;
             if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
             else amount = ing.getAmount();
 
-            if (content.chance == 0) {
+            if (content.chance() == 0) {
                 nonConsumables.addTo(ing, amount);
             } else {
                 boolean has = false;
@@ -326,89 +307,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return invs;
     }
 
-    @Override
-    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        List<Object> entryLists = contents.stream()
-                .map(Content::getContent)
-                .map(this::of)
-                .map(FluidRecipeCapability::mapFluid)
-                .collect(Collectors.toList());
-
-        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
-        return entryLists;
-    }
-
-    public Object createXEIContainer(List<?> contents) {
-        // cast is safe if you don't pass the wrong thing.
-        // noinspection unchecked
-        return new CycleFluidEntryHandler((List<FluidEntryList>) contents);
-    }
-
-    @NotNull
-    @Override
-    public Widget createWidget() {
-        TankWidget tank = new TankWidget();
-        tank.initTemplate();
-        tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
-        return tank;
-    }
-
-    @NotNull
-    @Override
-    public Class<? extends Widget> getWidgetClass() {
-        return TankWidget.class;
-    }
-
-    @Override
-    public void applyWidgetInfo(@NotNull Widget widget,
-                                int index,
-                                boolean isXEI,
-                                IO io,
-                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
-                                @NotNull GTRecipeType recipeType,
-                                @UnknownNullability("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {
-        if (widget instanceof TankWidget tank) {
-            if (storage instanceof IFluidHandler fluidHandler) {
-                tank.setFluidTank(fluidHandler, index);
-            }
-            tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
-            tank.setAllowClickFilled(!isXEI);
-            tank.setAllowClickDrained(!isXEI && io.support(IO.IN));
-            if (isXEI) tank.setShowAmount(false);
-            if (content != null) {
-                float chance = (float) recipeType.getChanceFunction()
-                        .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance;
-                tank.setXEIChance(chance);
-                tank.setOnAddedTooltips((w, tooltips) -> {
-                    FluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content);
-                    if (!isXEI && ingredient.getStacks().length > 0) {
-                        FluidStack stack = ingredient.getStacks()[0];
-                        TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
-                    }
-                    if (ingredient instanceof IntProviderFluidIngredient provider) {
-                        IntProvider countProvider = provider.getCountProvider();
-                        tooltips.add(Component.translatable("gtceu.gui.content.fluid_range",
-                                countProvider.getMinValue(), countProvider.getMaxValue())
-                                .withStyle(ChatFormatting.GOLD));
-                    }
-                    GTRecipeWidget.setConsumedChance(content,
-                            recipe.getChanceLogicForCapability(this, io, isTickSlot(index, io, recipe)),
-                            tooltips, recipeTier, chanceTier, recipeType.getChanceFunction());
-                    if (isTickSlot(index, io, recipe)) {
-                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
-                    }
-                });
-                if (io == IO.IN && (content.chance == 0)) {
-                    tank.setIngredientIO(IngredientIO.CATALYST);
-                }
-            }
-        }
-    }
-
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
-    public static FluidEntryList mapFluid(FluidIngredient ingredient) {
+    public static FluidEntryList mapIngredientToEntryList(FluidIngredient ingredient) {
         int amount;
         if (ingredient instanceof IntProviderFluidIngredient) {
             amount = 1;
@@ -455,5 +355,16 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public boolean shouldBypassDistinct() {
         return false;
+    }
+
+    @Override
+    public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableFluidTank.TYPE);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<NotifiableFluidTank> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

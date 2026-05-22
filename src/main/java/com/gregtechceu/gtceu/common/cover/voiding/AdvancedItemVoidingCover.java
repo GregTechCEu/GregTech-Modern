@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
@@ -129,8 +129,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
                 .value(voidingMode)
+                .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
                 .overlay(16, GTGuiTextures.VOIDING_MODES)
-                .lang(IKey.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
+                .lang(Text.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
                 .build()
                 .marginTop(2));
 

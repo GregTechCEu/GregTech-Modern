@@ -33,7 +33,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
@@ -320,7 +320,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                         .childPadding(2)
                         .margin(5)
                         .horizontalCenter()
-                        .child(new TextWidget<>(IKey.lang("gtceu.gui.item_collector.range")))
+                        .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
                         .child(new TextFieldWidget()
                                 .setNumbers(1, maxRange)
                                 .value(SyncHandlers.intNumber(this::getRange, this::setRange))))

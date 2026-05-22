@@ -26,7 +26,7 @@ public class PopupPanel extends ModularPanel<PopupPanel> {
         center();
         background(GTGuiTextures.BACKGROUND);
         child(ButtonWidget.panelCloseButton().top(5).right(5)
-                .onMousePressed((mouseX, mouseY, button) -> {
+                .onMousePressed((context, button) -> {
                     if (button == 0 || button == 1) {
                         this.closeIfOpen();
                         return true;

@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,7 +31,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -213,14 +214,14 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(IKey.lang("gtceu.gui.fluid_amount").asWidget()
+                        .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
-                        .child(IKey.dynamic(
+                        .child(Text.dynamic(
                                 () -> Component.literal(
-                                        FormattingUtil.formatBuckets(bucketSyncer.getLongValue())))
+                                        FormattingUtil.formatBuckets(bucketSyncer.getLongValue()))
+                                        .withStyle(ChatFormatting.WHITE))
                                 .asWidget()
-                                .color(0xffffff)
                                 .margin(8, 0, 18, 0))
                         .child(Flow.row()
                                 .margin(4, 0, 41, 0)

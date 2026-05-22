@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.TextWidget;
@@ -37,7 +37,7 @@ public class GuiModuleBehaviour implements IMonitorModuleItem {
         return syncManager.syncedPanel("gui_module_" + group.getName(), true,
                 (psm, handler) -> new ModularPanel<>("gui_module_info")
                         .coverChildren()
-                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.gui_module_info"))
+                        .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.gui_module_info"))
                                 .height(50)
                                 .width(200)));
     }

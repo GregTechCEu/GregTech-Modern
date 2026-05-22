@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.integration.recipeviewer.handlers.item.CycleItemEntryHandler;
 
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
@@ -43,6 +42,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import brachy.modularui.integration.recipeviewer.entry.item.ItemEntryList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
+import brachy.modularui.integration.recipeviewer.handlers.item.CycleItemEntryHandler;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.screen.RecipeScreen;
@@ -72,8 +74,8 @@ public class PatternPreviewWidget extends WidgetGroup {
     private final List<SimplePredicate> predicates;
     private int index;
     public int layer;
-    private SlotWidget[] slotWidgets;
-    private SlotWidget[] candidates;
+    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] slotWidgets;
+    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
         super(0, 0, 160, 160);
@@ -240,12 +242,14 @@ public class PatternPreviewWidget extends WidgetGroup {
         MBPattern pattern = patterns[index];
         setupScene(pattern);
         if (slotWidgets != null) {
-            for (SlotWidget slotWidget : slotWidgets) {
+            for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget : slotWidgets) {
                 scrollableWidgetGroup.removeWidget(slotWidget);
             }
         }
-        slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
-        CycleItemEntryHandler itemHandler = CycleItemEntryHandler.fromStacks(pattern.parts);
+        slotWidgets = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[Math.min(pattern.parts.size(), 18)];
+
+        var itemHandler = new CycleItemEntryHandler(
+                pattern.parts.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
         int xOffset = 0;
         for (int i = 0; i < slotWidgets.length; i++) {
             int padding = 1;
@@ -286,7 +290,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             predicates.addAll(predicate.limited);
             predicates.removeIf(p -> p == null || p.candidates == null); // why it happens?
             if (candidates != null) {
-                for (SlotWidget candidate : candidates) {
+                for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget candidate : candidates) {
                     removeWidget(candidate);
                 }
             }
@@ -299,13 +303,13 @@ public class PatternPreviewWidget extends WidgetGroup {
                     predicateTips.add(simplePredicate.getToolTips(predicate));
                 }
             }
-            candidates = new SlotWidget[candidateStacks.size()];
-            CycleItemEntryHandler itemHandler = CycleItemEntryHandler.fromStacks(candidateStacks);
+            candidates = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[candidateStacks.size()];
+            var itemHandler = new CycleItemEntryHandler(
+                    candidateStacks.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false,
-                        false)
+                candidates[i] = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget()
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));

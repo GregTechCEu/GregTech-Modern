@@ -14,7 +14,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.IPanelHandler;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
@@ -42,7 +42,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
                                 .marginTop(5)
                                 .center()
                                 .widthRel(1)
-                                .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.url")))
+                                .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.url")))
                                 .child(new TextFieldWidget()
                                         .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s)))
                                         .center()

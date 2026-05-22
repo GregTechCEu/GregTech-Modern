@@ -20,7 +20,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import brachy.modularui.api.IThemeApi;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.utils.Alignment;
@@ -128,7 +128,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                                 .child(mode.getItemIcon(item).asWidget()
                                                         .verticalCenter().leftRel(0f)
                                                         .size(12))
-                                                .child(new ScrollingTextWidget(IKey.lang(description))
+                                                .child(new ScrollingTextWidget(Text.of(description))
                                                         .textAlign(Alignment.CenterLeft)
                                                         .verticalCenter()
                                                         // .expanded()
@@ -185,7 +185,10 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     }
 
     @Override
-    public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
+    public @NotNull Result onMousePressed(int button) {
+        var mouseX = getContext().getMouseX();
+        var mouseY = getContext().getMouseY();
+
         if (!WaypointManager.isActive()) return Result.IGNORE;
 
         WaypointItem clickedItem = getClickedVein(mouseX, mouseY);

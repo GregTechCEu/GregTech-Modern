@@ -172,8 +172,8 @@ Flow column = Flow.column()
         .widthRel(1f)
         .padding(10)
         .crossAxisAlignment(Alignment.CrossAxis.START)
-        .child(new TextWidget<>(IKey.str("Title")).marginBottom(4))
-        .child(new TextWidget<>(IKey.str("Body")));
+        .child(new TextWidget<>(Text.str("Title")).marginBottom(4))
+        .child(new TextWidget<>(Text.str("Body")));
 ```
 
 ### Slot grid using absolute positioning

@@ -105,7 +105,7 @@ public abstract class GuiGraphicsMixin {
         // Other positions don't really work due to the lack of GuiContext in non-modular uis
         tooltip.add(textLines.get(0)).newLine();
         // vanilla inserts the bundle tooltip here so we need to do it as the 2nd item too
-        tooltipComponent.ifPresent(tooltip::addLine);
+        tooltipComponent.ifPresent(component -> tooltip.addLine(component.toString()));
 
         if (!this.tooltipStack.isEmpty()) {
             tooltip.spaceLine();

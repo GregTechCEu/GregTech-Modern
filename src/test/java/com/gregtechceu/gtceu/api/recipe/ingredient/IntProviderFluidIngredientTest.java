@@ -284,7 +284,7 @@ public class IntProviderFluidIngredientTest {
 
         helper.runAfterDelay(2, () -> {
             if (machine.getRecipeLogic().getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0)
-                    .getContent() instanceof IntProviderFluidIngredient ingredient) {
+                    .content() instanceof IntProviderFluidIngredient ingredient) {
                 ingredient.setSampledCount(0);
 
                 if (ingredient.getSampledCount() != 0) {

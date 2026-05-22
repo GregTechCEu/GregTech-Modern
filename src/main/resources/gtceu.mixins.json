@@ -25,6 +25,7 @@
         "ftbchunks.FTBChunksClientMixin",
         "ftbchunks.LargeMapScreenMixin",
         "ftbchunks.RegionMapPanelMixin",
+        "ldlib.ClickDataMixin",
         "ldlib.ModularWrapperWidgetMixin",
         "rei.FluidEntryRendererMixin",
         "xaerominimap.HighlighterRegistryMixin",

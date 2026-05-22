@@ -119,6 +119,16 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new Dialog<>("simple_fluid_filter")
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(getFilterUI(data, syncManager, settings).top(10))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         for (int i = 0; i < 9; i++) {
             syncManager.syncValue("filter_slot_" + i,
                     new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));
@@ -126,30 +136,22 @@ public class SimpleFluidFilter implements FluidFilter {
 
         Grid filterGrid = new Grid()
                 .coverChildren()
-                .mapTo(3, 9, i -> new FluidSlot().syncHandler("filter_slot_" + i));
+                .gridOfSizeWidth(9, 3, (x, y, i) -> new FluidSlot().syncHandler("filter_slot_" + i));
 
-        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList);
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
         syncManager.syncValue("blacklist", blacklist);
 
-        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt);
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt).allowC2S();
         syncManager.syncValue("ignoreNBT", ignoreNBT);
 
         Flow filterConfigButtons = Flow.col()
                 .coverChildren()
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
-
-        return new Dialog<>("simple_fluid_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(Flow.row()
-                        .top(10)
-                        .coverChildrenHeight()
-                        .child(filterGrid.horizontalCenter())
-                        .child(filterConfigButtons.marginLeft(118)))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(filterGrid.horizontalCenter())
+                .child(filterConfigButtons.marginLeft(118));
     }
 
     @Override

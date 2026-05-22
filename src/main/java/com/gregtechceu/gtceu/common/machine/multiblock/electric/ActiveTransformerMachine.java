@@ -24,7 +24,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.block.Block;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
@@ -200,16 +200,16 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(this.powerOutput::getOutputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.work_paused"))
+        widgets.add(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.running"))
+        widgets.add(Text.lang("gtceu.multiblock.running")
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> Component
+        widgets.add(Text.dynamic(() -> Component
                 .translatable("gtceu.multiblock.active_transformer.max_input",
                         FormattingUtil.formatNumbers(
                                 Math.abs(inputVoltage.getLongValue() * inputAmperage.getLongValue()))))
@@ -217,7 +217,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> Component
+        widgets.add(Text.dynamic(() -> Component
                 .translatable("gtceu.multiblock.active_transformer.max_output",
                         FormattingUtil.formatNumbers(
                                 Math.abs(outputVoltage.getLongValue() * outputAmperage.getLongValue()))))
@@ -225,31 +225,31 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> Component
+        widgets.add(Text.dynamic(() -> Component
                 .translatable("gtceu.multiblock.active_transformer.average_in",
                         FormattingUtil.formatNumbers(Math.abs(inputPerSec.getLongValue() / 20))))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> Component
+        widgets.add(Text.dynamic(() -> Component
                 .translatable("gtceu.multiblock.active_transformer.average_out",
                         FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20))))
                 .asWidget()
                 .setEnabledIf(
                         (widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() && active.getBoolValue()));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.active_transformer.danger_enabled"))
+        widgets.add(Text.lang("gtceu.multiblock.active_transformer.danger_enabled")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         active.getBoolValue() && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers));
 
-        widgets.add(IKey.lang(Component.translatable("gtceu.multiblock.idling"))
+        widgets.add(Text.lang("gtceu.multiblock.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
-        widgets.add(IKey.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
                     .withStyle(ChatFormatting.GRAY);
             return Component.translatable("gtceu.multiblock.invalid_structure")

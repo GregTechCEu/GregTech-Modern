@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -61,7 +63,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             int maxMultiplier = multiplier;
 
             long totalEU = 0L;
-            for (var content : outputs) totalEU += of(content.content).getTotalEU();
+            for (var content : outputs) totalEU += of(content.content()).getTotalEU();
             if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
                 maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
             }
@@ -104,8 +106,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             long nonConsumable = 0;
             long consumable = 0;
             for (Content content : inputs) {
-                EnergyStack s = of(content.content);
-                if (content.chance == 0) nonConsumable += s.getTotalEU();
+                EnergyStack s = of(content.content());
+                if (content.chance() == 0) nonConsumable += s.getTotalEU();
                 else consumable += s.getTotalEU();
             }
 
@@ -123,6 +125,17 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             sum -= nonConsumable;
             return Math.min(GTMath.saturatedCast(sum / consumable), limit);
         }
+    }
+
+    @Override
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableEnergyContainer.TYPE);
+    }
+
+    @Override
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 
     /**

@@ -14,7 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -103,7 +103,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).addDefaultConfigurators(false)
+        return MachineUIPanelBuilder.panelBuilder(this).addDefaultConfigurators(false)
                 .addTraitConfigurators(false).rightConfigurators(f -> f.child(GTMuiWidgets.createPowerButton(this)));
     }
 
@@ -127,7 +127,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                         .padding(7)
                         .mainAxisAlignment(Alignment.MainAxis.START)
                         .child(Flow.row().coverChildrenHeight()
-                                .child(IKey.lang("gtceu.creative.chest.item").asWidget()
+                                .child(Text.lang("gtceu.creative.chest.item").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
                                 .child(new PhantomItemSlot().syncHandler("stored")))
@@ -135,7 +135,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(IKey.lang("gtceu.creative.chest.ipc").asWidget()
+                                .child(Text.lang("gtceu.creative.chest.ipc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())
@@ -147,7 +147,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(IKey.lang("gtceu.creative.chest.tpc").asWidget()
+                                .child(Text.lang("gtceu.creative.chest.tpc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())

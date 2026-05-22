@@ -23,7 +23,7 @@ import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
@@ -131,7 +131,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
 
         var flow = Flow.col().coverChildren();
 
-        flow.child(IKey.dynamic(() -> isOnlineValue.getBoolValue() ?
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
                 Component.translatable("gtceu.gui.me_network.online") :
                 Component.translatable("gtceu.gui.me_network.offline"))
                 .asWidget().marginTop(2).marginBottom(4));

@@ -15,7 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.theme.ThemeAPI;
@@ -128,16 +128,16 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent));
-        var minValueSync = new LongSyncValue(this::getMinValue, this::setMinValue);
-        var maxValueSync = new LongSyncValue(this::getMaxValue, this::setMaxValue);
+        syncManager.syncValue("usePercent", new BooleanSyncValue(this::isUsePercent, this::setUsePercent).allowC2S());
+        var minValueSync = new LongSyncValue(this::getMinValue, this::setMinValue).allowC2S();
+        var maxValueSync = new LongSyncValue(this::getMaxValue, this::setMaxValue).allowC2S();
 
         syncManager.syncValue("minValue", minValueSync);
         syncManager.syncValue("maxValue", maxValueSync);
 
-        column.child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.min").asWidget().width(20))
+        column.child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.min").asWidget().width(20))
                 .child(GTMuiWidgets.createLongInputWithButtons(minValueSync, () -> 0, this::getMaxValue).width(142)))
-                .child(coverUIRow().child(IKey.lang("cover.advanced_energy_detector.max").asWidget().width(20))
+                .child(coverUIRow().child(Text.lang("cover.advanced_energy_detector.max").asWidget().width(20))
                         .child(GTMuiWidgets.createLongInputWithButtons(maxValueSync, () -> 0,
                                 () -> usePercent ? 100 : getEnergyCapacity()).width(142)))
                 .child(coverUIRow()

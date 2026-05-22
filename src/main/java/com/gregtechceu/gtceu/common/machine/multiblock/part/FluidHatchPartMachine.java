@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -36,7 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -57,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCircuitSlot, IPaintable {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMachine, IHasCircuitSlot, IPaintable {
 
     public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
@@ -292,9 +293,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IHasCi
                 .height(60)
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .childPadding(4)
-                .child(new TextWidget<>(IKey.dynamic(this::getFluidNameText))
+                .child(new TextWidget<>(Text.dynamic(this::getFluidNameText))
                         .horizontalCenter())
-                .child(new TextWidget<>(IKey.dynamic(this::getFluidAmountText))
+                .child(new TextWidget<>(Text.dynamic(this::getFluidAmountText))
                         .horizontalCenter())
                 .child(Flow.row()
                         .childPadding(2)

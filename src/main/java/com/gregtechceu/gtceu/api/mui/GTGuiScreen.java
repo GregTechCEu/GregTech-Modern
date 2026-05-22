@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 
-import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,10 +29,5 @@ public class GTGuiScreen extends ModularScreen {
     public GTGuiScreen(String owner, ModularPanel<?> mainPanel, String themeId) {
         super(owner, mainPanel);
         useTheme(themeId);
-    }
-
-    @Override
-    public @NotNull ScreenRectangle getRectangle() {
-        return super.getRectangle();
     }
 }

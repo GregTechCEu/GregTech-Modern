@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * triggers DynamicLinkedSyncHandler to rebuild the Grid with the correct widget count.
  */
 @SuppressWarnings("unchecked")
-public class AEKeyStorageSyncHandler extends ValueSyncHandler<List<GenericStack>> {
+public class AEKeyStorageSyncHandler extends ValueSyncHandler<List<GenericStack>, AEKeyStorageSyncHandler> {
 
     private static final Comparator<GenericStack> BY_AMOUNT_DESC = (a, b) -> Long.compare(b.amount(), a.amount());
 

@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
-import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-public interface IMultiPart extends IMachineFeature, IMuiMachine {
+public interface IMultiPart extends IMachineFeature {
 
     /**
      * @return If this multi part can be shared between multiple multiblocks.

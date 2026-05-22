@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
@@ -27,11 +25,6 @@ public class MonitorPartMachine extends MonitorComponentPartMachine {
     @Override
     public IDrawable getIcon() {
         return GTGuiTextures.MONITOR;
-    }
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
     }
 
     public Vector2d getMousePos(HitResult hitResult) {

@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.Interactable;
 import brachy.modularui.integration.emi.EmiStackConverter;
 import brachy.modularui.integration.recipeviewer.handlers.GhostIngredientSlot;
@@ -106,14 +106,14 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 .posRel(0.5f, 0.35f)
                 .background(GTGuiTextures.BACKGROUND)
                 .child(ButtonWidget.panelCloseButton())
-                .child(IKey.str("Amount").asWidget().pos(4, 4))
+                .child(Text.str("Amount").asWidget().pos(4, 4))
                 .child(Flow.row()
                         .left(4).right(4).bottom(4).height(18)
                         .child(amountField)
                         .child(new ButtonWidget<>()
                                 .size(18, 18)
-                                .overlay(IKey.str("✓"))
-                                .onMousePressed((mouseX, mouseY, button) -> {
+                                .overlay(Text.str("✓"))
+                                .onMousePressed((context, button) -> {
                                     if (button == 0) {
                                         confirmAmountEdit();
                                         return true;
@@ -232,16 +232,16 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
                 if (tooltipStack != null) {
                     ItemStack wrapped = GenericStack.wrapInItemStack(tooltipStack);
                     graphics.renderTooltip(Minecraft.getInstance().font, wrapped,
-                            (int) context.getAbsMouseX(), (int) context.getAbsMouseY());
+                            context.getAbsMouseX(), context.getAbsMouseY());
                 }
             }
         }
     }
 
     @Override
-    public Result onMousePressed(double mouseX, double mouseY, int button) {
-        double localX = mouseX - getArea().x;
-        double localY = mouseY - getArea().y;
+    public Result onMousePressed(int button) {
+        double localX = getContext().getMouseX() - getArea().x;
+        double localY = getContext().getMouseY() - getArea().y;
 
         int slotIndex = getSlotAtLocal(localX, localY);
         if (slotIndex < 0) return Result.IGNORE;
@@ -275,11 +275,11 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     }
 
     @Override
-    public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean onMouseScrolled(double delta) {
         if (isStocking()) return false;
 
-        double localX = mouseX - getArea().x;
-        double localY = mouseY - getArea().y;
+        double localX = getContext().getMouseX() - getArea().x;
+        double localY = getContext().getMouseY() - getArea().y;
         int slotIndex = getSlotAtLocal(localX, localY);
         if (slotIndex < 0) return false;
 

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -32,7 +33,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.wrappers.BucketPickupHandlerWrapper;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -546,14 +547,14 @@ public class PumpMachine extends TieredEnergyMachine implements IMuiMachine {
                         .background(GTGuiTextures.DISPLAY)
                         .size(90, 63)
                         .center()
-                        .child(IKey.lang("gtceu.gui.fluid_amount").asWidget()
+                        .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
                                 .color(0xffffff)
                                 .margin(8, 0, 8, 0))
-                        .child(IKey.dynamic(
+                        .child(Text.dynamic(
                                 () -> Component.literal(
-                                        FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
+                                        FormattingUtil.formatBuckets(bucketSyncer.getIntValue()))
+                                        .withStyle(ChatFormatting.WHITE))
                                 .asWidget()
-                                .color(0xffffff)
                                 .margin(8, 0, 20, 0))
                         .child(Flow.row()
                                 .margin(4, 0, 41, 0)

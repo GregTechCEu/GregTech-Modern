@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -23,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.Rectangle;
@@ -61,7 +60,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     private int minRedstoneStrength = 1;
 
     @SaveField
-    @SyncToClient
     @Getter
     @Nullable
     private ControllerMode controllerMode = ControllerMode.MACHINE;
@@ -111,7 +109,6 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         resetCurrentControllable();
 
         this.controllerMode = controllerMode;
-        syncDataHolder.markClientSyncFieldDirty("filterMode");
 
         updateInput();
     }
@@ -198,12 +195,12 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
     @Override
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
-                this::getControllerMode, this::setControllerMode);
+                this::getControllerMode, this::setControllerMode).allowC2S();
 
         syncManager.syncValue("controllerMode", controllerModeValue);
 
         return ModularPanel.defaultPanel(coverDefinition.getId().getPath(), 176, 245)
-                .child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
+                .child(GTMuiWidgets.createTitleBar(() -> this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
                 .child(Flow.col().top(7).margin(7, 0)
                         .childPadding(2)
                         .widthRel(1.0f)
@@ -212,28 +209,29 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
-                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true)))
+                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true))
+                                                .allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
-                                .child(IKey.lang("cover.enable_with_redstone").asWidget()
+                                .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> !this.isInverted(),
-                                                ($) -> this.setInverted(false)))
+                                                ($) -> this.setInverted(false)).allowC2S())
                                         .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
-                                .child(IKey.lang("cover.disable_with_redstone").asWidget()
+                                .child(Text.lang("cover.disable_with_redstone").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
                                 .child(new ToggleButton()
                                         .size(16).left(0)
                                         .value(new BooleanSyncValue(() -> preventPowerFail,
-                                                bool -> preventPowerFail = bool))
+                                                bool -> preventPowerFail = bool).allowC2S())
                                         .overlay(GTGuiTextures.CIRCUIT_OVERLAY))
-                                .child(IKey.lang("cover.machine_controller.suspend_powerfail").asWidget()
+                                .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
                                         .heightRel(1.0f).left(20)))
                         .child(coverUIRow()
-                                .child(IKey
+                                .child(Text
                                         .dynamic(() -> Component.translatable("cover.machine_controller.redstone",
                                                 redstoneSignalOutput))
                                         .asWidget()
@@ -247,27 +245,27 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
                                         .bounds(0, 15)
                                         .stopper(1.0)
                                         .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
-                                                v -> redstoneSignalOutput = (int) v))))
+                                                v -> redstoneSignalOutput = (int) v).allowC2S())))
                         // Separating line
                         .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
                                 .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
 
-                        .child(coverUIRow().child(IKey.lang("cover.machine_controller.control").asWidget()
+                        .child(coverUIRow().child(Text.lang("cover.machine_controller.control").asWidget()
                                 .height(16)))
 
                         // Controlling selector
                         .child(coverUIRow()
                                 .child(modeButton(controllerModeValue, ControllerMode.MACHINE).bottom(0))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_UP, IKey.str("U")))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_DOWN, IKey.str("D")))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_NORTH, IKey.str("N")))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_SOUTH, IKey.str("S")))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_EAST, IKey.str("E")))
-                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_WEST, IKey.str("W")))))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_UP, Text.str("U")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_DOWN, Text.str("D")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_NORTH, Text.str("N")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_SOUTH, Text.str("S")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_EAST, Text.str("E")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_WEST, Text.str("W")))))
                 .bindPlayerInventory();
     }
 
-    private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, IKey title) {
+    private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, Text title) {
         return Flow.column().width(18).height(28)
                 .child(title.asWidget().height(10).leftRel(0.5f))
                 .child(modeButton(syncValue, mode).bottom(0));
@@ -278,21 +276,21 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         if (controllable == null) {
             // Nothing to control, put a placeholder widget
             // 3 states possible here:
-            IKey detail;
+            Text detail;
             if (mode.side == attachedSide) {
                 // our own side, we can't control ourselves
-                detail = IKey.lang("cover.machine_controller.this_cover");
+                detail = Text.lang("cover.machine_controller.this_cover");
             } else if (mode.side != null) {
                 // some potential cover that either doesn't exist or isn't controllable
-                detail = IKey.lang("cover.machine_controller.cover_not_controllable");
+                detail = Text.lang("cover.machine_controller.cover_not_controllable");
             } else {
                 // cover holder is not controllable
-                detail = IKey.lang("cover.machine_controller.machine_not_controllable");
+                detail = Text.lang("cover.machine_controller.machine_not_controllable");
             }
 
             return GuiTextures.MC_BUTTON.asWidget().size(18)
                     .overlay(GTGuiTextures.BUTTON_CROSS)
-                    .tooltip(t -> t.addLine(IKey.lang(mode.localeName)).addLine(detail));
+                    .tooltip(t -> t.addLine(Text.lang(mode.getTooltip())).addLine(detail.getFormatted()));
         }
 
         ItemStack stack;
@@ -311,8 +309,8 @@ public class MachineControllerCover extends CoverBehavior implements IMuiCover {
         return new ToggleButton().size(18)
                 .value(boolValueOf(syncValue, mode))
                 .overlay(new ItemDrawable(stack).asIcon().size(16))
-                .tooltip(t -> t.addLine(IKey.lang(mode.localeName))
-                        .addLine(IKey.lang(stack.getHoverName())));
+                .tooltip(t -> t.addLine(Text.lang(mode.getTooltip()))
+                        .addLine(stack.getHoverName()));
     }
 
     @Override

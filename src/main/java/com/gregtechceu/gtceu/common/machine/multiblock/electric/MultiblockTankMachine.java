@@ -12,12 +12,13 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -79,14 +80,14 @@ public class MultiblockTankMachine extends MultiblockControllerMachine implement
 
         mainWidget
                 .background(GTGuiTextures.DISPLAY)
-                .child(IKey.lang("gtceu.gui.fluid_amount").asWidget()
+                .child(Text.lang("gtceu.gui.fluid_amount").asWidget()
                         .color(0xffffff)
                         .margin(8, 0, 8, 0))
-                .child(IKey.dynamic(
+                .child(Text.dynamic(
                         () -> Component.literal(
-                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue())))
+                                FormattingUtil.formatBuckets(bucketSyncer.getIntValue()))
+                                .withStyle(ChatFormatting.WHITE))
                         .asWidget()
-                        .color(0xffffff)
                         .margin(8, 0, 20, 0))
                 .child(Flow.column()
                         .margin(68, 0, 23, 0)

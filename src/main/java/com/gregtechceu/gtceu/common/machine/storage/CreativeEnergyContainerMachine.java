@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Rectangle;
@@ -28,6 +28,7 @@ import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.sync.BooleanSyncValue;
@@ -201,7 +202,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).attachInventory(false);
+        return MachineUIPanelBuilder.panelBuilder(this).attachInventory(false);
     }
 
     @Override
@@ -234,7 +235,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
         return Flow.row()
                 .height(18)
                 .marginBottom(4)
-                .child(IKey.str("Voltage").asWidget()
+                .child(Text.str("Voltage").asWidget()
                         .marginRight(4)
                         .width(50)
                         .verticalCenter())
@@ -245,14 +246,13 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                 .child(new ButtonWidget<>()
                         .height(18)
                         .width(40)
-                        .overlay(IKey.dynamic(
-                                () -> Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage.getLongValue())]))
-                                .shadow(true))
+                        .overlay(Text.dynamic(
+                                () -> Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage.getLongValue())])))
 
                         // .width(32)
                         .marginLeft(4)
                         .tooltip(new RichTooltip().add("Click to Change Tier"))
-                        .onMousePressed((a, b, c) -> {
+                        .onMousePressed((GuiContext context, int button) -> {
                             if (panel.isPanelOpen()) {
                                 panel.closePanel();
                             } else {
@@ -267,7 +267,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
     static Flow createAmpRow(IntSyncValue amps) {
         return Flow.row()
                 .coverChildrenHeight()
-                .child(IKey.lang("gtceu.creative.energy.amperage").asWidget()
+                .child(Text.lang("gtceu.creative.energy.amperage").asWidget()
                         .marginRight(4)
                         .verticalCenter().width(50))
                 .child(
@@ -280,11 +280,11 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .overlay(new DynamicDrawable(() -> {
                             MouseData mouseData = MouseData.create(-1);
                             if (mouseData.shift()) {
-                                return IKey.str("1/2x");
+                                return Text.str("1/2x");
                             } else if (mouseData.ctrl()) {
-                                return IKey.str("4x");
+                                return Text.str("4x");
                             } else {
-                                return IKey.str("2x");
+                                return Text.str("2x");
                             }
 
                         }))
@@ -292,8 +292,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .height(18)
                         .tooltip(new RichTooltip().addLine("Click to Double Amperage")
                                 .addLine("Shift to half current Amperage"))
-                        .onMousePressed((a, b, c) -> {
-                            MouseData mouseData = MouseData.create(c);
+                        .onMousePressed((GuiContext context, int button) -> {
+                            MouseData mouseData = MouseData.create(button);
                             if (mouseData.shift()) {
                                 amps.setValue(amps.getValue() / 2);
                             } else if (mouseData.ctrl()) {
@@ -321,7 +321,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(sourceSync))
-                        .child(IKey.lang("gtceu.creative.energy.source").asWidget())
+                        .child(Text.lang("gtceu.creative.energy.source").asWidget())
                         .paddingBottom(2))
                 .child(Flow.row()
                         .coverChildrenHeight()
@@ -336,7 +336,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                     return IDrawable.EMPTY;
                                 }))
                                 .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
-                        .child(IKey.lang("gtceu.creative.energy.sink").asWidget()));
+                        .child(Text.lang("gtceu.creative.energy.sink").asWidget()));
     }
 
     private ModularPanel<?> createAmpSelector(LongSyncValue voltage, IntSyncValue tier) {
@@ -347,7 +347,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                 .width(72)
                 .height(104)
                 .child(Flow.column()
-                        .child(IKey.lang("gtceu.top.cable_voltage").asWidget().top(4).left(3))
+                        .child(Text.lang("gtceu.top.cable_voltage").asWidget().top(4).left(3))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.80f).horizontalCenter().top(19))
                         .child(new ListWidget<>()
@@ -357,8 +357,8 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
                                 .children(GTValues.TIER_COUNT, v -> new ButtonWidget<>()
                                         .width(36)
-                                        .overlay(IKey.lang(Component.literal(GTValues.VNF[v])))
-                                        .onMousePressed((x, y, b) -> {
+                                        .overlay(Text.str(GTValues.VNF[v]))
+                                        .onMousePressed((context, b) -> {
                                             voltage.setValue(GTValues.V[v]);
                                             tier.setValue(v);
                                             return true;

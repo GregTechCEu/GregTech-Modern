@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
@@ -42,7 +43,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine {
+public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMachine {
 
     public static final int SPEED_INCREMENT = 1;
     public static final int SPEED_DECREMENT = 3;

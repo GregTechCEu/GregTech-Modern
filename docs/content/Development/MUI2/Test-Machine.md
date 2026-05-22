@@ -13,7 +13,7 @@ public class MuiTestMachine extends MetaMachine implements IMuiMachine {
         var panel = GTGuis.createPanel(this, 176, 168);
         // Do stuff with your panel here, add children, etc.
         // For example:
-        panel.child(IKey.str("Test machine")
+        panel.child(Text.str("Test machine")
                 .asWidget()
                 .margin(4));
 

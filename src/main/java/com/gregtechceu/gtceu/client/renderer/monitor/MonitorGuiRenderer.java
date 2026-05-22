@@ -211,7 +211,7 @@ public class MonitorGuiRenderer implements IMonitorRenderer {
                 if (monitor instanceof AdvancedMonitorPartMachine advancedMonitor && mouseX >= 0 && mouseY >= 0 &&
                         mouseX <= width && mouseY <= height) {
                     if (advancedMonitor.isClickedThisFrame()) {
-                        this.screen.onMousePressed(mouseX * 256, mouseY * 256, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+                        this.screen.mousePressed(GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         this.vanillaScreen.mouseClicked(mouseX * 256, mouseY * 256, GLFW.GLFW_MOUSE_BUTTON_LEFT);
                         advancedMonitor.setClickedThisFrame(false);
                     }

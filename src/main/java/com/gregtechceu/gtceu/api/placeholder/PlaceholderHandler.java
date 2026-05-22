@@ -21,13 +21,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.value.IBoolValue;
 import brachy.modularui.api.value.IIntValue;
 import brachy.modularui.api.value.IStringValue;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.ButtonWidget;
@@ -269,7 +270,7 @@ public class PlaceholderHandler {
                                         i -> new ItemSlot()
                                                 .slot(ctx.itemStackHandler(), i)
                                                 .addTooltipLine(
-                                                        IKey.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
+                                                        Text.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
                         .child(Flow.column()
                                 .widthRel(.8f)
                                 .padding(5)
@@ -277,7 +278,7 @@ public class PlaceholderHandler {
                                         .height(20)
                                         .childIf(scaleDouble != null,
                                                 () -> new TextWidget<>(
-                                                        IKey.lang("gtceu.gui.central_monitor.text_scale")))
+                                                        Text.lang("gtceu.gui.central_monitor.text_scale")))
                                         .childIf(scaleDouble != null, () -> new TextFieldWidget()
                                                 .setNumbersDouble(x -> Math.max(x, 0))
                                                 .setDefaultNumber(1.0)
@@ -285,7 +286,7 @@ public class PlaceholderHandler {
                                                 .marginLeft(4))
                                         .childIf(updateInterval != null,
                                                 () -> new TextWidget<>(
-                                                        IKey.lang("gtceu.gui.computer_monitor_cover.update_interval")))
+                                                        Text.lang("gtceu.gui.computer_monitor_cover.update_interval")))
                                         .childIf(updateInterval != null, () -> new TextFieldWidget()
                                                 .setNumbers(1, 1000)
                                                 .setDefaultNumber(1)
@@ -297,19 +298,19 @@ public class PlaceholderHandler {
                                                 .value(pause)
                                                 .background(false, GuiTextures.PAUSE)
                                                 .background(true, GuiTextures.PLAY)
-                                                .addTooltip(false, IKey.lang("gtceu.gui.central_monitor.pause"))
-                                                .addTooltip(true, IKey.lang("gtceu.gui.central_monitor.resume"))
+                                                .addTooltip(false, Text.lang("gtceu.gui.central_monitor.pause"))
+                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume"))
                                                 .margin(4))
                                         .childIf(updateText != null, () -> new ButtonWidget<>()
                                                 .background(GuiTextures.RIGHTLOAD)
                                                 .hoverBackground(GuiTextures.RIGHTLOAD, new BorderDrawable())
-                                                .addTooltipLine(IKey.lang("gtceu.gui.central_monitor.update_once"))
+                                                .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
                                                 .syncHandler("run_code_sync_handler"))
                                         .child(new ButtonWidget<>()
                                                 .background(GuiTextures.HELP)
                                                 .hoverBackground(GuiTextures.HELP, new BorderDrawable())
                                                 .margin(4)
-                                                .onMousePressed((mouseX, mouseY, button) -> {
+                                                .onMousePressed((GuiContext context, int button) -> {
                                                     helpPanel.openPanel();
                                                     return true;
                                                 })))
@@ -335,7 +336,7 @@ public class PlaceholderHandler {
                                                                 .getSingleOrMultiLang(
                                                                         "gtceu.placeholder_info." + w.getWidgetValue())
                                                                 .stream()
-                                                                .map(IKey::lang)
+                                                                .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))
                                         .toList()))));
@@ -346,7 +347,7 @@ public class PlaceholderHandler {
                 .size(500, 250)
                 .child(Flow.column()
                         .padding(5)
-                        .child(new TextWidget<>(IKey.lang("gtceu.gui.central_monitor.text_module_help")))
+                        .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.text_module_help")))
                         .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                 .padding(5)
                                 .widthRel(.95f)

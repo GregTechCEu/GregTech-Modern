@@ -278,7 +278,7 @@ public class IntProviderIngredientTest {
 
         helper.runAfterDelay(2, () -> {
             if (machine.getRecipeLogic().getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0)
-                    .getContent() instanceof IntProviderIngredient ingredient) {
+                    .content() instanceof IntProviderIngredient ingredient) {
                 ingredient.setSampledCount(0);
 
                 if (ingredient.getSampledCount() != 0) {

@@ -6,10 +6,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 
 import brachy.modularui.api.drawable.IDrawable;
 import lombok.Getter;
@@ -34,11 +31,6 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     public abstract boolean isAdvanced();
 
     public abstract IDrawable getComponentIcon();
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
 
     @Override
     public int getDefaultPaintingColor() {

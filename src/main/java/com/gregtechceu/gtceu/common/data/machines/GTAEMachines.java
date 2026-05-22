@@ -106,8 +106,7 @@ public class GTAEMachines {
             .machine("me_pattern_buffer", MEPatternBufferPartMachine::new)
             .tier(LuV)
             .rotationState(RotationState.ALL)
-            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
-                    PartAbility.EXPORT_ITEMS)
+            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch"))
             .langValue("ME Pattern Buffer")
@@ -121,8 +120,7 @@ public class GTAEMachines {
             .machine("me_pattern_buffer_proxy", MEPatternBufferProxyPartMachine::new)
             .tier(LuV)
             .rotationState(RotationState.ALL)
-            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS, PartAbility.EXPORT_FLUIDS,
-                    PartAbility.EXPORT_ITEMS)
+            .abilities(PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS)
             .rotationState(RotationState.ALL)
             .colorOverlayTieredHullModel(GTCEu.id("block/overlay/appeng/me_buffer_hatch_proxy"))
             .langValue("ME Pattern Buffer Proxy")

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
@@ -19,7 +20,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -99,6 +106,32 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
             tooltips.append(" ").append(id);
         });
         return tooltips;
+    }
+
+    @Override
+    public RecipeUIModifier modifyUI() {
+        return (recipe, widget) -> {
+            var row = Flow.row().coverChildrenHeight().widthRel(1);
+            var fluids = getOrInitFluids(recipe);
+
+            row.child(Text.lang("recipe.condition.adjacent_fluid.tooltip").asWidget());
+
+            for (HolderSet<Fluid> set : fluids) {
+                if (set.size() == 0) {
+                    continue;
+                }
+                var fluidTagList = new FluidStackList();
+                set.forEach(fluid -> {
+                    fluidTagList.add(new FluidStack(fluid.value(), 1));
+                });
+                row.child(RecipeViewerSlotWidget.create()
+                        .marginLeft(2)
+                        .recipeSlotRole(RecipeSlotRole.CATALYST)
+                        .value(fluidTagList));
+            }
+
+            widget.textComponents.child(row);
+        };
     }
 
     @Override

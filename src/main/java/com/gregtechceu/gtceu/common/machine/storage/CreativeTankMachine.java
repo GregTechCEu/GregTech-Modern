@@ -17,7 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -136,7 +136,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).addDefaultConfigurators(false)
+        return MachineUIPanelBuilder.panelBuilder(this).addDefaultConfigurators(false)
                 .addTraitConfigurators(false).rightConfigurators(f -> f.child(GTMuiWidgets.createPowerButton(this)));
     }
 
@@ -159,7 +159,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                         .padding(7)
                         .mainAxisAlignment(Alignment.MainAxis.START)
                         .child(Flow.row().coverChildrenHeight()
-                                .child(IKey.lang("gtceu.creative.tank.fluid").asWidget()
+                                .child(Text.lang("gtceu.creative.tank.fluid").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
                                 .child(new FluidSlot().syncHandler("locked_fluid_slot", 0)
@@ -168,7 +168,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(IKey.lang("gtceu.creative.tank.mbpc").asWidget()
+                                .child(Text.lang("gtceu.creative.tank.mbpc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())
@@ -180,7 +180,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
                                 .height(18)
-                                .child(IKey.lang("gtceu.creative.tank.tpc").asWidget()
+                                .child(Text.lang("gtceu.creative.tank.tpc").asWidget()
                                         .marginRight(4)
                                         .width(80)
                                         .verticalCenter())

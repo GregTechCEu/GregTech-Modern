@@ -40,7 +40,6 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
@@ -95,6 +94,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
+import static com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine.AMPS_PER_BATTERY_NORMAL;
 import static com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine.TANK_CAPACITY;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.*;
@@ -374,7 +374,7 @@ public class GTMachineUtils {
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
                         .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
-                        .ui(GTSingleblockMachinePanels.STEAM_MACHINE)
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -386,7 +386,8 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerBatteryBuffer(GTRegistrate registrate, int batterySlotSize) {
         return registerTieredMachines(registrate, "battery_buffer_" + batterySlotSize + "x",
-                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize, AMPS_PER_BATTERY_NORMAL,
+                        batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .model(GTMachineModels.createBatteryBufferModel(batterySlotSize))
@@ -400,7 +401,7 @@ public class GTMachineUtils {
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
-                                        batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
+                                        batterySlotSize * AMPS_PER_BATTERY_NORMAL),
                                 Component.translatable("gtceu.universal.tooltip.amperage_out_till", batterySlotSize))
                         .register(),
                 ALL_TIERS);
@@ -412,10 +413,11 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerCharger(GTRegistrate registrate, int itemSlotSize) {
         return registerTieredMachines(registrate, "charger_" + itemSlotSize + "x",
-                (holder, tier) -> new ChargerMachine(holder, tier, itemSlotSize),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, itemSlotSize,
+                        BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
-                        .modelProperty(GTMachineModelProperties.CHARGER_STATE, ChargerMachine.State.IDLE)
+                        .modelProperty(GTMachineModelProperties.CHARGER_STATE, BatteryBufferMachine.State.IDLE)
                         .model(GTMachineModels.createChargerModel())
                         .langValue("%s %sx Turbo Charger".formatted(
                                 VCF[tier] + VOLTAGE_NAMES[tier] + ChatFormatting.RESET,
@@ -425,7 +427,7 @@ public class GTMachineUtils {
                                         FormattingUtil.formatNumbers(GTValues.V[tier]),
                                         GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till",
-                                        itemSlotSize * ChargerMachine.AMPS_PER_ITEM))
+                                        itemSlotSize * BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER))
                         .register(),
                 ALL_TIERS);
     }

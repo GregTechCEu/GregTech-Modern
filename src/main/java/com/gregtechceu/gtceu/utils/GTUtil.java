@@ -9,13 +9,19 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.item.TieredBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -55,15 +61,15 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
+import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -365,27 +371,21 @@ public class GTUtil {
 
     public static boolean isShiftDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+            return Screen.hasShiftDown();
         }
         return false;
     }
 
     public static boolean isCtrlDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
+            return Screen.hasControlDown();
         }
         return false;
     }
 
     public static boolean isAltDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
+            return Screen.hasAltDown();
         }
         return false;
     }
@@ -771,5 +771,36 @@ public class GTUtil {
             }
         }
         return -1;
+    }
+
+    public static void openRecipeViewerCategory(GTRecipeCategory category) {
+        if (GTCEu.Mods.isEMILoaded()) {
+            EmiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            JeiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isREILoaded()) {
+            ReiCallWrapper.openRecipeCategory(category);
+        }
+    }
+
+    private static class EmiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+        }
+    }
+
+    private static class JeiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
+        }
+    }
+
+    private static class ReiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
+        }
     }
 }

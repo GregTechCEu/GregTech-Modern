@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -101,7 +101,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).attachInventory(false);
+        return MachineUIPanelBuilder.panelBuilder(this).attachInventory(false);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.max_usage")))
+                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.max_usage")))
                                 .child(new TextFieldWidget()
                                         .setNumbers(0, Integer.MAX_VALUE)
                                         .value(new IntSyncValue(() -> maxCWUt, (v) -> maxCWUt = v))))
@@ -125,7 +125,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
                                 .leftRel(0)
                                 .childPadding(5)
                                 .coverChildren()
-                                .child(new TextWidget<>(IKey.lang("gtceu.creative.computation.average",
-                                        () -> new Object[] { lastRequestedCWUt })))));
+                                .child(new TextWidget<>(Text.lang("gtceu.creative.computation.average",
+                                        lastRequestedCWUt)))));
     }
 }

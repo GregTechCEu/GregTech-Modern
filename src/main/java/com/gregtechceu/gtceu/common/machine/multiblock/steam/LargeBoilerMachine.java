@@ -28,7 +28,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -256,20 +256,20 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         syncManager.syncValue("throttle", throttle);
 
         listWidget
-                .child(IKey.dynamic(() -> {
+                .child(Text.dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
                     return Component.translatable("gtceu.multiblock.large_boiler.temperature",
                             currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
                             .withStyle(ChatFormatting.WHITE);
                 })
                         .asWidget())
-                .child(IKey.dynamic(() -> {
+                .child(Text.dynamic(() -> {
                     if (!isFormed.getBoolValue()) return Component.empty();
                     return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
                             steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
                 })
                         .asWidget())
-                .child(IKey.lang(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
+                .child(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
                         .withStyle(ChatFormatting.WHITE))
                         .asWidget())
                 .child(createIntInputWithButtons(throttle))
@@ -286,7 +286,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         var textField = new TextFieldWidget() {
 
             @Override
-            public boolean onMouseScrolled(double mouseX, double mouseY, double delta) {
+            public boolean onMouseScrolled(double delta) {
                 int inc = (int) delta;
                 int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
                 syncValue.setIntValue(val, true, true);
@@ -305,7 +305,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 .widthRel(1.0f)
                 .child(new ButtonWidget<>()
                         .left(0).width(18)
-                        .onMousePressed((x, y, button) -> {
+                        .onMousePressed((context, button) -> {
                             int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
                             val = Mth.clamp(val, 25, 100);
                             syncValue.setIntValue(val, true, true);
@@ -315,7 +315,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 .child(textField)
                 .child(new ButtonWidget<>()
                         .right(0).width(18)
-                        .onMousePressed((x, y, button) -> {
+                        .onMousePressed((context, button) -> {
                             int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
                             val = Mth.clamp(val, 25, 100);
                             syncValue.setIntValue(val, true, true);
@@ -324,7 +324,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                         .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
     }
 
-    private static IKey createAdjustOverlay(boolean increment) {
+    private static Text createAdjustOverlay(boolean increment) {
         final StringBuilder builder = new StringBuilder();
         builder.append(increment ? '+' : '-');
         builder.append(getIncrementValue(MouseData.create(-1)));
@@ -337,7 +337,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         } else if (builder.length() > 4) {
             scale = 0.5f;
         }
-        return IKey.str(builder.toString())
+        return Text.str(builder.toString())
                 .color(Color.WHITE.main)
                 .scale(scale);
     }

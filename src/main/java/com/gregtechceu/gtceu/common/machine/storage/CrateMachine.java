@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -55,7 +55,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
 
     @Override
     public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return MachineUIPanelBuilder.defaultPanelBuilder(this).addTitleBar(false);
+        return MachineUIPanelBuilder.panelBuilder(this).addTitleBar(false);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
                 .margin(5, 5, 0, 5)
                 .coverChildren();
         col.child(
-                IKey.lang(getBlockState().getBlock().getName()).asWidget().leftRel(0).margin(0, 0, 3, 3))
+                Text.of(getBlockState().getBlock().getName()).asWidget().leftRel(0).margin(0, 0, 3, 3))
                 .child(slots.height(rows * 18));
         mainWidget.child(col);
     }

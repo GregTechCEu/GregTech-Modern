@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.model.pipe;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.Node;
@@ -25,15 +26,13 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer,
                             IBlockEntityRendererBakedModel<PipeBlockEntity<?, ?>> {
@@ -141,7 +140,42 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         for (BakedModel restrictor : this.restrictors.values()) {
             modelData = restrictor.getModelData(level, pos, state, modelData);
         }
-        return modelData;
+
+        var builder = modelData.derive();
+
+        if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
+            Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
+            for (Direction side : GTUtil.DIRECTIONS) {
+                CoverBehavior coverBehavior = pipeNode.getCoverContainer().getCoverAtSide(side);
+                if (coverBehavior == null) continue;
+
+                // it won't ever be null on the client
+                // noinspection DataFlowIssue
+                ModelData data = coverBehavior.getCoverRenderer().get()
+                        .getModelData(coverBehavior, pos, level, modelData);
+
+                coverModelData.put(side, data);
+            }
+            builder.with(GTModelProperties.COVER_MODEL_DATA, coverModelData);
+        }
+
+        return builder.build();
+    }
+
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData modelData) {
+        ChunkRenderTypeSet renderTypes = super.getRenderTypes(state, rand, modelData);
+
+        BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
+        BlockPos pos = modelData.get(GTModelProperties.POS);
+
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode)) {
+            return renderTypes;
+        }
+
+        ChunkRenderTypeSet coverRenderTypes = ICoverableRenderer.super.getCoverRenderTypes(pipeNode.getCoverContainer(),
+                pos, level, rand, modelData);
+        return ChunkRenderTypeSet.union(renderTypes, coverRenderTypes);
     }
 
     @SuppressWarnings("deprecation")

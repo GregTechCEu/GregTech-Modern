@@ -11,27 +11,30 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidEntryList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidStackList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.fluid.FluidTagList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemEntryList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemStackList;
-import com.gregtechceu.gtceu.integration.recipeviewer.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidEntryList;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidStackList;
+import brachy.modularui.integration.recipeviewer.entry.fluid.FluidTagList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemEntryList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemTagList;
+import brachy.modularui.screen.RichTooltip;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 public class GTOreByProduct {
 
@@ -48,8 +51,11 @@ public class GTOreByProduct {
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
     private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
+    @Getter
     protected final List<ItemEntryList> itemInputs = new ArrayList<>();
+    @Getter
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
+    @Getter
     protected final List<FluidEntryList> fluidInputs = new ArrayList<>();
     private boolean hasDirectSmelt = false;
     private boolean hasChemBath = false;
@@ -96,9 +102,9 @@ public class GTOreByProduct {
         ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
             // get all ores with the relevant oredicts instead of just the first unified ore
-            oreStacks.add(ChemicalHelper.getTag(prefix, material), 1, null);
+            oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null);
         }
-        oreStacks.add(ChemicalHelper.getTag(TagPrefix.rawOre, material), 1, null);
+        oreStacks.add(Objects.requireNonNull(ChemicalHelper.getTag(TagPrefix.rawOre, material)), 1, null);
         itemInputs.add(oreStacks);
 
         // set up machines as inputs
@@ -142,7 +148,7 @@ public class GTOreByProduct {
 
         // add prefixes that should count as inputs to input lists (they will not be displayed in actual page)
         for (TagPrefix prefix : IN_PROCESSING_STEPS) {
-            itemInputs.add(ItemTagList.of(ChemicalHelper.getTag(prefix, material), 1, null));
+            itemInputs.add(ItemTagList.of(Objects.requireNonNull(ChemicalHelper.getTag(prefix, material)), 1, null));
         }
 
         // total number of inputs added
@@ -288,18 +294,22 @@ public class GTOreByProduct {
         }
     }
 
-    public void getTooltip(int slotIndex, List<Component> tooltips) {
-        if (chances.containsKey(slotIndex)) {
-            Content entry = chances.get(slotIndex);
-            float chance = 100 * (float) entry.chance / entry.maxChance;
-            if (entry.tierChanceBoost != 0) {
-                float boost = entry.tierChanceBoost / 100.0f;
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
-            } else {
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
+    public Consumer<RichTooltip> getTooltip(int slotIndex) {
+        return tooltip -> {
+            if (chances.containsKey(slotIndex)) {
+                Content entry = chances.get(slotIndex);
+                float chance = 100 * (float) entry.chance() / entry.maxChance();
+                if (entry.tierChanceBoost() != 0) {
+                    float boost = entry.tierChanceBoost() / 100.0f;
+                    tooltip.addLine(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
+                    tooltip.addLine(
+                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
+                } else {
+                    tooltip.addLine(
+                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
+                }
             }
-        }
+        };
     }
 
     public Content getChance(int slot) {
