@@ -21,6 +21,9 @@ public class DataFixTypesMixin {
     @ModifyReturnValue(method = "update(Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;",
                        at = @At(value = "RETURN"))
     private <T> Dynamic<T> gtceu$injectDataFixers(Dynamic<T> value) {
+        // skip applying datafixers to options.txt; doing that loads the fixers too early
+        if ((Object) this == DataFixTypes.OPTIONS) return value;
+
         return DataFixesInternals.get().updateWithAllFixers(this.type, value);
     }
 }
