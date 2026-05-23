@@ -35,8 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
-public class MultiblockPreviewWidget extends ParentWidget<GTRecipeViewerWidget> {
+public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
 
     private final MultiblockMachineDefinition multiblockDefinition;
 
@@ -70,12 +69,6 @@ public class MultiblockPreviewWidget extends ParentWidget<GTRecipeViewerWidget> 
                         }
                     }
                     return menuRow;
-//                    return new ListWidget<>()
-//                            .coverChildren()
-//                            .children(text.stream()
-//                                    .map(Text::of)
-//                                    .map(ModularComponent::asWidget)
-//                                    .collect(Collectors.toList()));
                 }));
 
         setupSchema();
