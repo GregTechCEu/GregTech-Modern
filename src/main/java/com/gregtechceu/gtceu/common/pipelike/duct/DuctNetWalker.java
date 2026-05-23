@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
-import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

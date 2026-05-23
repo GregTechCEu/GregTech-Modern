@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 

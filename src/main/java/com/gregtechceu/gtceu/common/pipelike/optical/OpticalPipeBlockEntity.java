@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.blockentity;
+package com.gregtechceu.gtceu.common.pipelike.optical;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.pipelike.optical.*;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -129,7 +128,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
 
             // also check the other pipe
             BlockEntity tile = getLevel().getBlockEntity(this.getBlockPos().relative(side));
-            if (tile instanceof IPipeNode<?, ?> pipeTile &&
+            if (tile instanceof PipeBlockEntity<?, ?> pipeTile &&
                     pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
                 if (pipeTile.getNumConnections() >= 2) return;
             }

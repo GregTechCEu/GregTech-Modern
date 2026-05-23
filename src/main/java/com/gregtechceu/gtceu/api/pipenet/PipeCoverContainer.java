@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -10,8 +11,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlockEntity;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -26,14 +27,14 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    private final IPipeNode<?, ?> pipeTile;
+    private final PipeBlockEntity<?, ?> pipeTile;
 
     @SyncToClient
     @SaveField
     @RerenderOnChanged
     private CoverBehavior up, down, north, south, west, east;
 
-    public PipeCoverContainer(IPipeNode<?, ?> pipeTile) {
+    public PipeCoverContainer(PipeBlockEntity<?, ?> pipeTile) {
         this.pipeTile = pipeTile;
     }
 

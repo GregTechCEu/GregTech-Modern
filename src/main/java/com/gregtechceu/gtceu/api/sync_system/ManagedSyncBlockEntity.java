@@ -115,6 +115,17 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         }
     }
 
+    @Override
+    public boolean triggerEvent(int id, int para) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
+    }
+
     @MustBeInvokedByOverriders
     public void serverTick() {
         setChanged();

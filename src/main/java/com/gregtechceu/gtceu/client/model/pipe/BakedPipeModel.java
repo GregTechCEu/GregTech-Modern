@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.model.pipe;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.Node;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
@@ -88,7 +87,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 }
             }
         }
-        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode)) {
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode)) {
             return quads;
         }
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
@@ -143,7 +142,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
         var builder = modelData.derive();
 
-        if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode) {
             Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
             for (Direction side : GTUtil.DIRECTIONS) {
                 CoverBehavior coverBehavior = pipeNode.getCoverContainer().getCoverAtSide(side);
@@ -169,7 +168,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
         BlockPos pos = modelData.get(GTModelProperties.POS);
 
-        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode)) {
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode)) {
             return renderTypes;
         }
 

@@ -589,17 +589,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         syncDataHolder.markClientSyncFieldDirty("ownerUUID");
     }
 
-    @Override
-    public boolean triggerEvent(int id, int para) {
-        if (id == 1) { // chunk re render
-            if (level != null && level.isClientSide) {
-                scheduleRenderUpdate();
-            }
-            return true;
-        }
-        return false;
-    }
-
     public void setRenderState(MachineRenderState renderState) {
         this.renderState = renderState;
         if (level != null && !level.isClientSide) {

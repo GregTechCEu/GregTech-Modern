@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.ShutterCover;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;

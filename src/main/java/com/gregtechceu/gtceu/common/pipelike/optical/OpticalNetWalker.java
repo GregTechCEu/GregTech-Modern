@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
-import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

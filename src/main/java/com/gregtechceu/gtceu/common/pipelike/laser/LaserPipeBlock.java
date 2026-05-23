@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
@@ -6,15 +6,10 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeProperties;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
-import com.gregtechceu.gtceu.common.pipelike.laser.LevelLaserPipeNet;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
@@ -88,7 +83,7 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     }
 
     @Override
-    public LaserPipeProperties createProperties(IPipeNode<LaserPipeType, LaserPipeProperties> pipeTile) {
+    public LaserPipeProperties createProperties(PipeBlockEntity<LaserPipeType, LaserPipeProperties> pipeTile) {
         LaserPipeType pipeType = pipeTile.getPipeType();
         if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
@@ -110,13 +105,13 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
-                                   IPipeNode<LaserPipeType, LaserPipeProperties> sideTile) {
+    public boolean canPipesConnect(PipeBlockEntity<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
+                                   PipeBlockEntity<LaserPipeType, LaserPipeProperties> sideTile) {
         return selfTile instanceof LaserPipeBlockEntity && sideTile instanceof LaserPipeBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
+    public boolean canPipeConnectToBlock(PipeBlockEntity<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
     }

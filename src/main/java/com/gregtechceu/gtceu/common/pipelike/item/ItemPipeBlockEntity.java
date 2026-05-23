@@ -1,13 +1,9 @@
-package com.gregtechceu.gtceu.common.blockentity;
+package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
-import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;

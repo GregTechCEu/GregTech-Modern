@@ -13,8 +13,11 @@ import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
 import com.gregtechceu.gtceu.api.item.SurfaceRockBlockItem;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.*;
+import com.gregtechceu.gtceu.common.pipelike.cable.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 

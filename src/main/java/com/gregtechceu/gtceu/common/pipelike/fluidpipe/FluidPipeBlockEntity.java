@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.blockentity;
+package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
@@ -21,8 +21,6 @@ import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
@@ -7,14 +7,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.LevelFluidPipeNet;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -71,13 +67,13 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
-                                   IPipeNode<FluidPipeType, FluidPipeProperties> sideTile) {
+    public boolean canPipesConnect(PipeBlockEntity<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
+                                   PipeBlockEntity<FluidPipeType, FluidPipeProperties> sideTile) {
         return selfTile instanceof FluidPipeBlockEntity && sideTile instanceof FluidPipeBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
+    public boolean canPipeConnectToBlock(PipeBlockEntity<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent();
     }

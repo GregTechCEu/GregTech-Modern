@@ -1,17 +1,13 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
-import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -81,13 +77,13 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
-                                   IPipeNode<ItemPipeType, ItemPipeProperties> sideTile) {
+    public boolean canPipesConnect(PipeBlockEntity<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
+                                   PipeBlockEntity<ItemPipeType, ItemPipeProperties> sideTile) {
         return selfTile instanceof ItemPipeBlockEntity && sideTile instanceof ItemPipeBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
+    public boolean canPipeConnectToBlock(PipeBlockEntity<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null &&
                 tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();

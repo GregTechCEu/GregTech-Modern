@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.pattern;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -13,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.*;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
@@ -315,7 +315,7 @@ public class Predicates {
         return blocks(frameBlocks)
                 .or(new TraceabilityPredicate(blockWorldState -> {
                     BlockEntity blockEntity = blockWorldState.getBlockEntity();
-                    if (!(blockEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                    if (!(blockEntity instanceof PipeBlockEntity<?, ?> pipeNode)) {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());

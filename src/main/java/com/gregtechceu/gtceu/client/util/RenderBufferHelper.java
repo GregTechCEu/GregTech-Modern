@@ -105,24 +105,28 @@ public class RenderBufferHelper {
         }
     }
 
-    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text, int colorARGB, Vec3 pos, Vec3 offset) {
+    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
+                                         int colorARGB, Vec3 pos, Vec3 offset) {
         renderInWorldText(multiBuf, stack, camera, text, 0.030F, colorARGB, pos, offset);
     }
 
-    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text, float scale, int colorARGB, Vec3 pos, Vec3 offset) {
+    public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
+                                         float scale, int colorARGB, Vec3 pos, Vec3 offset) {
         Font fontRender = Minecraft.getInstance().font;
         Vec3 c = pos.subtract(camera.getPosition());
-        float stringMiddle = (float)fontRender.width(text) / 2.0F;
+        float stringMiddle = (float) fontRender.width(text) / 2.0F;
         stack.pushPose();
         stack.translate(c.x, c.y, c.z);
         stack.mulPose(camera.rotation());
         stack.scale(-scale, -scale, scale);
         Matrix4f mat = stack.last().pose();
-        fontRender.drawInBatch(text, -stringMiddle, 0.0F, colorARGB, false, mat, multiBuf, Font.DisplayMode.SEE_THROUGH, 0, 15728880);
+        fontRender.drawInBatch(text, -stringMiddle, 0.0F, colorARGB, false, mat, multiBuf, Font.DisplayMode.SEE_THROUGH,
+                0, 15728880);
         stack.popPose();
     }
 
-    public static void drawLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, double thickness, int colorARGB) {
+    public static void drawLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, double thickness,
+                                int colorARGB) {
         Vec3 a = from.getCenter();
         Vec3 b = to.getCenter();
         Vec3 law = getFirstPerpendicular(a, b).scale(thickness);
@@ -146,7 +150,8 @@ public class RenderBufferHelper {
     public static void renderCube(VertexConsumer buf, PoseStack stack, BlockPos pos, float size, int colorARGB) {
         float half = size / 2.0F;
         Vec3 c = pos.getCenter();
-        AABB box = new AABB(c.x - (double)half, c.y - (double)half, c.z - (double)half, c.x + (double)half, c.y + (double)half, c.z + (double)half);
+        AABB box = new AABB(c.x - (double) half, c.y - (double) half, c.z - (double) half, c.x + (double) half,
+                c.y + (double) half, c.z + (double) half);
         Vec3 topRight = new Vec3(box.maxX, box.maxY, box.maxZ);
         Vec3 bottomRight = new Vec3(box.maxX, box.minY, box.maxZ);
         Vec3 bottomLeft = new Vec3(box.minX, box.minY, box.maxZ);
@@ -163,13 +168,13 @@ public class RenderBufferHelper {
         renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
     }
 
-
-    private static void renderSide(VertexConsumer buf, PoseStack pose, Vec3 tr, Vec3 tl, Vec3 br, Vec3 bl, int colorARGB) {
+    private static void renderSide(VertexConsumer buf, PoseStack pose, Vec3 tr, Vec3 tl, Vec3 br, Vec3 bl,
+                                   int colorARGB) {
         Matrix4f mat = pose.last().pose();
-        buf.vertex(mat, (float)tr.x, (float)tr.y, (float)tr.z).color(colorARGB).endVertex();
-        buf.vertex(mat, (float)br.x, (float)br.y, (float)br.z).color(colorARGB).endVertex();
-        buf.vertex(mat, (float)bl.x, (float)bl.y, (float)bl.z).color(colorARGB).endVertex();
-        buf.vertex(mat, (float)tl.x, (float)tl.y, (float)tl.z).color(colorARGB).endVertex();
+        buf.vertex(mat, (float) tr.x, (float) tr.y, (float) tr.z).color(colorARGB).endVertex();
+        buf.vertex(mat, (float) br.x, (float) br.y, (float) br.z).color(colorARGB).endVertex();
+        buf.vertex(mat, (float) bl.x, (float) bl.y, (float) bl.z).color(colorARGB).endVertex();
+        buf.vertex(mat, (float) tl.x, (float) tl.y, (float) tl.z).color(colorARGB).endVertex();
     }
 
     public static void renderTexturedCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
@@ -228,10 +233,14 @@ public class RenderBufferHelper {
                                               float x4, float y4, float z4, float u4, float v4) {
         Vector3fc normal = GTMatrixUtils.getDirectionAxis(normalDir);
 
-        vertex(buffer, pose, x1, y1, z1, color, u1, v1, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x2, y2, z2, color, u2, v2, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x3, y3, z3, color, u3, v3, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
-        vertex(buffer, pose, x4, y4, z4, color, u4, v4, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(), normal.y(), normal.z());
+        vertex(buffer, pose, x1, y1, z1, color, u1, v1, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(),
+                normal.y(), normal.z());
+        vertex(buffer, pose, x2, y2, z2, color, u2, v2, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(),
+                normal.y(), normal.z());
+        vertex(buffer, pose, x3, y3, z3, color, u3, v3, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(),
+                normal.y(), normal.z());
+        vertex(buffer, pose, x4, y4, z4, color, u4, v4, OverlayTexture.NO_OVERLAY, combinedLight, normal.x(),
+                normal.y(), normal.z());
     }
 
     public static void vertex(VertexConsumer buffer, PoseStack.Pose pose,

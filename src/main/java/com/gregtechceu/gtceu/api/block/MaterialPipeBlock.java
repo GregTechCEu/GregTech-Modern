@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
 
@@ -57,7 +58,7 @@ public abstract class MaterialPipeBlock<
     }
 
     @Override
-    public NodeDataType createProperties(IPipeNode<PipeType, NodeDataType> pipeTile) {
+    public NodeDataType createProperties(PipeBlockEntity<PipeType, NodeDataType> pipeTile) {
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
                 .getPipeBlock()).material;

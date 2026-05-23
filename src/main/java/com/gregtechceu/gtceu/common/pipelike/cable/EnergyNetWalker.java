@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

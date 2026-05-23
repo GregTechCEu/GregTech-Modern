@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
 
 import net.minecraft.core.BlockPos;

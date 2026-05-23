@@ -1,20 +1,15 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.pipelike.duct;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
-import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeProperties;
-import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
-import com.gregtechceu.gtceu.common.pipelike.duct.LevelDuctPipeNet;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -60,7 +55,7 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     }
 
     @Override
-    public DuctPipeProperties createProperties(IPipeNode<DuctPipeType, DuctPipeProperties> pipeTile) {
+    public DuctPipeProperties createProperties(PipeBlockEntity<DuctPipeType, DuctPipeProperties> pipeTile) {
         DuctPipeType pipeType = pipeTile.getPipeType();
         if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
@@ -78,13 +73,13 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
-                                   IPipeNode<DuctPipeType, DuctPipeProperties> sideTile) {
+    public boolean canPipesConnect(PipeBlockEntity<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
+                                   PipeBlockEntity<DuctPipeType, DuctPipeProperties> sideTile) {
         return selfTile instanceof DuctPipeBlockEntity && sideTile instanceof DuctPipeBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
+    public boolean canPipeConnectToBlock(PipeBlockEntity<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
                                          @Nullable BlockEntity tile) {
         return tile != null &&
                 (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||

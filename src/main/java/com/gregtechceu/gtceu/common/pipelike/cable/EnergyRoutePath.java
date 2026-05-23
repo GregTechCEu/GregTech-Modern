@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

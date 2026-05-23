@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.pipelike.optical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
@@ -6,15 +6,10 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
-import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
-import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.Direction;
@@ -78,7 +73,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     }
 
     @Override
-    public OpticalPipeProperties createProperties(@NotNull IPipeNode<OpticalPipeType, OpticalPipeProperties> pipeTile) {
+    public OpticalPipeProperties createProperties(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> pipeTile) {
         OpticalPipeType pipeType = pipeTile.getPipeType();
         if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
@@ -110,13 +105,14 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side,
-                                   IPipeNode<OpticalPipeType, OpticalPipeProperties> sideTile) {
+    public boolean canPipesConnect(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side,
+                                   PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> sideTile) {
         return selfTile instanceof OpticalPipeBlockEntity && sideTile instanceof OpticalPipeBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side,
+    public boolean canPipeConnectToBlock(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> selfTile,
+                                         Direction side,
                                          @Nullable BlockEntity tile) {
         if (tile == null) return false;
         if (tile.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side.getOpposite()).isPresent()) return true;

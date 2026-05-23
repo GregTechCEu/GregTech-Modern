@@ -1,6 +1,12 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.blockentity.*;
+import com.gregtechceu.gtceu.common.pipelike.cable.CableBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeBlockEntity;
 
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 

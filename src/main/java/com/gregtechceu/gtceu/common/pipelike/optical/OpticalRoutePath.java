@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

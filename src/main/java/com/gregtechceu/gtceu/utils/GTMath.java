@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
@@ -186,5 +186,4 @@ public class GTMath {
         Vec3 bc = b.getCenter();
         return ac.add(bc).scale(0.5F);
     }
-
 }

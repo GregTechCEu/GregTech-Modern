@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
-import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlock;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraftforge.api.distmarker.Dist;

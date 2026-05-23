@@ -3,14 +3,14 @@ package com.gregtechceu.gtceu.core.mixins.client;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.pipelike.cable.CableBlockEntity;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -189,7 +189,7 @@ public abstract class LevelRendererMixin {
                     renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
-        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
+        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipe) {
             renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();

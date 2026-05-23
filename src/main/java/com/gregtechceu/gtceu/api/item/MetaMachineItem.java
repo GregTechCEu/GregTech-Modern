@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.renderer.ItemWithBERModelRenderer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -46,7 +46,7 @@ public class MetaMachineItem extends BlockItem {
             BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
             Block block = level.getBlockState(possiblePipe).getBlock();
             if (block instanceof PipeBlock<?, ?, ?>) {
-                IPipeNode pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);
+                PipeBlockEntity pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);
                 if (pipeTile != null && ((PipeBlock<?, ?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
                         level.getBlockEntity(pos))) {
                     pipeTile.setConnection(side, true, false);
