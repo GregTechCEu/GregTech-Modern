@@ -41,8 +41,7 @@ public class GTDataFixers {
     }
 
     public static void addFixers(DataFixerBuilder builder) {
-        Schema schemaV0 = builder.addSchema(0, BASE_SCHEMA);
-        builder.addFixer(new AddNewChoices(schemaV0, "Add GT block entities", References.BLOCK_ENTITY));
+        builder.addSchema(0, BASE_SCHEMA);
 
         Schema schemaV1 = builder.addSchema(1, V1::new);
 
