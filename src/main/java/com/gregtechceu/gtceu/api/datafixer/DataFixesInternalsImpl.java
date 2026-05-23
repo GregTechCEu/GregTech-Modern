@@ -47,23 +47,6 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
     }
 
     @Override
-    public synchronized DataFixer createDataFixer(String name, int currentVersion, Consumer<DataFixerBuilder> fixers) {
-        DataFixerBuilder builder = new DataFixerBuilder(currentVersion);
-        fixers.accept(builder);
-
-        DataFixer fixer;
-        if (SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE.isEmpty()) {
-            fixer = builder.buildUnoptimized();
-        } else {
-            Executor executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
-                    .setNameFormat(name + " Datafixer Bootstrap").setDaemon(true).setPriority(1).build());
-            fixer = builder.buildOptimized(SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE, executor);
-        }
-        DataFixesInternals.get().registerFixer(currentVersion, fixer);
-        return fixer;
-    }
-
-    @Override
     public void registerFixer(@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, DataFixer dataFixer) {
         if (this.dataFixer != null) {
             throw new IllegalArgumentException("GTCEu already has a registered data fixer");

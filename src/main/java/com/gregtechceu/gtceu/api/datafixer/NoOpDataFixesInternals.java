@@ -36,11 +36,6 @@ public class NoOpDataFixesInternals extends DataFixesInternals {
     }
 
     @Override
-    public @Nullable DataFixer createDataFixer(String name, int currentVersion, Consumer<DataFixerBuilder> fixers) {
-        return null;
-    }
-
-    @Override
     public void registerFixer(@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, DataFixer dataFixer) {}
 
     @Override

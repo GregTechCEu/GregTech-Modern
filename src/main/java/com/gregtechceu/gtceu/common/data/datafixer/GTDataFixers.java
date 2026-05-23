@@ -38,17 +38,18 @@ public class GTDataFixers {
 
         GTCEu.LOGGER.info("Registering data fixers");
 
-        DataFixerBuilder builder = new DataFixerBuilder(GTCEu.GT_DATA_VERSION);
-        addFixers(builder);
+        DataFixer fixer = new LazyDataFixer(() -> {
+            DataFixerBuilder builder = new DataFixerBuilder(GTCEu.GT_DATA_VERSION);
+            addFixers(builder);
 
-        DataFixer fixer;
-        if (SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE.isEmpty()) {
-            fixer = builder.buildUnoptimized();
-        } else {
-            Executor executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
-                    .setNameFormat("GTCEu Datafixer Bootstrap").setDaemon(true).setPriority(1).build());
-            fixer = builder.buildOptimized(SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE, executor);
-        }
+            if (SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE.isEmpty()) {
+                return builder.buildUnoptimized();
+            } else {
+                Executor executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                        .setNameFormat("GTCEu Datafixer Bootstrap").setDaemon(true).setPriority(1).build());
+                return builder.buildOptimized(SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE, executor);
+            }
+        });
         DataFixesInternals.get().registerFixer(GTCEu.GT_DATA_VERSION, fixer);
     }
 

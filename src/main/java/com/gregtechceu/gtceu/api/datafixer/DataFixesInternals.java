@@ -82,9 +82,6 @@ public abstract class DataFixesInternals {
         return instance;
     }
 
-    public abstract @Nullable DataFixer createDataFixer(String name, int currentVersion,
-                                                        Consumer<DataFixerBuilder> fixers);
-
     public abstract void registerFixer(@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
                                        DataFixer dataFixer);
 
