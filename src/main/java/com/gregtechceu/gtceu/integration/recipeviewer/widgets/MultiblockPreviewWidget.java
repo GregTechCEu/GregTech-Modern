@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.menu.ContextMenuButton;
+import brachy.modularui.widgets.menu.Menu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
@@ -10,6 +15,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.*;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
 
+import lombok.extern.slf4j.Slf4j;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +35,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MultiblockPreviewWidget extends ParentWidget<GTRecipeViewerWidget> {
 
     private final MultiblockMachineDefinition multiblockDefinition;
@@ -44,20 +51,31 @@ public class MultiblockPreviewWidget extends ParentWidget<GTRecipeViewerWidget> 
                     List<Component> text = new ArrayList<>();
                     IBlockPattern pattern = e.getValue().get();
 
+                    Flow menuRow = Flow.row();
                     if (pattern instanceof BlockPattern blockPattern) {
                         for (var predicate : blockPattern.getPredicates().values()) {
                             if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
                                 continue;
                             }
+                            var menu = new ContextMenuButton<>(predicate.predicateList.get(0).getPredicateName())
+                                    .size(18)
+                                    .menuList(l -> l
+                                            .children(predicate.predicateList, innerPred -> {
+                                                return new ButtonWidget<>()
+                                                        .size(16)
+                                                        .overlay(new ItemDrawable(innerPred.getCandidates().get(0)));
+                                            }));
+                            menuRow.child(menu);
                             text.add(predicate.getCandidates().get(0).get(0).getHoverName());
                         }
                     }
-                    return new ListWidget<>()
-                            .coverChildren()
-                            .children(text.stream()
-                                    .map(Text::of)
-                                    .map(ModularComponent::asWidget)
-                                    .collect(Collectors.toList()));
+                    return menuRow;
+//                    return new ListWidget<>()
+//                            .coverChildren()
+//                            .children(text.stream()
+//                                    .map(Text::of)
+//                                    .map(ModularComponent::asWidget)
+//                                    .collect(Collectors.toList()));
                 }));
 
         setupSchema();
