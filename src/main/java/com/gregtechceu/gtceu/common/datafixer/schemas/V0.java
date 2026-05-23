@@ -441,8 +441,11 @@ public class V0 extends NamespacedSchema {
     }
 
     @Override
-    public void register(final Map<String, Supplier<TypeTemplate>> map, final String name, final Supplier<TypeTemplate> template) {
-        map.put("gtceu:" + name, template);
+    public void register(final Map<String, Supplier<TypeTemplate>> map, String name, final Supplier<TypeTemplate> template) {
+        if (name.indexOf(':') == -1) {
+            name = "gtceu:" + name;
+        }
+        map.put(name, template);
     }
 
     protected static void registerSimpleMachine(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name, int... tiers) {

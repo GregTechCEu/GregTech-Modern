@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.common.data.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
 import com.gregtechceu.gtceu.common.datafixer.fixes.AutoOutputTraitFix;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.datafix.fixes.*;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
@@ -103,19 +103,14 @@ public class GTDataFixers {
     }
 
     private static UnaryOperator<String> createRenamer(String oldName, String newName) {
-        return id -> Objects.equals(ensureNamespaced(id), oldName) ? newName : id;
+        return id -> Objects.equals(NamespacedSchema.ensureNamespaced(id), oldName) ? newName : id;
     }
 
     private static UnaryOperator<String> createRenamer(Map<String, String> renameMap) {
-        return id -> renameMap.getOrDefault(ensureNamespaced(id), id);
+        return id -> renameMap.getOrDefault(NamespacedSchema.ensureNamespaced(id), id);
     }
 
     private static UnaryOperator<String> createRenamer(Pattern check, String replaceWith) {
-        return id -> check.matcher(ensureNamespaced(id)).replaceAll(replaceWith);
-    }
-
-    public static String ensureNamespaced(String string) {
-        ResourceLocation loc = GTCEu.id(string);
-        return loc != null ? loc.toString() : string;
+        return id -> check.matcher(NamespacedSchema.ensureNamespaced(id)).replaceAll(replaceWith);
     }
 }
