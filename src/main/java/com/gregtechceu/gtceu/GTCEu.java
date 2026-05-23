@@ -40,15 +40,15 @@ public class GTCEu {
      * subsequent change.
      *
      * <p>
-     * Versions:
+     * Example versions:
      * <ul>
-     * <li>10: 7.5.3</li>
-     * <li>20: 8.0.0-SNAPSHOT+HASH3</li>
-     * <li>81: 8.0.0</li>
-     * <li>81: 8.0.0</li>
+     * <li>0: 7.5.3</li>
+     * <li>10: 8.0.0-SNAPSHOT+HASH1</li> // TODO set the correct hash here
+     * <li>11: 8.0.0-SNAPSHOT+HASH2</li>
+     * <li>20: 8.0.1-SNAPSHOT+HASH2</li>
      * </ul>
      */
-    public static final int GT_DATA_VERSION = 80;
+    public static final int GT_DATA_VERSION = 10;
 
     public GTCEu() {
         GTCEu.init();
