@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -43,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, LevelEnergyNet> {
+public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties> {
 
     public CableBlock(Properties properties, Insulation insulation, Material material) {
         super(properties, insulation, material);
@@ -68,8 +69,9 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public LevelEnergyNet getWorldPipeNet(ServerLevel level) {
-        return LevelEnergyNet.getOrCreate(level);
+    public LevelPipeNet<WireProperties, EnergyNet> getWorldPipeNet(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, EnergyNet::new),
+                () -> new LevelPipeNet<>(serverLevel, EnergyNet::new), "gtcue_energy_net");
     }
 
     @Override

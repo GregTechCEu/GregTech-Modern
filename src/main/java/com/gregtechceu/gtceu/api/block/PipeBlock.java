@@ -69,8 +69,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType,
-        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends Block
+public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType> extends Block
                                implements EntityBlock, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
@@ -119,7 +118,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         return getBlockEntityType().create(pos, state);
     }
 
-    public abstract WorldPipeNetType getWorldPipeNet(ServerLevel level);
+    public abstract LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>> getWorldPipeNet(ServerLevel level);
 
     public abstract BlockEntityType<? extends PipeBlockEntity<PipeType, NodeDataType>> getBlockEntityType();
 
@@ -424,7 +423,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
                                 coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem &&
-                                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
+                                blockItem.getBlock() instanceof PipeBlock<?, ?> pipeBlock &&
                                 pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();
                 }

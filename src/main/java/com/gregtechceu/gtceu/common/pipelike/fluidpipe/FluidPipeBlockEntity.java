@@ -79,8 +79,6 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         createTanksList();
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> fluidPipeBlockEntityBlockEntityType) {}
-
     public long getOffsetTimer() {
         return timer + offset;
     }

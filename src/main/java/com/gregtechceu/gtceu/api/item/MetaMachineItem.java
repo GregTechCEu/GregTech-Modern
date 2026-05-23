@@ -45,9 +45,9 @@ public class MetaMachineItem extends BlockItem {
         if (!level.isClientSide) {
             BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
             Block block = level.getBlockState(possiblePipe).getBlock();
-            if (block instanceof PipeBlock<?, ?, ?>) {
-                PipeBlockEntity pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);
-                if (pipeTile != null && ((PipeBlock<?, ?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
+            if (block instanceof PipeBlock<?, ?>) {
+                PipeBlockEntity pipeTile = ((PipeBlock<?, ?>) block).getPipeTile(level, possiblePipe);
+                if (pipeTile != null && ((PipeBlock<?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
                         level.getBlockEntity(pos))) {
                     pipeTile.setConnection(side, true, false);
                 }

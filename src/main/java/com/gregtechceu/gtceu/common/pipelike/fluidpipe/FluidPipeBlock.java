@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -40,7 +41,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipeProperties, LevelFluidPipeNet> {
+public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipeProperties> {
 
     public FluidPipeBlock(Properties properties, FluidPipeType fluidPipeType, Material material) {
         super(properties, fluidPipeType, material);
@@ -57,8 +58,9 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
-    public LevelFluidPipeNet getWorldPipeNet(ServerLevel level) {
-        return LevelFluidPipeNet.getOrCreate(level);
+    public LevelPipeNet<FluidPipeProperties, FluidPipeNet> getWorldPipeNet(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, FluidPipeNet::new),
+                () -> new LevelPipeNet<>(serverLevel, FluidPipeNet::new), "gtcue_fluid_pipe_net");
     }
 
     @Override

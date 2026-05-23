@@ -283,7 +283,7 @@ public class GTModels {
         };
     }
 
-    public static void createPipeBlockModel(DataGenContext<Block, ? extends PipeBlock<?, ?, ?>> ctx,
+    public static void createPipeBlockModel(DataGenContext<Block, ? extends PipeBlock<?, ?>> ctx,
                                             GTBlockstateProvider prov) {
         // the pipe model generator handles adding its models to the provider by itself
         ctx.getEntry().createPipeModel(prov).initModels();

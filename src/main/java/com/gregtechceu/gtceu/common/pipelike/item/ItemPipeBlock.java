@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -28,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeProperties, LevelItemPipeNet> {
+public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeProperties> {
 
     public ItemPipeBlock(Properties properties, ItemPipeType itemPipeType, Material material) {
         super(properties, itemPipeType, material);
@@ -50,8 +51,9 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public LevelItemPipeNet getWorldPipeNet(ServerLevel level) {
-        return LevelItemPipeNet.getOrCreate(level);
+    public LevelPipeNet<ItemPipeProperties, ItemPipeNet> getWorldPipeNet(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, ItemPipeNet::new),
+                () -> new LevelPipeNet<>(serverLevel, ItemPipeNet::new), "gtceu_item_pipe_net");
     }
 
     @Override

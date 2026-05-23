@@ -83,7 +83,7 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
         ResourceLocation side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         ResourceLocation end = MaterialIconType.wire

@@ -247,7 +247,7 @@ public class MaterialBlock extends Block {
 
     public boolean replaceWithFramedPipe(Level level, BlockPos pos, BlockState state, Player player,
                                          ItemStack stackInHand, BlockHitResult hit) {
-        PipeBlock<?, ?, ?> pipeBlock = (PipeBlock<?, ?, ?>) ((PipeBlockItem) stackInHand.getItem()).getBlock();
+        PipeBlock<?, ?> pipeBlock = (PipeBlock<?, ?>) ((PipeBlockItem) stackInHand.getItem()).getBlock();
         if (pipeBlock.pipeType.getThickness() < 1) {
             PipeBlockItem itemBlock = (PipeBlockItem) stackInHand.getItem();
             BlockState pipeState = pipeBlock.defaultBlockState();
@@ -256,13 +256,9 @@ public class MaterialBlock extends Block {
             BlockState original = level.getBlockState(context.getClickedPos());
             itemBlock.placeBlock(context, pipeState);
             var pipeTile = pipeBlock.getPipeTile(level, pos);
-            if (pipeTile instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
-                pipeBlockEntity.setFrameMaterial(material);
-            } else {
-                // reset the state if we didn't place correctly
-                level.setBlockAndUpdate(context.getClickedPos(), original);
-                return false;
-            }
+            if (pipeTile == null) return false;
+
+            pipeTile.setFrameMaterial(material);
 
             SoundType type = VanillaRecipeHelper.isMaterialWood(pipeTile.getFrameMaterial()) ? SoundType.WOOD :
                     SoundType.METAL;

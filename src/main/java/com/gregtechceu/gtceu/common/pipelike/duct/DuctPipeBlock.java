@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
@@ -30,8 +31,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, LevelDuctPipeNet> {
+public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties> {
 
+    private static final String DATA_ID = "gtceu_duct_pipe_net";
     private final DuctPipeProperties properties;
 
     public DuctPipeBlock(Properties properties, DuctPipeType type) {
@@ -40,8 +42,9 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties, L
     }
 
     @Override
-    public LevelDuctPipeNet getWorldPipeNet(ServerLevel world) {
-        return LevelDuctPipeNet.getOrCreate(world);
+    public LevelPipeNet<DuctPipeProperties, DuctPipeNet> getWorldPipeNet(ServerLevel world) {
+        return world.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(world, DuctPipeNet::new),
+                () -> new LevelPipeNet<>(world, DuctPipeNet::new), DATA_ID);
     }
 
     @Override

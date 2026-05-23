@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
@@ -52,13 +51,5 @@ public class OpticalPipeNet extends PipeNet<OpticalPipeProperties> {
         super.transferNodeData(transferredNodes, parentNet);
         NET_DATA.clear();
         ((OpticalPipeNet) parentNet).NET_DATA.clear();
-    }
-
-    @Override
-    protected void writeNodeData(OpticalPipeProperties nodeData, CompoundTag tagCompound) {}
-
-    @Override
-    protected OpticalPipeProperties readNodeData(CompoundTag tagCompound) {
-        return OpticalPipeProperties.INSTANCE;
     }
 }

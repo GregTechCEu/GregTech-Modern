@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -106,7 +107,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
         OpticalPipeNet currentPipeNet = this.currentPipeNet.get();
         if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos()))
             return currentPipeNet; // if current net is valid and does contain position, return it
-        LevelOpticalPipeNet worldNet = (LevelOpticalPipeNet) getPipeBlock()
+        LevelPipeNet<OpticalPipeProperties, OpticalPipeNet> worldNet = (LevelPipeNet<OpticalPipeProperties, OpticalPipeNet>) getPipeBlock()
                 .getWorldPipeNet((ServerLevel) this.getLevel());
         currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
         if (currentPipeNet != null) {

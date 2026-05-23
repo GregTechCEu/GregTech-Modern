@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
@@ -30,9 +31,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProperties, LevelOpticalPipeNet> {
+public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProperties> {
 
     private final OpticalPipeProperties properties;
+    private static final String DATA_ID = "gtceu_optical_pipe_net";
 
     public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeType pipeType) {
         super(properties, pipeType);
@@ -58,8 +60,9 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     }
 
     @Override
-    public LevelOpticalPipeNet getWorldPipeNet(ServerLevel level) {
-        return LevelOpticalPipeNet.getOrCreate(level);
+    public LevelPipeNet<OpticalPipeProperties, OpticalPipeNet> getWorldPipeNet(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, OpticalPipeNet::new),
+                () -> new LevelPipeNet<>(serverLevel, OpticalPipeNet::new), DATA_ID);
     }
 
     @Override

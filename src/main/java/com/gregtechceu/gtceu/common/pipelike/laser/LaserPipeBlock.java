@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
@@ -30,9 +31,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> {
+public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties> {
 
     private final LaserPipeProperties properties;
+    private static final String DATA_ID = "gtceu_laser_pipe_net";
 
     public LaserPipeBlock(Properties properties, LaserPipeType type) {
         super(properties, type);
@@ -68,8 +70,9 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     }
 
     @Override
-    public LevelLaserPipeNet getWorldPipeNet(ServerLevel world) {
-        return LevelLaserPipeNet.getOrCreate(world);
+    public LevelPipeNet<LaserPipeProperties, LaserPipeNet> getWorldPipeNet(ServerLevel world) {
+        return world.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(world, LaserPipeNet::new),
+                () -> new LevelPipeNet<>(world, LaserPipeNet::new), DATA_ID);
     }
 
     @Override

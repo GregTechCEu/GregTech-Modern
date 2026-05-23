@@ -74,7 +74,7 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
         return TYPE_ID;
     }
 
-    public PipeModel createPipeModel(PipeBlock<?, ?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
         String side = "block/pipe/pipe%s_side";
         String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {

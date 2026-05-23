@@ -162,8 +162,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @SuppressWarnings("unchecked")
-    public PipeBlock<PipeType, NodeDataType, ?> getPipeBlock() {
-        return (PipeBlock<PipeType, NodeDataType, ?>) getBlockState().getBlock();
+    public PipeBlock<PipeType, NodeDataType> getPipeBlock() {
+        return (PipeBlock<PipeType, NodeDataType>) getBlockState().getBlock();
     }
 
     public int getBlockedConnections() {
@@ -249,6 +249,12 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             }
         }
     }
+
+    /**
+     * Whether pipe can attach to specific side.
+     * e.g. check if there is an energyContainer nearby.
+     */
+    public abstract boolean canAttachTo(Direction side);
 
     /**
      * get connections for rendering and collision.
@@ -424,7 +430,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public int getDefaultPaintingColor() {
-        return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?, ?> materialPipeBlock ?
+        return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?> materialPipeBlock ?
                 materialPipeBlock.material.getMaterialRGB() : 0xFFFFFF;
     }
 

@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
@@ -142,8 +141,8 @@ public class BlockHighlightRenderer {
             // draw pipe connection grid highlight
             var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
                     null;
-            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
-                    pipeBlockEntity.getPipeType().type().equals(type.type())) {
+            if (pipeType != null && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
+                    pipeBlockEntity.getPipeType().type().equals(pipeType.type())) {
                 poseStack.pushPose();
 
                 drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,

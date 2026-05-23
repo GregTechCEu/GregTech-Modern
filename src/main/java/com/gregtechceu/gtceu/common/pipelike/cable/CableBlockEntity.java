@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
@@ -34,7 +35,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -69,7 +69,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
             var container = getEnergyContainer(side);
             if (container != null) {
@@ -93,6 +93,11 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return false;
     }
 
+    private static LevelPipeNet<WireProperties, EnergyNet> getWorldNet(ServerLevel serverLevel) {
+        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, EnergyNet::new),
+                () -> new LevelPipeNet<>(serverLevel, EnergyNet::new), "gtcue_energy_net");
+    }
+
     @Nullable
     private EnergyNet getEnergyNet() {
         if (!(level instanceof ServerLevel serverLevel))
@@ -101,7 +106,9 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (currentEnergyNet != null && currentEnergyNet.isValid() &&
                 currentEnergyNet.containsNode(getBlockPos()))
             return currentEnergyNet; // return current net if it is still valid
-        LevelEnergyNet worldENet = LevelEnergyNet.getOrCreate(serverLevel);
+
+        LevelPipeNet<WireProperties, EnergyNet> worldENet = getWorldNet(serverLevel);
+
         currentEnergyNet = worldENet.getNetFromPos(getBlockPos());
         if (currentEnergyNet != null) {
             this.currentEnergyNet = new WeakReference<>(currentEnergyNet);
@@ -311,8 +318,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         }
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<CableBlockEntity> cableBlockEntityBlockEntityType) {}
-
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
@@ -328,7 +333,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

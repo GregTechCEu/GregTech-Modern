@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.pipenet.Node;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
 import java.util.*;
@@ -53,21 +52,6 @@ public class EnergyNet extends PipeNet<WireProperties> {
         super.transferNodeData(transferredNodes, parentNet);
         NET_DATA.clear();
         ((EnergyNet) parentNet).NET_DATA.clear();
-    }
-
-    @Override
-    protected void writeNodeData(WireProperties nodeData, CompoundTag tagCompound) {
-        tagCompound.putLong("voltage", nodeData.getVoltage());
-        tagCompound.putInt("amperage", nodeData.getAmperage());
-        tagCompound.putInt("loss", nodeData.getLossPerBlock());
-    }
-
-    @Override
-    protected WireProperties readNodeData(CompoundTag tagCompound) {
-        long voltage = tagCompound.getLong("voltage");
-        int amperage = tagCompound.getInt("amperage");
-        int lossPerBlock = tagCompound.getInt("loss");
-        return new WireProperties(voltage, amperage, lossPerBlock);
     }
 
     //////////////////////////////////////

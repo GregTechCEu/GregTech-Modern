@@ -22,9 +22,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MaterialPipeBlock<
-        PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType,
-        WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>>
-                                       extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
+        PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType>
+                                       extends PipeBlock<PipeType, NodeDataType> {
 
     public final Material material;
 
@@ -41,7 +40,7 @@ public abstract class MaterialPipeBlock<
                     return paintable.getPaintingColor();
                 }
             }
-            if (state.getBlock() instanceof MaterialPipeBlock<?, ?, ?> block) {
+            if (state.getBlock() instanceof MaterialPipeBlock<?, ?> block) {
                 return block.tinted(state, level, pos, index);
             }
             return -1;
@@ -60,9 +59,9 @@ public abstract class MaterialPipeBlock<
     @Override
     public NodeDataType createProperties(PipeBlockEntity<PipeType, NodeDataType> pipeTile) {
         PipeType pipeType = pipeTile.getPipeType();
-        Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile
+        Material material = ((MaterialPipeBlock<PipeType, NodeDataType>) pipeTile
                 .getPipeBlock()).material;
-        if (pipeType == null || material.isNull()) {
+        if (material.isNull()) {
             return getFallbackType();
         }
         return createProperties(pipeType, material);

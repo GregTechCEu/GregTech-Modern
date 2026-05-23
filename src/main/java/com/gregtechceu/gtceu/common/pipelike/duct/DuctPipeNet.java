@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 
 import java.util.*;
 
@@ -47,15 +46,5 @@ public class DuctPipeNet extends PipeNet<DuctPipeProperties> {
         super.transferNodeData(transferredNodes, parentNet);
         NET_DATA.clear();
         ((DuctPipeNet) parentNet).NET_DATA.clear();
-    }
-
-    @Override
-    protected void writeNodeData(DuctPipeProperties nodeData, CompoundTag tagCompound) {
-        tagCompound.putFloat("Rate", nodeData.getTransferRate());
-    }
-
-    @Override
-    protected DuctPipeProperties readNodeData(CompoundTag tagCompound) {
-        return new DuctPipeProperties(tagCompound.getFloat("Rate"));
     }
 }
