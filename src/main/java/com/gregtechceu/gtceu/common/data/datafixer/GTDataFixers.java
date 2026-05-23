@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
 import com.gregtechceu.gtceu.common.datafixer.fixes.*;
 import com.gregtechceu.gtceu.common.datafixer.schemas.V1;
@@ -38,7 +37,7 @@ public class GTDataFixers {
         GTCEu.LOGGER.info("Registering data fixers");
 
         DataFixesInternals api = DataFixesInternals.get();
-        api.createDataFixer("GTCEu", GTCEuAPI.GT_DATA_VERSION, GTDataFixers::addFixers);
+        api.createDataFixer("GTCEu", GTCEu.GT_DATA_VERSION, GTDataFixers::addFixers);
     }
 
     public static void addFixers(DataFixerBuilder builder) {

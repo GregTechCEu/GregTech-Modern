@@ -34,6 +34,22 @@ public class GTCEu {
 
     public static final Path GTCEU_FOLDER = getGameDir().resolve("gtceu");
 
+    /**
+     * Only used for datafixers. Bump whenever a block changes id, save data layout changes, etc.<br>
+     * Should be bumped up to the next multiple of 10 the first time it is bumped after a release, then by 1 for each
+     * subsequent change.
+     *
+     * <p>
+     * Versions:
+     * <ul>
+     * <li>10: 7.5.3</li>
+     * <li>20: 8.0.0-SNAPSHOT+HASH3</li>
+     * <li>81: 8.0.0</li>
+     * <li>81: 8.0.0</li>
+     * </ul>
+     */
+    public static final int GT_DATA_VERSION = 80;
+
     public GTCEu() {
         GTCEu.init();
         GTCEuAPI.instance = this;
@@ -96,7 +112,7 @@ public class GTCEu {
 
     /**
      * A friendly reminder that the server instance is populated on the server side only, so null/side check it!
-     * 
+     *
      * @return the current minecraft server instance
      */
     public static MinecraftServer getMinecraftServer() {
@@ -113,7 +129,7 @@ public class GTCEu {
 
     /**
      * For async stuff use this, otherwise use {@link GTCEu isClientSide}
-     * 
+     *
      * @return if the current thread is the client thread
      */
     public static boolean isClientThread() {
@@ -123,7 +139,7 @@ public class GTCEu {
     /**
      * @return if the game is the <strong>PHYSICAL</strong> client, e.g. not a dedicated server.
      * @apiNote Do not use this to check if you're currently on the server thread for side-specific actions!
-     *          It does <strong>NOT</strong> work for that. Use {@link #isClientThread()} instead.
+     * It does <strong>NOT</strong> work for that. Use {@link #isClientThread()} instead.
      * @see #isClientThread()
      */
     public static boolean isClientSide() {
@@ -132,9 +148,9 @@ public class GTCEu {
 
     /**
      * This check isn't the same for client and server!
-     * 
+     *
      * @return if it's safe to access the current instance {@link net.minecraft.world.level.Level Level} on client or if
-     *         it's safe to access any level on server.
+     * it's safe to access any level on server.
      */
     public static boolean canGetServerLevel() {
         if (isClientSide()) {
