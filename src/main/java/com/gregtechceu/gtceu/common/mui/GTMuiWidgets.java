@@ -36,7 +36,6 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
-import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
@@ -49,6 +48,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.*;
 
@@ -68,10 +69,11 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        return createTitleBar(definition.asStack(), panelWidth, background);
+        return createTitleBar(() -> definition.asStack(), panelWidth, background);
     }
 
-    public static Flow createTitleBar(ItemStack stack, int panelWidth, UITexture background) {
+    public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
+        ItemStack stack = stackSupplier.get();
         var name = stack.getHoverName().getString();
         name = name.replaceAll("§.", "").trim();
         return createTitleBar(new ItemDrawable(stack).asIcon(), name, panelWidth, background);
@@ -377,42 +379,41 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(ParentWidget<?> existingRow,
+    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
                                                                               FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
-        // TODO get the panel to use the right sync handler when swapping from one item filter to the next
-        var panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlot.getStackInSlot(0)).getPanel(data, sm, settings));
 
-        DynamicSyncHandler filterButton = new DynamicSyncHandler()
-                .widgetProvider((sm, buf) -> {
-                    ItemStack stack = buf.readItem();
-                    if (stack.isEmpty()) return new EmptyWidget();
-                    stack = filterSlot.getStackInSlot(0);
-                    S filter = filterHandler.loadFilter(stack);
+        ModularSlot modSlot = new ModularSlot(filterSlot, 0)
+                .singletonSlotGroup(0);
 
-                    return new ButtonWidget<>()
-                            .onMousePressed((context, b) -> {
-                                panelHandler.openPanel();
-                                return true;
-                            });
-                });
-        return existingRow.child(new ItemSlot()
-                .slot(new ModularSlot(filterSlot, 0)
-                        .changeListener((stack, amount, client, init) -> filterButton
-                                .notifyUpdate(packet -> packet.writeItem(stack)))))
-                .child(new DynamicSyncedWidget<>().syncHandler(filterButton));
+        ItemSlotSyncHandler filterSlotHandler = new ItemSlotSyncHandler(modSlot);
+        syncManager.syncValue("filterSlotHandler", filterSlotHandler);
+
+        IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
+                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
+                        settings));
+
+        return existingRow
+                .child(new ItemSlot().syncHandler(filterSlotHandler))
+                .child(new ButtonWidget<>()
+                        .background(GuiTextures.MC_BUTTON)
+                        .size(16)
+                        .onMousePressed((c, b) -> {
+                            panelHandler.togglePanel();
+                            return true;
+                        })
+                        .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
                                                                               SidedPosGuiData data,
                                                                               PanelSyncManager syncManager,
                                                                               UISettings settings) {
-        return createFilterRow(Flow.row().coverChildrenHeight().childPadding(2), filterHandler, data, syncManager,
-                settings);
+        Flow row = Flow.row().coverChildrenHeight().childPadding(2);
+        return createFilterRow(row, filterHandler, data, syncManager, settings);
     }
 
     private static int getIncrementValue(MouseData data, int step) {
@@ -610,7 +611,9 @@ public class GTMuiWidgets {
                         .right(0)
                         .width(18)
                         .value(bucketModeSyncValue)
-                        .background(BucketMode.BUCKET.getIcon(), BucketMode.MILLI_BUCKET.getIcon()));
+                        .background(GTGuiTextures.BUTTON)
+                        .stateOverlay(0, BucketMode.BUCKET.icon.asIcon().size(16))
+                        .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
     }
 
     public static class EnumRowBuilder<T extends Enum<T>> {
@@ -618,7 +621,8 @@ public class GTMuiWidgets {
         private @Nullable EnumSyncValue<T> syncValue;
         private final Class<T> enumValue;
         private @Nullable Component lang;
-        private @Nullable Component langTooltip;
+        private @Nullable List<Component> langTooltip;
+        private @Nullable Function<T, Supplier<Component>> buttonTooltipSupplier;
         private IDrawable @Nullable [] background;
         private @Nullable IDrawable selectedBackground;
         private IDrawable @Nullable [] overlay;
@@ -638,7 +642,17 @@ public class GTMuiWidgets {
         }
 
         public EnumRowBuilder<T> langTooltip(Component tooltip) {
-            this.langTooltip = tooltip;
+            this.langTooltip = Collections.singletonList(tooltip);
+            return this;
+        }
+
+        public EnumRowBuilder<T> multiLangTooltip(Component... tooltips) {
+            this.langTooltip = List.of(tooltips);
+            return this;
+        }
+
+        public EnumRowBuilder<T> multiLangTooltip(List<Component> tooltips) {
+            this.langTooltip = tooltips;
             return this;
         }
 
@@ -662,6 +676,11 @@ public class GTMuiWidgets {
             for (int i = 0; i < overlay.length; i++) {
                 this.overlay[i] = overlay[i].asIcon().size(size);
             }
+            return this;
+        }
+
+        public EnumRowBuilder<T> buttonTooltipSupplier(Function<T, Supplier<Component>> buttonTooltipSupplier) {
+            this.buttonTooltipSupplier = buttonTooltipSupplier;
             return this;
         }
 
@@ -689,7 +708,9 @@ public class GTMuiWidgets {
                     if (this.overlay != null)
                         button.overlay(this.overlay[enumVal.ordinal()]);
 
-                    if (enumVal instanceof StringRepresentable serializable) {
+                    if (this.buttonTooltipSupplier != null) {
+                        button.addTooltipLine(Text.lang(buttonTooltipSupplier.apply(enumVal).get().getString()));
+                    } else if (enumVal instanceof StringRepresentable serializable) {
                         button.addTooltipLine(Text.lang(serializable.getSerializedName()));
                     }
                     row.child(button);
@@ -703,7 +724,7 @@ public class GTMuiWidgets {
                         .rightRel(0.f)
                         .height(18);
                 if (this.langTooltip != null) {
-                    text.tooltip(r -> r.addLine(langTooltip));
+                    text.tooltip(r -> langTooltip.forEach(r::addLine));
                 }
                 row.child(text);
             }

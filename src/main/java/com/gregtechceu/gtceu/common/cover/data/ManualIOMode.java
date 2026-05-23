@@ -14,7 +14,15 @@ public enum ManualIOMode {
         this.localeName = localeName;
     }
 
+    public static String getTitle() {
+        return "cover.manual.mode.title";
+    }
+
     public String getTooltip() {
-        return "cover.universal.manual_import_export.mode." + localeName;
+        return "cover.manual.mode." + localeName;
+    }
+
+    public String getDescription() {
+        return "cover.manual.mode." + localeName + ".description";
     }
 }

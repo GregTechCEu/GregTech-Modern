@@ -124,7 +124,7 @@ public class RecipeRunner {
             return ActionResult.fail(
                     Component.translatable("gtceu.recipe_logic.no_capabilities")
                             .append(Component.literal(": "))
-                            .append(Component.translatable(io.tooltip)),
+                            .append(Component.translatable(io.getTooltip())),
                     null, io);
         }
 

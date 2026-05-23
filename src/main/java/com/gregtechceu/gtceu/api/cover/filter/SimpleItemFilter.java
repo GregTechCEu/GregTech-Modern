@@ -111,6 +111,17 @@ public class SimpleItemFilter implements ItemFilter {
 
     @Override
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return new Dialog<>("simple_item_filter")
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(() -> GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
+                .child(getFilterUI(data, syncManager, settings).top(10))
+                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    }
+
+    @Override
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
 
         Grid filterGrid = new Grid()
@@ -132,18 +143,10 @@ public class SimpleItemFilter implements ItemFilter {
                 .coverChildren()
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
                 .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
-
-        return new Dialog<>("simple_item_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(Flow.row()
-                        .top(10)
-                        .coverChildrenHeight()
-                        .child(filterGrid.horizontalCenter())
-                        .child(filterConfigButtons.marginLeft(118)))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(filterGrid.horizontalCenter())
+                .child(filterConfigButtons.marginLeft(118));
     }
 
     public static class FilterItemStackHandler extends CustomItemStackHandler {

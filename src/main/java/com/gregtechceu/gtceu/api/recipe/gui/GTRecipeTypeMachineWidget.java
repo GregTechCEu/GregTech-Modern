@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.network.chat.Component;
+
 import brachy.modularui.api.GuiAxis;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
@@ -55,7 +57,7 @@ public class GTRecipeTypeMachineWidget extends Flow {
             return true;
         });
 
-        child(progressWidget.tooltip(r -> r.addLine(Text.lang("gtceu.recipe_type.show_recipes"))));
+        child(progressWidget.tooltip(r -> r.add(Text.comp(Component.translatable("gtceu.recipe_type.show_recipes")))));
         child(outputColumn);
 
         for (var entry : recipeType.maxInputs.object2IntEntrySet()) {
