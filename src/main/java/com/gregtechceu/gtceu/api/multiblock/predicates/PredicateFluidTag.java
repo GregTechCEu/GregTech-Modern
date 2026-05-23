@@ -10,6 +10,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 
+import java.util.Collections;
+
 public class PredicateFluidTag extends BasePredicate {
 
     public TagKey<Fluid> tag;
@@ -22,18 +24,18 @@ public class PredicateFluidTag extends BasePredicate {
         this.tag = tag;
         if (tag == null) {
             errorPredicate = state -> null;
-            candidates = (map) -> new BlockInfo[] { BlockInfo.fromBlock(Blocks.BARRIER) };
+            candidates = Collections.singletonList(BlockInfo.fromBlock(Blocks.BARRIER));
             this.debugName = "nullTag";
             return;
         } else {
             errorPredicate = state -> state.getBlockState().getFluidState().is(tag) ? null :
                     PatternError.PLACEHOLDER;
-            candidates = (compoundTag) -> BuiltInRegistries.FLUID.getTag(tag)
+            candidates = BuiltInRegistries.FLUID.getTag(tag)
                     .stream()
                     .flatMap(HolderSet.Named::stream)
                     .map(Holder::value)
                     .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
-                    .toArray(BlockInfo[]::new);
+                    .toList();
         }
 
         if (debugName == null) {

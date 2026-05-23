@@ -23,7 +23,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -32,8 +34,9 @@ import java.util.stream.Collectors;
 
 public class BasePredicate {
 
-    @Nullable
-    public Function<CompoundTag, BlockInfo[]> candidates;
+    @NotNull
+    @Getter
+    public List<BlockInfo> candidates;
     public Function<CurrentBlockInfo, PatternError> errorPredicate;
     public List<Component> toolTips;
     public int minCount = -1;
@@ -55,7 +58,7 @@ public class BasePredicate {
      * @param candidates     The qualifying blocks or item stacks valid in this predicate based on information from
      *                       either
      *                       the
-     *                       {@link com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern#autobuild(Reference2ObjectMap, MultiblockControllerMachine, UseOnContext)
+     *                       {@link com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern#autobuild(Object2ObjectMap, MultiblockControllerMachine, CompoundTag, UseOnContext)
      *                       Terminal Auto-Builder},
      *                       {@link com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer#renderInWorldPreview(PoseStack, Camera, float)
      *                       In-world Preview} or
@@ -63,12 +66,12 @@ public class BasePredicate {
      *                       XEI Preview}
      */
     public BasePredicate(Function<CurrentBlockInfo, PatternError> errorPredicate,
-                         @Nullable Function<CompoundTag, BlockInfo[]> candidates) {
+                         @Nullable List<BlockInfo> candidates) {
         this("Unknown", errorPredicate, candidates);
     }
 
     public BasePredicate(String debugName, Function<CurrentBlockInfo, PatternError> errorPredicate,
-                         @Nullable Function<CompoundTag, BlockInfo[]> candidates) {
+                         @Nullable List<BlockInfo> candidates) {
         this.debugName = debugName;
         this.errorPredicate = errorPredicate;
         this.candidates = candidates;
@@ -170,16 +173,16 @@ public class BasePredicate {
         return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
     }
 
-    public List<ItemStack> getCandidates() {
+    public List<ItemStack> getCandidateStacks() {
         if (GTCEu.isClientSide()) {
             return candidates == null ? Collections.emptyList() :
-                    Arrays.stream(this.candidates.apply(new CompoundTag()))
+                    this.candidates.stream()
                             .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
                             .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
                             .collect(Collectors.toList());
         }
         return candidates == null ? Collections.emptyList() :
-                Arrays.stream(this.candidates.apply(new CompoundTag()))
+                this.candidates.stream()
                         .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
                         .map(BlockInfo::getItemStackForm)
                         .collect(Collectors.toList());

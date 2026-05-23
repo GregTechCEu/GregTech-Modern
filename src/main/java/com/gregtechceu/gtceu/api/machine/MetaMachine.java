@@ -177,7 +177,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (isOldMachineData) {
             Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(),
                     this.getUpwardsFacing());
-            if (upwardsGlobal != null) {
+            if (upwardsGlobal != null && getBlockState().hasProperty(GTBlockStateProperties.UPWARDS_FACING)) {
                 // force the global upwards direction
                 var blockState = getBlockState();
                 boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;

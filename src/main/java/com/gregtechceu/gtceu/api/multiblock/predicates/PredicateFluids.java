@@ -26,9 +26,9 @@ public class PredicateFluids extends BasePredicate {
         else this.fluids = Arrays.stream(fluids).filter(Objects::nonNull).toArray(Fluid[]::new);
         errorPredicate = state -> ArrayUtils.contains(this.fluids, state.getBlockState().getFluidState().getType()) ?
                 null : PatternError.PLACEHOLDER;
-        candidates = (tag) -> Arrays.stream(this.fluids)
+        candidates = Arrays.stream(this.fluids)
                 .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
-                .toArray(BlockInfo[]::new);
+                .toList();
 
         if (debugName == null) {
             StringJoiner sb = new StringJoiner("-");

@@ -308,7 +308,7 @@ public class ExpandablePattern implements IBlockPattern {
             if (simplePred.candidates == null) continue;
 
             var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.apply(tag)[0]);
+            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.get(0));
 
             if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
             entry.setValue(null);
@@ -334,7 +334,7 @@ public class ExpandablePattern implements IBlockPattern {
             globalCache.mergeInt(simplePred, 1, Integer::sum);
             if (simplePred.candidates == null) continue;
             var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.apply(tag)[0]);
+            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.get(0));
             if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
         }
     }

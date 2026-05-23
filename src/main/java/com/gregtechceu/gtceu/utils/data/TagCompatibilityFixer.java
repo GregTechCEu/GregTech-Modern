@@ -92,6 +92,10 @@ public final class TagCompatibilityFixer {
             case UP:
             default: {
                 newUpwards = upwardsFacing;
+                // needed if previous machine did not have an upwards facing
+                if (upwardsFacing == null) {
+                    newUpwards = Direction.NORTH;
+                }
             }
         }
         return newUpwards;

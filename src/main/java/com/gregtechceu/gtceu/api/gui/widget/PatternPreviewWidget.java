@@ -300,7 +300,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             List<List<ItemStack>> candidateStacks = new ArrayList<>();
             List<List<Component>> predicateTips = new ArrayList<>();
             for (BasePredicate basePredicate : predicates) {
-                List<ItemStack> itemStacks = basePredicate.getCandidates();
+                List<ItemStack> itemStacks = basePredicate.getCandidateStacks();
                 if (!itemStacks.isEmpty()) {
                     candidateStacks.add(itemStacks);
                     predicateTips.add(basePredicate.getToolTips(predicate));

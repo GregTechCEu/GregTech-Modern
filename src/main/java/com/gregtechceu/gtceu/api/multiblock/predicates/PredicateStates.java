@@ -24,7 +24,7 @@ public class PredicateStates extends BasePredicate {
         else this.states = Arrays.stream(states).filter(Objects::nonNull).toArray(BlockState[]::new);
         errorPredicate = state -> ArrayUtils.contains(this.states, state.getBlockState()) ?
                 null : PatternError.PLACEHOLDER;
-        candidates = (tag) -> Arrays.stream(this.states).map(BlockInfo::fromBlockState).toArray(BlockInfo[]::new);
+        candidates = Arrays.stream(this.states).map(BlockInfo::fromBlockState).toList();
 
         if (debugName == null) {
             /*

@@ -38,7 +38,7 @@ public class PatternError {
     }
 
     public PatternError(BlockPos pos, BasePredicate failingPredicate) {
-        this(pos, Collections.singletonList(failingPredicate.getCandidates()));
+        this(pos, Collections.singletonList(failingPredicate.getCandidateStacks()));
     }
 
     public Level getWorld() {

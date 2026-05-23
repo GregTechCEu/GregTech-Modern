@@ -14,15 +14,13 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
@@ -252,15 +250,17 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
-        widgets.add(Text.dynamic(() -> {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-                    .withStyle(ChatFormatting.GRAY);
-            return Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
-        })
-                .asWidget()
-                .setEnabledIf((widget) -> !isFormed.getBoolValue()));
+        GTMultiblockTextUtil.addUnformedWarning(this, syncManager);
+
+        // widgets.add(Text.dynamic(() -> {
+        // Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
+        // .withStyle(ChatFormatting.GRAY);
+        // return Component.translatable("gtceu.multiblock.invalid_structure")
+        // .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+        // .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+        // })
+        // .asWidget()
+        // .setEnabledIf((widget) -> !isFormed.getBoolValue()));
 
         return widgets;
 

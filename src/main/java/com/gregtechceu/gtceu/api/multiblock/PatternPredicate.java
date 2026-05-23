@@ -5,10 +5,8 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -23,7 +21,7 @@ public class PatternPredicate {
     public static PatternPredicate AIR = new PatternPredicate("Air",
             currentBlockInfo -> currentBlockInfo.getBlockState().isAir() ? null :
                     new PatternError(currentBlockInfo.getBlockPos(), Collections.emptyList()),
-            tag -> new BlockInfo[] { new BlockInfo(Blocks.AIR) });
+            Collections.singletonList(BlockInfo.EMPTY));
 
     public List<BasePredicate> predicateList = new ArrayList<>();
     @Getter
@@ -47,7 +45,7 @@ public class PatternPredicate {
      * @param candidates the valid list of BlockInfos that this traceability predicate allows
      */
     public PatternPredicate(String debugName, Function<CurrentBlockInfo, PatternError> predicate,
-                            Function<CompoundTag, BlockInfo[]> candidates) {
+                            List<BlockInfo> candidates) {
         predicateList.add(new BasePredicate(debugName, predicate, candidates));
     }
 
@@ -57,7 +55,7 @@ public class PatternPredicate {
      * @param candidates the valid list of BlockInfos that this traceability predicate allows
      */
     public PatternPredicate(Function<CurrentBlockInfo, PatternError> predicate,
-                            Function<CompoundTag, BlockInfo[]> candidates) {
+                            List<BlockInfo> candidates) {
         predicateList.add(new BasePredicate(predicate, candidates));
     }
 
@@ -100,7 +98,7 @@ public class PatternPredicate {
 
     public List<List<ItemStack>> getCandidates() {
         return predicateList.stream()
-                .map(BasePredicate::getCandidates)
+                .map(BasePredicate::getCandidateStacks)
                 .collect(Collectors.toList());
     }
 

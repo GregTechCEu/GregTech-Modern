@@ -530,8 +530,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.custom(
                 blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock ? null :
                         PatternError.PLACEHOLDER,
-                (map) -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
-                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER)) });
+                List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
+                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
 
     private PatternPredicate getValidFloorBlocks() {

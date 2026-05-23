@@ -26,12 +26,12 @@ public class SinglePredicateError extends PatternError {
 
     @Override
     public List<List<ItemStack>> getCandidates() {
-        return Collections.singletonList(predicate.getCandidates());
+        return Collections.singletonList(predicate.getCandidateStacks());
     }
 
     @Override
     public List<Component> getErrorInfo() {
-        Component predName = predicate.getCandidates().get(0).getHoverName();
+        Component predName = predicate.getCandidateStacks().get(0).getHoverName();
         switch (type) {
             case MAX_COUNT -> {
                 return List.of(

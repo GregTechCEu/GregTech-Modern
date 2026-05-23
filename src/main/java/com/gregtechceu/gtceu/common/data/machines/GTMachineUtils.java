@@ -906,9 +906,9 @@ public class GTMachineUtils {
                 return null;
             }
             return PatternError.PLACEHOLDER;
-        }, (map) -> PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
+        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
                 .map(BlockInfo::fromBlock)
-                .toArray(BlockInfo[]::new)))
+                .toList()))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
                         VN[tier]));

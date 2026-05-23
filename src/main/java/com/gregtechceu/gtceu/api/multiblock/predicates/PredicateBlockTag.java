@@ -10,6 +10,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.Collections;
+
 public class PredicateBlockTag extends BasePredicate {
 
     public TagKey<Block> tag;
@@ -22,17 +24,17 @@ public class PredicateBlockTag extends BasePredicate {
         this.tag = tag;
         if (tag == null) {
             errorPredicate = state -> PatternError.PLACEHOLDER;
-            candidates = (candidateTag) -> new BlockInfo[] { BlockInfo.fromBlock(Blocks.BARRIER) };
+            candidates = Collections.singletonList(BlockInfo.fromBlock(Blocks.BARRIER));
             this.debugName = "nullTag";
             return;
         } else {
             errorPredicate = state -> state.getBlockState().is(tag) ? null : PatternError.PLACEHOLDER;
-            candidates = (candidateTag) -> BuiltInRegistries.BLOCK.getTag(tag)
+            candidates = BuiltInRegistries.BLOCK.getTag(tag)
                     .stream()
                     .flatMap(HolderSet.Named::stream)
                     .map(Holder::value)
                     .map(BlockInfo::fromBlock)
-                    .toArray(BlockInfo[]::new);
+                    .toList();
         }
 
         if (debugName == null) {

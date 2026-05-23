@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -27,12 +29,16 @@ public class PredicateBlocks extends BasePredicate {
         blocks = Arrays.stream(blocks).filter(Objects::nonNull).toArray(Block[]::new);
         if (blocks.length == 0) blocks = new Block[] { Blocks.BARRIER };
         Block[] finalBlocks = blocks;
-        errorPredicate = state -> ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ?
-                null : PatternError.PLACEHOLDER;
+        errorPredicate = state -> {
+            BlockPos pos = state.getPos();
+            return ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ?
+                    null : new PatternStringError(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(),
+                            pos.getY(), pos.getZ()));
+        };
 
-        candidates = (tag) -> Arrays.stream(finalBlocks)
+        candidates = Arrays.stream(finalBlocks)
                 .map(BlockInfo::fromBlock)
-                .toArray(BlockInfo[]::new);
+                .toList();
 
         if (debugName == null) {
             StringJoiner sb = new StringJoiner("-");

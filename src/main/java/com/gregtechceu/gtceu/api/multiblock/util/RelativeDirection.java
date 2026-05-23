@@ -54,7 +54,8 @@ public enum RelativeDirection implements StringRepresentable {
 
     public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing) {
         if (frontFacing.getAxis() == upwardsFacing.getAxis()) {
-            throw new IllegalArgumentException("front facing and up facing must be on different axes");
+            return Direction.UP;
+            // throw new IllegalArgumentException("front facing and up facing must be on different axes");
         }
         return facingFunction.apply(frontFacing, upwardsFacing);
     }
