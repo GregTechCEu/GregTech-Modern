@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.common.datafixer.schemas;
 
+import net.minecraft.util.datafix.schemas.NamespacedSchema;
+
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import java.util.Map;
 import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.common.datafixer.schemas.V0.*;
 
 public class V1 extends NamespacedSchema {
 
@@ -14,13 +17,12 @@ public class V1 extends NamespacedSchema {
     }
 
     @Override
-    public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes,
-                              Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
-        super.registerTypes(schema, entityTypes, blockEntityTypes);
-    }
-
-    @Override
     public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
-        return super.registerBlockEntities(schema);
+        Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
+
+        map.remove("steam_miner");
+        registerSimpleSteamMachine(schema, map, "steam_miner");
+
+        return map;
     }
 }

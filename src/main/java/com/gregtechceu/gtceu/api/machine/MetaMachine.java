@@ -153,12 +153,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     // ***** Machine Lifecycle ******//
     //////////////////////////////////////
 
-    @Override
-    public void load(CompoundTag tag) {
-        TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
-        super.load(tag);
-    }
-
     /**
      * Called when this machine is loaded.<br>
      * On the server side, the entire world may not be loaded when this method is called.<br>
