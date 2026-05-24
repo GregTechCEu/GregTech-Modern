@@ -47,7 +47,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = GTMultiMachines.DISTILLATION_TOWER;
+        multiblockDefinition = GTMultiMachines.ELECTRIC_BLAST_FURNACE;
 
         for (var pattern : multiblockDefinition.getStructurePatterns().values()) {
             if (pattern instanceof BlockPattern blockPattern) {
