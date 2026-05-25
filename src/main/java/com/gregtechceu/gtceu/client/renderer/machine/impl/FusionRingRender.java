@@ -43,7 +43,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public boolean shouldRender(FusionReactorMachine machine, Vec3 cameraPos) {
-        return machine.recipeLogic.isWorking() || machine.delta > 0;
+        return (machine.recipeLogic.isWorking() || machine.delta > 0) && super.shouldRender(machine, cameraPos);
     }
 
     @Override
