@@ -132,7 +132,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
         cycleAmpMode();
         if (!isRemote()) {
             this.scheduleRenderUpdate();
-            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
+            context.getPlayer().sendSystemMessage(Component.translatable("machine.gtceu.diode.message", amps));
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.CONSUME;

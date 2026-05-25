@@ -24,7 +24,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -255,8 +255,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
+            slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]));
         });
     }
 
@@ -272,8 +272,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine
             slotWidget.setCircuitInventory(machine.circuitInventory);
             slotWidget.setCanPutItems(false);
             slotWidget.setCanTakeItems(false);
-            slotWidget.setHoverTooltips(
-                    LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
+            slotWidget.setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip"));
         });
     }
 

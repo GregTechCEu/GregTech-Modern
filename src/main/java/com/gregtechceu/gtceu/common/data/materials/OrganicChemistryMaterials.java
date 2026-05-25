@@ -167,7 +167,7 @@ public class OrganicChemistryMaterials {
 
         Methane = new Material.Builder(GTCEu.id("methane"))
                 .gas(new FluidBuilder()
-                        .translation("gtceu.fluid.gas_generic"))
+                        .translation("fluid.gtceu.gas_generic"))
                 .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();

@@ -37,7 +37,6 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -45,7 +44,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.FoliageColor;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -78,7 +76,6 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -1183,16 +1180,7 @@ public class GTBlocks {
             .lang("Brittle Charcoal")
             .exBlockstate(GTModels.cubeAllModel(GTCEu.id("block/misc/brittle_charcoal")))
             .tag(BlockTags.MINEABLE_WITH_SHOVEL)
-            .item((b, p) -> new BlockItem(b, p) {
-
-                @Override
-                public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                            TooltipFlag isAdvanced) {
-                    super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-                    tooltipComponents.add(1, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.0"));
-                    tooltipComponents.add(2, Component.translatable("tile.gtceu.brittle_charcoal.tooltip.1"));
-                }
-            })
+            .item()
             .build()
             .register();
 

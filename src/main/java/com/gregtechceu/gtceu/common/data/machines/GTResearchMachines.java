@@ -27,7 +27,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHa
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -63,7 +63,7 @@ public class GTResearchMachines {
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
-            .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
+            .tooltips(LangUtil.getMultiLang("gtceu.machine.research_station.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
                     .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
@@ -201,7 +201,7 @@ public class GTResearchMachines {
             // good API addition for packdevs
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-            .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
+            .tooltips(LangUtil.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("AA", "CC", "CC", "CC", "AA")
                     .aisle("VA", "XV", "XV", "XV", "VA")

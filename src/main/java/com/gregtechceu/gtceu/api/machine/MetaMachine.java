@@ -1013,8 +1013,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void onAddFancyInformationTooltip(List<Component> tooltips) {
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
-        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
-                getDefinition().getId().getPath());
+        /*
+         * String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
+         * getDefinition().getId().getPath());
+         */
+        String mainKey = getDefinition().getId().toLanguageKey("machine", "tooltip");
         if (Language.getInstance().has(mainKey)) {
             tooltips.add(0, Component.translatable(mainKey));
         }

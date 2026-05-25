@@ -60,6 +60,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DUMMY_RECIPES;
 import static com.gregtechceu.gtceu.common.data.machines.GTMachineUtils.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
@@ -324,7 +325,7 @@ public class GTMultiMachines {
             })
             .workableCasingModel(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
-            .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
+            .tooltips(Component.translatable("machine.gtceu.pyrolyse_oven.coil_tooltip"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.pyrolyse_oven.speed",
@@ -339,8 +340,7 @@ public class GTMultiMachines {
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, BATCH_MODE)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
-                    Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
+            .tooltips(GTMachineUtils.getAvailableRecipeMapTooltip(FURNACE_RECIPES, ALLOY_SMELTER_RECIPES))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "XXX")
                     .aisle("XXX", "C#C", "XMX")
@@ -428,7 +428,7 @@ public class GTMultiMachines {
             })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
-            .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
+            .tooltips(Component.translatable("machine.gtceu.cracker.coil_tooltip"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.cracking_unit.energy",

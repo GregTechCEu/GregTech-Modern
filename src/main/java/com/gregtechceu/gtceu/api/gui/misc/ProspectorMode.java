@@ -50,7 +50,7 @@ import java.util.*;
 
 public abstract class ProspectorMode<T> {
 
-    public static ProspectorMode<String> ORE = new ProspectorMode<>("metaitem.prospector.mode.ores", 16) {
+    public static ProspectorMode<String> ORE = new ProspectorMode<>("item.prospector.mode.ores", 16) {
 
         private final Map<BlockState, String> BLOCK_CACHE = new HashMap<>();
         private final Map<String, IGuiTexture> ICON_CACHE = new HashMap<>();
@@ -194,7 +194,7 @@ public abstract class ProspectorMode<T> {
         }
     }
 
-    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("metaitem.prospector.mode.fluid", 1) {
+    public static ProspectorMode<FluidInfo> FLUID = new ProspectorMode<>("item.prospector.mode.fluid", 1) {
 
         @Override
         public void scan(FluidInfo[][][] storage, LevelChunk chunk) {
@@ -283,7 +283,7 @@ public abstract class ProspectorMode<T> {
 
     }
 
-    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("metaitem.prospector.mode.bedrock_ore",
+    public static ProspectorMode<OreInfo> BEDROCK_ORE = new ProspectorMode<>("item.prospector.mode.bedrock_ore",
             1) {
 
         @Override

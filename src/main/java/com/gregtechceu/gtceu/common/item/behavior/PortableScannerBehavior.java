@@ -486,7 +486,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
-        tooltipComponents.add(Component.translatable("metaitem.behavior.mode_switch.tooltip"));
+        tooltipComponents.add(Component.translatable("item.behavior.mode_switch.tooltip"));
         tooltipComponents.add(Component.translatable("behavior.portable_scanner.mode.caption",
                 Component.translatable(getMode(stack).getLangKey()).withStyle(ChatFormatting.AQUA)));
     }

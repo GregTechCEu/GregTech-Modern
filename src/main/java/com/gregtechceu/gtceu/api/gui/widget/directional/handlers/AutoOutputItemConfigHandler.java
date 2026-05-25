@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandle
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -58,8 +59,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
 
                 if (side == null) {
                     setButtonTexture(TEXTURE_OFF);
-                    setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.item_auto_output.unselected")
-                            .toArray(Component[]::new));
+                    setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.item_auto_output.unselected"));
                 } else if (trait.getItemOutputDirection() == side) {
                     if (trait.isAutoOutputItems()) {
                         setButtonTexture(TEXTURE_AUTO);
@@ -70,8 +70,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
                     }
                 } else {
                     setButtonTexture(TEXTURE_OFF);
-                    setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.item_auto_output.other_direction")
-                            .toArray(Component[]::new));
+                    setHoverTooltips(LangUtil.getMultiLang("gtceu.gui.item_auto_output.other_direction"));
                 }
             }
         });

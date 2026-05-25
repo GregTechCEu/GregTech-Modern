@@ -78,10 +78,13 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     if (world.isClientSide())
-                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
+                        player.displayClientMessage(
+                                Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
                 } else {
                     if (world.isClientSide()) player.displayClientMessage(Component
-                            .translatable("metaarmor.nms.nightvision." + (nightVision ? "enabled" : "disabled")), true);
+                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
+                                    (nightVision ? "enabled" : "disabled")),
+                            true);
                 }
             }
 
@@ -109,7 +112,8 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+                player.displayClientMessage(
+                        Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.disabled"), true);
         }
     }
 
@@ -182,15 +186,15 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("metaarmor.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
             } else {
-                lines.add(Component.translatable("metaarmor.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (nbtData.getBoolean("stepAssist"))
-                lines.add(Component.translatable("metaarmor.message.step_assist.enabled"));
-            else lines.add(Component.translatable("metaarmor.message.step_assist.disabled"));
-            lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
+                lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.enabled"));
+            else lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.disabled"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
         }
     }
 }

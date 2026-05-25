@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.DimensionCondition;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -138,8 +139,8 @@ public class GTRecipeWidget extends WidgetGroup {
                         .setBackgroundTexture(IGuiTexture.EMPTY));
             } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
-        for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
+        for (Function<CompoundTag, Component> dataInfo : recipe.recipeType.getDataInfos()) {
+            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data).getString()));
         }
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
     }
@@ -186,8 +187,7 @@ public class GTRecipeWidget extends WidgetGroup {
             addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
                     voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(),
                     cd -> setRecipeOC(cd.button, cd.isShiftClick))
-                    .setHoverTooltips(LangHandler.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])
-                            .toArray(Component[]::new)));
+                    .setHoverTooltips(LangUtil.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])));
             addWidget(this.voltageTextWidget = voltageTextWidget);
         }
     }

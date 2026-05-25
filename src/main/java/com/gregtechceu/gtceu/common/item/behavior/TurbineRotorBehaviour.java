@@ -80,8 +80,8 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         IMaterialPartItem.super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         tooltipComponents
-                .add(Component.translatable("metaitem.tool.tooltip.rotor.efficiency", getRotorEfficiency(stack)));
-        tooltipComponents.add(Component.translatable("metaitem.tool.tooltip.rotor.power", getRotorPower(stack)));
+                .add(Component.translatable("item.gtceu.turbine_rotor.tooltip.efficiency", getRotorEfficiency(stack)));
+        tooltipComponents.add(Component.translatable("item.gtceu.turbine_rotor.tooltip.power", getRotorPower(stack)));
     }
 
     @Nullable

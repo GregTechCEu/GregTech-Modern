@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyCustomMouseWheelAction;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -19,7 +19,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.items.ItemStackHandler;
@@ -165,9 +164,7 @@ public class CircuitFancyConfigurator implements IFancyConfigurator, IFancyCusto
     @Override
     public List<Component> getTooltips() {
         var list = new ArrayList<>(IFancyConfigurator.super.getTooltips());
-        list.addAll(Arrays.stream(
-                LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(new MutableComponent[0]))
-                .toList());
+        list.addAll(Arrays.asList(LangUtil.getMultiLang("gtceu.gui.configurator_slot.tooltip")));
         return list;
     }
 

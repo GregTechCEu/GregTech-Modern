@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -135,8 +136,8 @@ public class ComputerMonitorCover extends CoverBehavior
             formatStringInput.setSize(textFieldWidth, 15);
             formatStringInput.setSelfPosition(horizontalPadding + textFieldWidth / 2,
                     10 + verticalPadding + i * (15 + verticalPadding));
-            formatStringInput.setHoverTooltips(GTStringUtils.toImmutable(
-                    LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.main_textbox_tooltip", i + 1)));
+            formatStringInput.setHoverTooltips(
+                    LangUtil.getMultiLang("gtceu.gui.computer_monitor_cover.main_textbox_tooltip", i + 1));
             int finalI = i;
             if (i >= formatStringLines.size()) formatStringLines.add("");
             formatStringInput.setCurrentString(formatStringLines.get(i));
@@ -148,8 +149,8 @@ public class ComputerMonitorCover extends CoverBehavior
                     horizontalPadding + 50,
                     20 * i);
             slot.setBackgroundTexture(SlotWidget.ITEM_SLOT_TEXTURE);
-            slot.setHoverTooltips(GTStringUtils
-                    .toImmutable(LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1)));
+            slot.setHoverTooltips(
+                    LangUtil.getMultiLang("gtceu.gui.computer_monitor_cover.slot_tooltip", i + 1));
             mainPage.addWidget(slot);
         }
         for (int i = 0; i < 8; i++) {
@@ -157,9 +158,9 @@ public class ComputerMonitorCover extends CoverBehavior
             formatStringArgsInput.setSize(textFieldWidth, 15);
             formatStringArgsInput.setSelfPosition(textFieldWidth / 2 + horizontalPadding,
                     10 + verticalPadding + i * (15 + verticalPadding));
-            formatStringArgsInput.setHoverTooltips(GTStringUtils.toImmutable(
-                    LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
-                            GTStringUtils.getIntOrderingSuffix(i + 1))));
+            formatStringArgsInput.setHoverTooltips(
+                    LangUtil.getMultiLang("gtceu.gui.computer_monitor_cover.second_page_textbox_tooltip",
+                            GTStringUtils.getIntOrderingSuffix(i + 1)));
 
             int finalI = i;
             if (i >= formatStringArgs.size()) formatStringArgs.add("");

@@ -62,7 +62,7 @@ public class ConverterMachine extends TieredEnergyMachine {
             if (getConverterTrait().isFeToEu()) {
                 setFeToEu(false);
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.machine.energy_converter.message_conversion_eu",
+                        Component.translatable("machine.gtceu.energy_converter.message_conversion_eu",
                                 getConverterTrait().getAmps(), getConverterTrait().getVoltage(),
                                 FeCompat.toFeLong(
                                         getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
@@ -70,7 +70,7 @@ public class ConverterMachine extends TieredEnergyMachine {
             } else {
                 setFeToEu(true);
                 context.getPlayer().sendSystemMessage(
-                        Component.translatable("gtceu.machine.energy_converter.message_conversion_native",
+                        Component.translatable("machine.gtceu.energy_converter.message_conversion_native",
                                 FeCompat.toFeLong(
                                         getConverterTrait().getVoltage() * getConverterTrait().getAmps(),
                                         FeCompat.ratio(true)),

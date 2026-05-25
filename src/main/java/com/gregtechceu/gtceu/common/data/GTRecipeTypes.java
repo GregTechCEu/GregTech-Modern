@@ -28,11 +28,10 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -146,7 +145,7 @@ public class GTRecipeTypes {
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .addCustomRecipeLogic(MaceratorLogic.INSTANCE)
             .setSound(GTSoundEntries.MACERATOR)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]));
+            .addDataInfo(data -> Component.translatable("gtceu.recipe.byproduct_tier", GTValues.VNF[GTValues.HV]));
 
     public final static GTRecipeType CANNER_RECIPES = register("canner", ELECTRIC).setMaxIOSize(2, 2, 1, 1)
             .setEUIO(IO.IN)
@@ -507,17 +506,17 @@ public class GTRecipeTypes {
             .setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp));
+                return Component.translatable("gtceu.recipe.temperature", FormattingUtil.formatTemperature(temp));
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil != null && !requiredCoil.getMaterial().isNull()) {
-                    return LocalizationUtils.format("gtceu.recipe.coil.tier",
-                            I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
+                    return Component.translatable("gtceu.recipe.coil.tier",
+                            requiredCoil.getMaterial().getLocalizedName());
                 }
-                return "";
+                return CommonComponents.EMPTY;
             })
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");

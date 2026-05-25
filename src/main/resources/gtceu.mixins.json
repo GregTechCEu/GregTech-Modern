@@ -78,6 +78,7 @@
         "ldlib.SyncUtilsMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
+        "registrate.LanguageProviderAccessor",
         "rei.InputSlotCrafterMixin",
         "rei.RecipeFinderMixin"
     ],

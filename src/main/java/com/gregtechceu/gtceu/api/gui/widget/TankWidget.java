@@ -299,15 +299,15 @@ public class TankWidget extends Widget implements IRecipeIngredientSlot, IConfig
             tooltips.add(fluidStack.getDisplayName());
             if (!isPhantom && showAmount) {
                 tooltips.add(
-                        Component.translatable("gtceu.fluid.amount",
+                        Component.translatable("fluid.gtceu.amount",
                                 FormattingUtil.formatNumbers(fluidStack.getAmount()),
                                 FormattingUtil.formatNumbers(lastTankCapacity)));
             }
             TooltipsHandler.appendFluidTooltips(fluidStack, tooltips::add, null);
         } else {
-            tooltips.add(Component.translatable("gtceu.fluid.empty"));
+            tooltips.add(Component.translatable("fluid.gtceu.empty"));
             if (!isPhantom && showAmount) {
-                tooltips.add(Component.translatable("gtceu.fluid.amount", 0,
+                tooltips.add(Component.translatable("fluid.gtceu.amount", 0,
                         FormattingUtil.formatNumbers(lastTankCapacity)));
             }
         }

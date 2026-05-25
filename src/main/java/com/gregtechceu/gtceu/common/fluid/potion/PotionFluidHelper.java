@@ -187,21 +187,20 @@ public class PotionFluidHelper {
             Instant start = Instant.now();
             Instant max = Instant.now().plusSeconds(time / 20);
             Duration durationMax = Duration.between(start, max);
-
-            Component unit;
+            String unitKey;
 
             if (durationMax.getSeconds() <= 60) {
                 time = GTMath.saturatedCast(durationMax.getSeconds());
-                unit = Component.translatable("item.gtceu.battery.charge_unit.second");
+                unitKey = "gtceu.gui.seconds";
             } else if (durationMax.toMinutes() <= 60) {
                 time = GTMath.saturatedCast(durationMax.toMinutes());
-                unit = Component.translatable("item.gtceu.battery.charge_unit.minute");
+                unitKey = "gui.minutes";
             } else {
                 time = GTMath.saturatedCast(durationMax.toHours());
-                unit = Component.translatable("item.gtceu.battery.charge_unit.hour");
+                unitKey = "gui.hours";
             }
 
-            return Component.literal(FormattingUtil.formatNumbers(time)).append(unit);
+            return Component.translatable(unitKey, FormattingUtil.formatNumbers(time));
         }
     }
 }

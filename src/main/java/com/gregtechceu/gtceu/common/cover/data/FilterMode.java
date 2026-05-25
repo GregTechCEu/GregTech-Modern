@@ -28,7 +28,7 @@ public enum FilterMode implements EnumSelectorWidget.SelectableEnum {
 
     @Override
     public String getTooltip() {
-        return "cover.filter.mode." + this.localeName;
+        return "cover.gtceu.filter.mode." + this.localeName;
     }
 
     @Override

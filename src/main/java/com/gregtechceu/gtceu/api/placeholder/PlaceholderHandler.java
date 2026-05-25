@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketExcepti
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.lang.LangUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -203,8 +204,7 @@ public class PlaceholderHandler {
             for (String placeholder : placeholders) {
                 TextTextureWidget placeholderName = new TextTextureWidget(0, y, 80, 15, placeholder);
                 placeholderName.getTextTexture().type = TextTexture.TextType.LEFT;
-                placeholderName.setHoverTooltips(GTStringUtils
-                        .toImmutable(LangHandler.getSingleOrMultiLang("gtceu.placeholder_info." + placeholder)));
+                placeholderName.setHoverTooltips(LangUtil.getSingleOrMultiLang("gtceu.placeholder_info." + placeholder));
                 placeholderReference.addWidget(placeholderName);
                 y += 15;
             }
@@ -214,7 +214,7 @@ public class PlaceholderHandler {
                 280, 0,
                 160, 15,
                 GTStringUtils.componentsToString(
-                        LangHandler.getMultiLang("gtceu.gui.computer_monitor_cover.placeholder_reference")));
+                        List.of(LangUtil.getMultiLang("gtceu.gui.computer_monitor_cover.placeholder_reference"))));
         placeholderReferenceLabel.getTextTexture().type = TextTexture.TextType.LEFT;
         WidgetGroup out = new WidgetGroup();
         out.addWidget(placeholderReferenceLabel);

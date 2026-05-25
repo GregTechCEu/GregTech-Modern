@@ -95,7 +95,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
                                 TooltipFlag isAdvanced) {
         int configuration = getCircuitConfiguration(stack);
-        tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
+        tooltipComponents.add(Component.translatable("item.int_circuit.configuration", configuration));
     }
 
     @Override
