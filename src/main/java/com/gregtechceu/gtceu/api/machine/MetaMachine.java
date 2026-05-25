@@ -686,8 +686,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
     private @Nullable List<DynamicRender<?, ?>> renderers;
 
+    @OnlyIn(Dist.CLIENT)
     public List<DynamicRender<?, ?>> getOrInitDynamicRenderers(List<Supplier<DynamicRender<?, ?>>> rendererSuppliers,
                                                                MachineModel model) {
         if (renderers == null) {
