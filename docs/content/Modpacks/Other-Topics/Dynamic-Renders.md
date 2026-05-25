@@ -117,9 +117,10 @@ public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
 
 ### Optional overrides
 
-| Method | Default | Purpose                                            |
-|---|---|----------------------------------------------------|
-| `shouldRender(machine, cameraPos)` | within view distance | Skip rendering based on distance or state          |
-| `shouldRenderOffScreen(machine)` | `false` | Keep rendering even when the machine is off-screen |
-| `getRenderBoundingBox(machine)` | 3×2×3 around controller | Off-screen culling                                 |
-| `getViewDistance()` | 64 | Distance cutoff for `shouldRender`                 |
+- **`shouldRender(machine, cameraPos)`** — Controls whether the renderer runs at all for a given frame. By default it returns `true` as long as the camera is within the view distance returned by `getViewDistance()`. You can override this to add additional conditions, such as skipping the render when the machine is not working.
+
+- **`shouldRenderOffScreen(machine)`** — Determines whether the renderer continues to run when the controller block is outside the camera frustum. Defaults to `false`, meaning the renderer is culled along with the block when the block moves out of view.
+
+- **`getRenderBoundingBox(machine)`** — Defines the bounding box used for off-screen culling when `shouldRenderOffScreen` is `false`. Defaults to a 3×2×3 box centered on the controller. Override this to return a box that tightly wraps your actual rendered content; a box that is too small will cause the render to disappear while still partially visible, and a box that is too large will prevent culling and waste resources.
+
+- **`getViewDistance()`** — Sets the maximum distance in blocks at which the renderer will run, used by the default `shouldRender` implementation. Defaults to `64`. Lower this for expensive renders that do not need to be visible far away, or raise it if the render needs to be legible from a long distance.
