@@ -77,30 +77,25 @@ public class ItemAboveControllerRender
 
 ### Registering the type
 
-Register your renderer type in `ClientProxy`:
+Register your renderer type in your mod's main java file:
 
-```java title="ClientProxy.java"
-public class ClientProxy extends CommonProxy {
-
-    public ClientProxy() {
-        super();
-        init();
+```java title="ExampleMod.java"
+@Mod(ExampleMod.MOD_ID)
+public class ExampleMod {
+    
+    public ExampleMod() {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> ExampleMod::initializeDynamicRenders);
     }
-
-    public static void init() {
-        initializeDynamicRenders();
-    }
-
+    
     public static void initializeDynamicRenders() {
         DynamicRenderManager.register(GTCEu.id("item_above_controller"), ItemAboveControllerRender.TYPE);
     }
 }
 ```
 
-
 ### Attaching to a machine
 
-Use `.model([base model].andThen(b -> b.addDynamicRenderer(new ...())))` when defining the machine. If the machine previously used the `.workableCasingModel(...)` shorthand, expand it into `.model(createWorkableCasingMachineModel(...).andThen(...))`:
+Use `.model([base model].andThen(b -> b.addDynamicRenderer(() -> new ...())))` when defining the machine. If the machine previously used the `.workableCasingModel(...)` shorthand, expand it into `.model(createWorkableCasingMachineModel(...).andThen(...))`:
 
 ```java
 public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
@@ -110,7 +105,7 @@ public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
     .model(createWorkableCasingMachineModel(
             GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
             GTCEu.id("block/multiblock/large_chemical_reactor"))
-            .andThen(b -> b.addDynamicRenderer(new ItemAboveControllerRender())))
+            .andThen(b -> b.addDynamicRenderer(() -> new ItemAboveControllerRender())))
     .hasBER(true)
     .register();
 ```
