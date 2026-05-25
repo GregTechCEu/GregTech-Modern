@@ -16,7 +16,7 @@ Users who contribute AI written code are held responsible for the quality of the
 **All machine code MUST be reviewed by the pull request submitter before opening. **
 
 - [ ] No AI driven tools were used for this pull request.
-- [ ] Yes AI driven tools were used for this pull Request.
+- [ ] Yes AI driven tools were used for this pull request.
 
 _If you answered no and it is discovered the pull request in question used AI tooling, users will be restricted from submitting future pull requests_
 
