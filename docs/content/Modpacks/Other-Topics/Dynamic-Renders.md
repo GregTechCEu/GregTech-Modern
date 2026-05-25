@@ -69,10 +69,10 @@ public class ItemAboveControllerRender
 }
 ```
 
-!!! warning "Client-side data must be synced"
-    `render(...)` runs on the render thread, so any machine state you read must be marked `@SyncToClient`. Using server-only fields will silently read stale or default values. `RecipeLogic.status` and `RecipeLogic.isActive` are both `@SyncToClient`, which is why `recipeLogic.isWorking()` works here. If you add fields to a custom machine and need them in a renderer, annotate them accordingly. See the [sync annotations reference](../../Development/Data-Sync-System/Annotations.md) for details.
+!!! warning "Server-side data must be synced"
+    `render(...)` runs on the render thread, so any machine state you read must be sent to clients, for exakple with `@SyncToClient` . Using server-only fields will silently read stale or default values. `RecipeLogic.status` and `RecipeLogic.isActive` are both `@SyncToClient`, which is why `recipeLogic.isWorking()` works here. If you add fields to a custom machine and want to use them in a renderer, annotate them accordingly. See the [sync annotations reference](../../Development/Data-Sync-System/Annotations.md) for details.
 
-!!! warning "The Render is global"
+!!! warning "Renders are global"
     Only one instance of the render class exists. Make sure to not store any machine- or instance-specific data in the class. There is also no lifecycle management for BEs going off-screen or being destroyed, so by putting the data in the render class you would have a bunch of stale values and memory leaks.
 
 ### Registering the type
