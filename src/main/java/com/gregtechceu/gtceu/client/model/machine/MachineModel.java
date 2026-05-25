@@ -58,6 +58,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
@@ -85,8 +86,26 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     private final MachineDefinition definition;
     private final Map<MachineRenderState, BakedModel> modelsByState;
     private final @Nullable MultiPartBakedModel multiPart;
-    @Getter
-    private final List<DynamicRender<?, ?>> dynamicRenders;
+
+    private final List<Supplier<DynamicRender<?, ?>>> dynamicRenderSuppliers;
+
+    public List<DynamicRender<?, ?>> getOrInitDynamicRenderers(MetaMachine machine) {
+        return machine.getOrInitDynamicRenderers(dynamicRenderSuppliers, this);
+    }
+
+    private List<DynamicRender<?, ?>> dynamicRenderersWithoutMachine;
+
+    public List<DynamicRender<?, ?>> getOrInitDynamicRenderersWithoutMachine() {
+        if (dynamicRenderersWithoutMachine == null) {
+            dynamicRenderersWithoutMachine = new ArrayList<>();
+            for (var supplier : dynamicRenderSuppliers) {
+                var renderer = supplier.get();
+                renderer.setParent(this);
+                dynamicRenderersWithoutMachine.add(renderer);
+            }
+        }
+        return dynamicRenderersWithoutMachine;
+    }
 
     @Getter
     private final ItemTransforms transforms;
@@ -108,13 +127,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public MachineModel(MachineDefinition definition,
                         Map<MachineRenderState, BakedModel> modelsByState,
                         @Nullable MultiPartBakedModel multiPart,
-                        List<DynamicRender<?, ?>> dynamicRenders,
+                        List<Supplier<DynamicRender<?, ?>>> dynamicRenders,
                         ItemTransforms transforms, Transformation rootTransform, ModelState modelState,
                         boolean isGui3d, boolean usesBlockLight, boolean useAmbientOcclusion) {
         this.definition = definition;
         this.modelsByState = modelsByState;
         this.multiPart = multiPart;
-        this.dynamicRenders = dynamicRenders;
+        this.dynamicRenderSuppliers = dynamicRenders;
 
         this.transforms = transforms;
         this.rootTransform = rootTransform;
@@ -122,10 +141,6 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         this.isGui3d = isGui3d;
         this.usesBlockLight = usesBlockLight;
         this.useAmbientOcclusion = useAmbientOcclusion;
-
-        for (DynamicRender<?, ?> render : this.dynamicRenders) {
-            render.setParent(this);
-        }
     }
 
     public static void initSprites(TextureAtlas atlas) {
@@ -309,8 +324,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         MachineRenderState renderState = machine != null ? machine.getRenderState() : definition.defaultRenderState();
         renderBaseModel(quads, renderState, blockState, side, rand, modelData, renderType);
 
-        for (DynamicRender render : dynamicRenders) {
-            quads.addAll(render.getRenderQuads(machine, level, pos, blockState, side, rand, modelData, renderType));
+        if (machine != null) {
+            for (DynamicRender render : getOrInitDynamicRenderers(machine)) {
+                quads.addAll(render.getRenderQuads(machine, level, pos, blockState, side, rand, modelData, renderType));
+            }
         }
         // the instanceof check also ensures it's not null
         if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
@@ -379,7 +396,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         var overrides = controllerModel.textureOverrides;
 
         List<BakedQuad> renderQuads = new LinkedList<>();
-        for (var render : controllerModel.getDynamicRenders()) {
+        for (var render : controllerModel.getOrInitDynamicRenderers(controller)) {
             if (render instanceof IControllerModelRenderer controllerRenderer) {
                 controllerRenderer.renderPartModel(renderQuads, controller, part, frontFacing, side,
                         rand, modelData, renderType);
@@ -437,10 +454,10 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer,
                 packedLight,
                 packedOverlay);
-        if (dynamicRenders.isEmpty()) return;
+        if (dynamicRenderSuppliers.isEmpty()) return;
 
         Vec3 cameraPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition();
-        for (DynamicRender model : dynamicRenders) {
+        for (DynamicRender model : getOrInitDynamicRenderers(machine)) {
             if (!model.shouldRender(machine, cameraPos)) {
                 continue;
             }
@@ -452,8 +469,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public void renderByItem(ItemStack stack, ItemDisplayContext displayContext,
                              PoseStack poseStack, MultiBufferSource buffer,
                              int packedLight, int packedOverlay) {
-        if (dynamicRenders.isEmpty()) return;
-        for (DynamicRender<?, ?> model : dynamicRenders) {
+        if (dynamicRenderSuppliers.isEmpty()) return;
+        for (DynamicRender<?, ?> model : getOrInitDynamicRenderersWithoutMachine()) {
             model.renderByItem(stack, displayContext, poseStack, buffer, packedLight, packedOverlay);
         }
     }
@@ -465,9 +482,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
         if (!(blockEntity instanceof MetaMachine machine)) return bounds;
         if (machine.getDefinition() != getDefinition()) return bounds;
-        if (dynamicRenders.isEmpty()) return bounds;
+        if (dynamicRenderSuppliers.isEmpty()) return bounds;
 
-        for (DynamicRender model : dynamicRenders) {
+        for (DynamicRender model : getOrInitDynamicRenderers(machine)) {
             bounds = bounds.minmax(model.getRenderBoundingBox(machine));
         }
         return bounds;
@@ -478,9 +495,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
         if (!(blockEntity instanceof MetaMachine machine)) return false;
         if (machine.getDefinition() != getDefinition()) return false;
-        if (dynamicRenders.isEmpty()) return false;
+        if (dynamicRenderSuppliers.isEmpty()) return false;
 
-        for (DynamicRender render : dynamicRenders) {
+        for (DynamicRender render : getOrInitDynamicRenderers(machine)) {
             if (render.shouldRenderOffScreen(machine)) return true;
         }
         return false;
@@ -492,9 +509,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         if (!(blockEntity instanceof MetaMachine machine)) return false;
         if (machine.getDefinition() != getDefinition()) return false;
         if (machine.getCoverContainer().hasDynamicCovers()) return true;
-        if (dynamicRenders.isEmpty()) return false;
+        if (dynamicRenderSuppliers.isEmpty()) return false;
 
-        for (DynamicRender model : dynamicRenders) {
+        for (DynamicRender model : getOrInitDynamicRenderers(machine)) {
             if (model.shouldRender(machine, Minecraft.getInstance().gameRenderer.getMainCamera().getPosition())) {
                 return true;
             }
@@ -505,7 +522,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     @Override
     public int getViewDistance() {
         int distance = 0;
-        for (DynamicRender<?, ?> model : dynamicRenders) {
+        for (DynamicRender<?, ?> model : getOrInitDynamicRenderersWithoutMachine()) {
             distance = Math.max(distance, model.getViewDistance());
         }
         return distance;

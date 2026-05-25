@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> {
@@ -138,13 +139,14 @@ public class MachineModelLoader implements IGeometryLoader<UnbakedMachineModel> 
         }
 
         // load dynamic renders
-        List<DynamicRender<?, ?>> dynamicRenders = new ArrayList<>();
+        List<Supplier<DynamicRender<?, ?>>> dynamicRenders = new ArrayList<>();
         JsonArray array = GsonHelper.getAsJsonArray(json, "dynamic_renders", null);
         if (array != null) {
             for (JsonElement entry : array) {
-                var render = DynamicRender.CODEC.parse(JsonOps.INSTANCE, entry)
-                        .getOrThrow(true, LOGGER::error);
-                dynamicRenders.add(render);
+                dynamicRenders.add(() -> {
+                    return DynamicRender.CODEC.parse(JsonOps.INSTANCE, entry)
+                            .getOrThrow(true, LOGGER::error);
+                });
             }
         }
 

@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel> {
 
@@ -29,14 +30,14 @@ public class UnbakedMachineModel implements IUnbakedGeometry<UnbakedMachineModel
     @Getter
     private final MultiPartUnbakedModel multiPart;
     @Getter
-    private final List<DynamicRender<?, ?>> dynamicRenders;
+    private final List<Supplier<DynamicRender<?, ?>>> dynamicRenders;
     private final Set<String> replaceableTextures;
     private final Map<String, ResourceLocation> textureOverrides;
 
     public UnbakedMachineModel(MachineDefinition definition,
                                Map<MachineRenderState, UnbakedModel> models,
                                @Nullable MultiPartUnbakedModel multiPart,
-                               List<DynamicRender<?, ?>> dynamicRenders,
+                               List<Supplier<DynamicRender<?, ?>>> dynamicRenders,
 
                                Set<String> replaceableTextures,
                                Map<String, ResourceLocation> textureOverrides) {

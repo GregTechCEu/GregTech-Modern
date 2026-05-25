@@ -37,7 +37,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
+import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.util.ModelUtils;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -99,6 +101,7 @@ import org.jetbrains.annotations.*;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * The base BlockEntity for all GT machines.
@@ -681,6 +684,21 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         for (var property : renderState.getValues().entrySet()) {
             lines.accept(ModelUtils.getPropertyValueString(property));
         }
+    }
+
+    private @Nullable List<DynamicRender<?, ?>> renderers;
+
+    public List<DynamicRender<?, ?>> getOrInitDynamicRenderers(List<Supplier<DynamicRender<?, ?>>> rendererSuppliers,
+                                                               MachineModel model) {
+        if (renderers == null) {
+            renderers = new ArrayList<>();
+            for (var supplier : rendererSuppliers) {
+                var renderer = supplier.get();
+                renderer.setParent(model);
+                renderers.add(renderer);
+            }
+        }
+        return renderers;
     }
 
     /**
