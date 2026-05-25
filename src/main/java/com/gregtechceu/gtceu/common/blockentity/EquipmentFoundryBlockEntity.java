@@ -137,7 +137,7 @@ public class EquipmentFoundryBlockEntity extends BlockEntity
         return new ModularPanel<>("equipment_foundry")
                 .size(168, 75)
                 .bindPlayerInventory(-80)
-                .child(GTMuiWidgets.createTitleBar(GTBlocks.EQUIPMENT_FOUNDRY.asStack(), 176,
+                .child(GTMuiWidgets.createTitleBar(GTBlocks.EQUIPMENT_FOUNDRY::asStack, 176,
                         GTGuiTextures.BACKGROUND_STEEL))
                 .child(new ItemSlot()
                         .left(10)
@@ -156,7 +156,7 @@ public class EquipmentFoundryBlockEntity extends BlockEntity
                         .top(-1)
                         .minColWidth(26)
                         .minRowHeight(39)
-                        .mapTo(5, moduleSlots));
+                        .gridOf(5, moduleSlots));
     }
 
     /*

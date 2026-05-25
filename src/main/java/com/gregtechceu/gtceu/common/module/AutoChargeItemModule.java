@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.item.module.TieredItemModule;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTItemModules;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 
 import net.minecraft.core.BlockPos;
@@ -49,8 +49,8 @@ public class AutoChargeItemModule extends TieredItemModule {
         if (energy > 0) {
             if (machine instanceof PowerSubstationMachine substation) {
                 electricItem.charge(substation.getEnergyBank().drain(energy), electricItem.getTier(), false, false);
-            } else if (machine instanceof ChargerMachine charger) {
-                charger.getLinkedItems().add(module.getAppliedTo());
+            } else if (machine instanceof BatteryBufferMachine charger) {
+                electricItem.charge(charger.energyContainer.changeEnergy(-energy), charger.getTier(), false, false);
             }
         }
     }

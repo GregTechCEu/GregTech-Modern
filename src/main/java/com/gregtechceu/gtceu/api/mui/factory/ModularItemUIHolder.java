@@ -17,7 +17,7 @@ import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiDraw;
 import brachy.modularui.factory.GuiData;
@@ -55,9 +55,11 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
     }
 
     private void registerSyncValues(PanelSyncManager syncManager) {
-        dynamicSyncHandler = new DynamicSyncHandler();
+        dynamicSyncHandler = new DynamicSyncHandler()
+                .allowC2S();
         dynamicSyncHandler.widgetProvider(this::getStackInfoWidget);
-        selectedSlotSyncValue = SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot);
+        selectedSlotSyncValue = SyncHandlers.intNumber(this::getSelectedSlot, this::setSelectedSlot)
+                .allowC2S();
         syncManager.syncValue("selectedSlot", selectedSlotSyncValue);
     }
 
@@ -96,37 +98,40 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                         .coverChildren()
                         .childPadding(5)
                         .child(new ItemDisplayWidget().item(stack))
-                        .child(new TextWidget<>(IKey.dynamic(stack::getHoverName))))
+                        .child(new TextWidget<>(Text.dynamic(stack::getHoverName))))
                 .childIf(modularItem == null,
-                        () -> new TextWidget<>(IKey.str("This item does not accept modules")).center())
+                        () -> new TextWidget<>(Text.str("This item does not accept modules")).center())
                 .childIf(modularItem != null, () -> new Grid()
                         .minColWidth(100)
                         .widthRel(1)
                         .minRowHeight(10)
                         .margin(5)
-                        .mapTo(2, slots.size(), index -> {
+                        .gridOfSizeWidth(slots.size(), 2, (x, y, index) -> {
                             assert modularItem != null;
                             AppliedItemModule appliedModule = modularItem.getModuleInSlot(index);
                             if (appliedModule == null) {
-                                return new ButtonWidget<>()
+                                ButtonWidget<?> button = new ButtonWidget<>()
                                         .height(10)
                                         .widthRel(0.5f)
-                                        .backgroundOverlay(slots.get(index).getSlotTexture())
-                                        .overlay(IKey.lang("metaarmor.tooltip.modifier.empty").scale(0.5f));
+                                        .overlay(Text.lang("metaarmor.tooltip.modifier.empty").scale(0.5f));
+                                if (index < slots.size()) {
+                                    button.backgroundOverlay(slots.get(index).getSlotTexture());
+                                }
+                                return button;
                             } else {
                                 ItemModule module = appliedModule.getModule();
                                 IPanelHandler panelHandler = psm.syncedPanel("module" + index, false,
                                         (psm1, handler) -> createPanelForModule(psm1, handler, index));
                                 return new ButtonWidget<>()
-                                        .onMousePressed((x, y, button) -> {
+                                        .onMousePressed((ctx, button) -> {
                                             panelHandler.openPanel();
                                             return false;
                                         })
                                         .height(10)
                                         .widthRel(0.5f)
-                                        .overlay(IKey.dynamic(() -> module.getDisplayName(appliedModule)).scale(0.5f))
+                                        .overlay(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .backgroundOverlay(slots.get(index).getSlotTexture())
-                                        .addTooltipElement(IKey.dynamic(module::getInfo));
+                                        .addTooltipElement(Text.dynamic(module::getInfo));
                             }
                         }));
     }
@@ -149,7 +154,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                         .left(5)
                         .childPadding(3)
                         .childIf(moduleItem == null || moduleItem.isEmpty(),
-                                () -> new TextWidget<>(IKey.dynamic(() -> module.getDisplayName(appliedModule)))
+                                () -> new TextWidget<>(Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                         .scale(0.75f)
                                         .horizontalCenter())
                         .childIf(moduleItem != null && !moduleItem.isEmpty(), () -> {
@@ -165,10 +170,10 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                                             .childPadding(2)
                                             .heightRel(1)
                                             .child(new TextWidget<>(
-                                                    IKey.dynamic(() -> module.getDisplayName(appliedModule)))
+                                                    Text.dynamic(() -> module.getDisplayName(appliedModule)))
                                                     .scale(0.75f)
                                                     .left(0))
-                                            .child(new TextWidget<>(IKey.dynamic(moduleItem::getHoverName))
+                                            .child(new TextWidget<>(Text.dynamic(moduleItem::getHoverName))
                                                     .scale(0.6f)
                                                     .left(0)));
                         })
@@ -198,18 +203,18 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         }
 
         @Override
-        public @NotNull Result onMousePressed(double mouseX, double mouseY, int button) {
+        public @NotNull Result onMousePressed(int button) {
             if (inventoryUnlocked)
-                return super.onMousePressed(mouseX, mouseY, button);
+                return super.onMousePressed(button);
             selectedSlotSyncValue.setValue(getIndex());
             dynamicSyncHandler.notifyUpdate(buf -> {});
             return Result.SUCCESS;
         }
 
         @Override
-        public boolean onMouseReleased(double mouseX, double mouseY, int button) {
+        public boolean onMouseReleased(int button) {
             if (inventoryUnlocked)
-                return super.onMouseReleased(mouseX, mouseY, button);
+                return super.onMouseReleased(button);
             return false;
         }
 

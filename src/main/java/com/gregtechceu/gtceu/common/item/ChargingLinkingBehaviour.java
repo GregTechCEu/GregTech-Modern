@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 
@@ -20,7 +20,7 @@ public class ChargingLinkingBehaviour implements IInteractionItem {
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         BlockPos pos = context.getClickedPos();
         MetaMachine machine = MetaMachine.getMachine(context.getLevel(), pos);
-        if (machine instanceof PowerSubstationMachine || machine instanceof ChargerMachine) {
+        if (machine instanceof PowerSubstationMachine || machine instanceof BatteryBufferMachine) {
             PlayerOwner owner = machine.getPlayerOwner();
             Player player = context.getPlayer();
             if (owner == null || player != null && owner.isPlayerFriendly(player.getUUID())) {

@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
@@ -39,9 +38,12 @@ import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.layout.Flow;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 
 import java.util.Collections;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("deprecation")
 public class GTRecipeTypes {

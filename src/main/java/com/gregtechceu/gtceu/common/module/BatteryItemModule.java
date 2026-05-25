@@ -25,7 +25,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -144,7 +144,7 @@ public class BatteryItemModule extends ItemModule implements ICapabilityModule, 
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(module.getModuleItem());
         if (electricItem == null) return super.getSettings(module, psm, id);
         return super.getSettings(module, psm, id)
-                .progress(IKey.lang("gtceu.module.gui.charge"),
+                .progress(Text.lang("gtceu.module.gui.charge"),
                         () -> (double) electricItem.getCharge() / electricItem.getMaxCharge(),
                         x -> GTStringUtils.formatInt((long) (x * electricItem.getMaxCharge())) + " EU");
     }

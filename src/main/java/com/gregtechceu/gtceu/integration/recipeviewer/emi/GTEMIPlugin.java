@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockOreEm
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.Ae2PatternTerminalHandler;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTEmiRecipeHandler;
-import com.gregtechceu.gtceu.integration.emi.recipe.GTModuleEMIRecipe;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTModuleEMIRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;

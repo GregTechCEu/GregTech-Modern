@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 
 import java.util.Iterator;
@@ -94,7 +94,7 @@ public abstract class TieredAttributeItemModule extends TieredItemModule {
     @Override
     public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
-                .num(IKey.lang("gtceu.module.gui.power"),
+                .num(Text.lang("gtceu.module.gui.power"),
                         () -> getModifier(module),
                         x -> setModifier(module, x),
                         getMinModifier(module), getMaxModifier(module),

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.emi.recipe;
+package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;

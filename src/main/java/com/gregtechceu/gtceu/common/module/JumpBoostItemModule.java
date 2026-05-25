@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.value.sync.PanelSyncManager;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class JumpBoostItemModule extends TieredItemModule implements IJumpBoostI
     @Override
     public Settings getSettings(AppliedItemModule module, PanelSyncManager psm, int id) {
         return super.getSettings(module, psm, id)
-                .num(IKey.lang("gtceu.module.gui.jump_boost"),
+                .num(Text.lang("gtceu.module.gui.jump_boost"),
                         () -> getJumpBoost(module),
                         x -> setJumpBoost(module, (float) x),
                         0, getMaxJumpBoost());

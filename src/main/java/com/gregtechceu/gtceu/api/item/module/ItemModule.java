@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.module;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -21,9 +20,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
-import brachy.modularui.api.drawable.IKey;
+import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.DrawableStack;
 import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandler;
@@ -185,7 +187,7 @@ public abstract class ItemModule {
                 SyncHandlers.intNumber(() -> isEnabled(module) ? 0 : 1, x -> setEnabled(module, x == 0)));
         Settings settings = new Settings(psm, id);
         return settings
-                .bool(IKey.lang("gtceu.module.gui.enabled"), () -> isEnabled(module), b -> setEnabled(module, b));
+                .bool(Text.lang("gtceu.module.gui.enabled"), () -> isEnabled(module), b -> setEnabled(module, b));
     }
 
     public static final class Settings extends ArrayList<IWidget> {
@@ -199,7 +201,7 @@ public abstract class ItemModule {
             this.id = id;
         }
 
-        private String registerSyncValue(SyncHandler syncHandler) {
+        private String registerSyncValue(SyncHandler<?> syncHandler) {
             String key = "module_setting" + current;
             current++;
             psm.syncValue(key, id, syncHandler);
@@ -216,80 +218,86 @@ public abstract class ItemModule {
             return (W) get(size() - 1);
         }
 
-        private static Flow wrap(IKey label, IWidget widget) {
+        private static Flow wrap(Text label, IWidget widget) {
             return Flow.row()
                     .coverChildren()
                     .childPadding(5)
-                    .child(new TextWidget<>(label))
+                    .child(new TextWidget<>(label.get()))
                     .child(widget);
         }
 
-        public Settings custom(IKey label, SyncHandler syncHandler, Widget<?> widget) {
+        public Settings custom(Text label, SyncHandler<?> syncHandler, Widget<?> widget) {
             String key = registerSyncValue(syncHandler);
             add(wrap(label, widget
                     .syncHandler(key, id)));
             return this;
         }
 
-        public Settings bool(IKey label, BooleanSupplier getter, Consumer<Boolean> setter) {
+        public Settings bool(Text label, BooleanSupplier getter, Consumer<Boolean> setter) {
             return custom(label,
-                    SyncHandlers.intNumber(() -> getter.getAsBoolean() ? 0 : 1, x -> setter.accept(x == 0)),
+                    SyncHandlers.intNumber(() -> getter.getAsBoolean() ? 0 : 1, x -> setter.accept(x == 0))
+                            .allowC2S(),
                     new ToggleButton()
                             .invertSelected(true)
                             .overlay(false, GuiTextures.CHECKMARK));
         }
 
-        public Settings num(IKey label, IntSupplier getter, IntConsumer setter, int min, int max) {
+        public Settings num(Text label, IntSupplier getter, IntConsumer setter, int min, int max) {
             return num(label, getter, setter, min, max, "%d");
         }
 
-        public Settings num(IKey label, IntSupplier getter, IntConsumer setter, int min, int max, String sliderLabel) {
+        public Settings num(Text label, IntSupplier getter, IntConsumer setter, int min, int max, String sliderLabel) {
             custom(label,
-                    SyncHandlers.intNumber(getter, setter),
+                    SyncHandlers.intNumber(getter, setter)
+                            .allowC2S(),
                     new SliderWidget()
                             .bounds(min, max)
                             .width(50)
                             .stopper(1))
                     .<Flow>last()
                     .child(new TextWidget<>(
-                            IKey.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
+                            Text.dynamic(() -> Component.literal(sliderLabel.formatted(getter.getAsInt())))));
             return this;
         }
 
-        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max) {
+        public Settings num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min, double max) {
             return num(label, getter, setter, min, max, "%.2f"::formatted);
         }
 
-        public Settings num(IKey label, DoubleSupplier getter, DoubleConsumer setter, double min, double max,
+        public Settings num(Text label, DoubleSupplier getter, DoubleConsumer setter, double min, double max,
                             DoubleFunction<String> sliderLabel) {
             custom(label,
-                    SyncHandlers.doubleNumber(getter, setter),
+                    SyncHandlers.doubleNumber(getter, setter)
+                            .allowC2S(),
                     new SliderWidget()
                             .bounds(min, max)
                             .width(50)
                             .stopper((max - min) / 10))
                     .<Flow>last()
                     .child(new TextWidget<>(
-                            IKey.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble())))));
+                            Text.dynamic(() -> Component.literal(sliderLabel.apply(getter.getAsDouble())))));
             return this;
         }
 
-        public Settings str(IKey label, Supplier<String> getter, Consumer<String> setter) {
+        public Settings str(Text label, Supplier<String> getter, Consumer<String> setter) {
             return custom(label,
-                    SyncHandlers.string(getter, setter),
+                    SyncHandlers.string(getter, setter)
+                            .allowC2S(),
                     new TextFieldWidget());
         }
 
-        public Settings progress(IKey label, DoubleSupplier getter, DoubleFunction<String> rightLabel) {
+        public Settings progress(Text label, DoubleSupplier getter, DoubleFunction<String> rightLabel) {
             DoubleSyncValue syncValue = SyncHandlers.doubleNumber(getter, null);
             custom(label, syncValue, new ProgressWidget()
-                    .texture(GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL,
-                            GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, 60)
-                    .direction(ProgressWidget.Direction.RIGHT)
+                    .texture(new Rectangle().hollow(1).color(0xFF555555),
+                            new DrawableStack(
+                                    new Rectangle().color(0xFFEEE600),
+                                    new Rectangle().hollow(1).color(0xFF555555)),
+                            ProgressDrawable.Direction.RIGHT)
                     .width(50))
                     .<Flow>last()
                     .child(new TextWidget<>(
-                            IKey.dynamic(() -> Component.literal(rightLabel.apply(syncValue.getValue())))));
+                            Text.dynamic(() -> Component.literal(rightLabel.apply(syncValue.getValue())))));
             return this;
         }
     }
