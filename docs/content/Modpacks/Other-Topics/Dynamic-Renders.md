@@ -88,7 +88,7 @@ public class ExampleMod {
     }
     
     public static void initializeDynamicRenders() {
-        DynamicRenderManager.register(GTCEu.id("item_above_controller"), ItemAboveControllerRender.TYPE);
+        DynamicRenderManager.register(ExampleMod.id("item_above_controller"), ItemAboveControllerRender.TYPE);
     }
 }
 ```
