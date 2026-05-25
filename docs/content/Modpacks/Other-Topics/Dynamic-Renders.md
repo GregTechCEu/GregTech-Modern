@@ -6,7 +6,7 @@ Dynamic renders allow you to attach custom block entity rendering logic to a mac
 
 ### How it works
 
-A `DynamicRender` is a typed renderer that is attached to a machine model. You create a class that extends `DynamicRender<T, S>`, where `T` is the machine type it reads from and `S` is the renderer class itself. The renderer is then registered in `ClientProxy`, and attached to a machine definition via `.model(...).andThen(b -> b.addDynamicRenderer(...))`.
+A `DynamicRender` is a typed renderer that is attached to a machine model. You create a class that extends `DynamicRender<T, S>`, where `T` is the machine type it reads from and `S` is the renderer class itself. The renderer is then registered in `ClientProxy`, and attached to a machine definition via `.model([base model].andThen(b -> b.addDynamicRenderer(...)))`.
 
 ### Creating a renderer
 
@@ -77,16 +77,30 @@ public class ItemAboveControllerRender
 
 ### Registering the type
 
-Register your renderer type in `ClientProxy.initializeDynamicRenders()`:
+Register your renderer type in `ClientProxy`:
 
-```java
-DynamicRenderManager.register(GTCEu.id("item_above_controller"), ItemAboveControllerRender.TYPE);
+```java title="ClientProxy.java"
+public class ClientProxy extends CommonProxy {
+
+    public ClientProxy() {
+        super();
+        init();
+    }
+
+    public static void init() {
+        initializeDynamicRenders();
+    }
+
+    public static void initializeDynamicRenders() {
+        DynamicRenderManager.register(GTCEu.id("item_above_controller"), ItemAboveControllerRender.TYPE);
+    }
+}
 ```
 
 
 ### Attaching to a machine
 
-Use `.model(...).andThen(...)` when defining the machine. If the machine previously used the `.workableCasingModel(...)` shorthand, expand it into `.model(createWorkableCasingMachineModel(...))` so you can chain `.andThen`:
+Use `.model([base model].andThen(b -> b.addDynamicRenderer(new ...())))` when defining the machine. If the machine previously used the `.workableCasingModel(...)` shorthand, expand it into `.model(createWorkableCasingMachineModel(...).andThen(...))`:
 
 ```java
 public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
@@ -96,13 +110,10 @@ public static final MultiblockMachineDefinition MY_MACHINE = REGISTRATE
     .model(createWorkableCasingMachineModel(
             GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
             GTCEu.id("block/multiblock/large_chemical_reactor"))
-            .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createItemAboveControllerRender)))
+            .andThen(b -> b.addDynamicRenderer(new ItemAboveControllerRender())))
     .hasBER(true)
     .register();
 ```
-
-!!! warning "hasBER is required"
-    You must call `.hasBER(true)` on any machine that uses a dynamic renderer. Without it, the block entity renderer is not created and nothing will be drawn.
 
 ### Optional overrides
 
