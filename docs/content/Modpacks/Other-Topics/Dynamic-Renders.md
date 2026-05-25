@@ -6,7 +6,7 @@ Dynamic renders allow you to attach custom block entity rendering logic to a mac
 
 ### How it works
 
-A `DynamicRender` is a typed renderer that is attached to a machine model. You create a class that extends `DynamicRender<T, S>`, where `T` is the machine type it reads from and `S` is the renderer class itself. The renderer is then registered in `ClientProxy`, and attached to a machine definition via `.model([base model].andThen(b -> b.addDynamicRenderer(...)))`.
+A `DynamicRender` is a typed renderer that is attached to a machine model. You create a class that extends `DynamicRender<T, S>`, where `T` is the machine type it reads from and `S` is the renderer class itself. The renderer is registered during mod initialisation, and attached to a machine definition via `.model([base model].andThen(b -> b.addDynamicRenderer(...)))`.
 
 ### Creating a renderer
 
