@@ -4,16 +4,11 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -44,13 +39,13 @@ public class AdvancedMonitorPartMachine extends MonitorPartMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-                                   BlockHitResult hit) {
-        if (hit.getDirection() != getFrontFacing()) return super.onUse(state, world, pos, player, hand, hit);
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (context.getClickedFace() != getFrontFacing()) return super.onUse(context);
+        var hitLocation = context.getHitResult().getLocation();
         clicked = true;
-        clickPosX = hit.getLocation()
+        clickPosX = hitLocation
                 .get(RelativeDirection.RIGHT.getRelative(getFrontFacing(), getUpwardsFacing(), false).getAxis());
-        clickPosY = hit.getLocation()
+        clickPosY = hitLocation
                 .get(getFrontFacing().getAxis().isVertical() ? Direction.Axis.X : Direction.Axis.Y);
         clickPosX -= Math.floor(clickPosX);
         if (clickPosX < 0) clickPosX++;

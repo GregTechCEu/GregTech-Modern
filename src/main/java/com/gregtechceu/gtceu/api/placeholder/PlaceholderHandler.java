@@ -91,7 +91,8 @@ public class PlaceholderHandler {
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
         indices.addTo(name, 1);
-        return placeholders.get(name).apply(context.withIndex(indices.getInt(name)),
+        context.index(indices.getInt(name));
+        return placeholders.get(name).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 

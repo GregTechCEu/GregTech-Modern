@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.gregtechceu.gtceu.api.item.LampBlockItem;
+import com.gregtechceu.gtceu.common.item.LampBlockItem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -48,7 +48,7 @@ public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
         if (!(stack.getItem() instanceof LampBlockItem item)) {
             return;
         }
-        BlockState state = item.getStateFromStack(stack, null);
+        BlockState state = item.getStateFromStack(stack, item.getBlock().defaultBlockState());
         BakedModel p_model = blockRenderer.getBlockModel(state);
 
         for (var model : p_model.getRenderPasses(stack, true)) {

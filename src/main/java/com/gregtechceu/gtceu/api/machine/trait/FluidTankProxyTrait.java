@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -30,8 +29,8 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
     @Getter
     public @Nullable IFluidHandlerModifiable proxy;
 
-    public FluidTankProxyTrait(MetaMachine machine, IO capabilityIO) {
-        super(machine);
+    public FluidTankProxyTrait(IO capabilityIO) {
+        super();
         this.capabilityIO = capabilityIO;
     }
 

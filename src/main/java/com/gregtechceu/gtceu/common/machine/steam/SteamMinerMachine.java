@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -29,8 +29,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -47,13 +45,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SteamMinerMachine extends SteamWorkableMachine implements IControllable, IExhaustVentMachine,
+public class SteamMinerMachine extends SteamWorkableMachine implements IControllable,
                                IUIMachine, IDataInfoProvider, IMiner {
 
-    @Getter
-    @SaveField
-    @SyncToClient
-    private boolean needsVenting;
     @SaveField
     public final NotifiableItemStackHandler importItems;
     @SaveField
@@ -65,14 +59,20 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Nullable
     protected ISubscription exportItemSubs;
 
+    @Getter
+    private final ExhaustVentMachineTrait exhaustVentTrait;
+
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
                              int fortune, int energyPerTick) {
-        super(info, isHighPressure, (m) -> new SteamMinerLogic(m, fortune, speed, maximumRadius));
+        super(info, isHighPressure, new SteamMinerLogic(fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
-        this.importItems = createImportItemHandler();
-        this.exportItems = createExportItemHandler();
+        this.importItems = attachTrait(createImportItemHandler());
+        this.exportItems = attachTrait(createExportItemHandler());
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
+        exhaustVentTrait.setVentingDirection(Direction.UP);
+        exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
     }
 
     @Override
@@ -81,18 +81,11 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     }
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, 0, IO.IN);
+        return new NotifiableItemStackHandler(0, IO.IN);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.OUT);
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        getRecipeLogic().onRemove();
-        exportItems.dropInventoryInWorld();
+        return new NotifiableItemStackHandler(inventorySize, IO.OUT);
     }
 
     @Override
@@ -105,10 +98,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Override
     public void onLoad() {
         super.onLoad();
+        scheduleForNextServerTick(this::updateAutoOutputSubscription);
         if (!isRemote()) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-            }
             exportItemSubs = exportItems.addChangedListener(this::updateAutoOutputSubscription);
         }
     }
@@ -141,11 +132,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
             exportItems.exportToNearby(getFrontFacing());
         }
         updateAutoOutputSubscription();
-    }
-
-    public void setNeedsVenting(boolean venting) {
-        this.needsVenting = venting;
-        syncDataHolder.markClientSyncFieldDirty("needsVenting");
     }
 
     //////////////////////////////////////
@@ -198,7 +184,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
         if (getRecipeLogic().isInventoryFull())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
                     .withStyle(ChatFormatting.RED));
-        if (isVentingBlocked())
+        if (exhaustVentTrait.isVentingBlocked())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.vent")
                     .withStyle(ChatFormatting.RED));
         else if (!drainInput(true))
@@ -215,27 +201,12 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Override
     public boolean drainInput(boolean simulate) {
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
-        if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
+        if (!exhaustVentTrait.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
                 steamTank.drainInternal(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;
-    }
-
-    @Override
-    public @NotNull Direction getVentingDirection() {
-        return Direction.UP;
-    }
-
-    @Override
-    public void markVentingComplete() {
-        this.needsVenting = false;
-    }
-
-    @Override
-    public float getVentingDamage() {
-        return isHighPressure() ? 12F : 6F;
     }
 
     @NotNull

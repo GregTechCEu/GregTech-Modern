@@ -11,13 +11,10 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
-import com.gregtechceu.gtceu.api.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -26,15 +23,18 @@ import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MufflerPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomLogic;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -61,7 +61,6 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -99,12 +98,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     private final CleanroomProviderTrait cleanroomProviderTrait;
 
     public CleanroomMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new CleanroomLogic((CleanroomMachine) m));
-        this.cleanroomProviderTrait = new CleanroomProviderTrait(this);
+        super(info, new CleanroomLogic());
+        this.cleanroomProviderTrait = attachTrait(new CleanroomProviderTrait());
     }
 
     @Override
-    @NotNull
     public CleanroomLogic getRecipeLogic() {
         return (CleanroomLogic) super.getRecipeLogic();
     }
@@ -266,8 +264,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * @param direction the direction to move
      * @return if a block is a valid wall block at pos moved in direction
      */
-    public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
-                               @NotNull Direction direction) {
+    public boolean isBlockEdge(Level world, BlockPos.MutableBlockPos pos,
+                               Direction direction) {
         var state = world.getBlockState(pos.move(direction));
         return state == getCasingState() || state == getGlassState();
     }
@@ -278,13 +276,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      * @param direction the direction to move
      * @return if a block is a valid floor block at pos moved in direction
      */
-    public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos,
-                                @NotNull Direction direction) {
+    public boolean isBlockFloor(Level world, BlockPos.MutableBlockPos pos,
+                                Direction direction) {
         var state = world.getBlockState(pos.move(direction));
         return state == getCasingState() || state == getGlassState() || state.is(CustomTags.CLEANROOM_FLOORS);
     }
 
-    @NotNull
     @Override
     public BlockPattern getPattern() {
         // return the default structure, even if there is no valid size found
@@ -389,17 +386,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     // protected to allow easy addition of addon "cleanrooms"
-    @NotNull
     protected BlockState getCasingState() {
         return GTBlocks.PLASTCRETE.getDefaultState();
     }
 
-    @NotNull
     protected BlockState getGlassState() {
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    @NotNull
     protected static TraceabilityPredicate doorPredicate() {
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().is(CustomTags.CLEANROOM_DOORS),
                 () -> new BlockInfo[] { new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
@@ -410,18 +404,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    @NotNull
     protected TraceabilityPredicate innerPredicate() {
         return new TraceabilityPredicate(blockWorldState -> {
             Set<CleanroomReceiverTrait> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver",
                     Sets::newHashSet);
             // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getTileEntity();
+            BlockEntity blockEntity = blockWorldState.getBlockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
                     return false;
                 }
-                machine.getTraitHolder().getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(receivers::add);
+                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(receivers::add);
             }
             return true;
         }, null) {
@@ -440,8 +433,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
-        if (machine.getTraitHolder().getTrait(CleanroomProviderTrait.TYPE) != null) return true;
-        if (machine instanceof IMufflerMachine) return true;
+        if (machine.getTrait(CleanroomProviderTrait.TYPE) != null) return true;
+        if (machine instanceof MufflerPartMachine) return true;
         if (machine instanceof SimpleGeneratorMachine) return true;
         if (machine instanceof LargeCombustionEngineMachine) return true;
         if (machine instanceof LargeTurbineMachine) return true;
@@ -517,7 +510,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         cleanroomProviderTrait.setActive(this.cleanAmount >= CLEAN_AMOUNT_THRESHOLD);
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

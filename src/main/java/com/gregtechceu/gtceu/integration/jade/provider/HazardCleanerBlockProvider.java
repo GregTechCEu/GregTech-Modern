@@ -1,41 +1,32 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
+import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.FloatTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class HazardCleanerBlockProvider extends CapabilityBlockProvider<IEnvironmentalHazardCleaner> {
+public class HazardCleanerBlockProvider extends MachineTraitProvider<EnvironmentalHazardCleanerTrait, FloatTag> {
 
     public HazardCleanerBlockProvider() {
-        super(GTCEu.id("hazard_cleaner_provider"));
+        super(GTCEu.id("hazard_cleaner_provider"), EnvironmentalHazardCleanerTrait.TYPE);
     }
 
     @Override
-    protected @Nullable IEnvironmentalHazardCleaner getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        return level.getBlockEntity(pos) instanceof IEnvironmentalHazardCleaner cleaner ? cleaner : null;
+    protected FloatTag write(EnvironmentalHazardCleanerTrait capability) {
+        return FloatTag.valueOf(capability.getRemovedLastSecond());
     }
 
     @Override
-    protected void write(CompoundTag data, IEnvironmentalHazardCleaner capability) {
-        data.putFloat("Cleaned", capability.getRemovedLastSecond());
-    }
-
-    @Override
-    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
+    protected void addTooltip(FloatTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        float cleaned = capData.getFloat("Cleaned");
+        float cleaned = capData.getAsFloat();
         if (cleaned > 0) {
             tooltip.add(Component.translatable("gtceu.jade.cleaned_this_second", cleaned));
         }

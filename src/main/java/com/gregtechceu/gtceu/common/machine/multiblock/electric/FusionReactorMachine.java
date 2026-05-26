@@ -81,23 +81,20 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Nullable
     protected TickableSubscription preHeatSubs;
 
+    // Used for rendering
+    public float delta = 0;
+    public int lastColor = -1;
+
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
-        this.energyContainer = createEnergyContainer();
+        this.energyContainer = attachTrait(new NotifiableEnergyContainer(0, 0, 0, 0, 0));
+        energyContainer.setCapabilityValidator(Objects::isNull);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-
-    public NotifiableEnergyContainer createEnergyContainer() {
-        // create an internal energy container for temp storage. its capacity is decided when the structure formed.
-        // it doesn't provide any capability of all sides, but null for the goggles mod to check it storages.
-        var container = new NotifiableEnergyContainer(this, 0, 0, 0, 0, 0);
-        container.setCapabilityValidator(Objects::isNull);
-        return container;
-    }
 
     @Override
     public void onLoad() {

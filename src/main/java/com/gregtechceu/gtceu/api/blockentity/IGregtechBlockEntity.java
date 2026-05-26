@@ -23,7 +23,14 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
     boolean isRemoved();
 
-    void notifyBlockUpdate();
+    /**
+     * Called to notify neighboring blocks that this block has changed.
+     */
+    default void notifyBlockUpdate() {
+        if (getLevel() != null) {
+            getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
+        }
+    }
 
     default void scheduleNeighborShapeUpdate() {
         Level level = getLevel();
@@ -34,8 +41,6 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
-
-    void markAsChanged();
 
     default boolean isRemote() {
         return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;

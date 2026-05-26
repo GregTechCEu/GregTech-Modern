@@ -31,6 +31,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -39,6 +40,11 @@ import java.util.stream.Collectors;
 public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     IGregtechBlockEntity getHolder();
+
+    @Override
+    default ISyncManaged getParentSyncObject() {
+        return getHolder();
+    }
 
     default Level getLevel() {
         return getHolder().getLevel();
@@ -64,16 +70,8 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         getHolder().notifyBlockUpdate();
     }
 
-    default void scheduleRenderUpdate() {
-        getHolder().notifyBlockUpdate();
-    }
-
     default void scheduleNeighborShapeUpdate() {
         getHolder().scheduleNeighborShapeUpdate();
-    }
-
-    default void markAsChanged() {
-        getHolder().markAsChanged();
     }
 
     @Nullable
@@ -108,6 +106,7 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
      * @param coverBehavior
      * @param side
      */
+    @ApiStatus.Internal
     void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side);
 
     @Nullable

@@ -177,6 +177,11 @@ public class MixinHelpers {
                     }
                 }
 
+                if (entry.tagPrefix() == TagPrefix.oreEndstone) {
+                    // Make endstone-based ores dragon-immune
+                    tagMap.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
+                }
+
                 if (entry.tagPrefix() == TagPrefix.frameGt) {
                     tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
                             .addAll(entries);

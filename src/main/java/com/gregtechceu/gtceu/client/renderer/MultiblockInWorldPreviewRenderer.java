@@ -432,7 +432,7 @@ public class MultiblockInWorldPreviewRenderer {
             BlockState state = level.getBlockState(pos);
             FluidState fluidState = state.getFluidState();
             Block block = state.getBlock();
-            BlockEntity te = level.getBlockEntity(pos);
+            BlockEntity be = level.getBlockEntity(pos);
 
             if (block == Blocks.AIR) continue;
 
