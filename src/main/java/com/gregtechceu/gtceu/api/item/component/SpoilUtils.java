@@ -14,6 +14,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
+import org.jetbrains.annotations.Nullable;
+
 public class SpoilUtils {
 
     /**
@@ -35,13 +37,17 @@ public class SpoilUtils {
     }
 
     public static void updateBlock(BlockEntity blockEntity, Direction side) {
-        IItemHandler handler = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side).resolve().orElse(null);
-        if (handler != null) {
-            SpoilContext ctx = new SpoilContext(blockEntity.getLevel(), blockEntity.getBlockPos())
-                    .withItemHandlerSide(side);
-            for (int slot = 0; slot < handler.getSlots(); slot++) {
-                update(handler.getStackInSlot(slot), ctx.withSlot(slot));
-            }
+        blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side)
+                .resolve()
+                .ifPresent(handler -> updateHandler(handler, blockEntity.getLevel(), blockEntity.getBlockPos(), side));
+    }
+
+    public static void updateHandler(IItemHandler handler, Level level, @Nullable BlockPos pos,
+                                     @Nullable Direction side) {
+        SpoilContext ctx = new SpoilContext(level, pos)
+                .withItemHandlerSide(side);
+        for (int slot = 0; slot < handler.getSlots(); slot++) {
+            update(handler.getStackInSlot(slot), ctx.withSlot(slot));
         }
     }
 
