@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.HPCAOverlay;
 import com.gregtechceu.gtceu.client.model.machine.overlays.WorkableOverlays;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
@@ -340,7 +340,7 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createChargerModel() {
         return (ctx, prov, builder) -> {
             builder.forAllStatesModels(renderState -> {
-                ChargerMachine.State state = renderState.getValue(CHARGER_STATE);
+                BatteryBufferMachine.State state = renderState.getValue(CHARGER_STATE);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));

@@ -36,6 +36,7 @@
     ],
     "mixins": [
         "AnvilMenuMixin",
+        "BeehiveBlockAccessor",
         "BlockBehaviourAccessor",
         "BlockMixin",
         "BlockPropertiesAccessor",

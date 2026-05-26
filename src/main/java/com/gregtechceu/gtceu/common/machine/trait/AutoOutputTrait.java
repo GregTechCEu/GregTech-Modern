@@ -21,8 +21,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -128,10 +126,8 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                 Direction.UP;
         this.fluidOutputDirection = itemOutputDirection;
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateFluidOutputSubscription));
-            serverLevel.getServer().tell(new TickTask(0, this::updateItemOutputSubscription));
-        }
+        getMachine().scheduleForNextServerTick(this::updateFluidOutputSubscription);
+        getMachine().scheduleForNextServerTick(this::updateItemOutputSubscription);
         for (var handler : itemHandlers) {
             if (handler instanceof NotifiableItemStackHandler notifiable)
                 itemSubs.add(notifiable.addChangedListener(this::updateItemOutputSubscription));
