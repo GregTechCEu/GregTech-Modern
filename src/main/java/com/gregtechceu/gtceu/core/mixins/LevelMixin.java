@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.item.component.SpoilUtils;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 
@@ -30,9 +29,6 @@ import java.util.Set;
 
 @Mixin(Level.class)
 public abstract class LevelMixin implements LevelAccessor {
-
-    @Unique
-    private static boolean gtceu$updatingSpoilage = false;
 
     @Shadow
     @Final
@@ -65,15 +61,6 @@ public abstract class LevelMixin implements LevelAccessor {
         ChunkAccess chunk = gtceu$maybeGetChunkAsync(pos.getX() >> 4, pos.getZ() >> 4);
         if (chunk != null) {
             cir.setReturnValue(chunk.getBlockState(pos));
-        }
-    }
-
-    @Inject(method = "getBlockEntity", at = @At("RETURN"))
-    private void gtceu$updateSpoilage(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
-        if (cir.getReturnValue() != null && !gtceu$updatingSpoilage) {
-            gtceu$updatingSpoilage = true;
-            SpoilUtils.updateBlock(cir.getReturnValue());
-            gtceu$updatingSpoilage = false;
         }
     }
 
