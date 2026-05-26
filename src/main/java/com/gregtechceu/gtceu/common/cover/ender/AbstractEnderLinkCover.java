@@ -31,6 +31,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -239,6 +240,24 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
 
     protected int getColor() {
         return VirtualEntry.parseColor(this.colorStr);
+    }
+
+    @Override
+    public CompoundTag copyConfig(CompoundTag tag) {
+        tag.putString("colorStr", colorStr);
+        tag.putInt("permission", getPermission().ordinal());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        return super.copyConfig(tag);
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setChannelName(tag.getString("colorStr"));
+        setPermission(Permissions.values()[tag.getInt("permission")]);
+        setIo(IO.values()[tag.getInt("io")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        super.pasteConfig(player, tag);
     }
 
     protected enum Permissions implements EnumSelectorWidget.SelectableEnum {

@@ -16,13 +16,13 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -35,8 +35,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -79,7 +77,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     private final int inventorySize;
 
-    private AABB aabb;
+    private @Nullable AABB aabb;
 
     @SaveField
     @Getter
@@ -109,11 +107,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         super(info, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
-        this.output = createOutputItemHandler();
+        this.output = attachTrait(createOutputItemHandler());
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
-        this.autoOutput = AutoOutputTrait.ofItems(this, output);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(output));
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
     }
@@ -138,7 +136,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     protected NotifiableItemStackHandler createOutputItemHandler() {
-        return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
+        return new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT);
     }
 
     @Override
@@ -146,10 +144,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         super.onLoad();
         if (isRemote()) return;
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-
-            serverLevel.getServer().tell(new TickTask(0, this::updateCollectionSubscription));
-        }
+        scheduleForNextServerTick(this::updateCollectionSubscription);
 
         energySubs = energyContainer.addChangedListener(() -> {
             this.updateBatterySubscription();
@@ -171,7 +166,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public void onMachineDestroyed() {
         super.onMachineDestroyed();
         chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
-        output.dropInventoryInWorld();
     }
 
     //////////////////////////////////////

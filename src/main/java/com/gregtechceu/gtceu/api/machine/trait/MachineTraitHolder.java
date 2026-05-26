@@ -11,13 +11,10 @@ import net.minecraft.nbt.Tag;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public final class MachineTraitHolder {
 
@@ -34,11 +31,34 @@ public final class MachineTraitHolder {
         this.traitsToSave = new Object2ObjectOpenHashMap<>();
     }
 
-    public @UnmodifiableView List<MachineTrait> getAllTraits() {
-        return traits;
+    /**
+     * @return An unmodifiable list of all traits attached to this machine.
+     */
+    public @Unmodifiable List<MachineTrait> getAllTraits() {
+        return Collections.unmodifiableList(traits);
     }
 
-    public void attachTrait(MachineTrait trait) {
+    /**
+     * Attaches a trait to this machine, with the default trait callback priority of 1.
+     * 
+     * @param trait The trait to attach
+     * @return The attached trait
+     */
+    public <T extends MachineTrait> T attachTrait(T trait) {
+        return attachTrait(trait, 1);
+    }
+
+    /**
+     * Attaches a trait to this machine.
+     * 
+     * @param trait            The trait to attach
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
+     * @return The attached trait
+     */
+    public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        trait.setTraitPriority(callbackPriority);
+
         var traitType = trait.getTraitType();
 
         var list = traitsByType.computeIfAbsent(traitType, $ -> new ObjectArrayList<>(1));
@@ -47,33 +67,47 @@ public final class MachineTraitHolder {
         }
 
         list.add(trait);
+        list.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
         traits.add(trait);
+        traits.sort(Comparator.comparingInt(MachineTrait::getTraitPriority).reversed());
+
+        trait.setMachine(machine);
+        return trait;
     }
 
     /**
-     * Registers a trait to be synced/saved.
-     * Do not register a trait to be synced and also store that trait as a syncable machine field, otherwise the trait
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
      * data will be duplicated. Use only one sync method.
      *
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
-    public MachineTraitHolder syncTrait(String traitName, MachineTrait trait) {
-        if (trait.machine != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
+    public MachineTraitHolder registerPersistentTrait(String traitName, MachineTrait trait) {
+        if (trait.getMachine() != machine) throw new IllegalArgumentException("Trait does not belong to this machine.");
         if (traitsToSave.containsKey(traitName))
             throw new IllegalArgumentException("Attempted to register duplicate trait save key \"" + traitName + "\"");
         traitsToSave.put(traitName, trait);
         return this;
     }
 
+    /**
+     * Gets a trait registered by {@code registerPersistentTrait}
+     * 
+     * @param traitName the unique identifier for the trait
+     * @return the trait, or null if not present
+     */
     @SuppressWarnings("unchecked")
-    public @Nullable <T extends MachineTrait> T getSyncTrait(String traitName) {
+    public @Nullable <T extends MachineTrait> T getPersistentTrait(String traitName) {
         MachineTrait trait = traitsToSave.get(traitName);
         return trait == null ? null : (T) trait;
     }
 
     /**
-     * Gets the first trait with the specified type.
+     * Gets the first trait (trait with highest priority) of a specified type
+     * 
+     * @param type The trait type to get
+     * @return The trait, or null if no traits of the given type are present.
      */
     public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
         List<MachineTrait> traitList = traitsByType.get(type);
@@ -81,12 +115,20 @@ public final class MachineTraitHolder {
         return type.castTrait(traitList.get(0));
     }
 
+    /**
+     * Gets the first trait (trait with highest priority) of a specified type
+     * 
+     * @param type The trait type to get
+     * @return An optional result containing the trait if present.
+     */
     public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
         return Optional.ofNullable(getTrait(type));
     }
 
     /**
      * Get all traits with the specified type.
+     * 
+     * @return An unmodifiable list containing all traits of the specified type.
      */
     @SuppressWarnings("unchecked")
     public <T extends MachineTrait> @UnmodifiableView List<T> getTraits(MachineTraitType<T> type) {
@@ -113,13 +155,13 @@ public final class MachineTraitHolder {
             var compoundTag = (CompoundTag) tag;
 
             for (var key : compoundTag.getAllKeys()) {
-                var trait = traitHolder.getSyncTrait(key);
+                var trait = traitHolder.getPersistentTrait(key);
                 if (trait == null) {
                     GTCEu.LOGGER.warn("Attempted to deserialise syncable trait '{}', but no syncable trait has that ID",
                             key);
                     continue;
                 }
-                trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound("key"), context.isClientSync());
+                trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key), context.isClientSync());
             }
 
             return null;

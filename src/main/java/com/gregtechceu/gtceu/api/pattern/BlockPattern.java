@@ -148,7 +148,7 @@ public class BlockPattern {
                             }
                         }
                         boolean canPartShared = true;
-                        if (worldState.getTileEntity() instanceof IMultiPart part) { // add detected parts
+                        if (worldState.getBlockEntity() instanceof IMultiPart part) { // add detected parts
                             if (!predicate.isAny()) {
                                 if (part.isFormed() && !part.canShared() &&
                                         !part.hasController(worldState.controllerPos)) { // check part can be shared

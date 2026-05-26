@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
@@ -150,7 +150,7 @@ public class Material implements Comparable<Material> {
     }
 
     protected void registerMaterial() {
-        GTCEuAPI.materialManager.getRegistry(getModid()).register(this);
+        GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
 
     public String getName() {
@@ -176,7 +176,7 @@ public class Material implements Comparable<Material> {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials())
+        if (!GTRegistries.MATERIALS.canModifyMaterials())
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
     }
@@ -533,7 +533,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials()) {
+        if (!GTRegistries.MATERIALS.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
@@ -1875,7 +1875,7 @@ public class Material implements Comparable<Material> {
 
         @Override
         @HideFromJS
-        public Material register() {
+        public @NotNull Material register() {
             return value = buildAndRegister();
         }
     }

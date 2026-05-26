@@ -187,12 +187,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     }
 
     @Override
-    public void markAsChanged() {
-        container.markAsChanged();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        container.scheduleRenderUpdate();
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return container;
     }
 }

@@ -5,14 +5,13 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -69,7 +68,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         var blockEntity = context.getLevel().getBlockEntity(context.getClickedPos());
         var player = context.getPlayer();
 
-        if (player == null || player instanceof LocalPlayer) return InteractionResult.PASS;
+        if (!(player instanceof ServerPlayer)) return InteractionResult.PASS;
         if (blockEntity instanceof MetaMachine mm &&
                 !MachineOwner.canOpenOwnerMachine(context.getPlayer(), mm))
             return InteractionResult.FAIL;
@@ -108,7 +107,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (tag == null) return InteractionResult.FAIL;
 
             List<ItemStack> items = new ArrayList<>();
-            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
             });
 
@@ -186,7 +185,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
 
         tag.putString(FACING_DIR, directionToString(machine.getFrontFacing()));
 
-        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
                 outputTrait.getItemOutputDirection() != null) {
             tag.putString(ITEM_OUTPUT_SIDE, directionToString(outputTrait.getItemOutputDirection()));
@@ -221,7 +220,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
     }
 
     private static void pasteMachineConfig(ServerPlayer player, MetaMachine machine, CompoundTag tag) {
-        var outputTrait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+        var outputTrait = machine.getTrait(AutoOutputTrait.TYPE);
         if (outputTrait != null) {
             if (tag.contains(ITEM_OUTPUT_SIDE))
                 outputTrait.setItemOutputDirection(stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
@@ -304,9 +303,9 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
         if (tag.contains(CIRCUIT)) tooltip.add(Component.translatable("behaviour.setting.tooltip.circuit_config")
                 .append(Component.literal(Integer.toString(tag.getInt(CIRCUIT))).withStyle(ChatFormatting.YELLOW)));
 
-        if (tag.contains("itemsToPaste")) {
+        if (tag.contains(ITEMS_TO_PASTE)) {
             List<ItemStack> items = new ArrayList<>();
-            tag.getList("itemsToPaste", CompoundTag.TAG_COMPOUND).forEach(t -> {
+            tag.getList(ITEMS_TO_PASTE, CompoundTag.TAG_COMPOUND).forEach(t -> {
                 if (t instanceof CompoundTag c) items.add(ItemStack.of(c));
             });
 

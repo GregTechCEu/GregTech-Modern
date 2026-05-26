@@ -48,7 +48,7 @@ public class LampItemRenderer extends BlockEntityWithoutLevelRenderer {
         if (!(stack.getItem() instanceof LampBlockItem item)) {
             return;
         }
-        BlockState state = item.getStateFromStack(stack, null);
+        BlockState state = item.getStateFromStack(stack, item.getBlock().defaultBlockState());
         BakedModel p_model = blockRenderer.getBlockModel(state);
 
         for (var model : p_model.getRenderPasses(stack, true)) {
