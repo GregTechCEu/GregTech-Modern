@@ -32,8 +32,10 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.fakelevel.MapSchema;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
+import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.SchemaWidget;
 import brachy.modularui.widgets.SliderWidget;
@@ -82,15 +84,15 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
+    private DynamicSyncHandler viewWidget;
+
     @Override
     public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel<?> panel = new ModularPanel<>("test_tile2")
                 // .size(200, 200)
                 .padding(8, 4)
-                .coverChildren();
-        panel
+                .coverChildren()
                 .background(GuiTextures.MC_BACKGROUND);
-
         Flow col = Flow.col().coverChildren();
         col.child(new ListWidget<>()
                 .name("structurePatterns")
@@ -114,19 +116,31 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     return patternColumn;
                 }));
 
+        viewWidget = new DynamicSyncHandler().widgetProvider((slotsSyncManger, buffer) -> {
+            Flow innerCol = Flow.col().coverChildren();
+            if (blocks.isEmpty()) {
+                setupBlocks();
+            }
+            MapSchema array = new MapSchema(blocks);
+            if (getLevel().isClientSide()) {
+                multiSchema = new SchemaWidget(array);
+                innerCol.child(multiSchema.size(200, 200));
+            }
+            innerCol.child(new SchemaWidget.LayerButton(array, 0, maxLayers)
+                    .onMouseReleased((context, button) -> {
+                        this.refreshViewWidget();
+                        return true;
+                    }));
+            return innerCol;
+        }).allowC2S();
+        col.child(new DynamicSyncedWidget<>().syncHandler(viewWidget).coverChildren());
+        refreshViewWidget();
         panel.child(col);
-        if (blocks.isEmpty()) {
-            setupBlocks();
-        }
-        MapSchema array = new MapSchema(blocks);
-        if (getLevel().isClientSide()) {
-            multiSchema = new SchemaWidget(array);
-            col.child(multiSchema.size(200, 200));
-        }
-        // todo this should force a redraw on the schema
-        col.child(new SchemaWidget.LayerButton(array, 0, maxLayers));
-
         return panel;
+    }
+
+    private void refreshViewWidget() {
+        viewWidget.notifyUpdate((packet) -> {});
     }
 
     private void setPredicateDefaultBlock(PatternPredicate predicate, BlockInfo blockInfo) {
@@ -136,6 +150,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             blockState = setValidState(blockState, pos);
             blocks.put(pos, blockState);
         }
+        refreshViewWidget();
     }
 
     private void createAisleSliders(Flow col, BlockPattern blockPattern, String patternName) {
@@ -164,6 +179,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 predicatePositions.clear();
                                 allPositions.clear();
                                 // todo this should force a redraw on the schema
+                                refreshViewWidget();
                             })));
                 }
             }
