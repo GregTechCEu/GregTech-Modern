@@ -148,27 +148,23 @@ public class V0 extends NamespacedSchema {
         // endregion
 
         // region electric
-        final Supplier<TypeTemplate> energyContainer = () -> optionalFields(
-                "energyContainer", notifiableEnergyContainer(schema)
-        );
         final int[] transformerTiers = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? OpV : UV);
-        registerForTiers(schema, map, "transformer_1a", energyContainer, transformerTiers);
-        registerForTiers(schema, map, "transformer_2a", energyContainer, transformerTiers);
-        registerForTiers(schema, map, "transformer_4a", energyContainer, transformerTiers);
-        registerForTiers(schema, map, "transformer_16a", energyContainer, transformerTiers);
+        registerForTiers(schema, map, "transformer_1a", DSL::remainder, transformerTiers);
+        registerForTiers(schema, map, "transformer_2a", DSL::remainder, transformerTiers);
+        registerForTiers(schema, map, "transformer_4a", DSL::remainder, transformerTiers);
+        registerForTiers(schema, map, "transformer_16a", DSL::remainder, transformerTiers);
 
-        registerForTiers(schema, map, "1a_energy_converter", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "4a_energy_converter", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "8a_energy_converter", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "16a_energy_converter", energyContainer, ALL_TIERS);
+        registerForTiers(schema, map, "1a_energy_converter", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "4a_energy_converter", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "8a_energy_converter", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "16a_energy_converter", DSL::remainder, ALL_TIERS);
 
         schema.registerSimple(map, "long_distance_item_pipeline_endpoint");
         schema.registerSimple(map, "long_distance_fluid_pipeline_endpoint");
         schema.registerSimple(map, "long_distance_fluid_pipeline_endpoint");
 
         final Supplier<TypeTemplate> batteryBuffer = () -> optionalFields(
-                "batteryInventory", itemHandler(schema),
-                energyContainer.get()
+                "batteryInventory", itemHandler(schema)
         );
         registerForTiers(schema, map, "battery_buffer_4x", batteryBuffer, ALL_TIERS);
         registerForTiers(schema, map, "battery_buffer_8x", batteryBuffer, ALL_TIERS);
@@ -176,27 +172,23 @@ public class V0 extends NamespacedSchema {
         registerForTiers(schema, map, "charger_4x", batteryBuffer, ALL_TIERS);
 
         registerForTiers(schema, map, "pump", () -> optionalFields(
-                "cache", notifiableFluidTank(schema),
-                energyContainer.get()
+                "cache", notifiableFluidTank(schema)
         ), LV, MV, HV, EV);
         registerForTiers(schema, map, "fisher", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
                 "baitHandler", notifiableItemHandler(schema),
-                "chargerInventory", itemHandler(schema),
-                energyContainer.get()
+                "chargerInventory", itemHandler(schema)
         ), LV, MV, HV, EV, IV, LuV);
         registerForTiers(schema, map, "block_breaker", () -> optionalFields(
                 "cache", notifiableItemHandler(schema),
-                "chargerInventory", itemHandler(schema),
-                energyContainer.get()
+                "chargerInventory", itemHandler(schema)
         ), LV, MV, HV, EV);
         registerSimpleMachine(schema, map, "miner", LV, MV, HV);
-        registerForTiers(schema, map, "world_accelerator", energyContainer, LV, MV, HV, EV, IV, LuV, ZPM, UV);
+        registerForTiers(schema, map, "world_accelerator", DSL::remainder, LV, MV, HV, EV, IV, LuV, ZPM, UV);
         registerForTiers(schema, map, "item_collector", () -> optionalFields(
                 "output", notifiableItemHandler(schema),
                 "chargerInventory", itemHandler(schema),
-                "filterInventory", itemHandler(schema),
-                energyContainer.get()
+                "filterInventory", itemHandler(schema)
         ), LV, MV, HV, EV);
         // endregion
 
@@ -265,14 +257,14 @@ public class V0 extends NamespacedSchema {
         registerForTiers(schema, map, "output_hatch_4x", fluidHatch, ALL_TIERS);
         registerForTiers(schema, map, "output_hatch_9x", fluidHatch, ALL_TIERS);
 
-        registerForTiers(schema, map, "energy_input_hatch", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_4a", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_4a", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "energy_input_hatch_16a", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "energy_output_hatch_16a", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "substation_input_hatch_64a", energyContainer, ALL_TIERS);
-        registerForTiers(schema, map, "substation_output_hatch_64a", energyContainer, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch_4a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch_4a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_input_hatch_16a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "energy_output_hatch_16a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "substation_input_hatch_64a", DSL::remainder, ALL_TIERS);
+        registerForTiers(schema, map, "substation_output_hatch_64a", DSL::remainder, ALL_TIERS);
 
         registerForTiers(schema, map, "muffler_hatch", itemStorage, ELECTRIC_TIERS);
 
@@ -299,21 +291,18 @@ public class V0 extends NamespacedSchema {
         registerForTiers(schema, map, "dual_input_hatch", dualHatch, DUAL_HATCH_TIERS);
         registerForTiers(schema, map, "dual_output_hatch", dualHatch, DUAL_HATCH_TIERS);
 
-        registerForTiers(schema, map, "diode", energyContainer, ELECTRIC_TIERS);
+        registerForTiers(schema, map, "diode", DSL::remainder, ELECTRIC_TIERS);
         registerForTiers(schema, map, "rotor_holder", () -> optionalFields(
                 "rotorMaterial", GTReferences.MATERIAL_NAME.in(schema),
                 itemStorage.get()
         ), GTValues.tiersBetween(HV, GTCEuAPI.isHighTier() ? OpV : UV));
 
-        final Supplier<TypeTemplate> laserHatch = () -> optionalFields(
-                "buffer", notifiableEnergyContainer(schema)
-        );
-        registerForTiers(schema, map, "256a_laser_target_hatch", laserHatch, HIGH_TIERS);
-        registerForTiers(schema, map, "256a_laser_source_hatch", laserHatch, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_target_hatch", laserHatch, HIGH_TIERS);
-        registerForTiers(schema, map, "1024a_laser_source_hatch", laserHatch, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_target_hatch", laserHatch, HIGH_TIERS);
-        registerForTiers(schema, map, "4096a_laser_source_hatch", laserHatch, HIGH_TIERS);
+        registerForTiers(schema, map, "256a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "256a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "1024a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "1024a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "4096a_laser_target_hatch", DSL::remainder, HIGH_TIERS);
+        registerForTiers(schema, map, "4096a_laser_source_hatch", DSL::remainder, HIGH_TIERS);
 
         schema.registerSimple(map, "monitor");
         schema.registerSimple(map, "advanced_monitor");
@@ -368,7 +357,7 @@ public class V0 extends NamespacedSchema {
         schema.registerSimple(map, "central_monitor");
 
         // region GCYM
-        registerForTiers(schema, map, "parallel_hatch", laserHatch, IV, LuV, ZPM, UV);
+        registerForTiers(schema, map, "parallel_hatch", DSL::remainder, IV, LuV, ZPM, UV);
         schema.registerSimple(map, "large_maceration_tower");
         schema.registerSimple(map, "large_chemical_bath");
         schema.registerSimple(map, "large_centrifuge");
@@ -471,7 +460,6 @@ public class V0 extends NamespacedSchema {
                 "exportItems", notifiableItemHandler(schema),
                 "importFluids", notifiableFluidTank(schema),
                 "exportFluids", notifiableFluidTank(schema),
-                "energyContainer", notifiableEnergyContainer(schema),
                 "chargerInventory", itemHandler(schema),
                 "circuitInventory", notifiableItemHandler(schema)
         ), tiers);
@@ -508,12 +496,6 @@ public class V0 extends NamespacedSchema {
 
     protected static TypeTemplate notifiableFluidTank(Schema schema) {
         return field("storages", list(GTReferences.FLUID_STACK.in(schema)));
-    }
-
-    protected static TypeTemplate notifiableEnergyContainer(Schema schema) {
-        return fields(
-                "energyStored", constType(longType())
-        );
     }
     // spotless:on
 }
