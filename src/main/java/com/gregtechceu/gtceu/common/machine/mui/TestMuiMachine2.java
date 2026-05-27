@@ -61,6 +61,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private final Set<Long> allPositions = new HashSet<>();
     private final Reference2ObjectMap<PatternPredicate, Set<Long>> predicatePositions = new Reference2ObjectOpenHashMap<>();
     private final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
+    // TODO player specific set blocks with higher prio than predicate wide changed blocks
     private final Map<BasePredicate, Integer> placed = new Reference2IntOpenHashMap<>();
 
     private Long2ObjectMap<BlockInfo> blockInfo = new Long2ObjectOpenHashMap<>();
