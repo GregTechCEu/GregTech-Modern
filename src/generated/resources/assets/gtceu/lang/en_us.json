@@ -4815,6 +4815,7 @@
   "item.gtceu.tool.behavior.relocate_mining": "§2Magnetic: §fRelocates Mined Blocks and Mob Drops",
   "item.gtceu.tool.behavior.remove_wax": "§6Cleaner: §fRemoves Wax",
   "item.gtceu.tool.behavior.scrape": "§bPolisher: §fRemoves Oxidation",
+  "item.gtceu.tool.behavior.shears": "§aGardener: §fShears blocks and mobs",
   "item.gtceu.tool.behavior.shield_disable": "§cBrute: §fDisables Shields",
   "item.gtceu.tool.behavior.silk_ice": "§bIce Cutter: §fSilk Harvests Ice",
   "item.gtceu.tool.behavior.strip_log": "§5Artisan: §fStrips Logs",

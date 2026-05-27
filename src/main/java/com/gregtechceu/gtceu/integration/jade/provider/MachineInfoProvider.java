@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,47 +15,45 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
 
 /**
- * Jade provider which provides info for a machine trait.
+ * Jade provider which provides info for a specific machine type.
  * 
- * @param <T>       Machine trait class
+ * @param <T>       Machine type
  * @param <TagType> Info data tag type
  */
-@ParametersAreNonnullByDefault
-public abstract class MachineTraitProvider<T extends MachineTrait, TagType extends Tag>
-                                          implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public abstract class MachineInfoProvider<T extends MetaMachine, TagType extends Tag>
+                                         implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
 
     @Getter
     private final ResourceLocation uid;
-    public final MachineTraitType<T> traitType;
+    public final Class<T> machineType;
 
-    protected MachineTraitProvider(ResourceLocation uid, MachineTraitType<T> type) {
+    public MachineInfoProvider(ResourceLocation uid, Class<T> type) {
         this.uid = uid;
-        this.traitType = type;
+        machineType = type;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void appendTooltip(ITooltip iTooltip, BlockAccessor block, IPluginConfig iPluginConfig) {
         var be = block.getBlockEntity();
-        if (be == null || !block.getServerData().contains(uid.toString(), CompoundTag.TAG_COMPOUND)) return;
-
-        var serverData = block.getServerData().getCompound(uid.toString());
-        addTooltip((TagType) serverData, iTooltip, block.getPlayer(), block, be, iPluginConfig);
+        if (be == null || !block.getServerData().contains(uid.toString())) return;
+        addTooltip((TagType) Objects.requireNonNull(block.getServerData().get(uid.toString())), iTooltip,
+                block.getPlayer(), block, be, iPluginConfig);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         var be = blockAccessor.getBlockEntity();
-        if (be instanceof MetaMachine machine) {
-            T t = machine.getTrait(traitType);
-            if (t != null) compoundTag.put(uid.toString(), write(t));
+        if (machineType.isAssignableFrom(be.getClass())) {
+            compoundTag.put(uid.toString(), write((T) be));
         }
     }
 
-    protected abstract TagType write(T trait);
+    protected abstract TagType write(T machine);
 
     protected abstract void addTooltip(TagType data, ITooltip tooltip, Player player, BlockAccessor block,
                                        BlockEntity blockEntity, IPluginConfig config);

@@ -4,39 +4,33 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class MultiblockStructureProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class MultiblockStructureProvider extends MachineInfoProvider<MultiblockControllerMachine, ByteTag> {
 
-    @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        if (blockAccessor.getServerData().contains("hasError")) {
-            boolean hasError = blockAccessor.getServerData().getBoolean("hasError");
-            if (hasError) {
-                iTooltip.add(Component.translatable("gtceu.top.invalid_structure").withStyle(ChatFormatting.RED));
-            } else {
-                iTooltip.add(Component.translatable("gtceu.top.valid_structure").withStyle(ChatFormatting.GREEN));
-            }
-        }
+    public MultiblockStructureProvider() {
+        super(GTCEu.id("multiblock_structure"), MultiblockControllerMachine.class);
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        if (blockAccessor.getBlockEntity() instanceof MultiblockControllerMachine controller) {
-            compoundTag.putBoolean("hasError", !controller.isFormed());
-        }
+    protected ByteTag write(MultiblockControllerMachine machine) {
+        return ByteTag.valueOf(machine.isFormed());
     }
 
     @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("multiblock_structure");
+    protected void addTooltip(ByteTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        if (data.getAsByte() == 0) {
+            tooltip.add(Component.translatable("gtceu.top.invalid_structure").withStyle(ChatFormatting.RED));
+        } else {
+            tooltip.add(Component.translatable("gtceu.top.valid_structure").withStyle(ChatFormatting.GREEN));
+        }
     }
 }

@@ -34,9 +34,6 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     public static final float FADEOUT = 60;
 
-    protected float delta = 0;
-    protected int lastColor = -1;
-
     public FusionRingRender() {}
 
     @Override
@@ -46,14 +43,14 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public boolean shouldRender(FusionReactorMachine machine, Vec3 cameraPos) {
-        return machine.recipeLogic.isWorking() || delta > 0;
+        return (machine.recipeLogic.isWorking() || machine.delta > 0) && super.shouldRender(machine, cameraPos);
     }
 
     @Override
     public void render(FusionReactorMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!machine.recipeLogic.isWorking() && delta <= 0) {
+        if (!machine.recipeLogic.isWorking() && machine.delta <= 0) {
             return;
         }
         if (GTCEu.Mods.isShimmerLoaded()) {
@@ -71,12 +68,13 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         var color = machine.getColor();
         var alpha = 1f;
         if (machine.recipeLogic.isWorking()) {
-            lastColor = color;
-            delta = FADEOUT;
+            machine.lastColor = color;
+            machine.delta = FADEOUT;
         } else {
-            alpha = delta / FADEOUT;
-            lastColor = color(Mth.floor(alpha * 255), red(lastColor), green(lastColor), blue(lastColor));
-            delta -= Minecraft.getInstance().getDeltaFrameTime();
+            alpha = machine.delta / FADEOUT;
+            machine.lastColor = color(Mth.floor(alpha * 255), red(machine.lastColor), green(machine.lastColor),
+                    blue(machine.lastColor));
+            machine.delta -= Minecraft.getInstance().getDeltaFrameTime();
         }
 
         final var lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
@@ -85,9 +83,9 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         var flipped = machine.isFlipped();
         var back = RelativeDirection.BACK.getRelative(front, upwards, flipped);
         var axis = RelativeDirection.UP.getRelative(front, upwards, flipped).getAxis();
-        var r = Mth.lerp(lerpFactor, red(lastColor), 255) / 255f;
-        var g = Mth.lerp(lerpFactor, green(lastColor), 255) / 255f;
-        var b = Mth.lerp(lerpFactor, blue(lastColor), 255) / 255f;
+        var r = Mth.lerp(lerpFactor, red(machine.lastColor), 255) / 255f;
+        var g = Mth.lerp(lerpFactor, green(machine.lastColor), 255) / 255f;
+        var b = Mth.lerp(lerpFactor, blue(machine.lastColor), 255) / 255f;
         RenderBufferHelper.renderRing(stack, buffer,
                 back.getStepX() * 7 + 0.5F,
                 back.getStepY() * 7 + 0.5F,
@@ -98,7 +96,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public boolean shouldRenderOffScreen(FusionReactorMachine machine) {
-        return machine.recipeLogic.isWorking() || delta > 0;
+        return machine.recipeLogic.isWorking() || machine.delta > 0;
     }
 
     @Override

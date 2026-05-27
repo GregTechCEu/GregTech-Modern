@@ -81,6 +81,10 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     @Nullable
     protected TickableSubscription preHeatSubs;
 
+    // Used for rendering
+    public float delta = 0;
+    public int lastColor = -1;
+
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
