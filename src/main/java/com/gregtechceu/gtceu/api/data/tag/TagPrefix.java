@@ -203,7 +203,7 @@ public class TagPrefix {
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
                     new ResourceLocation("block/end_stone"), true, false, true);
 
-    public static final TagPrefix rawOre = new TagPrefix("raw", true)
+    public static final TagPrefix rawOre = new TagPrefix("raw")
             .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
@@ -983,8 +983,6 @@ public class TagPrefix {
     @Getter
     @Setter
     private String idPattern;
-    @Getter
-    public final boolean invertedName;
 
     protected final List<TagType> tags = new ArrayList<>();
     @Setter
@@ -1050,13 +1048,8 @@ public class TagPrefix {
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
     public TagPrefix(String name) {
-        this(name, false);
-    }
-
-    public TagPrefix(String name, boolean invertedName) {
         this.name = name;
         this.idPattern = "%s_" + getLowerCaseName();
-        this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
         PREFIXES.put(name, this);
     }
