@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class NbtUtilsMixin {
 
     @ModifyReturnValue(method = "addDataVersion", at = @At("RETURN"))
-    private static CompoundTag gtceu$addModDataVersions(CompoundTag tag) {
-        return DataFixesInternals.get().addModDataVersions(tag);
+    private static CompoundTag gtceu$addGTDataVersion(CompoundTag tag) {
+        return DataFixesInternals.get().addGTDataVersion(tag);
     }
 }

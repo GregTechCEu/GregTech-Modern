@@ -16,22 +16,22 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
-import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.SharedConstants;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.util.datafix.DataFixers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.*;
 
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -48,12 +48,6 @@ public abstract class DataFixesInternals {
     };
 
     public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {}
-
-    @Contract(pure = true)
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    public static int getModDataVersion(Dynamic<?> compound) {
-        return compound.get(GT_DATA_VERSION_TAG).asInt(0);
-    }
 
     private static @Nullable DataFixesInternals instance;
 
@@ -92,5 +86,30 @@ public abstract class DataFixesInternals {
 
     public abstract <T> Dynamic<T> updateWithAllFixers(DSL.TypeReference dataFixTypes, Dynamic<T> dynamic);
 
-    public abstract CompoundTag addModDataVersions(CompoundTag compound);
+    public abstract CompoundTag addGTDataVersion(CompoundTag tag);
+
+    @Contract(pure = true)
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int getGTDataVersion(Dynamic<?> dynamic) {
+        return getGTDataVersion(dynamic, -1);
+    }
+
+    @Contract(pure = true)
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int getGTDataVersion(Dynamic<?> dynamic, int defaultValue) {
+        return dynamic.get(GT_DATA_VERSION_TAG).asInt(defaultValue);
+    }
+
+    @Contract(pure = true)
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int getGTDataVersion(CompoundTag tag) {
+        return getGTDataVersion(tag, -1);
+    }
+
+    @Contract(pure = true)
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public static int getGTDataVersion(CompoundTag tag, int defaultValue) {
+        return tag.contains(GT_DATA_VERSION_TAG, CompoundTag.TAG_ANY_NUMERIC) ? tag.getInt(GT_DATA_VERSION_TAG) :
+                defaultValue;
+    }
 }

@@ -70,12 +70,12 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
         if (dataFixer == null) {
             return dynamic;
         }
-        int modDataVersion = DataFixesInternals.getModDataVersion(dynamic);
+        int modDataVersion = DataFixesInternals.getGTDataVersion(dynamic);
         return dataFixer.dataFixer().update(type, dynamic, modDataVersion, dataFixer.currentVersion());
     }
 
     @Override
-    public CompoundTag addModDataVersions(CompoundTag compound) {
+    public CompoundTag addGTDataVersion(CompoundTag compound) {
         if (dataFixer != null)
             compound.putInt(GT_DATA_VERSION_TAG, dataFixer.currentVersion());
 

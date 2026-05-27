@@ -54,7 +54,7 @@ public class NoOpDataFixesInternals extends DataFixesInternals {
     }
 
     @Override
-    public CompoundTag addModDataVersions(CompoundTag compound) {
+    public CompoundTag addGTDataVersion(CompoundTag compound) {
         return compound;
     }
 }
