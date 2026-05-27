@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluid;
@@ -49,8 +48,10 @@ public class AlloyBlastRecipeProducer {
         // get the output fluid
         Fluid molten;
         if (ingotHot.doGenerateItem(material)) {
-            molten = GTUtil.getMoltenFluid(material);
-            addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
+            molten = material.getHotFluid();
+            if (molten != null) {
+                addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
+            }
         } else {
             molten = material.getFluid();
         }

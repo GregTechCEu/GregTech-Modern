@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -47,9 +46,7 @@ public class AlloyBlastPropertyAddition {
         // ignore materials which are not alloys
         if (components.size() < 2) return;
 
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
+        if (!material.hasProperty(PropertyKey.BLAST)) return;
         if (!material.hasProperty(PropertyKey.FLUID)) return;
 
         // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
@@ -57,8 +54,8 @@ public class AlloyBlastPropertyAddition {
             return;
         }
 
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
-        material.getProperty(PropertyKey.FLUID).getStorage()
+        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty());
+        material.getProperty(PropertyKey.FLUID)
                 .enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.LIQUID));
     }
 
