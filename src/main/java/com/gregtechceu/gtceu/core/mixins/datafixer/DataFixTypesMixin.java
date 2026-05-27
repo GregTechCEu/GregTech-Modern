@@ -24,6 +24,6 @@ public class DataFixTypesMixin {
         // skip applying datafixers to options.txt; doing that loads the fixers too early
         if ((Object) this == DataFixTypes.OPTIONS) return value;
 
-        return DataFixesInternals.get().updateWithAllFixers(this.type, value);
+        return DataFixesInternals.get().updateToCurrentVersion(this.type, value);
     }
 }

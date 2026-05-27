@@ -81,7 +81,19 @@ public abstract class DataFixesInternals {
     @Contract(value = "-> new", pure = true)
     public abstract Schema createBaseSchema();
 
-    public abstract <T> Dynamic<T> updateWithAllFixers(DSL.TypeReference dataFixTypes, Dynamic<T> dynamic);
+    public <T> Dynamic<T> updateToCurrentVersion(DSL.TypeReference type, Dynamic<T> dynamic) {
+        return update(type, dynamic, getGTDataVersion(dynamic), GTCEu.GT_DATA_VERSION);
+    }
+
+    public abstract <T> Dynamic<T> update(DSL.TypeReference type, Dynamic<T> dynamic, int version, int newVersion);
+
+    public CompoundTag updateToCurrentVersion(DSL.TypeReference dataFixTypes, CompoundTag tag) {
+        return this.update(dataFixTypes, tag, getGTDataVersion(tag), GTCEu.GT_DATA_VERSION);
+    }
+
+    public CompoundTag update(DSL.TypeReference dataFixTypes, CompoundTag tag, int version, int newVersion) {
+        return (CompoundTag) this.update(dataFixTypes, new Dynamic<>(NbtOps.INSTANCE, tag), version, newVersion).getValue();
+    }
 
     public abstract CompoundTag addGTDataVersion(CompoundTag tag);
 

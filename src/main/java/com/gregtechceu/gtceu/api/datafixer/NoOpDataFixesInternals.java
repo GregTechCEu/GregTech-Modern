@@ -41,8 +41,23 @@ public class NoOpDataFixesInternals extends DataFixesInternals {
     }
 
     @Override
-    public <T> Dynamic<T> updateWithAllFixers(DSL.TypeReference dataFixTypes, Dynamic<T> dynamic) {
+    public <T> Dynamic<T> updateToCurrentVersion(DSL.TypeReference type, Dynamic<T> dynamic) {
         return dynamic;
+    }
+
+    @Override
+    public <T> Dynamic<T> update(DSL.TypeReference type, Dynamic<T> dynamic, int version, int newVersion) {
+        return dynamic;
+    }
+
+    @Override
+    public CompoundTag updateToCurrentVersion(DSL.TypeReference dataFixTypes, CompoundTag tag) {
+        return tag;
+    }
+
+    @Override
+    public CompoundTag update(DSL.TypeReference dataFixTypes, CompoundTag tag, int version, int newVersion) {
+        return tag;
     }
 
     @Override

@@ -58,12 +58,11 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
     }
 
     @Override
-    public <T> Dynamic<T> updateWithAllFixers(DSL.TypeReference type, Dynamic<T> dynamic) {
+    public <T> Dynamic<T> update(DSL.TypeReference type, Dynamic<T> dynamic, int version, int newVersion) {
         if (this.dataFixer == null) {
             return dynamic;
         }
-        int modDataVersion = DataFixesInternals.getGTDataVersion(dynamic);
-        return this.dataFixer.update(type, dynamic, modDataVersion, GTCEu.GT_DATA_VERSION);
+        return this.dataFixer.update(type, dynamic, version, newVersion);
     }
 
     @Override
