@@ -72,29 +72,29 @@ public class GTDataFixers {
     public static void addFixers(DataFixerBuilder builder) {
         builder.addSchema(new V0(DataFixUtils.makeKey(0), DataFixHelper.getLatestVanillaSchema()));
 
-        Schema schemaV1 = builder.addSchema(1, V1::new);
-        createBlockItemRenameFix(builder, schemaV1, "RTM Alloy Coil Block",
+        Schema v1 = builder.addSchema(1, V1::new);
+        createBlockItemRenameFix(builder, v1, "Rename RTM Alloy Coil Block",
                 createRenamer("tungstensteel_coil_block", "rtm_alloy_coil_block"));
 
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Advanced Nanomuscle Chestplate rename fix",
+        builder.addFixer(ItemRenameFix.create(v1, "Rename Advanced Nanomuscle Chestplate",
                 createRenamer("gtceu:avanced_nanomuscle_chestplate", "gtceu:advanced_nanomuscle_chestplate")));
 
-        createBlockItemRenameFix(builder, schemaV1, "Palladium Substation Casing",
+        createBlockItemRenameFix(builder, v1, "Rename Palladium Substation Casing",
                 createRenamer("gtceu:palladium_substation", "gtceu:palladium_substation_casing"));
 
-        builder.addFixer(BlockRenameFix.create(schemaV1, "Rename Tungstensteel Fluid Cell",
+        builder.addFixer(BlockRenameFix.create(v1, "Rename Tungstensteel Fluid Cell",
                 createRenamer("gtceu:tungstensteel_fluid_cell", "gtceu:tungsten_steel_fluid_cell")));
 
-        createBlockItemRenameFix(builder, schemaV1, "Rename Low Pressure Steam Miner",
+        createBlockItemRenameFix(builder, v1, "Rename Low Pressure Steam Miner",
                 createRenamer("gtceu:steam_miner", "gtceu:lp_steam_miner"));
 
-        builder.addFixer(ItemRenameFix.create(schemaV1, "Rename electric wire cutters",
+        builder.addFixer(ItemRenameFix.create(v1, "Rename electric wire cutters",
                 createRenamer(Pattern.compile("([lhi])v_([a-z0-9/._-]+)_wirecutter"), "$1v_$2_wire_cutter")));
 
         // separator
 
-        Schema schemaV10 = builder.addSchema(10, SAME_NAMESPACED);
-        builder.addFixer(new AutoOutputTraitFix(schemaV10));
+        Schema v10 = builder.addSchema(10, SAME_NAMESPACED);
+        builder.addFixer(new AutoOutputTraitFix(v10));
 
         /*
         createBlockItemRenameFix(builder, schemaV11, "U238",
@@ -113,9 +113,9 @@ public class GTDataFixers {
 
     private static void createBlockItemRenameFix(DataFixerBuilder builder, Schema schema, String name,
                                                  UnaryOperator<String> renamer) {
-        builder.addFixer(ItemRenameFix.create(schema, "Rename " + name, renamer));
-        builder.addFixer(BlockRenameFix.create(schema, "Rename " + name, renamer));
-        builder.addFixer(BlockEntityRenameFix.create(schema, "Rename " + name, renamer));
+        builder.addFixer(ItemRenameFix.create(schema, name, renamer));
+        builder.addFixer(BlockRenameFix.create(schema, name, renamer));
+        builder.addFixer(BlockEntityRenameFix.create(schema, name, renamer));
     }
 
     private static UnaryOperator<String> createRenamer(String oldName, String newName) {
