@@ -10,8 +10,7 @@ public class AlloyBlastProperty implements IMaterialProperty {
 
     @Getter
     @Setter
-    @NotNull
-    private AlloyBlastRecipeProducer recipeProducer = AlloyBlastRecipeProducer.DEFAULT_PRODUCER;
+    private @NotNull AlloyBlastRecipeProducer recipeProducer = AlloyBlastRecipeProducer.DEFAULT_PRODUCER;
 
     public AlloyBlastProperty() {}
 
