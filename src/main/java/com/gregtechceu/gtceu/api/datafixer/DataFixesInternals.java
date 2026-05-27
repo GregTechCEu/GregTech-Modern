@@ -58,10 +58,11 @@ public abstract class DataFixesInternals {
             }
 
             try {
-                int vanillaDataVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
-                Schema latestVanillaSchema = DataFixers.getDataFixer().getSchema(DataFixUtils.makeKey(vanillaDataVersion));
 
-                instance = new DataFixesInternalsImpl(latestVanillaSchema);
+                instance = new DataFixesInternalsImpl(() -> {
+                    int vanillaDataVersion = SharedConstants.getCurrentVersion().getDataVersion().getVersion();
+                    return DataFixers.getDataFixer().getSchema(DataFixUtils.makeKey(vanillaDataVersion));
+                });
             } catch (Exception ex) {
                 LOGGER.warn("Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft build is hosed.");
                 LOGGER.warn("Using no-op implementation.");

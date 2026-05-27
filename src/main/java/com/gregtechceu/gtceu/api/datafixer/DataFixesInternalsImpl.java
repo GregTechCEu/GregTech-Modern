@@ -28,14 +28,16 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.function.Supplier;
+
 @ApiStatus.Internal
 public final class DataFixesInternalsImpl extends DataFixesInternals {
 
-    private final Schema latestVanillaSchema;
+    private final Supplier<Schema> latestVanillaSchema;
 
     private @Nullable DataFixer dataFixer;
 
-    public DataFixesInternalsImpl(Schema latestVanillaSchema) {
+    public DataFixesInternalsImpl(Supplier<Schema> latestVanillaSchema) {
         this.latestVanillaSchema = latestVanillaSchema;
 
         this.dataFixer = null;
@@ -52,7 +54,7 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     @Override
     public Schema createBaseSchema() {
-        return new V0(0, this.latestVanillaSchema);
+        return new V0(0, this.latestVanillaSchema.get());
     }
 
     @Override
