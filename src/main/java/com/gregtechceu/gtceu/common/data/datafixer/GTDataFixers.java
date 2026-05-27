@@ -29,6 +29,24 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
+/**
+ * Register new datafixers in {@link #addFixers(DataFixerBuilder)}. Remember to bump {@link GTCEu#GT_DATA_VERSION} in
+ * every PR that changes existing save data and add a schema & fixer for it here.
+ *
+ * <p>
+ * For changes that do not change named types or add new (block) entities, use {@link #SAME_NAMESPACED} for the schema.
+ * Register machines (and other block entities) in a schema overriding {@link Schema#registerBlockEntities}.
+ *
+ * <p>
+ * <h3>DO NOT ADD NEW MACHINES TO {@link V0}!! THEY SHOULD BE IN NEW, CORRECTLY VERSIONED, SCHEMAS!!</h3>
+ * Reference vanilla schemas for more information on that, examples linked below. Also check how they're used in
+ * vanilla's {@link net.minecraft.util.datafix.DataFixers DataFixers}.<br>
+ * {@link net.minecraft.util.datafix.schemas.V1460 V1460}, {@link net.minecraft.util.datafix.schemas.V1906 V1906}
+ *
+ * <p>
+ * Note how only fields that use other registered types (such as item/fluid stacks) are defined. The same should be
+ * done for all types.
+ */
 @SuppressWarnings("SameParameterValue")
 public class GTDataFixers {
 
