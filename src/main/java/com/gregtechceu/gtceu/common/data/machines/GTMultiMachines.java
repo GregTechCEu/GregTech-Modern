@@ -569,7 +569,7 @@ public class GTMultiMachines {
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
-                    .where('D', dataHatchPredicate(blocks(CASING_GRATE.get())))
+                    .where('D', blocks(CASING_GRATE.get()).or(dataHatchPredicate()))
                     .where('#', Predicates.any())
                     .build())
             .partSorter(AssemblyLineMachine::partSorter)

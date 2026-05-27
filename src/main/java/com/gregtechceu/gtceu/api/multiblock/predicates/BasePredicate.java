@@ -25,7 +25,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -34,11 +33,11 @@ import java.util.stream.Collectors;
 
 public class BasePredicate {
 
-    @NotNull
     @Getter
     public List<BlockInfo> candidates;
     public Function<CurrentBlockInfo, PatternError> errorPredicate;
     public List<Component> toolTips;
+    public int priority = 0;
     public int minCount = -1;
     public int maxCount = -1;
     public int minLayerCount = -1;
@@ -54,7 +53,7 @@ public class BasePredicate {
     }
 
     /**
-     * @param errorPredicate The precicate function for being a valid block state or tile entity in a pattern
+     * @param errorPredicate The predicate function for being a valid block state or tile entity in a pattern
      * @param candidates     The qualifying blocks or item stacks valid in this predicate based on information from
      *                       either
      *                       the

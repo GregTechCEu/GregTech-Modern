@@ -22,7 +22,7 @@ public class PatternPredicate {
             currentBlockInfo -> currentBlockInfo.getBlockState().isAir() ? null :
                     new PatternError(currentBlockInfo.getBlockPos(), Collections.emptyList()),
             Collections.singletonList(BlockInfo.EMPTY));
-
+    private static final Comparator<BasePredicate> predicateComparator = Comparator.comparingInt(p -> p.priority);
     public List<BasePredicate> predicateList = new ArrayList<>();
     @Getter
     protected boolean isController;
@@ -56,7 +56,7 @@ public class PatternPredicate {
      */
     public PatternPredicate(Function<CurrentBlockInfo, PatternError> predicate,
                             List<BlockInfo> candidates) {
-        predicateList.add(new BasePredicate(predicate, candidates));
+        this("Unknown", predicate, candidates);
     }
 
     public PatternPredicate(Function<CurrentBlockInfo, PatternError> predicate) {
@@ -86,7 +86,6 @@ public class PatternPredicate {
         if (tips.length > 0) {
             List<Component> tooltips = Arrays.stream(tips).toList();
             predicateList.forEach(predicate -> {
-                if (predicate.candidates == null) return;
                 if (predicate.toolTips == null) {
                     predicate.toolTips = new ArrayList<>();
                 }
@@ -167,6 +166,11 @@ public class PatternPredicate {
         return this;
     }
 
+    public PatternPredicate setPriority(int priority) {
+        predicateList.forEach(p -> p.priority = priority);
+        return this;
+    }
+
     /**
      * Set renderMask.
      */
@@ -197,6 +201,7 @@ public class PatternPredicate {
             PatternPredicate newPredicate = new PatternPredicate(this);
             newPredicate.hasAir = newPredicate.hasAir || this == AIR || other == AIR;
             newPredicate.predicateList.addAll(other.predicateList);
+            newPredicate.predicateList.sort(predicateComparator);
             return newPredicate;
         }
         return this;

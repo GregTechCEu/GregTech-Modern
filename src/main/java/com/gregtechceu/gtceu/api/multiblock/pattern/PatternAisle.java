@@ -5,6 +5,7 @@ import lombok.Setter;
 
 public class PatternAisle {
 
+    @Getter
     protected int minRepeats, maxRepeats;
     @Setter
     @Getter
