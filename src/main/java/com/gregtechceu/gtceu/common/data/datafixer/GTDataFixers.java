@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.api.datafixer.LazyDataFixer;
 import com.gregtechceu.gtceu.common.datafixer.fixes.AutoOutputTraitFix;
 import com.gregtechceu.gtceu.common.datafixer.schemas.*;
@@ -12,49 +12,65 @@ import net.minecraft.util.datafix.fixes.*;
 import net.minecraft.util.datafix.schemas.NamespacedSchema;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
+import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
-import static com.gregtechceu.gtceu.api.datafixer.DataFixesInternals.BASE_SCHEMA;
-
 @SuppressWarnings("SameParameterValue")
 public class GTDataFixers {
 
     private static final BiFunction<Integer, Schema, Schema> SAME_NAMESPACED = NamespacedSchema::new;
 
-    public static void init() {
+    @Getter
+    private static final @Nullable DataFixer dataFixer = createFixer(SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE);
+
+    public static void init() {}
+
+    private static @Nullable DataFixer createFixer(final Set<DSL.TypeReference> typesToOptimize) {
         if (!ConfigHolder.INSTANCE.compat.doDataFixers) {
-            return;
+            return null;
         }
 
-        GTCEu.LOGGER.info("Registering data fixers");
+        DataFixHelper.LOGGER.info("Registering data fixers");
 
-        DataFixer fixer = new LazyDataFixer(() -> {
-            DataFixerBuilder builder = new DataFixerBuilder(GTCEu.GT_DATA_VERSION);
-            addFixers(builder);
 
-            if (SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE.isEmpty()) {
-                return builder.buildUnoptimized();
-            } else {
-                Executor executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
-                        .setNameFormat("GTCEu Datafixer Bootstrap").setDaemon(true).setPriority(1).build());
-                return builder.buildOptimized(SharedConstants.DATA_FIX_TYPES_TO_OPTIMIZE, executor);
+        return new LazyDataFixer(() -> {
+            try {
+                DataFixerBuilder builder = new DataFixerBuilder(GTCEu.GT_DATA_VERSION);
+                addFixers(builder);
+
+                if (typesToOptimize.isEmpty()) {
+                    return builder.buildUnoptimized();
+                } else {
+                    Executor executor = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+                            .setNameFormat("GTCEu Datafixer Bootstrap").setDaemon(true).setPriority(1).build());
+                    return builder.buildOptimized(typesToOptimize, executor);
+                }
+            } catch (Exception ex) {
+                DataFixHelper.LOGGER.warn("Failed to initialize! Either someone stopped DFU from initializing, or this Minecraft build is hosed.");
+                DataFixHelper.LOGGER.warn("Using no-op implementation.");
+                DataFixHelper.LOGGER.warn("Full error: ", ex);
+
+                return null;
             }
         });
-        DataFixesInternals.get().registerFixer(GTCEu.GT_DATA_VERSION, fixer);
     }
 
     public static void addFixers(DataFixerBuilder builder) {
-        builder.addSchema(0, BASE_SCHEMA);
+        builder.addSchema(new V0(DataFixUtils.makeKey(0), DataFixHelper.getLatestVanillaSchema()));
 
         Schema schemaV1 = builder.addSchema(1, V1::new);
         createBlockItemRenameFix(builder, schemaV1, "RTM Alloy Coil Block",

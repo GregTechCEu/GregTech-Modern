@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
-import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.datafixers.DSL;
 import com.mojang.serialization.Dynamic;
@@ -24,6 +24,6 @@ public class DataFixTypesMixin {
         // skip applying datafixers to options.txt; doing that loads the fixers too early
         if ((Object) this == DataFixTypes.OPTIONS) return value;
 
-        return DataFixesInternals.get().updateToCurrentVersion(this.type, value);
+        return DataFixHelper.updateToCurrentVersion(this.type, value);
     }
 }

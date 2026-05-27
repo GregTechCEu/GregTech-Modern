@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
 import net.minecraft.nbt.CompoundTag;
@@ -32,8 +32,7 @@ public class ForgeHooksMixin {
     @ModifyExpressionValue(method = "readAdditionalLevelSaveData", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
     private static CompoundTag gtceu$fixRegistriesTag(CompoundTag regs,
                                                       @Local(name = "tag") CompoundTag tag) {
-        int currentVersion = DataFixesInternals.getGTDataVersion(tag);
-        return DataFixesInternals.get()
-                .update(GTReferences.FORGE_REGISTRY_DATA, regs, currentVersion, GTCEu.GT_DATA_VERSION);
+        int currentVersion = DataFixHelper.getGTDataVersion(tag);
+        return DataFixHelper.update(GTReferences.FORGE_REGISTRY_DATA, regs, currentVersion, GTCEu.GT_DATA_VERSION);
     }
 }

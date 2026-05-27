@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.datafixer;
 
-import com.gregtechceu.gtceu.api.datafixer.DataFixesInternals;
+import com.gregtechceu.gtceu.api.datafixer.DataFixHelper;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -12,6 +12,6 @@ public class NbtUtilsMixin {
 
     @ModifyReturnValue(method = "addDataVersion", at = @At("RETURN"))
     private static CompoundTag gtceu$addGTDataVersion(CompoundTag tag) {
-        return DataFixesInternals.get().addGTDataVersion(tag);
+        return DataFixHelper.addGTDataVersion(tag);
     }
 }
