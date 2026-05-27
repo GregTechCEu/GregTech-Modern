@@ -37,6 +37,27 @@ public class V0 extends NamespacedSchema {
                               Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
         super.registerTypes(schema, entityTypes, blockEntityTypes);
 
+        // add forge registry id map to the level schema
+        schema.registerType(false, GTReferences.FORGE_REGISTRY_DATA, () -> optionalFields(
+                "minecraft:block", optionalFields(
+                        "ids", compoundList(References.BLOCK_NAME.in(schema), constType(intType())),
+                        "aliases", compoundList(DSL.constType(namespacedString()), References.BLOCK_NAME.in(schema))
+                ),
+                "minecraft:item", optionalFields(
+                        "ids", compoundList(References.ITEM_NAME.in(schema), constType(intType())),
+                        "aliases", compoundList(DSL.constType(namespacedString()), References.ITEM_NAME.in(schema))
+                ),
+                "minecraft:fluid", optionalFields(
+                        "ids", compoundList(GTReferences.FLUID_NAME.in(schema), constType(intType())),
+                        "aliases", compoundList(DSL.constType(namespacedString()), GTReferences.FLUID_NAME.in(schema))
+                ),
+                "minecraft:entity_type", optionalFields(
+                        "ids", compoundList(References.ENTITY_NAME.in(schema), constType(intType())),
+                        "aliases", compoundList(DSL.constType(namespacedString()), References.ENTITY_NAME.in(schema))
+                )
+        ));
+
+
         schema.registerType(false, GTReferences.MATERIAL_NAME, () -> constType(namespacedString()));
 
         schema.registerType(true, GTReferences.FLUID_STACK, () -> hook(

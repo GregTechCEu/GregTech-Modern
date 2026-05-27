@@ -1,6 +1,9 @@
 {
     "required": true,
     "minVersion": "0.8",
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.3"
+    },
     "refmap": "gtceu.refmap.json",
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_17",
@@ -65,6 +68,7 @@
         "TagValueAccessor",
         "client.ItemEntityMixin",
         "datafixer.DataFixTypesMixin",
+        "datafixer.ForgeHooksMixin",
         "datafixer.NbtUtilsMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
