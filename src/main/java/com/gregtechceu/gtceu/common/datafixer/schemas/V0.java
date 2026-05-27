@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.common.data.datafixer.GTReferences;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.Hook;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 
 import net.minecraft.util.datafix.fixes.References;
@@ -60,13 +59,10 @@ public class V0 extends NamespacedSchema {
 
         schema.registerType(false, GTReferences.MATERIAL_NAME, () -> constType(namespacedString()));
 
-        schema.registerType(true, GTReferences.FLUID_STACK, () -> hook(
-                optionalFields(
-                        "FluidName", GTReferences.FLUID_NAME.in(schema),
-                        "Tag", remainder()
-                ),
-                Hook.HookFunction.IDENTITY, Hook.HookFunction.IDENTITY)
-        );
+        schema.registerType(true, GTReferences.FLUID_STACK, () -> optionalFields(
+                "FluidName", GTReferences.FLUID_NAME.in(schema),
+                "Tag", remainder()
+        ));
         schema.registerType(false, GTReferences.FLUID_NAME, () -> constType(namespacedString()));
     }
 
