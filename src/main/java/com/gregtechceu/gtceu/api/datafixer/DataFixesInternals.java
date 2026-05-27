@@ -47,8 +47,6 @@ public abstract class DataFixesInternals {
         return get().createBaseSchema();
     };
 
-    public record DataFixerEntry(DataFixer dataFixer, int currentVersion) {}
-
     private static @Nullable DataFixesInternals instance;
 
     public static DataFixesInternals get() {
@@ -78,8 +76,6 @@ public abstract class DataFixesInternals {
 
     public abstract void registerFixer(@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion,
                                        DataFixer dataFixer);
-
-    public abstract @Nullable DataFixerEntry getFixerEntry();
 
     @Contract(value = "-> new", pure = true)
     public abstract Schema createBaseSchema();

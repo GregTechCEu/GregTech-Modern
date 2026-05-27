@@ -16,29 +16,24 @@
  */
 package com.gregtechceu.gtceu.api.datafixer;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.datafixer.schemas.V0;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
-import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
-import net.minecraft.SharedConstants;
+
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 @ApiStatus.Internal
 public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     private final Schema latestVanillaSchema;
 
-    private @Nullable DataFixerEntry dataFixer;
+    private @Nullable DataFixer dataFixer;
 
     public DataFixesInternalsImpl(Schema latestVanillaSchema) {
         this.latestVanillaSchema = latestVanillaSchema;
@@ -52,12 +47,7 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
             throw new IllegalArgumentException("GTCEu already has a registered data fixer");
         }
 
-        this.dataFixer = new DataFixerEntry(dataFixer, currentVersion);
-    }
-
-    @Override
-    public @Nullable DataFixerEntry getFixerEntry() {
-        return dataFixer;
+        this.dataFixer = dataFixer;
     }
 
     @Override
@@ -67,17 +57,18 @@ public final class DataFixesInternalsImpl extends DataFixesInternals {
 
     @Override
     public <T> Dynamic<T> updateWithAllFixers(DSL.TypeReference type, Dynamic<T> dynamic) {
-        if (dataFixer == null) {
+        if (this.dataFixer == null) {
             return dynamic;
         }
         int modDataVersion = DataFixesInternals.getGTDataVersion(dynamic);
-        return dataFixer.dataFixer().update(type, dynamic, modDataVersion, dataFixer.currentVersion());
+        return this.dataFixer.update(type, dynamic, modDataVersion, GTCEu.GT_DATA_VERSION);
     }
 
     @Override
     public CompoundTag addGTDataVersion(CompoundTag compound) {
-        if (dataFixer != null)
-            compound.putInt(GT_DATA_VERSION_TAG, dataFixer.currentVersion());
+        if (this.dataFixer != null) {
+            compound.putInt(GT_DATA_VERSION_TAG, GTCEu.GT_DATA_VERSION);
+        }
 
         return compound;
     }

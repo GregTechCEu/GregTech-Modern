@@ -18,14 +18,11 @@ package com.gregtechceu.gtceu.api.datafixer;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixer;
-import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.serialization.Dynamic;
 import net.minecraft.nbt.CompoundTag;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
-import java.util.function.Consumer;
+import org.jetbrains.annotations.Range;
 
 public class NoOpDataFixesInternals extends DataFixesInternals {
 
@@ -37,11 +34,6 @@ public class NoOpDataFixesInternals extends DataFixesInternals {
 
     @Override
     public void registerFixer(@Range(from = 0, to = Integer.MAX_VALUE) int currentVersion, DataFixer dataFixer) {}
-
-    @Override
-    public @Nullable DataFixerEntry getFixerEntry() {
-        return null;
-    }
 
     @Override
     public Schema createBaseSchema() {
