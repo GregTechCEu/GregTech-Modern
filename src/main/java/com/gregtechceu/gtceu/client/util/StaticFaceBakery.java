@@ -63,9 +63,8 @@ public class StaticFaceBakery {
                 case WEST -> new float[] { posFrom.z(), posTo.y(), posTo.z(), posFrom.y() };
                 case EAST -> new float[] { posTo.z(), posTo.y(), posFrom.z(), posFrom.y() };
             };
-        }
-        else {
-             uv = new float[] { 0.0F, 0.0F, 16.0F, 16.0F };
+        } else {
+            uv = new float[] { 0.0F, 0.0F, 16.0F, 16.0F };
         }
 
         return bakeQuad(posFrom, posTo,

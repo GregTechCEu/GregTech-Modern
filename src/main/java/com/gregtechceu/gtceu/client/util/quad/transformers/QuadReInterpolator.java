@@ -64,11 +64,11 @@ public class QuadReInterpolator implements IQuadTransformer {
             originalSpriteLightmap[v] = vertices[offset + UV2];
         }
 
-//        interpolationHelper.reset(
-//                posCache[0][0], posCache[0][1],
-//                posCache[1][0], posCache[1][1],
-//                posCache[2][0], posCache[2][1],
-//                posCache[3][0], posCache[3][1]);
+        // interpolationHelper.reset(
+        // posCache[0][0], posCache[0][1],
+        // posCache[1][0], posCache[1][1],
+        // posCache[2][0], posCache[2][1],
+        // posCache[3][0], posCache[3][1]);
     }
 
     @Override

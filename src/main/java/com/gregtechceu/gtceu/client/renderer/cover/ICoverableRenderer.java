@@ -77,8 +77,8 @@ public interface ICoverableRenderer {
                     quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));
                 } else if (side != face.getOpposite() &&
                         (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
-                    quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0], true));
-                }
+                            quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0], true));
+                        }
             }
 
             ModelData coverData = coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) :

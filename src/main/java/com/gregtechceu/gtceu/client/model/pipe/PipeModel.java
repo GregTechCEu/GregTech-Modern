@@ -426,7 +426,9 @@ public class PipeModel {
          * @param texture The texture of the face, usually in {@code #reference} format.
          *                <b>Note that the String does NOT begin with {@code #}</b>.
          * @param builder The face builder.
-         * @see #makePartModelElement(ModelBuilder, Direction, boolean, float, int, int, float, float, float, float, float, float, ResourceLocation, ResourceLocation, String, String) ActivablePipeModel.makePartModelElement
+         * @see #makePartModelElement(ModelBuilder, Direction, boolean, float, int, int, float, float, float, float,
+         *      float, float, ResourceLocation, ResourceLocation, String, String)
+         *      ActivablePipeModel.makePartModelElement
          */
         void accept(Direction face, String texture, ModelBuilder<T>.ElementBuilder.FaceBuilder builder);
     }
