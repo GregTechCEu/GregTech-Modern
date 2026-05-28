@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMac
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -69,7 +70,7 @@ public class MultiblockControllerMachine extends MetaMachine {
         super.onLoad();
         if (!isRemote()) {
             // run a structure check on the first tick
-            scheduleForNextServerTick(this::checkAndFormStructure);
+            ((ServerLevel)getLevel()).getServer().tell(new TickTask(2, this::checkAndFormStructure));
         }
     }
 
