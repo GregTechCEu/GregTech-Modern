@@ -1,0 +1,30 @@
+package com.gregtechceu.gtceu.api.multiblock.error;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class BlockMatchingError extends PatternError {
+
+    private final Block[] blocks;
+
+    public BlockMatchingError(BlockPos pos, Block[] blocks) {
+        super(pos, Collections.emptyList());
+        this.blocks = blocks;
+    }
+
+    @Override
+    public List<Component> getErrorInfo() {
+        List<Component> comps = new ArrayList<>();
+        for (Block block : blocks) {
+            comps.add(block.getName());
+        }
+        comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(),
+                pos.getY(), pos.getZ()));
+        return comps;
+    }
+}

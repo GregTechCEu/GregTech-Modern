@@ -14,6 +14,8 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternAisle;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -24,6 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
@@ -61,6 +64,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private final MultiblockMachineDefinition multiblockDefinition;
 
     private SchemaWidget multiSchema;
+    private MutableSchema mutableSchema;
     private Map<PatternPredicate, BlockInfo> predicateSetting = new HashMap<>();
     private int maxLayers = 0;
     private int layer = 0;
@@ -141,7 +145,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             MapSchema array = new MapSchema(blocks);
             array.setRenderFilter((pos, state) -> pos.getY() < layer);
             if (getLevel().isClientSide()) {
-                multiSchema = new SchemaWidget(array);
+                mutableSchema = new MutableSchema(blocks);
+                multiSchema = new SchemaWidget(mutableSchema);
                 innerCol.child(multiSchema.size(200, 200));
             }
             innerCol.child(new SchemaWidget.LayerButton(array, 0, maxLayers)
@@ -174,6 +179,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private void refreshViewWidget() {
         schemaViewWidget.notifyUpdate((packet) -> {});
         partsViewWidget.notifyUpdate((packet) -> {});
+        multiSchema.getSchemaRenderer().recompile();
     }
 
     private void setPredicateDefaultBlock(PatternPredicate predicate, BlockInfo blockInfo) {
@@ -426,6 +432,16 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     } else if (!allPositions.contains(blockPos.relative(Direction.DOWN).asLong())) {
                         state = state.setValue(machineBlock.getRotationState().property, Direction.DOWN);
                     }
+                }
+                BlockEntity be = machineBlock.newBlockEntity(blockPos, state);
+                if (be instanceof MetaMachine machine) {
+                    MachineRenderState renderState = machine.getRenderState();
+                    if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
+                        machine.setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
+                    }
+                }
+                if (this.mutableSchema != null) {
+                    this.mutableSchema.updateBlockEntity(be);
                 }
             }
         }

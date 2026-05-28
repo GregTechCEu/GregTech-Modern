@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
+import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
@@ -31,9 +32,8 @@ public class PredicateBlocks extends BasePredicate {
         Block[] finalBlocks = blocks;
         errorPredicate = state -> {
             BlockPos pos = state.getPos();
-            return ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ?
-                    null : new PatternStringError(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(),
-                            pos.getY(), pos.getZ()));
+
+            return ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ? null : new BlockMatchingError(pos, finalBlocks);
         };
 
         candidates = Arrays.stream(finalBlocks)
