@@ -124,7 +124,7 @@ public class GTResearchMachines {
                     }))
             .register();
 
-    public static final MachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
+    public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
             .langValue("Data Bank")
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(COMPUTER_CASING)
@@ -155,7 +155,7 @@ public class GTResearchMachines {
                     GTCEu.id("block/multiblock/data_bank"))
             .register();
 
-    public static final MachineDefinition NETWORK_SWITCH = REGISTRATE
+    public static final MultiblockMachineDefinition NETWORK_SWITCH = REGISTRATE
             .multiblock("network_switch", NetworkSwitchMachine::new)
             .langValue("Network Switch")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -194,7 +194,7 @@ public class GTResearchMachines {
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
 
-    public static final MachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
+    public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
             .multiblock("high_performance_computation_array", HPCAMachine::new)
             .langValue("High Performance Computation Array (HPCA)")
             .rotationState(RotationState.NON_Y_AXIS)

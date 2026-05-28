@@ -393,12 +393,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         return Predicates.controller(Predicates.blocks(getDefinition().getBlock()));
 
                     int intersections = 0;
-
                     boolean topAisle = bp.getX() == b[0];
                     boolean bottomAisle = bp.getX() == -b[1];
-
                     if (topAisle || bottomAisle) intersections++;
-
                     // negative signs for the LEFT and BACK ordinals
                     // string dir is right, so its bounds[2] and bounds[3]
                     if (bp.getY() == -b[2] || bp.getY() == b[3]) intersections++;
@@ -409,14 +406,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         if (topAisle || bottomAisle) return edgePredicate;
                         return verticalEdgePredicate;
                     }
-
                     if (intersections == 1) {
                         if (topAisle) return filterPredicate;
                         return facePredicate;
                     }
-
                     return innerPredicate;
-
                 })
                 .build();
 
