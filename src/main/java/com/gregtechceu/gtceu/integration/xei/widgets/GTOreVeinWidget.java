@@ -118,7 +118,6 @@ public class GTOreVeinWidget extends WidgetGroup {
         return String.format("%dmB/s", depletion);
     }
 
-
     @SuppressWarnings("all")
     private String veinYield(BedrockOreDefinition oreDefinition) {
         IntProvider yieldProvider = oreDefinition.yield();
