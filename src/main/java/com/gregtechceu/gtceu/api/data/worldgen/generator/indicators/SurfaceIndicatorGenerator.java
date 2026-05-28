@@ -146,10 +146,10 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
                                             BlockState blockState) {
-        return (access) -> {
+        return (access, wglevel) -> {
             var positions = positionsWithoutY.stream()
-                    .map(pos -> placement.resolver.apply(level, access, pos))
-                    .filter(pos -> !level.isOutsideBuildHeight(pos))
+                    .map(pos -> placement.resolver.apply(wglevel, access, pos))
+                    .filter(pos -> !wglevel.isOutsideBuildHeight(pos))
                     .toList();
 
             for (BlockPos pos : positions) {
@@ -163,7 +163,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                 if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
                     return;
 
-                if (!blockState.canSurvive(level, pos))
+                if (!blockState.canSurvive(wglevel, pos))
                     return;
 
                 section.setBlockState(sectionX, sectionY, sectionZ, blockState, false);
