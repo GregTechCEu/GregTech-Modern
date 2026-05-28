@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
-import com.gregtechceu.gtceu.core.mixins.BulkSectionAccessAccessor;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -141,33 +140,27 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
                                             BlockState blockState) {
-        return (access) -> {
-            try {
-                final var bulkedlevel = ((BulkSectionAccessAccessor) access).getLevel();
-                var positions = positionsWithoutY.stream()
-                        .map(pos -> placement.resolver.apply((WorldGenLevel) bulkedlevel, access, pos))
-                        .filter(pos -> !bulkedlevel.isOutsideBuildHeight(pos))
-                        .toList();
+        return (access, wglevel) -> {
+            var positions = positionsWithoutY.stream()
+                    .map(pos -> placement.resolver.apply(wglevel, access, pos))
+                    .filter(pos -> !wglevel.isOutsideBuildHeight(pos))
+                    .toList();
 
-                for (BlockPos pos : positions) {
-                    // This is necessary because the heightmap can't be determined at the time of creating the placers
-                    var section = Objects.requireNonNull(access.getSection(pos));
+            for (BlockPos pos : positions) {
+                // This is necessary because the heightmap can't be determined at the time of creating the placers
+                var section = Objects.requireNonNull(access.getSection(pos));
 
-                    int sectionX = SectionPos.sectionRelative(pos.getX());
-                    int sectionY = SectionPos.sectionRelative(pos.getY());
-                    int sectionZ = SectionPos.sectionRelative(pos.getZ());
+                int sectionX = SectionPos.sectionRelative(pos.getX());
+                int sectionY = SectionPos.sectionRelative(pos.getY());
+                int sectionZ = SectionPos.sectionRelative(pos.getZ());
 
-                    if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
-                        return;
+                if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
+                    return;
 
-                    if (!blockState.canSurvive(bulkedlevel, pos))
-                        return;
+                if (!blockState.canSurvive(wglevel, pos))
+                    return;
 
-                    section.setBlockState(sectionX, sectionY, sectionZ, blockState, false);
-                }
-            } catch (RuntimeException ignored) {
-                // Ignoring it just makes the indicators try to place again when the correct chunk is being generated.
-                // This should theoretically never happen, but it shouldn't be fatal either.
+                section.setBlockState(sectionX, sectionY, sectionZ, blockState, false);
             }
         };
     }
