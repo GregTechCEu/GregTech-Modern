@@ -88,25 +88,8 @@ public class MutableSchema implements ISchema {
 
     @Override
     public @NotNull Iterator<Map.Entry<BlockPos, BlockState>> iterator() {
-        return new AbstractIterator<>() {
-
-            private final ObjectIterator<Long2ReferenceMap.Entry<BlockState>> it = blocks
-                    .long2ReferenceEntrySet().iterator();
-
-            @Override
-            protected Map.Entry<BlockPos, BlockState> computeNext() {
-                while (true) {
-                    if (it.hasNext()) {
-                        Long2ReferenceMap.Entry<BlockState> entry = it.next();
-                        BlockPos key = BlockPos.of(entry.getLongKey());
-                        if (renderFilter.test(key, entry.getValue())) {
-                            return Map.entry(key, entry.getValue());
-                        }
-                        continue;
-                    }
-                    return endOfData();
-                }
-            }
-        };
+        return blocks.long2ReferenceEntrySet().stream()
+                .map(e -> Map.entry(BlockPos.of(e.getLongKey()), e.getValue()))
+                .iterator();
     }
 }

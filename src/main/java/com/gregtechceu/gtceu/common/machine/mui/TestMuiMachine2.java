@@ -142,14 +142,17 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 blockCounts.merge(state.getBlock(), 1, Integer::sum);
             });
 
-            MapSchema array = new MapSchema(blocks);
-            array.setRenderFilter((pos, state) -> pos.getY() < layer);
-            if (getLevel().isClientSide()) {
+            //MapSchema array = new MapSchema(blocks);
+            //array.setRenderFilter((pos, state) -> pos.getY() < layer);
+            if(mutableSchema == null) {
                 mutableSchema = new MutableSchema(blocks);
+            }
+
+            if (getLevel().isClientSide()) {
                 multiSchema = new SchemaWidget(mutableSchema);
                 innerCol.child(multiSchema.size(200, 200));
             }
-            innerCol.child(new SchemaWidget.LayerButton(array, 0, maxLayers)
+            innerCol.child(new SchemaWidget.LayerButton(mutableSchema, 0, maxLayers)
                     .onMouseReleased((context, button) -> {
                         layer += 1;
                         layer %= maxLayers;
@@ -179,7 +182,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private void refreshViewWidget() {
         schemaViewWidget.notifyUpdate((packet) -> {});
         partsViewWidget.notifyUpdate((packet) -> {});
-        multiSchema.getSchemaRenderer().recompile();
+        if(multiSchema != null) multiSchema.getSchemaRenderer().recompile();
     }
 
     private void setPredicateDefaultBlock(PatternPredicate predicate, BlockInfo blockInfo) {
