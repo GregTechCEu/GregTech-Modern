@@ -436,15 +436,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                         state = state.setValue(machineBlock.getRotationState().property, Direction.DOWN);
                     }
                 }
-                BlockEntity be = machineBlock.newBlockEntity(blockPos, state);
-                if (be instanceof MetaMachine machine) {
-                    MachineRenderState renderState = machine.getRenderState();
-                    if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
-                        machine.setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
-                    }
-                }
                 if (this.mutableSchema != null) {
-                    this.mutableSchema.updateBlockEntity(be);
+                    BlockEntity be = this.mutableSchema.getLevel().getBlockEntity(blockPos);
+                    if (be instanceof MetaMachine machine) {
+                        machine.setRenderState(machine.getRenderState().setValue(GTMachineModelProperties.IS_FORMED, true));
+                    }
                 }
             }
         }
