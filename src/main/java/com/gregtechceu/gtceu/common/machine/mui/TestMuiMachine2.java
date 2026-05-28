@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternAisle;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -36,17 +35,12 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.fakelevel.MapSchema;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
-import brachy.modularui.widgets.DynamicSyncedWidget;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.SchemaWidget;
-import brachy.modularui.widgets.SliderWidget;
-import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
@@ -74,15 +68,16 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private final Reference2ObjectMap<PatternPredicate, BlockInfo> predicateBlockMapping = new Reference2ObjectOpenHashMap<>();
     private final Long2ReferenceMap<BlockState> userDefinedBlocks = new Long2ReferenceOpenHashMap<>();
     private final Long2ReferenceMap<BlockState> predicateDefaultBlocks = new Long2ReferenceOpenHashMap<>();
-    private final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     private final Map<BasePredicate, Integer> placed = new Reference2IntOpenHashMap<>();
+
+    private DynamicSyncHandler partsViewWidget;
 
     private Long2ObjectMap<BlockInfo> blockInfo = new Long2ObjectOpenHashMap<>();
 
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ELECTRIC_BLAST_FURNACE;
+        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
 
         for (var pattern : multiblockDefinition.getStructurePatterns().values()) {
             if (pattern instanceof BlockPattern blockPattern) {
@@ -95,9 +90,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             }
         }
     }
-
-    private DynamicSyncHandler schemaViewWidget;
-    private DynamicSyncHandler partsViewWidget;
 
     @Override
     public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -129,65 +121,54 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     return patternColumn;
                 }));
 
-        schemaViewWidget = new DynamicSyncHandler().widgetProvider((slotsSyncManger, buffer) -> {
-            Flow innerCol = Flow.col().coverChildren();
-            if (predicateDefaultBlocks.isEmpty()) {
-                setupBlocks();
-            }
-            blocks.clear();
-            blockCounts.clear();
-            blocks.putAll(predicateDefaultBlocks);
-            blocks.putAll(userDefinedBlocks);
-            blocks.forEach((pos, state) -> {
-                blockCounts.merge(state.getBlock(), 1, Integer::sum);
-            });
+        Flow schemaCol = Flow.col().coverChildren();
+        if (mutableSchema == null) {
+            mutableSchema = new MutableSchema();
+            mutableSchema.setRenderFilter((pos, state) -> pos.getY() < layer);
+        }
+        if (predicateDefaultBlocks.isEmpty()) {
+            setupBlocks();
+        }
 
-            //MapSchema array = new MapSchema(blocks);
-            //array.setRenderFilter((pos, state) -> pos.getY() < layer);
-            if(mutableSchema == null) {
-                mutableSchema = new MutableSchema(blocks);
-            }
-
-            if (getLevel().isClientSide()) {
-                multiSchema = new SchemaWidget(mutableSchema);
-                innerCol.child(multiSchema.size(200, 200));
-            }
-            innerCol.child(new SchemaWidget.LayerButton(mutableSchema, 0, maxLayers)
-                    .onMouseReleased((context, button) -> {
-                        layer += 1;
-                        layer %= maxLayers;
-                        this.refreshViewWidget();
-                        return true;
-                    }));
-            return innerCol;
-        }).allowC2S();
+        if (getLevel().isClientSide()) {
+            multiSchema = new SchemaWidget(mutableSchema);
+            schemaCol.child(multiSchema.size(200, 200));
+        }
+        schemaCol.child(new SchemaWidget.LayerButton(mutableSchema, 0, maxLayers)
+                .onMouseReleased((context, button) -> {
+                    layer = ++layer % maxLayers;
+                    this.refreshViewWidget(); // this may not be necessary?
+                    return true;
+                }));
+        col.child(schemaCol);
 
         partsViewWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
-            Flow innerCol = Flow.col().coverChildren();
+            Flow innerCol = Flow.col().coverChildren().childPadding(2).rightRelOffset(1.0f, -20);
             innerCol.children(blockCounts.reference2IntEntrySet(), (e) -> {
                 Item item = e.getKey().asItem();
                 return new ItemDrawable(new ItemStack(item, e.getIntValue()))
                         .asWidget().tooltip(r -> r.addLine(item.getDescription()));
             });
-            innerCol.childPadding(2).rightRelOffset(1.0f, -20);
+            innerCol.childPadding(2).left(2);
             return innerCol;
         }).allowC2S();
-        col.child(new DynamicSyncedWidget<>().syncHandler(schemaViewWidget).coverChildren());
-        panel.child(new DynamicSyncedWidget<>().syncHandler(partsViewWidget).coverChildren());
         refreshViewWidget();
         panel.child(col);
+        panel.child(new DynamicSyncedWidget<>().syncHandler(partsViewWidget).coverChildren());
         return panel;
     }
 
     private void refreshViewWidget() {
-        schemaViewWidget.notifyUpdate((packet) -> {});
         partsViewWidget.notifyUpdate((packet) -> {});
-        if(multiSchema != null) multiSchema.getSchemaRenderer().recompile();
+        if (multiSchema != null) {
+            multiSchema.getSchemaRenderer().recompile();
+        }
     }
 
     private void setPredicateDefaultBlock(PatternPredicate predicate, BlockInfo blockInfo) {
         predicateBlockMapping.put(predicate, blockInfo);
         predicateDefaultBlocks.clear();
+        setupBlocks();
         refreshViewWidget();
     }
 
@@ -253,7 +234,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                                     (b) -> setPredicateDefaultBlock(predicate,
                                                             candidates.get(0))))
                                             .size(16)
-                                            .tooltip(r -> r.add(basePredicate.getPredicateName()))
+                                            .tooltip(r -> r.add(basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
                                             .overlay(new ItemDrawable(
                                                     candidates.get(0).getItemStackForm()));
                                 }
@@ -313,6 +294,17 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 setupPredicateBlocks(predicate, predicatePositions.get(predicate), predicateBlocks);
                 predicateDefaultBlocks.putAll(predicateBlocks);
             }
+
+            mutableSchema.getBlocks().clear();
+            blockCounts.clear();
+            predicateDefaultBlocks.forEach((pos, state) -> {
+                mutableSchema.updateBlockState(BlockPos.of(pos), state);
+                blockCounts.merge(state.getBlock(), 1, Integer::sum);
+            });
+            userDefinedBlocks.forEach((pos, state) -> {
+                mutableSchema.updateBlockState(BlockPos.of(pos), state);
+                blockCounts.merge(state.getBlock(), 1, Integer::sum);
+            });
         }
     }
 
@@ -439,7 +431,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 if (this.mutableSchema != null) {
                     BlockEntity be = this.mutableSchema.getLevel().getBlockEntity(blockPos);
                     if (be instanceof MetaMachine machine) {
-                        machine.setRenderState(machine.getRenderState().setValue(GTMachineModelProperties.IS_FORMED, true));
+                        machine.setRenderState(
+                                machine.getRenderState().setValue(GTMachineModelProperties.IS_FORMED, true));
                     }
                 }
             }

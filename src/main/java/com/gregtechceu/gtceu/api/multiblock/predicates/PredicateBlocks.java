@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -33,7 +31,8 @@ public class PredicateBlocks extends BasePredicate {
         errorPredicate = state -> {
             BlockPos pos = state.getPos();
 
-            return ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ? null : new BlockMatchingError(pos, finalBlocks);
+            return ArrayUtils.contains(finalBlocks, state.getBlockState().getBlock()) ? null :
+                    new BlockMatchingError(pos, finalBlocks);
         };
 
         candidates = Arrays.stream(finalBlocks)
