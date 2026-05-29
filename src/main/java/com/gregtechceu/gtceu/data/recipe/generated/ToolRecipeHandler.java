@@ -180,6 +180,13 @@ public final class ToolRecipeHandler {
                             'P', plate,
                             'T', new MaterialEntry(TagPrefix.screw, material),
                             'S', rod);
+
+                    addToolRecipe(provider, material, GTToolType.SHEARS, false,
+                            "PTP", "hRf", "SdS",
+                            'P', plate,
+                            'T', new MaterialEntry(TagPrefix.screw, material),
+                            'R', new MaterialEntry(TagPrefix.ring, material),
+                            'S', stick);
                 } else if (!ArrayUtils.contains(softMaterials, material)) {
                     GTCEu.LOGGER
                             .info("Did not find bolt for {}, skipping wirecutter recipe", material.getName());

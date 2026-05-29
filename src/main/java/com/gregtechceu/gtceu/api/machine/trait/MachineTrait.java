@@ -56,6 +56,11 @@ public abstract class MachineTrait implements ISyncManaged {
         return machine;
     }
 
+    @Override
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return getMachine();
+    }
+
     /**
      * A list containing the machine classes which this trait can be attached to.
      * If this trait is being attached to a machine class that does not conform to any of the list elements, an
@@ -117,14 +122,10 @@ public abstract class MachineTrait implements ISyncManaged {
         getMachine().setRenderState(state);
     }
 
-    public void scheduleRenderUpdate() {
-        getMachine().scheduleRenderUpdate();
-    }
-
     /**
      * Called when the machine is loaded. The entire world is not loaded when this method is called.
      * To schedule code to run on the first full world tick, do
-     * {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
+     * {@code getMachine().scheduleForNextServerTick(callback)}
      */
     public void onMachineLoad() {}
 
