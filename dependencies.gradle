@@ -93,7 +93,7 @@ dependencies {
 //    extraLocalRuntime(forge.worldstripper)
     localRuntime(forge.cc.tweaked.forge.impl)
 
-    extraLocalRuntime(forge.bundles.kjs)
+    localRuntime(forge.bundles.kjs)
 
     extraLocalRuntime(forge.ftblibrary)
     extraLocalRuntime(forge.ftbteams)
