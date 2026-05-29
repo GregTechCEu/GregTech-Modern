@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.sync_system;
+package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 import com.gregtechceu.gtceu.api.sync_system.ClassSyncData;
 import com.gregtechceu.gtceu.api.sync_system.FieldSyncData;
 import com.gregtechceu.gtceu.api.sync_system.FieldSyncHandler;
-import com.gregtechceu.gtceu.api.sync_system.ISyncAnnotated;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncAnnotated;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;

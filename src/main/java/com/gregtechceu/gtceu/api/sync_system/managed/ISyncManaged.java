@@ -1,5 +1,6 @@
-package com.gregtechceu.gtceu.api.sync_system;
+package com.gregtechceu.gtceu.api.sync_system.managed;
 
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformer;
 
 import net.minecraftforge.common.util.INBTSerializable;

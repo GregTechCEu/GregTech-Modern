@@ -5,8 +5,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sync_system.ISyncAnnotated;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.ListTransformer;
@@ -16,6 +14,8 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.SetTr
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.CoverBehaviorTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.GTRecipeTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.MonitorGroupTransformer;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncAnnotated;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
