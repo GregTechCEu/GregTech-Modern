@@ -6,15 +6,15 @@ title: "Usage"
 
 ### Registering classes with the sync system
 
-At the core of the system are the `ISyncManaged` and `ISyncAnnotated` interfaces, which allow for their fields to have sync annotations..
-All block entities which should be synchronised or saved must extend the abstract class `ManagedSyncBlockEntity`.
+At the core of the system are the `ISyncManaged` and `ISyncAnnotated` interfaces, which allow for their fields to have sync annotations.
 
-`ISyncManaged` should be used for classes with any form of persistent state, and cannot be instantiated or reassigned.<br>
-`ISyncAnnotated` should be used for record-like classes that hold data, and must define a no-args constructor.
+- `ISyncManaged` should be used for classes with any form of persistent state, and cannot be instantiated or reassigned.
+- `ISyncAnnotated` should be used for record-like classes that hold data, and must define a no-args constructor.
 
+All `ISyncManaged` objects must belong to a root managed sync object. There are two default types of root sync objects:
 
-!!! warning 
-  Block entities that inherit `ManagedSyncBlockEntity` must call `ManagedSyncBlockEntity::updateTick`***every tick*** within their ticker, or they will not be saved.
+- `ManagedSyncBlockEntity` is a block entity storing its data through the system. The `Block` class using this `BlockEntity` must implement `ManagedSyncEntityBlock`.
+- `ManagedSavedData` is a `SavedData` object that stores data through the system.
 
 #### Example of `ISyncManaged` usage
 ```java
