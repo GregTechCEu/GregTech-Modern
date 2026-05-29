@@ -25,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
 public class PatternState {
 
     @Getter
-    protected BlockPos controllerPos;
+    protected @Nullable BlockPos controllerPos;
     @Getter
-    protected MultiblockControllerMachine controller;
+    protected @Nullable MultiblockControllerMachine controller;
     @Getter
     @Setter
     protected boolean isFormed = false;

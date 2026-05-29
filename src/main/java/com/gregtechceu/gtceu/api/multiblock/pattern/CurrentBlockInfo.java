@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class CurrentBlockInfo {
 
     @Setter
@@ -24,16 +26,17 @@ public class CurrentBlockInfo {
     private @Nullable BlockEntity blockEntity;
     private boolean teResolved;
 
-    public @Nullable BlockState retrieveCurrentBlockState() {
+    public BlockState retrieveCurrentBlockState() {
         if (this.blockState == null && level != null) {
             this.blockState = level.getBlockState(pos);
         }
+        Objects.requireNonNull(blockState, "why is the blockstate null hmmmm");
         return blockState;
     }
 
     public @Nullable BlockEntity retrieveCurrentBlockEntity() {
         var blockState = retrieveCurrentBlockState();
-        if (blockState == null || !blockState.hasBlockEntity()) {
+        if (!blockState.hasBlockEntity()) {
             return null;
         }
         if (blockEntity == null && !teResolved && level != null) {
