@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 public class PatternAisle {
 
@@ -49,7 +50,7 @@ public class PatternAisle {
         this.maxRepeats = repeats;
     }
 
-    public int[] firstInstanceOf(char c) {
+    public int @Nullable [] firstInstanceOf(char c) {
         for (int strI = 0; strI < pattern.length; strI++) {
             int pos = pattern[strI].indexOf(c);
             if (pos != -1) return new int[] { strI, pos };

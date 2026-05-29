@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class ExpandablePattern implements IBlockPattern {
     @FunctionalInterface
     public interface BoundsFunction {
 
-        int[] apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+        int @Nullable [] apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
     }
 
     protected final BoundsFunction boundsFunc;
@@ -49,9 +49,9 @@ public class ExpandablePattern implements IBlockPattern {
 
     protected final RelativeDirection[] directions;
 
-    public ExpandablePattern(@NotNull BoundsFunction boundsFunc,
-                             @NotNull BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc,
-                             @NotNull RelativeDirection[] directions) {
+    public ExpandablePattern(BoundsFunction boundsFunc,
+                             BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc,
+                             RelativeDirection[] directions) {
         this.boundsFunc = boundsFunc;
         this.predicateFunc = predicateFunc;
         this.directions = directions;
@@ -180,7 +180,7 @@ public class ExpandablePattern implements IBlockPattern {
     }
 
     @Override
-    public Long2ObjectSortedMap<PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
+    public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
                                                                   CompoundTag tag) {
         Direction front = src.getFrontFacing();
         Direction up = src.getUpwardsFacing();
@@ -239,7 +239,7 @@ public class ExpandablePattern implements IBlockPattern {
     @Override
     public void autobuild(Object2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
-        var predicates = getDefaultShape(controller, null);
+        var predicates = getDefaultShape(controller, new CompoundTag());
 
         var level = context.getLevel();
 
@@ -286,6 +286,7 @@ public class ExpandablePattern implements IBlockPattern {
 
         for (var entry : predicates.long2ObjectEntrySet()) {
             var pred = entry.getValue();
+            if (pred == null) continue;
             if (predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
 
             int pointer = predicateIndex.getInt(pred);

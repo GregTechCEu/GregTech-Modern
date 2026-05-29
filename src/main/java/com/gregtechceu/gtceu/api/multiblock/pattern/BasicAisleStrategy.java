@@ -10,19 +10,18 @@ import net.minecraft.util.Mth;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class BasicAisleStrategy extends AisleStrategy {
 
-    protected class MultiblockAisle {
+    protected static class MultiblockAisle {
 
-        public int minRepeats = -1;
-        public int maxRepeats = -1;
-        public int startInclusive = -1;
-        public int endExclusive = -1;
-        public int actualRepeats = -1;
+        public int minRepeats;
+        public int maxRepeats;
+        public int startInclusive;
+        public int endExclusive;
+        public int actualRepeats;
 
         public MultiblockAisle(int minRepeats, int maxRepeats, int startInclusive, int endExclusive,
                                int actualRepeats) {
@@ -93,11 +92,11 @@ public class BasicAisleStrategy extends AisleStrategy {
     }
 
     @Override
-    public int @NotNull [] getDefaultAisles(CompoundTag tag) {
+    public int[] getDefaultAisles(CompoundTag tag) {
         IntList list = new IntArrayList();
         for (int i = 0; i < multiblockAisles.size(); i++) {
             var multi = multiblockAisles.get(i);
-            int multiRepeats = 0;
+            int multiRepeats;
             if (tag.isEmpty()) {
                 multiRepeats = multi.minRepeats;
             } else {
@@ -106,7 +105,7 @@ public class BasicAisleStrategy extends AisleStrategy {
             }
             for (int j = 0; j < multiRepeats; j++) {
                 for (int k = multi.startInclusive; k < multi.endExclusive; k++) {
-                    int aisleRepeats = 0;
+                    int aisleRepeats;
                     if (tag.isEmpty()) {
                         aisleRepeats = aisles.get(k).minRepeats;
                     } else {

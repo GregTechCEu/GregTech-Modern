@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -15,9 +17,26 @@ public abstract class AisleStrategy {
     protected final int[] dimensions = new int[3];
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
-    protected BlockPattern pattern;
-    protected BlockPos.MutableBlockPos pos;
-    protected Direction front, up;
+    @Getter
+    @Setter
+    private @Nullable BlockPattern pattern;
+    private @Nullable BlockPos.MutableBlockPos pos;
+    private @Nullable Direction front, up;
+
+    public BlockPos.MutableBlockPos getPos() {
+        if (pos == null) throw new IllegalStateException("AisleStrategy.start() has not been called");
+        return pos;
+    }
+
+    public Direction getFront() {
+        if (front == null) throw new IllegalStateException("AisleStrategy.start() has not been called");
+        return front;
+    }
+
+    public Direction getUp() {
+        if (up == null) throw new IllegalStateException("AisleStrategy.start() has not been called");
+        return up;
+    }
 
     /**
      * Checks the aisles
@@ -34,7 +53,7 @@ public abstract class AisleStrategy {
      *            {@link IBlockPattern#autobuild}
      * @return Array where the i-th element specifies that at offset i there would be aisle a_i
      */
-    public abstract int @NotNull [] getDefaultAisles(CompoundTag tag);
+    public abstract int [] getDefaultAisles(CompoundTag tag);
 
     /**
      * Called at the start of a structure check.
@@ -54,6 +73,7 @@ public abstract class AisleStrategy {
     }
 
     protected boolean checkAisle(PatternState state, int index, int offset, boolean flip) {
-        return pattern.checkAisle(this.pos, state, this.front, this.up, index, offset, flip);
+        if (pattern == null) throw new IllegalStateException("BlockPattern not set.");
+        return pattern.checkAisle(getPos(), state, getFront(), getUp(), index, offset, flip);
     }
 }

@@ -9,29 +9,31 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 
 public class CurrentBlockInfo {
 
     @Setter
     @Getter
-    protected Level level;
+    protected @Nullable Level level;
     @Getter
     private BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     @Getter
-    private BlockState blockState;
+    private @Nullable BlockState blockState;
     @Getter
-    private BlockEntity blockEntity;
+    private @Nullable BlockEntity blockEntity;
     private boolean teResolved;
 
-    public BlockState retrieveCurrentBlockState() {
+    public @Nullable BlockState retrieveCurrentBlockState() {
         if (this.blockState == null && level != null) {
             this.blockState = level.getBlockState(pos);
         }
         return blockState;
     }
 
-    public BlockEntity retrieveCurrentBlockEntity() {
-        if (!retrieveCurrentBlockState().hasBlockEntity()) {
+    public @Nullable BlockEntity retrieveCurrentBlockEntity() {
+        var blockState = retrieveCurrentBlockState();
+        if (blockState == null || !blockState.hasBlockEntity()) {
             return null;
         }
         if (blockEntity == null && !teResolved && level != null) {

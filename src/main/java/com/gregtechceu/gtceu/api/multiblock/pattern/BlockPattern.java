@@ -27,11 +27,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 
 public class BlockPattern implements IBlockPattern {
@@ -52,10 +52,10 @@ public class BlockPattern implements IBlockPattern {
     @Getter
     protected final Char2ObjectMap<PatternPredicate> predicates;
 
-    public BlockPattern(@NotNull PatternAisle @NotNull [] aisles, @NotNull AisleStrategy aisleStrategy,
-                        int @NotNull [] dimensions, @NotNull RelativeDirection @NotNull [] directions,
+    public BlockPattern(PatternAisle[] aisles, AisleStrategy aisleStrategy,
+                        int[] dimensions, RelativeDirection[] directions,
                         @Nullable OriginOffset offset, @Nullable OriginOffset anchorOffset,
-                        @NotNull Char2ObjectMap<@NotNull PatternPredicate> predicates,
+                        Char2ObjectMap<PatternPredicate> predicates,
                         char centerChar) {
         this.aisles = aisles;
         this.aisleStrategy = aisleStrategy;
@@ -154,9 +154,8 @@ public class BlockPattern implements IBlockPattern {
     public boolean checkPatternAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing,
                                   boolean isFlipped) {
-        if (patternState == null) {
-            throw new IllegalStateException("PatternState not set");
-        }
+        Objects.requireNonNull(patternState, "PatternState not set");
+
         patternState.globalCount.clear();
         patternState.layerCount.clear();
         patternState.cache.clear();
@@ -165,7 +164,7 @@ public class BlockPattern implements IBlockPattern {
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
-        aisleStrategy.pattern = this;
+        aisleStrategy.setPattern(this);
         aisleStrategy.start(controllerPos, frontFacing, upwardsFacing);
         if (!aisleStrategy.check(patternState, isFlipped)) return false;
 
@@ -252,7 +251,7 @@ public class BlockPattern implements IBlockPattern {
     }
 
     @Override
-    public Long2ObjectSortedMap<PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
+    public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
                                                                   CompoundTag tag) {
         Long2ObjectSortedMap<PatternPredicate> map = new Long2ObjectRBTreeMap<>();
         Direction absoluteAisle = directions[0].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
@@ -339,6 +338,7 @@ public class BlockPattern implements IBlockPattern {
 
         for (var entry : predicates.long2ObjectEntrySet()) {
             var pred = entry.getValue();
+            if (pred == null) continue;
             if (predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
 
             int pointer = predicateIndex.getInt(pred);
@@ -361,7 +361,7 @@ public class BlockPattern implements IBlockPattern {
             if (simplePred.candidates == null) continue;
 
             var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.getCandidates().get(0));
+            cache.computeIfAbsent(simplePred, k -> finalSimple.getCandidates() != null ? finalSimple.getCandidates().get(0) : null);
 
             if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
             entry.setValue(null);
@@ -410,10 +410,6 @@ public class BlockPattern implements IBlockPattern {
                 predicateTag.putInt("maxLayer", simplePred.maxLayerCount);
 
                 tag.put(simplePred.getPredicateName(), predicateTag);
-            }
-
-            if (predicate.predicateList.size() > 1) {
-
             }
         }
     }

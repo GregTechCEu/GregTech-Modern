@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +42,14 @@ public class MultiblockPatternBuilder {
 
     private final int[] dimensions = { -1, -1, -1 };
 
-    private OriginOffset offset;
-    private OriginOffset anchorOffset;
+    private @Nullable OriginOffset offset;
+    private @Nullable OriginOffset anchorOffset;
     private char centerChar;
-    private AisleStrategy aisleStrategy;
+    private @Nullable AisleStrategy aisleStrategy;
 
     private final List<PatternAisle> aisles = new ArrayList<>();
 
-    private final Char2ObjectMap<PatternPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<@Nullable PatternPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -62,7 +62,7 @@ public class MultiblockPatternBuilder {
         this.symbolMap.put(' ', PatternPredicate.ANY);
     }
 
-    public MultiblockPatternBuilder aisleRepeatable(int minRepeats, int maxRepeats, @NotNull String... aisle) {
+    public MultiblockPatternBuilder aisleRepeatable(int minRepeats, int maxRepeats, String... aisle) {
         validateAisle(aisle);
         for (String s : aisle) {
             for (char c : s.toCharArray()) {

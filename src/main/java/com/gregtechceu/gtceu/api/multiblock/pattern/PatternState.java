@@ -17,7 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /*
  * Contains vital information to an instanced version of a structure pattern.
@@ -40,12 +40,11 @@ public class PatternState {
     protected boolean shouldUpdate = true;
     @Setter
     @Getter
-    protected PatternError error;
+    protected @Nullable PatternError error;
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
     @Getter
-    @NotNull
     protected CurrentBlockInfo cbi = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();

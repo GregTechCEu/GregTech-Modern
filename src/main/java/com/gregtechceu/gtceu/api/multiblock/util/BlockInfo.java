@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockInfo {
 
@@ -22,9 +23,9 @@ public class BlockInfo {
     @Getter
     private final BlockState blockState;
     private final boolean hasBlockEntity;
-    private final ItemStack itemStack;
+    private final @Nullable ItemStack itemStack;
     @Getter
-    private final BlockEntity blockEntity;
+    private final @Nullable BlockEntity blockEntity;
 
     public BlockInfo(Block block) {
         this(block.defaultBlockState());
@@ -38,11 +39,11 @@ public class BlockInfo {
         this(blockState, hasBlockEntity, null, null);
     }
 
-    public BlockInfo(BlockState blockState, BlockEntity blockEntity) {
+    public BlockInfo(BlockState blockState, @Nullable BlockEntity blockEntity) {
         this(blockState, true, null, blockEntity);
     }
 
-    public BlockInfo(BlockState blockState, boolean hasBlockEntity, ItemStack itemStack, BlockEntity blockEntity) {
+    public BlockInfo(BlockState blockState, boolean hasBlockEntity, @Nullable ItemStack itemStack, @Nullable BlockEntity blockEntity) {
         this.blockState = blockState;
         this.hasBlockEntity = hasBlockEntity;
         this.itemStack = itemStack;
@@ -63,7 +64,7 @@ public class BlockInfo {
         return hasBlockEntity;
     }
 
-    public BlockEntity getBlockEntity(Level level, BlockPos pos) {
+    public @Nullable BlockEntity getBlockEntity(Level level, BlockPos pos) {
         BlockEntity entity = getBlockEntity();
         if (entity != null) {
             entity.setLevel(level);

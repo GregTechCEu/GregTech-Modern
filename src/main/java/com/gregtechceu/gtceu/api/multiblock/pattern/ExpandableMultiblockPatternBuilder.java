@@ -4,13 +4,15 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class ExpandableMultiblockPatternBuilder {
 
-    protected ExpandablePattern.BoundsFunction boundsFunc;
-    protected BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc;
+    protected @Nullable ExpandablePattern.BoundsFunction boundsFunc;
+    protected @Nullable BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
@@ -42,11 +44,8 @@ public class ExpandableMultiblockPatternBuilder {
     }
 
     public ExpandablePattern build() {
-        if (boundsFunc == null)
-            throw new IllegalStateException("Bound function is null, use .boundsFunction(...) on the builder");
-        if (predicateFunc == null)
-            throw new IllegalStateException("Predicate function is null, use .predicateFunction(...) on the builder");
-
+        Objects.requireNonNull(boundsFunc, "Bound function is null, use .boundsFunction(...) on the builder");
+        Objects.requireNonNull(predicateFunc, "Predicate function is null, use .predicateFunction(...) on the builder");
         return new ExpandablePattern(boundsFunc, predicateFunc, directions);
     }
 }

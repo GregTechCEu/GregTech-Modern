@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import org.jetbrains.annotations.Nullable;
 
 public interface IBlockPattern {
 
@@ -61,8 +62,8 @@ public interface IBlockPattern {
      *         respectively being. The map is sorted using the natural ordering(thus with x, y, z order).
      */
     // TODO move the keyMap to a NBTCompoundTag
-    Long2ObjectSortedMap<PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
-                                                           CompoundTag tag);
+    Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
+                                                                     CompoundTag tag);
 
     // void setActivePatternState(PatternState patternState);
 
