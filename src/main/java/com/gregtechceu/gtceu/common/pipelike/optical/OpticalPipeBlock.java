@@ -77,14 +77,7 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
 
     @Override
     public OpticalPipeProperties createProperties(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> pipeTile) {
-        OpticalPipeType pipeType = pipeTile.getPipeType();
-        if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
-    }
-
-    @Override
-    public OpticalPipeProperties getFallbackType() {
-        return OpticalPipeProperties.INSTANCE;
     }
 
     @OnlyIn(Dist.CLIENT)

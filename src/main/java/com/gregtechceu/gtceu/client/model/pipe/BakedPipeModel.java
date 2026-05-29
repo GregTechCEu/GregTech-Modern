@@ -58,9 +58,9 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
         if (state == null) {
             connectionMask = ITEM_CONNECTIONS;
-            blockedMask = Node.ALL_CLOSED;
+            blockedMask = PipeBlockEntity.ALL_CLOSED;
         }
-        if (connectionMask == null || connectionMask != Node.ALL_OPENED) {
+        if (connectionMask == null || connectionMask != PipeBlockEntity.ALL_OPENED) {
             BakedModel centerModel = parts.get(null);
             if (renderType == null ||
                     state != null && centerModel.getRenderTypes(state, rand, modelData).contains(renderType)) {

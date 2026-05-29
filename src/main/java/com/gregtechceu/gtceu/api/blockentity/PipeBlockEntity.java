@@ -59,6 +59,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                                      implements ITickSubscription, IPaintable, IGregtechBlockEntity, IToolGridHighlight,
                                      ICopyable {
 
+    public static final int ALL_OPENED = 0b111111;
+    public static final int ALL_CLOSED = 0b000000;
+
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
@@ -70,11 +73,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @SyncToClient
     @SaveField
     @RerenderOnChanged
-    protected int connections = Node.ALL_CLOSED;
+    protected int connections = ALL_CLOSED;
     @SyncToClient
     @SaveField
     @RerenderOnChanged
-    private int blockedConnections = Node.ALL_CLOSED;
+    private int blockedConnections = ALL_CLOSED;
     private NodeDataType cachedNodeData;
 
     @SaveField
@@ -329,12 +332,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         } else {
             return blockedConnections & ~index;
         }
-    }
-
-    @Override
-    public void notifyBlockUpdate() {
-        getLevel().updateNeighborsAt(getBlockPos(), getPipeBlock());
-        getPipeBlock().updateActiveNodeStatus(getLevel(), getBlockPos(), this);
     }
 
     @Nullable

@@ -30,6 +30,7 @@ public abstract class MaterialPipeBlock<
     public MaterialPipeBlock(Properties properties, PipeType pipeType, Material material) {
         super(properties, pipeType);
         this.material = material;
+        if (material.isNull()) throw new IllegalStateException("Cannot create material pipe block with null material");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -61,18 +62,10 @@ public abstract class MaterialPipeBlock<
         PipeType pipeType = pipeTile.getPipeType();
         Material material = ((MaterialPipeBlock<PipeType, NodeDataType>) pipeTile
                 .getPipeBlock()).material;
-        if (material.isNull()) {
-            return getFallbackType();
-        }
         return createProperties(pipeType, material);
     }
 
     protected abstract NodeDataType createProperties(PipeType pipeType, Material material);
-
-    @Override
-    public final NodeDataType getFallbackType() {
-        return createMaterialData();
-    }
 
     protected abstract NodeDataType createMaterialData();
 

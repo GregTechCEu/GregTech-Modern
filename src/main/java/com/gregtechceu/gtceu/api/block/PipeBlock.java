@@ -133,54 +133,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     public abstract NodeDataType createProperties(PipeBlockEntity<PipeType, NodeDataType> pipeTile);
 
-    /**
-     * Sometimes some people
-     */
-    public abstract NodeDataType getFallbackType();
-
     public abstract PipeModel createPipeModel(GTBlockstateProvider provider);
-
-    public void updateActiveNodeStatus(Level worldIn, BlockPos pos,
-                                       PipeBlockEntity<PipeType, NodeDataType> pipeTile) {
-        if (worldIn.isClientSide) return;
-
-        PipeNet<NodeDataType> pipeNet = getWorldPipeNet((ServerLevel) worldIn).getNetFromPos(pos);
-        if (pipeNet != null && pipeTile != null) {
-            int activeConnections = pipeTile.getConnections(); // remove blocked connections
-            boolean isActiveNodeNow = activeConnections != 0;
-            boolean modeChanged = pipeNet.markNodeAsActive(pos, isActiveNodeNow);
-            if (modeChanged) {
-                onActiveModeChange(worldIn, pos, isActiveNodeNow, false);
-            }
-        }
-    }
-
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        if (level.isClientSide()) return;
-        PipeBlockEntity<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
-
-        if (pipeTile != null) {
-            Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
-            if (facing == null) return;
-            CoverBehavior cover = pipeTile.getCoverContainer().getCoverAtSide(facing);
-            if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
-                boolean open = pipeTile.isConnected(facing);
-                boolean canConnect = cover != null ||
-                        canConnect(pipeTile, facing);
-                if (!open && canConnect)
-                    pipeTile.setConnection(facing, true, false);
-                if (open && !canConnect)
-                    pipeTile.setConnection(facing, false, false);
-                updateActiveNodeStatus(pipeTile.getLevel(), pos, pipeTile);
-            }
-            PipeNet<NodeDataType> net = pipeTile.getPipeNet();
-            if (net != null) {
-                pipeTile.getPipeNet().onNeighbourUpdate(neighbor);
-            }
-            if (cover != null) cover.onNeighborChanged(state.getBlock(), pos, false);
-        }
-    }
 
     /**
      * Get pipe nodes with the same pipe type.
@@ -194,12 +147,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
         return null;
     }
-
-    /**
-     * Can be used to update tile entity to tickable when node becomes active
-     * usable for fluid pipes, as example
-     */
-    protected void onActiveModeChange(Level world, BlockPos pos, boolean isActiveNow, boolean isInitialChange) {}
 
     public boolean canConnect(PipeBlockEntity<PipeType, NodeDataType> selfTile, Direction facing) {
         if (selfTile.getLevel().getBlockState(selfTile.getBlockPos().relative(facing)).getBlock() == Blocks.AIR)
@@ -266,7 +213,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     pipeTile.setConnection(facing, true, false);
                 if (open && !canConnect)
                     pipeTile.setConnection(facing, false, false);
-                updateActiveNodeStatus(level, pos, pipeTile);
             }
             pipeTile.getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
         }
@@ -300,8 +246,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         if (pipeTile != null) {
             int activeConnections = pipeTile.getConnections();
             boolean isActiveNode = activeConnections != 0;
-            getWorldPipeNet(level).addNode(pos, createRawData(state, null), 0, activeConnections, isActiveNode);
-            onActiveModeChange(level, pos, isActiveNode, true);
+            getWorldPipeNet(level).addNode(pos, createRawData(state, null), activeConnections, isActiveNode);
         }
     }
 

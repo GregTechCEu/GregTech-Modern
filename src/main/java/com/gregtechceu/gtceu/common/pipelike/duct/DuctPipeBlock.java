@@ -59,14 +59,7 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties> {
 
     @Override
     public DuctPipeProperties createProperties(PipeBlockEntity<DuctPipeType, DuctPipeProperties> pipeTile) {
-        DuctPipeType pipeType = pipeTile.getPipeType();
-        if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
-    }
-
-    @Override
-    public DuctPipeProperties getFallbackType() {
-        return properties;
     }
 
     @Override

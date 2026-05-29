@@ -215,10 +215,6 @@ public abstract class PipeNet<NodeDataType> {
         return !first.isBlocked(firstFacing) && !second.isBlocked(firstFacing.getOpposite());
     }
 
-    private boolean areMarksCompatible(int mark1, int mark2) {
-        return mark1 == mark2 || mark1 == Node.DEFAULT_MARK || mark2 == Node.DEFAULT_MARK;
-    }
-
     /**
      * Checks if given nodes can connect
      * Note that this logic should equal with block connection logic
@@ -226,9 +222,7 @@ public abstract class PipeNet<NodeDataType> {
      */
     protected final boolean canNodesConnect(Node<NodeDataType> first, Direction firstFacing, Node<NodeDataType> second,
                                             PipeNet<NodeDataType> secondPipeNet) {
-        return areNodeBlockedConnectionsCompatible(first, firstFacing, second) &&
-                areMarksCompatible(first.mark, second.mark) &&
-                areNodesCustomContactable(first.data, second.data, secondPipeNet);
+        return areNodeBlockedConnectionsCompatible(first, firstFacing, second);
     }
 
     // we need to search only this network
@@ -301,11 +295,6 @@ public abstract class PipeNet<NodeDataType> {
         }
         onNodeConnectionsUpdate();
         worldData.setDirty();
-    }
-
-    protected boolean areNodesCustomContactable(NodeDataType first, NodeDataType second,
-                                                PipeNet<NodeDataType> secondNodePipeNet) {
-        return true;
     }
 
     protected boolean canAttachNode(NodeDataType nodeData) {

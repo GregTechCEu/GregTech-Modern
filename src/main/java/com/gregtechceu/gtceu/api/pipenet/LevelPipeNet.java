@@ -34,9 +34,9 @@ public class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>> extends
         this.pipeNets.forEach(PipeNet::onNodeConnectionsUpdate);
     }
 
-    public void addNode(BlockPos nodePos, NodeDataType nodeData, int mark, int openConnections, boolean isActive) {
+    public void addNode(BlockPos nodePos, NodeDataType nodeData, int openConnections, boolean isActive) {
         T myPipeNet = null;
-        Node<NodeDataType> node = new Node<>(nodeData, openConnections, mark, isActive);
+        Node<NodeDataType> node = new Node<>(nodeData, openConnections, isActive);
         for (Direction facing : GTUtil.DIRECTIONS) {
             BlockPos offsetPos = nodePos.relative(facing);
             T pipeNet = getNetFromPos(offsetPos);

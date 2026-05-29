@@ -87,14 +87,7 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
 
     @Override
     public LaserPipeProperties createProperties(PipeBlockEntity<LaserPipeType, LaserPipeProperties> pipeTile) {
-        LaserPipeType pipeType = pipeTile.getPipeType();
-        if (pipeType == null) return getFallbackType();
         return this.pipeType.modifyProperties(properties);
-    }
-
-    @Override
-    public LaserPipeProperties getFallbackType() {
-        return LaserPipeProperties.INSTANCE;
     }
 
     @Override
