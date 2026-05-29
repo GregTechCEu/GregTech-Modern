@@ -17,6 +17,8 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
+    public ManagedSavedData() {}
+
     public ManagedSavedData(CompoundTag tag) {
         getSyncDataHolder().deserializeNBT(tag, false);
     }
@@ -30,6 +32,7 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
     @Override
     public void markAsChanged() {}
 
+    // No functionality, not synced to clients
     @Override
     public void scheduleRenderUpdate() {}
 
@@ -38,7 +41,6 @@ public abstract class ManagedSavedData extends SavedData implements ISyncManaged
         return true;
     }
 
-    // No functionality, not synced to clients
     @Override
     public CompoundTag save(CompoundTag compoundTag) {
         return getSyncDataHolder().serializeNBT(false);
