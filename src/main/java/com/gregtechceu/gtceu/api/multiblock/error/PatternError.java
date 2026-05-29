@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,21 +24,21 @@ public class PatternError {
      */
     public static final PatternError PLACEHOLDER = new PatternError(BlockPos.ZERO, Collections.emptyList());
     @Getter
-    protected BlockPos pos;
+    protected @Nullable BlockPos pos;
     @Getter
     protected List<List<ItemStack>> candidates;
     protected CurrentBlockInfo blockInfo;
 
-    public PatternError(BlockPos pos, List<List<ItemStack>> candidates) {
+    public PatternError(@Nullable BlockPos pos, List<List<ItemStack>> candidates) {
         this.pos = pos;
         this.candidates = candidates;
     }
 
-    public PatternError(BlockPos pos, PatternPredicate predicate) {
+    public PatternError(@Nullable BlockPos pos, PatternPredicate predicate) {
         this(pos, predicate.getCandidates());
     }
 
-    public PatternError(BlockPos pos, BasePredicate failingPredicate) {
+    public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
         this(pos, Collections.singletonList(failingPredicate.getCandidateStacks()));
     }
 
@@ -47,9 +48,12 @@ public class PatternError {
 
     public List<Component> getErrorInfo() {
         List<Component> lines = new ArrayList<>();
-        lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
-        lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
-                pos.getZ()));
+
+        if (pos != null) {
+            lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
+            lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
+                    pos.getZ()));
+        }
         for (List<ItemStack> candidate : candidates) {
             if (!candidate.isEmpty()) {
                 Component c = candidate.get(0).getHoverName();

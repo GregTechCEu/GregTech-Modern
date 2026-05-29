@@ -45,7 +45,7 @@ public class OriginOffset {
             case 2, 3 -> x += amount;
             case 4, 5 -> z += amount;
             default -> throw new IllegalStateException("Unexpected value: " + dir.ordinal());
-        };
+        }
 
         return this;
     }

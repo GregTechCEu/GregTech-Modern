@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -44,8 +45,8 @@ public class PatternPredicate {
      * @param predicate  the testing function for if the current block information is valid
      * @param candidates the valid list of BlockInfos that this traceability predicate allows
      */
-    public PatternPredicate(String debugName, Function<CurrentBlockInfo, PatternError> predicate,
-                            List<BlockInfo> candidates) {
+    public PatternPredicate(String debugName, Function<CurrentBlockInfo, @Nullable PatternError> predicate,
+                            @Nullable List<BlockInfo> candidates) {
         predicateList.add(new BasePredicate(debugName, predicate, candidates));
     }
 
@@ -54,12 +55,12 @@ public class PatternPredicate {
      * @param predicate  the testing function for if the current block information is valid
      * @param candidates the valid list of BlockInfos that this traceability predicate allows
      */
-    public PatternPredicate(Function<CurrentBlockInfo, PatternError> predicate,
-                            List<BlockInfo> candidates) {
+    public PatternPredicate(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
+                            @Nullable List<BlockInfo> candidates) {
         this("Unknown", predicate, candidates);
     }
 
-    public PatternPredicate(Function<CurrentBlockInfo, PatternError> predicate) {
+    public PatternPredicate(Function<CurrentBlockInfo, @Nullable PatternError> predicate) {
         this(predicate, null);
     }
 
@@ -86,10 +87,10 @@ public class PatternPredicate {
         if (tips.length > 0) {
             List<Component> tooltips = Arrays.stream(tips).toList();
             predicateList.forEach(predicate -> {
-                if (predicate.toolTips == null) {
-                    predicate.toolTips = new ArrayList<>();
+                if (predicate.tooltips == null) {
+                    predicate.tooltips = new ArrayList<>();
                 }
-                predicate.toolTips.addAll(tooltips);
+                predicate.tooltips.addAll(tooltips);
             });
         }
         return this;
@@ -184,8 +185,8 @@ public class PatternPredicate {
         return this;
     }
 
-    public PatternError test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
-                             Object2IntMap<BasePredicate> layerCache) {
+    public @Nullable PatternError test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
+                             @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError lastError = null;
         for (BasePredicate p : predicateList) {
             PatternError error = p.testLimited(currBlock, globalCache, layerCache);
@@ -196,7 +197,7 @@ public class PatternPredicate {
                 lastError;
     }
 
-    public PatternPredicate or(PatternPredicate other) {
+    public PatternPredicate or(@Nullable PatternPredicate other) {
         if (other != null) {
             PatternPredicate newPredicate = new PatternPredicate(this);
             newPredicate.hasAir = newPredicate.hasAir || this == AIR || other == AIR;

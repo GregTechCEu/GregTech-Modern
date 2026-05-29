@@ -7,10 +7,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
+import java.util.Objects;
 
 public class PredicateFluidTag extends BasePredicate {
 
@@ -20,28 +20,20 @@ public class PredicateFluidTag extends BasePredicate {
         this(null, tag);
     }
 
-    public PredicateFluidTag(String debugName, TagKey<Fluid> tag) {
-        this.tag = tag;
-        if (tag == null) {
-            errorPredicate = state -> null;
-            candidates = Collections.singletonList(BlockInfo.fromBlock(Blocks.BARRIER));
-            this.debugName = "nullTag";
-            return;
-        } else {
-            errorPredicate = state -> state.getBlockState().getFluidState().is(tag) ? null :
-                    PatternError.PLACEHOLDER;
-            candidates = BuiltInRegistries.FLUID.getTag(tag)
-                    .stream()
-                    .flatMap(HolderSet.Named::stream)
-                    .map(Holder::value)
-                    .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
-                    .toList();
-        }
+    public PredicateFluidTag(@Nullable String debugName, TagKey<Fluid> tag) {
+        Objects.requireNonNull(tag, "PredicateFluidTag tag cannot be null");
 
-        if (debugName == null) {
-            this.debugName = tag.registry().location() + "/" + tag.location();
-        } else {
-            this.debugName = debugName;
-        }
+        this.tag = tag;
+
+        errorPredicate = state -> state.getBlockState().getFluidState().is(tag) ? null :
+                PatternError.PLACEHOLDER;
+        candidates = BuiltInRegistries.FLUID.getTag(tag)
+                .stream()
+                .flatMap(HolderSet.Named::stream)
+                .map(Holder::value)
+                .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
+                .toList();
+
+        this.debugName = Objects.requireNonNullElse(debugName, tag.registry().location() + "/" + tag.location());
     }
 }

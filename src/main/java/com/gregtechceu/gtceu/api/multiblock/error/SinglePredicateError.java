@@ -57,7 +57,7 @@ public class SinglePredicateError extends PatternError {
                                 predicate.minLayerCount, actualCount),
                         predName);
             }
-        };
+        }
         return Collections.singletonList(CommonComponents.EMPTY);
     }
 

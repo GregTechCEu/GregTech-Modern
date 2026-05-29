@@ -30,7 +30,8 @@ import net.minecraft.world.level.material.Fluid;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -72,13 +73,8 @@ public class Predicates {
      */
 
     public static PatternPredicate machines(MachineDefinition... definitions) {
-        ArrayList<MetaMachineBlock> machineBlocks = new ArrayList<>(definitions.length);
-        for (var definition : definitions) {
-            if (definition != null) {
-                machineBlocks.add(definition.get());
-            }
-        }
-        return blocks(machineBlocks.toArray(MetaMachineBlock[]::new));
+        Validate.noNullElements(definitions, "MachineDefinition array has null element at index %s");
+        return blocks(Arrays.stream(definitions).map(MachineDefinition::get).toArray(MetaMachineBlock[]::new));
     }
 
     public static PatternPredicate blockTag(TagKey<Block> tag) {
@@ -94,7 +90,7 @@ public class Predicates {
     }
 
     public static PatternPredicate custom(Function<CurrentBlockInfo, PatternError> predicate,
-                                          @NotNull List<BlockInfo> candidates) {
+                                          @Nullable List<BlockInfo> candidates) {
         return new PatternPredicate(predicate, candidates);
     }
 
@@ -295,7 +291,7 @@ public class Predicates {
          */
     }
 
-    public static PatternPredicate dataHatchPredicate() {
+    public static @Nullable PatternPredicate dataHatchPredicate() {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)

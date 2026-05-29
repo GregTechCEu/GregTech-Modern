@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
 public class BasePredicate {
 
     @Getter
-    public List<BlockInfo> candidates;
-    public Function<CurrentBlockInfo, PatternError> errorPredicate;
-    public List<Component> toolTips;
+    public @Nullable List<BlockInfo> candidates;
+    public Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate;
+    public @Nullable List<Component> tooltips;
     public int priority = 0;
     public int minCount = -1;
     public int maxCount = -1;
@@ -44,12 +44,13 @@ public class BasePredicate {
     public int maxLayerCount = -1;
     public int previewCount = -1;
     public boolean disableRenderFormed = false;
-    public String nbtParser;
+    public @Nullable String nbtParser;
 
     protected String debugName;
 
     public BasePredicate() {
         this.debugName = "Unknown";
+        this.errorPredicate = $ -> null;
     }
 
     /**
@@ -77,10 +78,10 @@ public class BasePredicate {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<Component> getToolTips(PatternPredicate predicates) {
+    public List<Component> getTooltips(@Nullable PatternPredicate predicates) {
         List<Component> result = new ArrayList<>();
-        if (toolTips != null) {
-            result.addAll(toolTips);
+        if (tooltips != null) {
+            result.addAll(tooltips);
         }
         if (minCount == maxCount && maxCount != -1) {
             result.add(Component.translatable("gtceu.multiblock.pattern.error.limited_exact", minCount));
@@ -104,13 +105,13 @@ public class BasePredicate {
         return result;
     }
 
-    public PatternError testRaw(CurrentBlockInfo currBlock) {
+    public @Nullable PatternError testRaw(CurrentBlockInfo currBlock) {
         return errorPredicate.apply(currBlock);
     }
 
-    public PatternError testLimited(CurrentBlockInfo currBlock,
+    public @Nullable PatternError testLimited(CurrentBlockInfo currBlock,
                                     Object2IntMap<BasePredicate> globalCache,
-                                    Object2IntMap<BasePredicate> layerCache) {
+                                              @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError error = testGlobal(currBlock, globalCache, layerCache);
         if (error != null) return error;
         return testLayer(currBlock, layerCache);
@@ -150,9 +151,9 @@ public class BasePredicate {
      * }
      */
 
-    public PatternError testGlobal(CurrentBlockInfo currBlock,
+    public @Nullable PatternError testGlobal(CurrentBlockInfo currBlock,
                                    Object2IntMap<BasePredicate> globalCache,
-                                   Object2IntMap<BasePredicate> layerCache) {
+                                   @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError res = errorPredicate.apply(currBlock);
         // if (!globalCache.containsKey(this)) globalCache.put(this, 0);
         globalCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
@@ -163,7 +164,7 @@ public class BasePredicate {
         return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
     }
 
-    public PatternError testLayer(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> layerCache) {
+    public @Nullable PatternError testLayer(CurrentBlockInfo currBlock, @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError res = errorPredicate.apply(currBlock);
         if (layerCache == null) return res;
         layerCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
@@ -177,7 +178,7 @@ public class BasePredicate {
             return candidates == null ? Collections.emptyList() :
                     this.candidates.stream()
                             .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                            .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
+                            .map(blockInfo -> blockInfo.getItemStackForm(Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
                             .collect(Collectors.toList());
         }
         return candidates == null ? Collections.emptyList() :

@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class CoilMatchingError extends PatternError {
 
@@ -20,6 +21,7 @@ public class CoilMatchingError extends PatternError {
 
     @Override
     public List<Component> getErrorInfo() {
+        Objects.requireNonNull(pos);
         return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils",
                 coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
                 pos.getX(), pos.getY(), pos.getZ()));

@@ -8,9 +8,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Validate;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 public class PredicateFluids extends BasePredicate {
@@ -21,9 +22,11 @@ public class PredicateFluids extends BasePredicate {
         this(null, fluids);
     }
 
-    public PredicateFluids(String debugName, Fluid... fluids) {
+    public PredicateFluids(@Nullable String debugName, Fluid... fluids) {
+        Validate.noNullElements(fluids, "Fluids array has null element at index %s");
+
         if (fluids.length == 0) this.fluids = new Fluid[] { Fluids.WATER };
-        else this.fluids = Arrays.stream(fluids).filter(Objects::nonNull).toArray(Fluid[]::new);
+        else this.fluids = Arrays.stream(fluids).toArray(Fluid[]::new);
         errorPredicate = state -> ArrayUtils.contains(this.fluids, state.getBlockState().getFluidState().getType()) ?
                 null : PatternError.PLACEHOLDER;
         candidates = Arrays.stream(this.fluids)

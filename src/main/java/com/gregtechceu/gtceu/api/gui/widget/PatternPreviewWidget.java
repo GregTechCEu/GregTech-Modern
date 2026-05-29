@@ -303,7 +303,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 List<ItemStack> itemStacks = basePredicate.getCandidateStacks();
                 if (!itemStacks.isEmpty()) {
                     candidateStacks.add(itemStacks);
-                    predicateTips.add(basePredicate.getToolTips(predicate));
+                    predicateTips.add(basePredicate.getTooltips(predicate));
                 }
             }
             candidates = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[candidateStacks.size()];

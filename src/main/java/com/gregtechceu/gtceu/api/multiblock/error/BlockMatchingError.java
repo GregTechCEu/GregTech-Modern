@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
@@ -23,8 +24,8 @@ public class BlockMatchingError extends PatternError {
         for (Block block : blocks) {
             comps.add(block.getName());
         }
-        comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(),
-                pos.getY(), pos.getZ()));
+        Objects.requireNonNull(pos);
+        comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(), pos.getY(), pos.getZ()));
         return comps;
     }
 }

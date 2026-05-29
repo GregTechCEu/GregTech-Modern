@@ -9,7 +9,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -60,9 +59,8 @@ public class MultiblockWorldSavedData extends SavedData {
         chunkPosMapping.entrySet().removeIf(e -> e.getValue().isEmpty());
     }
 
-    @NotNull
     @Override
-    public CompoundTag save(@NotNull CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound) {
         return compound;
     }
 }

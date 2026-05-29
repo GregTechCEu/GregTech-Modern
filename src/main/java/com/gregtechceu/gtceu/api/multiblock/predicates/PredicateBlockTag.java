@@ -8,9 +8,9 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
+import java.util.Objects;
 
 public class PredicateBlockTag extends BasePredicate {
 
@@ -20,22 +20,17 @@ public class PredicateBlockTag extends BasePredicate {
         this(null, tag);
     }
 
-    public PredicateBlockTag(String debugName, TagKey<Block> tag) {
+    public PredicateBlockTag(@Nullable String debugName, TagKey<Block> tag) {
+        Objects.requireNonNull(tag, "PredicateBlockTag tag cannot be null");
         this.tag = tag;
-        if (tag == null) {
-            errorPredicate = state -> PatternError.PLACEHOLDER;
-            candidates = Collections.singletonList(BlockInfo.fromBlock(Blocks.BARRIER));
-            this.debugName = "nullTag";
-            return;
-        } else {
-            errorPredicate = state -> state.getBlockState().is(tag) ? null : PatternError.PLACEHOLDER;
-            candidates = BuiltInRegistries.BLOCK.getTag(tag)
-                    .stream()
-                    .flatMap(HolderSet.Named::stream)
-                    .map(Holder::value)
-                    .map(BlockInfo::fromBlock)
-                    .toList();
-        }
+
+        errorPredicate = state -> state.getBlockState().is(tag) ? null : PatternError.PLACEHOLDER;
+        candidates = BuiltInRegistries.BLOCK.getTag(tag)
+                .stream()
+                .flatMap(HolderSet.Named::stream)
+                .map(Holder::value)
+                .map(BlockInfo::fromBlock)
+                .toList();
 
         if (debugName == null) {
             this.debugName = tag.registry().location() + "/" + tag.location();
