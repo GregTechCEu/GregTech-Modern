@@ -37,9 +37,6 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     public static final float FADEOUT = 60;
 
-    protected float delta = 0;
-    protected int lastColor = -1;
-
     public FusionRingRender() {}
 
     @Override
@@ -49,13 +46,13 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public boolean shouldRender(FusionReactorMachine machine, Vec3 cameraPos) {
-        return machine.recipeLogic.isWorking() || delta > 0;
+        return (machine.recipeLogic.isWorking() || machine.delta > 0) && super.shouldRender(machine, cameraPos);
     }
 
     @Override
     public void render(FusionReactorMachine machine, float partialTick, PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!machine.recipeLogic.isWorking() && delta <= 0) {
+        if (!machine.recipeLogic.isWorking() && machine.delta <= 0) {
             return;
         }
 
@@ -81,12 +78,13 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
         float alpha = 1f;
         if (machine.recipeLogic.isWorking()) {
-            lastColor = machine.getColor();
-            delta = FADEOUT;
+            machine.lastColor = machine.getColor();
+            machine.delta = FADEOUT;
         } else {
-            alpha = delta / FADEOUT;
-            lastColor = color(Mth.floor(alpha * 255), red(lastColor), green(lastColor), blue(lastColor));
-            delta -= Minecraft.getInstance().getDeltaFrameTime();
+            alpha = machine.delta / FADEOUT;
+            machine.lastColor = color(Mth.floor(alpha * 255), red(machine.lastColor), green(machine.lastColor),
+                    blue(machine.lastColor));
+            machine.delta -= Minecraft.getInstance().getDeltaFrameTime();
         }
 
         Direction front = machine.getFrontFacing();
@@ -96,9 +94,9 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
         Direction.Axis axis = RelativeDirection.UP.getRelative(front, upwards, flipped).getAxis();
 
         float lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
-        float r = Mth.lerp(lerpFactor, red(lastColor), 255) / 255f;
-        float g = Mth.lerp(lerpFactor, green(lastColor), 255) / 255f;
-        float b = Mth.lerp(lerpFactor, blue(lastColor), 255) / 255f;
+        float r = Mth.lerp(lerpFactor, red(machine.lastColor), 255) / 255f;
+        float g = Mth.lerp(lerpFactor, green(machine.lastColor), 255) / 255f;
+        float b = Mth.lerp(lerpFactor, blue(machine.lastColor), 255) / 255f;
 
         RenderBufferHelper.renderRing(stack, buffer,
                 back.getStepX() * 7 + 0.5F,
@@ -114,7 +112,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public boolean shouldRenderOffScreen(FusionReactorMachine machine) {
-        return machine.recipeLogic.isWorking() || delta > 0;
+        return machine.recipeLogic.isWorking() || machine.delta > 0;
     }
 
     @Override
@@ -163,7 +161,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
         @Override
         public boolean shouldRenderBloomEffect(EffectRenderContext context) {
-            return (machine.recipeLogic.isWorking() || delta > 0) &&
+            return FusionRingRender.this.shouldRenderOffScreen(machine) &&
                     context.frustum().isVisible(FusionRingRender.this.getRenderBoundingBox(machine));
         }
     }

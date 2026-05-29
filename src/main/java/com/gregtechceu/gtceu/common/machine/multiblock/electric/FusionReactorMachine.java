@@ -77,12 +77,15 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected long heat = 0;
     @SaveField
     protected final NotifiableEnergyContainer energyContainer;
-    @Getter
-    @SyncToClient
-    private int color = 0xFFFFFFFF;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
+    // Used for rendering
+    @Getter
+    @SyncToClient
+    private int color = 0xFFFFFFFF;
+    public float delta = 0;
+    public int lastColor = -1;
     @Getter
     @Setter
     protected BloomRenderTicket registeredBloomTicket = BloomRenderTicket.INVALID;
