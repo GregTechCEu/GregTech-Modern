@@ -618,9 +618,9 @@ public class IntProviderIngredientTest {
                                 .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
-                                completed + "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
                         "Parallel LCent didn't consume correct number of items, consumed " +
                                 (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -684,8 +684,8 @@ public class IntProviderIngredientTest {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                itemIn.getStackInSlot(0).getCount() + "] not [" + runs +
-                                "] \nFailed recipes follow:\n" +
+                                itemIn.getStackInSlot(0).getCount() + "] not [" + runs + "]\n Current machine state: " +
+                                busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
                                 TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
@@ -769,9 +769,9 @@ public class IntProviderIngredientTest {
                                 .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
-                                completed + "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
                         "Parallel LCent didn't consume correct number of items, consumed " +
                                 (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -835,8 +835,8 @@ public class IntProviderIngredientTest {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
-                                itemIn.getStackInSlot(0).getCount() + "] not [" + runs +
-                                "] \nFailed recipes follow:\n" +
+                                itemIn.getStackInSlot(0).getCount() + "] not [" + runs + "]\n Current machine state: " +
+                                busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
                                 TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
@@ -926,9 +926,9 @@ public class IntProviderIngredientTest {
                         .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                         STONE.copyWithCount(completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" +
-                                completed + "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 helper.assertTrue(TestUtils.isItemWithinRange(results, lowerLimit, upperLimit),
                         "Batched Parallel LCent didn't consume correct number of items, consumed " +
                                 (64 - results.getCount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -1000,7 +1000,8 @@ public class IntProviderIngredientTest {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.isEmpty(),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                itemIn.getTotalContentAmount() + "] not [" + runs + "] \nFailed recipes follow:\n" +
+                                itemIn.getTotalContentAmount() + "] not [" + runs + "]\nCurrent machine state: " +
+                                busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
                                 TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;

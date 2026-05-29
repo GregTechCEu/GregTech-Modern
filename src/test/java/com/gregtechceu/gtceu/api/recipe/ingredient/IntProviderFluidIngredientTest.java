@@ -631,9 +631,9 @@ public class IntProviderFluidIngredientTest {
                                 ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
-                                completed + "]. \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
+                                "].\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
                         "Parallel LCent didn't consume correct number of fluids, consumed " +
                                 (amount - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -698,8 +698,8 @@ public class IntProviderFluidIngredientTest {
                 helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs +
-                                " \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
                 int upperLimit = runs * 40;
@@ -784,9 +784,9 @@ public class IntProviderFluidIngredientTest {
                                 ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
-                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" +
-                                completed + "]. \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
+                                "].\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
                         "Batched LCent didn't consume correct number of fluids, consumed " +
                                 (amount - results.getAmount()) + "] not [" + lowerLimit + "-" + upperLimit + "]");
@@ -851,8 +851,8 @@ public class IntProviderFluidIngredientTest {
                 helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
                                 fluidIn.getFluidInTank(0).getAmount() + "] not [" + runs +
-                                "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(fluidOut.getTotalContentAmount());
                 int lowerLimit = runs * 0;
                 int upperLimit = runs * 40;
@@ -939,8 +939,8 @@ public class IntProviderFluidIngredientTest {
                                 new FluidStack(REDSTONE, completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 (fluidOut.getFluidInTank(0).getAmount()) + "] not [" + completed +
-                                "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int upperLimit = amount - (batches * parallels * 0);
                 int lowerLimit = amount - (batches * parallels * 40);
                 helper.assertTrue(TestUtils.isFluidWithinRange(results, lowerLimit, upperLimit),
@@ -1009,8 +1009,8 @@ public class IntProviderFluidIngredientTest {
                 helper.assertTrue(fluidIn.isEmpty(),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 (runs - fluidIn.getFluidInTank(0).getAmount()) + "] not [" + runs +
-                                "] \nFailed recipes follow:\n" +
-                                TestUtils.getFailures(busHolder.controller.recipeLogic));
+                                "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
+                                "\nFailed recipes follow:\n" + TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = fluidOut.getFluidInTank(0).getAmount();
                 int lowerLimit = runs * 0;
                 int upperLimit = runs * 40;
