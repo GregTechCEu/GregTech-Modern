@@ -260,9 +260,9 @@ public class FormattingUtil {
         long sec = ticks / 20;
         String out = "";
         out = (sec % 60) + "s" + out;
-        if (sec > 60) out = ((sec / 60) % 60) + "m " + out;
-        if (sec > 3600) out = ((sec / 3600) % 24) + "h " + out;
-        if (sec > 24 * 3600) out = (sec / (3600 * 24)) + "d " + out;
+        if (sec >= 60) out = ((sec / 60) % 60) + "m " + out;
+        if (sec >= 3600) out = ((sec / 3600) % 24) + "h " + out;
+        if (sec >= 24 * 3600) out = (sec / (3600 * 24)) + "d " + out;
         return out;
     }
 
