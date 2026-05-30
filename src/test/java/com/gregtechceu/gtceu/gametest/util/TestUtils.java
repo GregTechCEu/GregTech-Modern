@@ -233,7 +233,7 @@ public class TestUtils {
         StringBuilder failures = new StringBuilder();
         if (!reasons.isEmpty()) {
             for (var reason : reasons.entrySet()) {
-                failures.append(reason.getKey().id).append(" - ").append(reason.getValue().plainCopy()).append("\n");
+                failures.append(reason.getKey().id).append(" - ").append(reason).append("\n");
             }
         }
         return failures.toString();

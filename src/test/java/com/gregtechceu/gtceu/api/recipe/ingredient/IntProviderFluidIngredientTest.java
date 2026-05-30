@@ -65,9 +65,10 @@ public class IntProviderFluidIngredientTest {
     /**
      * How many times to repeat the Batch and Parallel random roll tests to avoid false positives
      * Currently set to 7, with singleblock recipes processing up to 9 fluids, allowing for stacks of up to 63 fluids.
+     * Entire test repeated 10 times for multiblocks
      */
-    @Getter
     private static final int REPLICAS = 7;
+    private static final int MULTI_REPLICAS = 10;
 
     @BeforeBatch(batch = "RangedFluidIngredients")
     public static void prepare(ServerLevel level) {
@@ -594,10 +595,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -614,21 +613,21 @@ public class IntProviderFluidIngredientTest {
         itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
         fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, amount));
 
-        // 1t to turn on, 4t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
                 int upperLimit = amount - (batches * parallels * 0);
                 int lowerLimit = amount - (batches * parallels * 40);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
@@ -646,7 +645,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -669,10 +668,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -686,14 +683,14 @@ public class IntProviderFluidIngredientTest {
         busHolder.controller.setBatchEnabled(false);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
@@ -714,7 +711,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
@@ -747,10 +744,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -767,21 +762,21 @@ public class IntProviderFluidIngredientTest {
         itemIn.setStackInSlot(0, COBBLE.copyWithCount(batches * parallels));
         fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, amount));
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 batches
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
                 int upperLimit = amount - (batches * parallels * 0);
                 int lowerLimit = amount - (batches * parallels * 40);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isFluidStackEqual(new FluidStack(fluidOut.getFluidInTank(0),
-                                ((int) Math.round(fluidOut.getTotalContentAmount()))),
+                                        ((int) Math.round(fluidOut.getTotalContentAmount()))),
                                 new FluidStack(REDSTONE, completed)),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(fluidOut.getTotalContentAmount())) + "] not [" + completed +
@@ -799,7 +794,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -822,10 +817,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -839,14 +832,14 @@ public class IntProviderFluidIngredientTest {
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(fluidIn.getFluidInTank(0).isEmpty(),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
@@ -867,7 +860,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
@@ -900,10 +893,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -924,13 +915,13 @@ public class IntProviderFluidIngredientTest {
         }
         fluidIn.setFluidInTank(0, new FluidStack(LCENT_IN, amount));
 
-        // 1t to turn on, 64t per recipe run
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
+            helper.runAfterDelay(75 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
@@ -958,7 +949,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -981,10 +972,8 @@ public class IntProviderFluidIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged fluid output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedFluidIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedFluidOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -998,13 +987,13 @@ public class IntProviderFluidIngredientTest {
 
         fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
 
-        // 1t to turn on, 64t per recipe run
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
+            helper.runAfterDelay(75 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(fluidIn.isEmpty(),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
@@ -1025,7 +1014,7 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];

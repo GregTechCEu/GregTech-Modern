@@ -60,9 +60,10 @@ public class IntProviderIngredientTest {
     /**
      * How many times to repeat the Batch and Parallel random roll tests to avoid false positives
      * Currently set to 7, with singleblock recipes processing up to 9 items, allowing for stacks of up to 63 items.
+     * Entire test repeated 10 times for multiblocks
      */
-    @Getter
     private static final int REPLICAS = 7;
+    private static final int MULTI_REPLICAS = 10;
 
     @BeforeBatch(batch = "RangedIngredients")
     public static void prepare(ServerLevel level) {
@@ -583,10 +584,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -601,21 +600,21 @@ public class IntProviderIngredientTest {
         itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
         itemIn.setStackInSlot(1, COBBLE.copyWithCount(parallels));
 
-        // 1t to turn on, 4t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
@@ -633,7 +632,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -656,10 +655,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -673,18 +670,18 @@ public class IntProviderIngredientTest {
         busHolder.controller.setBatchEnabled(false);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
-                                itemIn.getStackInSlot(0).getCount() + "] not [" + runs + "]\n Current machine state: " +
+                                (int) Math.round(itemIn.getTotalContentAmount()) + "] not [" + runs + "]\n Current machine state: " +
                                 busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
                                 TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
@@ -701,7 +698,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
@@ -734,10 +731,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -752,21 +747,21 @@ public class IntProviderIngredientTest {
         itemIn.setStackInSlot(0, LCENT_IN.copyWithCount(64));
         itemIn.setStackInSlot(1, COBBLE.copyWithCount(batches));
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 batches
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(
                         TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                                .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
                                 STONE.copyWithCount(completed)),
                         "Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
@@ -784,7 +779,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -807,10 +802,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 2000,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -824,14 +817,14 @@ public class IntProviderIngredientTest {
         busHolder.controller.setBatchEnabled(true);
         busHolder.parallelHatch.setCurrentParallel(parallels);
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(17 * finalI, () -> {
+            helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.getStackInSlot(0).isEmpty(),
                         "Batched LCent didn't complete correct number of recipes, completed [" +
@@ -852,7 +845,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 17 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
@@ -885,10 +878,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item input
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -910,21 +901,21 @@ public class IntProviderIngredientTest {
             itemIn.setStackInSlot(k, LCENT_IN.copyWithCount(64));
         }
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] rolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
+            helper.runAfterDelay(75 * finalI, () -> {
                 ItemStack results = itemIn.getStackInSlot(0);
                 int upperLimit = 64 - (batches * parallels * 0);
                 int lowerLimit = 64 - (batches * parallels * 4);
                 int completed = batches * parallels * finalI;
                 helper.assertTrue(TestUtils.isItemStackEqual(itemOut.getStackInSlot(0)
-                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
-                        STONE.copyWithCount(completed)),
+                                        .copyWithCount((int) Math.round(itemOut.getTotalContentAmount())),
+                                STONE.copyWithCount(completed)),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
                                 ((int) Math.round(itemOut.getTotalContentAmount())) + "] not [" + completed +
                                 "]\n Current machine state: " + busHolder.controller.recipeLogic.getStatus() +
@@ -947,7 +938,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             for (int i = 0; i < REPLICAS; i++) {
@@ -970,10 +961,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-              batch = "RangedIngredients",
-              timeoutTicks = 500,
-              requiredSuccesses = 1,
-              attempts = 10)
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -989,18 +978,18 @@ public class IntProviderIngredientTest {
             itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
         }
 
-        // 1t to turn on, 1t per recipe run
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe REPLICAS times
         int[] addedRolls = new int[REPLICAS];
         for (int i = 1; i <= REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(65 * finalI, () -> {
+            helper.runAfterDelay(75 * finalI, () -> {
                 int runs = finalI * batches * parallels;
                 helper.assertTrue(itemIn.isEmpty(),
                         "Batched Parallel LCent didn't complete correct number of recipes, completed [" +
-                                itemIn.getTotalContentAmount() + "] not [" + runs + "]\nCurrent machine state: " +
+                                (runs - itemIn.getTotalContentAmount()) + "] not [" + runs + "]\nCurrent machine state: " +
                                 busHolder.controller.recipeLogic.getStatus() + "\nFailed recipes follow:\n" +
                                 TestUtils.getFailures(busHolder.controller.recipeLogic));
                 int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
@@ -1019,7 +1008,7 @@ public class IntProviderIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 65 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
             int[] rolls = new int[REPLICAS];
