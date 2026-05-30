@@ -65,10 +65,10 @@ public class IntProviderFluidIngredientTest {
     /**
      * How many times to repeat the Batch and Parallel random roll tests to avoid false positives
      * Currently set to 7, with singleblock recipes processing up to 9 fluids, allowing for stacks of up to 63 fluids.
-     * Entire test repeated 10 times for multiblocks
+     * Set 20 times for Batch/Parallel multis
      */
     private static final int REPLICAS = 7;
-    private static final int MULTI_REPLICAS = 10;
+    private static final int MULTI_REPLICAS = 20;
 
     @BeforeBatch(batch = "RangedFluidIngredients")
     public static void prepare(ServerLevel level) {
@@ -616,9 +616,9 @@ public class IntProviderFluidIngredientTest {
         // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(21 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
@@ -645,10 +645,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
+            for (int i = 0; i < MULTI_REPLICAS; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
                     GTCEu.LOGGER.warn("Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
@@ -686,9 +686,9 @@ public class IntProviderFluidIngredientTest {
         // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] addedRolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
@@ -711,10 +711,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            int[] rolls = new int[REPLICAS];
+            int[] rolls = new int[MULTI_REPLICAS];
 
             rolls[0] = addedRolls[0];
             if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
@@ -723,7 +723,7 @@ public class IntProviderFluidIngredientTest {
                         rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                         "). If this message only appears once, this is likely a false positive.");
             }
-            for (int i = 1; i < REPLICAS; i++) {
+            for (int i = 1; i < MULTI_REPLICAS; i++) {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
@@ -765,9 +765,9 @@ public class IntProviderFluidIngredientTest {
         // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 batches
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(21 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
@@ -794,10 +794,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
+            for (int i = 0; i < MULTI_REPLICAS; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
                     GTCEu.LOGGER.warn("Batched LCent ranged fluid input test iteration " + i + " consumed [" +
@@ -835,9 +835,9 @@ public class IntProviderFluidIngredientTest {
         // 1t to turn on, 1t per recipe run, 4t buffer for sanity
         // 16 parallels
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] addedRolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(21 * finalI, () -> {
                 int runs = finalI * batches * parallels;
@@ -860,10 +860,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 21 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 21 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            int[] rolls = new int[REPLICAS];
+            int[] rolls = new int[MULTI_REPLICAS];
 
             rolls[0] = addedRolls[0];
             if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
@@ -872,7 +872,7 @@ public class IntProviderFluidIngredientTest {
                         rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + batches +
                         "). If this message only appears once, this is likely a false positive.");
             }
-            for (int i = 1; i < REPLICAS; i++) {
+            for (int i = 1; i < MULTI_REPLICAS; i++) {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
@@ -917,9 +917,9 @@ public class IntProviderFluidIngredientTest {
 
         // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] rolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(75 * finalI, () -> {
                 FluidStack results = fluidIn.getFluidInTank(0);
@@ -949,10 +949,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            for (int i = 0; i < REPLICAS; i++) {
+            for (int i = 0; i < MULTI_REPLICAS; i++) {
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
                     GTCEu.LOGGER.warn("Batched Parallel LCent ranged fluid input test iteration " + i + " consumed [" +
@@ -989,9 +989,9 @@ public class IntProviderFluidIngredientTest {
 
         // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // check the results of all rolls together
-        // repeat recipe REPLICAS times
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 1; i <= REPLICAS; i++) {
+        // repeat recipe MULTI_REPLICAS times
+        int[] addedRolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(75 * finalI, () -> {
                 int runs = finalI * batches * parallels;
@@ -1014,10 +1014,10 @@ public class IntProviderFluidIngredientTest {
             });
         }
 
-        helper.runAfterDelay(1 + 75 * REPLICAS, () -> {
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            int[] rolls = new int[REPLICAS];
+            int[] rolls = new int[MULTI_REPLICAS];
 
             rolls[0] = addedRolls[0];
             if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
@@ -1026,7 +1026,7 @@ public class IntProviderFluidIngredientTest {
                         rolls[0] + "] fluids, a multiple of its Batch * Parallel count (" + (batches * parallels) +
                         "). If this message only appears once, this is likely a false positive.");
             }
-            for (int i = 1; i < REPLICAS; i++) {
+            for (int i = 1; i < MULTI_REPLICAS; i++) {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
