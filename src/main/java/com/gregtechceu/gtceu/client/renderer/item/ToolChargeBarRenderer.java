@@ -3,14 +3,14 @@ package com.gregtechceu.gtceu.client.renderer.item;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.drawable.GuiDraw;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 
 public final class ToolChargeBarRenderer {
@@ -38,9 +38,10 @@ public final class ToolChargeBarRenderer {
 
         int x = xPosition + 2;
         int y = yPosition + 13 - offset;
-        graphics.fill(RenderType.gui(), x, y, x + 13, y + (shadow ? 2 : 1), 190, colorShadow);
-        DrawUtil.fillHorizontalGradient(graphics, RenderType.gui(), x, y, x + level, y + 1, left, right, 190);
-        // graphics.fill(RenderType.guiOverlay(), x + BAR_W, y, x + BAR_W - level, y - 1, colorBG);
+
+        GuiDraw.drawRect(graphics, x, y, 13, shadow ? 2 : 1, colorShadow);
+        GuiDraw.drawHorizontalGradientRect(graphics, x, y, level, 1, left, right);
+        ((GuiGraphicsAccessor) graphics).callFlushIfUnmanaged();
     }
 
     public static void renderBarsTool(GuiGraphics graphics, IGTTool tool, ItemStack stack, int xPosition,

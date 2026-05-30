@@ -7,8 +7,6 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
-import com.lowdragmc.lowdraglib.utils.Size;
-
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 
@@ -34,13 +32,9 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
     private final GTRecipeCategory category;
     @Getter
     private final Renderer icon;
-    @Getter
-    private final Size size;
 
     public GTRecipeREICategory(@NotNull GTRecipeCategory category) {
         this.category = category;
-        var recipeType = category.getRecipeType();
-        this.size = new Size(8, 8);
         this.icon = (Renderer) category.getIcon().get();
     }
 
@@ -91,16 +85,6 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
     @Override
     public CategoryIdentifier<? extends GTRecipeDisplay> getCategoryIdentifier() {
         return CATEGORIES.apply(category);
-    }
-
-    @Override
-    public int getDisplayHeight() {
-        return getSize().height;
-    }
-
-    @Override
-    public int getDisplayWidth(GTRecipeDisplay display) {
-        return getSize().width;
     }
 
     @NotNull

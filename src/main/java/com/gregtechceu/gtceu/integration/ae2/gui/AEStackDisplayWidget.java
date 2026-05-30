@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.gui;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -15,6 +15,7 @@ import brachy.modularui.api.ITheme;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.WidgetThemeEntry;
 import brachy.modularui.widget.Widget;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class AEStackDisplayWidget extends Widget<AEStackDisplayWidget> {
         size(18);
     }
 
-    private GenericStack getStack() {
+    private @Nullable GenericStack getStack() {
         return index < source.size() ? source.get(index) : null;
     }
 
@@ -46,7 +47,7 @@ public class AEStackDisplayWidget extends Widget<AEStackDisplayWidget> {
     @Override
     public void draw(ModularGuiContext context, WidgetThemeEntry<?> widgetTheme) {
         var graphics = context.getGraphics();
-        GuiTextures.SLOT_DARK.draw(graphics, 0, 0, 0, 0, 18, 18);
+        GTGuiTextures.SLOT_DARK.draw(context, 0, 0, 18, 18);
 
         GenericStack stack = getStack();
         if (stack == null) return;
@@ -72,7 +73,7 @@ public class AEStackDisplayWidget extends Widget<AEStackDisplayWidget> {
                     List.of(stack.what().getDisplayName(),
                             Component.literal("x" + AEGuiHelper.formatAmountFull(stack.amount()))
                                     .withStyle(ChatFormatting.GRAY)),
-                    (int) context.getAbsMouseX(), (int) context.getAbsMouseY());
+                    context.getAbsMouseX(), context.getAbsMouseY());
         }
     }
 }

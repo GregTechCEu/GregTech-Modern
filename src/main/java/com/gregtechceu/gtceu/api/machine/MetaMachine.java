@@ -57,6 +57,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -130,6 +132,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     private final long offset = GTValues.RNG.nextInt(20);
 
     @Getter
+    @SaveField
+    @SyncToClient
     protected final MachineTraitHolder traitHolder;
 
     private final List<TickableSubscription> serverTicks;
@@ -155,9 +159,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Called when this machine is loaded. The entire world is not loaded when this method is called.
-     * To schedule code to run on the first full world tick, do
-     * {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
+     * Called when this machine is loaded.<br>
+     * On the server side, the entire world may not be loaded when this method is called.<br>
+     * On the client side, this method is called before this machine's data has been received.<br>
+     * To schedule code to run on the first full world tick, see {@link #scheduleForNextServerTick(Runnable)}
      */
     @MustBeInvokedByOverriders
     public void onLoad() {
@@ -168,6 +173,18 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (renderState.hasProperty(GTMachineModelProperties.IS_PAINTED) &&
                 this.isPainted() != renderState.getValue(GTMachineModelProperties.IS_PAINTED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_PAINTED, this.isPainted()));
+        }
+    }
+
+    /**
+     * Schedules a callback to be executed on the next server tick. Only works on the server-side. <br>
+     * Should be called from methods such as {@link #onLoad()}, when the world may not be fully loaded.
+     *
+     * @param runnable The callback to execute
+     */
+    public final void scheduleForNextServerTick(Runnable runnable) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.getServer().tell(new TickTask(0, runnable));
         }
     }
 
@@ -234,6 +251,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @ApiStatus.Internal
     public final void serverTick() {
+        super.serverTick();
         executeTick();
     }
 
@@ -397,14 +415,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         Pair<@Nullable GTToolType, InteractionResult> result = null;
 
         // Prioritize covers
-        var cover = getCoverContainer().getCoverAtSide(context.getClickedFace());
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
         if (cover != null) {
             result = cover.onToolClick(context);
             if (result.getSecond() != InteractionResult.PASS) return result;
 
-            if (toolType.contains(GTToolType.CROWBAR) && !isRemote()) {
+            if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.SUCCESS);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 

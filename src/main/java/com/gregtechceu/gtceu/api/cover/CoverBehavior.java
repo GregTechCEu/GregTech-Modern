@@ -67,16 +67,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         this.attachedSide = attachedSide;
     }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        coverHolder.scheduleRenderUpdate();
-    }
-
     @Override
-    public void markAsChanged() {
-        coverHolder.markAsChanged();
+    public ISyncManaged getParentSyncObject() {
+        return coverHolder;
     }
 
     /**
