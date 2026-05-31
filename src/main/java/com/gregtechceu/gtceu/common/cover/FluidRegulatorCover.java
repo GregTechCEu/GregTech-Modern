@@ -68,7 +68,8 @@ public class FluidRegulatorCover extends PumpCover {
     @Override
     protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
                                            int platformTransferLimit) {
-        return switch (transferMode) { // TRANSFER_MULTIPLE and KEEP_MULTIPLE don't do anything special with fluids right now
+        return switch (transferMode) { // TRANSFER_MULTIPLE and KEEP_MULTIPLE don't do anything special with fluids
+                                       // right now
             case TRANSFER_ANY -> transferAny(source, destination, platformTransferLimit);
             case TRANSFER_EXACT, TRANSFER_MULTIPLE -> transferExact(source, destination, platformTransferLimit);
             case KEEP_EXACT, KEEP_MULTIPLE -> keepExact(source, destination, platformTransferLimit);
