@@ -47,28 +47,6 @@ public final class GTQuadTransformers {
         };
     }
 
-    public static IQuadTransformer forcePositionTo(AABB bounds) {
-        return quad -> {
-            int[] vertices = quad.getVertices();
-            float minX = (float) bounds.minX, minY = (float) bounds.minY, minZ = (float) bounds.minZ;
-            float maxX = (float) bounds.maxX, maxY = (float) bounds.maxY, maxZ = (float) bounds.maxZ;
-            float middleX = (minX + maxX) / 2f, middleY = (minY + maxY) / 2f, middleZ = (minZ + maxZ) / 2f;
-
-            for (int i = 0; i < 4; i++) {
-                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
-
-                float x = Float.intBitsToFloat(vertices[offset]);
-                float y = Float.intBitsToFloat(vertices[offset + 1]);
-                float z = Float.intBitsToFloat(vertices[offset + 2]);
-
-                // noinspection PointlessArithmeticExpression looks nicer
-                vertices[offset + 0] = Float.floatToRawIntBits(middleX - x > Mth.EPSILON ? minX : maxX);
-                vertices[offset + 1] = Float.floatToRawIntBits(middleY - y > Mth.EPSILON ? minY : maxY);
-                vertices[offset + 2] = Float.floatToRawIntBits(middleZ - z > Mth.EPSILON ? minZ : maxZ);
-            }
-        };
-    }
-
     public static BakedQuad setSprite(BakedQuad quad, TextureAtlasSprite sprite) {
         TextureAtlasSprite oldSprite = quad.getSprite();
         int[] vertices = quad.getVertices().clone();
