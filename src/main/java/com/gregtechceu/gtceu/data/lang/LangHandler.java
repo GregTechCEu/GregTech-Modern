@@ -474,6 +474,8 @@ public class LangHandler {
         provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
+        provider.add("cover.robot_arm.allow_multiples", "Allow multiples");
+        provider.add("cover.robot_arm.allow_multiples.tooltip", "Allows the robot arm to transfer multiples of the specified amount in 1 operation in supply/keep exact mode.\nFor example:\n - Supply exact mode, 5 items, 32 items in input => 30 items will be transfered in 1 operation\n - Keep exact mode, 5 items, 32 items in input, 1 item in output => 29 items will be transfered in 1 operation");
         provider.add("cover.distribution.mode.title", "Distribution Mode");
         provider.add("cover.distribution.mode.round_robin_global", "Round Robin");
         provider.add("cover.distribution.mode.round_robin_prio", "Round Robin with Restriction");

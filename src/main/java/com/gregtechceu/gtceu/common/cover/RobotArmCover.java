@@ -1,5 +1,12 @@
 package com.gregtechceu.gtceu.common.cover;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -43,6 +50,10 @@ public class RobotArmCover extends ConveyorCover {
     @SaveField
     @Getter
     protected int globalTransferLimit;
+    @Setter
+    @SaveField
+    @Getter
+    protected boolean allowMultiples;
     protected int itemsTransferBuffered;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
@@ -80,7 +91,11 @@ public class RobotArmCover extends ConveyorCover {
             int itemToMoveAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             if (itemAmount >= itemToMoveAmount) {
-                sourceInfo.totalCount = itemToMoveAmount;
+                if (allowMultiples) {
+                    sourceInfo.totalCount = itemAmount - (itemAmount % itemToMoveAmount);
+                } else {
+                    sourceInfo.totalCount = itemToMoveAmount;
+                }
             } else {
                 iterator.remove();
             }
@@ -116,6 +131,7 @@ public class RobotArmCover extends ConveyorCover {
         while (iterator.hasNext()) {
             ItemStack filteredItem = iterator.next();
             GroupItemInfo sourceInfo = sourceItemAmounts.get(filteredItem);
+            int sourceAmount = sourceInfo.totalCount;
             int itemToKeepAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             int itemAmount = 0;
@@ -123,7 +139,10 @@ public class RobotArmCover extends ConveyorCover {
                 GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
                 itemAmount = destItemInfo.totalCount;
             }
-            if (itemAmount < itemToKeepAmount) {
+            int maxMultiple = ((sourceAmount + itemAmount) / itemToKeepAmount)*itemToKeepAmount;
+            if (allowMultiples && itemAmount < maxMultiple) {
+                sourceInfo.totalCount = maxMultiple - itemAmount;
+            } else if (itemAmount < itemToKeepAmount) {
                 sourceInfo.totalCount = itemToKeepAmount - itemAmount;
             } else {
                 iterator.remove();
@@ -157,6 +176,12 @@ public class RobotArmCover extends ConveyorCover {
     // *********** GUI ***********//
 
     @Override
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return super.buildUI(data, syncManager, settings)
+                .height(192 + 18 + 40);
+    }
+
+    @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
@@ -164,14 +189,24 @@ public class RobotArmCover extends ConveyorCover {
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
                 .allowC2S();
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
+        var allowMultiples = new BooleanSyncValue(this::isAllowMultiples, this::setAllowMultiples).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
+        syncManager.syncValue("allowMultiples", allowMultiples);
 
         GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
+        column.child(Flow.row()
+                .child(new ToggleButton()
+                        .value(allowMultiples)
+                        .overlay(true, GuiTextures.CHECKMARK))
+                .child(new TextWidget<>(Text.lang("cover.robot_arm.allow_multiples"))
+                        .addTooltipElement(Text.lang("cover.robot_arm.allow_multiples.tooltip"))
+                        .right(0)
+                        .verticalCenter()));
     }
 
     public void setTransferMode(TransferMode transferMode) {
