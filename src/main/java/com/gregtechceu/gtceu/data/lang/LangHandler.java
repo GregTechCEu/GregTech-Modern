@@ -474,8 +474,6 @@ public class LangHandler {
         provider.add("cover.conveyor.mode", "Mode: %s");
         provider.add("cover.conveyor.mode.export", "Mode: Export");
         provider.add("cover.conveyor.mode.import", "Mode: Import");
-        provider.add("cover.robot_arm.allow_multiples", "Allow multiples");
-        provider.add("cover.robot_arm.allow_multiples.tooltip", "Allows the robot arm to transfer multiples of the specified amount in 1 operation in supply/keep exact mode.\nFor example:\n - Supply exact mode, 5 items, 32 items in input => 30 items will be transfered in 1 operation\n - Keep exact mode, 5 items, 32 items in input, 1 item in output => 29 items will be transfered in 1 operation");
         provider.add("cover.distribution.mode.title", "Distribution Mode");
         provider.add("cover.distribution.mode.round_robin_global", "Round Robin");
         provider.add("cover.distribution.mode.round_robin_prio", "Round Robin with Restriction");
@@ -508,8 +506,10 @@ public class LangHandler {
         provider.add("cover.robotic_arm.transfer_mode.transfer_any", "Transfer Any");
         provider.add("cover.robotic_arm.transfer_mode.transfer_exact", "Supply Exact");
         provider.add("cover.robotic_arm.transfer_mode.keep_exact", "Keep Exact");
+        provider.add("cover.robotic_arm.transfer_mode.transfer_multiple", "Transfer Multiple");
+        provider.add("cover.robotic_arm.transfer_mode.keep_multiple", "Keep Multiple");
         multilineLang(provider, "cover.robotic_arm.transfer_mode.description",
-                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
+                "§eTransfer Any§r - in this mode, cover will transfer as many items matching its filter as possible.\n§eSupply Exact§r - in this mode, cover will supply items in portions specified in item filter slots (or variable under this button for tag filter). If amount of items is less than portion size, items won't be moved.\n§eKeep Exact§r - in this mode, cover will keep specified amount of items in the destination inventory, supplying additional amount of items if required.\n§eTransfer Multiple§r - like supply exact, but can transfer a multiple of the specified amount in 1 operation (i.e. if the amount is 5, and there are 32 items in the input, 30 will be transferred).\n§eKeep Multiple§r - in this mode, the cover will transfer as many items as possible, such that the output will have a multiple of the specified amount of items.\n§7Tip: left/right click on filter slots to change item amount,  use shift clicking to change amount faster.");
         provider.add("cover.pump.title", "Pump Cover Settings (%s)");
         provider.add("cover.pump.transfer_rate", "%s");
         provider.add("cover.pump.mode.export", "Mode: Export");

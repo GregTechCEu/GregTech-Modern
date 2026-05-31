@@ -1,12 +1,5 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.BooleanSyncValue;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.ToggleButton;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -25,11 +18,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,10 +48,6 @@ public class RobotArmCover extends ConveyorCover {
     @SaveField
     @Getter
     protected int globalTransferLimit;
-    @Setter
-    @SaveField
-    @Getter
-    protected boolean allowMultiples;
     protected int itemsTransferBuffered;
 
     public RobotArmCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,
@@ -76,8 +70,8 @@ public class RobotArmCover extends ConveyorCover {
         }
         return switch (transferMode) {
             case TRANSFER_ANY -> moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
-            case TRANSFER_EXACT -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
-            case KEEP_EXACT -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
+            case TRANSFER_EXACT, TRANSFER_MULTIPLE -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
+            case KEEP_EXACT, KEEP_MULTIPLE -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
         };
     }
 
@@ -91,7 +85,7 @@ public class RobotArmCover extends ConveyorCover {
             int itemToMoveAmount = getFilteredItemAmount(sourceInfo.itemStack);
 
             if (itemAmount >= itemToMoveAmount) {
-                if (allowMultiples) {
+                if (transferMode == TransferMode.TRANSFER_MULTIPLE) {
                     sourceInfo.totalCount = itemAmount - (itemAmount % itemToMoveAmount);
                 } else {
                     sourceInfo.totalCount = itemToMoveAmount;
@@ -139,8 +133,8 @@ public class RobotArmCover extends ConveyorCover {
                 GroupItemInfo destItemInfo = targetItemAmounts.get(filteredItem);
                 itemAmount = destItemInfo.totalCount;
             }
-            int maxMultiple = ((sourceAmount + itemAmount) / itemToKeepAmount)*itemToKeepAmount;
-            if (allowMultiples && itemAmount < maxMultiple) {
+            int maxMultiple = ((sourceAmount + itemAmount) / itemToKeepAmount) * itemToKeepAmount;
+            if (transferMode == TransferMode.KEEP_MULTIPLE && itemAmount < maxMultiple) {
                 sourceInfo.totalCount = maxMultiple - itemAmount;
             } else if (itemAmount < itemToKeepAmount) {
                 sourceInfo.totalCount = itemToKeepAmount - itemAmount;
@@ -178,7 +172,7 @@ public class RobotArmCover extends ConveyorCover {
     @Override
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return super.buildUI(data, syncManager, settings)
-                .height(192 + 18 + 40);
+                .height(192 + 18 + 20);
     }
 
     @Override
@@ -189,11 +183,9 @@ public class RobotArmCover extends ConveyorCover {
         var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
                 .allowC2S();
         var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
-        var allowMultiples = new BooleanSyncValue(this::isAllowMultiples, this::setAllowMultiples).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
-        syncManager.syncValue("allowMultiples", allowMultiples);
 
         GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
@@ -201,7 +193,6 @@ public class RobotArmCover extends ConveyorCover {
                 .setEnabledIf($ -> shouldShowStackSize()));
         column.child(Flow.row()
                 .child(new ToggleButton()
-                        .value(allowMultiples)
                         .overlay(true, GuiTextures.CHECKMARK))
                 .child(new TextWidget<>(Text.lang("cover.robot_arm.allow_multiples"))
                         .addTooltipElement(Text.lang("cover.robot_arm.allow_multiples.tooltip"))
