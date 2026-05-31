@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -102,6 +103,8 @@ public class CommonProxy {
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
+
+        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
 
     public static void init() {

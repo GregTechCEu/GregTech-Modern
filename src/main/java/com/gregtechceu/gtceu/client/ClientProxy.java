@@ -73,6 +73,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
+import java.util.*;
+
 public class ClientProxy extends CommonProxy {
 
     public static final BiMap<ResourceLocation, GTOreDefinition> CLIENT_ORE_VEINS = HashBiMap.create();
