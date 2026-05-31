@@ -38,7 +38,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
@@ -46,6 +46,7 @@ import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -53,8 +54,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -679,7 +678,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         // add render state info
         MachineRenderState renderState = this.getRenderState();
         for (var property : renderState.getValues().entrySet()) {
-            lines.accept(ModelUtils.getPropertyValueString(property));
+            lines.accept(GTStringUtils.getPropertyValueString(property));
         }
     }
 
@@ -1029,8 +1028,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
+        BakedModel model = RenderUtil.getModelForState(this.getBlockState());
 
         if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
             if (modelWithBER.getBlockEntityType() == this.getType()) {

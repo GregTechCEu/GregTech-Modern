@@ -17,10 +17,12 @@
  */
 package com.gregtechceu.gtceu.client.util.quad.transformers;
 
+import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
+import com.gregtechceu.gtceu.client.model.quad.QuadView;
+import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
+
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.IQuadTransformer;
 
 /**
  * This transformer Re-Interpolates the Color, UV's and LightMaps. Use this after all transformations that translate
@@ -30,8 +32,7 @@ import net.minecraftforge.client.model.IQuadTransformer;
  *
  * @author covers1624
  */
-@SuppressWarnings("PointlessArithmeticExpression")
-public class QuadReInterpolator implements IQuadTransformer {
+public class QuadReInterpolator implements QuadTransform {
 
     private final InterpolationHelper interpolationHelper = new InterpolationHelper();
 
@@ -42,26 +43,23 @@ public class QuadReInterpolator implements IQuadTransformer {
 
     public QuadReInterpolator() {}
 
-    public void setInputQuad(BakedQuad quad) {
-        Direction.Axis axis = quad.getDirection().getAxis();
+    public void setInputQuad(QuadView quad) {
+        Direction.Axis axis = quad.nominalFace().getAxis();
         int xIndex = xCoord(axis);
         int yIndex = yCoord(axis);
 
-        int[] vertices = quad.getVertices();
-        float[][] posCache = interpolationHelper.getInternalPosCache();
+        interpolationHelper.reset(
+                quad.posByIndex(0, xIndex), quad.posByIndex(0, yIndex),
+                quad.posByIndex(1, xIndex), quad.posByIndex(1, yIndex),
+                quad.posByIndex(2, xIndex), quad.posByIndex(2, yIndex),
+                quad.posByIndex(3, xIndex), quad.posByIndex(3, yIndex));
 
         // Save the original properties of the quad's vertices
         for (int v = 0; v < 4; v++) {
-            int offset = v * IQuadTransformer.STRIDE;
-
-            // same as calling interpolationHelper.reset with the array contents
-            posCache[v][0] = Float.intBitsToFloat(vertices[offset + POSITION + xIndex]);
-            posCache[v][1] = Float.intBitsToFloat(vertices[offset + POSITION + yIndex]);
-
-            originalSpriteColor[v] = vertices[offset + COLOR];
-            originalSpriteU[v] = Float.intBitsToFloat(vertices[offset + UV0 + 0]);
-            originalSpriteV[v] = Float.intBitsToFloat(vertices[offset + UV0 + 1]);
-            originalSpriteLightmap[v] = vertices[offset + UV2];
+            originalSpriteColor[v] = quad.color(v);
+            originalSpriteU[v] = quad.u(v);
+            originalSpriteV[v] = quad.v(v);
+            originalSpriteLightmap[v] = quad.lightmap(v);
         }
 
         // interpolationHelper.reset(
@@ -72,29 +70,27 @@ public class QuadReInterpolator implements IQuadTransformer {
     }
 
     @Override
-    public void processInPlace(BakedQuad quad) {
-        int[] vertices = quad.getVertices();
-        Direction.Axis axis = quad.getDirection().getAxis();
+    public boolean transform(MutableQuadView quad) {
+        Direction.Axis axis = quad.nominalFace().getAxis();
         int xIndex = xCoord(axis);
         int yIndex = yCoord(axis);
 
         this.interpolationHelper.setup();
-        for (int v = 0; v < 4; v++) {
-            int offset = v * STRIDE + POSITION;
-            float x = Float.intBitsToFloat(vertices[offset + xIndex]);
-            float y = Float.intBitsToFloat(vertices[offset + yIndex]);
+        for (int i = 0; i < 4; i++) {
+            float x = quad.posByIndex(i, xIndex);
+            float y = quad.posByIndex(i, yIndex);
             this.interpolationHelper.locate(x, y);
-
-            interpolateColorFrom(quad, v);
-            interpolateUVFrom(quad, v);
-            interpolateLightmapFrom(quad, v);
+            interpolateColorFrom(quad, i);
+            interpolateUVFrom(quad, i);
+            interpolateLightmapFrom(quad, i);
         }
+        return true;
     }
 
     /**
      * Interpolates the new color values for this Vertex using the others as a reference.
      */
-    public void interpolateColorFrom(BakedQuad quad, int vertexIndex) {
+    public void interpolateColorFrom(MutableQuadView quad, int vertexIndex) {
         int p1 = this.originalSpriteColor[0];
         int p2 = this.originalSpriteColor[1];
         int p3 = this.originalSpriteColor[2];
@@ -116,13 +112,13 @@ public class QuadReInterpolator implements IQuadTransformer {
             mask <<= 8;
         }
 
-        quad.getVertices()[vertexIndex * STRIDE + COLOR] = color;
+        quad.color(vertexIndex, color);
     }
 
     /**
      * Interpolates the new UV values for this Vertex using the others as a reference.
      */
-    public void interpolateUVFrom(BakedQuad quad, int vertexIndex) {
+    public void interpolateUVFrom(MutableQuadView quad, int vertexIndex) {
         float p1 = originalSpriteU[0];
         float p2 = originalSpriteU[1];
         float p3 = originalSpriteU[2];
@@ -134,10 +130,7 @@ public class QuadReInterpolator implements IQuadTransformer {
         p3 = originalSpriteV[2];
         p4 = originalSpriteV[3];
         float v = interpolationHelper.interpolate(p1, p2, p3, p4);
-
-        int offset = vertexIndex * STRIDE + UV0;
-        quad.getVertices()[offset + 0] = Float.floatToIntBits(u);
-        quad.getVertices()[offset + 1] = Float.floatToIntBits(v);
+        quad.uv(vertexIndex, u, v);
     }
 
     /**
@@ -145,7 +138,7 @@ public class QuadReInterpolator implements IQuadTransformer {
      *
      * @return The same Vertex.
      */
-    public void interpolateLightmapFrom(BakedQuad quad, int vertexIndex) {
+    public void interpolateLightmapFrom(MutableQuadView quad, int vertexIndex) {
         int p1 = originalSpriteLightmap[0];
         int p2 = originalSpriteLightmap[1];
         int p3 = originalSpriteLightmap[2];
@@ -167,7 +160,7 @@ public class QuadReInterpolator implements IQuadTransformer {
         p4l = LightTexture.sky(p4);
         int sky = (int) interpolationHelper.interpolate(p1l, p2l, p3l, p4l);
 
-        quad.getVertices()[vertexIndex * STRIDE + UV2] = LightTexture.pack(block, sky);
+        quad.lightmap(vertexIndex, block, sky);
     }
 
     /**

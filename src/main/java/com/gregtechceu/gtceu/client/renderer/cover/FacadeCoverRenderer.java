@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -125,7 +125,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return;
         }
 
-        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        BakedModel facadeModel = RenderUtil.getModelForState(facadeState);
         if (facadeModel.isCustomRenderer()) {
             return;
         }
@@ -199,7 +199,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return ModelData.EMPTY;
         }
 
-        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        BakedModel facadeModel = RenderUtil.getModelForState(facadeState);
         return facadeModel.getModelData(level, pos, facadeState, holderModelData);
     }
 
@@ -214,7 +214,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             return ChunkRenderTypeSet.none();
         }
 
-        BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+        BakedModel facadeModel = RenderUtil.getModelForState(facadeState);
         return facadeModel.getRenderTypes(facadeState, rand, modelData);
     }
 
@@ -297,7 +297,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             if (facadeState.getRenderShape() != RenderShape.MODEL) {
                 return quads;
             }
-            BakedModel facadeModel = ModelUtils.getModelForState(facadeState);
+            BakedModel facadeModel = RenderUtil.getModelForState(facadeState);
             if (facadeModel.isCustomRenderer()) {
                 return quads;
             }
@@ -363,7 +363,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         public ModelData getModelData(BlockAndTintGetter level, BlockPos pos, BlockState state, ModelData modelData) {
             return super.getModelData(level, pos, state, modelData).derive()
                     .with(GTModelProperties.CHILD_MODEL_DATA,
-                            ModelUtils.getModelForState(facadeState).getModelData(level, pos, state, modelData))
+                            RenderUtil.getModelForState(facadeState).getModelData(level, pos, state, modelData))
                     .build();
         }
 
@@ -371,7 +371,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         public List<RenderType> getRenderTypes(ItemStack stack, boolean fabulous) {
             List<RenderType> renderTypes = new ArrayList<>();
 
-            BakedModel facadeModel = ModelUtils.getModelForState(this.facadeState);
+            BakedModel facadeModel = RenderUtil.getModelForState(this.facadeState);
             for (var model : facadeModel.getRenderPasses(stack, fabulous)) {
                 renderTypes.addAll(model.getRenderTypes(this.facadeStack, fabulous));
             }

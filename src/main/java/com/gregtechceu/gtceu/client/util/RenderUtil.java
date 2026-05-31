@@ -216,6 +216,10 @@ public class RenderUtil {
                 Math.fma(face.getStepZ(), 0.5f, z));
     }
 
+    public static BakedModel getModelForState(BlockState state) {
+        return Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+    }
+
     public static void drawBlock(BlockAndTintGetter level, BlockPos pos, BlockState state,
                                  MultiBufferSource bufferSource, PoseStack poseStack) {
         int packedLight = LevelRenderer.getLightColor(level, state, pos);
