@@ -206,7 +206,7 @@ public interface GTGuiTextures {
             18, 18 * 2, 18, 18, ColorType.DEFAULT);
 
     UITexture[] TRANSFER_MODE_OVERLAY = slice("textures/gui/overlay/transfer_mode_overlay.png",
-            40, 40 * 3, 40, 40, ColorType.DEFAULT);
+            40, 40 * 5, 40, 40, ColorType.DEFAULT);
 
     UITexture[] BUTTON_DISTINCT = slice(
             "textures/gui/widget/button_distinct_buses.png",
