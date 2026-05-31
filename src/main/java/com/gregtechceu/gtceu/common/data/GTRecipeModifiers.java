@@ -44,8 +44,11 @@ public class GTRecipeModifiers {
                 }
                 return logic.getModifier(machine, recipe, overclockMachine.getOverclockVoltage());
             });
-
-    // Shortcuts for common OC logics
+    /*
+    Shortcuts for common OC logics
+    One of these modifiers must be present within .recipeModifiers() to enable normal overclocking
+    otherwise, the time discount will not be applied, regardless of the eu/t supplied
+    */
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
