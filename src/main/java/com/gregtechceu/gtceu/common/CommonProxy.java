@@ -190,20 +190,6 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
-
-        if (GTCEu.isDev()) {
-            SpoilableBehavior.builder()
-                    .ticks(60*20)
-                    .result(EntityType.CHICKEN)
-                    .result(Items.QUARTZ)
-                    .build()
-                    .attachTo(Items.EGG);
-            SpoilableBehavior.builder()
-                    .ticks(2*60*20)
-                    .result(EntityType.ENDER_DRAGON)
-                    .build()
-                    .attachTo(Items.DRAGON_EGG);
-        }
     }
 
     private static void initMaterials() {
