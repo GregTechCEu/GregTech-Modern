@@ -2154,6 +2154,8 @@
       
         
       
+        
+      
     
     
     
@@ -2282,6 +2284,34 @@
     
   
     Central Monitor & Placeholder System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Other-Topics/Connected-Textures/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Connected Textures
   
 
     
@@ -3545,6 +3575,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#connected-texture-reimplementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connected texture reimplementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4551,6 +4592,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#connected-texture-reimplementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connected texture reimplementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4700,6 +4752,18 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <li><code>IHPCACoolantProvider</code> - Use <code>HPCACoolantProviderTrait</code></li>
 <li><code>IFluidRendererMulti</code> - Use <code>MultiblockFluidRendererTrait</code></li>
 </ul>
+<h2 id="connected-texture-reimplementation">Connected texture reimplementation</h2>
+<p>The mod's connected texture logic has been reimplemented in GTM proper.
+Texture packs, addons, and modpacks will have to change their texture metadata files for connected texures slightly.<br />
+A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
+<ol>
+<li>Match: <code>"ldlib":([\s\{]*)"connection"(:\s".*?")(?:,\s.*)?</code><br />
+   Replace with: <code>"gtceu":$1"connection_texture"$2</code> </li>
+<li>Match: <code>\s*\},\s*"shimmer":\s*\{(\s*"bloom":.*)</code><br />
+   Replace with: <code>,$1</code> </li>
+<li>Match: <code>(\{\s*)"shimmer":(\s*\{\s*"bloom":.*)</code><br />
+   Replace with: <code>$1"gtceu":$2</code> </li>
+</ol>
 <h2 id="other-changes">Other Changes</h2>
 <ul>
 <li><code>BlastingRecipeBuilder</code>, <code>CampfireRecipeBuilder</code>, <code>SmeltingRecipeBuilder</code> and <code>SmokingRecipeBuilder</code> have been merged into <code>SimpleCookingRecipeBuilder</code><ul>
