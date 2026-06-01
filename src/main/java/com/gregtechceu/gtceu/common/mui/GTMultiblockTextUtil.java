@@ -48,7 +48,7 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(weMachine::isFormed));
         BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(
-                        () -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() !=
+                        () -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
                                 null));
 
         GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
@@ -57,9 +57,9 @@ public class GTMultiblockTextUtil {
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
                             for (String structureName : weMachine.getStructurePatterns().keySet()) {
-                                var error = weMachine.getPatternState(structureName)
-                                        .getError();
-                                list.add(error);
+                                var errors = weMachine.getPatternState(structureName)
+                                        .getErrors();
+                                list.addAll(errors);
                             }
                             return list;
                         })

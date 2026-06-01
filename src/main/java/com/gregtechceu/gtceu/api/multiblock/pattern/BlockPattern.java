@@ -118,7 +118,7 @@ public class BlockPattern implements IBlockPattern {
             }
 
             if (pass) {
-                if (patternState.hasError()) {
+                if (patternState.hasErrors()) {
                     patternState.setState(PatternState.CheckState.INVALID_CACHED);
                 } else {
                     patternState.setState(PatternState.CheckState.VALID_CACHED);

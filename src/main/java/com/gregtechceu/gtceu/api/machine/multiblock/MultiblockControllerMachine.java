@@ -157,7 +157,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
             boolean formed = name.equals(DEFAULT_STRUCTURE) ? isFormed : patternState.isFormed();
-            if (!formed || patternState.hasError() ||
+            if (!formed || patternState.hasErrors() ||
                     patternState.getState() == PatternState.CheckState.UNINITIALIZED) {
                 if (!patternState.getState().isValid()) {
                     checkStructurePattern(name);

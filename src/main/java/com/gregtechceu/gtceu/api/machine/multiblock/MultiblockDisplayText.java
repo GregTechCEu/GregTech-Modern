@@ -70,7 +70,7 @@ public class MultiblockDisplayText {
             }
 
             if (!isStructureFormed) {
-                if (state.hasError() && state.getError() != null) {
+                if (state.hasErrors() && state.getErrors() != null) {
                     // state.getError().applyErrorInformation().apply();
                 }
                 // textList.add(state.getError().getErrorInfo());

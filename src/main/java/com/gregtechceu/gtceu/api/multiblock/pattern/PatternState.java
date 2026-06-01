@@ -19,6 +19,8 @@ import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
@@ -38,9 +40,8 @@ public class PatternState {
     protected boolean actualFlipped = false;
     @Setter
     protected boolean shouldUpdate = true;
-    @Setter
     @Getter
-    protected @Nullable PatternError error;
+    protected @Nullable List<PatternError> errors;
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
@@ -65,8 +66,16 @@ public class PatternState {
         return shouldUpdate;
     }
 
-    public boolean hasError() {
-        return error != null;
+    public boolean hasErrors() {
+        return errors != null;
+    }
+
+    public void setError(@Nullable PatternError error) {
+        this.errors = error != null ? List.of(error) : null;
+    }
+
+    public void setErrors(@Nullable List<PatternError> error) {
+        this.errors = error;
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
@@ -87,7 +96,7 @@ public class PatternState {
 
             for (var name : controller.getStructureNames()) {
                 PatternState patternState = controller.checkStructurePattern(name);
-                if (!patternState.hasError()) {
+                if (!patternState.hasErrors()) {
                     controller.formStructure(name);
                 } else {
                     controller.invalidateStructure(name);

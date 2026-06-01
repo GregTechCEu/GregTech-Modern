@@ -259,7 +259,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public boolean isRecipeLogicAvailable() {
-        return isFormed && !getDefaultPatternState().hasError();
+        return isFormed && !getDefaultPatternState().hasErrors();
     }
 
     @Override
