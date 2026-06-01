@@ -194,7 +194,8 @@ public class PatternPredicate {
             if (error == null) return null;
             lastError = error;
         }
-        return lastError == PatternError.PLACEHOLDER ? new SimplePatternError(currBlock.getBlockPos(), getCandidates()) :
+        return lastError == PatternError.PLACEHOLDER ?
+                new SimplePatternError(currBlock.getBlockPos(), getCandidates()) :
                 lastError;
     }
 
