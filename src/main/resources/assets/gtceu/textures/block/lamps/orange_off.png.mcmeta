@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/lamps/orange_off_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/lamps/orange_off_ctm"
     }
 }
