@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
+import brachy.modularui.api.drawable.Text;
+
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class CoilMatchingError extends PatternError {
@@ -20,10 +21,13 @@ public class CoilMatchingError extends PatternError {
     }
 
     @Override
-    public List<Component> getErrorInfo() {
-        Objects.requireNonNull(pos);
-        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils",
-                coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
-                pos.getX(), pos.getY(), pos.getZ()));
+    public PatternErrorUI applyErrorInformation() {
+        return (parent) -> {
+            Objects.requireNonNull(pos);
+            Component comp = Component.translatable("gtceu.pattern_error.mismatch_coils",
+                    coilType1.getMaterial().getName(), coilType2.getMaterial().getName(),
+                    pos.getX(), pos.getY(), pos.getZ());
+            parent.child(Text.of(comp).asWidget());
+        };
     }
 }

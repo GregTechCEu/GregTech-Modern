@@ -5,8 +5,9 @@ import com.gregtechceu.gtceu.api.block.IFilterType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
+import brachy.modularui.api.drawable.Text;
+
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 public class FilterMatchingError extends PatternError {
@@ -20,10 +21,13 @@ public class FilterMatchingError extends PatternError {
     }
 
     @Override
-    public List<Component> getErrorInfo() {
-        Objects.requireNonNull(pos);
-        return Collections.singletonList(Component.translatable("gtceu.pattern_error.mismatch_coils",
-                type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
-                pos.getX(), pos.getY(), pos.getZ()));
+    public PatternErrorUI applyErrorInformation() {
+        return (parent) -> {
+            Objects.requireNonNull(pos);
+            Component comp = Component.translatable("gtceu.pattern_error.mismatch_filters",
+                    type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
+                    pos.getX(), pos.getY(), pos.getZ());
+            parent.child(Text.of(comp).asWidget());
+        };
     }
 }

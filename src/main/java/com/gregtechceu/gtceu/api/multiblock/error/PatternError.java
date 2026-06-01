@@ -9,7 +9,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import brachy.modularui.api.drawable.Text;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -46,24 +48,25 @@ public class PatternError {
         return blockInfo.getLevel();
     }
 
-    public List<Component> getErrorInfo() {
-        List<Component> lines = new ArrayList<>();
+    @NotNull
+    public PatternErrorUI applyErrorInformation() {
+        return (parent) -> {
+            List<Component> lines = new ArrayList<>();
 
-        if (pos != null) {
-            lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
-            lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
-                    pos.getZ()));
-        }
-        for (List<ItemStack> candidate : candidates) {
-            if (!candidate.isEmpty()) {
-                Component c = candidate.get(0).getHoverName();
-                lines.add(c);
-                // builder.append(c.toString());
-                // builder.append(COMMA_SEPERATOR_LITERAL);
+            if (pos != null) {
+                lines.add(Component.translatable("gtceu.multiblock.pattern.error.0"));
+                lines.add(Component.translatable("gtceu.multiblock.pattern.error.1", pos.getX(), pos.getY(),
+                        pos.getZ()));
             }
-        }
-        // builder.append(CommonComponents.ELLIPSIS);
-
-        return lines;
+            for (List<ItemStack> candidate : candidates) {
+                if (!candidate.isEmpty()) {
+                    Component c = candidate.get(0).getHoverName();
+                    lines.add(c);
+                    // builder.append(c.toString());
+                    // builder.append(COMMA_SEPERATOR_LITERAL);
+                }
+            }
+            lines.forEach(comp -> parent.child(Text.of(comp).asWidget()));
+        };
     }
 }

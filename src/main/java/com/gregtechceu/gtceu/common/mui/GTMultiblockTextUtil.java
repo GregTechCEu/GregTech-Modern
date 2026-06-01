@@ -55,15 +55,7 @@ public class GTMultiblockTextUtil {
                 () -> GenericListSyncHandler.<Component>builder()
                         .getter(() -> {
                             List<Component> comps = new ArrayList<>();
-                            for (String structureName : weMachine.getStructurePatterns().keySet()) {
-                                var error = weMachine.getPatternState(structureName)
-                                        .getError();
-                                if (error != null) {
-                                    comps.add(Text.str(structureName));
-                                    comps.addAll(error.getErrorInfo());
-                                    // comps.add(CommonComponents.NEW_LINE);
-                                }
-                            }
+
                             return comps;
                         })
                         .setter((errors) -> {})
@@ -95,11 +87,27 @@ public class GTMultiblockTextUtil {
                     return list;
                 });
 
-        unformed.child(new DynamicSyncedWidget<>()
-                .widthRel(1)
-                .coverChildrenHeight()
-                .syncHandler(dynamicLinkedSyncHandler))
-                .setEnabledIf(w -> !isFormed.getBoolValue());
+        for (String structureName : weMachine.getStructurePatterns().keySet()) {
+            var error = weMachine.getPatternState(structureName)
+                    .getError();
+            unformed.child(Text.str(structureName).asWidget());
+            if (error != null) {
+                // comps.add(Text.str(structureName));
+                error.applyErrorInformation().apply(unformed);
+                // comps.addAll(error.applyErrorInformation());
+                // comps.add(CommonComponents.NEW_LINE);
+            }
+        }
+
+        // unformed.child
+
+        /*
+         * unformed.child(new DynamicSyncedWidget<>()
+         * .widthRel(1)
+         * .coverChildrenHeight()
+         * .syncHandler(dynamicLinkedSyncHandler))
+         * .setEnabledIf(w -> !isFormed.getBoolValue());
+         */
         return unformed;
     }
 

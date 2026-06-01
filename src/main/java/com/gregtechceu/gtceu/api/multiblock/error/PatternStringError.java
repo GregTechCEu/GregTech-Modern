@@ -2,8 +2,9 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import net.minecraft.network.chat.Component;
 
+import brachy.modularui.api.drawable.Text;
+
 import java.util.Collections;
-import java.util.List;
 
 public class PatternStringError extends PatternError {
 
@@ -15,7 +16,9 @@ public class PatternStringError extends PatternError {
     }
 
     @Override
-    public List<Component> getErrorInfo() {
-        return Collections.singletonList(component);
+    public PatternErrorUI applyErrorInformation() {
+        return (parent) -> {
+            parent.child(Text.of(component).asWidget());
+        };
     }
 }
