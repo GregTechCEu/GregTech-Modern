@@ -9,20 +9,12 @@ import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -58,7 +50,6 @@ import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
@@ -108,9 +99,7 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -543,45 +532,6 @@ public class CommonEventListener {
             // mimic how AttributeInstance handles MULTIPLY_BASE modifiers
             event.setNewSpeed(event.getNewSpeed() + event.getNewSpeed() * miningFatigueModifier);
         }
-    }
-
-    @SubscribeEvent
-    public static void addAlloyBlastProperties(PostMaterialEvent event) {
-        for (Material material : GTRegistries.MATERIALS.values()) {
-            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
-                addAlloyBlastProperty(material);
-            }
-        }
-        // Alloy Blast Overriding
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
-
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
-                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
-    }
-
-    public static void addAlloyBlastProperty(@NotNull Material material) {
-        final List<MaterialStack> components = material.getMaterialComponents();
-        // ignore materials which are not alloys
-        if (components.size() < 2) return;
-
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
-        if (!material.hasProperty(PropertyKey.FLUID)) return;
-
-        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
-        if (components.stream().filter(CommonEventListener::isMaterialStackFluidOnly).limit(3).count() > 2) {
-            return;
-        }
-
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
-        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN,
-                new FluidBuilder().state(FluidState.LIQUID));
-    }
-
-    private static boolean isMaterialStackFluidOnly(@NotNull MaterialStack ms) {
-        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     @SubscribeEvent

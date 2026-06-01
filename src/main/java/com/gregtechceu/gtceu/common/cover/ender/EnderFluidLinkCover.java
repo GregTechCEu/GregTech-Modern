@@ -116,9 +116,9 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 
@@ -45,7 +45,7 @@ public class OreVeinElementRenderer extends MinimapElementRenderer<OreVeinElemen
 
         Material firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
         int materialARGB = firstMaterial.getMaterialARGB();
-        float[] colors = DrawUtil.floats(materialARGB);
+        float[] colors = RenderUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(),

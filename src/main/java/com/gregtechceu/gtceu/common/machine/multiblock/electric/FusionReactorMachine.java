@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.bloom.BloomRenderTicket;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -40,6 +41,7 @@ import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,15 +77,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected long heat = 0;
     @SaveField
     protected final NotifiableEnergyContainer energyContainer;
-    @Getter
-    @SyncToClient
-    private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
     // Used for rendering
+    @Getter
+    @SyncToClient
+    private int color = 0xFFFFFFFF;
     public float delta = 0;
     public int lastColor = -1;
+    @Getter
+    @Setter
+    protected BloomRenderTicket registeredBloomTicket = BloomRenderTicket.INVALID;
 
     public FusionReactorMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
