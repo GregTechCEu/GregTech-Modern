@@ -18,16 +18,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
@@ -192,13 +188,6 @@ public class RobotArmCover extends ConveyorCover {
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
-        column.child(Flow.row()
-                .child(new ToggleButton()
-                        .overlay(true, GuiTextures.CHECKMARK))
-                .child(new TextWidget<>(Text.lang("cover.robot_arm.allow_multiples"))
-                        .addTooltipElement(Text.lang("cover.robot_arm.allow_multiples.tooltip"))
-                        .right(0)
-                        .verticalCenter()));
     }
 
     public void setTransferMode(TransferMode transferMode) {

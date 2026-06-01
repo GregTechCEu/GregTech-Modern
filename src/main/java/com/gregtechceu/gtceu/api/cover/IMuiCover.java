@@ -17,7 +17,6 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 
 public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
@@ -57,7 +56,7 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
 
         createCoverUIRows(column, data, syncManager, settings);
         return panel.child(column)
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+                .bindPlayerInventory();
     }
 
     /**

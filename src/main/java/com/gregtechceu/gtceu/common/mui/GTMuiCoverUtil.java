@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.network.chat.Component;
 
@@ -65,12 +66,8 @@ public class GTMuiCoverUtil {
     }
 
     public static void addTransferModeRow(Flow column, EnumSyncValue<TransferMode> value) {
-        Component[] transferModeDesc = {
-                Component.translatable("cover.robotic_arm.transfer_mode.description.0"),
-                Component.translatable("cover.robotic_arm.transfer_mode.description.1"),
-                Component.translatable("cover.robotic_arm.transfer_mode.description.2"),
-                Component.translatable("cover.robotic_arm.transfer_mode.description.3"),
-        };
+        Component[] transferModeDesc = LangHandler.getMultiLang("cover.robotic_arm.transfer_mode.description")
+                .toArray(new Component[0]);
         column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
                 .value(value)
                 .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
