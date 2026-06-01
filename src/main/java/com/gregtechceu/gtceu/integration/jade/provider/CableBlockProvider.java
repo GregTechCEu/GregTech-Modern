@@ -43,7 +43,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage")) + "A"));
+                iTooltip.append(Component.translatable("gtceu.jade.amperage_use", DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
 
                 if (temperature != CableBlockEntity.getDefaultTemp()){
                     iTooltip.append(Component.translatable("gtceu.top.cable_overloaded", temperature, CableBlockEntity.getMeltTemp()));
