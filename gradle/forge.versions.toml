@@ -32,7 +32,7 @@ xaerosMinimap = "25.3.10"
 
 ## modrinth maven ##
 jade = "11.6.3"
-embeddium = "0.3.31+mc1.20.1"
+embeddium = "0.3.31-beta.53+mc1.20.1"
 oculus = "1.20.1-1.8.0"
 modernfix = "DdUByV9S" # 5.24.1+mc1.20.1
 
@@ -90,7 +90,7 @@ ftbteams            = { module = "dev.ftb.mods:ftb-teams-forge", version.ref = "
 ftbquests           = { module = "dev.ftb.mods:ftb-quests-forge", version.ref = "ftbquests" }
 ftbchunks           = { module = "dev.ftb.mods:ftb-chunks-forge", version.ref = "ftbchunks" }
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
-embeddium           = { module = "maven.modrinth:embeddium", version.ref = "embeddium" }
+embeddium           = { module = "org.embeddedt:embeddium-1.20.1", version.ref = "embeddium" }
 oculus              = { module = "maven.modrinth:oculus", version.ref = "oculus" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
 xaeroslib           = { module = "xaero.lib:xaerolib-forge-1.20.1", version.ref = "xaerosLib" }

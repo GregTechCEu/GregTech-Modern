@@ -13,6 +13,14 @@ repositories {
         }
     }
 
+    exclusiveContent { // Create, Ponder, Flywheel
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
+    }
+
     maven {
         name 'GTCEu Maven'
         url 'https://maven.gtceu.com'
@@ -51,7 +59,7 @@ repositories {
     }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
-        filter { includeGroup("dev.latvian.mods")}
+        filter { includeGroup("dev.latvian.mods") }
     }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }

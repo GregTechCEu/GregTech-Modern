@@ -69,7 +69,6 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkableMachine;
-import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
@@ -281,7 +280,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Material related
         event.add("GTElements", GTElements.class);
         event.add("GTMaterials", GTMaterials.class);
-        event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("MaterialEntry", MaterialEntry.class);

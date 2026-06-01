@@ -349,39 +349,29 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
 
         if (!player.isShiftKeyDown()) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
-            int result = -1;
-            if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(serverPlayer, stack, pos);
-            }
-            if (result != 0) {
-                // prevent exploits with instantly breakable blocks
-                BlockState state = player.level().getBlockState(pos);
-                boolean effective = false;
-                for (GTToolType type : getToolClasses(stack)) {
-                    if (type.harvestTags.stream().anyMatch(state::is)) {
-                        effective = true;
-                        break;
-                    }
+            // prevent exploits with instantly breakable blocks
+            BlockState state = player.level().getBlockState(pos);
+            boolean effective = false;
+            for (GTToolType type : getToolClasses(stack)) {
+                if (type.harvestTags.stream().anyMatch(state::is)) {
+                    effective = true;
+                    break;
                 }
+            }
 
-                effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
+            effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
 
-                if (effective) {
-                    if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-                        if (playSoundOnBlockDestroy()) playSound(player);
-                    } else {
-                        if (result == -1) {
-                            var tag = getBehaviorsTag(stack);
-                            if (tag.getBoolean(TREE_FELLING_KEY) &&
-                                    !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
-                                    state.is(BlockTags.LOGS)) {
-                                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
-                            }
-                            if (playSoundOnBlockDestroy()) playSound(player);
-                        } else {
-                            return true;
-                        }
+            if (effective) {
+                if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
+                    if (playSoundOnBlockDestroy()) playSound(player);
+                } else {
+                    var tag = getBehaviorsTag(stack);
+                    if (tag.getBoolean(TREE_FELLING_KEY) &&
+                            !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
+                            state.is(BlockTags.LOGS)) {
+                        TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                     }
+                    if (playSoundOnBlockDestroy()) playSound(player);
                 }
             }
         }
@@ -394,7 +384,8 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             getToolStats().getBehaviors()
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
-            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
+            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D ||
+                    getToolType().harvestTags.stream().anyMatch(state::is)) {
                 ToolHelper.damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
             }
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
@@ -648,6 +639,18 @@ public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike,
             }
         }
         return InteractionResultHolder.pass(heldItem);
+    }
+
+    default InteractionResult definition$interactLivingEntity(ItemStack stack, Player player,
+                                                              LivingEntity interactionTarget,
+                                                              InteractionHand usedHand) {
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (behavior.onInteractLivingEntity(stack, player, interactionTarget, usedHand) ==
+                    InteractionResult.SUCCESS) {
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.PASS;
     }
 
     default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {

@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 
@@ -48,8 +47,8 @@ public class GTRegistryInfo<K, V> {
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
     public static final GTRegistryInfo<String, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
-    public static final GTRegistryInfo<String, Material> MATERIAL = add(
-            MaterialRegistryManager.getInstance().getRegistry(GTCEu.MOD_ID), Material.class);
+    public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS,
+            Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES,
             GTRecipeType.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(

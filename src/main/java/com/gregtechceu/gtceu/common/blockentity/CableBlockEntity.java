@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
+import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
@@ -30,8 +32,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import brachy.modularui.drawable.UITexture;
 import lombok.Getter;
@@ -51,6 +58,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
+    @SideOnly(Side.CLIENT)
+    private GTOverheatParticle particle;
     private static final int meltTemp = 3000;
 
     private final EnumMap<Direction, EnergyNetHandler> handlers = new EnumMap<>(Direction.class);
@@ -224,6 +233,27 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         }
 
         return false;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public boolean isParticleAlive() {
+        return particle != null && particle.isAlive();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void createParticle() {
+        particle = new GTOverheatParticle(this, meltTemp,
+                getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
+                getPipeType().insulationLevel >= 0);
+        GTParticleManager.INSTANCE.addEffect(particle);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void killParticle() {
+        if (isParticleAlive()) {
+            particle.setExpired();
+            particle = null;
+        }
     }
 
     public void applyHeat(int amount) {

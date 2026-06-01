@@ -63,7 +63,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
-        if (cover == null || cover.coverDefinition.getId() != coverType) {
+        if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
             var coverReg = GTRegistries.COVERS.get(coverType);
             if (coverReg == null) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
@@ -75,8 +75,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"),
-                isSync);
+        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"), isSync);
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");

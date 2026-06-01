@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/casings/transparent/laminated_glass_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/transparent/laminated_glass_ctm"
     }
 }

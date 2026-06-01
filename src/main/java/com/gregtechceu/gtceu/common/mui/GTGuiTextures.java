@@ -151,6 +151,8 @@ public interface GTGuiTextures {
             .name(IDs.STEEL_SLOT)
             .build();
 
+    UITexture SLOT_DARK = fullImage("textures/gui/base/slot_dark.png");
+
     // todo move to textures/gui/base
     UITexture SLOT_PRIMITIVE = new UITexture.Builder()
             .location(GTCEu.MOD_ID, "textures/gui/primitive/primitive_slot.png")
@@ -661,6 +663,9 @@ public interface GTGuiTextures {
             .adaptable(2)
             .build();
 
+    UITexture CONFIG_ARROW = fullImage("textures/gui/widget/config_arrow.png");
+    UITexture CONFIG_ARROW_DARK = fullImage("textures/gui/widget/config_arrow_dark.png");
+
     // HPCA
     UITexture HPCA_COMPUTATION_COMPONENT = fullImage(
             "textures/gui/widget/hpca/computation_component.png");
@@ -721,6 +726,12 @@ public interface GTGuiTextures {
     UITexture OREBY_SEP = fullImage("textures/gui/arrows/oreby-sep.png");
     UITexture OREBY_SIFT = fullImage("textures/gui/arrows/oreby-sift.png");
     UITexture OREBY_SMELT = fullImage("textures/gui/arrows/oreby-smelt.png");
+
+    // Lamp item overlay
+    UITexture LAMP_NO_BLOOM = fullImage(
+            "textures/gui/item_overlay/lamp_no_bloom.png");
+    UITexture LAMP_NO_LIGHT = fullImage(
+            "textures/gui/item_overlay/lamp_no_light.png");
 
     // MISC
 
