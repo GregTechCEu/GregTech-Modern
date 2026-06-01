@@ -15,21 +15,14 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.api.block.ICoilType.ICOILTYPE_CODEC;
-
 public class CoilMatchingError extends PatternError {
 
     public static Codec<CoilMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            ICOILTYPE_CODEC.fieldOf("coilType1").forGetter(CoilMatchingError::getCoilType1),
-            ICOILTYPE_CODEC.fieldOf("coilType2").forGetter(CoilMatchingError::getCoilType2))
+            ICoilType.CODEC.fieldOf("coilType1").forGetter(CoilMatchingError::getCoilType1),
+            ICoilType.CODEC.fieldOf("coilType2").forGetter(CoilMatchingError::getCoilType2))
             .apply(instance, CoilMatchingError::new));
     public static ResourceLocation ID = GTCEu.id("coil_matching_error");
-
-    @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
-    }
 
     @Getter
     ICoilType coilType1, coilType2;
@@ -49,5 +42,10 @@ public class CoilMatchingError extends PatternError {
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());
         };
+    }
+
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
     }
 }

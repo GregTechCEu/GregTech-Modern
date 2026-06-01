@@ -10,14 +10,14 @@ import net.minecraft.world.level.block.Blocks;
 
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
 public class PredicateBlocks extends BasePredicate {
 
-    public List<Block> blocks;
+    public final @Unmodifiable List<Block> blocks;
 
     public PredicateBlocks(Block... blocks) {
         this(null, blocks);
@@ -25,21 +25,20 @@ public class PredicateBlocks extends BasePredicate {
 
     public PredicateBlocks(@Nullable String debugName, Block... blocks) {
         if (blocks.length == 0) {
-            this.blocks = new ArrayList<>(List.of(Blocks.BARRIER));
+            this.blocks = List.of(Blocks.BARRIER);
         } else {
-            this.blocks = new ArrayList<>(List.of(blocks));
+            this.blocks = List.of(blocks);
         }
-        Validate.noNullElements(blocks, "Blocks array has null element at index %s");
+        Validate.noNullElements(this.blocks, "Blocks array has null element at index %s");
 
-        List<Block> finalBlocks = this.blocks;
         errorPredicate = state -> {
             BlockPos pos = state.getPos();
 
-            return finalBlocks.contains(state.getBlockState().getBlock()) ? null :
-                    new BlockMatchingError(pos, finalBlocks);
+            return this.blocks.contains(state.getBlockState().getBlock()) ? null :
+                    new BlockMatchingError(pos, this.blocks);
         };
 
-        candidates = finalBlocks.stream()
+        candidates = this.blocks.stream()
                 .map(BlockInfo::fromBlock)
                 .toList();
 

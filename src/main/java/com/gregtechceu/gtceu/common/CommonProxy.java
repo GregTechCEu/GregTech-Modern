@@ -154,13 +154,13 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTPatternErrors.init();
         GTMachineUtils.init();
         GTMachines.init();
 
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init();
-        GTPatternErrors.init();
         ChanceLogic.init();
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);

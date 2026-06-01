@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
@@ -25,11 +26,6 @@ public class SinglePredicateError extends PatternError {
             Codec.INT.fieldOf("pred_max_layer_count").forGetter(e -> e.predMaxLayerCount),
             ItemStack.CODEC.fieldOf("stack").forGetter(e -> e.stack)).apply(instance, SinglePredicateError::new));
     public static ResourceLocation ID = GTCEu.id("single_predicate_error");
-
-    @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
-    }
 
     public final ErrorType type;
     public final int actualCount;
@@ -91,7 +87,7 @@ public class SinglePredicateError extends PatternError {
     }
 
     @Getter
-    public enum ErrorType {
+    public enum ErrorType implements StringRepresentable {
 
         MAX_COUNT("max_count"),
         MIN_COUNT("min_count"),
@@ -104,8 +100,16 @@ public class SinglePredicateError extends PatternError {
             this.name = name;
         }
 
-        public static final Codec<ErrorType> CODEC = Codec.STRING.xmap(
-                ErrorType::valueOf,
-                Enum::name);
+        public static final Codec<ErrorType> CODEC = StringRepresentable.fromEnum(ErrorType::values);
+
+        @Override
+        public String getSerializedName() {
+            return getName();
+        }
+    }
+
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
     }
 }

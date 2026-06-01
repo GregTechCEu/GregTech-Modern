@@ -27,11 +27,6 @@ public class BlockMatchingError extends PatternError {
             .apply(instance, BlockMatchingError::new));
     public static ResourceLocation ID = GTCEu.id("block_matching_error");
 
-    @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
-    }
-
     @Getter
     private final List<Block> blocks;
 
@@ -51,5 +46,10 @@ public class BlockMatchingError extends PatternError {
             comps.add(Component.translatable("gtceu.pattern_predicate.blocks", pos.getX(), pos.getY(), pos.getZ()));
             comps.forEach(comp -> parent.child(Text.of(comp).asWidget()));
         };
+    }
+
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
     }
 }

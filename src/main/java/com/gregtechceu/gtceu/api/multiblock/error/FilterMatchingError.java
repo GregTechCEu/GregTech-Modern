@@ -15,21 +15,14 @@ import lombok.Getter;
 import java.util.Collections;
 import java.util.Objects;
 
-import static com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.CLEANROOM_TYPE_CODEC;
-
 public class FilterMatchingError extends PatternError {
 
     public static Codec<FilterMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
-            CLEANROOM_TYPE_CODEC.fieldOf("coilType1").forGetter(FilterMatchingError::getFilterType1),
-            CLEANROOM_TYPE_CODEC.fieldOf("coilType2").forGetter(FilterMatchingError::getFilterType2))
+            CleanroomType.CODEC.fieldOf("coilType1").forGetter(FilterMatchingError::getFilterType1),
+            CleanroomType.CODEC.fieldOf("coilType2").forGetter(FilterMatchingError::getFilterType2))
             .apply(instance, FilterMatchingError::new));
     public static ResourceLocation ID = GTCEu.id("filter_matching_error");
-
-    @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
-    }
 
     @Getter
     CleanroomType filterType1, filterType2;
@@ -49,5 +42,10 @@ public class FilterMatchingError extends PatternError {
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());
         };
+    }
+
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
     }
 }

@@ -15,7 +15,7 @@ import java.util.Comparator;
 
 public interface ICoilType {
 
-    public static Codec<ICoilType> ICOILTYPE_CODEC = Codec.STRING.xmap(
+    Codec<ICoilType> CODEC = Codec.STRING.xmap(
             (name) -> GTCEuAPI.HEATING_COILS.keySet()
                     .stream()
                     .filter(type -> type.getName().equals(name))

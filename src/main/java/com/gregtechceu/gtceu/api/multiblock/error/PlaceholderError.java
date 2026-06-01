@@ -16,12 +16,12 @@ public class PlaceholderError extends PatternError {
     public static Codec<PlaceholderError> CODEC = Codec.unit(() -> PatternError.PLACEHOLDER);
     public static ResourceLocation ID = GTCEu.id("placeholder_error");
 
+    public PlaceholderError(@Nullable BlockPos pos, List<List<ItemStack>> candidates) {
+        super(pos, candidates);
+    }
+
     @Override
     public Codec<? extends PatternError> codec() {
         return CODEC;
-    }
-
-    public PlaceholderError(@Nullable BlockPos pos, List<List<ItemStack>> candidates) {
-        super(pos, candidates);
     }
 }
