@@ -31,6 +31,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 var tag = data.getCompound("cableData");
                 long voltage = tag.getLong("currentVoltage");
                 double amperage = tag.getDouble("currentAmperage");
+                int temperature = tag.getInt("temperature");
                 iTooltip.add(Component.translatable("gtceu.top.cable_voltage"));
                 if (voltage != 0) {
                     iTooltip.append(Component.literal(GTValues.VNF[GTUtil.getTierByVoltage(voltage)]));
@@ -43,6 +44,10 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
                 iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage")) + "A"));
+
+                if (temperature != CableBlockEntity.getDefaultTemp()){
+                    iTooltip.append(Component.translatable("gtceu.top.cable_overloaded", temperature, CableBlockEntity.getMeltTemp()));
+                }
             }
         }
     }
@@ -59,6 +64,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 cableData.putLong("currentVoltage", cable.getCurrentMaxVoltage());
                 cableData.putDouble("maxAmperage", cable.getMaxAmperage());
                 cableData.putDouble("currentAmperage", cable.getAverageAmperage());
+                cableData.putInt("temperature", cable.getTemperature());
                 data.put("cableData", cableData);
             }
         }
