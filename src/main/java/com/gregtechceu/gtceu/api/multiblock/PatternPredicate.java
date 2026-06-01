@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -186,17 +187,18 @@ public class PatternPredicate {
         return this;
     }
 
-    public @Nullable PatternError test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
-                                       @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError lastError = null;
+    public @NotNull List<PatternError> test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
+                                            @Nullable Object2IntMap<BasePredicate> layerCache) {
+        List<PatternError> lastErrors = new ArrayList<>();
         for (BasePredicate p : predicateList) {
             PatternError error = p.testLimited(currBlock, globalCache, layerCache);
-            if (error == null) return null;
-            lastError = error;
+            if (error == null) return List.of();
+            lastErrors.add(error);
         }
-        return lastError == PatternError.PLACEHOLDER ?
-                new SimplePatternError(currBlock.getBlockPos(), getCandidates()) :
-                lastError;
+        if(lastErrors.isEmpty() || (lastErrors.get(0) == PatternError.PLACEHOLDER)){
+            return List.of(new SimplePatternError(currBlock.getBlockPos(), getCandidates()));
+        }
+        return lastErrors;
     }
 
     public PatternPredicate or(@Nullable PatternPredicate other) {

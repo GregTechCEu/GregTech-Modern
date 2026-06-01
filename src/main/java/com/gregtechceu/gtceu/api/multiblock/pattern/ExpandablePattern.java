@@ -29,6 +29,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -159,9 +160,9 @@ public class ExpandablePattern implements IBlockPattern {
                 // patternState.posCache.add(mPos.immutable());
             }
 
-            PatternError res = pred.test(patternState.cbi, patternState.globalCount, null);
-            if (res != null) {
-                patternState.setError(res);
+            List<PatternError> res = pred.test(patternState.cbi, patternState.globalCount, null);
+            if (!res.isEmpty()) {
+                patternState.setErrors(res);
                 return false;
             }
         }

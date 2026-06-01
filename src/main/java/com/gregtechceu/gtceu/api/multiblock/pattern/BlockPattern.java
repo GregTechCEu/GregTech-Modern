@@ -29,6 +29,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
@@ -220,9 +221,9 @@ public class BlockPattern implements IBlockPattern {
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, be));
                 }
 
-                PatternError res = pred.test(patternState.cbi, patternState.globalCount, patternState.layerCount);
-                if (res != null) {
-                    patternState.setError(res);
+                List<PatternError> res = pred.test(patternState.cbi, patternState.globalCount, patternState.layerCount);
+                if (!res.isEmpty()) {
+                    patternState.setErrors(res);
                     return false;
                 }
 
