@@ -74,9 +74,14 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
     }
 
     @Override
+    public final void handleUpdateTag(CompoundTag tag) {
+        this.clientLoad(tag);
+    }
+
+    @Override
     public final void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        var compound = pkt.getTag();
-        if (compound != null) clientLoad(compound);
+        CompoundTag tag = pkt.getTag();
+        if (tag != null) clientLoad(tag);
     }
 
     /**

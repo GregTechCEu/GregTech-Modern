@@ -46,10 +46,7 @@ public class SyncDataHolder {
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields) {
-        CompoundTag tag = serializeNBT(writeClientFields, resyncAll);
-        resyncAll = false;
-        dirtySyncFields.clear();
-        return tag;
+        return serializeNBT(writeClientFields, resyncAll);
     }
 
     public CompoundTag serializeNBT(boolean writeClientFields, boolean fullSync) {
@@ -63,6 +60,8 @@ public class SyncDataHolder {
                 tag.put(field.nbtSaveKey, nbtValue);
             }
         }
+        resyncAll = false;
+        dirtySyncFields.clear();
         return tag;
     }
 

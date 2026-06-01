@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.client.model.pipe;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.Node;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -101,7 +101,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
             return quads;
         }
         BlockState frameState = frameBlockEntry.getDefaultState();
-        BakedModel frameModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(frameState);
+        BakedModel frameModel = RenderUtil.getModelForState(frameState);
 
         modelData = frameModel.getModelData(level, pos, frameState, modelData);
 

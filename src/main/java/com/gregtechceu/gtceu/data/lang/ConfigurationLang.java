@@ -18,6 +18,9 @@ public class ConfigurationLang {
         final Set<String> added = new HashSet<>();
         ConfigHolder.INTERNAL_INSTANCE.values()
                 .forEach((value) -> addTranslation(provider, added, value));
+
+        provider.add("config.gtceu.option.bloomType.load_error",
+                "Could not load shaders for the bloom effect, see %s for details");
     }
 
     private static void addTranslation(RegistrateLangProvider provider, Set<String> added, IConfigValue<?> value) {
