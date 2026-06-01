@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public abstract class AisleStrategy {
      *            {@link IBlockPattern#autobuild}
      * @return Array where the i-th element specifies that at offset i there would be aisle a_i
      */
-    public abstract int [] getDefaultAisles(CompoundTag tag);
+    public abstract int[] getDefaultAisles(CompoundTag tag);
 
     /**
      * Called at the start of a structure check.

@@ -186,7 +186,7 @@ public class PatternPredicate {
     }
 
     public @Nullable PatternError test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
-                             @Nullable Object2IntMap<BasePredicate> layerCache) {
+                                       @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError lastError = null;
         for (BasePredicate p : predicateList) {
             PatternError error = p.testLimited(currBlock, globalCache, layerCache);

@@ -110,7 +110,7 @@ public class BasePredicate {
     }
 
     public @Nullable PatternError testLimited(CurrentBlockInfo currBlock,
-                                    Object2IntMap<BasePredicate> globalCache,
+                                              Object2IntMap<BasePredicate> globalCache,
                                               @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError error = testGlobal(currBlock, globalCache, layerCache);
         if (error != null) return error;
@@ -152,8 +152,8 @@ public class BasePredicate {
      */
 
     public @Nullable PatternError testGlobal(CurrentBlockInfo currBlock,
-                                   Object2IntMap<BasePredicate> globalCache,
-                                   @Nullable Object2IntMap<BasePredicate> layerCache) {
+                                             Object2IntMap<BasePredicate> globalCache,
+                                             @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError res = errorPredicate.apply(currBlock);
         // if (!globalCache.containsKey(this)) globalCache.put(this, 0);
         globalCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
@@ -164,7 +164,8 @@ public class BasePredicate {
         return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
     }
 
-    public @Nullable PatternError testLayer(CurrentBlockInfo currBlock, @Nullable Object2IntMap<BasePredicate> layerCache) {
+    public @Nullable PatternError testLayer(CurrentBlockInfo currBlock,
+                                            @Nullable Object2IntMap<BasePredicate> layerCache) {
         PatternError res = errorPredicate.apply(currBlock);
         if (layerCache == null) return res;
         layerCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
@@ -178,7 +179,8 @@ public class BasePredicate {
             return candidates == null ? Collections.emptyList() :
                     this.candidates.stream()
                             .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                            .map(blockInfo -> blockInfo.getItemStackForm(Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
+                            .map(blockInfo -> blockInfo.getItemStackForm(
+                                    Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
                             .collect(Collectors.toList());
         }
         return candidates == null ? Collections.emptyList() :

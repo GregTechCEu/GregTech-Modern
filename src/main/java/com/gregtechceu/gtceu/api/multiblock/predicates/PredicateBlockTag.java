@@ -8,6 +8,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;

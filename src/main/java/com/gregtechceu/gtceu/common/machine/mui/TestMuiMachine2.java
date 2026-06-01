@@ -234,7 +234,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                                     (b) -> setPredicateDefaultBlock(predicate,
                                                             candidates.get(0))))
                                             .size(16)
-                                            .tooltip(r -> r.add(basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
+                                            .tooltip(r -> r.add(
+                                                    basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
                                             .overlay(new ItemDrawable(
                                                     candidates.get(0).getItemStackForm()));
                                 }

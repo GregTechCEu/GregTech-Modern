@@ -14,8 +14,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 public interface IBlockPattern {
 
@@ -102,7 +103,7 @@ public interface IBlockPattern {
         getOffset().move(dir);
     }
 
-    default void autobuild(Object2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    default void autobuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                            CompoundTag tag, UseOnContext context) {}
 
     default void retrievePatternInformation(String name, MultiblockControllerMachine controller, CompoundTag tag) {}

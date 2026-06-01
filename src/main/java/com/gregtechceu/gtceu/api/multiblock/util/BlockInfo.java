@@ -43,7 +43,8 @@ public class BlockInfo {
         this(blockState, true, null, blockEntity);
     }
 
-    public BlockInfo(BlockState blockState, boolean hasBlockEntity, @Nullable ItemStack itemStack, @Nullable BlockEntity blockEntity) {
+    public BlockInfo(BlockState blockState, boolean hasBlockEntity, @Nullable ItemStack itemStack,
+                     @Nullable BlockEntity blockEntity) {
         this.blockState = blockState;
         this.hasBlockEntity = hasBlockEntity;
         this.itemStack = itemStack;

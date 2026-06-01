@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;

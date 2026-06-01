@@ -112,7 +112,7 @@ public class MultiblockInWorldPreviewRenderer {
         Direction front = controller.getFrontFacing();
         Direction up = controller.getUpwardsFacing();
 
-        IBlockPattern pattern = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
+        IBlockPattern pattern = controller.getSubstructurePattern(MultiblockControllerMachine.DEFAULT_STRUCTURE);
 
         // MultiblockShapeInfo shapeInfo = controller.getDefinition().getMatchingShapes().get(0);
 
@@ -126,7 +126,7 @@ public class MultiblockInWorldPreviewRenderer {
         // BlockPos controllerPatternPos = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE)
         // .getOffset().toBlockPos();
         BlockPos controllerPos = controller.getBlockPos();
-        BlockPos patternControllerPos = controller.getSubstructure(MultiblockControllerMachine.DEFAULT_STRUCTURE)
+        BlockPos patternControllerPos = controller.getSubstructurePattern(MultiblockControllerMachine.DEFAULT_STRUCTURE)
                 .getOffset().toBlockPos();
         var maxY = 0;
 

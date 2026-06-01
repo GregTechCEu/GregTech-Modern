@@ -25,7 +25,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -181,7 +180,7 @@ public class ExpandablePattern implements IBlockPattern {
 
     @Override
     public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
-                                                                  CompoundTag tag) {
+                                                                            CompoundTag tag) {
         Direction front = src.getFrontFacing();
         Direction up = src.getUpwardsFacing();
 
@@ -237,7 +236,7 @@ public class ExpandablePattern implements IBlockPattern {
     }
 
     @Override
-    public void autobuild(Object2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    public void autobuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, new CompoundTag());
 

@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
@@ -57,7 +59,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     @SyncToClient
     protected boolean isFlipped;
 
-    protected final Object2ObjectMap<String, IBlockPattern> structures = new Object2ObjectOpenHashMap<>();
+    protected static final Table<@NotNull MultiblockMachineDefinition, @NotNull String, @NotNull IBlockPattern> structurePatterns = HashBasedTable
+            .create();
     protected final Object2ObjectMap<String, PatternState> patternStates = new Object2ObjectOpenHashMap<>();
 
     public MultiblockControllerMachine(BlockEntityCreationInfo info) {
@@ -94,8 +97,8 @@ public class MultiblockControllerMachine extends MetaMachine {
         return this.controllerBlockInfo;
     }
 
-    public Object2ObjectMap<String, IBlockPattern> getStructurePatterns() {
-        return structures;
+    public Map<String, IBlockPattern> getStructurePatterns() {
+        return structurePatterns.row(this.getDefinition());
     }
 
     public void setFlipped(boolean flipped) {
@@ -181,7 +184,7 @@ public class MultiblockControllerMachine extends MetaMachine {
      * @return set of substructures used by controller
      */
     public Set<String> getStructureNames() {
-        return structures.keySet();
+        return structurePatterns.row(this.getDefinition()).keySet();
     }
 
     /**
@@ -208,13 +211,13 @@ public class MultiblockControllerMachine extends MetaMachine {
     public void createStructurePatterns() {
         getDefinition().getStructurePatterns().forEach((name, pattern) -> {
             patternStates.put(name, new PatternState());
-            structures.put(name, pattern.get());
+            structurePatterns.put(this.getDefinition(), name, pattern.get());
         });
         getSyncDataHolder().markClientSyncFieldDirty("patternStates");
     }
 
     public void checkAndFormStructurePatterns() {
-        for (String name : structures.keySet()) {
+        for (String name : getStructurePatterns().keySet()) {
             formStructure(name);
         }
     }
@@ -232,9 +235,9 @@ public class MultiblockControllerMachine extends MetaMachine {
     }
 
     public PatternState checkStructurePattern(String structureName) {
-        IBlockPattern pattern = getSubstructure(structureName);
+        IBlockPattern pattern = getSubstructurePattern(structureName);
         PatternState state = getPatternState(structureName);
-        if (!state.shouldUpdate() || getLevel() == null) return state;
+        if (pattern == null || !state.shouldUpdate() || getLevel() == null) return state;
 
         long time = System.nanoTime();
         state.setController(this, getBlockPos());
@@ -363,8 +366,9 @@ public class MultiblockControllerMachine extends MetaMachine {
         }
     }
 
-    public IBlockPattern getSubstructure(String name) {
-        return structures.get(name);
+    @Nullable
+    public IBlockPattern getSubstructurePattern(String name) {
+        return structurePatterns.get(this.getDefinition(), name);
     }
 
     protected final boolean forEachMultiPart(String name, Predicate<IMultiPart> action) {

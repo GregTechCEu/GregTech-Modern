@@ -25,7 +25,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectSortedMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -252,7 +251,7 @@ public class BlockPattern implements IBlockPattern {
 
     @Override
     public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
-                                                                  CompoundTag tag) {
+                                                                            CompoundTag tag) {
         Long2ObjectSortedMap<PatternPredicate> map = new Long2ObjectRBTreeMap<>();
         Direction absoluteAisle = directions[0].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
         Direction absoluteString = directions[1].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
@@ -289,7 +288,7 @@ public class BlockPattern implements IBlockPattern {
     }
 
     @Override
-    public void autobuild(Object2ObjectMap<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    public void autobuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, tag);
 
@@ -361,7 +360,8 @@ public class BlockPattern implements IBlockPattern {
             if (simplePred.candidates == null) continue;
 
             var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.getCandidates() != null ? finalSimple.getCandidates().get(0) : null);
+            cache.computeIfAbsent(simplePred,
+                    k -> finalSimple.getCandidates() != null ? finalSimple.getCandidates().get(0) : null);
 
             if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
             entry.setValue(null);

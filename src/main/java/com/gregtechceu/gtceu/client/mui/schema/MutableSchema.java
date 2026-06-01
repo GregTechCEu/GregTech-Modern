@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.mui.schema;
 
-import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,6 +8,8 @@ import brachy.modularui.schema.ISchema;
 import brachy.modularui.utils.BlockPosUtil;
 import brachy.modularui.utils.fakelevel.SchemaLevel;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
