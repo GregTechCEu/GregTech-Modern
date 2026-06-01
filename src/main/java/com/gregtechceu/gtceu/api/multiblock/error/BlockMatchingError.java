@@ -1,10 +1,17 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
+import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,9 +20,22 @@ import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
-    private final Block[] blocks;
+    public static Codec<BlockMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            Codec.list(BuiltInRegistries.BLOCK.byNameCodec()).fieldOf("blocks")
+                    .forGetter(BlockMatchingError::getBlocks))
+            .apply(instance, BlockMatchingError::new));
+    public static ResourceLocation ID = GTCEu.id("block_matching_error");
 
-    public BlockMatchingError(BlockPos pos, Block[] blocks) {
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
+    }
+
+    @Getter
+    private final List<Block> blocks;
+
+    public BlockMatchingError(BlockPos pos, List<Block> blocks) {
         super(pos, Collections.emptyList());
         this.blocks = blocks;
     }

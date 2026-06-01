@@ -7,11 +7,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class CleanroomType {
 
     private static final Map<String, CleanroomType> CLEANROOM_TYPES = new Object2ObjectOpenHashMap<>();
+
+    public static Codec<CleanroomType> CLEANROOM_TYPE_CODEC = Codec.STRING.xmap(
+            (name) -> Objects.requireNonNull(CleanroomType.getByName(name),
+                    "Cleanroom of type " + name + " was not found in CleanroomType.CLEANROOM_TYPES"),
+            CleanroomType::getName);
 
     public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", "gtceu.recipe.cleanroom.display_name");
     public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom",

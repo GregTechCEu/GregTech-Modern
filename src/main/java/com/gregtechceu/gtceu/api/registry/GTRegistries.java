@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -81,6 +82,8 @@ public final class GTRegistries {
             .create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
     public static final GTRegistry<String, Function<FriendlyByteBuf, FluidIngredient>> FLUID_SERIALIZERS = new GTRegistry.String<>(
             GTCEu.id("fluid_serializers"));
+    public static final GTRegistry.RL<Codec<? extends PatternError>> PATTERN_ERRORS = new GTRegistry.RL<>(
+            GTCEu.id("pattern_errors"));
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();

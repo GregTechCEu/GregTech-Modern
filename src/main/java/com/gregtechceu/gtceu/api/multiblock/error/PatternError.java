@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.Text;
+import com.mojang.serialization.Codec;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,14 +19,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
-public class PatternError {
+public abstract class PatternError {
 
+    public abstract Codec<? extends PatternError> codec();
+
+    public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
+            .dispatch(PatternError::codec, Function.identity());
     /**
      * Return this for your pattern errors if you want them to be a default error with the pos of the BlockWorldState
      * and candidates of the simple predicate's error.
      */
-    public static final PatternError PLACEHOLDER = new PatternError(BlockPos.ZERO, Collections.emptyList());
+    public static final PlaceholderError PLACEHOLDER = new PlaceholderError(BlockPos.ZERO, Collections.emptyList());
+
     @Getter
     protected @Nullable BlockPos pos;
     @Getter

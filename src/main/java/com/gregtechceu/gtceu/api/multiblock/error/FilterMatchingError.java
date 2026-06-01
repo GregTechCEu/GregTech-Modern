@@ -1,23 +1,43 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.block.IFilterType;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.api.drawable.Text;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 
 import java.util.Collections;
 import java.util.Objects;
 
+import static com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType.CLEANROOM_TYPE_CODEC;
+
 public class FilterMatchingError extends PatternError {
 
-    IFilterType type1, type2;
+    public static Codec<FilterMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+            CLEANROOM_TYPE_CODEC.fieldOf("coilType1").forGetter(FilterMatchingError::getFilterType1),
+            CLEANROOM_TYPE_CODEC.fieldOf("coilType2").forGetter(FilterMatchingError::getFilterType2))
+            .apply(instance, FilterMatchingError::new));
+    public static ResourceLocation ID = GTCEu.id("filter_matching_error");
 
-    public FilterMatchingError(BlockPos pos, IFilterType type1, IFilterType type2) {
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
+    }
+
+    @Getter
+    CleanroomType filterType1, filterType2;
+
+    public FilterMatchingError(BlockPos pos, CleanroomType type1, CleanroomType type2) {
         super(pos, Collections.emptyList());
-        this.type1 = type1;
-        this.type2 = type2;
+        this.filterType1 = type1;
+        this.filterType2 = type2;
     }
 
     @Override
@@ -25,7 +45,7 @@ public class FilterMatchingError extends PatternError {
         return (parent) -> {
             Objects.requireNonNull(pos);
             Component comp = Component.translatable("gtceu.pattern_error.mismatch_filters",
-                    type1.getCleanroomType().getName(), type2.getCleanroomType().getName(),
+                    filterType1.getName(), filterType2.getName(),
                     pos.getX(), pos.getY(), pos.getZ());
             parent.child(Text.of(comp).asWidget());
         };
