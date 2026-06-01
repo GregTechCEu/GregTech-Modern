@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.SimplePatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -21,7 +22,7 @@ public class PatternPredicate {
     public static PatternPredicate ANY = new PatternPredicate("Any", currentBlockInfo -> null, null);
     public static PatternPredicate AIR = new PatternPredicate("Air",
             currentBlockInfo -> currentBlockInfo.getBlockState().isAir() ? null :
-                    new PatternError(currentBlockInfo.getBlockPos(), Collections.emptyList()),
+                    new SimplePatternError(currentBlockInfo.getBlockPos(), Collections.emptyList()),
             Collections.singletonList(BlockInfo.EMPTY));
     private static final Comparator<BasePredicate> predicateComparator = Comparator.comparingInt(p -> p.priority);
     public List<BasePredicate> predicateList = new ArrayList<>();
@@ -193,7 +194,7 @@ public class PatternPredicate {
             if (error == null) return null;
             lastError = error;
         }
-        return lastError == PatternError.PLACEHOLDER ? new PatternError(currBlock.getBlockPos(), getCandidates()) :
+        return lastError == PatternError.PLACEHOLDER ? new SimplePatternError(currBlock.getBlockPos(), getCandidates()) :
                 lastError;
     }
 

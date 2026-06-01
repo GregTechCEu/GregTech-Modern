@@ -152,7 +152,7 @@ public class MultiblockInWorldPreviewRenderer {
                         var pred = predList.predicateList.get(0);
                         BlockState blockState = Blocks.AIR.defaultBlockState();
                         if (pred instanceof PredicateBlocks blockPred) {
-                            blockState = blockPred.blocks[0].defaultBlockState();
+                            blockState = blockPred.blocks.get(0).defaultBlockState();
                         } else if (pred instanceof PredicateStates statePred) {
                             blockState = statePred.states[0];
                         }

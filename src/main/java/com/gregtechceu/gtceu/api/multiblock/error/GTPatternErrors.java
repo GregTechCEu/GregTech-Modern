@@ -11,5 +11,6 @@ public class GTPatternErrors {
         PATTERN_ERRORS.register(FilterMatchingError.ID, FilterMatchingError.CODEC);
         PATTERN_ERRORS.register(PatternStringError.ID, PatternStringError.CODEC);
         PATTERN_ERRORS.register(SinglePredicateError.ID, SinglePredicateError.CODEC);
+        PATTERN_ERRORS.register(SimplePatternError.ID, SimplePatternError.CODEC);
     }
 }

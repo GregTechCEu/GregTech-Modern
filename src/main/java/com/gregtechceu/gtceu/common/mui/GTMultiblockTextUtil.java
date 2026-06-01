@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -30,7 +31,6 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
-import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
@@ -42,14 +42,30 @@ import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
-    public static Flow addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
-                                          PanelSyncManager syncManager) {
+    public static DynamicSyncedWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
+                                                            PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
         BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(
                         () -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getError() !=
                                 null));
+
+        GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
+                GenericListSyncHandler.class,
+                () -> GenericListSyncHandler.<PatternError>builder()
+                        .getter(() -> {
+                            var list = new ArrayList<PatternError>();
+                            for (String structureName : weMachine.getStructurePatterns().keySet()) {
+                                var error = weMachine.getPatternState(structureName)
+                                        .getError();
+                                list.add(error);
+                            }
+                            return list;
+                        })
+                        .adapter(GTByteBufAdapters.PATTERN_ERRORS)
+                        .build());
+
         GenericListSyncHandler<Component> structureErrors = syncManager.getOrCreateSyncHandler("structureErrors",
                 GenericListSyncHandler.class,
                 () -> GenericListSyncHandler.<Component>builder()
@@ -63,52 +79,28 @@ public class GTMultiblockTextUtil {
                         .copy(Component::copy)
                         .build());
 
-        Flow unformed = Flow.col().coverChildrenHeight()
-                .collapseDisabledChildren()
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .widthRel(1);
-
-        unformed
-                .child(Text.lang("gtceu.multiblock.invalid_structure")
-                        .withStyle(ChatFormatting.RED)
-                        .asWidget()
-                        .setEnabledIf(w -> !isFormed.getBoolValue()));
-
-        DynamicLinkedSyncHandler<GenericListSyncHandler<Component>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
-                structureErrors)
+        DynamicLinkedSyncHandler<GenericListSyncHandler<PatternError>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                patternErrors)
                 .widgetProvider((widgetSyncManager, listSyncHandler) -> {
-                    var list = new ListWidget<>()
-                            .widthRel(1)
-                            .coverChildrenHeight()
-                            .crossAxisAlignment(Alignment.CrossAxis.START);
+                    Flow unformed = Flow.col().coverChildrenHeight()
+                            .collapseDisabledChildren()
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .widthRel(1);
+
+                    unformed
+                            .child(Text.lang("gtceu.multiblock.invalid_structure")
+                                    .withStyle(ChatFormatting.RED)
+                                    .asWidget()
+                                    .setEnabledIf(w -> !isFormed.getBoolValue()));
                     for (var comp : listSyncHandler.getValue()) {
-                        list.child(Text.comp(comp).asWidget());
+                        comp.applyErrorInformation().apply(unformed);
                     }
-                    return list;
+                    return unformed;
                 });
-
-        for (String structureName : weMachine.getStructurePatterns().keySet()) {
-            var error = weMachine.getPatternState(structureName)
-                    .getError();
-            unformed.child(Text.str(structureName).asWidget());
-            if (error != null) {
-                // comps.add(Text.str(structureName));
-                error.applyErrorInformation().apply(unformed);
-                // comps.addAll(error.applyErrorInformation());
-                // comps.add(CommonComponents.NEW_LINE);
-            }
-        }
-
-        // unformed.child
-
-        /*
-         * unformed.child(new DynamicSyncedWidget<>()
-         * .widthRel(1)
-         * .coverChildrenHeight()
-         * .syncHandler(dynamicLinkedSyncHandler))
-         * .setEnabledIf(w -> !isFormed.getBoolValue());
-         */
-        return unformed;
+        return new DynamicSyncedWidget<>()
+                .widthRel(1)
+                .coverChildrenHeight()
+                .syncHandler(dynamicLinkedSyncHandler);
     }
 
     public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
