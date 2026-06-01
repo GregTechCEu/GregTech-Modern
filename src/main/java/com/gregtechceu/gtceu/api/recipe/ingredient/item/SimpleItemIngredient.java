@@ -1,0 +1,51 @@
+package com.gregtechceu.gtceu.api.recipe.ingredient.item;
+
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import lombok.Getter;
+
+public final class SimpleItemIngredient extends ItemIngredient {
+
+    @Getter
+    private final Item item;
+
+    public SimpleItemIngredient(Item item, int count) {
+        super(count);
+        this.item = item;
+    }
+
+    @Override
+    public int hash() {
+        return item.hashCode();
+    }
+
+    @Override
+    public ItemStack[] getItems() {
+        return new ItemStack[]{item.getDefaultInstance()};
+    }
+
+    @Override
+    public ItemStack toStack() {
+        return item.getDefaultInstance();
+    }
+
+    @Override
+    public boolean test(ItemStack itemStack) {
+        return itemStack.is(item);
+    }
+
+    @Override
+    public SimpleItemIngredient copy() {
+        return new SimpleItemIngredient(item, count);
+    }
+
+    @Override
+    public SimpleItemIngredient copyWithMultiplier(int multiplier) {
+        return new SimpleItemIngredient(item, count * multiplier);
+    }
+
+    @Override
+    public ChancedItemIngredient copyWithChance(int chance) {
+        return new ChancedItemIngredient(copy(), chance);
+    }
+}

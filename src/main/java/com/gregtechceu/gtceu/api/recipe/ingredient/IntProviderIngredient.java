@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * and an {@link IntProvider}.
  * Functions similarly to {@link IntProviderFluidIngredient}.
  */
-public class IntProviderIngredient extends Ingredient implements IRangedIngredient {
+public class IntProviderIngredient extends Ingredient implements OldRangedIngredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("int_provider");
     public static final ItemStack[] EMPTY_STACK_ARRAY = new ItemStack[0];

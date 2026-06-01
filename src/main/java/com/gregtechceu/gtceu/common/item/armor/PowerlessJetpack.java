@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
@@ -42,12 +42,12 @@ import java.util.List;
 
 public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider {
 
-    // Map of FluidIngredient -> burn time
-    public static final AbstractObject2IntMap<FluidIngredient> FUELS = new Object2IntOpenHashMap<>();
+    // Map of OldFluidIngredient -> burn time
+    public static final AbstractObject2IntMap<OldFluidIngredient> FUELS = new Object2IntOpenHashMap<>();
     public static final int tankCapacity = 16000;
 
-    private FluidIngredient currentFuel = FluidIngredient.EMPTY;
-    private FluidIngredient previousFuel = FluidIngredient.EMPTY;
+    private OldFluidIngredient currentFuel = OldFluidIngredient.EMPTY;
+    private OldFluidIngredient previousFuel = OldFluidIngredient.EMPTY;
     private int burnTimer = 0;
 
     @OnlyIn(Dist.CLIENT)
@@ -171,7 +171,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                 .map(h -> h.drain(Integer.MAX_VALUE, FluidAction.SIMULATE))
                 .map(drained -> drained.getAmount() >= currentFuel.getAmount())
                 .orElse(Boolean.FALSE);
-        if (!ret) currentFuel = FluidIngredient.EMPTY;
+        if (!ret) currentFuel = OldFluidIngredient.EMPTY;
         return ret;
     }
 
@@ -203,7 +203,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                     previousFuel = currentFuel = fuel;
                 }
             }
-        }, () -> currentFuel = FluidIngredient.EMPTY);
+        }, () -> currentFuel = OldFluidIngredient.EMPTY);
     }
 
     /*

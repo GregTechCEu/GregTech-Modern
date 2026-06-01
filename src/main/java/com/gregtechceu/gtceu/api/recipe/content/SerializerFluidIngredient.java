@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,24 +11,24 @@ import com.mojang.serialization.Codec;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.FLUID_SERIALIZERS;
 
-public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
+public class SerializerFluidIngredient implements IContentSerializer<OldFluidIngredient> {
 
     public static SerializerFluidIngredient INSTANCE = new SerializerFluidIngredient();
 
     static {
         FLUID_SERIALIZERS.unfreeze();
-        FLUID_SERIALIZERS.register("FluidIngredient", FluidIngredient::fromNetwork);
+        FLUID_SERIALIZERS.register("OldFluidIngredient", OldFluidIngredient::fromNetwork);
         FLUID_SERIALIZERS.register("IntProviderFluidIngredient", IntProviderFluidIngredient::fromNetwork);
     };
 
     private SerializerFluidIngredient() {}
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf, FluidIngredient content) {
+    public void toNetwork(FriendlyByteBuf buf, OldFluidIngredient content) {
         String name = content.getClass().getSimpleName();
         if (!FLUID_SERIALIZERS.containKey(name)) {
             throw new IllegalArgumentException(
-                    "SerializerFluidIngredient tried to serialize a FluidIngredient's subclass %s, which is not in the FluidSerializers registry!"
+                    "SerializerFluidIngredient tried to serialize a OldFluidIngredient's subclass %s, which is not in the FluidSerializers registry!"
                             .formatted(name));
         }
         buf.writeUtf(name);
@@ -36,7 +36,7 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     }
 
     @Override
-    public FluidIngredient fromNetwork(FriendlyByteBuf buf) {
+    public OldFluidIngredient fromNetwork(FriendlyByteBuf buf) {
         String name = buf.readUtf();
         var fromNetworkFunction = FLUID_SERIALIZERS.get(name);
         if (fromNetworkFunction == null) {
@@ -48,38 +48,38 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     }
 
     @Override
-    public FluidIngredient fromJson(JsonElement json) {
-        return FluidIngredient.fromJson(json);
+    public OldFluidIngredient fromJson(JsonElement json) {
+        return OldFluidIngredient.fromJson(json);
     }
 
     @Override
-    public JsonElement toJson(FluidIngredient content) {
+    public JsonElement toJson(OldFluidIngredient content) {
         return content.toJson();
     }
 
     @Override
-    public FluidIngredient of(Object o) {
-        if (o instanceof FluidIngredient ingredient) {
+    public OldFluidIngredient of(Object o) {
+        if (o instanceof OldFluidIngredient ingredient) {
             return ingredient.copy();
         }
         if (o instanceof FluidStack stack) {
-            return FluidIngredient.of(stack.copy());
+            return OldFluidIngredient.of(stack.copy());
         }
-        return FluidIngredient.EMPTY;
+        return OldFluidIngredient.EMPTY;
     }
 
     @Override
-    public FluidIngredient defaultValue() {
-        return FluidIngredient.EMPTY;
+    public OldFluidIngredient defaultValue() {
+        return OldFluidIngredient.EMPTY;
     }
 
     @Override
-    public Class<FluidIngredient> contentClass() {
-        return FluidIngredient.class;
+    public Class<OldFluidIngredient> contentClass() {
+        return OldFluidIngredient.class;
     }
 
     @Override
-    public Codec<FluidIngredient> codec() {
-        return FluidIngredient.CODEC;
+    public Codec<OldFluidIngredient> codec() {
+        return OldFluidIngredient.CODEC;
     }
 }

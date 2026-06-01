@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -184,12 +184,12 @@ public class RenderUtil {
         }
 
         var fluidContent = contents.stream()
-                .filter(content -> content.content instanceof FluidIngredient ingredient && !ingredient.isEmpty())
+                .filter(content -> content.content instanceof OldFluidIngredient ingredient && !ingredient.isEmpty())
                 .findAny();
         if (fluidContent.isEmpty()) {
             return null;
         }
-        var ingredient = (FluidIngredient) fluidContent.get().content;
+        var ingredient = (OldFluidIngredient) fluidContent.get().content;
 
         var stacks = ingredient.getStacks();
         if (stacks.length == 0) {

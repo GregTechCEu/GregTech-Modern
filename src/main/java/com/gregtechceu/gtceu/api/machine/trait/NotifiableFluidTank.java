@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
+public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<OldFluidIngredient>
                                  implements ICapabilityTrait, IFluidHandlerModifiable {
 
     @Getter
@@ -84,8 +84,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                   boolean simulate) {
+    public List<OldFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<OldFluidIngredient> left,
+                                                      boolean simulate) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
 
@@ -215,7 +215,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public boolean test(FluidIngredient ingredient) {
+    public boolean test(OldFluidIngredient ingredient) {
         return !this.isLocked() || ingredient.test(this.lockedFluid.getFluid());
     }
 
@@ -254,7 +254,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public RecipeCapability<FluidIngredient> getCapability() {
+    public RecipeCapability<OldFluidIngredient> getCapability() {
         return FluidRecipeCapability.CAP;
     }
 

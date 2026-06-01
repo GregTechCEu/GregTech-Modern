@@ -17,22 +17,22 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class IntCircuitIngredient extends StrictNBTIngredient {
+public class OldIntCircuitIngredient extends StrictNBTIngredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
     public static final int CIRCUIT_MAX = 32;
 
-    private static final IntCircuitIngredient[] INGREDIENTS = new IntCircuitIngredient[CIRCUIT_MAX + 1];
+    private static final OldIntCircuitIngredient[] INGREDIENTS = new OldIntCircuitIngredient[CIRCUIT_MAX + 1];
 
-    public static IntCircuitIngredient of(int configuration) {
+    public static OldIntCircuitIngredient of(int configuration) {
         if (configuration < CIRCUIT_MIN || configuration > CIRCUIT_MAX) {
             throw new IndexOutOfBoundsException("Circuit configuration " + configuration + " is out of range");
         }
-        IntCircuitIngredient ingredient = INGREDIENTS[configuration];
+        OldIntCircuitIngredient ingredient = INGREDIENTS[configuration];
         if (ingredient == null) {
-            INGREDIENTS[configuration] = ingredient = new IntCircuitIngredient(configuration);
+            INGREDIENTS[configuration] = ingredient = new OldIntCircuitIngredient(configuration);
         }
         return ingredient;
     }
@@ -40,7 +40,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     private final int configuration;
     private ItemStack[] stacks;
 
-    private IntCircuitIngredient(int configuration) {
+    private OldIntCircuitIngredient(int configuration) {
         super(IntCircuitBehaviour.stack(configuration));
         this.configuration = configuration;
     }
@@ -74,26 +74,26 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
         return SERIALIZER;
     }
 
-    public static IntCircuitIngredient fromJson(JsonObject json) {
+    public static OldIntCircuitIngredient fromJson(JsonObject json) {
         return SERIALIZER.parse(json);
     }
 
-    public static final IIngredientSerializer<IntCircuitIngredient> SERIALIZER = new IIngredientSerializer<>() {
+    public static final IIngredientSerializer<OldIntCircuitIngredient> SERIALIZER = new IIngredientSerializer<>() {
 
         @Override
-        public @NotNull IntCircuitIngredient parse(FriendlyByteBuf buffer) {
+        public @NotNull OldIntCircuitIngredient parse(FriendlyByteBuf buffer) {
             int configuration = buffer.readVarInt();
             return of(configuration);
         }
 
         @Override
-        public @NotNull IntCircuitIngredient parse(JsonObject json) {
+        public @NotNull OldIntCircuitIngredient parse(JsonObject json) {
             int configuration = json.get("configuration").getAsInt();
             return of(configuration);
         }
 
         @Override
-        public void write(FriendlyByteBuf buffer, IntCircuitIngredient ingredient) {
+        public void write(FriendlyByteBuf buffer, OldIntCircuitIngredient ingredient) {
             buffer.writeVarInt(ingredient.configuration);
         }
     };

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerEnergyStack;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import it.unimi.dsi.fastutil.longs.LongList;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
 import java.util.Map;
@@ -20,17 +22,22 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public final static EURecipeCapability CAP = new EURecipeCapability();
 
     protected EURecipeCapability() {
-        super("eu", 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
+        super("eu", 0xFFFFFF00, false, 2, EnergyStack.CODEC);
     }
 
     @Override
-    public EnergyStack copyInner(EnergyStack content) {
-        return content;
+    public EnergyStack fromNetwork(FriendlyByteBuf friendlyByteBuf) {
+        return EnergyStack.fromNetwork(friendlyByteBuf);
     }
 
     @Override
-    public EnergyStack copyWithModifier(EnergyStack content, ContentModifier modifier) {
-        return content.withAmperage(modifier.apply(content.amperage()));
+    public void toNetwork(EnergyStack ingredient, FriendlyByteBuf friendlyByteBuf) {
+        ingredient.toNetwork(friendlyByteBuf);
+    }
+
+    @Override
+    public EnergyStack copyInner(EnergyStack content, int multiplier) {
+        return content.withAmperage(content.amperage() * multiplier);
     }
 
     @Override
@@ -58,7 +65,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             int maxMultiplier = multiplier;
 
             long totalEU = 0L;
-            for (var content : outputs) totalEU += of(content.content).getTotalEU();
+            for (var content : outputs) totalEU += content.getTotalEU();
             if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
                 maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
             }
@@ -98,15 +105,12 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             var inputs = recipe.getInputContents(this);
             if (inputs.isEmpty()) return limit;
 
-            long nonConsumable = 0;
             long consumable = 0;
-            for (Content content : inputs) {
-                EnergyStack s = of(content.content);
-                if (content.chance == 0) nonConsumable += s.getTotalEU();
-                else consumable += s.getTotalEU();
+            for (var content : inputs) {
+                consumable += content.getTotalEU();
             }
 
-            if (nonConsumable == 0 && consumable == 0) return limit;
+            if (consumable == 0) return limit;
 
             long sum = 0;
             var handlers = holder.getInputHandlerMap().get(this);
@@ -118,22 +122,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
                 }
             }
 
-            if (sum < nonConsumable) return 0;
-            if (consumable == 0) return limit;
-            sum -= nonConsumable;
             return Math.min(GTMath.saturatedCast(sum / consumable), limit);
         }
-    }
-
-    /**
-     * Creates a {@code List<Content>} with the specified EU
-     * 
-     * @param eu EU/t value to put in the Content
-     * @return Singleton list of a new Content with the given EU value
-     */
-    public static List<Content> makeEUContent(EnergyStack eu) {
-        return List.of(
-                new Content(eu, 10000, 10000, 0));
     }
 
     /**
@@ -142,8 +132,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
      * @param contents content map
      * @param eu       EU value to put inside content map
      */
-    public static void putEUContent(Map<RecipeCapability<?>, List<Content>> contents, EnergyStack eu) {
-        contents.put(EURecipeCapability.CAP, makeEUContent(eu));
+    public static void putEUContent(ContentListMap contents, EnergyStack eu) {
+        contents.put(EURecipeCapability.CAP, List.of(eu));
     }
 
 }

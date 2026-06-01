@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -144,7 +144,7 @@ public class Content {
 
     @OnlyIn(Dist.CLIENT)
     public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof FluidIngredient ingredient) {
+        if (content instanceof OldFluidIngredient ingredient) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 400);
             graphics.pose().scale(0.5f, 0.5f, 1);

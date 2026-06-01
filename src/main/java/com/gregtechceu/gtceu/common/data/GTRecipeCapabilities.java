@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.world.item.crafting.Ingredient;
@@ -14,7 +16,7 @@ import net.minecraftforge.fml.ModLoader;
 
 public class GTRecipeCapabilities {
 
-    public final static RecipeCapability<Ingredient> ITEM = ItemRecipeCapability.CAP;
+    public final static RecipeCapability<ItemIngredient> ITEM = ItemRecipeCapability.CAP;
     public final static RecipeCapability<FluidIngredient> FLUID = FluidRecipeCapability.CAP;
     public final static RecipeCapability<BlockState> BLOCK_STATE = BlockStateRecipeCapability.CAP;
     public final static RecipeCapability<EnergyStack> EU = EURecipeCapability.CAP;

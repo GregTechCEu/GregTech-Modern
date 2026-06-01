@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.codec.DispatchedMapCodec;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -34,58 +32,53 @@ import java.util.*;
 public abstract class RecipeCapability<T> {
 
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
-    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
-            RecipeCapability.DIRECT_CODEC,
-            RecipeCapability::contentCodec);
+//    public static final Codec<Map<RecipeCapability<?>, List<?>>> CODEC = new DispatchedMapCodec<>(
+//            RecipeCapability.DIRECT_CODEC,
+//            RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;
     public final int color;
     public final boolean doRenderSlot;
     public final int sortIndex;
-    public final IContentSerializer<T> serializer;
+    public final Codec<T> contentCodec;
 
     protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
-                               IContentSerializer<T> serializer) {
+                               Codec<T> contentCodec) {
         this.name = name;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
-        this.serializer = serializer;
+        this.contentCodec = contentCodec;
     }
 
-    public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
-        return Content.codec(capability).listOf();
+    public static <T> Codec<List<T>> contentCodec(RecipeCapability<T> capability) {
+        return capability.contentCodec.listOf();
     }
 
-    public Tag contentToNbt(Object value) {
-        return this.serializer.toNbt(this.of(value));
-    }
+    public abstract T fromNetwork(FriendlyByteBuf friendlyByteBuf);
+
+    public abstract void toNetwork(T ingredient,  FriendlyByteBuf friendlyByteBuf);
+
+    public T copyInner(T content) {
+        return copyInner(content, 1);
+    };
 
     /**
      * deep copy of this content. recipe need it for searching and such things
      */
-    public T copyInner(T content) {
-        FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.buffer());
-        serializer.toNetwork(buf, content);
-        return serializer.fromNetwork(buf);
-    }
+    public abstract T copyInner(T content, int multiplier);
 
     /**
      * deep copy and modify the size attribute for those Content that have the size attribute.
      */
-    public T copyWithModifier(T content, ContentModifier modifier) {
-        return copyInner(content);
+    public T copyWithMultiplier(Object content, int multiplier) {
+        return copyInner((T)content, multiplier);
     }
 
     @SuppressWarnings("unchecked")
     public final T copyContent(Object content) {
         return copyInner((T) content);
-    }
-
-    @SuppressWarnings("unchecked")
-    public final T copyContent(Object content, ContentModifier modifier) {
-        return copyWithModifier((T) content, modifier);
     }
 
     /**
@@ -113,14 +106,6 @@ public abstract class RecipeCapability<T> {
 
     public boolean isRecipeSearchFilter() {
         return false;
-    }
-
-    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
-        return new ArrayList<>(ingredients);
-    }
-
-    public @Nullable List<AbstractMapIngredient> getDefaultMapIngredient(Object object) {
-        return null;
     }
 
     /**
@@ -165,11 +150,11 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<T> contents, boolean perTick,
                            boolean isInput, MutableInt yOffset) {}
 
     @NotNull
-    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
+    public List<Object> createXEIContainerContents(List<T> contents, GTRecipe recipe, IO io) {
         return new ArrayList<>();
     }
 
@@ -198,7 +183,7 @@ public abstract class RecipeCapability<T> {
                                 @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
                                 @Nullable("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
+                                @Nullable T content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {}
 
     public boolean isTickSlot(int index, IO io, GTRecipe recipe) {

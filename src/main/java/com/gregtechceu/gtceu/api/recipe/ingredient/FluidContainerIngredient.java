@@ -34,24 +34,24 @@ public class FluidContainerIngredient extends Ingredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("fluid_container");
 
-    public static final Codec<FluidContainerIngredient> CODEC = FluidIngredient.CODEC.xmap(
+    public static final Codec<FluidContainerIngredient> CODEC = OldFluidIngredient.CODEC.xmap(
             FluidContainerIngredient::new, FluidContainerIngredient::getFluid);
 
     @Getter
-    private final FluidIngredient fluid;
+    private final OldFluidIngredient fluid;
 
-    public FluidContainerIngredient(FluidIngredient fluid) {
+    public FluidContainerIngredient(OldFluidIngredient fluid) {
         super(Stream.empty());
         this.fluid = fluid;
     }
 
     public FluidContainerIngredient(FluidStack fluidStack) {
-        this(FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
+        this(OldFluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
                 fluidStack.getAmount(), fluidStack.getTag()));
     }
 
     public FluidContainerIngredient(TagKey<Fluid> tag, int amount) {
-        this(FluidIngredient.of(tag, amount, null));
+        this(OldFluidIngredient.of(tag, amount, null));
     }
 
     private ItemStack[] cachedStacks;
@@ -118,13 +118,13 @@ public class FluidContainerIngredient extends Ingredient {
 
         @Override
         public @NotNull FluidContainerIngredient parse(FriendlyByteBuf buffer) {
-            FluidIngredient fluid = FluidIngredient.fromNetwork(buffer);
+            OldFluidIngredient fluid = OldFluidIngredient.fromNetwork(buffer);
             return new FluidContainerIngredient(fluid);
         }
 
         @Override
         public @NotNull FluidContainerIngredient parse(JsonObject json) {
-            FluidIngredient fluid = FluidIngredient.fromJson(GsonHelper.getAsJsonObject(json, "fluid"));
+            OldFluidIngredient fluid = OldFluidIngredient.fromJson(GsonHelper.getAsJsonObject(json, "fluid"));
             return new FluidContainerIngredient(fluid);
         }
 

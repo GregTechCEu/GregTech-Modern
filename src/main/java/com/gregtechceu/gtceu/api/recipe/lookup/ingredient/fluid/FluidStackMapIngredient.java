@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
@@ -15,22 +15,22 @@ import java.util.List;
 public class FluidStackMapIngredient extends AbstractMapIngredient {
 
     protected FluidStack stack;
-    protected FluidIngredient ingredient = null;
+    protected OldFluidIngredient ingredient = null;
 
     public FluidStackMapIngredient(FluidStack stack) {
         this.stack = stack;
     }
 
-    public FluidStackMapIngredient(FluidStack stack, FluidIngredient ingredient) {
+    public FluidStackMapIngredient(FluidStack stack, OldFluidIngredient ingredient) {
         this.stack = stack;
         this.ingredient = ingredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient ingredient) {
+    public static List<AbstractMapIngredient> from(@NotNull OldFluidIngredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        for (FluidIngredient.Value value : ingredient.values) {
-            if (value instanceof FluidIngredient.FluidValue fluidValue) {
+        for (OldFluidIngredient.Value value : ingredient.values) {
+            if (value instanceof OldFluidIngredient.FluidValue fluidValue) {
                 FluidStack stack = new FluidStack(fluidValue.fluid(),
                         // wait. that's illegal.
                         (ingredient instanceof IntProviderFluidIngredient provider ?

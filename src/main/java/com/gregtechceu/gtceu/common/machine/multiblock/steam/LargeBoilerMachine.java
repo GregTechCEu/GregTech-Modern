@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -128,12 +128,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
                 steamGenerated = 0;
             } else if (maxDrain > 0) { // if maxDrain is 0 because throttle is too low, skip trying to make steam
                 // drain water
-                var drainWater = List.of(FluidIngredient.of(Fluids.WATER, maxDrain));
+                var drainWater = List.of(OldFluidIngredient.of(Fluids.WATER, maxDrain));
                 List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
                 inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
-                    drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
+                    drainWater = (List<OldFluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater == null || drainWater.isEmpty()) {
                         break;
                     }
@@ -145,12 +145,12 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
                 if (drained > 0) {
                     // fill steam
-                    var fillSteam = List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
+                    var fillSteam = List.of(OldFluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated)));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
                     outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
-                        fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
+                        fillSteam = (List<OldFluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
                         if (fillSteam == null) break;
                     }
                 }

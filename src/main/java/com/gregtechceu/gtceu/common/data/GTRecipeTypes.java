@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -537,7 +537,7 @@ public class GTRecipeTypes {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
                     Content inputContent = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
-                    FluidIngredient input = FluidRecipeCapability.CAP.of(inputContent.getContent());
+                    OldFluidIngredient input = FluidRecipeCapability.CAP.of(inputContent.getContent());
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ?
                             ItemRecipeCapability.CAP
                                     .of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent())
@@ -548,7 +548,7 @@ public class GTRecipeTypes {
                     List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
                         Content outputContent = contents.get(i);
-                        FluidIngredient output = FluidRecipeCapability.CAP.of(outputContent.getContent());
+                        OldFluidIngredient output = FluidRecipeCapability.CAP.of(outputContent.getContent());
                         if (output.isEmpty()) continue;
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
@@ -563,9 +563,9 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        FluidIngredient dividedInputFluid = input.copy();
+                        OldFluidIngredient dividedInputFluid = input.copy();
                         dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
-                        FluidIngredient dividedOutputFluid = output.copy();
+                        OldFluidIngredient dividedOutputFluid = output.copy();
                         dividedOutputFluid.setAmount(Math.max(1, dividedOutputFluid.getAmount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {

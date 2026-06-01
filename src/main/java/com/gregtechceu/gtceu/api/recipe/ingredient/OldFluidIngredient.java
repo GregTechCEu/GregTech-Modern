@@ -24,14 +24,14 @@ import java.util.*;
 import java.util.function.Predicate;
 
 @SuppressWarnings("deprecation")
-public class FluidIngredient implements Predicate<FluidStack> {
+public class OldFluidIngredient implements Predicate<FluidStack> {
 
-    public static final Codec<FluidIngredient> CODEC = ExtraCodecs.JSON
-            .xmap(FluidIngredient::fromJson, FluidIngredient::toJson);
+    public static final Codec<OldFluidIngredient> CODEC = ExtraCodecs.JSON
+            .xmap(OldFluidIngredient::fromJson, OldFluidIngredient::toJson);
 
-    public static final FluidIngredient EMPTY = new FluidIngredient(new Value[0], 0, null);
+    public static final OldFluidIngredient EMPTY = new OldFluidIngredient(new Value[0], 0, null);
     public static final FluidStack[] EMPTY_STACK_ARRAY = new FluidStack[0];
-    public FluidIngredient.Value[] values;
+    public OldFluidIngredient.Value[] values;
     @Nullable
     public FluidStack[] stacks;
     @Getter
@@ -40,23 +40,23 @@ public class FluidIngredient implements Predicate<FluidStack> {
     protected CompoundTag nbt;
     protected boolean changed = true;
 
-    protected FluidIngredient(Value[] values, int amount, @Nullable CompoundTag nbt) {
+    protected OldFluidIngredient(Value[] values, int amount, @Nullable CompoundTag nbt) {
         this.values = values;
         this.amount = amount;
         this.nbt = nbt;
     }
 
-    public static FluidIngredient fromValues(Value[] values, int amount, @Nullable CompoundTag nbt) {
+    public static OldFluidIngredient fromValues(Value[] values, int amount, @Nullable CompoundTag nbt) {
         if (values.length == 0) return EMPTY;
-        return new FluidIngredient(values, amount, nbt);
+        return new OldFluidIngredient(values, amount, nbt);
     }
 
-    public static FluidIngredient fromValues(List<? extends FluidIngredient.Value> values,
-                                             int amount, @Nullable CompoundTag nbt) {
+    public static OldFluidIngredient fromValues(List<? extends OldFluidIngredient.Value> values,
+                                                int amount, @Nullable CompoundTag nbt) {
         return fromValues(values.toArray(Value[]::new), amount, nbt);
     }
 
-    public static FluidIngredient fromValue(FluidIngredient.Value value, int amount, @Nullable CompoundTag nbt) {
+    public static OldFluidIngredient fromValue(OldFluidIngredient.Value value, int amount, @Nullable CompoundTag nbt) {
         return fromValues(new Value[] { value }, amount, nbt);
     }
 
@@ -84,15 +84,15 @@ public class FluidIngredient implements Predicate<FluidStack> {
             jsonObject.add("value", this.values[0].serialize());
         }
         JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
+        for (OldFluidIngredient.Value value : this.values) {
             jsonArray.add(value.serialize());
         }
         jsonObject.add("value", jsonArray);
         return jsonObject;
     }
 
-    public FluidIngredient copy() {
-        return new FluidIngredient(values, this.amount, this.nbt == null ? null : this.nbt.copy());
+    public OldFluidIngredient copy() {
+        return new OldFluidIngredient(values, this.amount, this.nbt == null ? null : this.nbt.copy());
     }
 
     @Override
@@ -116,7 +116,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof FluidIngredient other)) {
+        if (!(obj instanceof OldFluidIngredient other)) {
             return false;
         }
 
@@ -194,36 +194,36 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.changed = true;
     }
 
-    public static FluidIngredient of() {
+    public static OldFluidIngredient of() {
         return EMPTY;
     }
 
-    public static FluidIngredient of(Fluid fluid, int amount) {
+    public static OldFluidIngredient of(Fluid fluid, int amount) {
         return of(fluid, amount, null);
     }
 
-    public static FluidIngredient of(Fluid fluid, int amount, @Nullable CompoundTag nbt) {
-        return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
+    public static OldFluidIngredient of(Fluid fluid, int amount, @Nullable CompoundTag nbt) {
+        return OldFluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
     }
 
-    public static FluidIngredient of(List<Fluid> fluids, int amount, @Nullable CompoundTag nbt) {
-        if (fluids.isEmpty()) return FluidIngredient.EMPTY;
+    public static OldFluidIngredient of(List<Fluid> fluids, int amount, @Nullable CompoundTag nbt) {
+        if (fluids.isEmpty()) return OldFluidIngredient.EMPTY;
         if (fluids.size() == 1) return of(fluids.get(0), amount, nbt);
 
         List<Value> values = new ArrayList<>();
         for (Fluid fluid : fluids) {
             values.add(new FluidValue(fluid));
         }
-        return FluidIngredient.fromValues(values, amount, nbt);
+        return OldFluidIngredient.fromValues(values, amount, nbt);
     }
 
-    public static FluidIngredient of(FluidStack stack) {
-        if (stack.isEmpty()) return FluidIngredient.EMPTY;
-        return FluidIngredient.fromValue(new FluidValue(stack.getFluid()), stack.getAmount(), stack.getTag());
+    public static OldFluidIngredient of(FluidStack stack) {
+        if (stack.isEmpty()) return OldFluidIngredient.EMPTY;
+        return OldFluidIngredient.fromValue(new FluidValue(stack.getFluid()), stack.getAmount(), stack.getTag());
     }
 
-    public static FluidIngredient of(List<FluidStack> stacks) {
-        if (stacks.isEmpty()) return FluidIngredient.EMPTY;
+    public static OldFluidIngredient of(List<FluidStack> stacks) {
+        if (stacks.isEmpty()) return OldFluidIngredient.EMPTY;
         if (stacks.size() == 1) return of(stacks.get(0));
 
         List<Value> values = new ArrayList<>();
@@ -235,7 +235,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                 if (tag == null) tag = stack.getTag();
             }
         }
-        return FluidIngredient.fromValues(values, stacks.get(0).getAmount(), tag);
+        return OldFluidIngredient.fromValues(values, stacks.get(0).getAmount(), tag);
     }
 
     /**
@@ -243,24 +243,24 @@ public class FluidIngredient implements Predicate<FluidStack> {
      *
      * @param tag the tag key
      */
-    public static FluidIngredient of(TagKey<Fluid> tag, int amount) {
-        return FluidIngredient.fromValue(new TagValue(tag), amount, null);
+    public static OldFluidIngredient of(TagKey<Fluid> tag, int amount) {
+        return OldFluidIngredient.fromValue(new TagValue(tag), amount, null);
     }
 
-    public static FluidIngredient of(TagKey<Fluid> tag, int amount, @Nullable CompoundTag nbt) {
-        return FluidIngredient.fromValue(new TagValue(tag), amount, nbt);
+    public static OldFluidIngredient of(TagKey<Fluid> tag, int amount, @Nullable CompoundTag nbt) {
+        return OldFluidIngredient.fromValue(new TagValue(tag), amount, nbt);
     }
 
-    public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
+    public static OldFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
         List<Fluid> fluids = buffer.readList(buf -> buf.readById(BuiltInRegistries.FLUID));
-        return FluidIngredient.of(fluids, buffer.readVarInt(), buffer.readNbt());
+        return OldFluidIngredient.of(fluids, buffer.readVarInt(), buffer.readNbt());
     }
 
-    public static FluidIngredient fromJson(@Nullable JsonElement json) {
-        return FluidIngredient.fromJson(json, true);
+    public static OldFluidIngredient fromJson(@Nullable JsonElement json) {
+        return OldFluidIngredient.fromJson(json, true);
     }
 
-    public static FluidIngredient fromJson(@Nullable JsonElement json, boolean allowEmpty) {
+    public static OldFluidIngredient fromJson(@Nullable JsonElement json, boolean allowEmpty) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Fluid ingredient cannot be null");
         }
@@ -273,8 +273,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
         CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
 
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
-            Value value = FluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"));
-            return FluidIngredient.fromValue(value, amount, nbt);
+            Value value = OldFluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"));
+            return OldFluidIngredient.fromValue(value, amount, nbt);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
             JsonArray jsonArray = GsonHelper.getAsJsonArray(jsonObject, "value");
             if (jsonArray.isEmpty() && !allowEmpty) {
@@ -282,25 +282,25 @@ public class FluidIngredient implements Predicate<FluidStack> {
             }
             List<Value> values = new ArrayList<>();
             for (JsonElement e : jsonArray) {
-                values.add(FluidIngredient.valueFromJson(GsonHelper.convertToJsonObject(e, "fluid")));
+                values.add(OldFluidIngredient.valueFromJson(GsonHelper.convertToJsonObject(e, "fluid")));
             }
-            return FluidIngredient.fromValues(values, amount, nbt);
+            return OldFluidIngredient.fromValues(values, amount, nbt);
         } else if (GsonHelper.isStringValue(jsonObject, "value")) {
             String value = GsonHelper.getAsString(jsonObject, "value");
             if (value.startsWith("#")) {
                 ResourceLocation resourceLocation = new ResourceLocation(value.substring(1));
                 TagKey<Fluid> tagKey = TagKey.create(Registries.FLUID, resourceLocation);
-                return FluidIngredient.fromValue(new TagValue(tagKey), amount, nbt);
+                return OldFluidIngredient.fromValue(new TagValue(tagKey), amount, nbt);
             } else {
                 Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(value));
-                return FluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
+                return OldFluidIngredient.fromValue(new FluidValue(fluid), amount, nbt);
             }
         } else {
             throw new JsonSyntaxException("expected 'value' to be an object, an array or a string.");
         }
     }
 
-    private static FluidIngredient.Value valueFromJson(JsonObject json) {
+    private static OldFluidIngredient.Value valueFromJson(JsonObject json) {
         if (json.has("fluid") && json.has("tag")) {
             throw new JsonParseException("A fluid ingredient entry is either a tag or a fluid, not both");
         }
@@ -359,19 +359,19 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public static final Comparator<Fluid> FLUID_COMPARATOR = Comparator.comparing(BuiltInRegistries.FLUID::getKey);
 
-    public static final Comparator<FluidIngredient.Value> VALUE_COMPARATOR = new Comparator<>() {
+    public static final Comparator<OldFluidIngredient.Value> VALUE_COMPARATOR = new Comparator<>() {
 
         @Override
-        public int compare(FluidIngredient.Value value1, FluidIngredient.Value value2) {
-            if (value1 instanceof FluidIngredient.TagValue first) {
-                if (!(value2 instanceof FluidIngredient.TagValue second)) {
+        public int compare(OldFluidIngredient.Value value1, OldFluidIngredient.Value value2) {
+            if (value1 instanceof OldFluidIngredient.TagValue first) {
+                if (!(value2 instanceof OldFluidIngredient.TagValue second)) {
                     return 1;
                 }
                 if (first.tag() != second.tag()) {
                     return 1;
                 }
-            } else if (value1 instanceof FluidIngredient.FluidValue first) {
-                if (!(value2 instanceof FluidIngredient.FluidValue second)) {
+            } else if (value1 instanceof OldFluidIngredient.FluidValue first) {
+                if (!(value2 instanceof OldFluidIngredient.FluidValue second)) {
                     return 1;
                 }
                 return FLUID_COMPARATOR.compare(first.fluid, second.fluid);

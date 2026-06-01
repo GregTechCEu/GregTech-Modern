@@ -23,13 +23,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Allows a {@link FluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
+ * Allows a {@link OldFluidIngredient} to be created with a ranged {@code amount}, which will be randomly rolled upon
  * recipe start (input) / completion (output).
- * Instantiated using {@link IntProviderFluidIngredient#of()}, with a {@link FluidIngredient}
+ * Instantiated using {@link IntProviderFluidIngredient#of()}, with a {@link OldFluidIngredient}
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
-public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
+public class IntProviderFluidIngredient extends OldFluidIngredient implements OldRangedIngredient {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
@@ -43,20 +43,20 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     @Setter
     protected int sampledCount = -1;
     /**
-     * The {@link FluidIngredient} to have a ranged amount.
+     * The {@link OldFluidIngredient} to have a ranged amount.
      */
     @Getter
-    private final FluidIngredient inner;
+    private final OldFluidIngredient inner;
     @Setter
     protected FluidStack[] fluidStacks = null;
 
-    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider) {
+    protected IntProviderFluidIngredient(OldFluidIngredient inner, IntProvider provider) {
         super(inner.values, provider.getMaxValue(), null);
         this.inner = inner;
         this.countProvider = provider;
     }
 
-    protected IntProviderFluidIngredient(FluidIngredient inner, IntProvider provider, int sampledCount) {
+    protected IntProviderFluidIngredient(OldFluidIngredient inner, IntProvider provider, int sampledCount) {
         super(inner.values, provider.getMaxValue(), null);
         this.inner = inner;
         this.countProvider = provider;
@@ -156,15 +156,15 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     }
 
     /**
-     * @param inner    {@link FluidIngredient}
+     * @param inner    {@link OldFluidIngredient}
      * @param provider usually as {@link UniformInt#of(int, int)}
      */
-    public static IntProviderFluidIngredient of(FluidIngredient inner, IntProvider provider) {
+    public static IntProviderFluidIngredient of(OldFluidIngredient inner, IntProvider provider) {
         return new IntProviderFluidIngredient(inner, provider);
     }
 
     public static IntProviderFluidIngredient of(FluidStack inner, int min, int max) {
-        return IntProviderFluidIngredient.of(FluidIngredient.of(inner), UniformInt.of(min, max));
+        return IntProviderFluidIngredient.of(OldFluidIngredient.of(inner), UniformInt.of(min, max));
     }
 
     @Override
@@ -204,7 +204,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
         IntProvider amount = IntProvider.CODEC.parse(JsonOps.INSTANCE, jsonObject.get("count_provider"))
                 .getOrThrow(false, GTCEu.LOGGER::error);
         int sampledCount = jsonObject.getAsJsonPrimitive("sampledCount").getAsInt();
-        FluidIngredient inner = FluidIngredient.fromJson(jsonObject.get("inner"));
+        OldFluidIngredient inner = OldFluidIngredient.fromJson(jsonObject.get("inner"));
         return new IntProviderFluidIngredient(inner, amount, sampledCount);
     }
 
@@ -222,7 +222,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     }
 
     public static IntProviderFluidIngredient fromNetwork(FriendlyByteBuf buffer) {
-        FluidIngredient inner = FluidIngredient.fromNetwork(buffer);
+        OldFluidIngredient inner = OldFluidIngredient.fromNetwork(buffer);
         int[] range = buffer.readVarIntArray(2);
         IntProvider provider = UniformInt.of(range[0], range[1]);
         return new IntProviderFluidIngredient(inner, provider);

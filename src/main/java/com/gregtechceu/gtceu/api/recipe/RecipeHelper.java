@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -336,7 +336,7 @@ public class RecipeHelper {
         return outputs;
     }
 
-    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
+    public static int getRatioForDistillery(OldFluidIngredient fluidInput, OldFluidIngredient fluidOutput,
                                             @Nullable ItemStack output) {
         int[] divisors = new int[] { 2, 5, 10, 25, 50 };
         int ratio = -1;
@@ -358,7 +358,7 @@ public class RecipeHelper {
         return Math.max(1, ratio);
     }
 
-    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
+    public static boolean isFluidStackDivisibleForDistillery(OldFluidIngredient fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

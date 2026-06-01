@@ -248,14 +248,14 @@ public class CommonProxy {
     public void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
-            CraftingHelper.register(IntCircuitIngredient.TYPE, IntCircuitIngredient.SERIALIZER);
+            CraftingHelper.register(OldIntCircuitIngredient.TYPE, OldIntCircuitIngredient.SERIALIZER);
             CraftingHelper.register(IntProviderIngredient.TYPE, IntProviderIngredient.SERIALIZER);
             CraftingHelper.register(NBTPredicateIngredient.TYPE, NBTPredicateIngredient.Serializer.INSTANCE);
             CraftingHelper.register(FluidContainerIngredient.TYPE, FluidContainerIngredient.SERIALIZER);
 
             // register the map ingredient converters for all of our ingredients
-            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidTagMapIngredient::from);
-            MapIngredientTypeManager.registerMapIngredient(FluidIngredient.class, FluidStackMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(OldFluidIngredient.class, FluidTagMapIngredient::from);
+            MapIngredientTypeManager.registerMapIngredient(OldFluidIngredient.class, FluidStackMapIngredient::from);
 
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidTagMapIngredient::from);
             MapIngredientTypeManager.registerMapIngredient(FluidStack.class, FluidStackMapIngredient::from);

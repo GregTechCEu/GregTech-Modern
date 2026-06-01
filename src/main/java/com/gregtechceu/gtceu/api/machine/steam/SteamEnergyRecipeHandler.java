@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -43,9 +43,9 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
             long totalEU = stack.getTotalEU();
             int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
             if (totalSteam > 0) {
-                var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
-                        FluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
-                var list = new ArrayList<FluidIngredient>();
+                var steam = io == IO.IN ? OldFluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam) :
+                        OldFluidIngredient.of(GTMaterials.Steam.getFluid(totalSteam));
+                var list = new ArrayList<OldFluidIngredient>();
                 list.add(steam);
                 var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
                 if (leftSteam == null || leftSteam.isEmpty()) {

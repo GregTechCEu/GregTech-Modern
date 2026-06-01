@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -152,7 +152,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         for (int i = 0; i < inputsSize; i++) {
             var fluidStack = fluidInventory.get(i);
-            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
             if (!recipeStack.test(fluidStack) || recipeStack.getAmount() > fluidStack.getAmount()) {
                 return false;
             }
@@ -174,7 +174,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (fluidInventory.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
 
         for (int i = 0; i < fluidsSize; i++) {
-            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
             var currentBus = fluidInventory.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
@@ -184,7 +184,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         // If we get here, the recipe should be consumable
 
         for (int i = 0; i < fluidsSize; i++) {
-            FluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
             var currentBus = fluidInventory.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");

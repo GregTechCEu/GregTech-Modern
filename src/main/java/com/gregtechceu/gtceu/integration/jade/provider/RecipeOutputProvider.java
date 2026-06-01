@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -78,7 +78,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                         if (item.chance < item.maxChance) {
                             double countD = (double) runs *
                                     function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                            chanced = (IntProviderIngredient) ItemRecipeCapability.CAP.copyWithModifier(provider,
+                            chanced = (IntProviderIngredient) ItemRecipeCapability.CAP.copyWithMultiplier(provider,
                                     ContentModifier.multiplier(countD));
                         }
                         itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, chanced.toJson());
@@ -112,7 +112,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                         if (fluid.chance < fluid.maxChance) {
                             double countD = (double) runs *
                                     function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                            chanced = (IntProviderFluidIngredient) FluidRecipeCapability.CAP.copyWithModifier(provider,
+                            chanced = (IntProviderFluidIngredient) FluidRecipeCapability.CAP.copyWithMultiplier(provider,
                                     ContentModifier.multiplier(countD));
                         }
                         fluidTag = chanced.toNBT();
@@ -166,7 +166,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     }
                 }
             }
-            List<FluidIngredient> outputFluids = new ArrayList<>();
+            List<OldFluidIngredient> outputFluids = new ArrayList<>();
             if (capData.contains("OutputFluids", Tag.TAG_LIST)) {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
@@ -177,7 +177,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                         } else {
                             var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
                             if (!stack.isEmpty()) {
-                                outputFluids.add(FluidIngredient.of(stack));
+                                outputFluids.add(OldFluidIngredient.of(stack));
                             }
                         }
                     }
@@ -217,8 +217,8 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         }
     }
 
-    private void addFluidTooltips(ITooltip iTooltip, List<FluidIngredient> outputFluids) {
-        for (FluidIngredient fluidOutput : outputFluids) {
+    private void addFluidTooltips(ITooltip iTooltip, List<OldFluidIngredient> outputFluids) {
+        for (OldFluidIngredient fluidOutput : outputFluids) {
             if (fluidOutput != null && !fluidOutput.isEmpty()) {
                 FluidStack stack;
                 MutableComponent text = CommonComponents.space();

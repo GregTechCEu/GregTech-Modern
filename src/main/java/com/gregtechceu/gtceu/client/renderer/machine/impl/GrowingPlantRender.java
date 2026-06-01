@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -200,14 +201,14 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
     private static final Function<GTRecipe, Optional<Block>> RECIPE_BLOCK_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(recipe -> {
-                List<Content> allItemContents = new ArrayList<>();
+                List<ItemIngredient> allItemContents = new ArrayList<>();
                 allItemContents.addAll(recipe.getInputContents(ItemRecipeCapability.CAP));
                 allItemContents.addAll(recipe.getTickInputContents(ItemRecipeCapability.CAP));
                 allItemContents.addAll(recipe.getOutputContents(ItemRecipeCapability.CAP));
                 allItemContents.addAll(recipe.getTickOutputContents(ItemRecipeCapability.CAP));
                 return allItemContents.stream()
-                        .map(Content::getContent).map(ItemRecipeCapability.CAP::of)
-                        .map(Ingredient::getItems).flatMap(Arrays::stream)
+                        .map(ItemIngredient::getItems)
+                        .flatMap(Arrays::stream)
                         .map(ItemStack::getItem)
                         .filter(BlockItem.class::isInstance)
                         .findFirst()

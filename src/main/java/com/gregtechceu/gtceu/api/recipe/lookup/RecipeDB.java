@@ -2,14 +2,12 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -180,7 +178,7 @@ public final class RecipeDB {
         // Add combustion fuels to the Powerless Jetpack
         if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
             Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
-            FluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
+            OldFluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
             PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
         }
         if (addRecursive(recipe, ingredients, rootBranch, 0)) {

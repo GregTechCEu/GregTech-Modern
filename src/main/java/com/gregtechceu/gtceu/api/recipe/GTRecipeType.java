@@ -40,7 +40,7 @@ import java.util.*;
 import java.util.function.*;
 
 @Accessors(chain = true)
-public class GTRecipeType implements RecipeType<GTRecipe> {
+public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
 
     public final ResourceLocation registryName;
     public final String group;
@@ -305,7 +305,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return false;
     }
 
-    public GTRecipe toGTrecipe(ResourceLocation id, Recipe<?> recipe) {
+    public GTRecipeDefinition toGTrecipe(ResourceLocation id, Recipe<?> recipe) {
         var builder = recipeBuilder(id);
         for (var ingredient : recipe.getIngredients()) {
             builder.inputItems(ingredient);
@@ -314,7 +314,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         if (recipe instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }
-        return GTRecipeSerializer.SERIALIZER.fromJson(id, builder.build().serializeRecipe());
+        return builder.buildRawRecipe();
     }
 
     public void buildRepresentativeRecipes() {

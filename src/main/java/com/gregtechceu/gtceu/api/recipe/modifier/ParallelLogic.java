@@ -207,7 +207,7 @@ public class ParallelLogic {
         if (parallelLimit <= 1) return parallelLimit;
 
         while (parallelLimit > 0) {
-            var copied = recipe.copy(ContentModifier.multiplier(parallelLimit), false);
+            var copied = recipe.copy(parallelLimit, false);
             if (RecipeHelper.matchRecipe(group, copied).isSuccess() &&
                     RecipeHelper.matchTickRecipe(group, copied).isSuccess()) {
                 return parallelLimit;

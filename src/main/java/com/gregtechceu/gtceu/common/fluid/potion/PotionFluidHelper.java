@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.fluid.potion;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -50,16 +50,16 @@ public class PotionFluidHelper {
         return Pair.of(fluid, new ItemStack(Items.GLASS_BOTTLE));
     }
 
-    public static FluidIngredient potionIngredient(Potion potion, int amount) {
+    public static OldFluidIngredient potionIngredient(Potion potion, int amount) {
         FluidStack stack = PotionFluidHelper
                 .getFluidFromPotionItem(PotionUtils.setPotion(new ItemStack(Items.POTION), potion), amount);
         stack.setAmount(amount);
-        return FluidIngredient.of(stack);
+        return OldFluidIngredient.of(stack);
     }
 
-    public static FluidIngredient getPotionFluidIngredientFrom(Ingredient potion, int amount) {
+    public static OldFluidIngredient getPotionFluidIngredientFrom(Ingredient potion, int amount) {
         if (potion instanceof StrictNBTIngredientAccessor strict) {
-            return FluidIngredient.fromValue(new FluidIngredient.FluidValue(GTFluids.POTION.get()),
+            return OldFluidIngredient.fromValue(new OldFluidIngredient.FluidValue(GTFluids.POTION.get()),
                     amount, strict.getStack().getTag());
         }
 
@@ -70,7 +70,7 @@ public class PotionFluidHelper {
                 fluids.add(fluidStack);
             }
         }
-        return FluidIngredient.of(fluids);
+        return OldFluidIngredient.of(fluids);
     }
 
     public static FluidStack getFluidFromPotionItem(ItemStack stack, int amount) {

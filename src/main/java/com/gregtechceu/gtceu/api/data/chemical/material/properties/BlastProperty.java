@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.google.common.base.Supplier;
@@ -119,26 +119,26 @@ public class BlastProperty implements IMaterialProperty {
     public enum GasTier {
 
         // Tiers used by GTCEu
-        LOW(() -> FluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000)),
-        MID(() -> FluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100)),
-        HIGH(() -> FluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50)),
+        LOW(() -> OldFluidIngredient.of(GTMaterials.Nitrogen.getFluidTag(), 1000)),
+        MID(() -> OldFluidIngredient.of(GTMaterials.Helium.getFluidTag(), 100)),
+        HIGH(() -> OldFluidIngredient.of(GTMaterials.Argon.getFluidTag(), 50)),
 
         // Tiers reserved for addons
-        HIGHER(() -> FluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
-        HIGHEST(() -> FluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
+        HIGHER(() -> OldFluidIngredient.of(GTMaterials.Neon.getFluidTag(), 25)),
+        HIGHEST(() -> OldFluidIngredient.of(GTMaterials.Krypton.getFluidTag(), 10));
 
         public static final GasTier[] VALUES = values();
-        private Supplier<FluidIngredient> fluid;
+        private Supplier<OldFluidIngredient> fluid;
 
-        GasTier(Supplier<FluidIngredient> fluid) {
+        GasTier(Supplier<OldFluidIngredient> fluid) {
             this.fluid = Suppliers.memoize(fluid);
         }
 
-        public void setFluid(Supplier<FluidIngredient> fluid) {
+        public void setFluid(Supplier<OldFluidIngredient> fluid) {
             this.fluid = Suppliers.memoize(fluid);
         }
 
-        public FluidIngredient getFluid() {
+        public OldFluidIngredient getFluid() {
             return fluid.get().copy();
         }
     }

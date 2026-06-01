@@ -27,7 +27,7 @@ public class RecipeRunner {
     private final RecipeHandlerGroup group;
     private final boolean simulated;
     private Map<RecipeCapability<?>, List<Object>> recipeContents;
-    private final Map<RecipeCapability<?>, List<Object>> searchRecipeContents;
+    private boolean hasSearchContents;
     private final Predicate<RecipeCapability<?>> outputVoid;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
@@ -37,7 +37,6 @@ public class RecipeRunner {
         this.group = group;
 
         this.recipeContents = new Reference2ObjectOpenHashMap<>();
-        this.searchRecipeContents = simulated ? recipeContents : new Reference2ObjectOpenHashMap<>();
         this.simulated = simulated;
         this.outputVoid = group.getOutputVoid();
     }
@@ -46,7 +45,7 @@ public class RecipeRunner {
     public ActionResult handle(Map<RecipeCapability<?>, List<Content>> entries) {
         fillContentMatchList(entries);
 
-        if (searchRecipeContents.isEmpty()) {
+        if (!hasSearchContents) {
             return ActionResult.PASS_NO_CONTENTS;
         }
 
@@ -70,13 +69,14 @@ public class RecipeRunner {
             if (entry.getValue().isEmpty()) continue;
             // populate recipe content capability map
             var contentList = this.recipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
-            var searchContentList = this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             for (Content cont : entry.getValue()) {
-                searchContentList.add(cont.content);
+                hasSearchContents = true;
 
-                // When simulating the recipe handling (used for recipe matching),
-                // searchRecipeContents == recipeContents, so all contents, chanced and unchanced, must match
-                if (simulated) continue;
+                // When simulating the recipe handling, all contents, chanced and unchanced, must match.
+                if (simulated) {
+                    contentList.add(cont.content);
+                    continue;
+                }
 
                 if (cont.chance >= cont.maxChance) {
                     contentList.add(cont.content);
@@ -143,16 +143,12 @@ public class RecipeRunner {
                     null, io);
         }
 
-        var copiedRecipeContents = group.handleRecipe(io, recipe, searchRecipeContents, true);
-        if (io == IO.OUT) {
-            if (hasAnyNonVoidingContents(copiedRecipeContents)) {
-                return getFailureResult(recipeContents);
-            }
-        } else if (io == IO.IN && !copiedRecipeContents.isEmpty()) {
-            return getFailureResult(recipeContents);
+        if (simulated) {
+            var copiedRecipeContents = group.handleRecipe(io, recipe, recipeContents, true);
+            var result = getFailureResult(copiedRecipeContents);
+            if (!result.isSuccess()) return result;
+            return ActionResult.SUCCESS;
         }
-
-        if (simulated) return ActionResult.SUCCESS;
 
         recipeContents = group.handleRecipe(io, recipe, recipeContents, false);
         var result = getFailureResult(recipeContents);
@@ -182,13 +178,4 @@ public class RecipeRunner {
         return ActionResult.SUCCESS;
     }
 
-    private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {
-        for (var entry : contents.entrySet()) {
-            if (outputVoid.test(entry.getKey())) continue;
-            if (!(entry.getValue() == null || entry.getValue().isEmpty())) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

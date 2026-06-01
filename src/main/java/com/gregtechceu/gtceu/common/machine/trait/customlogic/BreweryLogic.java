@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.core.mixins.PotionBrewingAccessor;
@@ -46,7 +46,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
             .memoize(fluid -> TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid).getPath()));
     private static final Function<PotionBrewing.Mix<Potion>, FluidStack> MIX_INPUTS = Util
             .memoize(mix -> PotionFluidHelper.getFluidFromPotion(mix.from.get(), PotionFluidHelper.MB_PER_RECIPE));
-    private static final Function<BrewingRecipe, FluidIngredient> BREW_INGREDIENTS = Util.memoize(
+    private static final Function<BrewingRecipe, OldFluidIngredient> BREW_INGREDIENTS = Util.memoize(
             brew -> PotionFluidHelper.getPotionFluidIngredientFrom(brew.getInput(), PotionFluidHelper.MB_PER_RECIPE));
 
     @Override
@@ -74,7 +74,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
 
         for (IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes()) {
             if (!(recipe instanceof BrewingRecipe brew)) continue;
-            FluidIngredient fromFluid = BREW_INGREDIENTS.apply(brew);
+            OldFluidIngredient fromFluid = BREW_INGREDIENTS.apply(brew);
             for (var itemStack : itemStacks) {
                 if (!brew.isIngredient(itemStack)) continue;
                 for (var fluidStack : fluidStacks) {
@@ -94,7 +94,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 Objects.equals(fromFluid.getTag(), fluidStack.getTag());
     }
 
-    private static @NotNull GTRecipe forgePotionRecipe(BrewingRecipe brew, FluidIngredient fromFluid) {
+    private static @NotNull GTRecipe forgePotionRecipe(BrewingRecipe brew, OldFluidIngredient fromFluid) {
         FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(brew.getOutput(),
                 PotionFluidHelper.MB_PER_RECIPE);
         String name;
@@ -174,7 +174,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 continue;
             }
 
-            FluidIngredient fromFluid = PotionFluidHelper.getPotionFluidIngredientFrom(impl.getInput(),
+            OldFluidIngredient fromFluid = PotionFluidHelper.getPotionFluidIngredientFrom(impl.getInput(),
                     PotionFluidHelper.MB_PER_RECIPE);
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(impl.getOutput(),
                     PotionFluidHelper.MB_PER_RECIPE);
