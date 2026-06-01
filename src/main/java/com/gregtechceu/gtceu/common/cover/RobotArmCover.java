@@ -172,7 +172,8 @@ public class RobotArmCover extends ConveyorCover {
     @Override
     public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         return super.buildUI(data, syncManager, settings)
-                .height(192 + 18 + 20);
+                .height(192 + 18 + 20)
+                .width(176 + 20);
     }
 
     @Override
