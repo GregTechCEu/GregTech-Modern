@@ -72,6 +72,14 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         return insulationLevel >= 0;
     }
 
+    public Insulation getUninsulated() {
+        if (isCable()) {
+            return values()[insulationLevel];
+        } else {
+            return this;
+        }
+    }
+
     @Override
     public boolean isPaintable() {
         return true;

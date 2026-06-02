@@ -294,16 +294,16 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     private void uninsulate() {
-        int temp = temperature;
+        int oldTemperature = temperature;
         setTemperature(getDefaultTemp());
-        int index = getPipeType().insulationLevel;
-        CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS
-                .get(Insulation.values()[index].tagPrefix, getPipeBlock().material)
-                .get();
+
+        TagPrefix uninsulatedPrefix = getPipeType().getUninsulated().tagPrefix;
+        CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS.get(uninsulatedPrefix, getPipeBlock().material).get();
         level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
+
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
-            newCable.setTemperature(temp);
+            newCable.setTemperature(oldTemperature);
             newCable.subscribeHeat();
             for (Direction facing : GTUtil.DIRECTIONS) {
                 if (isConnected(facing)) {
