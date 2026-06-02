@@ -220,6 +220,9 @@ public class BloomRenderer {
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                                            Matrix4f projectionMatrix,
                                            LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
+            // re-setup in case someone touched-a my spaghetti
+            GTRenderTypes.bloom().setupRenderState();
+
             Vec3 camPos = camera.getPosition();
             profilerFiller.push("safe_mode");
 
