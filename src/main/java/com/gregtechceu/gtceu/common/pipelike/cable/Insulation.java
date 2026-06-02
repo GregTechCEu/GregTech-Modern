@@ -34,6 +34,7 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     public static final ResourceLocation TYPE_ID = GTCEu.id("insulation");
 
     public final String name;
+    @Getter
     public final float thickness;
     public final int amperage;
     public final int lossMultiplier;
@@ -54,11 +55,6 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         this.lossMultiplier = lossMultiplier;
 
         this.isCable = insulationLevel >= 0;
-    }
-
-    @Override
-    public float getThickness() {
-        return thickness;
     }
 
     @Override
