@@ -164,10 +164,6 @@ public class GTOverheatParticle extends GTBloomParticle {
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
-        updateColor();
-    }
-
-    public void updateColor() {
         if (temperature <= blockEntity.getDefaultTemp() || temperature > meltTemp) {
             setExpired();
             return;
@@ -205,8 +201,6 @@ public class GTOverheatParticle extends GTBloomParticle {
             blockEntity.killParticle();
             return;
         }
-
-        updateColor();
 
         if (temperature > 400 && blockEntity.getLevel().random.nextFloat() < 0.04f) {
             spawnSmoke();
