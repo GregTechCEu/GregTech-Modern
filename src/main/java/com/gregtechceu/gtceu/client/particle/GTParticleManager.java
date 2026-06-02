@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.bloom.EffectRenderContext;
 import com.gregtechceu.gtceu.client.bloom.IRenderSetup;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
@@ -12,9 +13,9 @@ import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -116,24 +117,28 @@ public final class GTParticleManager {
         this.depthDisabledParticles.clear();
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void renderParticles(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         if (this.depthEnabledParticles.isEmpty() && this.depthDisabledParticles.isEmpty()) return;
 
-        EffectRenderContext instance = EffectRenderContext.getInstance()
-                .update(event.getCamera(), event.getFrustum(), event.getPartialTick());
+        Camera camera = event.getCamera();
 
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        PoseStack poseStack = event.getPoseStack();
+        poseStack.pushPose();
+        poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
+
+        EffectRenderContext instance = EffectRenderContext.getInstance()
+                .update(camera, event.getFrustum(), event.getPartialTick());
 
         if (!this.depthDisabledParticles.isEmpty()) {
             RenderSystem.depthMask(false);
-            renderParticlesInLayer(event.getPoseStack(), this.depthDisabledParticles, instance);
+            renderParticlesInLayer(poseStack, this.depthDisabledParticles, instance);
             RenderSystem.depthMask(true);
         }
-        renderParticlesInLayer(event.getPoseStack(), this.depthEnabledParticles, instance);
+        renderParticlesInLayer(poseStack, this.depthEnabledParticles, instance);
 
-        RenderSystem.disableBlend();
+        poseStack.popPose();
     }
 
     private static void renderParticlesInLayer(PoseStack poseStack,
