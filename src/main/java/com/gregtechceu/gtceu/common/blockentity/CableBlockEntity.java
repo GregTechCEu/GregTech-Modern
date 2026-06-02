@@ -41,8 +41,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +59,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private GTOverheatParticle particle;
     private static final int meltTemp = 3000;
 
@@ -174,7 +172,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     private void subscribeHeat() {
         if (this.heatSubs == null) {
-            this.heatSubs = subscribeServerTick(this::update);
+            this.heatSubs = subscribeServerTick(this::updateHeat);
         }
     }
 
@@ -266,7 +264,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         }
     }
 
-    private boolean update() {
+    private boolean updateHeat() {
         if (heatQueue > 0) {
             // if received heat from overvolting or overamping, add heat
             setTemperature(temperature + heatQueue);
@@ -283,18 +281,17 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             return false;
         }
 
-        if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1) {
+        if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1f) {
             // insulation melted
             uninsulate();
             return false;
         }
 
-        if (heatQueue == 0) {
+        if (heatQueue <= 0) {
             // otherwise cool down
-            setTemperature((int) (temperature - Math.pow(temperature - getDefaultTemp(), 0.35)));
-        } else {
-            heatQueue = 0;
+            setTemperature((int) (temperature - Math.pow(temperature - getDefaultTemp(), 0.35f)));
         }
+        heatQueue = 0;
         return true;
     }
 
@@ -329,6 +326,17 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @ClientFieldChangeListener(fieldName = "temperature")
     public void onTemperatureUpdated() {
+        if (temperature <= getDefaultTemp()) {
+            if (isParticleAlive()) {
+                particle.setExpired();
+            }
+        } else {
+            if (!isParticleAlive()) {
+                createParticle();
+            }
+            particle.setTemperature(temperature);
+        }
+
         if (this.temperature >= meltTemp) {
             float xPos = Direction.UP.getStepX() * 0.76f + getBlockPos().getX() + 0.25f;
             float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
