@@ -168,11 +168,12 @@ public class GTOverheatParticle extends GTBloomParticle {
             setExpired();
             return;
         }
-        if (temperature < 500) {
+        if (temperature < 300) {
             alpha = 0.0f;
+        } else if (temperature < 600) {
+            alpha = 0.16f * (temperature - 300f) / 300f;
         } else if (temperature < 1000) {
-            alpha = (temperature - 500f) / 500f;
-            alpha *= 0.8f;
+            alpha = 0.8f * (temperature - 500f) / 500f;
         } else {
             alpha = 0.8f;
         }
