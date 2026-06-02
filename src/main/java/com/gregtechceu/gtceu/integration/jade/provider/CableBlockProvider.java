@@ -43,10 +43,12 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
                 if (amperage != 0) {
                     iTooltip.append(Component.literal(DECIMAL_FORMAT_1F.format(amperage) + "A / "));
                 }
-                iTooltip.append(Component.translatable("gtceu.jade.amperage_use", DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
+                iTooltip.append(Component.translatable("gtceu.jade.amperage_use",
+                        DECIMAL_FORMAT_1F.format(tag.getDouble("maxAmperage"))));
 
-                if (temperature != CableBlockEntity.getDefaultTemp()){
-                    iTooltip.add(Component.translatable("gtceu.top.cable_overloaded", progressToFailure(CableBlockEntity.getDefaultTemp(),CableBlockEntity.getMeltTemp(),temperature)));
+                if (temperature != CableBlockEntity.getDefaultTemp()) {
+                    iTooltip.add(Component.translatable("gtceu.top.cable_overloaded", progressToFailure(
+                            CableBlockEntity.getDefaultTemp(), CableBlockEntity.getMeltTemp(), temperature)));
                 }
             }
         }
@@ -76,7 +78,7 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
         return GTCEu.id("cable_info");
     }
 
-    private int progressToFailure(int base, int melt, int current){
+    private int progressToFailure(int base, int melt, int current) {
         return (100 * (current - base)) / (melt - base);
     }
 }
