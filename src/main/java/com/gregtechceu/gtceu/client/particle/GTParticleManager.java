@@ -31,8 +31,8 @@ public final class GTParticleManager {
 
     public static final GTParticleManager INSTANCE = new GTParticleManager();
 
-    private final Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> depthEnabledParticles = new Object2ObjectLinkedOpenHashMap<>();
-    private final Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> depthDisabledParticles = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<@Nullable IRenderSetup, Queue<GTParticle>> depthEnabledParticles = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<@Nullable IRenderSetup, Queue<GTParticle>> depthDisabledParticles = new Object2ObjectLinkedOpenHashMap<>();
 
     private final List<GTParticle> newParticleQueue = new ArrayList<>();
 
@@ -54,11 +54,11 @@ public final class GTParticleManager {
             for (GTParticle particle : newParticleQueue) {
                 var queue = particle.shouldDisableDepth() ? this.depthDisabledParticles : this.depthEnabledParticles;
 
-                ArrayDeque<GTParticle> particles = queue.computeIfAbsent(particle.getRenderSetup(),
+                Queue<GTParticle> particles = queue.computeIfAbsent(particle.getRenderSetup(),
                         setup -> new ArrayDeque<>());
 
                 if (particles.size() > 6000) {
-                    particles.removeFirst().setExpired();
+                    particles.remove().setExpired();
                 }
                 particles.add(particle);
             }
@@ -67,10 +67,10 @@ public final class GTParticleManager {
         }
     }
 
-    private void updateQueue(Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
-        Iterator<ArrayDeque<GTParticle>> it = renderQueue.values().iterator();
+    private void updateQueue(Map<@Nullable IRenderSetup, Queue<GTParticle>> renderQueue) {
+        Iterator<Queue<GTParticle>> it = renderQueue.values().iterator();
         while (it.hasNext()) {
-            ArrayDeque<GTParticle> particlesForSetup = it.next();
+            Queue<GTParticle> particlesForSetup = it.next();
 
             Iterator<GTParticle> particles = particlesForSetup.iterator();
             while (particles.hasNext()) {
@@ -102,12 +102,12 @@ public final class GTParticleManager {
             }
             this.newParticleQueue.clear();
         }
-        for (ArrayDeque<GTParticle> particles : this.depthEnabledParticles.values()) {
+        for (Queue<GTParticle> particles : this.depthEnabledParticles.values()) {
             for (GTParticle particle : particles) {
                 particle.setExpired();
             }
         }
-        for (ArrayDeque<GTParticle> particles : this.depthDisabledParticles.values()) {
+        for (Queue<GTParticle> particles : this.depthDisabledParticles.values()) {
             for (GTParticle particle : particles) {
                 particle.setExpired();
             }
@@ -137,10 +137,10 @@ public final class GTParticleManager {
     }
 
     private static void renderParticlesInLayer(PoseStack poseStack,
-                                               Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue,
+                                               Map<@Nullable IRenderSetup, Queue<GTParticle>> renderQueue,
                                                EffectRenderContext context) {
         for (var entry : renderQueue.entrySet()) {
-            ArrayDeque<GTParticle> particles = entry.getValue();
+            Queue<GTParticle> particles = entry.getValue();
             if (particles.isEmpty()) continue;
 
             IRenderSetup handler = entry.getKey();
@@ -211,11 +211,7 @@ public final class GTParticleManager {
         }
     }
 
-    private static int count(Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> renderQueue) {
-        int total = 0;
-        for (Deque<GTParticle> queue : renderQueue.values()) {
-            total += queue.size();
-        }
-        return total;
+    private static int count(Map<@Nullable IRenderSetup, Queue<GTParticle>> renderQueue) {
+        return renderQueue.values().stream().mapToInt(Queue::size).sum();
     }
 }
