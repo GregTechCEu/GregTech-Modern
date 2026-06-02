@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -36,7 +37,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -243,7 +243,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @OnlyIn(Dist.CLIENT)
     public void createParticle() {
-        particle = new GTOverheatParticle(this, meltTemp, getPipeType().insulationLevel >= 0);
+        particle = new GTOverheatParticle(this, meltTemp, getPipeType().isCable());
         GTParticleManager.INSTANCE.addEffect(particle);
     }
 
@@ -279,7 +279,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             return false;
         }
 
-        if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1f) {
+        if (getPipeType().isCable() && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1f) {
             // insulation melted
             uninsulate();
             return false;
@@ -370,7 +370,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

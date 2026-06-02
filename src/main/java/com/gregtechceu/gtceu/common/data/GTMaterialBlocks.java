@@ -188,7 +188,7 @@ public class GTMaterialBlocks {
 
     private static boolean allowCableBlock(Material material, Insulation insulation) {
         return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
-                !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
+                !(insulation.isCable() && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
 
     private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
