@@ -38,7 +38,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -61,7 +60,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class MachineModel extends BaseBakedModel implements ICoverableRenderer,
-                                IBlockEntityRendererBakedModel<BlockEntity> {
+                                IBlockEntityRendererBakedModel<MetaMachine> {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -429,10 +428,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void render(BlockEntity blockEntity, float partialTick,
+    public void render(MetaMachine machine, float partialTick,
                        PoseStack poseStack, MultiBufferSource buffer,
                        int packedLight, int packedOverlay) {
-        if (!(blockEntity instanceof MetaMachine machine)) return;
         if (machine.getDefinition() != getDefinition()) return;
         ICoverableRenderer.super.renderDynamicCovers(machine, partialTick, poseStack, buffer,
                 packedLight,
@@ -460,10 +458,9 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public AABB getRenderBoundingBox(BlockEntity blockEntity) {
-        AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(blockEntity);
+    public AABB getRenderBoundingBox(MetaMachine machine) {
+        AABB bounds = IBlockEntityRendererBakedModel.super.getRenderBoundingBox(machine);
 
-        if (!(blockEntity instanceof MetaMachine machine)) return bounds;
         if (machine.getDefinition() != getDefinition()) return bounds;
         if (dynamicRenders.isEmpty()) return bounds;
 
@@ -475,8 +472,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public boolean shouldRenderOffScreen(BlockEntity blockEntity) {
-        if (!(blockEntity instanceof MetaMachine machine)) return false;
+    public boolean shouldRenderOffScreen(MetaMachine machine) {
         if (machine.getDefinition() != getDefinition()) return false;
         if (dynamicRenders.isEmpty()) return false;
 
@@ -488,8 +484,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public boolean shouldRender(BlockEntity blockEntity, Vec3 cameraPos) {
-        if (!(blockEntity instanceof MetaMachine machine)) return false;
+    public boolean shouldRender(MetaMachine machine, Vec3 cameraPos) {
         if (machine.getDefinition() != getDefinition()) return false;
         if (machine.getCoverContainer().hasDynamicCovers()) return true;
         if (dynamicRenders.isEmpty()) return false;
@@ -512,7 +507,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     @Override
-    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+    public BlockEntityType<? extends MetaMachine> getBlockEntityType() {
         return getDefinition().getBlockEntityType();
     }
 }

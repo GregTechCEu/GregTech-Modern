@@ -37,7 +37,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -114,7 +113,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private Consumer<BlockBuilder<? extends Block, ?>> blockBuilder;
     @Nullable
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
-    private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
+    private NonNullConsumer<BlockEntityType<MetaMachine>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
     private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
     @Getter // getter for KJS
@@ -226,7 +225,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+    public TYPE onBlockEntityRegister(NonNullConsumer<BlockEntityType<MetaMachine>> onBlockEntityRegister) {
         this.onBlockEntityRegister = onBlockEntityRegister;
         return getThis();
     }
@@ -666,7 +665,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         var item = itemBuilder.register();
 
         var blockEntityBuilder = registrate
-                .blockEntity(
+                .<MetaMachine>blockEntity(
                         (type, pos, state) -> blockEntityFactory.apply(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(block);
