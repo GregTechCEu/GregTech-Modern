@@ -25,8 +25,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public class GTOverheatParticle extends GTBloomParticle {
 
-    public static final int TEMPERATURE_CUTOFF = 400;
-
     /**
      * <a href="http://www.vendian.org/mncharity/dir3/blackbody/">Source</a>
      */
@@ -143,7 +141,7 @@ public class GTOverheatParticle extends GTBloomParticle {
     private final CableBlockEntity blockEntity;
 
     protected final int meltTemp;
-    protected int temperature = 293;
+    protected int temperature;
     protected final boolean insulated;
 
     protected VoxelShape pipeShape;
@@ -156,6 +154,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         super(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
         this.blockEntity = blockEntity;
         this.meltTemp = meltTemp;
+        this.setTemperature(blockEntity.getTemperature());
         this.insulated = insulated;
 
         this.pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
@@ -169,7 +168,7 @@ public class GTOverheatParticle extends GTBloomParticle {
     }
 
     public void updateColor() {
-        if (temperature <= TEMPERATURE_CUTOFF || temperature > meltTemp) {
+        if (temperature <= blockEntity.getDefaultTemp() || temperature > meltTemp) {
             setExpired();
             return;
         }
