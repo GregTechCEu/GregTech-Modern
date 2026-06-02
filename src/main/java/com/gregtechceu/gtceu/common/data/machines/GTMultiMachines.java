@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BasicAisleStrategy;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -137,7 +136,7 @@ public class GTMultiMachines {
                     .where('#', Predicates.air())
                     .where('&', Predicates.air()
                             .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.getBlockState()) ?
-                                    null : PatternError.PLACEHOLDER,
+                                    null : Predicates.PLACEHOLDER,
                                     null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
                     .build())

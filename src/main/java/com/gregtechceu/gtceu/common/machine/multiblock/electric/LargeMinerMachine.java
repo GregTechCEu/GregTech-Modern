@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -99,7 +99,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     public PatternState checkStructurePattern(String name) {
         var patternState = super.checkStructurePattern(name);
         if (this.getUpwardsFacing() != Direction.UP && this.getUpwardsFacing() != Direction.DOWN) {
-            patternState.setError(PatternError.PLACEHOLDER);
+            patternState.setError(Predicates.PLACEHOLDER);
         }
         return patternState;
     }

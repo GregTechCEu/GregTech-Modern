@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.world.level.block.Blocks;
@@ -26,7 +26,7 @@ public class PredicateStates extends BasePredicate {
         if (states.length == 0) this.states = new BlockState[] { Blocks.BARRIER.defaultBlockState() };
         else this.states = Arrays.stream(states).toArray(BlockState[]::new);
         errorPredicate = state -> ArrayUtils.contains(this.states, state.getBlockState()) ?
-                null : PatternError.PLACEHOLDER;
+                null : Predicates.PLACEHOLDER;
         candidates = Arrays.stream(this.states).map(BlockInfo::fromBlockState).toList();
 
         if (debugName == null) {

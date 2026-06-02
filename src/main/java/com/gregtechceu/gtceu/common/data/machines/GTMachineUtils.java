@@ -26,7 +26,6 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -925,7 +924,7 @@ public class GTMachineUtils {
                             .isAir()) {
                 return null;
             }
-            return PatternError.PLACEHOLDER;
+            return Predicates.PLACEHOLDER;
         }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
                 .map(BlockInfo::fromBlock)
                 .toList()))

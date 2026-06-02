@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.Holder;
@@ -27,7 +27,7 @@ public class PredicateFluidTag extends BasePredicate {
         this.tag = tag;
 
         errorPredicate = state -> state.getBlockState().getFluidState().is(tag) ? null :
-                PatternError.PLACEHOLDER;
+                Predicates.PLACEHOLDER;
         candidates = BuiltInRegistries.FLUID.getTag(tag)
                 .stream()
                 .flatMap(HolderSet.Named::stream)

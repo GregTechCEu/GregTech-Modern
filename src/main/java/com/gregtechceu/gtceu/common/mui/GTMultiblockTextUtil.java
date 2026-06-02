@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
@@ -27,9 +28,11 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.FluidDrawable;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -74,13 +77,24 @@ public class GTMultiblockTextUtil {
                             .crossAxisAlignment(Alignment.CrossAxis.START)
                             .widthRel(1);
 
-                    unformed
-                            .child(Text.lang("gtceu.multiblock.invalid_structure")
-                                    .withStyle(ChatFormatting.RED)
-                                    .asWidget()
-                                    .setEnabledIf(w -> !isFormed.getBoolValue()));
-                    for (var comp : listSyncHandler.getValue()) {
-                        comp.getPatternErrorUIModifier().apply(unformed);
+                    unformed.child(Text.lang("gtceu.multiblock.invalid_structure")
+                            .withStyle(ChatFormatting.RED)
+                            .asWidget()
+                            .setEnabledIf(w -> !listSyncHandler.getValue().isEmpty()));
+                    if (listSyncHandler.getValue().isEmpty()) {
+                        return unformed;
+                    }
+                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).getPos();
+                    unformed.child(new ButtonWidget<>()
+                            .onMousePressed((c, b) -> {
+                                ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
+                                // todo in world block highlighting here
+                                return true;
+                            })
+                            .tooltip(r -> r.add("Highlight the missing predicate in world")));
+
+                    for (var error : listSyncHandler.getValue()) {
+                        error.getPatternErrorUIModifier().apply(unformed);
                     }
                     return unformed;
                 });

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -28,7 +28,7 @@ public class PredicateFluids extends BasePredicate {
         if (fluids.length == 0) this.fluids = new Fluid[] { Fluids.WATER };
         else this.fluids = Arrays.stream(fluids).toArray(Fluid[]::new);
         errorPredicate = state -> ArrayUtils.contains(this.fluids, state.getBlockState().getFluidState().getType()) ?
-                null : PatternError.PLACEHOLDER;
+                null : Predicates.PLACEHOLDER;
         candidates = Arrays.stream(this.fluids)
                 .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
                 .toList();

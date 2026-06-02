@@ -4,14 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
-import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
@@ -55,14 +53,6 @@ public class PartAbilityError extends PatternError {
                                 return new ItemDrawable(block.asItem()).asWidget()
                                         .tooltip(r -> r.add(block.asItem().getDescription()));
                             })));
-            row.child(new ButtonWidget<>()
-                    .onMousePressed((c, b) -> {
-                        parent.getPanel().closeIfOpen();
-                        parent.getPanel().getScreen()
-                                .getContainer().getPlayer()
-                                .sendSystemMessage(Component.literal(String.valueOf(pos.getX())));
-                        return true;
-                    }));
             parent.child(row);
         };
     }

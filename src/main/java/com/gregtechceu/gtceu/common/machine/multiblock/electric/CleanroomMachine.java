@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -524,7 +523,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static PatternPredicate doorPredicate() {
         return Predicates.custom(
                 blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock ? null :
-                        PatternError.PLACEHOLDER,
+                        Predicates.PLACEHOLDER,
                 List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
                         Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
@@ -539,7 +538,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             BlockEntity blockEntity = blockWorldState.getBlockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
-                    return PatternError.PLACEHOLDER;
+                    return Predicates.PLACEHOLDER;
                 }
                 machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }

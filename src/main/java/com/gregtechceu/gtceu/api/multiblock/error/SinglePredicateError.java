@@ -9,11 +9,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 
 import java.util.Collections;
+import java.util.List;
 
 public class SinglePredicateError extends PatternError {
 
@@ -24,69 +27,71 @@ public class SinglePredicateError extends PatternError {
             Codec.INT.fieldOf("pred_max_count").forGetter(e -> e.predMaxCount),
             Codec.INT.fieldOf("pred_min_layer_count").forGetter(e -> e.predMinLayerCount),
             Codec.INT.fieldOf("pred_max_layer_count").forGetter(e -> e.predMaxLayerCount),
-            BlockInfo.CODEC.fieldOf("candidate").forGetter(e -> e.candidate))
+            Codec.STRING.fieldOf("name").forGetter(e -> e.debugName),
+            Codec.list(BlockInfo.CODEC).fieldOf("candidates").forGetter(e -> e.candidates))
             .apply(instance, SinglePredicateError::new));
     public static ResourceLocation ID = GTCEu.id("single_predicate_error");
 
     public final ErrorType type;
     public final int actualCount;
     // Fields from BasePredicate that we need
-    public final BlockInfo candidate;
+    public final List<BlockInfo> candidates;
     public final int predMinCount;
     public final int predMaxCount;
     public final int predMinLayerCount;
     public final int predMaxLayerCount;
+    public final String debugName;
 
     public SinglePredicateError(BasePredicate failingPredicate, ErrorType type, int actualCount) {
         this(type, actualCount, failingPredicate.minCount, failingPredicate.maxCount, failingPredicate.minLayerCount,
-                failingPredicate.maxLayerCount,
-                failingPredicate.getCandidates().stream().findFirst().orElseThrow(
-                        () -> new IllegalStateException(
-                                "SinglePredicateError was created with empty failingPredicate.getCandidates()")));
+                failingPredicate.maxLayerCount, failingPredicate.getPredicateName(),
+                failingPredicate.getCandidates());
     }
 
     public SinglePredicateError(ErrorType type, int actualCount, int minCount, int maxCount, int minLayerCount,
-                                int maxLayerCount, BlockInfo candidate) {
-        super(null, Collections.singletonList(Collections.singletonList(candidate)));
+                                int maxLayerCount, String name, List<BlockInfo> candidates) {
+        super(null, Collections.singletonList(candidates));
         this.type = type;
         this.actualCount = actualCount;
-        this.candidate = candidate;
+        this.candidates = candidates;
         this.predMinCount = minCount;
         this.predMaxCount = maxCount;
         this.predMinLayerCount = minLayerCount;
         this.predMaxLayerCount = maxLayerCount;
+        this.debugName = name;
     }
 
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
-            Component predName = candidate.getItemStackForm().getHoverName();
+            parent.child(Text.of(Component.translatable(debugName)).asWidget());
             switch (type) {
                 case MAX_COUNT -> {
                     parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",
-                            predMaxCount,
-                            actualCount)).asWidget());
-                    parent.child(Text.of(predName).asWidget());
+                            predMaxCount, actualCount)).asWidget());
                 }
                 case MIN_COUNT -> {
                     parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_count",
-                            predMinCount,
-                            actualCount)).asWidget());
-                    parent.child(Text.of(predName).asWidget());
+                            predMinCount, actualCount)).asWidget());
                 }
                 case MAX_LAYER_COUNT -> {
                     parent.child(
                             Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_layer_count",
                                     predMaxLayerCount, actualCount)).asWidget());
-                    parent.child(Text.of(predName).asWidget());
                 }
                 case MIN_LAYER_COUNT -> {
                     parent.child(
                             Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.min_layer_count",
                                     predMinLayerCount, actualCount)).asWidget());
-                    parent.child(Text.of(predName).asWidget());
                 }
             }
+            parent.child(new ContextMenuButton<>("predicate")
+                    .menuList(l -> l
+                            .maxSize(40)
+                            .children(candidates, candidate -> {
+                                return new ItemDrawable(candidate.getItemStackForm()).asWidget()
+                                        .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
+                            })));
         };
     }
 

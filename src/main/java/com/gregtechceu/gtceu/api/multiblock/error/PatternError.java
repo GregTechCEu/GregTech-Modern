@@ -22,11 +22,6 @@ public abstract class PatternError {
 
     public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
             .dispatch(PatternError::codec, Function.identity());
-    /**
-     * Return this for your pattern errors if you want them to be a default error with the pos of the BlockWorldState
-     * and candidates of the simple predicate's error.
-     */
-    public static final PlaceholderError PLACEHOLDER = new PlaceholderError(BlockPos.ZERO, Collections.emptyList());
 
     @Getter
     protected @Nullable BlockPos pos;

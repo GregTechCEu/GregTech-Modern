@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.Holder;
@@ -25,7 +25,7 @@ public class PredicateBlockTag extends BasePredicate {
         Objects.requireNonNull(tag, "PredicateBlockTag tag cannot be null");
         this.tag = tag;
 
-        errorPredicate = state -> state.getBlockState().is(tag) ? null : PatternError.PLACEHOLDER;
+        errorPredicate = state -> state.getBlockState().is(tag) ? null : Predicates.PLACEHOLDER;
         candidates = BuiltInRegistries.BLOCK.getTag(tag)
                 .stream()
                 .flatMap(HolderSet.Named::stream)
