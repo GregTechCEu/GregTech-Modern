@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
@@ -31,6 +32,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -323,23 +325,25 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
         level.getLightEngine().checkBlock(worldPosition);
-        if (!level.isClientSide && temperature >= meltTemp) {
-            var facing = Direction.UP;
-            float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
-            float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;
-            float zPos = facing.getStepZ() * 0.76F + worldPosition.getZ() + 0.25F;
+    }
 
-            float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
-            float temp = GTValues.RNG.nextFloat() * 2 * (float) Math.PI;
-            float xSpd = (float) Math.sin(temp) * 0.1F;
-            float zSpd = (float) Math.cos(temp) * 0.1F;
+    @ClientFieldChangeListener(fieldName = "temperature")
+    public void onTemperatureUpdated() {
+        if (this.temperature >= meltTemp) {
+            float xPos = Direction.UP.getStepX() * 0.76f + getBlockPos().getX() + 0.25f;
+            float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
+            float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
 
-            ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
-                    xPos + GTValues.RNG.nextFloat() * 0.5F,
-                    yPos + GTValues.RNG.nextFloat() * 0.5F,
-                    zPos + GTValues.RNG.nextFloat() * 0.5F,
-                    0,
-                    xSpd, ySpd, zSpd, 1);
+            float horizontalDirection = level.random.nextFloat() * 2 * Mth.PI;
+            float xSpd = Mth.sin(horizontalDirection) * 0.1f;
+            float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.random.nextFloat();
+            float zSpd = Mth.cos(horizontalDirection) * 0.1f;
+
+            level.addParticle(ParticleTypes.SMOKE,
+                    xPos + level.random.nextFloat() * 0.5f,
+                    yPos + level.random.nextFloat() * 0.5f,
+                    zPos + level.random.nextFloat() * 0.5f,
+                    xSpd, ySpd, zSpd);
         }
     }
 
