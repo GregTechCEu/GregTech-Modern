@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.cover.ender;
 
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.utils.MutableSingletonList;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -29,6 +27,7 @@ import net.minecraft.server.level.ServerPlayer;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.factory.SidedPosGuiData;
@@ -39,6 +38,7 @@ import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
+import brachy.modularui.utils.MutableSingletonList;
 import brachy.modularui.utils.serialization.network.IByteBufAdapter;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.EmptyWidget;
