@@ -243,9 +243,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @OnlyIn(Dist.CLIENT)
     public void createParticle() {
-        particle = new GTOverheatParticle(this, meltTemp,
-                getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
-                getPipeType().insulationLevel >= 0);
+        particle = new GTOverheatParticle(this, meltTemp, getPipeType().insulationLevel >= 0);
         GTParticleManager.INSTANCE.addEffect(particle);
     }
 

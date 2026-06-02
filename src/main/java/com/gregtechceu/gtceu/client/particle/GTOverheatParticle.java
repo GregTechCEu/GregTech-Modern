@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,8 +19,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 /**
  * @author brachy84
@@ -146,61 +144,37 @@ public class GTOverheatParticle extends GTBloomParticle {
 
     protected final int meltTemp;
     protected int temperature = 293;
-    protected VoxelShape pipeBoxes;
-    protected boolean insulated;
+    protected final boolean insulated;
 
-    protected float alpha = 0;
+    protected VoxelShape pipeShape;
+    protected AABB pipeBounds;
+
+    protected float alpha = 0.0f;
     protected int color = blackBodyColors[0];
 
-    public GTOverheatParticle(CableBlockEntity blockEntity, int meltTemp, VoxelShape pipeBoxes, boolean insulated) {
+    public GTOverheatParticle(CableBlockEntity blockEntity, int meltTemp, boolean insulated) {
         super(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
         this.blockEntity = blockEntity;
         this.meltTemp = meltTemp;
-        this.pipeBoxes = pipeBoxes;
-        updatePipeBoxes(pipeBoxes);
         this.insulated = insulated;
+
+        this.pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
+                CollisionContext.empty());
+        this.pipeBounds = pipeShape.bounds().move(posX, posY, posZ);
     }
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
-        if (temperature <= 293 || temperature > meltTemp) {
-            setExpired();
-            return;
-        }
-        if (temperature < 500) {
-            alpha = 0f;
-        } else if (temperature < 1000) {
-            alpha = (temperature - 500f) / 500f;
-            alpha *= 0.8f;
-        } else {
-            alpha = 0.8f;
-        }
-        color = getBlackBodyColor(temperature);
+        updateColor();
     }
 
-    public void updatePipeBoxes(VoxelShape pipeBoxes) {
-        List<AABB> boxes = pipeBoxes.toAabbs();
-        this.pipeBoxes = boxes.stream()
-                .map(aabb -> aabb.inflate(0.001))
-                .map(Shapes::create)
-                .reduce(Shapes.empty(), Shapes::or)
-                .optimize();
-    }
-
-    @Override
-    public void onUpdate() {
-        if (blockEntity.isRemoved() || !blockEntity.isParticleAlive()) {
-            setExpired();
-            blockEntity.killParticle();
-            return;
-        }
-
+    public void updateColor() {
         if (temperature <= TEMPERATURE_CUTOFF || temperature > meltTemp) {
             setExpired();
             return;
         }
         if (temperature < 500) {
-            alpha = 0f;
+            alpha = 0.0f;
         } else if (temperature < 1000) {
             alpha = (temperature - 500f) / 500f;
             alpha *= 0.8f;
@@ -208,6 +182,22 @@ public class GTOverheatParticle extends GTBloomParticle {
             alpha = 0.8f;
         }
         color = getBlackBodyColor(temperature);
+    }
+
+    @Override
+    public void onUpdate() {
+        // if this isn't the block entity's particle, remove both
+        if (blockEntity.isRemoved() || !blockEntity.isParticleAlive()) {
+            setExpired();
+            blockEntity.killParticle();
+            return;
+        }
+        // update pipeShape every tick so it doesn't desync if the pipe is disconnected
+        pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
+                CollisionContext.empty());
+        pipeBounds = pipeShape.bounds().move(posX, posY, posZ);
+
+        updateColor();
 
         if (GTValues.RNG.nextFloat() < 0.04) {
             spawnSmoke();
@@ -227,8 +217,8 @@ public class GTOverheatParticle extends GTBloomParticle {
     @Override
     public String toString() {
         return "GTOverheatParticle{" +
-                "tileEntity=" + blockEntity +
-                ", pipeBoxes=" + pipeBoxes +
+                "blockEntity=" + blockEntity +
+                ", pipeShape=" + pipeShape +
                 ", insulated=" + insulated +
                 ", alpha=" + alpha +
                 ", color=" + color +
@@ -243,12 +233,7 @@ public class GTOverheatParticle extends GTBloomParticle {
     @Override
     public boolean shouldRender(EffectRenderContext context) {
         if (this.insulated) return false;
-        for (AABB cuboid : pipeBoxes.toAabbs()) {
-            if (!context.frustum().isVisible(cuboid.move(posX, posY, posZ))) {
-                return false;
-            }
-        }
-        return true;
+        return context.frustum().isVisible(pipeBounds);
     }
 
     @Override
@@ -256,6 +241,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         return SETUP;
     }
 
+    @Override
     public void renderBloomEffect(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
         float red = ((color >> 16) & 0xFF) / 255f;
         float green = ((color >> 8) & 0xFF) / 255f;
@@ -263,9 +249,11 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         poseStack.pushPose();
         poseStack.translate(posX, posY, posZ);
-        for (AABB cuboid : pipeBoxes.toAabbs()) {
-            RenderBufferHelper.renderColorCube(poseStack, buffer, cuboid, red, green, blue, alpha, true);
-        }
+        pipeShape.forAllBoxes((x1, y1, z1, x2, y2, z2) -> {
+            RenderBufferHelper.renderColorCube(poseStack, buffer,
+                    (float) x1, (float) y1, (float) z1, (float) x2, (float) y2, (float) z2,
+                    red, green, blue, alpha, true);
+        });
         poseStack.popPose();
     }
 
