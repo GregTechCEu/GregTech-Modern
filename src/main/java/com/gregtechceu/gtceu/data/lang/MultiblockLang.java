@@ -22,5 +22,6 @@ public class MultiblockLang {
         provider.add("gtceu.predicate_error.charcoal.walls", "Incorrect wall block at (%d, %d, %d).");
         provider.add("gtceu.predicate_error.charcoal.logs", "Must be completely filled with logs.");
         provider.add("gtceu.predicate_error.steam.missing_steam_hatch", "Missing steam hatch");
+        provider.add("gtceu.pattern_predicate.blocks", "Error at X: %d, Y: %d, Z: %d");
     }
 }

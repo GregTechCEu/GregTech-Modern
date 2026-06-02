@@ -42,7 +42,7 @@ public class PartAbilityError extends PatternError {
             Collection<Block> blocks = PartAbility.VALUES.get(partAbilityName).getAllBlocks();
             Flow row = Flow.row()
                     .coverChildren();
-            row.child(Text.str("Missing one of: ").asWidget());
+            row.child(Text.str("Missing one " + partAbilityName + ": ").asWidget());
             row.child(new ContextMenuButton<>(partAbilityName)
                     .menuList(l -> l
                             .maxSize(40)

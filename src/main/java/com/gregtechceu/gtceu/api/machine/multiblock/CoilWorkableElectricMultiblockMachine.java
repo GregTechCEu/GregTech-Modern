@@ -64,6 +64,8 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
         }
     }
 
+    // todo jurre custom coil error reporting
+
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
