@@ -353,6 +353,13 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         }
     }
 
+    @ClientFieldChangeListener(fieldName = "connections")
+    private void onConnectionsUpdated() {
+        if (isParticleAlive()) {
+            particle.updateConnections();
+        }
+    }
+
     public static void onBlockEntityRegister(BlockEntityType<CableBlockEntity> cableBlockEntityBlockEntityType) {}
 
     //////////////////////////////////////
