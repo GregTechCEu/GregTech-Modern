@@ -109,8 +109,11 @@ public class Predicates {
         }
         String debugName = sb.toString();
 
-        return blocks(debugName, Arrays.stream(abilities).map(PartAbility::getAllBlocks).flatMap(Collection::stream)
-                .toArray(Block[]::new));
+        PatternPredicate predicate = new PatternPredicate();
+        for (var ability : abilities) {
+            predicate.predicateList.add(new PredicatePartAbility(debugName, ability));
+        }
+        return predicate;
     }
 
     public static PatternPredicate ability(PartAbility ability, int... tiers) {
@@ -120,8 +123,7 @@ public class Predicates {
         }
         String debugName = ability.getName() + sb;
 
-        return blocks(debugName,
-                (tiers.length == 0 ? ability.getAllBlocks() : ability.getBlocks(tiers)).toArray(Block[]::new));
+        return new PatternPredicate(new PredicatePartAbility(debugName, ability, tiers));
     }
 
     public static PatternPredicate autoAbilities(GTRecipeType... recipeType) {

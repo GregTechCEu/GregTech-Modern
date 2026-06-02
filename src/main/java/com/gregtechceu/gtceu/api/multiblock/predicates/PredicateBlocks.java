@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -24,10 +25,14 @@ public class PredicateBlocks extends BasePredicate {
     }
 
     public PredicateBlocks(@Nullable String debugName, Block... blocks) {
-        if (blocks.length == 0) {
+        this(null, List.of(blocks), null);
+    }
+
+    public PredicateBlocks(@Nullable String debugName, List<Block> blocks, @Nullable PatternError error) {
+        if (blocks.isEmpty()) {
             this.blocks = List.of(Blocks.BARRIER);
         } else {
-            this.blocks = List.of(blocks);
+            this.blocks = blocks;
         }
         Validate.noNullElements(this.blocks, "Blocks array has null element at index %s");
 
@@ -35,7 +40,7 @@ public class PredicateBlocks extends BasePredicate {
             BlockPos pos = state.getPos();
 
             return this.blocks.contains(state.getBlockState().getBlock()) ? null :
-                    new BlockMatchingError(pos, this.blocks);
+                    (error == null ? new BlockMatchingError(pos, this.blocks) : error);
         };
 
         candidates = this.blocks.stream()

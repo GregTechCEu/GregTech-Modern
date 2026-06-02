@@ -36,7 +36,6 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -59,24 +58,13 @@ public class GTMultiblockTextUtil {
                             for (String structureName : weMachine.getStructurePatterns().keySet()) {
                                 var errors = weMachine.getPatternState(structureName)
                                         .getErrors();
-                                list.addAll(errors);
+                                if (errors != null && !errors.isEmpty()) {
+                                    list.addAll(errors);
+                                }
                             }
                             return list;
                         })
                         .adapter(GTByteBufAdapters.PATTERN_ERRORS)
-                        .build());
-
-        GenericListSyncHandler<Component> structureErrors = syncManager.getOrCreateSyncHandler("structureErrors",
-                GenericListSyncHandler.class,
-                () -> GenericListSyncHandler.<Component>builder()
-                        .getter(() -> {
-                            List<Component> comps = new ArrayList<>();
-
-                            return comps;
-                        })
-                        .setter((errors) -> {})
-                        .adapter(GTByteBufAdapters.COMPONENT)
-                        .copy(Component::copy)
                         .build());
 
         DynamicLinkedSyncHandler<GenericListSyncHandler<PatternError>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(

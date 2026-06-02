@@ -195,7 +195,7 @@ public class PatternPredicate {
             if (error == null) return List.of();
             lastErrors.add(error);
         }
-        if(lastErrors.isEmpty() || (lastErrors.get(0) == PatternError.PLACEHOLDER)){
+        if (lastErrors.isEmpty() || (lastErrors.get(0) == PatternError.PLACEHOLDER)) {
             return List.of(new SimplePatternError(currBlock.getBlockPos(), getCandidates()));
         }
         return lastErrors;

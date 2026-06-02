@@ -14,6 +14,8 @@ import java.util.function.Supplier;
 
 public class PartAbility {
 
+    public static final Map<String, PartAbility> VALUES = new HashMap<>();
+
     public static final PartAbility EXPORT_ITEMS = new PartAbility("export_items");
     public static final PartAbility IMPORT_ITEMS = new PartAbility("import_items");
     public static final PartAbility EXPORT_FLUIDS = new PartAbility("export_fluids");
@@ -66,6 +68,7 @@ public class PartAbility {
 
     public PartAbility(String name) {
         this.name = name;
+        VALUES.put(name, this);
     }
 
     public void register(int tier, Block block) {

@@ -12,6 +12,7 @@ import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
 
