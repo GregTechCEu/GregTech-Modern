@@ -84,6 +84,7 @@ public class GTMultiblockTextUtil {
                     }
                     return unformed;
                 });
+
         return new DynamicSyncedWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
