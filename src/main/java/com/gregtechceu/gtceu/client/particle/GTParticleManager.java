@@ -43,6 +43,7 @@ public class GTParticleManager {
 
     public void addEffect(GTParticle particles) {
         newParticleQueue.add(particles);
+        updateEffects();
     }
 
     public void updateEffects() {
@@ -183,9 +184,7 @@ public class GTParticleManager {
             INSTANCE.clearAllEffects(oldLevel != null);
         }
 
-        if (oldLevel != null) {
-            INSTANCE.updateEffects();
-        }
+        INSTANCE.updateEffects();
     }
 
     @SubscribeEvent

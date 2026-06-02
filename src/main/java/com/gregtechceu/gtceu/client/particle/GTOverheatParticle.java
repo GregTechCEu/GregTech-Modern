@@ -242,7 +242,7 @@ public class GTOverheatParticle extends GTBloomParticle {
 
     @Override
     public boolean shouldRender(EffectRenderContext context) {
-        if (this.insulated) return false;
+//        if (this.insulated) return false;
         for (AABB cuboid : pipeBoxes.toAabbs()) {
             if (!context.frustum().isVisible(cuboid.move(posX, posY, posZ))) {
                 return false;

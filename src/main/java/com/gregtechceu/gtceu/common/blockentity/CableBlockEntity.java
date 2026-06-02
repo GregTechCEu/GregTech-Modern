@@ -246,6 +246,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         particle = new GTOverheatParticle(this, meltTemp,
                 getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
                 getPipeType().insulationLevel >= 0);
+        particle.setTemperature(temperature);
         GTParticleManager.INSTANCE.addEffect(particle);
     }
 
@@ -272,17 +273,26 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
         if (temperature >= meltTemp) {
             // cable melted
+            killParticle();
             level.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
             return false;
         }
 
         if (temperature <= getDefaultTemp()) {
             unsubscribeHeat();
+            killParticle();
             return false;
+        }
+        else if (!isParticleAlive()){
+            createParticle();
+        }
+        else { //temperature elevated and particle created
+            particle.setTemperature(temperature);
         }
 
         if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1) {
             // insulation melted
+            killParticle();
             uninsulate();
             return false;
         }
