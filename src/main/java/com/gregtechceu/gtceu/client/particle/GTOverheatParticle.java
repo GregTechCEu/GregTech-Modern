@@ -140,15 +140,15 @@ public class GTOverheatParticle extends GTBloomParticle {
 
     private final CableBlockEntity blockEntity;
 
-    protected final int meltTemp;
-    protected int temperature;
-    protected final boolean insulated;
+    private final int meltTemp;
+    private int temperature;
+    private final boolean insulated;
 
-    protected VoxelShape pipeShape;
-    protected AABB pipeBounds;
+    private VoxelShape pipeShape;
+    private AABB pipeBounds;
 
-    protected float alpha = 0.0f;
-    protected int color = blackBodyColors[0];
+    private float alpha = 0.0f;
+    private int color = blackBodyColors[0];
 
     public GTOverheatParticle(CableBlockEntity blockEntity, int meltTemp, boolean insulated) {
         super(blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
