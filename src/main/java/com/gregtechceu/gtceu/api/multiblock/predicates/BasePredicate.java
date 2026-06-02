@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 public class BasePredicate {
 
     @Getter
-    public @Nullable List<BlockInfo> candidates;
+    public List<BlockInfo> candidates;
     public Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate;
     public @Nullable List<Component> tooltips;
     public int priority = 0;
@@ -74,7 +74,7 @@ public class BasePredicate {
                          @Nullable List<BlockInfo> candidates) {
         this.debugName = debugName;
         this.errorPredicate = errorPredicate;
-        this.candidates = candidates;
+        this.candidates = candidates != null ? candidates : Collections.emptyList();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -176,18 +176,16 @@ public class BasePredicate {
 
     public List<ItemStack> getCandidateStacks() {
         if (GTCEu.isClientSide()) {
-            return candidates == null ? Collections.emptyList() :
-                    this.candidates.stream()
-                            .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                            .map(blockInfo -> blockInfo.getItemStackForm(
-                                    Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
-                            .collect(Collectors.toList());
+            return this.candidates.stream()
+                    .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                    .map(blockInfo -> blockInfo.getItemStackForm(
+                            Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
+                    .collect(Collectors.toList());
         }
-        return candidates == null ? Collections.emptyList() :
-                this.candidates.stream()
-                        .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                        .map(BlockInfo::getItemStackForm)
-                        .collect(Collectors.toList());
+        return this.candidates.stream()
+                .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                .map(BlockInfo::getItemStackForm)
+                .collect(Collectors.toList());
     }
 
     public String getPredicateName() {

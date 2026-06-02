@@ -81,7 +81,7 @@ public class GTMultiblockTextUtil {
                                     .asWidget()
                                     .setEnabledIf(w -> !isFormed.getBoolValue()));
                     for (var comp : listSyncHandler.getValue()) {
-                        comp.applyErrorInformation().apply(unformed);
+                        comp.getPatternErrorUIModifier().apply(unformed);
                     }
                     return unformed;
                 });

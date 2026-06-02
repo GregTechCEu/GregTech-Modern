@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -98,9 +97,9 @@ public class PatternPredicate {
         return this;
     }
 
-    public List<List<ItemStack>> getCandidates() {
+    public List<List<BlockInfo>> getCandidates() {
         return predicateList.stream()
-                .map(BasePredicate::getCandidateStacks)
+                .map(BasePredicate::getCandidates)
                 .collect(Collectors.toList());
     }
 
@@ -194,9 +193,6 @@ public class PatternPredicate {
             PatternError error = p.testLimited(currBlock, globalCache, layerCache);
             if (error == null) return List.of();
             lastErrors.add(error);
-        }
-        if (lastErrors.isEmpty() || (lastErrors.get(0) == PatternError.PLACEHOLDER)) {
-            return List.of(new SimplePatternError(currBlock.getBlockPos(), getCandidates()));
         }
         return lastErrors;
     }

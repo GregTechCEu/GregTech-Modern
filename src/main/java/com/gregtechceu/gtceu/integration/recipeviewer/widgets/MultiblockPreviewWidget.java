@@ -56,7 +56,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                                 innerPred.getCandidateStacks().get(0)));
                                             }));
                             menuRow.child(menu);
-                            text.add(predicate.getCandidates().get(0).get(0).getHoverName());
+                            text.add(predicate.getCandidates().get(0).get(0).getItemStackForm().getHoverName());
                         }
                     }
                     return menuRow;

@@ -36,7 +36,7 @@ public class BlockMatchingError extends PatternError {
     }
 
     @Override
-    public PatternErrorUI applyErrorInformation() {
+    public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             List<Component> comps = new ArrayList<>();
             for (Block block : blocks) {

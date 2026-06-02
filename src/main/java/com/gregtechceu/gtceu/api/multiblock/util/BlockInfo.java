@@ -11,10 +11,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.mojang.serialization.Codec;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockInfo {
+
+    public static final Codec<BlockInfo> CODEC = BlockState.CODEC.xmap(BlockInfo::fromBlockState,
+            BlockInfo::getBlockState);
 
     public static final FakeBlockTintGetter FAKE_LEVEL = new FakeBlockTintGetter();
 

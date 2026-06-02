@@ -2,36 +2,36 @@ package com.gregtechceu.gtceu.api.multiblock.error;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Collections;
 
 public class SinglePredicateError extends PatternError {
 
     public static final Codec<SinglePredicateError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            SinglePredicateError.ErrorType.CODEC.fieldOf("type").forGetter(e -> e.type),
+            SinglePredicateError.ErrorType.CODEC.fieldOf("error_type").forGetter(e -> e.type),
             Codec.INT.fieldOf("actual_count").forGetter(e -> e.actualCount),
             Codec.INT.fieldOf("pred_min_count").forGetter(e -> e.predMinCount),
             Codec.INT.fieldOf("pred_max_count").forGetter(e -> e.predMaxCount),
             Codec.INT.fieldOf("pred_min_layer_count").forGetter(e -> e.predMinLayerCount),
             Codec.INT.fieldOf("pred_max_layer_count").forGetter(e -> e.predMaxLayerCount),
-            ItemStack.CODEC.fieldOf("stack").forGetter(e -> e.stack)).apply(instance, SinglePredicateError::new));
+            BlockInfo.CODEC.fieldOf("candidate").forGetter(e -> e.candidate))
+            .apply(instance, SinglePredicateError::new));
     public static ResourceLocation ID = GTCEu.id("single_predicate_error");
 
     public final ErrorType type;
     public final int actualCount;
     // Fields from BasePredicate that we need
-    public final ItemStack stack;
+    public final BlockInfo candidate;
     public final int predMinCount;
     public final int predMaxCount;
     public final int predMinLayerCount;
@@ -39,15 +39,18 @@ public class SinglePredicateError extends PatternError {
 
     public SinglePredicateError(BasePredicate failingPredicate, ErrorType type, int actualCount) {
         this(type, actualCount, failingPredicate.minCount, failingPredicate.maxCount, failingPredicate.minLayerCount,
-                failingPredicate.maxLayerCount, failingPredicate.getCandidateStacks().get(0));
+                failingPredicate.maxLayerCount,
+                failingPredicate.getCandidates().stream().findFirst().orElseThrow(
+                        () -> new IllegalStateException(
+                                "SinglePredicateError was created with empty failingPredicate.getCandidates()")));
     }
 
     public SinglePredicateError(ErrorType type, int actualCount, int minCount, int maxCount, int minLayerCount,
-                                int maxLayerCount, ItemStack stack) {
-        super(null, Collections.singletonList(Collections.singletonList(stack)));
+                                int maxLayerCount, BlockInfo candidate) {
+        super(null, Collections.singletonList(Collections.singletonList(candidate)));
         this.type = type;
         this.actualCount = actualCount;
-        this.stack = stack;
+        this.candidate = candidate;
         this.predMinCount = minCount;
         this.predMaxCount = maxCount;
         this.predMinLayerCount = minLayerCount;
@@ -55,9 +58,9 @@ public class SinglePredicateError extends PatternError {
     }
 
     @Override
-    public PatternErrorUI applyErrorInformation() {
+    public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
-            Component predName = stack.getHoverName();
+            Component predName = candidate.getItemStackForm().getHoverName();
             switch (type) {
                 case MAX_COUNT -> {
                     parent.child(Text.of(Component.translatable("gtceu.multiblock.pattern.error.limited.max_count",

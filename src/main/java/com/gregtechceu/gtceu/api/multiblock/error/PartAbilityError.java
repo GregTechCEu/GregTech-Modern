@@ -39,7 +39,7 @@ public class PartAbilityError extends PatternError {
     }
 
     @Override
-    public @NotNull PatternErrorUI applyErrorInformation() {
+    public @NotNull PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             Collection<Block> blocks = PartAbility.VALUES.get(partAbilityName).getAllBlocks();
             Flow row = Flow.row()

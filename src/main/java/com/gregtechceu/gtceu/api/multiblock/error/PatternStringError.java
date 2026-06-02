@@ -29,7 +29,7 @@ public class PatternStringError extends PatternError {
     }
 
     @Override
-    public PatternErrorUI applyErrorInformation() {
+    public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             parent.child(Text.of(component).asWidget());
         };
