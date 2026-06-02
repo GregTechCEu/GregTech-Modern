@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -296,6 +297,11 @@ public class MultiblockControllerMachine extends MetaMachine {
                     getSyncDataHolder().markClientSyncFieldDirty("isFormed");
                 }
                 setFlipped(patternState.isFlipped(), patternState);
+
+                for (var trait : getAllTraits()) {
+                    if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                        multiblockMachineTrait.onStructureFormed(substructureName);
+                }
             }
             return;
         }
@@ -358,6 +364,11 @@ public class MultiblockControllerMachine extends MetaMachine {
             getSyncDataHolder().markClientSyncFieldDirty("isFormed");
         }
         updatePartPositions();
+
+        for (var trait : getAllTraits()) {
+            if (trait instanceof MultiblockMachineTrait multiblockMachineTrait)
+                multiblockMachineTrait.onStructureInvalid(name);
+        }
     }
 
     protected void invalidateStructureCaches() {

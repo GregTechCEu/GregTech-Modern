@@ -49,7 +49,6 @@ public class GTMultiblockTextUtil {
                 () -> new BooleanSyncValue(
                         () -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
                                 null));
-
         GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
                 GenericListSyncHandler.class,
                 () -> GenericListSyncHandler.<PatternError>builder()
