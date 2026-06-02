@@ -158,7 +158,11 @@ public class BlockPattern implements IBlockPattern {
 
         patternState.globalCount.clear();
         patternState.layerCount.clear();
-        patternState.cache.clear();
+        // only try to clear the cache for structure checking mapping when checking the structure for unflipped
+        // maybe switch to a multiblock state value instead?
+        if (!isFlipped) {
+            patternState.cache.clear();
+        }
 
         patternState.cbi.setLevel(level);
 
