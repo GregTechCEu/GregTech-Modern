@@ -5,18 +5,14 @@ import com.gregtechceu.gtceu.client.bloom.EffectRenderContext;
 import com.gregtechceu.gtceu.client.bloom.IRenderSetup;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.world.entity.Entity;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.CustomizeGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -31,8 +27,7 @@ import java.util.*;
 /**
  * Singleton class responsible for managing, updating and rendering {@link GTParticle} instances.
  */
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
-public class GTParticleManager {
+public final class GTParticleManager {
 
     public static final GTParticleManager INSTANCE = new GTParticleManager();
 
@@ -40,6 +35,8 @@ public class GTParticleManager {
     private final Map<@Nullable IRenderSetup, ArrayDeque<GTParticle>> depthDisabledParticles = new Object2ObjectLinkedOpenHashMap<>();
 
     private final List<GTParticle> newParticleQueue = new ArrayList<>();
+
+    private GTParticleManager() {}
 
     public void addEffect(GTParticle particles) {
         newParticleQueue.add(particles);
@@ -119,21 +116,22 @@ public class GTParticleManager {
         this.depthDisabledParticles.clear();
     }
 
-    public void renderParticles(PoseStack poseStack, Camera camera, Frustum frustum, float partialTicks) {
+    @SubscribeEvent
+    public void renderParticles(RenderLevelStageEvent event) {
         if (this.depthEnabledParticles.isEmpty() && this.depthDisabledParticles.isEmpty()) return;
 
         EffectRenderContext instance = EffectRenderContext.getInstance()
-                .update(camera, frustum, partialTicks);
+                .update(event.getCamera(), event.getFrustum(), event.getPartialTick());
 
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
         if (!this.depthDisabledParticles.isEmpty()) {
             RenderSystem.depthMask(false);
-            renderParticlesInLayer(poseStack, this.depthDisabledParticles, instance);
+            renderParticlesInLayer(event.getPoseStack(), this.depthDisabledParticles, instance);
             RenderSystem.depthMask(true);
         }
-        renderParticlesInLayer(poseStack, this.depthEnabledParticles, instance);
+        renderParticlesInLayer(event.getPoseStack(), this.depthEnabledParticles, instance);
 
         RenderSystem.disableBlend();
     }
@@ -174,13 +172,13 @@ public class GTParticleManager {
     }
 
     @SubscribeEvent
-    public static void onClientLevelLoad(LevelEvent.Load event) {
+    public void onClientLevelLoad(LevelEvent.Load event) {
         if (!(event.getLevel() instanceof ClientLevel newLevel)) {
             return;
         }
         ClientLevel oldLevel = Minecraft.getInstance().level;
         if (oldLevel != newLevel) {
-            INSTANCE.clearAllEffects(oldLevel != null);
+            this.clearAllEffects(oldLevel != null);
         }
 
         if (oldLevel != null) {
@@ -189,34 +187,21 @@ public class GTParticleManager {
     }
 
     @SubscribeEvent
-    public static void onClientLevelUnload(ClientPlayerNetworkEvent.LoggingOut event) {
+    public void onClientLogout(ClientPlayerNetworkEvent.LoggingOut event) {
         if (event.getPlayer() != null) {
-            INSTANCE.clearAllEffects(true);
+            this.clearAllEffects(true);
         }
     }
 
     @SubscribeEvent
-    public static void renderWorld(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) {
-            Entity entity = Minecraft.getInstance().getCameraEntity();
-            if (entity == null) {
-                entity = Minecraft.getInstance().player;
-            }
-            if (entity != null) {
-                INSTANCE.renderParticles(event.getPoseStack(), event.getCamera(), event.getFrustum(),
-                        event.getPartialTick());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void debugOverlay(CustomizeGuiOverlayEvent.DebugText event) {
-        if (event.getLeft().size() >= 5) {
-            String particleTxt = event.getLeft().get(4);
-            particleTxt += "." + ChatFormatting.GOLD +
-                    " PARTICLE-BACK: " + count(INSTANCE.depthEnabledParticles) +
-                    "PARTICLE-FRONT: " + count(INSTANCE.depthDisabledParticles);
-            event.getLeft().set(4, particleTxt);
+    public void debugOverlay(CustomizeGuiOverlayEvent.DebugText event) {
+        List<String> gameInfo = event.getLeft();
+        if (gameInfo.size() >= 5) {
+            String countStatsLine = gameInfo.get(4);
+            countStatsLine += ". " + ChatFormatting.GOLD +
+                    "P-BACK: " + count(this.depthEnabledParticles) +
+                    " P-FRONT: " + count(this.depthDisabledParticles);
+            gameInfo.set(4, countStatsLine);
         }
     }
 
