@@ -35,7 +35,6 @@ public abstract class RecipeManagerMixin {
             at = @At(value = "TAIL"))
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager,
                                            ProfilerFiller profiler, CallbackInfo ci) {
-        PowerlessJetpack.FUELS.clear();
         for (RecipeType<?> recipeType : ForgeRegistries.RECIPE_TYPES) {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;

@@ -15,7 +15,7 @@ public final class ChancedFluidIngredient extends FluidIngredient implements ICh
     @Getter
     private final int multiplier;
 
-    private ChancedFluidIngredient(FluidIngredient ingredient, @Range(from = 0, to = 10000) int chance,
+    ChancedFluidIngredient(FluidIngredient ingredient, @Range(from = 0, to = 10000) int chance,
                            int multiplier) {
         super(ingredient.amount * multiplier);
         this.inner = ingredient;
@@ -33,13 +33,13 @@ public final class ChancedFluidIngredient extends FluidIngredient implements ICh
     }
 
     @Override
-    public FluidStack[] getStacks() {
-        return inner.getStacks();
+    public FluidStack[] getFluids() {
+        return inner.getFluids();
     }
 
     @Override
     public FluidStack toStack() {
-        FluidStack[] stacks = getStacks();
+        FluidStack[] stacks = getFluids();
         if (stacks.length == 0) return FluidStack.EMPTY;
         FluidStack stack = stacks[0].copy();
         stack.setAmount(inner.getAmount() * IChancedIngredient.rollSuccesses(multiplier, chance));
@@ -69,6 +69,11 @@ public final class ChancedFluidIngredient extends FluidIngredient implements ICh
     @Override
     public ChancedFluidIngredient copy() {
         return new ChancedFluidIngredient(inner.copy(), chance, multiplier);
+    }
+
+    @Override
+    public FluidIngredient copyWithAmount(int amount) {
+        return inner.copyWithAmount(amount);
     }
 
     @Override

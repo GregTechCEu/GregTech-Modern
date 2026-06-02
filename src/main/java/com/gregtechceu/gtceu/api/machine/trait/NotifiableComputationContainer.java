@@ -179,10 +179,9 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
-                                           boolean simulate) {
+    public boolean handleRecipe(IO io, GTRecipe recipe, List<Integer> left, boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
-        if (provider == null) return left;
+        if (provider == null) return false;
 
         int sum = left.stream().mapToInt(Integer::intValue).sum();
         if (io == IO.IN) {
@@ -216,7 +215,15 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             }
             sum = sum - canInput;
         }
-        return sum <= 0 ? null : Collections.singletonList(sum);
+
+        left.clear();
+        if(sum > 0) {
+            left.add(sum);
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     @Override

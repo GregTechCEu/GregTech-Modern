@@ -49,7 +49,7 @@ public final class IntCircuitIngredient extends ItemIngredient {
 
     @Override
     public ItemStack toStack() {
-        return IntCircuitBehaviour.stack(configuration);
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -71,6 +71,11 @@ public final class IntCircuitIngredient extends ItemIngredient {
     @Override
     public IntCircuitIngredient copy() {
         return of(configuration);
+    }
+
+    @Override
+    public IntCircuitIngredient copyWithCount(int count) {
+        return copy();
     }
 
     @Override

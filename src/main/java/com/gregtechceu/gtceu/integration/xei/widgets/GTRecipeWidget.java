@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -114,18 +115,11 @@ public class GTRecipeWidget extends WidgetGroup {
 
         /// add text based on i/o's
         MutableInt yOff = new MutableInt(yOffset);
-        for (var capability : recipe.inputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, true, yOff);
-        }
-        for (var capability : recipe.tickInputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, true, yOff);
-        }
-        for (var capability : recipe.outputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), false, false, yOff);
-        }
-        for (var capability : recipe.tickOutputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, xOffset, recipe, capability.getValue(), true, false, yOff);
-        }
+
+        addXEIInfo(recipe.inputs, false, true, yOff);
+        addXEIInfo(recipe.outputs, false, false, yOff);
+        addXEIInfo(recipe.tickInputs, true, true, yOff);
+        addXEIInfo(recipe.tickOutputs, true, false, yOff);
 
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
@@ -134,12 +128,24 @@ public class GTRecipeWidget extends WidgetGroup {
                         .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
                                 recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
-            } else addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
+            } else addWidget(new LabelWidget(3 - xOffset, yOff.addAndGet(LINE_HEIGHT), condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
-            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
+            addWidget(new LabelWidget(3 - xOffset, yOff.addAndGet(LINE_HEIGHT), dataInfo.apply(recipe.data)));
         }
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
+    }
+
+    private void addXEIInfo(ContentListMap contents, boolean perTick, boolean isInput, MutableInt yOff) {
+        contents.forEachEntry(new ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(
+                    RecipeCapability<T> capability,
+                    List<T> contents
+            ) {
+                capability.addXEIInfo(GTRecipeWidget.this, xOffset, recipe, contents, perTick, isInput, yOff);
+            }
+        });
     }
 
     private void initializeRecipeTextWidget() {
@@ -203,7 +209,7 @@ public class GTRecipeWidget extends WidgetGroup {
             if (recipe.data.getBoolean("duration_is_total_cwu") &&
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.max(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
-                        .map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
+                        .mapToInt(Integer::intValue).sum(), 1);
                 texts.add(Component.translatable("gtceu.recipe.max_eu",
                         FormattingUtil.formatNumbers(euTotal / minimumCWUt)));
             } else {

@@ -23,6 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import java.util.function.Supplier;
 
@@ -86,6 +87,8 @@ public abstract class ItemIngredient {
 
     public abstract ItemIngredient copy();
 
+    public abstract ItemIngredient copyWithCount(int count);
+
     public abstract ItemIngredient copyWithMultiplier(int multiplier);
 
     public abstract ItemIngredient copyWithChance(int chance);
@@ -100,7 +103,7 @@ public abstract class ItemIngredient {
 
     public static ItemIngredient of(ItemStack stack, int count) {
         if (stack.hasTag()) {
-            return of(Ingredient.of(stack), count);
+            return of(StrictNBTIngredient.of(stack), count);
         }
         return new SimpleItemIngredient(stack.getItem(), count);
     }

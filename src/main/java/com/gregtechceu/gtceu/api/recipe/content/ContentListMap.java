@@ -1,24 +1,19 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.codec.DispatchedMapCodec;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import net.minecraft.network.FriendlyByteBuf;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -40,7 +35,7 @@ public class ContentListMap{
         return (List<T>) contentsMap.get(capability);
     }
 
-    public void put(RecipeCapability<?> capability, List<?> contents) {
+    public <T> void put(RecipeCapability<T> capability, List<T> contents) {
         contentsMap.put(capability, contents);
     }
 
@@ -103,9 +98,14 @@ public class ContentListMap{
         return contentsMap.size();
     }
 
-    public Iterable<Map.Entry<RecipeCapability<?>, List<?>>> entries() {
-        return contentsMap.entrySet();
+    public ObjectIterator<Reference2ObjectMap.Entry<RecipeCapability<?>, List<?>>> fastIterator() {
+        if(contentsMap instanceof Reference2ObjectArrayMap<RecipeCapability<?>, List<?>> r) {
+            return r.reference2ObjectEntrySet().fastIterator();
+        }
+        throw new RuntimeException();
     }
+
+
 
     public Map<RecipeCapability<?>, List<?>> asMap() {
         return contentsMap;
@@ -154,13 +154,71 @@ public class ContentListMap{
 
     public ContentListMap copyWithMultiplier(int multiplier) {
         Map<RecipeCapability<?>, List<?>> newMap = new Reference2ObjectArrayMap<>();
-        contentsMap.forEach((cap, list) -> {
-            var newList = new ArrayList<>();
-            for(var content: list) {
-                newList.add(cap.copyWithMultiplier(content, multiplier));
+        forEachEntry(new EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> cap, List<T> list) {
+                var newList = new ArrayList<>();
+                for(var content: list) {
+                    newList.add(cap.copyWithMultiplier(content, multiplier));
+                }
+                newMap.put(cap, newList);
             }
-            newMap.put(cap, newList);
         });
         return new ContentListMap(newMap);
+    }
+
+    public void forEachEntry(EntryConsumer consumer) {
+        contentsMap.forEach((capability, contents) ->
+                acceptCaptured(consumer, capability, contents)
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> void acceptCaptured(
+            EntryConsumer consumer,
+            RecipeCapability<?> capability,
+            List<?> contents
+    ) {
+        consumer.accept(
+                (RecipeCapability<T>) capability,
+                (List<T>) contents
+        );
+    }
+
+    public interface EntryConsumer {
+        <T> void accept(RecipeCapability<T> capability, List<T> contents);
+    }
+
+    public interface TypedEntry {
+        <T> void accept(EntryConsumer consumer);
+    }
+
+    public Iterator<TypedEntry> iterator() {
+        Iterator<Map.Entry<RecipeCapability<?>, List<?>>> it =
+                contentsMap.entrySet().iterator();
+
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public TypedEntry next() {
+                Map.Entry<RecipeCapability<?>, List<?>> entry = it.next();
+
+                return new TypedEntry() {
+                    @Override
+                    public void accept(EntryConsumer consumer) {
+                        acceptCaptured(consumer, entry.getKey(), entry.getValue());
+                    }
+                };
+            }
+
+            @Override
+            public void remove() {
+                it.remove();
+            }
+        };
     }
 }

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
@@ -102,11 +101,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             }
 
             for (var handler : handlers) {
-                // noinspection unchecked
-                copied = (List<FluidIngredient>) handler.handleRecipe(IO.OUT, recipe, copied, true);
-                if (copied == null) break;
+                if (handler.handleRecipe(IO.OUT, recipe, copied, true)) break;
             }
-            int[] bin = ParallelLogic.adjustMultiplier(copied == null, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(copied.isEmpty(), minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];
@@ -253,8 +250,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                     tank.setXEIChance((float) content.getChance() / IChancedIngredient.MAX_CHANCE);
                 }
                 tank.setOnAddedTooltips((w, tooltips) -> {
-                    if (!isXEI && content.getStacks().length > 0) {
-                        FluidStack stack = content.getStacks()[0];
+                    if (!isXEI && content.getFluids().length > 0) {
+                        FluidStack stack = content.getFluids()[0];
                         TooltipsHandler.appendFluidTooltips(stack, tooltips::add, TooltipFlag.NORMAL);
                     }
                     if (content instanceof RangedFluidIngredient ranged) {

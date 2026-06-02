@@ -175,12 +175,6 @@ public final class RecipeDB {
      * @return if successful
      */
     boolean add(@NotNull GTRecipe recipe, @NotNull List<@Unmodifiable List<AbstractMapIngredient>> ingredients) {
-        // Add combustion fuels to the Powerless Jetpack
-        if (recipe.getType() == GTRecipeTypes.COMBUSTION_GENERATOR_FUELS) {
-            Content content = recipe.getInputContents(FluidRecipeCapability.CAP).get(0);
-            OldFluidIngredient fluid = FluidRecipeCapability.CAP.of(content.content);
-            PowerlessJetpack.FUELS.putIfAbsent(fluid, recipe.duration);
-        }
         if (addRecursive(recipe, ingredients, rootBranch, 0)) {
             recipe.recipeCategory.addRecipe(recipe);
             return true;

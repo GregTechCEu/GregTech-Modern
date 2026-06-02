@@ -33,7 +33,7 @@ public final class RangedItemIngredient extends ItemIngredient{
 
     @Override
     public ItemStack toStack() {
-        return getItems()[0].copyWithCount(countProvider.sample(GTValues.RNG));
+        return inner.toStack().copyWithCount(countProvider.sample(GTValues.RNG));
     }
 
     @Override
@@ -49,6 +49,11 @@ public final class RangedItemIngredient extends ItemIngredient{
     @Override
     public RangedItemIngredient copy() {
         return new RangedItemIngredient(inner.copy(), minCount, count);
+    }
+
+    @Override
+    public ItemIngredient copyWithCount(int count) {
+        return inner.copyWithCount(count);
     }
 
     @Override

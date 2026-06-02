@@ -284,7 +284,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
                 .stream()
                 .map(Content::getContent)
                 .map(FluidRecipeCapability.CAP::of)
-                .filter(ingredient -> !ingredient.isEmpty() && ingredient.getStacks().length > 0)
+                .filter(ingredient -> !ingredient.isEmpty() && ingredient.getFluids().length > 0)
                 .map(OldFluidIngredient::getStacks)
                 .map(stacks -> stacks[0])
                 .toList();

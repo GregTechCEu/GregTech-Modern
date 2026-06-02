@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,10 +25,10 @@ public class RecipeHandlerGroup {
     public static final RecipeHandlerGroup EMPTY = new RecipeHandlerGroup();
 
     @Getter
-    private final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> inputHandlerMap = new Reference2ObjectOpenHashMap<>();
+    private final HandlerListMap inputHandlerMap = new HandlerListMap();
 
     @Getter
-    private final Map<RecipeCapability<?>, List<IRecipeHandler<?>>> outputHandlerMap = new Reference2ObjectOpenHashMap<>();
+    private final HandlerListMap outputHandlerMap = new HandlerListMap();
 
     @Getter
     @Setter
@@ -52,12 +54,10 @@ public class RecipeHandlerGroup {
     public void addHandlers(Collection<IRecipeHandler<?>> handlers) {
         for(var handler: handlers) {
             if(handler.getHandlerIO().support(IO.IN)) {
-                inputHandlerMap.computeIfAbsent(handler.getCapability(), c -> new ArrayList<>())
-                        .add(handler);
+                inputHandlerMap.add(handler);
             }
             if(handler.getHandlerIO().support(IO.OUT)) {
-                outputHandlerMap.computeIfAbsent(handler.getCapability(), c -> new ArrayList<>())
-                        .add(handler);
+                outputHandlerMap.add(handler);
             }
         }
     }
@@ -66,28 +66,32 @@ public class RecipeHandlerGroup {
         addHandlers(handlerList.getAllHandlers());
     }
 
-    public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
-                                                               Map<RecipeCapability<?>, List<Object>> contents,
-                                                               boolean simulate) {
-        var copy = new Reference2ObjectOpenHashMap<>(contents);
-        for (var it = copy.reference2ObjectEntrySet().fastIterator(); it.hasNext();) {
+    public void handleRecipe(IO io, GTRecipe recipe, ContentListMap contents, boolean simulate) {
+        for (var it = contents.iterator(); it.hasNext();) {
             var entry = it.next();
-            var handlerList = getCapability(io, entry.getKey());
-            if(handlerList == null) continue;
-            for (var handler : handlerList) {
-                var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
-                if (left == null) {
-                    it.remove();
-                    break;
-                } else {
-                    entry.setValue(new ArrayList<>(left));
+            MutableBoolean b = new MutableBoolean(false);
+            entry.accept(new ContentListMap.EntryConsumer() {
+                @Override
+                public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
+                    var handlerList = getCapability(io , capability);
+                    if (handlerList != null) {
+                        for (var handler : handlerList) {
+                            boolean success = handler.handleRecipe(io, recipe, contents, simulate);
+                            if(success) {
+                                b.setValue(true);
+                                break;
+                            }
+                        }
+                    }
                 }
+            });
+            if(b.booleanValue())  {
+                it.remove();
             }
         }
-        return copy;
     }
 
-    private @Nullable List<IRecipeHandler<?>> getCapability(IO io, RecipeCapability<?> cap) {
+    private <T> @Nullable List<IRecipeHandler<T>> getCapability(IO io, RecipeCapability<T> cap) {
         if(io == IO.IN) {
             return inputHandlerMap.get(cap);
         }

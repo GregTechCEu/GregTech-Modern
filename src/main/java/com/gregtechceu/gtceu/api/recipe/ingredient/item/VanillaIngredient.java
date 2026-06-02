@@ -49,6 +49,11 @@ public class VanillaIngredient extends ItemIngredient{
     }
 
     @Override
+    public VanillaIngredient copyWithCount(int count) {
+        return new VanillaIngredient(inner, count);
+    }
+
+    @Override
     public VanillaIngredient copyWithMultiplier(int multiplier) {
         return new VanillaIngredient(inner, count * multiplier);
     }

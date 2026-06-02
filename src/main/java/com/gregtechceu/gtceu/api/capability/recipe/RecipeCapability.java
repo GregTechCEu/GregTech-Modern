@@ -72,8 +72,8 @@ public abstract class RecipeCapability<T> {
     /**
      * deep copy and modify the size attribute for those Content that have the size attribute.
      */
-    public T copyWithMultiplier(Object content, int multiplier) {
-        return copyInner((T)content, multiplier);
+    public T copyWithMultiplier(T content, int multiplier) {
+        return copyInner(content, multiplier);
     }
 
     @SuppressWarnings("unchecked")

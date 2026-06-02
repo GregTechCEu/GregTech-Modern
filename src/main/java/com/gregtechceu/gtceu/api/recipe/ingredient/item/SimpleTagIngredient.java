@@ -63,6 +63,11 @@ public final class SimpleTagIngredient extends ItemIngredient{
     }
 
     @Override
+    public SimpleTagIngredient copyWithCount(int count) {
+        return new SimpleTagIngredient(tag, count);
+    }
+
+    @Override
     public SimpleTagIngredient copyWithMultiplier(int multiplier) {
         return new SimpleTagIngredient(tag, count * multiplier);
     }

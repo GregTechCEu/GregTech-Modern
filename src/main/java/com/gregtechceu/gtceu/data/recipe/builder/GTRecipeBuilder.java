@@ -120,6 +120,17 @@ public class GTRecipeBuilder {
         tickOutput = new ContentListMap();
     }
 
+    public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType,
+                           ContentListMap input, ContentListMap output, ContentListMap tickInput, ContentListMap tickOutput) {
+        this.id = id;
+        this.recipeType = recipeType;
+        this.recipeCategory = recipeType.getCategory();
+        this.input = input;
+        this.tickInput = tickInput;
+        this.output = output;
+        this.tickOutput = tickOutput;
+    }
+
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
         this.id = toCopy.id;
         this.recipeType = recipeType;
@@ -137,6 +148,8 @@ public class GTRecipeBuilder {
         return new GTRecipeBuilder(id, recipeType);
     }
 
+
+
     public static GTRecipeBuilder ofRaw() {
         return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES);
     }
@@ -146,11 +159,9 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder copy(ResourceLocation id) {
-        GTRecipeBuilder copy = new GTRecipeBuilder(id, this.recipeType);
-        this.input.forEach((k, v) -> copy.input.put(k, new ArrayList<>(v)));
-        this.output.forEach((k, v) -> copy.output.put(k, new ArrayList<>(v)));
-        this.tickInput.forEach((k, v) -> copy.tickInput.put(k, new ArrayList<>(v)));
-        this.tickOutput.forEach((k, v) -> copy.tickOutput.put(k, new ArrayList<>(v)));
+        GTRecipeBuilder copy = new GTRecipeBuilder(id, this.recipeType,
+                input.copy(), output.copy(), tickInput.copy(), tickOutput.copy());
+
         copy.conditions.addAll(this.conditions);
         copy.data = this.data.copy();
         copy.duration = this.duration;

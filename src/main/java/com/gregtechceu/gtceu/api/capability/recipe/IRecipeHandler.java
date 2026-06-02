@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -36,7 +35,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      *         <br>
      *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
-    List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, boolean simulate);
+    boolean handleRecipe(IO io, GTRecipe recipe, List<K> left, boolean simulate);
 
     @NotNull
     List<Object> getContents();
@@ -67,11 +66,4 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return getCapability().copyInner((K) content);
     }
 
-    default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, boolean simulate) {
-        List<K> contents = new ObjectArrayList<>(left.size());
-        for (Object leftObj : left) {
-            contents.add(copyContent(leftObj));
-        }
-        return handleRecipeInner(io, recipe, contents, simulate);
-    }
 }

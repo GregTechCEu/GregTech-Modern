@@ -117,7 +117,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                         }
                         fluidTag = chanced.toNBT();
                     } else {
-                        FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                        FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
                         if (stacks.length == 0) continue;
                         if (stacks[0].isEmpty()) continue;
                         var stack = stacks[0];

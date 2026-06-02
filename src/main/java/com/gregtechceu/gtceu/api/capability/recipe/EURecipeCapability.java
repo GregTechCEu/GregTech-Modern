@@ -2,20 +2,16 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.content.SerializerEnergyStack;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import it.unimi.dsi.fastutil.longs.LongList;
 import net.minecraft.network.FriendlyByteBuf;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class EURecipeCapability extends RecipeCapability<EnergyStack> {
 
@@ -71,13 +67,12 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             }
 
             while (minMultiplier != maxMultiplier) {
-                List<Long> eu = LongList.of(totalEU * multiplier);
+                // TODO: fix this
+                List<EnergyStack> eu = new ArrayList<>(List.of(new EnergyStack(totalEU)));
                 for (var handler : handlers) {
-                    // noinspection unchecked
-                    eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                    if (eu == null) break;
+                    if (handler.handleRecipe(IO.OUT, recipe, eu, true)) break;
                 }
-                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+                int[] bin = ParallelLogic.adjustMultiplier(eu.isEmpty(), minMultiplier, multiplier, maxMultiplier);
                 minMultiplier = bin[0];
                 multiplier = bin[1];
                 maxMultiplier = bin[2];

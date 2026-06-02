@@ -88,7 +88,7 @@ public class FluidIngredient {
         return false;
     }
 
-    public FluidStack[] getStacks() {
+    public FluidStack[] getFluids() {
         if (stacks == null) {
             stacks = value.copyWithAmount(amount).getStacks().stream().map(FluidStack::copy).toArray(FluidStack[]::new);
         }
@@ -96,7 +96,7 @@ public class FluidIngredient {
     }
 
     public FluidStack toStack() {
-        FluidStack[] stacks = getStacks();
+        FluidStack[] stacks = getFluids();
         return stacks.length == 0 ? FluidStack.EMPTY : stacks[0].copy();
     }
 
@@ -105,6 +105,10 @@ public class FluidIngredient {
     }
 
     public FluidIngredient copy() {
+        return new FluidIngredient(amount, value.copy());
+    }
+
+    public FluidIngredient copyWithAmount(int amount) {
         return new FluidIngredient(amount, value.copy());
     }
 

@@ -29,13 +29,13 @@ public final class RangedFluidIngredient extends FluidIngredient {
     }
 
     @Override
-    public FluidStack[] getStacks() {
-        return inner.getStacks();
+    public FluidStack[] getFluids() {
+        return inner.getFluids();
     }
 
     @Override
     public FluidStack toStack() {
-        FluidStack[] stacks = getStacks();
+        FluidStack[] stacks = getFluids();
         if (stacks.length == 0) return FluidStack.EMPTY;
         FluidStack stack = stacks[0].copy();
         stack.setAmount(amountProvider.sample(GTValues.RNG));
@@ -55,6 +55,11 @@ public final class RangedFluidIngredient extends FluidIngredient {
     @Override
     public RangedFluidIngredient copy() {
         return new RangedFluidIngredient(inner.copy(), minAmount, amount);
+    }
+
+    @Override
+    public FluidIngredient copyWithAmount(int amount) {
+        return inner.copyWithAmount(amount);
     }
 
     @Override

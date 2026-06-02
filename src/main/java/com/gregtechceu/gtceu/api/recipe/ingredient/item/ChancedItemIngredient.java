@@ -36,7 +36,9 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
 
     @Override
     public ItemStack toStack() {
-        return getItems()[0].copyWithCount(inner.getCount() * IChancedIngredient.rollSuccesses(multiplier, chance));
+        int count = inner.getCount() * IChancedIngredient.rollSuccesses(multiplier, chance);
+        if(count == 0) return ItemStack.EMPTY;
+        else return  inner.toStack().copyWithCount(count);
     }
 
     @Override
@@ -62,6 +64,11 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
     @Override
     public ChancedItemIngredient copy() {
         return new ChancedItemIngredient(inner.copy(), chance, multiplier);
+    }
+
+    @Override
+    public ItemIngredient copyWithCount(int count) {
+        return inner.copyWithCount(count);
     }
 
     @Override

@@ -109,11 +109,9 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                 copied.add(copyWithMultiplier(ing, multiplier));
             }
             for (var handler : handlers) {
-                // noinspection unchecked
-                copied = (List<ItemIngredient>) handler.handleRecipe(IO.OUT, recipe, copied, true);
-                if (copied == null) break;
+                if (handler.handleRecipe(IO.OUT, recipe, copied, true)) break;
             }
-            int[] bin = ParallelLogic.adjustMultiplier(copied == null, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(copied.isEmpty(), minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];

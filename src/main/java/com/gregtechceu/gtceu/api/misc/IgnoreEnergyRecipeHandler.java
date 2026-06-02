@@ -18,8 +18,8 @@ public class IgnoreEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
     IO handlerIO = IO.BOTH;
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
-        return null;
+    public boolean handleRecipe(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+        return true;
     }
 
     @Override

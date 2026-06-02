@@ -40,6 +40,11 @@ public final class SimpleItemIngredient extends ItemIngredient {
     }
 
     @Override
+    public SimpleItemIngredient copyWithCount(int count) {
+        return new SimpleItemIngredient(item, count);
+    }
+
+    @Override
     public SimpleItemIngredient copyWithMultiplier(int multiplier) {
         return new SimpleItemIngredient(item, count * multiplier);
     }
