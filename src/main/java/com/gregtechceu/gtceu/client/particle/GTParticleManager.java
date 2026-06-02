@@ -172,6 +172,16 @@ public final class GTParticleManager {
     }
 
     @SubscribeEvent
+    public void clientTick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || Minecraft.getInstance().isPaused()) {
+            return;
+        }
+        if (Minecraft.getInstance().level != null) {
+            INSTANCE.updateEffects();
+        }
+    }
+
+    @SubscribeEvent
     public void onClientLevelLoad(LevelEvent.Load event) {
         if (!(event.getLevel() instanceof ClientLevel newLevel)) {
             return;
@@ -179,10 +189,6 @@ public final class GTParticleManager {
         ClientLevel oldLevel = Minecraft.getInstance().level;
         if (oldLevel != newLevel) {
             this.clearAllEffects(oldLevel != null);
-        }
-
-        if (oldLevel != null) {
-            INSTANCE.updateEffects();
         }
     }
 
