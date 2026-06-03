@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.utils.fakelevel.MapSchema;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -19,6 +20,8 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -45,50 +48,87 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     private final MultiblockMachineDefinition multiblockDefinition;
 
+    // schema stuff
     private SchemaWidget multiSchema;
-    private MutableSchema mutableSchema;
-    private Map<PatternPredicate, BlockInfo> predicateSetting = new HashMap<>();
-    private int maxSlices = 0;
-    private int slice = 0;
-    private final Table<String, Integer, Integer> sliceRepeats = HashBasedTable.create();
-    private final Set<Long> allPositions = new HashSet<>();
-    private final Reference2ObjectMap<PatternPredicate, Set<Long>> predicatePositions = new Reference2ObjectOpenHashMap<>();
-    private final Reference2ObjectMap<PatternPredicate, BlockInfo> predicateBlockMapping = new Reference2ObjectOpenHashMap<>();
-    private final Long2ReferenceMap<BlockState> userDefinedBlocks = new Long2ReferenceOpenHashMap<>();
-    private final Long2ReferenceMap<BlockState> predicateDefaultBlocks = new Long2ReferenceOpenHashMap<>();
-    private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
-    private final Map<BasePredicate, Integer> placed = new Reference2IntOpenHashMap<>();
-
+    private MapSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
+    private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
-    private Long2ObjectMap<BlockInfo> blockInfo = new Long2ObjectOpenHashMap<>();
+    // for the slice slider
+    private int slice = 0;
+    private int maxSlices = 0;
 
+    // user inputs
+    private final Map<Long, BlockInfo> blockPreferences = new Long2ReferenceOpenHashMap<>();
+    private final Map<Integer, Integer> sliceRepeats = new Int2IntArrayMap();
+    private final Table<PatternPredicate, BasePredicate, BlockInfo> basePredicateBlockPreferences = HashBasedTable.create();
+    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> basePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max
+    private final Map<PatternPredicate, BasePredicate> disabledBasePredicatePreferences = new Object2ObjectArrayMap<>();
+
+
+
+
+    ///  ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
+    /// INPUTS:
+    /// User supplied, ordered by priority:
+    /// Layer sizes (layerRepeats) from user,
+    /// Overrides for which candidate to pick per BlockPos
+    ///   - e.g. "left of controller should be maintenance hatch"
+    ///   - e.g. DT with 10 repeats of the output hatch isle. Default to PatternLayer.minRepeats
+    /// Overrides for which candidate to pick per BasePredicate
+    ///   - e.g. "all energy hatches should be HV"
+    /// Overrides for the min/max for each BasePredicate
+    ///   - e.g. "only put 1 energy hatch instead of 2"
+    ///   - has to be within the BasePredicate's minCount/maxCount
+    /// Disable a BasePredicate in a PatternPredicate
+    ///   - has to respect the BasePredicate's minCount
+    ///   - e.g. can disable EBF's fluid outputs, but can't disable EBF's casing
+    ///
+    ///
+    /// Machine supplied:
+    /// BlockPattern:
+    /// - PatternLayer[], each PatternLayer:
+    ///     - minRepeats
+    ///     - maxRepeats
+    ///     - Char[][] pattern, NxM array of char
+    /// - Char <-> PatternPredicate, each PatternPredicate:
+    ///     - List of BasePredicates, each BasePredicate:
+    ///         - candidates, List<BlockInfo> The candidates to place
+    ///         - priority, specifically within the PatternPredicate
+    ///         - minCount, total minimum across the whole multi
+    ///         - maxCount, total maximum across the whole multi
+    ///         - minLayerCount, total minimum in one layer (e.g. hatch in DT) TODO: Should this be in BlockPattern instead?
+    ///         - maxLayerCount, total maximum in one layer
+    ///
+    /// OUTPUTS:
+    /// Map<BlockPos, BlockInfo> resultStructure
+    /// Descriptive error if not possible
+    ///
+    /// Naive approach:
+    /// 1. Flatten PatternIsle[] (which contains Char[][]) into Char[][][] based on the layerRepeats
+    /// 2. Create the final Map<BlockPos, BlockInfo>
+    /// 3. Fill in the candidate overrides first (e.g. "0,1,0 should be maintenance hatch") if it fits any of the BasePredicates, error otherwise(?)
+    /// 4. In any order (probably just naive x,y,z loop), get the char at that position,
+    ///  4a. Go through every BasePredicate in order of priority, see if there's a minCount that's not satisfied yet, then try those
+    ///  4b. If all basePredicates with a mincount are satisfied, place the first predicate that works
+    ///  4c. If the BasePredicate is at its max, remove it from the list to be considered (maybe not needed at first, but optimization)
+    ///  4d. error if none are valid candidates(?)
+    ///
+    /// note- For this, we should have a isValidCandidate(current resultStructure, new BlockPos, new BlockInfo) function
+    ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
         multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
-
-        for (var pattern : multiblockDefinition.getStructurePatterns().values()) {
-            if (pattern instanceof BlockPattern blockPattern) {
-                for (var predicate : blockPattern.getPredicates().values()) {
-                    if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
-                        continue;
-                    }
-                    predicateBlockMapping.put(predicate, predicate.predicateList.get(0).getCandidates().get(0));
-                }
-            }
-        }
     }
 
     @Override
@@ -114,27 +154,21 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             .coverChildrenWidth();
 
                     if (pattern instanceof BlockPattern blockPattern) {
-                        createSliceSliders(patternColumn, blockPattern, patternName);
-                        createPredicateMenus(patternName, blockPattern, predicatesRow);
+                        createSliceSliders(patternColumn, blockPattern);
+                        createPredicateMenus(predicatesRow, blockPattern);
                     }
                     patternColumn.child(predicatesRow);
                     return patternColumn;
                 }));
 
         Flow schemaCol = Flow.col().coverChildren();
-        if (mutableSchema == null) {
-            mutableSchema = new MutableSchema();
-            mutableSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
-        }
-        if (predicateDefaultBlocks.isEmpty()) {
-            setupBlocks();
-        }
+        refreshSchema();
 
         if (getLevel().isClientSide()) {
-            multiSchema = new SchemaWidget(mutableSchema);
+            multiSchema = new SchemaWidget(mapSchema);
             schemaCol.child(multiSchema.size(200, 200));
         }
-        schemaCol.child(new SchemaWidget.LayerButton(mutableSchema, 0, maxSlices)
+        schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices)
                 .onMouseReleased((context, button) -> {
                     slice = ++slice % maxSlices;
                     this.refreshViewWidget(); // this may not be necessary?
@@ -165,19 +199,42 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
-    private void setPredicateDefaultBlock(PatternPredicate predicate, BlockInfo blockInfo) {
-        predicateBlockMapping.put(predicate, blockInfo);
-        predicateDefaultBlocks.clear();
-        setupBlocks();
+
+
+
+
+    /// ==== Schema setup ====
+    private void refreshSchema(){
+        Map<BlockPos, BlockInfo> resultStructure; // TODO make this lol
+
+        resultStructure = new HashMap<>();
+
+
+        Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
+                .stream()
+                .map(entry -> Pair.of(entry.getKey(), entry.getValue().getBlockState()))
+                .collect(Collectors.toMap(Pair::left, Pair::right));
+        mapSchema = new MapSchema(schemaMap);
+        mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
         refreshViewWidget();
     }
 
-    private void createSliceSliders(Flow col, BlockPattern blockPattern, String patternName) {
+
+
+
+
+    /// ==== User Preference UI ======
+    private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo blockInfo) {
+        basePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
+        refreshSchema();
+    }
+
+    private void createSliceSliders(Flow col, BlockPattern blockPattern) {
         int repeatSliceIndex = 0;
         for (var patternSlice : blockPattern.getSlices()) {
             if (patternSlice.getMinRepeats() != 1 || patternSlice.getMaxRepeats() != 1) {
-                if (!sliceRepeats.row(patternName).containsKey(repeatSliceIndex)) {
-                    sliceRepeats.put(patternName, repeatSliceIndex, patternSlice.getMinRepeats());
+                if (!sliceRepeats.containsKey(repeatSliceIndex)) {
+                    sliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
                 }
                 if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
 
@@ -190,14 +247,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             .stopper(1.0f)
                             .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
                             .value(new DoubleValue.Dynamic(() -> {
-                                if (!sliceRepeats.row(patternName).containsKey(finalRepeatSliceIndex)) return 0;
-                                return sliceRepeats.row(patternName).get(finalRepeatSliceIndex);
+                                if (!sliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
+                                return sliceRepeats.get(finalRepeatSliceIndex);
                             }, (v) -> {
-                                sliceRepeats.put(patternName, finalRepeatSliceIndex, (int) v);
-                                predicateDefaultBlocks.clear();
-                                predicatePositions.clear();
-                                allPositions.clear();
-                                refreshViewWidget();
+                                sliceRepeats.put(finalRepeatSliceIndex, (int) v);
+                                refreshSchema();
                             })));
                 }
             }
@@ -205,7 +259,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
-    private void createPredicateMenus(String patternName, BlockPattern blockPattern, Flow predicatesRow) {
+    private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
             var predicate = entry.getValue();
             // todo figure out sliders needed for predicate min/max depending on base predicates in the
@@ -213,8 +267,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
                 continue;
             }
-            predicateSetting.put(predicate, predicate.predicateList.get(0).getCandidates().get(0));
-            var menu = new ContextMenuButton<>(patternName + "#" + entry.getCharKey())
+            var menu = new ContextMenuButton<>(String.valueOf(entry.getCharKey()))
                     .size(20)
                     .requiresClick()
                     .menuList(l -> l
@@ -231,8 +284,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 } else {
                                     return new ToggleButton()
                                             .value(new BoolValue.Dynamic(() -> false,
-                                                    (b) -> setPredicateDefaultBlock(predicate,
-                                                            candidates.get(0))))
+                                                    (b) -> setPredicateDefaultBlock(predicate, basePredicate, candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
                                                     basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
@@ -263,181 +315,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             return new ToggleButton()
                                     .value(new BoolValue.Dynamic(
                                             () -> false,
-                                            (b) -> setPredicateDefaultBlock(predicate, blockInfo)))
+                                            (b) -> setPredicateDefaultBlock(predicate, basePredicate, blockInfo)))
                                     .size(16)
                                     .tooltip(r -> r.add(stackName))
                                     .overlay(new ItemDrawable(
                                             blockInfo.getItemStackForm()));
                         }));
-    }
-
-    private void setupBlocks() {
-        IBlockPattern mainPattern = multiblockDefinition.getStructurePatterns()
-                .get(MultiblockControllerMachine.DEFAULT_STRUCTURE).get();
-        if (mainPattern instanceof BlockPattern blockPattern) {
-            var dimensions = blockPattern.getDimensions();
-            maxSlices = dimensions[0];
-            setupPredicatePositions(MultiblockControllerMachine.DEFAULT_STRUCTURE, blockPattern);
-
-            for (var predicate : predicatePositions.keySet()) {
-                if (!predicateBlockMapping.containsKey(predicate)) continue;
-                BlockState blockState = predicateBlockMapping.get(predicate).getBlockState();
-                for (long pos : predicatePositions.get(predicate)) {
-                    blockState = setValidState(blockState, pos);
-                    predicateDefaultBlocks.put(pos, blockState);
-                }
-            }
-
-            for (var entry : predicatePositions.entrySet()) {
-                PatternPredicate predicate = entry.getKey();
-                int posSize = entry.getValue().size();
-                Map<Long, BlockState> predicateBlocks = new HashMap<Long, BlockState>(posSize);
-                setupPredicateBlocks(predicate, predicatePositions.get(predicate), predicateBlocks);
-                predicateDefaultBlocks.putAll(predicateBlocks);
-            }
-
-            mutableSchema.getBlocks().clear();
-            blockCounts.clear();
-            predicateDefaultBlocks.forEach((pos, state) -> {
-                mutableSchema.updateBlockState(BlockPos.of(pos), state);
-                blockCounts.merge(state.getBlock(), 1, Integer::sum);
-            });
-            userDefinedBlocks.forEach((pos, state) -> {
-                mutableSchema.updateBlockState(BlockPos.of(pos), state);
-                blockCounts.merge(state.getBlock(), 1, Integer::sum);
-            });
-        }
-    }
-
-    private void setupPredicateBlocks(PatternPredicate patternPredicate, Set<Long> positions,
-                                      Map<Long, BlockState> blocks) {
-        boolean placedBlock = false;
-        boolean filledMinCounts = false;
-        int predicatePointer = 0;
-        for (var pos : positions) {
-            BasePredicate basePred = patternPredicate.predicateList.get(predicatePointer);
-            // attempt to fill blocks with other predicate values before wrapping back to higher priority predicate
-            // values
-            int specificPlaced = placed.getOrDefault(basePred, 0);
-            while (specificPlaced > basePred.minCount && !filledMinCounts) {
-                predicatePointer++;
-                if (predicatePointer >= patternPredicate.predicateList.size()) {
-                    filledMinCounts = true;
-                    break;
-                }
-                basePred = patternPredicate.predicateList.get(predicatePointer);
-                // can not place more of this specific base predicate
-                if (placed.getOrDefault(basePred, 0) == basePred.maxCount) {
-                    predicatePointer++;
-                }
-            }
-
-            if (filledMinCounts) {
-                predicatePointer = 0;
-                basePred = patternPredicate.predicateList.get(predicatePointer);
-            }
-            BlockState state = null;
-            if (predicateBlockMapping.containsKey(patternPredicate)) {
-                state = predicateBlockMapping.get(patternPredicate).getBlockState();
-            } else {
-                List<BlockInfo> candidate = basePred.candidates;
-                state = candidate.get(0).getBlockState();
-            }
-            blocks.put(pos, setValidState(state, pos));
-            placed.merge(basePred, 1, Integer::sum);
-        }
-    }
-
-    private void setupPredicatePositions(String patternName, BlockPattern blockPattern) {
-        var dimensions = blockPattern.getDimensions();
-
-        var mapping = blockPattern.getPredicates();
-        var slices = blockPattern.getSlices();
-        BlockPos controllerPos = BlockPos.ZERO;
-        RelativeDirection[] directions = blockPattern.getDirections();
-
-        Direction frontFacing = multiblockDefinition.getRotationState().defaultDirection;
-        Direction upFacing;
-        switch (multiblockDefinition.getRotationState()) {
-            case NONE -> upFacing = Direction.UP;
-            case ALL -> upFacing = frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
-            case Y_AXIS -> upFacing = Direction.NORTH;
-            case NON_Y_AXIS -> upFacing = Direction.UP;
-            default -> upFacing = Direction.UP;
-        }
-
-        Direction absoluteSlice = directions[0].getRelativeFacing(frontFacing, upFacing, false);
-        Direction absoluteString = directions[1].getRelativeFacing(frontFacing, upFacing, false);
-        Direction absoluteChar = directions[2].getRelativeFacing(frontFacing, upFacing, false);
-
-        BlockPos.MutableBlockPos sliceStart = controllerPos.mutable();
-        blockPattern.getOffset().apply(sliceStart, frontFacing, upFacing, false);
-
-        List<Integer> sliceIndices = new ArrayList<>();
-        for (int i = 0; i < dimensions[0]; i++) {
-            if (sliceRepeats.row(patternName).containsKey(i)) {
-                for (int j = 0; j < sliceRepeats.row(patternName).get(i); j++) {
-                    sliceIndices.add(i);
-                }
-            } else {
-                sliceIndices.add(i);
-            }
-        }
-
-        for (Integer sliceIdx : sliceIndices) {
-            PatternSlice slice = slices[sliceIdx];
-            BlockPos.MutableBlockPos stringStart = sliceStart.mutable();
-            BlockPos.MutableBlockPos charPos = sliceStart.mutable();
-            for (int strIdx = 0; strIdx < dimensions[1]; strIdx++) {
-                for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
-                    PatternPredicate predicate = mapping.get(slice.charAt(strIdx, charIdx));
-                    if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
-                        predicatePositions.getOrDefault(PatternPredicate.AIR, new HashSet<>()).add(charPos.asLong());
-                    } else {
-                        if (!predicatePositions.containsKey(predicate)) {
-                            predicatePositions.put(predicate, new HashSet<>());
-                        }
-                        predicatePositions.get(predicate).add(charPos.asLong());
-                        allPositions.add(charPos.asLong());
-                    }
-                    charPos.move(absoluteChar);
-                }
-                stringStart.move(absoluteString);
-                charPos.set(stringStart);
-            }
-            sliceStart.move(absoluteSlice);
-        }
-    }
-
-    public BlockState setValidState(BlockState state, long pos) {
-        Direction valid = null;
-        BlockPos blockPos = BlockPos.of(pos);
-        if (state.getBlock() instanceof MetaMachineBlock machineBlock) {
-            for (var dir : GTUtil.HORIZONTALS) {
-                if (!allPositions.contains(blockPos.relative(dir).asLong())) {
-                    valid = dir;
-                    break;
-                }
-            }
-            if (state.hasProperty(BlockStateProperties.FACING)) {
-                if (valid != null) {
-                    state = state.setValue(machineBlock.getRotationState().property, valid);
-                } else {
-                    if (!allPositions.contains(blockPos.relative(Direction.UP).asLong())) {
-                        state = state.setValue(machineBlock.getRotationState().property, Direction.UP);
-                    } else if (!allPositions.contains(blockPos.relative(Direction.DOWN).asLong())) {
-                        state = state.setValue(machineBlock.getRotationState().property, Direction.DOWN);
-                    }
-                }
-                if (this.mutableSchema != null) {
-                    BlockEntity be = this.mutableSchema.getLevel().getBlockEntity(blockPos);
-                    if (be instanceof MetaMachine machine) {
-                        machine.setRenderState(
-                                machine.getRenderState().setValue(GTMachineModelProperties.IS_FORMED, true));
-                    }
-                }
-            }
-        }
-        return state;
     }
 }
