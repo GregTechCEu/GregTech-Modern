@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.particle;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.client.bloom.EffectRenderContext;
 import com.gregtechceu.gtceu.client.bloom.IRenderSetup;
 import com.gregtechceu.gtceu.client.bloom.particle.GTBloomParticle;
@@ -17,6 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 
@@ -268,7 +268,9 @@ public class GTOverheatParticle extends GTBloomParticle {
         @OnlyIn(Dist.CLIENT)
         public void preDraw(BufferBuilder buffer) {
             RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
+            RenderSystem.blendFuncSeparate(
+                    GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                    GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -280,6 +282,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         public void postDraw(BufferBuilder buffer) {
             BufferUploader.drawWithShader(buffer.end());
             RenderSystem.disableBlend();
+            RenderSystem.defaultBlendFunc();
         }
     };
 
