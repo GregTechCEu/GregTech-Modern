@@ -31,7 +31,7 @@ public class MutableSchema implements ISchema {
 
     public MutableSchema(Long2ReferenceMap<BlockState> blocks) {
         this();
-        putAll(blocks);
+        setBlocks(blocks);
     }
 
     @Override
@@ -39,7 +39,8 @@ public class MutableSchema implements ISchema {
         return this.level;
     }
 
-    public MutableSchema putAll(Long2ReferenceMap<BlockState> blocks) {
+    public MutableSchema setBlocks(Long2ReferenceMap<BlockState> blocks) {
+        this.blocks.clear();
         BlockPos.MutableBlockPos min = BlockPosUtil.MAX.mutable();
         BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
         for (long l : blocks.keySet()) {

@@ -13,9 +13,11 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -58,7 +60,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     // schema stuff
     private SchemaWidget multiSchema;
-    private MapSchema mapSchema;
+    private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
@@ -230,11 +232,15 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         fixRotationsAndFacing(resultStructure, frontFacing, upFacing, multiblockDefinition.getBlock());
 
-        Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
-                .stream()
-                .map(entry -> Pair.of(entry.getKey(), entry.getValue().getBlockState()))
-                .collect(Collectors.toMap(Pair::left, Pair::right));
-        mapSchema = new MapSchema(schemaMap);
+        Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
+        for (var entry : resultStructure.entrySet()){
+            schemaMap.put(entry.getKey().asLong(), entry.getValue().getBlockState());
+        }
+        if(mapSchema == null) {
+            mapSchema = new MutableSchema(schemaMap);
+        } else {
+            mapSchema.setBlocks(schemaMap);
+        }
         mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
     }
 
@@ -528,6 +534,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                           BlockInfo blockInfo) {
         userBasePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
         refreshSchema();
+        refreshViewWidget();
     }
 
     private void createSliceSliders(Flow col, BlockPattern blockPattern) {
@@ -553,6 +560,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             }, (v) -> {
                                 userSliceRepeats.put(finalRepeatSliceIndex, (int) v);
                                 refreshSchema();
+                                refreshViewWidget();
                             })));
                 }
             }
