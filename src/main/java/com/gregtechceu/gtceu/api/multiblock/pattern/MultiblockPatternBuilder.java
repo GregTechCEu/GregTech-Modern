@@ -166,7 +166,7 @@ public class MultiblockPatternBuilder {
         Char2IntMap charCount = new Char2IntOpenHashMap();
         for (var slice : slices) {
             for (var string : slice.getPattern()) {
-                for (char c : string.toCharArray()) {
+                for (char c : string) {
                     charCount.merge(c, 1, Integer::sum);
                 }
             }

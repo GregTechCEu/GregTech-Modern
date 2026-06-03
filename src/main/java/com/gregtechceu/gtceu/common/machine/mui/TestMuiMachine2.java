@@ -71,8 +71,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
     private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable.create();
-    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max
-    private final Map<PatternPredicate, BasePredicate> disabledBasePredicatePreferences = new Object2ObjectArrayMap<>();
+    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max.
+    // ^ To disable a base predicate, set min to 0
 
 
 
@@ -127,8 +127,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
-
+        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ELECTRIC_BLAST_FURNACE;
+        var pattern = ((BlockPattern)multiblockDefinition.getStructurePatterns().get("main").get());
+        for(int i=0;i<pattern.getSlices().length;i++){
+            userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
+        }
         frontFacing = multiblockDefinition.getRotationState().defaultDirection;
         switch (multiblockDefinition.getRotationState()) {
             case NONE -> upFacing = Direction.UP;
@@ -209,11 +212,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
 
 
-
-
     /// ==== Schema setup ====
     private void refreshSchema(){
-        Map<BlockPos, BlockInfo> resultStructure; // TODO make this lol
+        Map<BlockPos, BlockInfo> resultStructure;
 
         resultStructure = new HashMap<>();
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
@@ -223,6 +224,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern, userGlobalBlockPreferences);
 
+        populateFromPattern(resultStructure, pattern, adjustedCharPattern);
 
         Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
                 .stream()
@@ -230,7 +232,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 .collect(Collectors.toMap(Pair::left, Pair::right));
         mapSchema = new MapSchema(schemaMap);
         mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
-        refreshViewWidget();
     }
 
     private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern, Map<Integer, Integer> sliceRepeats){
@@ -251,6 +252,13 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         return flattenedPattern;
     }
 
+    private int[] getDimensions(char[][][] charPattern){
+        int d0 = charPattern.length;
+        int d1 = d0 > 0 ? charPattern[0].length : 0;
+        int d2 = d1 > 0 ? charPattern[0][0].length : 0;
+        return new int[]{d0, d1, d2};
+    }
+
     /// Re-bins the local {@code [sliceIdx][stringIdx][charIdx]} pattern into an absolute,
     /// axis-aligned {@code [x][y][z]} array matching the schema's world frame.
     ///
@@ -263,10 +271,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         Direction absoluteDir1 = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteDir2 = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
-        int d0 = localFlattenedPattern.length;
-        int d1 = d0 > 0 ? localFlattenedPattern[0].length : 0;
-        int d2 = d1 > 0 ? localFlattenedPattern[0][0].length : 0;
-        if (d0 == 0 || d1 == 0 || d2 == 0) return new char[0][0][0];
+        var dimensions = getDimensions(localFlattenedPattern);
+        if (dimensions[0] == 0 || dimensions[1] == 0 || dimensions[2] == 0) return new char[0][0][0];
 
         // Per-axis step vectors of each absolute direction.
         int[][] steps = {
@@ -275,7 +281,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 { absoluteDir2.getStepX(), absoluteDir2.getStepY(), absoluteDir2.getStepZ() },
         };
         // Max local index reached along each local axis.
-        int[] extents = { d0 - 1, d1 - 1, d2 - 1 };
+        int[] extents = { dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 1 };
 
         // World-space bounding box. Each axis contributes monotonically, so the extremes are
         // reached at index 0 or at extents[axis] depending on the sign of the step.
@@ -294,9 +300,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         int sizeZ = max[2] - min[2] + 1;
         char[][][] result = new char[sizeX][sizeY][sizeZ];
 
-        for (int s = 0; s < d0; s++) {
-            for (int t = 0; t < d1; t++) {
-                for (int c = 0; c < d2; c++) {
+        for (int s = 0; s < dimensions[0]; s++) {
+            for (int t = 0; t < dimensions[1]; t++) {
+                for (int c = 0; c < dimensions[2]; c++) {
                     int worldX = steps[0][0] * s + steps[1][0] * t + steps[2][0] * c;
                     int worldY = steps[0][1] * s + steps[1][1] * t + steps[2][1] * c;
                     int worldZ = steps[0][2] * s + steps[1][2] * t + steps[2][2] * c;
@@ -310,17 +316,94 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     }
 
     private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern, Map<Long, BlockInfo> userBlockPreferences) {
+        var dimensions = getDimensions(flattenedBlockPattern);
         for(Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()){
             BlockPos pos = BlockPos.of(blockPreference.getKey());
             BlockInfo blockInfo = blockPreference.getValue();
-
-            // do some checking
+            if( pos.getX() >= dimensions[0] ||
+                pos.getY() >= dimensions[1] ||
+                pos.getZ() >= dimensions[2]){
+                // TODO: Throw or silently fail?
+                throw new IllegalStateException("BlockPos preference " + pos.toString() + "is outside of bounds for pattern of size " + dimensions[0]+","+dimensions[1]+","+dimensions[2]);
+            }
+            if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, blockInfo)){
+                throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +" for position " + pos);
+            }
             resultStructure.put(pos, blockInfo);
         }
     }
 
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo>  resultStructure, BlockPos pos, BlockInfo newInfo){
-        return true;
+    private void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern){
+        /// 4. In any order (probably just naive x,y,z loop), get the char at that position,
+        ///  4a. Go through every BasePredicate in order of priority, see if there's a minCount that's not satisfied yet, then try those
+        ///  4b. If all basePredicates with a mincount are satisfied, place the first predicate that works
+        ///  4c. If the BasePredicate is at its max, remove it from the list to be considered (maybe not needed at first, but optimization)
+        ///  4d. error if none are valid candidates(?)
+        ///
+
+        // TODO: Change this to loop through the slices to handle min/maxPerSlice
+        var dimensions = getDimensions(flattenedBlockPattern);
+        for(int x=0;x<dimensions[0];x++) {
+            for (int y = 0; y < dimensions[1]; y++) {
+                for (int z = 0; z < dimensions[2]; z++) {
+                    var pos = new BlockPos(x,y,z);
+                    if(resultStructure.containsKey(pos)) continue;
+                    char c = flattenedBlockPattern[x][y][z];
+                    PatternPredicate predicate = pattern.getPredicates().get(c);
+
+                    // Try to find a basePredicate that doesn't have its minCount satisfied, and if so, place that
+                    boolean inserted = false;
+                    for(BasePredicate basePredicate : predicate.predicateList){
+                        int minCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
+                                userBasePredicateMinMaxPreferences.get(predicate, basePredicate).left() :
+                                basePredicate.minCount;
+                        if(minCount == 0) continue;
+                        int totalAlreadyPopulated = (int) resultStructure.values()
+                                .stream()
+                                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
+                                .count();
+                        if(totalAlreadyPopulated >= minCount) continue;
+                        var toInsert = basePredicate.getCandidates().get(0);
+                        // TODO: is this needed? doesn't this just do what we're already doing?
+                        if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
+                        resultStructure.put(pos, toInsert);
+                        inserted = true;
+                        break;
+                    }
+                    if(inserted) continue;
+
+                    // Try to find a basePredicate that doesn't have its maxCount filled yet, and if so, place that
+                    inserted = false;
+                    for(BasePredicate basePredicate : predicate.predicateList){
+                        int maxCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
+                                userBasePredicateMinMaxPreferences.get(predicate, basePredicate).right() :
+                                basePredicate.maxCount;
+                        if(maxCount == 0) continue;
+                        int totalAlreadyPopulated = (int) resultStructure.values()
+                                .stream()
+                                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
+                                .count();
+                        if(totalAlreadyPopulated >= maxCount && maxCount != -1) continue;
+                        var toInsert = basePredicate.getCandidates().get(0);
+                        // TODO: is this needed? doesn't this just do what we're already doing?
+                        if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
+                        resultStructure.put(pos, toInsert);
+                        inserted = true;
+                        break;
+                    }
+                    if(inserted) continue;
+                    // If we arrive here, there's nothing we can place that doesn't overflow a maxcount!
+                    throw new IllegalStateException("Could not place a block without breaking maxCount requirments for character " + c);
+                }
+            }
+        }
+    }
+
+    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern, BlockPos pos, BlockInfo newInfo){
+        char c = flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
+        PatternPredicate predicate = pattern.getPredicates().get(c);
+        // TODO: More intricate checking of e.g. minlimit using resultStructure
+        return predicate.predicateList.stream().anyMatch(basePredicate -> basePredicate.candidates.contains(newInfo));
     }
 
 

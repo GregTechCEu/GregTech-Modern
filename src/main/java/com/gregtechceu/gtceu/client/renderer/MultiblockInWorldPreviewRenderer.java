@@ -148,7 +148,7 @@ public class MultiblockInWorldPreviewRenderer {
                 for (int y = 0; y < dims[1]; y++) {
                     var string = slice.getPattern()[y];
                     for (int z = 0; z < dims[2]; z++) {
-                        var predList = predicateMapping.get(string.charAt(z));
+                        var predList = predicateMapping.get(string[z]);
                         var pred = predList.predicateList.get(0);
                         BlockState blockState = Blocks.AIR.defaultBlockState();
                         if (pred instanceof PredicateBlocks blockPred) {

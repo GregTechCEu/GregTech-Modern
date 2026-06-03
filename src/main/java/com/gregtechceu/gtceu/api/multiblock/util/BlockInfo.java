@@ -15,6 +15,8 @@ import com.mojang.serialization.Codec;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public class BlockInfo {
 
     public static final Codec<BlockInfo> CODEC = BlockState.CODEC.xmap(BlockInfo::fromBlockState,
@@ -93,5 +95,17 @@ public class BlockInfo {
         if (blockEntity != null) {
             level.setBlockEntity(blockEntity);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        BlockInfo blockInfo = (BlockInfo) o;
+        return Objects.equals(blockState, blockInfo.blockState);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(blockState);
     }
 }
