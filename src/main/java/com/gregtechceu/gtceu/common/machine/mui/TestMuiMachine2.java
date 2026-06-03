@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
 import brachy.modularui.utils.fakelevel.MapSchema;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -15,10 +12,8 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
@@ -28,9 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
@@ -50,9 +43,12 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
@@ -69,10 +65,13 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private int maxSlices = 0;
 
     // user inputs
-    private final Map<Long, BlockInfo> blockPreferences = new Long2ReferenceOpenHashMap<>();
-    private final Map<Integer, Integer> sliceRepeats = new Int2IntArrayMap();
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> basePredicateBlockPreferences = HashBasedTable.create();
-    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> basePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max
+    private boolean isFlipped = false;
+    private Direction frontFacing;
+    private Direction upFacing;
+    private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
+    private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
+    private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable.create();
+    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max
     private final Map<PatternPredicate, BasePredicate> disabledBasePredicatePreferences = new Object2ObjectArrayMap<>();
 
 
@@ -129,6 +128,15 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
         multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
+
+        frontFacing = multiblockDefinition.getRotationState().defaultDirection;
+        switch (multiblockDefinition.getRotationState()) {
+            case NONE -> upFacing = Direction.UP;
+            case ALL -> upFacing = frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
+            case Y_AXIS -> upFacing = Direction.NORTH;
+            case NON_Y_AXIS -> upFacing = Direction.UP;
+            default -> upFacing = Direction.UP;
+        }
     }
 
     @Override
@@ -208,6 +216,12 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         Map<BlockPos, BlockInfo> resultStructure; // TODO make this lol
 
         resultStructure = new HashMap<>();
+        BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+
+        char[][][] flattenedCharPattern = flattenBlockPattern(pattern, userSliceRepeats);
+        char[][][] adjustedCharPattern = rotateAndFlipCharPattern(flattenedCharPattern, pattern.getDirections(), frontFacing, upFacing, isFlipped);
+
+        populateWithUserBlockPreferences(resultStructure, flattenedCharPattern, userGlobalBlockPreferences);
 
 
         Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
@@ -219,13 +233,49 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         refreshViewWidget();
     }
 
+    private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern, Map<Integer, Integer> sliceRepeats){
+        int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
+        int[] dimensions = pattern.getDimensions();
+        char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
+        PatternSlice[] slices = pattern.getSlices();
+        int totalSlicesIndex = 0;
+        for(int sliceIndex=0; sliceIndex<slices.length; sliceIndex++){
+            PatternSlice slice = slices[sliceIndex];
+            int repeats = sliceRepeats.getOrDefault(sliceIndex, 1);
+            for(int i=0;i<repeats;i++){
+                flattenedPattern[totalSlicesIndex] = slice.getPattern();
+                totalSlicesIndex++;
+            }
+        }
+        assert(totalSlicesIndex == totalSlices);
+        return flattenedPattern;
+    }
+
+    private char[][][] rotateAndFlipCharPattern(char[][][] localFlattenedPattern, RelativeDirection[] patternDirections, Direction frontFacing, Direction upFacing, boolean isFlipped){
+
+        Direction absoluteDir0 = patternDirections[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction absoluteDir1 = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction absoluteDir2 = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
 
+
+        return localFlattenedPattern;
+    }
+
+    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, char[][][] flattenedBlockPattern, Map<Long, BlockInfo> userBlockPreferences) {
+        for(Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()){
+            BlockPos pos = BlockPos.of(blockPreference.getKey());
+            BlockInfo blockInfo = blockPreference.getValue();
+
+            // do some checking
+            resultStructure.put(pos, blockInfo);
+        }
+    }
 
 
     /// ==== User Preference UI ======
     private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo blockInfo) {
-        basePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
+        userBasePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
         refreshSchema();
     }
 
@@ -233,8 +283,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         int repeatSliceIndex = 0;
         for (var patternSlice : blockPattern.getSlices()) {
             if (patternSlice.getMinRepeats() != 1 || patternSlice.getMaxRepeats() != 1) {
-                if (!sliceRepeats.containsKey(repeatSliceIndex)) {
-                    sliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
+                if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
+                    userSliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
                 }
                 if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
 
@@ -247,10 +297,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             .stopper(1.0f)
                             .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
                             .value(new DoubleValue.Dynamic(() -> {
-                                if (!sliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
-                                return sliceRepeats.get(finalRepeatSliceIndex);
+                                if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
+                                return userSliceRepeats.get(finalRepeatSliceIndex);
                             }, (v) -> {
-                                sliceRepeats.put(finalRepeatSliceIndex, (int) v);
+                                userSliceRepeats.put(finalRepeatSliceIndex, (int) v);
                                 refreshSchema();
                             })));
                 }

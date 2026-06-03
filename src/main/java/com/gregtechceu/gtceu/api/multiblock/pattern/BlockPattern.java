@@ -39,6 +39,7 @@ public class BlockPattern implements IBlockPattern {
     @Getter
     protected final RelativeDirection[] directions;
 
+    // TODO: can this be removed? Multiblocks with repeatable isles can differ in sizes
     @Getter
     protected final int[] dimensions;
     @Getter

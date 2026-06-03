@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
 
 public class PatternSlice {
 
@@ -12,33 +15,41 @@ public class PatternSlice {
     @Getter
     protected int actualRepeats;
     @Getter
-    protected final String[] pattern;
+    protected final char[][] pattern;
 
-    public PatternSlice(int repeats, char[][] pattern) {
-        this.pattern = new String[pattern.length];
-        for (int i = 0; i < pattern.length; i++) {
-            this.pattern[i] = new String(pattern[i]);
-        }
-        this.minRepeats = this.maxRepeats = repeats;
+
+
+    private static char[][] toCharArray(String[] pattern){
+        return Arrays.stream(pattern)
+                .map(String::toCharArray)
+                .toArray(char[][]::new);
     }
 
-    public PatternSlice(int minRepeats, int maxRepeats, String[] pattern) {
+    public PatternSlice(int minRepeats, int maxRepeats, char[][] pattern) {
         this.pattern = pattern;
         this.minRepeats = minRepeats;
         this.maxRepeats = maxRepeats;
     }
 
+    public PatternSlice(int minRepeats, int maxRepeats, String[] pattern){
+        this(minRepeats, maxRepeats, toCharArray(pattern));
+    }
+
+    public PatternSlice(int repeats, char[][] pattern) {
+        this(repeats, repeats, pattern);
+    }
     public PatternSlice(int repeats, String[] pattern) {
         this(repeats, repeats, pattern);
+    }
+
+    public PatternSlice(char[][] pattern) {
+        this(1, pattern);
     }
 
     public PatternSlice(String[] pattern) {
         this(1, pattern);
     }
 
-    public PatternSlice(char[][] pattern) {
-        this(1, pattern);
-    }
 
     public void setRepeats(int minRepeats, int maxRepeats) {
         this.minRepeats = minRepeats;
@@ -52,23 +63,16 @@ public class PatternSlice {
 
     public int @Nullable [] firstInstanceOf(char c) {
         for (int strI = 0; strI < pattern.length; strI++) {
-            int pos = pattern[strI].indexOf(c);
+            int pos = ArrayUtils.indexOf(pattern[strI], c);
             if (pos != -1) return new int[] { strI, pos };
         }
         return null;
     }
 
     public char charAt(int stringI, int charI) {
-        return pattern[stringI].charAt(charI);
+        return pattern[stringI][charI];
     }
 
-    public int getStringCount() {
-        return pattern.length;
-    }
-
-    public int getCharCount() {
-        return pattern[0].length();
-    }
 
     public PatternSlice copy() {
         PatternSlice c = new PatternSlice(minRepeats, maxRepeats, pattern.clone());
