@@ -180,20 +180,6 @@ public class GTOverheatParticle extends GTBloomParticle {
         color = getBlackBodyColor(temperature);
     }
 
-    public void updateConnections() {
-        // if this isn't the block entity's particle, remove both
-        if (blockEntity.isRemoved() || !blockEntity.isParticleAlive()) {
-            setExpired();
-            blockEntity.killParticle();
-            return;
-        }
-
-        // update pipeShape every tick so it doesn't desync if the pipe is disconnected
-        pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
-                CollisionContext.empty());
-        pipeBounds = pipeShape.bounds().inflate(0.001).move(posX, posY, posZ);
-    }
-
     @Override
     public void onUpdate() {
         // if this isn't the block entity's particle, remove both
@@ -202,6 +188,10 @@ public class GTOverheatParticle extends GTBloomParticle {
             blockEntity.killParticle();
             return;
         }
+        // update pipeShape every tick so it doesn't desync if the pipe is disconnected
+        pipeShape = blockEntity.getBlockState().getVisualShape(blockEntity.getLevel(), blockEntity.getBlockPos(),
+                CollisionContext.empty());
+        pipeBounds = pipeShape.bounds().inflate(0.001).move(posX, posY, posZ);
 
         if (temperature > 400 && blockEntity.getLevel().random.nextFloat() < 0.04f) {
             spawnSmoke();
