@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.client.schemarenderer.BaseSchemaRenderer;
+import brachy.modularui.client.schemarenderer.BlockHighlight;
+import brachy.modularui.drawable.SchemaRenderer;
+import brachy.modularui.utils.Color;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -14,9 +18,11 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,6 +53,8 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -133,7 +141,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.DISTILLATION_TOWER;
+        multiblockDefinition = (MultiblockMachineDefinition) GCYMMachines.MEGA_VACUUM_FREEZER;
         var pattern = ((BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get());
         for (int i = 0; i < pattern.getSlices().length; i++) {
             userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
@@ -181,7 +189,16 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         refreshSchema();
 
         if (getLevel().isClientSide()) {
-            multiSchema = new SchemaWidget(mapSchema);
+            SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema) {
+                @Override
+                protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {
+                    super.onSuccessfulRayTrace(poseStack, result);
+                    System.out.println("guh" + result.getBlockPos().getX());
+                }
+            };
+            schemaRenderer.highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+
+            multiSchema = new SchemaWidget(schemaRenderer);
             schemaCol.child(multiSchema.size(200, 200));
         }
         schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices)
