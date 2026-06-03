@@ -221,7 +221,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         char[][][] flattenedCharPattern = flattenBlockPattern(pattern, userSliceRepeats);
         char[][][] adjustedCharPattern = rotateAndFlipCharPattern(flattenedCharPattern, pattern.getDirections(), frontFacing, upFacing, isFlipped);
 
-        populateWithUserBlockPreferences(resultStructure, flattenedCharPattern, userGlobalBlockPreferences);
+        populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern, userGlobalBlockPreferences);
 
 
         Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
@@ -251,18 +251,65 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         return flattenedPattern;
     }
 
+    /// Re-bins the local {@code [sliceIdx][stringIdx][charIdx]} pattern into an absolute,
+    /// axis-aligned {@code [x][y][z]} array matching the schema's world frame.
+    ///
+    /// The local axes map to world {@link Direction}s exactly like {@code checkSlice} does:
+    ///   worldOffset = sliceIdx*abs(directions[0]) + stringIdx*abs(directions[1]) + charIdx*abs(directions[2])
+    /// The min corner is placed at index (0,0,0),
+    /// i.e. {@code result[x][y][z]} is the char physically located at (x,y,z).
     private char[][][] rotateAndFlipCharPattern(char[][][] localFlattenedPattern, RelativeDirection[] patternDirections, Direction frontFacing, Direction upFacing, boolean isFlipped){
-
         Direction absoluteDir0 = patternDirections[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteDir1 = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteDir2 = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
+        int d0 = localFlattenedPattern.length;
+        int d1 = d0 > 0 ? localFlattenedPattern[0].length : 0;
+        int d2 = d1 > 0 ? localFlattenedPattern[0][0].length : 0;
+        if (d0 == 0 || d1 == 0 || d2 == 0) return new char[0][0][0];
 
+        // Per-axis step vectors of each absolute direction.
+        int[][] steps = {
+                { absoluteDir0.getStepX(), absoluteDir0.getStepY(), absoluteDir0.getStepZ() },
+                { absoluteDir1.getStepX(), absoluteDir1.getStepY(), absoluteDir1.getStepZ() },
+                { absoluteDir2.getStepX(), absoluteDir2.getStepY(), absoluteDir2.getStepZ() },
+        };
+        // Max local index reached along each local axis.
+        int[] extents = { d0 - 1, d1 - 1, d2 - 1 };
 
-        return localFlattenedPattern;
+        // World-space bounding box. Each axis contributes monotonically, so the extremes are
+        // reached at index 0 or at extents[axis] depending on the sign of the step.
+        int[] min = new int[3];
+        int[] max = new int[3];
+        for (int axis = 0; axis < 3; axis++) {
+            for (int world = 0; world < 3; world++) {
+                int contribution = steps[axis][world] * extents[axis];
+                min[world] += Math.min(0, contribution);
+                max[world] += Math.max(0, contribution);
+            }
+        }
+
+        int sizeX = max[0] - min[0] + 1;
+        int sizeY = max[1] - min[1] + 1;
+        int sizeZ = max[2] - min[2] + 1;
+        char[][][] result = new char[sizeX][sizeY][sizeZ];
+
+        for (int s = 0; s < d0; s++) {
+            for (int t = 0; t < d1; t++) {
+                for (int c = 0; c < d2; c++) {
+                    int worldX = steps[0][0] * s + steps[1][0] * t + steps[2][0] * c;
+                    int worldY = steps[0][1] * s + steps[1][1] * t + steps[2][1] * c;
+                    int worldZ = steps[0][2] * s + steps[1][2] * t + steps[2][2] * c;
+                    result[worldX - min[0]][worldY - min[1]][worldZ - min[2]] =
+                            localFlattenedPattern[s][t][c];
+                }
+            }
+        }
+
+        return result;
     }
 
-    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, char[][][] flattenedBlockPattern, Map<Long, BlockInfo> userBlockPreferences) {
+    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern, Map<Long, BlockInfo> userBlockPreferences) {
         for(Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()){
             BlockPos pos = BlockPos.of(blockPreference.getKey());
             BlockInfo blockInfo = blockPreference.getValue();
@@ -270,6 +317,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             // do some checking
             resultStructure.put(pos, blockInfo);
         }
+    }
+
+    private boolean isValidCandidate(Map<BlockPos, BlockInfo>  resultStructure, BlockPos pos, BlockInfo newInfo){
+        return true;
     }
 
 
