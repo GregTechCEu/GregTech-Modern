@@ -131,7 +131,7 @@ public class PatternPredicate {
      * Set the minimum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMinLayerLimited(int min) {
-        predicateList.forEach(p -> p.minLayerCount = min);
+        predicateList.forEach(p -> p.minSliceCount = min);
         return this;
     }
 
@@ -143,7 +143,7 @@ public class PatternPredicate {
      * Set the maximum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMaxLayerLimited(int max) {
-        predicateList.forEach(p -> p.maxLayerCount = max);
+        predicateList.forEach(p -> p.maxSliceCount = max);
         return this;
     }
 

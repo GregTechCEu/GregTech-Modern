@@ -40,8 +40,8 @@ public class BasePredicate {
     public int priority = 0;
     public int minCount = -1;
     public int maxCount = -1;
-    public int minLayerCount = -1;
-    public int maxLayerCount = -1;
+    public int minSliceCount = -1;
+    public int maxSliceCount = -1;
     public int previewCount = -1;
     public boolean disableRenderFormed = false;
     public @Nullable String nbtParser;
@@ -169,8 +169,8 @@ public class BasePredicate {
         PatternError res = errorPredicate.apply(currBlock);
         if (layerCache == null) return res;
         layerCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
-        if ((minLayerCount == -1 && maxLayerCount == -1) || res != null) return res;
-        if (maxLayerCount == -1 || layerCache.getInt(this) <= maxLayerCount) return null;
+        if ((minSliceCount == -1 && maxSliceCount == -1) || res != null) return res;
+        if (maxSliceCount == -1 || layerCache.getInt(this) <= maxSliceCount) return null;
         return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
     }
 

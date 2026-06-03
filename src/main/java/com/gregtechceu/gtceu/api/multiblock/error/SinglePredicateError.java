@@ -43,8 +43,8 @@ public class SinglePredicateError extends PatternError {
     public final String debugName;
 
     public SinglePredicateError(BasePredicate failingPredicate, ErrorType type, int actualCount) {
-        this(type, actualCount, failingPredicate.minCount, failingPredicate.maxCount, failingPredicate.minLayerCount,
-                failingPredicate.maxLayerCount, failingPredicate.getPredicateName(),
+        this(type, actualCount, failingPredicate.minCount, failingPredicate.maxCount, failingPredicate.minSliceCount,
+                failingPredicate.maxSliceCount, failingPredicate.getPredicateName(),
                 failingPredicate.getCandidates());
     }
 

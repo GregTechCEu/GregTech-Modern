@@ -240,7 +240,7 @@ public class BlockPattern implements IBlockPattern {
         }
 
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().minLayerCount) {
+            if (entry.getIntValue() < entry.getKey().minSliceCount) {
                 patternState.setError(
                         new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_LAYER_COUNT,
                                 entry.getIntValue()));
@@ -412,8 +412,8 @@ public class BlockPattern implements IBlockPattern {
                 BasePredicate simplePred = predicate.predicateList.get(0);
                 predicateTag.putInt("min", simplePred.minCount);
                 predicateTag.putInt("max", simplePred.maxCount);
-                predicateTag.putInt("minLayer", simplePred.minLayerCount);
-                predicateTag.putInt("maxLayer", simplePred.maxLayerCount);
+                predicateTag.putInt("minLayer", simplePred.minSliceCount);
+                predicateTag.putInt("maxLayer", simplePred.maxSliceCount);
 
                 tag.put(simplePred.getPredicateName(), predicateTag);
             }
