@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
 import brachy.modularui.utils.fakelevel.MapSchema;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -12,9 +16,12 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import net.minecraft.core.BlockPos;
@@ -23,6 +30,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.GuiTextures;
@@ -43,6 +52,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -140,6 +150,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             case NON_Y_AXIS -> upFacing = Direction.UP;
             default -> upFacing = Direction.UP;
         }
+        //userGlobalBlockPreferences.put(BlockPos.asLong(0,0,1), BlockInfo.fromBlock(GTMachines.MAINTENANCE_HATCH.getBlock()));
     }
 
     @Override
@@ -154,7 +165,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 .name("structurePatterns")
                 .coverChildren()
                 .children(multiblockDefinition.getStructurePatterns().entrySet(), (e) -> {
-                    String patternName = e.getKey();
                     IBlockPattern pattern = e.getValue().get();
 
                     Flow patternColumn = Flow.col()
@@ -225,6 +235,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern, userGlobalBlockPreferences);
 
         populateFromPattern(resultStructure, pattern, adjustedCharPattern);
+
+        fixRotationsAndFacing(resultStructure, frontFacing, upFacing, multiblockDefinition.getBlock());
 
         Map<BlockPos, BlockState> schemaMap = resultStructure.entrySet()
                 .stream()
@@ -351,6 +363,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     char c = flattenedBlockPattern[x][y][z];
                     PatternPredicate predicate = pattern.getPredicates().get(c);
 
+                    if(predicate == PatternPredicate.AIR || predicate == PatternPredicate.ANY){
+                        continue;
+                    }
+
                     // Try to find a basePredicate that doesn't have its minCount satisfied, and if so, place that
                     boolean inserted = false;
                     for(BasePredicate basePredicate : predicate.predicateList){
@@ -363,7 +379,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
                                 .count();
                         if(totalAlreadyPopulated >= minCount) continue;
-                        var toInsert = basePredicate.getCandidates().get(0);
+                        var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
+                                userBasePredicateBlockPreferences.get(predicate, basePredicate) :
+                                basePredicate.getCandidates().get(0);
                         // TODO: is this needed? doesn't this just do what we're already doing?
                         if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
                         resultStructure.put(pos, toInsert);
@@ -384,7 +402,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
                                 .count();
                         if(totalAlreadyPopulated >= maxCount && maxCount != -1) continue;
-                        var toInsert = basePredicate.getCandidates().get(0);
+                        var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
+                                userBasePredicateBlockPreferences.get(predicate, basePredicate) :
+                                basePredicate.getCandidates().get(0);
                         // TODO: is this needed? doesn't this just do what we're already doing?
                         if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
                         resultStructure.put(pos, toInsert);
@@ -405,7 +425,37 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         // TODO: More intricate checking of e.g. minlimit using resultStructure
         return predicate.predicateList.stream().anyMatch(basePredicate -> basePredicate.candidates.contains(newInfo));
     }
+    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.UP, Direction.DOWN };
 
+    private void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing, Direction upFacing, Block controllerBlock){
+        Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
+        for(var entry : resultStructure.entrySet()){
+            BlockPos pos = entry.getKey();
+            BlockState currentState = entry.getValue().getBlockState();
+            Direction valid = null;
+            if (currentState.getBlock() instanceof MetaMachineBlock machineBlock) {
+                if (!currentState.hasProperty(machineBlock.getRotationState().property)) continue;
+                if (machineBlock.equals(controllerBlock)){
+                    toUpdate.put(pos, currentState.setValue(machineBlock.getRotationState().property, frontFacing)
+                            .setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing));
+                    continue;
+                }
+                for (var dir : DIRECTIONS_IN_ORDER) {
+                    if(!machineBlock.getRotationState().test(valid)) continue;
+                    if (!resultStructure.containsKey(pos.relative(dir))) {
+                        valid = dir;
+                        break;
+                    }
+                }
+                if (valid != null) {
+                    toUpdate.put(pos, currentState.setValue(machineBlock.getRotationState().property, valid));
+                }
+            }
+        }
+        for(var entry : toUpdate.entrySet()){
+            resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
+        }
+    };
 
     /// ==== User Preference UI ======
     private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo blockInfo) {
