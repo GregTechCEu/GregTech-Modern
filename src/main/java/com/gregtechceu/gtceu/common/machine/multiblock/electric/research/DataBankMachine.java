@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
@@ -20,8 +20,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -51,8 +49,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     @Nullable
     protected TickableSubscription tickSubs;
 
-    public DataBankMachine(IMachineBlockEntity holder) {
-        super(holder);
+    public DataBankMachine(BlockEntityCreationInfo info) {
+        super(info);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
     }
 
@@ -63,7 +61,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
                 Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
@@ -84,10 +82,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
             onStructureInvalid();
             return;
         }
-
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        updateTickSubscription();
     }
 
     protected int calculateEnergyUsage() {
@@ -122,9 +117,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (this.isFormed() && getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override

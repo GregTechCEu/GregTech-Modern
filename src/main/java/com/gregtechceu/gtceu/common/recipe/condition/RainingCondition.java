@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class RainingCondition extends RecipeCondition {
+public class RainingCondition extends RecipeCondition<RainingCondition> {
 
-    public static final Codec<RainingCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-                    .apply(instance, RainingCondition::new));
+    // spotless:off
+    public static final Codec<RainingCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.FLOAT.fieldOf("level").forGetter(val -> val.level)
+    ).apply(instance, RainingCondition::new));
+    // spotless:on
 
-    public final static RainingCondition INSTANCE = new RainingCondition();
     private float level;
 
     public RainingCondition(boolean isReverse, float level) {
@@ -35,7 +35,7 @@ public class RainingCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<RainingCondition> getType() {
         return GTRecipeConditions.RAINING;
     }
 
@@ -50,12 +50,12 @@ public class RainingCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.machine.self().getLevel();
-        return level != null && level.getRainLevel(1) >= this.level;
+        Level level = recipeLogic.getLevel();
+        return level.getRainLevel(1) >= this.level;
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public RainingCondition createTemplate() {
         return new RainingCondition();
     }
 }

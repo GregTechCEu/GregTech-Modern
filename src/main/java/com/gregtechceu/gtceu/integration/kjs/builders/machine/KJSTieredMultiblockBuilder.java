@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
@@ -29,11 +29,11 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     private final MultiblockMachineBuilder[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
-    public volatile int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
+    public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
-    public volatile TieredCreationFunction machine;
+    public transient TieredCreationFunction machine;
     @Setter
-    public volatile DefinitionFunction definition = (tier, def) -> def.tier(tier);
+    public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
     public KJSTieredMultiblockBuilder(ResourceLocation id) {
         super(id);
@@ -93,12 +93,12 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
     @FunctionalInterface
     public interface TieredCreationFunction {
 
-        MultiblockControllerMachine create(IMachineBlockEntity holder, int tier);
+        MultiblockControllerMachine create(BlockEntityCreationInfo info, int tier);
     }
 
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?> builder);
+        void apply(int tier, MachineBuilder<?, ?> builder);
     }
 }

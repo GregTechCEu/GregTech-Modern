@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic.Status;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.utils.data.RuntimeExistingFileHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -25,6 +26,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class WorkableOverlays {
 
     public static WorkableOverlays get(ResourceLocation textureDir, ExistingFileHelper fileHelper) {
+        if (fileHelper instanceof RuntimeExistingFileHelper runtimeFileHelper) {
+            // if fileHelper is an instance of RuntimeExistingFileHelper, we have to enable its existence checking.
+            // the AutoCloseable warning is suppressed here because there's no clean way to
+            // use a try-with-resources statement in this.
+            // noinspection resource
+            fileHelper = runtimeFileHelper.activeHelper();
+        }
+
         WorkableOverlays model = new WorkableOverlays(textureDir);
 
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
@@ -55,6 +64,13 @@ public class WorkableOverlays {
             model.textures.put(overlayFace, new StatusTextures(normalSprite, activeSprite, pausedSprite,
                     normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
         }
+
+        if (fileHelper instanceof RuntimeExistingFileHelper.Active activeHelper) {
+            // close the active helper, just for good measure.
+            // Also in case we ever make it do anything, this won't be forgotten.
+            activeHelper.close();
+        }
+
         return model;
     }
 

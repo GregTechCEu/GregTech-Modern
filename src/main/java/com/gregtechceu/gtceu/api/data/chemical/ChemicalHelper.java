@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
@@ -12,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -97,7 +97,7 @@ public class ChemicalHelper {
     public static Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
-            for (final Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            for (final Material material : GTRegistries.MATERIALS.values()) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
@@ -193,7 +193,7 @@ public class ChemicalHelper {
                     MaterialEntry materialEntry1 = getMaterialEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
                     if (!materialEntry1.isEmpty() &&
-                            Arrays.stream(materialEntry1.tagPrefix().getItemParentTags()).noneMatch(itemTag::equals)) {
+                            materialEntry1.tagPrefix().getItemParentTags().stream().noneMatch(itemTag::equals)) {
                         return materialEntry1;
                     }
                 }
@@ -209,8 +209,8 @@ public class ChemicalHelper {
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
-                for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                    Arrays.stream(prefix.getItemTags(material))
+                for (Material material : GTRegistries.MATERIALS.values()) {
+                    prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
                             .forEach(tagKey -> {
                                 // remove the tag so that the next iteration is faster.
@@ -291,19 +291,19 @@ public class ChemicalHelper {
     @Nullable
     public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getBlockTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     @Nullable
     public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getItemTags(material);
-        if (tags.length > 0) {
-            return tags[0];
+        if (tags.isEmpty()) {
+            return null;
         }
-        return null;
+        return tags.get(0);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

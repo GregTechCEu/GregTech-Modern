@@ -77,13 +77,6 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "theoneprobe"
-mandatory = false
-versionRange = "[${top_version},)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
 modId = "jade"
 mandatory = false
 versionRange = "[${jade_version},)"

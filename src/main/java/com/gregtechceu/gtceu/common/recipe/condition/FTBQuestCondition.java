@@ -21,15 +21,14 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
-public class FTBQuestCondition extends RecipeCondition {
+public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
     private static final Long2ObjectMap<QuestObject> QUEST_CACHE = new Long2ObjectOpenHashMap<>();
-    public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .and(Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId))
-                    .apply(instance, FTBQuestCondition::new));
-
-    public final static FTBQuestCondition INSTANCE = new FTBQuestCondition();
+    // spotless:off
+    public static final Codec<FTBQuestCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance).and(
+            Codec.LONG.fieldOf("questId").forGetter(val -> val.parsedQuestId)
+    ).apply(instance, FTBQuestCondition::new));
+    // spotless:on
 
     private long parsedQuestId;
 
@@ -47,7 +46,7 @@ public class FTBQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<FTBQuestCondition> getType() {
         return GTRecipeConditions.FTB_QUEST;
     }
 
@@ -64,7 +63,7 @@ public class FTBQuestCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        MachineOwner owner = recipeLogic.machine.self().getOwner();
+        MachineOwner owner = recipeLogic.getMachine().getOwner();
         if (!(owner instanceof FTBOwner ftbOwner)) return false;
         if (ftbOwner.getTeam() == null) return false;
         BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);
@@ -73,7 +72,7 @@ public class FTBQuestCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public FTBQuestCondition createTemplate() {
         return new FTBQuestCondition();
     }
 }

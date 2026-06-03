@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.codec.DispatchedMapCodec;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -9,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -25,6 +25,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -115,7 +116,7 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(@Unmodifiable Collection<Object> ingredients) {
         return new ArrayList<>(ingredients);
     }
 

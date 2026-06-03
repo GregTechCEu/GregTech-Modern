@@ -39,10 +39,11 @@ public class CoverHolderPeripheral implements GenericPeripheral {
         if (coverable.getCoverAtSide(direction) instanceof ComputerMonitorCover cover) {
             return MethodResult.of(true, PlaceholderHandler.processPlaceholders(text, new PlaceholderContext(
                     coverable.getLevel(),
-                    coverable.getPos(),
+                    coverable.getBlockPos(),
                     direction,
                     cover.itemStackHandler,
                     cover,
+                    null,
                     new MultiLineComponent(cover.getText()),
                     cover.getPlaceholderUUID())).toString());
         } else return MethodResult.of(false, "invalid cover");

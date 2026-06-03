@@ -56,7 +56,7 @@ public class OverlayedItemHandler {
             initSlot(i);
             // if it's the same item or there is no item in the slot
             ItemStack slotKey = this.slots[i].getItemStack();
-            if (slotKey.isEmpty() || ItemStack.isSameItemSameTags(slotKey, stack)) {
+            if (slotKey.isEmpty() || GTUtil.isSameItemSameTags(slotKey, stack)) {
                 // if the slot is not full
                 int canInsertUpTo = Math.min(this.slots[i].getSlotLimit() - this.slots[i].getCount(),
                         stack.getMaxStackSize());
@@ -140,7 +140,7 @@ public class OverlayedItemHandler {
         }
 
         public void setItemStack(@NotNull ItemStack itemStack) {
-            if (!ItemStack.isSameItemSameTags(this.itemStack, itemStack)) {
+            if (!GTUtil.isSameItemSameTags(this.itemStack, itemStack)) {
                 this.itemStack = itemStack;
                 this.slotLimit = Math.min(itemStack.getMaxStackSize(), slotLimit);
             }

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.property;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
+import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -28,7 +28,7 @@ public class GTMachineModelProperties {
     public static final BooleanProperty IS_STEEL_MACHINE = BooleanProperty.create("steel");
     public static final EnumProperty<RelativeDirection> VENT_DIRECTION = EnumProperty.create("steam_vent", RelativeDirection.class);
 
-    public static final EnumProperty<ChargerMachine.State> CHARGER_STATE = EnumProperty.create("charger_state", ChargerMachine.State.class);
+    public static final EnumProperty<BatteryBufferMachine.State> CHARGER_STATE = EnumProperty.create("charger_state", BatteryBufferMachine.State.class);
     public static final BooleanProperty IS_FE_TO_EU = BooleanProperty.create("fe_to_eu");
     public static final BooleanProperty IS_TRANSFORM_UP = BooleanProperty.create("transform_up");
     public static final EnumProperty<DiodePartMachine.AmpMode> DIODE_AMP_MODE = EnumProperty.create("amp_mode", DiodePartMachine.AmpMode.class);

@@ -36,11 +36,14 @@ public class GTValues {
     public static final int L = 144;
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
-    /**
-     * The Item WildCard Tag. Even shorter than the "-1" of the past
-     */
-
-    // public static final short W = OreDictionary.WILDCARD_VALUE;
+    // shortcut for various lengths of time in ticks (with the default tickrate of 20)
+    public static final long SECONDS = 20;
+    public static final long MINUTES = 60 * SECONDS;
+    public static final long HOURS = 60 * MINUTES;
+    public static final long DAYS = 24 * HOURS;
+    public static final long WEEKS = 7 * DAYS;
+    public static final long MONTHS = 30 * DAYS;
+    public static final long YEARS = 365 * DAYS;
 
     /** Current time on the Client. Will always be zero on the server. */
     public static long CLIENT_TIME = 0;
@@ -104,8 +107,7 @@ public class GTValues {
                 .toArray();
     }
 
-    public static final String MODID_TOP = "theoneprobe",
-            MODID_JEI = "jei",
+    public static final String MODID_JEI = "jei",
             MODID_REI = "roughlyenoughitems",
             MODID_EMI = "emi",
             MODID_APPENG = "ae2",
@@ -113,12 +115,11 @@ public class GTValues {
             MODID_IRIS = "iris",
             MODID_OCULUS = "oculus",
             MODID_SODIUM = "sodium",
-            MODID_RUBIDIUM = "rubidium",
             MODID_EMBEDDIUM = "embeddium",
+            MODID_OPTIFINE = "optifine",
             MODID_CREATE = "create",
             MODID_CURIOS = "curios",
             MODID_AE2WTLIB = "ae2wtlib",
-            MODID_SHIMMER = "shimmer",
             MODID_MODERNFIX = "modernfix",
             MODID_JOURNEYMAP = "journeymap",
             MODID_XAEROS_MINIMAP = "xaerominimap",
@@ -264,6 +265,7 @@ public class GTValues {
             0x7EC3C4, 0x7EB07E, 0xBF74C0, 0x0B5CFE, 0x914E91, 0x488748, 0x8C0000, 0x2828F5 };
 
     // Main colour for each tier
+    @SuppressWarnings("DataFlowIssue")
     public static final int[] VCM = new int[] {
             DARK_GRAY.getColor(),
             GRAY.getColor(),

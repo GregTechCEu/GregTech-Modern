@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -34,16 +35,30 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         return tagPrefix().isIgnored(material());
     }
 
+    public long getMaterialAmount() {
+        if (!tagPrefix.isEmpty()) {
+            if (!material.isNull()) {
+                return tagPrefix.getMaterialAmount(material);
+            }
+            return tagPrefix.materialAmount();
+        }
+        if (!material.isNull()) {
+            return GTValues.M;
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public String toString() {
         if (tagPrefix.isEmpty()) {
             return material.getResourceLocation().toString();
         }
         var tags = tagPrefix.getItemTags(material);
-        if (tags.length == 0) {
+        if (tags.isEmpty()) {
             return tagPrefix.name + "/" + material.getName();
         }
-        return tags[0].location().toString();
+        return tags.get(0).location().toString();
     }
 
     public static @Nullable MaterialEntry of(Object o) {

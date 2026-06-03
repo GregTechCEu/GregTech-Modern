@@ -54,7 +54,6 @@ public class GrassPathBehavior implements IToolBehavior {
                 blocks = List.of(pos);
             } else {
                 blocks = getPathConvertibleBlocks(aoeDefinition, context);
-                blocks.add(0, context.getClickedPos());
             }
         } else {
             return InteractionResult.PASS;

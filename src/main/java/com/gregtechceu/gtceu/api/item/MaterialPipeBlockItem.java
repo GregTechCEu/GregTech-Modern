@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
@@ -13,13 +10,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendererProvider {
+public class MaterialPipeBlockItem extends PipeBlockItem {
 
     public MaterialPipeBlockItem(MaterialPipeBlock block, Properties properties) {
         super(block, properties);
@@ -40,13 +36,6 @@ public class MaterialPipeBlockItem extends PipeBlockItem implements IItemRendere
             }
             return -1;
         };
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public IRenderer getRenderer(ItemStack stack) {
-        return getBlock().getRenderer(getBlock().defaultBlockState());
     }
 
     @Override

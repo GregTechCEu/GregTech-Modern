@@ -26,10 +26,11 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
+import com.gregtechceu.gtceu.common.item.behavior.*;
+import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.MachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
-import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
-import com.gregtechceu.gtceu.common.item.tool.behavior.MetaMachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -2035,6 +2036,7 @@ public class GTItems {
             .onRegister(modelPredicate(GTCEu.id("circuit"),
                     (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
             .onRegister(attach(new IntCircuitBehaviour()))
+            .tag(CustomTags.SKIP_ITEM_DETECTOR)
             .register();
 
     // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",
@@ -2179,7 +2181,7 @@ public class GTItems {
             .item("machine_memory_card", ComponentItem::create)
             .lang("Machine Memory Card")
             .properties(p -> p.stacksTo(1))
-            .onRegister(attach(new MetaMachineConfigCopyBehaviour()))
+            .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
     public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
@@ -2335,8 +2337,8 @@ public class GTItems {
             .tag(Tags.Items.ARMORS_HELMETS)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.inhalation"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.inhalation"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
@@ -2347,8 +2349,8 @@ public class GTItems {
             .tag(Tags.Items.ARMORS_CHESTPLATES)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.skin_contact"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.skin_contact"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE

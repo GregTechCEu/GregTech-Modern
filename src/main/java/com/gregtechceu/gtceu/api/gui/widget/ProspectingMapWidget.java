@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
-import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.ProspectorScannerBehavior;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;

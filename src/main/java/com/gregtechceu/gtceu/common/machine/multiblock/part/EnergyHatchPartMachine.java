@@ -1,16 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
@@ -23,40 +19,33 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExplosionMachine {
+public class EnergyHatchPartMachine extends TieredIOPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            EnergyHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     public final NotifiableEnergyContainer energyContainer;
-    protected TickableSubscription explosionSub;
     @Getter
     protected int amperage;
 
-    public EnergyHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int amperage, Object... args) {
-        super(holder, tier, io);
+    public EnergyHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int amperage) {
+        super(info, tier, io);
         this.amperage = amperage;
-        this.energyContainer = createEnergyContainer(args);
+        this.energyContainer = attachTrait(createEnergyContainer());
+        attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10, () -> energyContainer.getEnergyStored() > 0));
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
+    protected NotifiableEnergyContainer createEnergyContainer() {
         NotifiableEnergyContainer container;
         if (io == IO.OUT) {
-            container = NotifiableEnergyContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,
+            container = NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L * amperage,
                     GTValues.V[tier], amperage);
             container.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
         } else {
-            container = NotifiableEnergyContainer.receiverContainer(this, GTValues.V[tier] * 16L * amperage,
+            container = NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 16L * amperage,
                     GTValues.V[tier], amperage);
             container.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
@@ -72,29 +61,6 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine implements IExpl
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!isRemote() && ConfigHolder.INSTANCE.machines.shouldWeatherOrTerrainExplosion &&
-                shouldWeatherOrTerrainExplosion()) {
-            explosionSub = subscribeServerTick(this::checkExplosion);
-            checkExplosion();
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (explosionSub != null) {
-            explosionSub.unsubscribe();
-            explosionSub = null;
-        }
-    }
-
-    //////////////////////////////////////
-    // ******** Explosion ********//
-    //////////////////////////////////////
-    protected void checkExplosion() {
-        if (energyContainer.getEnergyStored() > 0) {
-            checkWeatherOrTerrainExplosion(tier, tier * 10);
-        }
     }
 
     //////////////////////////////////////
