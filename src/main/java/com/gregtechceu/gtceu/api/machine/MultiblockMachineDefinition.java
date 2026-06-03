@@ -73,23 +73,4 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         // int[][] sliceRepetitions = structurePattern.sliceRepetitions;
         // return repetitionDFS(structurePattern, new ArrayList<>(), sliceRepetitions, new IntArrayList());
     }
-
-    private List<MultiblockShapeInfo> repetitionDFS(BlockPattern pattern, List<MultiblockShapeInfo> pages,
-                                                    int[][] sliceRepetitions, IntArrayList repetitionStack) {
-        if (repetitionStack.size() == sliceRepetitions.length) {
-            int[] repetition = new int[repetitionStack.size()];
-            for (int i = 0; i < repetitionStack.size(); i++) {
-                repetition[i] = repetitionStack.getInt(i);
-            }
-            // pages.add(new MultiblockShapeInfo(pattern.getPreview(repetition)));
-        } else {
-            for (int i = sliceRepetitions[repetitionStack.size()][0]; i <=
-                    sliceRepetitions[repetitionStack.size()][1]; i++) {
-                repetitionStack.push(i);
-                repetitionDFS(pattern, pages, sliceRepetitions, repetitionStack);
-                repetitionStack.popInt();
-            }
-        }
-        return pages;
-    }
 }
