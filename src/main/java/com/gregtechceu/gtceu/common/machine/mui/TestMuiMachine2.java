@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.utils.fakelevel.MapSchema;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
@@ -14,12 +13,9 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -34,6 +30,7 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.fakelevel.MapSchema;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
@@ -44,6 +41,8 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -73,44 +72,43 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private Direction upFacing;
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
     private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable.create();
-    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable.create(); // Min, Max.
+    private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
+            .create();
+    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
+            .create(); // Min, Max.
     // ^ To disable a base predicate, set min to 0
 
-
-
-
-    ///  ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
+    /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
     /// INPUTS:
     /// User supplied, ordered by priority:
     /// Layer sizes (layerRepeats) from user,
     /// Overrides for which candidate to pick per BlockPos
-    ///   - e.g. "left of controller should be maintenance hatch"
-    ///   - e.g. DT with 10 repeats of the output hatch isle. Default to PatternLayer.minRepeats
+    /// - e.g. "left of controller should be maintenance hatch"
+    /// - e.g. DT with 10 repeats of the output hatch isle. Default to PatternLayer.minRepeats
     /// Overrides for which candidate to pick per BasePredicate
-    ///   - e.g. "all energy hatches should be HV"
+    /// - e.g. "all energy hatches should be HV"
     /// Overrides for the min/max for each BasePredicate
-    ///   - e.g. "only put 1 energy hatch instead of 2"
-    ///   - has to be within the BasePredicate's minCount/maxCount
+    /// - e.g. "only put 1 energy hatch instead of 2"
+    /// - has to be within the BasePredicate's minCount/maxCount
     /// Disable a BasePredicate in a PatternPredicate
-    ///   - has to respect the BasePredicate's minCount
-    ///   - e.g. can disable EBF's fluid outputs, but can't disable EBF's casing
+    /// - has to respect the BasePredicate's minCount
+    /// - e.g. can disable EBF's fluid outputs, but can't disable EBF's casing
     ///
     ///
     /// Machine supplied:
     /// BlockPattern:
     /// - PatternLayer[], each PatternLayer:
-    ///     - minRepeats
-    ///     - maxRepeats
-    ///     - Char[][] pattern, NxM array of char
+    /// - minRepeats
+    /// - maxRepeats
+    /// - Char[][] pattern, NxM array of char
     /// - Char <-> PatternPredicate, each PatternPredicate:
-    ///     - List of BasePredicates, each BasePredicate:
-    ///         - candidates, List<BlockInfo> The candidates to place
-    ///         - priority, specifically within the PatternPredicate
-    ///         - minCount, total minimum across the whole multi
-    ///         - maxCount, total maximum across the whole multi
-    ///         - minLayerCount, total minimum in one layer (e.g. hatch in DT) TODO: Should this be in BlockPattern instead?
-    ///         - maxLayerCount, total maximum in one layer
+    /// - List of BasePredicates, each BasePredicate:
+    /// - candidates, List<BlockInfo> The candidates to place
+    /// - priority, specifically within the PatternPredicate
+    /// - minCount, total minimum across the whole multi
+    /// - maxCount, total maximum across the whole multi
+    /// - minLayerCount, total minimum in one layer (e.g. hatch in DT) TODO: Should this be in BlockPattern instead?
+    /// - maxLayerCount, total maximum in one layer
     ///
     /// OUTPUTS:
     /// Map<BlockPos, BlockInfo> resultStructure
@@ -119,20 +117,23 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     /// Naive approach:
     /// 1. Flatten PatternIsle[] (which contains Char[][]) into Char[][][] based on the layerRepeats
     /// 2. Create the final Map<BlockPos, BlockInfo>
-    /// 3. Fill in the candidate overrides first (e.g. "0,1,0 should be maintenance hatch") if it fits any of the BasePredicates, error otherwise(?)
+    /// 3. Fill in the candidate overrides first (e.g. "0,1,0 should be maintenance hatch") if it fits any of the
+    /// BasePredicates, error otherwise(?)
     /// 4. In any order (probably just naive x,y,z loop), get the char at that position,
-    ///  4a. Go through every BasePredicate in order of priority, see if there's a minCount that's not satisfied yet, then try those
-    ///  4b. If all basePredicates with a mincount are satisfied, place the first predicate that works
-    ///  4c. If the BasePredicate is at its max, remove it from the list to be considered (maybe not needed at first, but optimization)
-    ///  4d. error if none are valid candidates(?)
+    /// 4a. Go through every BasePredicate in order of priority, see if there's a minCount that's not satisfied yet,
+    /// then try those
+    /// 4b. If all basePredicates with a mincount are satisfied, place the first predicate that works
+    /// 4c. If the BasePredicate is at its max, remove it from the list to be considered (maybe not needed at first, but
+    /// optimization)
+    /// 4d. error if none are valid candidates(?)
     ///
     /// note- For this, we should have a isValidCandidate(current resultStructure, new BlockPos, new BlockInfo) function
     ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
         multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.DISTILLATION_TOWER;
-        var pattern = ((BlockPattern)multiblockDefinition.getStructurePatterns().get("main").get());
-        for(int i=0;i<pattern.getSlices().length;i++){
+        var pattern = ((BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get());
+        for (int i = 0; i < pattern.getSlices().length; i++) {
             userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
         }
         frontFacing = multiblockDefinition.getRotationState().defaultDirection;
@@ -212,17 +213,16 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
-
-
     /// ==== Schema setup ====
-    private void refreshSchema(){
+    private void refreshSchema() {
         Map<BlockPos, BlockInfo> resultStructure;
 
         resultStructure = new HashMap<>();
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
 
         char[][][] flattenedCharPattern = flattenBlockPattern(pattern, userSliceRepeats);
-        char[][][] adjustedCharPattern = rotateAndFlipCharPattern(flattenedCharPattern, pattern.getDirections(), frontFacing, upFacing, isFlipped);
+        char[][][] adjustedCharPattern = rotateAndFlipCharPattern(flattenedCharPattern, pattern.getDirections(),
+                frontFacing, upFacing, isFlipped);
 
         populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern, userGlobalBlockPreferences);
 
@@ -238,32 +238,33 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
     }
 
-    private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern, Map<Integer, Integer> sliceRepeats){
+    private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern, Map<Integer, Integer> sliceRepeats) {
         int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
         int[] dimensions = pattern.getDimensions();
         char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
         PatternSlice[] slices = pattern.getSlices();
         int totalSlicesIndex = 0;
-        for(int sliceIndex=0; sliceIndex<slices.length; sliceIndex++){
+        for (int sliceIndex = 0; sliceIndex < slices.length; sliceIndex++) {
             PatternSlice slice = slices[sliceIndex];
             int repeats = sliceRepeats.getOrDefault(sliceIndex, 1);
-            for(int i=0;i<repeats;i++){
+            for (int i = 0; i < repeats; i++) {
                 flattenedPattern[totalSlicesIndex] = slice.getPattern();
                 totalSlicesIndex++;
             }
         }
-        assert(totalSlicesIndex == totalSlices);
+        assert (totalSlicesIndex == totalSlices);
         return flattenedPattern;
     }
 
-    private int[] getDimensions(char[][][] charPattern){
+    private int[] getDimensions(char[][][] charPattern) {
         int d0 = charPattern.length;
         int d1 = d0 > 0 ? charPattern[0].length : 0;
         int d2 = d1 > 0 ? charPattern[0][0].length : 0;
-        return new int[]{d0, d1, d2};
+        return new int[] { d0, d1, d2 };
     }
 
-    private char[][][] rotateAndFlipCharPattern(char[][][] localFlattenedPattern, RelativeDirection[] patternDirections, Direction frontFacing, Direction upFacing, boolean isFlipped){
+    private char[][][] rotateAndFlipCharPattern(char[][][] localFlattenedPattern, RelativeDirection[] patternDirections,
+                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
         Direction absoluteDir0 = patternDirections[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteDir1 = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteDir2 = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
@@ -303,8 +304,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     int worldX = steps[0][0] * s + steps[1][0] * t + steps[2][0] * c;
                     int worldY = steps[0][1] * s + steps[1][1] * t + steps[2][1] * c;
                     int worldZ = steps[0][2] * s + steps[1][2] * t + steps[2][2] * c;
-                    result[worldX - min[0]][worldY - min[1]][worldZ - min[2]] =
-                            localFlattenedPattern[s][t][c];
+                    result[worldX - min[0]][worldY - min[1]][worldZ - min[2]] = localFlattenedPattern[s][t][c];
                 }
             }
         }
@@ -312,31 +312,37 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         return result;
     }
 
-    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern, Map<Long, BlockInfo> userBlockPreferences) {
+    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
+                                                  char[][][] flattenedBlockPattern,
+                                                  Map<Long, BlockInfo> userBlockPreferences) {
         var dimensions = getDimensions(flattenedBlockPattern);
-        for(Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()){
+        for (Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()) {
             BlockPos pos = BlockPos.of(blockPreference.getKey());
             BlockInfo blockInfo = blockPreference.getValue();
-            if( pos.getX() >= dimensions[0] ||
-                pos.getY() >= dimensions[1] ||
-                pos.getZ() >= dimensions[2]){
-                throw new IllegalStateException("BlockPos preference " + pos.toString() + "is outside of bounds for pattern of size " + dimensions[0]+","+dimensions[1]+","+dimensions[2]);
+            if (pos.getX() >= dimensions[0] ||
+                    pos.getY() >= dimensions[1] ||
+                    pos.getZ() >= dimensions[2]) {
+                throw new IllegalStateException(
+                        "BlockPos preference " + pos.toString() + "is outside of bounds for pattern of size " +
+                                dimensions[0] + "," + dimensions[1] + "," + dimensions[2]);
             }
-            if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, blockInfo)){
-                throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +" for position " + pos);
+            if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, blockInfo)) {
+                throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
+                        " for position " + pos);
             }
             resultStructure.put(pos, blockInfo);
         }
     }
 
-    private void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern){
+    private void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
+                                     char[][][] flattenedBlockPattern) {
         /// 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
-        ///    get the char at that position,
-        ///  4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
-        ///      not satisfied yet, then try those
-        ///  4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
-        ///  4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
-        ///  4d. error if none are valid candidates(?)
+        /// get the char at that position,
+        /// 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
+        /// not satisfied yet, then try those
+        /// 4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
+        /// 4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
+        /// 4d. error if none are valid candidates(?)
         ///
 
         var dimensions = getDimensions(flattenedBlockPattern);
@@ -347,7 +353,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         int innerAxisA = (sliceAxis + 1) % 3;
         int innerAxisB = (sliceAxis + 2) % 3;
 
-        for(int sliceCoord = 0; sliceCoord < dimensions[sliceAxis]; sliceCoord++) {
+        for (int sliceCoord = 0; sliceCoord < dimensions[sliceAxis]; sliceCoord++) {
             for (int a = 0; a < dimensions[innerAxisA]; a++) {
                 for (int b = 0; b < dimensions[innerAxisB]; b++) {
                     int[] coords = new int[3];
@@ -355,69 +361,71 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     coords[innerAxisA] = a;
                     coords[innerAxisB] = b;
                     var pos = new BlockPos(coords[0], coords[1], coords[2]);
-                    if(resultStructure.containsKey(pos)) continue;
+                    if (resultStructure.containsKey(pos)) continue;
                     char c = flattenedBlockPattern[coords[0]][coords[1]][coords[2]];
                     PatternPredicate predicate = pattern.getPredicates().get(c);
 
-                    if(predicate == PatternPredicate.AIR || predicate == PatternPredicate.ANY){
+                    if (predicate == PatternPredicate.AIR || predicate == PatternPredicate.ANY) {
                         continue;
                     }
 
                     // Try to find a basePredicate that doesn't have its minCount (global) or minLayerCount (this
                     // slice) satisfied yet, and if so, place that.
                     boolean inserted = false;
-                    for(BasePredicate basePredicate : predicate.predicateList){
+                    for (BasePredicate basePredicate : predicate.predicateList) {
                         int minCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
                                 userBasePredicateMinMaxPreferences.get(predicate, basePredicate).left() :
                                 basePredicate.minCount;
-                        if(minCount == 0) continue;
+                        if (minCount == 0) continue;
                         int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
                         int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
                         boolean globalMinUnmet = minCount > 0 && totalAlreadyPopulated < minCount;
                         boolean layerMinUnmet = basePredicate.minSliceCount > 0 &&
                                 layerAlreadyPopulated < basePredicate.minSliceCount;
-                        if(!globalMinUnmet && !layerMinUnmet) continue;
+                        if (!globalMinUnmet && !layerMinUnmet) continue;
                         var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
                                 userBasePredicateBlockPreferences.get(predicate, basePredicate) :
                                 basePredicate.getCandidates().get(0);
                         // TODO: is this needed? doesn't this just do what we're already doing?
-                        if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
+                        if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
                         resultStructure.put(pos, toInsert);
                         inserted = true;
                         break;
                     }
-                    if(inserted) continue;
+                    if (inserted) continue;
 
                     // Try to find a basePredicate that doesn't have its maxCount/maxLayerCount filled yet, and if so,
                     // place that.
                     inserted = false;
-                    for(BasePredicate basePredicate : predicate.predicateList){
+                    for (BasePredicate basePredicate : predicate.predicateList) {
                         int maxCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
                                 userBasePredicateMinMaxPreferences.get(predicate, basePredicate).right() :
                                 basePredicate.maxCount;
-                        if(maxCount == 0) continue;
+                        if (maxCount == 0) continue;
                         int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
                         int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
-                        if(maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-                        if(basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount) continue;
+                        if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+                        if (basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount)
+                            continue;
                         var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
                                 userBasePredicateBlockPreferences.get(predicate, basePredicate) :
                                 basePredicate.getCandidates().get(0);
                         // TODO: is this needed? doesn't this just do what we're already doing?
-                        if(!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
+                        if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
                         resultStructure.put(pos, toInsert);
                         inserted = true;
                         break;
                     }
-                    if(inserted) continue;
+                    if (inserted) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a maxcount!
-                    throw new IllegalStateException("Could not place a block without breaking maxCount requirments for character " + c);
+                    throw new IllegalStateException(
+                            "Could not place a block without breaking maxCount requirments for character " + c);
                 }
             }
         }
     }
 
-    private static int axisIndex(Direction.Axis axis){
+    private static int axisIndex(Direction.Axis axis) {
         return switch (axis) {
             case X -> 0;
             case Y -> 1;
@@ -426,7 +434,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     }
 
     /// Total number of already-placed blocks across the whole structure matching {@code basePredicate}.
-    private int countGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate){
+    private int countGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
         return (int) resultStructure.values()
                 .stream()
                 .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
@@ -435,7 +443,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     /// Number of already-placed blocks matching {@code basePredicate} within a single slice (layer), i.e. those
     /// whose position shares the given coordinate along the slice axis.
-    private int countInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate, int sliceAxis, int sliceCoord){
+    private int countInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate, int sliceAxis,
+                             int sliceCoord) {
         return (int) resultStructure.entrySet()
                 .stream()
                 .filter(e -> coordAlongAxis(e.getKey(), sliceAxis) == sliceCoord)
@@ -443,7 +452,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 .count();
     }
 
-    private static int coordAlongAxis(BlockPos pos, int axis){
+    private static int coordAlongAxis(BlockPos pos, int axis) {
         return switch (axis) {
             case 0 -> pos.getX();
             case 1 -> pos.getY();
@@ -451,7 +460,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         };
     }
 
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern, char[][][] flattenedBlockPattern, BlockPos pos, BlockInfo newInfo){
+    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
+                                     char[][][] flattenedBlockPattern, BlockPos pos, BlockInfo newInfo) {
         char c = flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
         PatternPredicate predicate = pattern.getPredicates().get(c);
 
@@ -462,40 +472,42 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
         // (this slice) wouldn't be exceeded by placing it here.
-        for(BasePredicate basePredicate : predicate.predicateList){
-            if(!basePredicate.candidates.contains(newInfo)) continue;
+        for (BasePredicate basePredicate : predicate.predicateList) {
+            if (!basePredicate.candidates.contains(newInfo)) continue;
             int maxCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
                     userBasePredicateMinMaxPreferences.get(predicate, basePredicate).right() :
                     basePredicate.maxCount;
-            if(maxCount == 0) continue;
+            if (maxCount == 0) continue;
             int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
-            if(maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if(basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount) continue;
+            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+            if (basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount) continue;
             return true;
         }
         return false;
     }
 
-    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, Direction.UP, Direction.DOWN };
+    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
+            Direction.EAST, Direction.UP, Direction.DOWN };
 
-    private void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing, Direction upFacing, Block controllerBlock){
+    private void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
+                                       Direction upFacing, Block controllerBlock) {
         Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
-        for(var entry : resultStructure.entrySet()){
+        for (var entry : resultStructure.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState currentState = entry.getValue().getBlockState();
             Direction valid = null;
             if (currentState.getBlock() instanceof MetaMachineBlock machineBlock) {
                 if (!currentState.hasProperty(machineBlock.getRotationState().property)) continue;
-                if (machineBlock.equals(controllerBlock)){
+                if (machineBlock.equals(controllerBlock)) {
                     var newState = currentState.setValue(machineBlock.getRotationState().property, frontFacing);
-                    if(newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING))
+                    if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING))
                         newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
                     toUpdate.put(pos, newState);
                     continue;
                 }
                 for (var dir : DIRECTIONS_IN_ORDER) {
-                    if(!machineBlock.getRotationState().test(valid)) continue;
+                    if (!machineBlock.getRotationState().test(valid)) continue;
                     if (!resultStructure.containsKey(pos.relative(dir))) {
                         valid = dir;
                         break;
@@ -506,13 +518,14 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 }
             }
         }
-        for(var entry : toUpdate.entrySet()){
+        for (var entry : toUpdate.entrySet()) {
             resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
         }
     };
 
     /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo blockInfo) {
+    private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
+                                          BlockInfo blockInfo) {
         userBasePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
         refreshSchema();
     }
@@ -572,7 +585,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 } else {
                                     return new ToggleButton()
                                             .value(new BoolValue.Dynamic(() -> false,
-                                                    (b) -> setPredicateDefaultBlock(predicate, basePredicate, candidates.get(0))))
+                                                    (b) -> setPredicateDefaultBlock(predicate, basePredicate,
+                                                            candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
                                                     basePredicate.candidates.get(0).getItemStackForm().getHoverName()))

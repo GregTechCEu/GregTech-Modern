@@ -11,12 +11,10 @@ import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A builder class for {@link BlockPattern}<br />
@@ -183,7 +181,7 @@ public class MultiblockPatternBuilder {
                     maxCount = -1;
                     break;
                 }
-                if(basePredicate.minCount == basePredicate.maxCount) {
+                if (basePredicate.minCount == basePredicate.maxCount) {
                     if (maxCount == -1) {
                         maxCount = basePredicate.minCount;
                     } else {
@@ -193,7 +191,8 @@ public class MultiblockPatternBuilder {
             }
             if (maxCount == -1) continue;
             if (charCount.get(symbol) > maxCount) {
-                throw new IllegalArgumentException("Predicate has global max of " + maxCount + " but appears " + charCount.get(symbol) + " times.");
+                throw new IllegalArgumentException("Predicate has global max of " + maxCount + " but appears " +
+                        charCount.get(symbol) + " times.");
             }
         }
     }

@@ -17,9 +17,7 @@ public class PatternSlice {
     @Getter
     protected final char[][] pattern;
 
-
-
-    private static char[][] toCharArray(String[] pattern){
+    private static char[][] toCharArray(String[] pattern) {
         return Arrays.stream(pattern)
                 .map(String::toCharArray)
                 .toArray(char[][]::new);
@@ -31,13 +29,14 @@ public class PatternSlice {
         this.maxRepeats = maxRepeats;
     }
 
-    public PatternSlice(int minRepeats, int maxRepeats, String[] pattern){
+    public PatternSlice(int minRepeats, int maxRepeats, String[] pattern) {
         this(minRepeats, maxRepeats, toCharArray(pattern));
     }
 
     public PatternSlice(int repeats, char[][] pattern) {
         this(repeats, repeats, pattern);
     }
+
     public PatternSlice(int repeats, String[] pattern) {
         this(repeats, repeats, pattern);
     }
@@ -49,7 +48,6 @@ public class PatternSlice {
     public PatternSlice(String[] pattern) {
         this(1, pattern);
     }
-
 
     public void setRepeats(int minRepeats, int maxRepeats) {
         this.minRepeats = minRepeats;
@@ -72,7 +70,6 @@ public class PatternSlice {
     public char charAt(int stringI, int charI) {
         return pattern[stringI][charI];
     }
-
 
     public PatternSlice copy() {
         PatternSlice c = new PatternSlice(minRepeats, maxRepeats, pattern.clone());

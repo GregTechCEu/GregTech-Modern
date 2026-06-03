@@ -159,6 +159,14 @@ public class BlockPattern implements IBlockPattern {
 
         patternState.globalCount.clear();
         patternState.layerCount.clear();
+        // Make sure every prerdicate with a minvalue is checked
+        for (PatternPredicate predicate : predicates.values()) {
+            for (BasePredicate basePredicate : predicate.predicateList) {
+                if (basePredicate.minCount > 0) {
+                    patternState.globalCount.putIfAbsent(basePredicate, 0);
+                }
+            }
+        }
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {
