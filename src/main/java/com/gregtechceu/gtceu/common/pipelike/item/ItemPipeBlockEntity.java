@@ -5,13 +5,14 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -25,10 +26,12 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 import java.util.Objects;
 
+@ParametersAreNonnullByDefault
 public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
 
     protected WeakReference<ItemPipeNet> currentItemPipeNet = new WeakReference<>(null);
@@ -90,15 +93,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         for (ItemNetHandler handler : handlers.values()) {
             handler.setNetwork(current);
         }
-    }
-
-    @Override
-    public boolean canAttachTo(Direction side) {
-        if (level == null) return false;
-        if (level.getBlockEntity(getBlockPos().relative(side)) instanceof ItemPipeBlockEntity) {
-            return false;
-        }
-        return GTTransferUtils.hasAdjacentItemHandler(level, getBlockPos(), side);
     }
 
     @Nullable
@@ -170,5 +164,16 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         return cover != null ? cover.getItemHandlerCap(handler) : handler;
+    }
+
+    @Override
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeType, ItemPipeProperties> other) {
+        return other instanceof ItemPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        return blockEntity != null &&
+                blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
     }
 }

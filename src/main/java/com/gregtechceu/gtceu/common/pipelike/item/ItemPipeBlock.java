@@ -77,17 +77,4 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
 
         tooltip.add(Component.translatable("gtceu.item_pipe.priority", properties.getPriority()));
     }
-
-    @Override
-    public boolean canPipesConnect(PipeBlockEntity<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
-                                   PipeBlockEntity<ItemPipeType, ItemPipeProperties> sideTile) {
-        return selfTile instanceof ItemPipeBlockEntity && sideTile instanceof ItemPipeBlockEntity;
-    }
-
-    @Override
-    public boolean canPipeConnectToBlock(PipeBlockEntity<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
-                                         @Nullable BlockEntity tile) {
-        return tile != null &&
-                tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
-    }
 }

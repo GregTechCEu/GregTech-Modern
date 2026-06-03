@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -27,10 +26,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.Nullable;
@@ -69,18 +66,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
-    public boolean canPipesConnect(PipeBlockEntity<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
-                                   PipeBlockEntity<FluidPipeType, FluidPipeProperties> sideTile) {
-        return selfTile instanceof FluidPipeBlockEntity && sideTile instanceof FluidPipeBlockEntity;
-    }
-
-    @Override
-    public boolean canPipeConnectToBlock(PipeBlockEntity<FluidPipeType, FluidPipeProperties> selfTile, Direction side,
-                                         @Nullable BlockEntity tile) {
-        return tile != null && tile.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent();
-    }
-
-    @Override
     public PipeModel createPipeModel(GTBlockstateProvider provider) {
         return pipeType.createPipeModel(this, material, provider);
     }
@@ -115,22 +100,23 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         // dont apply damage if there is a frame box
-        var pipeNode = getPipeTile(level, pos);
-        if (pipeNode == null) {
+        FluidPipeBlockEntity pipe = (FluidPipeBlockEntity) level.getBlockEntity(pos);
+
+        if (pipe == null) {
             GTCEu.LOGGER.error("Pipe was null");
             return;
         }
-        if (!pipeNode.getFrameMaterial().isNull()) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+        if (!pipe.getFrameMaterial().isNull()) {
+            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipe.getFrameMaterial())
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
             return;
         }
         if (level.isClientSide) return;
         if (level.getBlockEntity(pos) == null) return;
-        FluidPipeBlockEntity pipe = (FluidPipeBlockEntity) level.getBlockEntity(pos);
 
         if (pipe.getOffsetTimer() % 10 == 0) {
             if (entity instanceof LivingEntity livingEntity) {
@@ -140,7 +126,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                     int minTemperature = Integer.MAX_VALUE;
                     for (var tank : pipe.getFluidTanks()) {
                         FluidStack stack = tank.getFluid();
-                        if (tank.getFluid() != null && tank.getFluid().getAmount() > 0) {
+                        if (tank.getFluid().getAmount() > 0) {
                             maxTemperature = Math.max(maxTemperature,
                                     stack.getFluid().getFluidType().getTemperature(stack));
                             minTemperature = Math.min(minTemperature,
@@ -155,7 +141,7 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
                     }
                 } else {
                     var tank = pipe.getFluidTanks()[0];
-                    if (tank.getFluid() != null && tank.getFluid().getAmount() > 0) {
+                    if (tank.getFluid().getAmount() > 0) {
                         // Apply temperature damage for the pipe (single fluid pipes)
                         FluidStack stack = tank.getFluid();
                         EntityDamageUtil.applyTemperatureDamage(livingEntity,

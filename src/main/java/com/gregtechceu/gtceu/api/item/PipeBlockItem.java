@@ -58,7 +58,7 @@ public class PipeBlockItem extends BlockItem {
         Direction side = context.getClickedFace();
 
         var realPos = pos.relative(side.getOpposite());
-        var baseNode = getBlock().getPipeTile(level, realPos);
+        var baseNode = PipeBlock.getPipeBE(level, realPos);
         if (baseNode != null) {
             var sideAttach = ICoverable
                     .traceCoverSide(new BlockHitResult(context.getClickLocation(), side, realPos, false));
@@ -72,23 +72,23 @@ public class PipeBlockItem extends BlockItem {
 
         boolean superVal = super.placeBlock(context, state);
         if (superVal && !level.isClientSide) {
-            PipeBlockEntity selfTile = getBlock().getPipeTile(level, pos);
+            PipeBlockEntity selfTile = PipeBlock.getPipeBE(level, pos);
             if (selfTile == null) return true;
-            if (selfTile.getPipeBlock().canConnect(selfTile, side.getOpposite())) {
+            if (selfTile.canConnect(side.getOpposite())) {
                 selfTile.setConnection(side.getOpposite(), true, false);
             }
             for (Direction facing : GTUtil.DIRECTIONS) {
                 BlockEntity be = selfTile.getNeighbor(facing);
                 if (be instanceof PipeBlockEntity otherPipe) {
                     if (otherPipe.isConnected(facing.getOpposite())) {
-                        if (otherPipe.getPipeBlock().canPipesConnect(otherPipe, facing.getOpposite(), selfTile)) {
+                        if (otherPipe.canPipesConnect(facing.getOpposite(), selfTile)) {
                             selfTile.setConnection(facing, true, true);
                         } else {
                             otherPipe.setConnection(facing.getOpposite(), false, true);
                         }
                     }
                 } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables &&
-                        selfTile.getPipeBlock().canPipeConnectToBlock(selfTile, facing, be)) {
+                        selfTile.canPipeConnectToBlock(facing, be.getBlockState().getBlock(), be)) {
                             selfTile.setConnection(facing, true, false);
                         }
             }

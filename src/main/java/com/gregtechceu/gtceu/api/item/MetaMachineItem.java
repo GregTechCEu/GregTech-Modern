@@ -34,7 +34,7 @@ public class MetaMachineItem extends BlockItem {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes"})
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -46,9 +46,9 @@ public class MetaMachineItem extends BlockItem {
             BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
             Block block = level.getBlockState(possiblePipe).getBlock();
             if (block instanceof PipeBlock<?, ?>) {
-                PipeBlockEntity pipeTile = ((PipeBlock<?, ?>) block).getPipeTile(level, possiblePipe);
-                if (pipeTile != null && ((PipeBlock<?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
-                        level.getBlockEntity(pos))) {
+                PipeBlockEntity pipeTile = PipeBlock.getPipeBE(level, possiblePipe);
+                if (pipeTile != null && pipeTile.canPipeConnectToBlock(side.getOpposite(),
+                        level.getBlockState(pos).getBlock(), level.getBlockEntity(pos))) {
                     pipeTile.setConnection(side, true, false);
                 }
             }

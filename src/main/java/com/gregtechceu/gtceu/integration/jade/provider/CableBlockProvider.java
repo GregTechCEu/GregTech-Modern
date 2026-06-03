@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -50,8 +51,8 @@ public class CableBlockProvider implements IBlockComponentProvider, IServerDataP
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         CompoundTag data = compoundTag.getCompound(getUid().toString());
-        if (blockAccessor.getBlock() instanceof CableBlock cableBlock) {
-            CableBlockEntity cable = (CableBlockEntity) cableBlock.getPipeTile(blockAccessor.getLevel(),
+        if (blockAccessor.getBlock() instanceof CableBlock) {
+            CableBlockEntity cable = (CableBlockEntity) PipeBlock.getPipeBE(blockAccessor.getLevel(),
                     blockAccessor.getPosition());
             if (cable != null) {
                 var cableData = new CompoundTag();

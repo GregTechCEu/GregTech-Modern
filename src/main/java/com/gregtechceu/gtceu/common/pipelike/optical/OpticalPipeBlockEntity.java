@@ -11,9 +11,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,10 +25,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.EnumMap;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
 
     private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
@@ -117,11 +122,6 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     }
 
     @Override
-    public boolean canAttachTo(Direction side) {
-        return false;
-    }
-
-    @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         if (!getLevel().isClientSide && connected && !fromNeighbor) {
             // never allow more than two connections total
@@ -153,6 +153,18 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         this.handlers.clear();
+    }
+
+    @Override
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> other) {
+        return other instanceof OpticalPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        if (blockEntity == null) return false;
+        if (blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side.getOpposite()).isPresent()) return true;
+        return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, side.getOpposite()).isPresent();
     }
 
     @Override

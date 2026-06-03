@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -30,7 +29,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -91,15 +92,14 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public boolean canAttachTo(Direction side) {
-        if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof CableBlockEntity) {
-                return false;
-            }
-            return GTCapabilityHelper.getEnergyContainer(level, getBlockPos().relative(side), side.getOpposite()) !=
-                    null;
-        }
-        return false;
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<Insulation, WireProperties> other) {
+        return other instanceof CableBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        return blockEntity != null &&
+                blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, side.getOpposite()).isPresent();
     }
 
     private static LevelPipeNet<WireProperties, EnergyNet> getWorldNet(ServerLevel serverLevel) {

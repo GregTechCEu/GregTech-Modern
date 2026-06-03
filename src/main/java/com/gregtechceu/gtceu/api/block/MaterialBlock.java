@@ -255,7 +255,7 @@ public class MaterialBlock extends Block {
                     hit);
             BlockState original = level.getBlockState(context.getClickedPos());
             itemBlock.placeBlock(context, pipeState);
-            var pipeTile = pipeBlock.getPipeTile(level, pos);
+            var pipeTile = PipeBlock.getPipeBE(level, pos);
             if (pipeTile == null) return false;
 
             pipeTile.setFrameMaterial(material);

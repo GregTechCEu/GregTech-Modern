@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IHazardParticleContainer;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,6 +13,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -23,9 +24,11 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
+@ParametersAreNonnullByDefault
 public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeProperties> {
 
     @Getter
@@ -102,19 +105,18 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     }
 
     @Override
-    public boolean canAttachTo(Direction side) {
-        if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof DuctPipeBlockEntity) {
-                return false;
-            }
-            BlockPos relative = getBlockPos().relative(side);
-            MetaMachine adjacent = MetaMachine.getMachine(level, relative);
-            return GTCapabilityHelper.getHazardContainer(level, relative, side.getOpposite()) != null ||
-                    (adjacent != null &&
-                            (adjacent.getTrait(EnvironmentalHazardEmitterTrait.TYPE) != null ||
-                                    adjacent.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null));
-        }
-        return false;
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeType, DuctPipeProperties> other) {
+        return other instanceof DuctPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        return blockEntity != null &&
+                (blockEntity.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
+                        blockEntity instanceof MetaMachine metaMachine &&
+                                (metaMachine.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null ||
+                                        metaMachine.getTrait(EnvironmentalHazardEmitterTrait.TYPE) !=
+                                                null));
     }
 
     private static class DefaultDuctContainer implements IHazardParticleContainer {

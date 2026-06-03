@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -38,6 +37,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -54,11 +54,13 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.function.Predicate;
 
+@ParametersAreNonnullByDefault
 public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>
                                   implements IDataInfoProvider {
 
@@ -92,23 +94,22 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     }
 
     @Override
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeType, FluidPipeProperties> other) {
+        return other instanceof FluidPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        return blockEntity != null && blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent();
+    }
+
+    @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
         if (updateSubs != null) {
             this.unsubscribe(updateSubs);
             updateSubs = null;
         }
-    }
-
-    @Override
-    public boolean canAttachTo(Direction side) {
-        if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof FluidPipeBlockEntity) {
-                return false;
-            }
-            return GTTransferUtils.hasAdjacentFluidHandler(level, getBlockPos(), side);
-        }
-        return false;
     }
 
     private Predicate<FluidStack> getFluidCapFilter(@Nullable Direction side, IO io) {

@@ -101,18 +101,6 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties
     }
 
     @Override
-    public boolean canPipesConnect(PipeBlockEntity<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
-                                   PipeBlockEntity<LaserPipeType, LaserPipeProperties> sideTile) {
-        return selfTile instanceof LaserPipeBlockEntity && sideTile instanceof LaserPipeBlockEntity;
-    }
-
-    @Override
-    public boolean canPipeConnectToBlock(PipeBlockEntity<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
-                                         @Nullable BlockEntity tile) {
-        return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
-    }
-
-    @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
     }

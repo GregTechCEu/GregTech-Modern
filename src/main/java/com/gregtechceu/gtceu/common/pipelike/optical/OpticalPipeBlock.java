@@ -101,21 +101,6 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     }
 
     @Override
-    public boolean canPipesConnect(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side,
-                                   PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> sideTile) {
-        return selfTile instanceof OpticalPipeBlockEntity && sideTile instanceof OpticalPipeBlockEntity;
-    }
-
-    @Override
-    public boolean canPipeConnectToBlock(PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> selfTile,
-                                         Direction side,
-                                         @Nullable BlockEntity tile) {
-        if (tile == null) return false;
-        if (tile.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side.getOpposite()).isPresent()) return true;
-        return tile.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, side.getOpposite()).isPresent();
-    }
-
-    @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
     }

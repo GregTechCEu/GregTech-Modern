@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
@@ -25,9 +24,11 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
+@ParametersAreNonnullByDefault
 public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeProperties> {
 
     @Getter
@@ -116,17 +117,6 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     @Override
-    public boolean canAttachTo(Direction side) {
-        if (level != null) {
-            if (level.getBlockEntity(getBlockPos().relative(side)) instanceof LaserPipeBlockEntity) {
-                return false;
-            }
-            return GTCapabilityHelper.getLaser(level, getBlockPos().relative(side), side.getOpposite()) != null;
-        }
-        return false;
-    }
-
-    @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         if (!getLevel().isClientSide && connected) {
             int connections = getConnections();
@@ -173,6 +163,16 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
             TaskHandler.enqueueServerTask(serverLevel, () -> setPipeActive(blockEntity, newState, false, -1), duration);
         }
         return newState;
+    }
+
+    @Override
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeType, LaserPipeProperties> other) {
+        return other instanceof LaserPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
+        return blockEntity != null && blockEntity.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
     }
 
     private static class DefaultLaserContainer implements ILaserContainer {

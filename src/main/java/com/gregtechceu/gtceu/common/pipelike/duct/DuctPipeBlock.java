@@ -69,23 +69,6 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties> {
     }
 
     @Override
-    public boolean canPipesConnect(PipeBlockEntity<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
-                                   PipeBlockEntity<DuctPipeType, DuctPipeProperties> sideTile) {
-        return selfTile instanceof DuctPipeBlockEntity && sideTile instanceof DuctPipeBlockEntity;
-    }
-
-    @Override
-    public boolean canPipeConnectToBlock(PipeBlockEntity<DuctPipeType, DuctPipeProperties> selfTile, Direction side,
-                                         @Nullable BlockEntity tile) {
-        return tile != null &&
-                (tile.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, side.getOpposite()).isPresent() ||
-                        tile instanceof MetaMachine metaMachine &&
-                                (metaMachine.getTrait(EnvironmentalHazardCleanerTrait.TYPE) != null ||
-                                        metaMachine.getTrait(EnvironmentalHazardEmitterTrait.TYPE) !=
-                                                null));
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
