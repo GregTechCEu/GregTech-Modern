@@ -92,11 +92,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SECURE_MACERATION)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX")
-                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XXXXX", "XXSXX", "XXXXX")
+                    .slice("XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .slice("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .slice("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .slice("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .slice("XXXXX", "XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SECURE_MACERATION.get()).setMinGlobalLimited(55)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -119,13 +119,13 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXXXX")
-                    .aisle("XXXXX", "XTTTX", "X   X")
-                    .aisle("XXXXX", "X   X", "X   X")
-                    .aisle("XXXXX", "X   X", "X   X")
-                    .aisle("XXXXX", "X   X", "X   X")
-                    .aisle("XXXXX", "XTTTX", "X   X")
-                    .aisle("XXXXX", "XXSXX", "XXXXX")
+                    .slice("XXXXX", "XXXXX", "XXXXX")
+                    .slice("XXXXX", "XTTTX", "X   X")
+                    .slice("XXXXX", "X   X", "X   X")
+                    .slice("XXXXX", "X   X", "X   X")
+                    .slice("XXXXX", "X   X", "X   X")
+                    .slice("XXXXX", "XTTTX", "X   X")
+                    .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(55)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -151,11 +151,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "XXXXX", "#XXX#")
-                    .aisle("XXXXX", "XAPAX", "XXXXX")
-                    .aisle("XXXXX", "XPAPX", "XXXXX")
-                    .aisle("XXXXX", "XAPAX", "XXXXX")
-                    .aisle("#XXX#", "XXSXX", "#XXX#")
+                    .slice("#XXX#", "XXXXX", "#XXX#")
+                    .slice("XXXXX", "XAPAX", "XXXXX")
+                    .slice("XXXXX", "XPAPX", "XXXXX")
+                    .slice("XXXXX", "XAPAX", "XXXXX")
+                    .slice("#XXX#", "XXSXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(40)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -179,11 +179,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_REACTION_SAFE)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
-                    .aisle("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
-                    .aisle("XXXXX", "XPPPX", "XAPAX", "XPPPX", "XAGAX", "FFGFF")
-                    .aisle("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
-                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
+                    .slice("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
+                    .slice("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
+                    .slice("XXXXX", "XPPPX", "XAPAX", "XPPPX", "XAGAX", "FFGFF")
+                    .slice("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
+                    .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_REACTION_SAFE.get()).setMinGlobalLimited(50)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -212,10 +212,10 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXXXX")
-                    .aisle("XXXXX", "XCCCX", "XCCCX")
-                    .aisle("XXXXX", "XCCCX", "XCCCX")
-                    .aisle("XXXXX", "XXSXX", "XXXXX")
+                    .slice("XXXXX", "XXXXX", "XXXXX")
+                    .slice("XXXXX", "XCCCX", "XCCCX")
+                    .slice("XXXXX", "XCCCX", "XCCCX")
+                    .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(30)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -238,10 +238,10 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXXXX")
-                    .aisle("XCXCX", "XCXCX", "XCXCX")
-                    .aisle("XCXCX", "XCXCX", "XCXCX")
-                    .aisle("XXXXX", "XXSXX", "XXXXX")
+                    .slice("XXXXX", "XXXXX", "XXXXX")
+                    .slice("XCXCX", "XCXCX", "XCXCX")
+                    .slice("XCXCX", "XCXCX", "XCXCX")
+                    .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(35)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -263,12 +263,12 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXX", "XXX", "XXX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
+                    .slice("XXX", "XXX", "XXX")
+                    .slice("XXX", "XAX", "XXX")
+                    .slice("XXX", "XAX", "XXX")
+                    .slice("XXX", "XAX", "XXX")
+                    .slice("XXX", "XAX", "XXX")
+                    .slice("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get()).setMinGlobalLimited(30)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -294,9 +294,9 @@ public class GCYMMachines {
                     BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX")
-                    .aisle("XXXXXXXXX", "XAAAXAAAX", "XGGGXXXXX")
-                    .aisle("XXXXXXXXX", "XGGGXXSXX", "XGGGX###X")
+                    .slice("XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX")
+                    .slice("XXXXXXXXX", "XAAAXAAAX", "XGGGXXXXX")
+                    .slice("XXXXXXXXX", "XGGGXXSXX", "XGGGX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(40)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
@@ -326,11 +326,11 @@ public class GCYMMachines {
                     BATCH_MODE)
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
-                    .aisle("XXXXXXX", "XPPPPPX", "XGGGGGX")
-                    .aisle("XXXXXXX", "XAAAAPX", "XGGGGGX")
-                    .aisle("XXXXXXX", "XTTTTXX", "XXXXXXX")
-                    .aisle("#####XX", "#####SX", "#####XX")
+                    .slice("XXXXXXX", "XXXXXXX", "XXXXXXX")
+                    .slice("XXXXXXX", "XPPPPPX", "XGGGGGX")
+                    .slice("XXXXXXX", "XAAAAPX", "XGGGGGX")
+                    .slice("XXXXXXX", "XTTTTXX", "XXXXXXX")
+                    .slice("#####XX", "#####SX", "#####XX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(55)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
@@ -358,11 +358,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
-                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
-                    .aisle("XXXXX", "XAAAX", "XAAAX", "XXMXX")
-                    .aisle("XXXXX", "XACAX", "XACAX", "XXXXX")
-                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#")
+                    .slice("#XXX#", "#XXX#", "#XXX#", "#XXX#")
+                    .slice("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .slice("XXXXX", "XAAAX", "XAAAX", "XXMXX")
+                    .slice("XXXXX", "XACAX", "XACAX", "XXXXX")
+                    .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(45)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -390,11 +390,11 @@ public class GCYMMachines {
                     BATCH_MODE)
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXGXX", "XXGXX", "XXXXX")
-                    .aisle("XXXXX", "XAAAX", "XAAAX", "XKKKX")
-                    .aisle("XXXXX", "GAAAG", "GACAG", "XKXKX")
-                    .aisle("XXXXX", "XAAAX", "XAAAX", "XKKKX")
-                    .aisle("XXSXX", "XXGXX", "XXGXX", "XXXXX")
+                    .slice("XXXXX", "XXGXX", "XXGXX", "XXXXX")
+                    .slice("XXXXX", "XAAAX", "XAAAX", "XKKKX")
+                    .slice("XXXXX", "GAAAG", "GACAG", "XKXKX")
+                    .slice("XXXXX", "XAAAX", "XAAAX", "XKKKX")
+                    .slice("XXSXX", "XXGXX", "XXGXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('C', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
                     .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(50)
@@ -419,11 +419,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#X#X#", "#X#X#", "#XXX#", "XXXXX", "#XXX#")
-                    .aisle("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
-                    .aisle("#XXX#", "#XAX#", "XKKKX", "XKKKX", "X###X")
-                    .aisle("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
-                    .aisle("#X#X#", "#X#X#", "#XSX#", "XXXXX", "#XXX#")
+                    .slice("#X#X#", "#X#X#", "#XXX#", "XXXXX", "#XXX#")
+                    .slice("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
+                    .slice("#XXX#", "#XAX#", "XKKKX", "XKKKX", "X###X")
+                    .slice("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
+                    .slice("#X#X#", "#X#X#", "#XSX#", "XXXXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(50)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -449,11 +449,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers::ebfOverclock)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
-                    .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                    .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXMXX")
-                    .aisle("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                    .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                    .slice("#XXX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                    .slice("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                    .slice("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXMXX")
+                    .slice("XXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                    .slice("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(30)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -467,11 +467,11 @@ public class GCYMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
-                        .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
-                        .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                        .slice("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
+                        .slice("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                        .slice("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
+                        .slice("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                        .slice("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                         .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
                         .where('S', definition, Direction.NORTH)
                         .where('G', HEAT_VENT.getDefaultState())
@@ -515,11 +515,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXX", "XXX", "XXX")
-                    .aisle("XXX", "XTX", "XXX")
-                    .aisle("XXX", "XTX", "XXX")
-                    .aisle("XXX", "XTX", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
+                    .slice("XXX", "XXX", "XXX")
+                    .slice("XXX", "XTX", "XXX")
+                    .slice("XXX", "XTX", "XXX")
+                    .slice("XXX", "XTX", "XXX")
+                    .slice("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(30)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -543,9 +543,9 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
-                    .aisle("XXXXXXX", "XAXGGGX", "XXXXXXX")
-                    .aisle("XXXXXXX", "XSXCCCX", "XXXXXXX")
+                    .slice("XXXXXXX", "XXXXXXX", "XXXXXXX")
+                    .slice("XXXXXXX", "XAXGGGX", "XXXXXXX")
+                    .slice("XXXXXXX", "XSXCCCX", "XXXXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -570,11 +570,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_CORROSION_PROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
-                    .aisle("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
-                    .aisle("XXXXX", "XCPCX", "XAPAX", "XAPAX", "#XXX#")
-                    .aisle("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
-                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#####")
+                    .slice("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
+                    .slice("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
+                    .slice("XXXXX", "XCPCX", "XAPAX", "XAPAX", "#XXX#")
+                    .slice("XXXXX", "XCCCX", "XAAAX", "XXAXX", "##X##")
+                    .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#####")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_CORROSION_PROOF.get()).setMinGlobalLimited(50)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -599,10 +599,10 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_SHOCK_PROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX", "##XXXXX")
-                    .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
-                    .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
-                    .aisle("XXXXXXX", "XSXGGGX", "XXXGGGX", "##XXXXX")
+                    .slice("XXXXXXX", "XXXXXXX", "XXXXXXX", "##XXXXX")
+                    .slice("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
+                    .slice("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
+                    .slice("XXXXXXX", "XSXGGGX", "XXXGGGX", "##XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SHOCK_PROOF.get()).setMinGlobalLimited(65)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -633,10 +633,10 @@ public class GCYMMachines {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 exportPredicate.setMaxLayerLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
-                        .aisle("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
-                        .aisle("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
-                        .aisleRepeatable(1, 12, "##X##", "#XAX#", "XAPAX", "#XAX#", "##X##")
-                        .aisle("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
+                        .slice("#YYY#", "YYYYY", "YYYYY", "YYYYY", "#YYY#")
+                        .slice("#YSY#", "YAAAY", "YAAAY", "YAAAY", "#YYY#")
+                        .sliceRepeatable(1, 12, "##X##", "#XAX#", "XAPAX", "#XAX#", "##X##")
+                        .slice("#####", "#ZZZ#", "#ZZZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
                                 .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
@@ -663,38 +663,38 @@ public class GCYMMachines {
                         .where('F', FLUID_EXPORT_HATCH[IV], Direction.SOUTH)
                         .where('E', ENERGY_INPUT_HATCH[IV], Direction.SOUTH)
                         .where('#', Blocks.AIR.defaultBlockState());
-                List<String> aisle1 = new ArrayList<>(16);
-                aisle1.add("#HCB#");
-                aisle1.add("#NSX#");
-                aisle1.add("#####");
-                List<String> aisle2 = new ArrayList<>(16);
-                aisle2.add("CCCCC");
-                aisle2.add("C###C");
-                aisle2.add("#CCC#");
-                List<String> aisle3 = new ArrayList<>(16);
-                aisle3.add("CCCCC");
-                aisle3.add("C###C");
-                aisle3.add("#CCC#");
-                List<String> aisle4 = new ArrayList<>(16);
-                aisle4.add("CCCCC");
-                aisle4.add("C###C");
-                aisle4.add("#CCC#");
-                List<String> aisle5 = new ArrayList<>(16);
-                aisle5.add("#CEC#");
-                aisle5.add("#CCC#");
-                aisle5.add("#####");
+                List<String> slice1 = new ArrayList<>(16);
+                slice1.add("#HCB#");
+                slice1.add("#NSX#");
+                slice1.add("#####");
+                List<String> slice2 = new ArrayList<>(16);
+                slice2.add("CCCCC");
+                slice2.add("C###C");
+                slice2.add("#CCC#");
+                List<String> slice3 = new ArrayList<>(16);
+                slice3.add("CCCCC");
+                slice3.add("C###C");
+                slice3.add("#CCC#");
+                List<String> slice4 = new ArrayList<>(16);
+                slice4.add("CCCCC");
+                slice4.add("C###C");
+                slice4.add("#CCC#");
+                List<String> slice5 = new ArrayList<>(16);
+                slice5.add("#CEC#");
+                slice5.add("#CCC#");
+                slice5.add("#####");
                 for (int i = 1; i <= 12; ++i) {
-                    aisle1.add(2, "##C##");
-                    aisle2.add(2, "#C#C#");
-                    aisle3.add(2, "C#P#C");
-                    aisle4.add(2, "#C#C#");
-                    aisle5.add(2, "##F##");
+                    slice1.add(2, "##C##");
+                    slice2.add(2, "#C#C#");
+                    slice3.add(2, "C#P#C");
+                    slice4.add(2, "#C#C#");
+                    slice5.add(2, "##F##");
                     var copy = builder.shallowCopy()
-                            .aisle(aisle1.toArray(String[]::new))
-                            .aisle(aisle2.toArray(String[]::new))
-                            .aisle(aisle3.toArray(String[]::new))
-                            .aisle(aisle4.toArray(String[]::new))
-                            .aisle(aisle5.toArray(String[]::new));
+                            .slice(slice1.toArray(String[]::new))
+                            .slice(slice2.toArray(String[]::new))
+                            .slice(slice3.toArray(String[]::new))
+                            .slice(slice4.toArray(String[]::new))
+                            .slice(slice5.toArray(String[]::new));
                     shapeInfos.add(copy.build());
                 }
                 return shapeInfos;
@@ -716,9 +716,9 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXXXX")
-                    .aisle("XXXXX", "XCACX", "XXXXX")
-                    .aisle("XXXXX", "XXSXX", "XXXXX")
+                    .slice("XXXXX", "XXXXX", "XXXXX")
+                    .slice("XXXXX", "XCACX", "XXXXX")
+                    .slice("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(25)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -741,11 +741,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(BACK, UP, LEFT)
-                    .aisle("XXXXX", "XSXXX", "XXXXX")
-                    .aisle("XXXXX", "XAXPX", "XXXGX")
-                    .aisle("XXXXX", "XXXPX", "XXXGX")
-                    .aisleRepeatable(2, 2, "##XXX", "##XPX", "##XGX")
-                    .aisle("##XXX", "##XXX", "##XXX")
+                    .slice("XXXXX", "XSXXX", "XXXXX")
+                    .slice("XXXXX", "XAXPX", "XXXGX")
+                    .slice("XXXXX", "XXXPX", "XXXGX")
+                    .sliceRepeatable(2, 2, "##XXX", "##XPX", "##XGX")
+                    .slice("##XXX", "##XXX", "##XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(40)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -770,11 +770,11 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
-                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
-                    .aisle("XXXXX", "XAAAX", "XAAAX", "XXXXX")
-                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
-                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#")
+                    .slice("#XXX#", "#XXX#", "#XXX#", "#XXX#")
+                    .slice("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .slice("XXXXX", "XAAAX", "XAAAX", "XXXXX")
+                    .slice("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .slice("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(45)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -798,9 +798,9 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .aisle("XXXXX", "XXXXX", "XXX##")
-                    .aisle("XXXXX", "X#CCX", "XXXXX")
-                    .aisle("XXXXX", "XSXXX", "XXX##")
+                    .slice("XXXXX", "XXXXX", "XXX##")
+                    .slice("XXXXX", "X#CCX", "XXXXX")
+                    .slice("XXXXX", "XSXXX", "XXX##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_STRESS_PROOF.get()).setMinGlobalLimited(25)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -830,19 +830,19 @@ public class GCYMMachines {
                 PatternPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         // spotless:off
-                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPMPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .slice("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPMPPPT##")
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .slice("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                         // spotless:on
                         .where('S', controller(blocks(definition.get())))
                         .where('X', casing.or(autoAbilities(definition.getRecipeTypes()))
@@ -863,55 +863,55 @@ public class GCYMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
+                        .slice("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "####FFFFF####", "#############", "#############", "#############", "#############",
                                 "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
+                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
                                 "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
                                 "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
                                 "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
+                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
                                 "######P######", "######P######", "######P######", "######P######", "######P######",
                                 "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
                                 "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
                                 "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
                                 "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
                                 "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
                                 "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
                                 "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
                                 "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
                                 "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
                                 "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
                                 "###PTAAATP###", "##TPPPHPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
                                 "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
                                 "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
                                 "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
+                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
                                 "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
                                 "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
                                 "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
+                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
                                 "######P######", "######P######", "######P######", "######P######", "######P######",
                                 "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
                                 "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
+                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
                                 "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
                                 "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
                                 "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "####FFFFF####", "#############", "#############", "#############", "#############",
                                 "#############", "#############")
-                        .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
+                        .slice("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "#############", "#############", "#############", "#############", "#############",
                                 "#############", "#############")
@@ -962,12 +962,12 @@ public class GCYMMachines {
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     // spotless:off
-                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPX#VPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####", "XXXXXXX####")
-                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
+                    .slice("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####", "XXXXXXX####")
+                    .slice("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####", "XXXXXXX####")
+                    .slice("XXXXXXX#KVK", "XPAPAPX#VPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .slice("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
+                    .slice("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####", "XXXXXXX####")
+                    .slice("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
                     // spotless:on
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)

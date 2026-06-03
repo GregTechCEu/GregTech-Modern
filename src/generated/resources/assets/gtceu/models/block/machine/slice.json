@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "loader": "gtceu:machine",
-  "machine": "gtceu:aisle",
+  "machine": "gtceu:slice",
   "texture_overrides": {
     "all": "gtceu:block/casings/cleanroom/plascrete"
   },

@@ -29,14 +29,14 @@ import java.util.Objects;
  *
  * <pre>
  * {@code
- * for(int aisleI in 0..aisles):
+ * for(int sliceI in 0..slices):
  *     for(int stringI in 0..strings):
  *         for(int charI in 0..chars):
  *             pos = startPos()
- *             pos.move(aisleI in aisleDir)
+ *             pos.move(sliceI in sliceDir)
  *             pos.move(stringI in stringDir)
  *             pos.move(charI in charDir)
- *             predicate = aisles[aisleI].stringAt(stringI).charAt(charI)
+ *             predicate = slices[sliceI].stringAt(stringI).charAt(charI)
  * }
  * </pre>
  */
@@ -49,17 +49,17 @@ public class MultiblockPatternBuilder {
     private @Nullable OriginOffset offset;
     private @Nullable OriginOffset anchorOffset;
     private char centerChar;
-    private @Nullable AisleStrategy aisleStrategy;
+    private @Nullable SliceStrategy sliceStrategy;
 
-    private final List<PatternAisle> aisles = new ArrayList<>();
+    private final List<PatternSlice> slices = new ArrayList<>();
 
     private final Char2ObjectMap<@Nullable PatternPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
-    private MultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
+    private MultiblockPatternBuilder(RelativeDirection sliceDir, RelativeDirection stringDir,
                                      RelativeDirection charDir) {
-        directions[0] = aisleDir;
+        directions[0] = sliceDir;
         directions[1] = stringDir;
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
@@ -67,9 +67,9 @@ public class MultiblockPatternBuilder {
         this.symbolMap.put(' ', PatternPredicate.ANY);
     }
 
-    public MultiblockPatternBuilder aisleRepeatable(int minRepeats, int maxRepeats, String... aisle) {
-        validateAisle(aisle);
-        for (String s : aisle) {
+    public MultiblockPatternBuilder sliceRepeatable(int minRepeats, int maxRepeats, String... slice) {
+        validateSlice(slice);
+        for (String s : slice) {
             for (char c : s.toCharArray()) {
                 if (!this.symbolMap.containsKey(c)) {
                     this.symbolMap.put(c, null);
@@ -80,15 +80,15 @@ public class MultiblockPatternBuilder {
         if (minRepeats > maxRepeats) {
             throw new IllegalArgumentException("minRepeats must be smaller than maxRepeats");
         }
-        PatternAisle pa = new PatternAisle(aisle);
-        pa.minRepeats = minRepeats;
-        pa.maxRepeats = maxRepeats;
-        aisles.add(pa);
+        PatternSlice ps = new PatternSlice(slice);
+        ps.minRepeats = minRepeats;
+        ps.maxRepeats = maxRepeats;
+        slices.add(ps);
         return this;
     }
 
-    public MultiblockPatternBuilder aisle(String... aisle) {
-        return aisleRepeatable(1, 1, aisle);
+    public MultiblockPatternBuilder slice(String... slice) {
+        return sliceRepeatable(1, 1, slice);
     }
 
     public MultiblockPatternBuilder startOffset(OriginOffset offset) {
@@ -103,7 +103,7 @@ public class MultiblockPatternBuilder {
 
     /**
      * Start a new multiblock pattern builder, this is equivalent to
-     * {@link MultiblockPatternBuilder#start(RelativeDirection aisle, RelativeDirection string, RelativeDirection char)
+     * {@link MultiblockPatternBuilder#start(RelativeDirection slice, RelativeDirection string, RelativeDirection char)
      * FactoryBlockPattern.start(BACK, UP, RIGHT)}
      *
      */
@@ -114,16 +114,16 @@ public class MultiblockPatternBuilder {
     /**
      * Starts the builder, each pair of {@link RelativeDirection} must be used at exactly once!
      *
-     * @param aisleDir  The direction aisles progress in, each successive
-     *                  {@link MultiblockPatternBuilder#aisle(String...)}
+     * @param sliceDir  The direction slices progress in, each successive
+     *                  {@link MultiblockPatternBuilder#slice(String...)}
      *                  progresses in this direction
-     * @param stringDir The direction strings progress in, each successive string in an aisle progresses by this
+     * @param stringDir The direction strings progress in, each successive string in an slice progresses by this
      *                  direction
      * @param charDir   The direction chars progress in, each successive char in a string progresses by this direction
      */
-    public static MultiblockPatternBuilder start(RelativeDirection aisleDir, RelativeDirection stringDir,
+    public static MultiblockPatternBuilder start(RelativeDirection sliceDir, RelativeDirection stringDir,
                                                  RelativeDirection charDir) {
-        return new MultiblockPatternBuilder(aisleDir, stringDir, charDir);
+        return new MultiblockPatternBuilder(sliceDir, stringDir, charDir);
     }
 
     public MultiblockPatternBuilder where(char symbol, PatternPredicate predicate) {
@@ -132,19 +132,19 @@ public class MultiblockPatternBuilder {
         return this;
     }
 
-    public MultiblockPatternBuilder aisleStrategy(AisleStrategy aisleStrategy) {
-        this.aisleStrategy = aisleStrategy;
+    public MultiblockPatternBuilder sliceStrategy(SliceStrategy sliceStrategy) {
+        this.sliceStrategy = sliceStrategy;
         return this;
     }
 
     public IBlockPattern build() {
         checkMissingPredicates();
         checkGlobalConstraints();
-        this.dimensions[0] = aisles.size();
-        if (aisleStrategy == null) aisleStrategy = new BasicAisleStrategy();
+        this.dimensions[0] = slices.size();
+        if (sliceStrategy == null) sliceStrategy = new BasicSliceStrategy();
 
-        aisleStrategy.finish(dimensions, directions, aisles);
-        return new BlockPattern(aisles.toArray(new PatternAisle[0]), aisleStrategy, dimensions,
+        sliceStrategy.finish(dimensions, directions, slices);
+        return new BlockPattern(slices.toArray(new PatternSlice[0]), sliceStrategy, dimensions,
                 directions, offset, anchorOffset, symbolMap, centerChar);
     }
 
@@ -164,8 +164,8 @@ public class MultiblockPatternBuilder {
 
     private void checkGlobalConstraints() {
         Char2IntMap charCount = new Char2IntOpenHashMap();
-        for (var aisle : aisles) {
-            for (var string : aisle.getPattern()) {
+        for (var slice : slices) {
+            for (var string : slice.getPattern()) {
                 for (char c : string.toCharArray()) {
                     charCount.merge(c, 1, Integer::sum);
                 }
@@ -198,26 +198,26 @@ public class MultiblockPatternBuilder {
         }
     }
 
-    public void validateAisle(String[] aisle) {
-        if (ArrayUtils.isEmpty(aisle) || StringUtils.isEmpty(aisle[0]))
-            throw new IllegalArgumentException("Empty pattern for aisle");
+    public void validateSlice(String[] slice) {
+        if (ArrayUtils.isEmpty(slice) || StringUtils.isEmpty(slice[0]))
+            throw new IllegalArgumentException("Empty pattern for slice");
 
         if (dimensions[2] == -1) {
-            dimensions[2] = aisle[0].length();
+            dimensions[2] = slice[0].length();
         }
 
         if (dimensions[1] == -1) {
-            dimensions[1] = aisle.length;
+            dimensions[1] = slice.length;
         }
 
-        if (aisle.length != dimensions[1]) {
-            throw new IllegalArgumentException("Expected aisle with height of " + dimensions[1] +
-                    ", but was given one with a height of " + aisle.length);
+        if (slice.length != dimensions[1]) {
+            throw new IllegalArgumentException("Expected slice with height of " + dimensions[1] +
+                    ", but was given one with a height of " + slice.length);
         } else {
-            for (String s : aisle) {
+            for (String s : slice) {
                 if (s.length() != dimensions[2]) {
                     throw new IllegalArgumentException(
-                            "Not all rows in the given aisle are the correct width (expected " + dimensions[2] +
+                            "Not all rows in the given slice are the correct width (expected " + dimensions[2] +
                                     ", found one with " + s.length() + ")");
                 }
             }

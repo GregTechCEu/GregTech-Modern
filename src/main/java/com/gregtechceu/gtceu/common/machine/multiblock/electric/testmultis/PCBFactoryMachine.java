@@ -21,9 +21,9 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
     @Override
     public IBlockPattern getDefaultStructurePattern() {
         return MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-                .aisle("CCC", "CCC")
-                .aisle("CCC", "CBC")
-                .aisle("CSC", "CCC")
+                .slice("CCC", "CCC")
+                .slice("CCC", "CBC")
+                .slice("CSC", "CCC")
                 .where('C', /*
                              * Predicates.autoAbilities(true, false, false)
                              * .or(
@@ -39,13 +39,13 @@ public class PCBFactoryMachine extends WorkableElectricMultiblockMachine {
         // patternStates.put("cooler", new PatternState());
         // structures.put("cooler",
         // MultiblockPatternBuilder.start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-        // .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
-        // .aisle("BBBBBBB", "B#####B", "#######", "#######")
-        // .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
-        // .aisle("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
-        // .aisle("BBBBBBB", "B#####B", "###B###", "##BBB##")
-        // .aisle("BBBBBBB", "B#####B", "#######", "#######")
-        // .aisle("BBBBBBB", "BBBBBBB", "#######", "#######")
+        // .slice("BBBBBBB", "BBBBBBB", "#######", "#######")
+        // .slice("BBBBBBB", "B#####B", "#######", "#######")
+        // .slice("BBBBBBB", "B#####B", "###B###", "##BBB##")
+        // .slice("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
+        // .slice("BBBBBBB", "B#####B", "###B###", "##BBB##")
+        // .slice("BBBBBBB", "B#####B", "#######", "#######")
+        // .slice("BBBBBBB", "BBBBBBB", "#######", "#######")
         // .where('#', PatternPredicate.AIR)
         // .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
         // .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))

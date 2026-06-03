@@ -128,7 +128,7 @@ public class PatternPredicate {
     }
 
     /**
-     * Set the minimum number of candidate blocks for each aisle layer.
+     * Set the minimum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMinLayerLimited(int min) {
         predicateList.forEach(p -> p.minLayerCount = min);
@@ -140,7 +140,7 @@ public class PatternPredicate {
     }
 
     /**
-     * Set the maximum number of candidate blocks for each aisle layer.
+     * Set the maximum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMaxLayerLimited(int max) {
         predicateList.forEach(p -> p.maxLayerCount = max);

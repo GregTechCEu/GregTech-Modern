@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-public class PatternAisle {
+public class PatternSlice {
 
     @Getter
     protected int minRepeats, maxRepeats;
@@ -14,7 +14,7 @@ public class PatternAisle {
     @Getter
     protected final String[] pattern;
 
-    public PatternAisle(int repeats, char[][] pattern) {
+    public PatternSlice(int repeats, char[][] pattern) {
         this.pattern = new String[pattern.length];
         for (int i = 0; i < pattern.length; i++) {
             this.pattern[i] = new String(pattern[i]);
@@ -22,21 +22,21 @@ public class PatternAisle {
         this.minRepeats = this.maxRepeats = repeats;
     }
 
-    public PatternAisle(int minRepeats, int maxRepeats, String[] pattern) {
+    public PatternSlice(int minRepeats, int maxRepeats, String[] pattern) {
         this.pattern = pattern;
         this.minRepeats = minRepeats;
         this.maxRepeats = maxRepeats;
     }
 
-    public PatternAisle(int repeats, String[] pattern) {
+    public PatternSlice(int repeats, String[] pattern) {
         this(repeats, repeats, pattern);
     }
 
-    public PatternAisle(String[] pattern) {
+    public PatternSlice(String[] pattern) {
         this(1, pattern);
     }
 
-    public PatternAisle(char[][] pattern) {
+    public PatternSlice(char[][] pattern) {
         this(1, pattern);
     }
 
@@ -70,8 +70,8 @@ public class PatternAisle {
         return pattern[0].length();
     }
 
-    public PatternAisle copy() {
-        PatternAisle c = new PatternAisle(minRepeats, maxRepeats, pattern.clone());
+    public PatternSlice copy() {
+        PatternSlice c = new PatternSlice(minRepeats, maxRepeats, pattern.clone());
         c.actualRepeats = this.actualRepeats;
         return c;
     }

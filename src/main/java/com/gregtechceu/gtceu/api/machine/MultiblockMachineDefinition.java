@@ -70,23 +70,23 @@ public class MultiblockMachineDefinition extends MachineDefinition {
         // var structurePattern = patternFactory.get();
         return new ArrayList<>();
         // return null;
-        // int[][] aisleRepetitions = structurePattern.aisleRepetitions;
-        // return repetitionDFS(structurePattern, new ArrayList<>(), aisleRepetitions, new IntArrayList());
+        // int[][] sliceRepetitions = structurePattern.sliceRepetitions;
+        // return repetitionDFS(structurePattern, new ArrayList<>(), sliceRepetitions, new IntArrayList());
     }
 
     private List<MultiblockShapeInfo> repetitionDFS(BlockPattern pattern, List<MultiblockShapeInfo> pages,
-                                                    int[][] aisleRepetitions, IntArrayList repetitionStack) {
-        if (repetitionStack.size() == aisleRepetitions.length) {
+                                                    int[][] sliceRepetitions, IntArrayList repetitionStack) {
+        if (repetitionStack.size() == sliceRepetitions.length) {
             int[] repetition = new int[repetitionStack.size()];
             for (int i = 0; i < repetitionStack.size(); i++) {
                 repetition[i] = repetitionStack.getInt(i);
             }
             // pages.add(new MultiblockShapeInfo(pattern.getPreview(repetition)));
         } else {
-            for (int i = aisleRepetitions[repetitionStack.size()][0]; i <=
-                    aisleRepetitions[repetitionStack.size()][1]; i++) {
+            for (int i = sliceRepetitions[repetitionStack.size()][0]; i <=
+                    sliceRepetitions[repetitionStack.size()][1]; i++) {
                 repetitionStack.push(i);
-                repetitionDFS(pattern, pages, aisleRepetitions, repetitionStack);
+                repetitionDFS(pattern, pages, sliceRepetitions, repetitionStack);
                 repetitionStack.popInt();
             }
         }

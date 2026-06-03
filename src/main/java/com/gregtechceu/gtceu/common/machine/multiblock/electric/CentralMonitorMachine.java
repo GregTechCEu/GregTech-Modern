@@ -236,13 +236,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        String[] aisle = new String[upDist + downDist + 1];
+        String[] slice = new String[upDist + downDist + 1];
         for (int i = 0; i < upDist + downDist + 1; i++) {
-            aisle[i] = pattern[i].toString();
+            slice[i] = pattern[i].toString();
         }
 
         return MultiblockPatternBuilder.start()
-                .aisle(aisle)
+                .slice(slice)
                 .where('B', getMultiPredicate())
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();

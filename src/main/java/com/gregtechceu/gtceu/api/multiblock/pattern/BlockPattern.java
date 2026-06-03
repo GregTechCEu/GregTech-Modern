@@ -46,19 +46,19 @@ public class BlockPattern implements IBlockPattern {
 
     protected final boolean hasStartOffset;
     @Getter
-    protected final PatternAisle[] aisles;
+    protected final PatternSlice[] slices;
     @Getter
-    protected final AisleStrategy aisleStrategy;
+    protected final SliceStrategy sliceStrategy;
     @Getter
     protected final Char2ObjectMap<PatternPredicate> predicates;
 
-    public BlockPattern(PatternAisle[] aisles, AisleStrategy aisleStrategy,
+    public BlockPattern(PatternSlice[] slices, SliceStrategy sliceStrategy,
                         int[] dimensions, RelativeDirection[] directions,
                         @Nullable OriginOffset offset, @Nullable OriginOffset anchorOffset,
                         Char2ObjectMap<PatternPredicate> predicates,
                         char centerChar) {
-        this.aisles = aisles;
-        this.aisleStrategy = aisleStrategy;
+        this.slices = slices;
+        this.sliceStrategy = sliceStrategy;
         this.dimensions = dimensions;
         this.directions = directions;
         this.predicates = predicates;
@@ -80,10 +80,10 @@ public class BlockPattern implements IBlockPattern {
 
     private void legacyStartOffset(char center) {
         if (center == 0) return;
-        for (int aisleI = 0; aisleI < dimensions[0]; aisleI++) {
-            int[] res = aisles[aisleI].firstInstanceOf(center);
+        for (int sliceI = 0; sliceI < dimensions[0]; sliceI++) {
+            int[] res = slices[sliceI].firstInstanceOf(center);
             if (res != null) {
-                moveOffset(directions[0], -aisleI);
+                moveOffset(directions[0], -sliceI);
                 moveOffset(directions[1], -res[0]);
                 moveOffset(directions[2], -res[1]);
                 return;
@@ -168,9 +168,9 @@ public class BlockPattern implements IBlockPattern {
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
-        aisleStrategy.setPattern(this);
-        aisleStrategy.start(controllerPos, frontFacing, upwardsFacing);
-        if (!aisleStrategy.check(patternState, isFlipped)) return false;
+        sliceStrategy.setPattern(this);
+        sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
+        if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
             if (entry.getIntValue() < entry.getKey().minCount) {
@@ -186,38 +186,38 @@ public class BlockPattern implements IBlockPattern {
     }
 
     /**
-     * Checks a specific aisle for validity
+     * Checks a specific slice for validity
      *
      * @param controllerPos The position of the controller
      * @param frontFacing   The front facing of the controller
      * @param upwardsFacing The up facing of the controller
-     * @param aisleIndex    The index of the aisle, this is where the pattern is gotten from, treats repeatable aisles
+     * @param sliceIndex    The index of the slice, this is where the pattern is gotten from, treats repeatable slices
      *                      as only 1
-     * @param aisleOffset   The offset of the aisle, how much offset in aisleDir to check the blocks in world, for
-     *                      example, if the first aisle is repeated 2 times, aisleIndex is 1 while this is 2
+     * @param sliceOffset   The offset of the slice, how much offset in sliceDir to check the blocks in world, for
+     *                      example, if the first slice is repeated 2 times, sliceIndex is 1 while this is 2
      * @param flip          Whether to flip or not
      * @return True if the check passed
      */
-    public boolean checkAisle(BlockPos.MutableBlockPos controllerPos, PatternState patternState, Direction frontFacing,
+    public boolean checkSlice(BlockPos.MutableBlockPos controllerPos, PatternState patternState, Direction frontFacing,
                               Direction upwardsFacing,
-                              int aisleIndex, int aisleOffset, boolean flip) {
-        Direction absoluteAisle = directions[0].getRelativeFacing(frontFacing, upwardsFacing, flip);
+                              int sliceIndex, int sliceOffset, boolean flip) {
+        Direction absoluteSlice = directions[0].getRelativeFacing(frontFacing, upwardsFacing, flip);
         Direction absoluteString = directions[1].getRelativeFacing(frontFacing, upwardsFacing, flip);
         Direction absoluteChar = directions[2].getRelativeFacing(frontFacing, upwardsFacing, flip);
 
-        BlockPos.MutableBlockPos aisleStart = startPos(controllerPos, frontFacing, upwardsFacing, flip)
-                .move(absoluteAisle, aisleOffset);
+        BlockPos.MutableBlockPos sliceStart = startPos(controllerPos, frontFacing, upwardsFacing, flip)
+                .move(absoluteSlice, sliceOffset);
 
-        BlockPos.MutableBlockPos stringStart = aisleStart.mutable();
-        BlockPos.MutableBlockPos charPos = aisleStart.mutable();
-        PatternAisle aisle = aisles[aisleIndex];
+        BlockPos.MutableBlockPos stringStart = sliceStart.mutable();
+        BlockPos.MutableBlockPos charPos = sliceStart.mutable();
+        PatternSlice slice = slices[sliceIndex];
 
         patternState.layerCount.clear();
 
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 patternState.cbi.setCurrentPos(charPos);
-                PatternPredicate pred = predicates.get(aisle.charAt(stringIdx, charIdx));
+                PatternPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
                 if (!pred.equals(PatternPredicate.ANY)) {
                     BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
@@ -250,15 +250,15 @@ public class BlockPattern implements IBlockPattern {
         return true;
     }
 
-    public int getRepetitionCount(int aisleIndex) {
-        return aisles[aisleIndex].actualRepeats;
+    public int getRepetitionCount(int sliceIndex) {
+        return slices[sliceIndex].actualRepeats;
     }
 
     @Override
     public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
                                                                             CompoundTag tag) {
         Long2ObjectSortedMap<PatternPredicate> map = new Long2ObjectRBTreeMap<>();
-        Direction absoluteAisle = directions[0].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
+        Direction absoluteSlice = directions[0].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
         Direction absoluteString = directions[1].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
         Direction absoluteChar = directions[2].getRelativeFacing(src.getFrontFacing(), src.getUpwardsFacing());
 
@@ -266,11 +266,11 @@ public class BlockPattern implements IBlockPattern {
         BlockPos.MutableBlockPos start = startPos(pos, src.getFrontFacing(), src.getUpwardsFacing(), false);
         BlockPos.MutableBlockPos serial = start.mutable();
 
-        int[] order = aisleStrategy.getDefaultAisles(tag);
+        int[] order = sliceStrategy.getDefaultSlices(tag);
         for (int i = 0; i < order.length; i++) {
             for (int j = 0; j < dimensions[1]; j++) {
                 for (int k = 0; k < dimensions[2]; k++) {
-                    PatternPredicate pred = predicates.get(aisles[order[i]].charAt(j, k));
+                    PatternPredicate pred = predicates.get(slices[order[i]].charAt(j, k));
                     if (!pred.equals(PatternPredicate.ANY))
                         map.put(serial.asLong(), pred);
                     serial.move(absoluteChar);
@@ -279,7 +279,7 @@ public class BlockPattern implements IBlockPattern {
                 serial.move(absoluteChar.getOpposite(), dimensions[2]);
             }
             serial.set(start);
-            serial.move(absoluteAisle, i + 1);
+            serial.move(absoluteSlice, i + 1);
         }
 
         return map;

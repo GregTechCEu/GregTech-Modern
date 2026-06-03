@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternAisle;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateBlocks;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateFluidTag;
 import com.gregtechceu.gtceu.api.multiblock.predicates.PredicateFluids;
@@ -144,9 +144,9 @@ public class MultiblockInWorldPreviewRenderer {
             var predicateMapping = blockPattern.getPredicates();
             int[] dims = blockPattern.getDimensions();
             for (int x = 0; x < dims[0]; x++) {
-                PatternAisle aisle = blockPattern.getAisles()[x];
+                PatternSlice slice = blockPattern.getSlices()[x];
                 for (int y = 0; y < dims[1]; y++) {
-                    var string = aisle.getPattern()[y];
+                    var string = slice.getPattern()[y];
                     for (int z = 0; z < dims[2]; z++) {
                         var predList = predicateMapping.get(string.charAt(z));
                         var pred = predList.predicateList.get(0);
@@ -168,9 +168,9 @@ public class MultiblockInWorldPreviewRenderer {
 
         /*
          * for (int x = 0; x < pattern.; x++) {
-         * BlockInfo[][] aisle = blocks[x];
-         * for (int y = 0; y < aisle.length; y++) {
-         * BlockInfo[] column = aisle[y];
+         * BlockInfo[][] slice = blocks[x];
+         * for (int y = 0; y < slice.length; y++) {
+         * BlockInfo[] column = slice[y];
          * if (LAST_LAYER != -1 && LAST_LAYER != y) {
          * continue;
          * }

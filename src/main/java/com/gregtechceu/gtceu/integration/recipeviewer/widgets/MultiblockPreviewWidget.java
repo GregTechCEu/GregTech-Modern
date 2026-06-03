@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternAisle;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.*;
 
 import net.minecraft.network.chat.Component;
@@ -75,19 +75,19 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             var dimensions = blockPattern.getDimensions();
             BlockState[][][] blocks = new BlockState[dimensions[0]][dimensions[1]][dimensions[2]];
             var mapping = blockPattern.getPredicates();
-            var aisles = blockPattern.getAisles();
+            var slices = blockPattern.getSlices();
             // todo use real relative directions from the definition
-            for (int aisleIdx = 0; aisleIdx < dimensions[0]; aisleIdx++) {
-                PatternAisle aisle = aisles[aisleIdx];
+            for (int sliceIdx = 0; sliceIdx < dimensions[0]; sliceIdx++) {
+                PatternSlice slice = slices[sliceIdx];
                 for (int strIdx = 0; strIdx < dimensions[1]; strIdx++) {
                     for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
-                        PatternPredicate predicate = mapping.get(aisle.charAt(strIdx, charIdx));
+                        PatternPredicate predicate = mapping.get(slice.charAt(strIdx, charIdx));
                         if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
-                            blocks[aisleIdx][strIdx][charIdx] = Blocks.AIR.defaultBlockState();
+                            blocks[sliceIdx][strIdx][charIdx] = Blocks.AIR.defaultBlockState();
                             continue;
                         }
 
-                        blocks[aisleIdx][strIdx][charIdx] = predicate.predicateList.get(0).candidates.get(0)
+                        blocks[sliceIdx][strIdx][charIdx] = predicate.predicateList.get(0).candidates.get(0)
                                 .getBlockState();
 
                     }

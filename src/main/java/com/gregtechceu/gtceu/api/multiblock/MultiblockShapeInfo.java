@@ -32,7 +32,7 @@ public class MultiblockShapeInfo {
         protected List<String[]> shape = new ArrayList<>();
         protected Map<Character, BlockInfo> symbolMap = new LinkedHashMap<>();
 
-        public ShapeInfoBuilder aisle(String... data) {
+        public ShapeInfoBuilder slice(String... data) {
             this.shape.add(data);
             return this;
         }
@@ -67,9 +67,9 @@ public class MultiblockShapeInfo {
         private BlockInfo[][][] bake() {
             BlockInfo[][][] Ts = new BlockInfo[shape.get(0)[0].length()][shape.get(0).length][shape.size()];
             for (int z = 0; z < shape.size(); z++) { // z
-                String[] aisleEntry = shape.get(z);
+                String[] sliceEntry = shape.get(z);
                 for (int y = 0; y < shape.get(0).length; y++) {
-                    String columnEntry = aisleEntry[y];
+                    String columnEntry = sliceEntry[y];
                     for (int x = 0; x < columnEntry.length(); x++) {
                         BlockInfo info = symbolMap.getOrDefault(columnEntry.charAt(x), BlockInfo.EMPTY);
                         Ts[x][y][z] = info;
