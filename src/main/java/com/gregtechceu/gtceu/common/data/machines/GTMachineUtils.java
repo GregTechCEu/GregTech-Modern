@@ -899,7 +899,7 @@ public class GTMachineUtils {
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
                         .where('R', rotorHolder(tier).setExactLimit(1)
-                                .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
+                                .or(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
                         .where('H', blocks(casing.get())
                                 .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
                                 .or(autoAbilities(true, needsMuffler, false)))

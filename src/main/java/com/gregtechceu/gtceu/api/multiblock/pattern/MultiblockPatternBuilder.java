@@ -5,14 +5,18 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
+import it.unimi.dsi.fastutil.chars.Char2IntMap;
+import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A builder class for {@link BlockPattern}<br />
@@ -59,6 +63,7 @@ public class MultiblockPatternBuilder {
         directions[1] = stringDir;
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
+        // todo is this wanted?
         this.symbolMap.put(' ', PatternPredicate.ANY);
     }
 
@@ -134,6 +139,7 @@ public class MultiblockPatternBuilder {
 
     public IBlockPattern build() {
         checkMissingPredicates();
+        checkGlobalConstraints();
         this.dimensions[0] = aisles.size();
         if (aisleStrategy == null) aisleStrategy = new BasicAisleStrategy();
 
@@ -153,6 +159,42 @@ public class MultiblockPatternBuilder {
 
         if (!list.isEmpty()) {
             throw new IllegalStateException("Predicates for character(s) " + COMMA_JOINER.join(list) + " are missing");
+        }
+    }
+
+    private void checkGlobalConstraints() {
+        Char2IntMap charCount = new Char2IntOpenHashMap();
+        for (var aisle : aisles) {
+            for (var string : aisle.getPattern()) {
+                for (char c : string.toCharArray()) {
+                    charCount.merge(c, 1, Integer::sum);
+                }
+            }
+        }
+
+        for (var entry : symbolMap.char2ObjectEntrySet()) {
+            char symbol = entry.getCharKey();
+            PatternPredicate predicate = entry.getValue();
+            if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
+
+            int maxCount = -1;
+            for (var basePredicate : predicate.predicateList) {
+                if (basePredicate.maxCount == -1) {
+                    maxCount = -1;
+                    break;
+                }
+                if(basePredicate.minCount == basePredicate.maxCount) {
+                    if (maxCount == -1) {
+                        maxCount = basePredicate.minCount;
+                    } else {
+                        maxCount += basePredicate.minCount;
+                    }
+                }
+            }
+            if (maxCount == -1) continue;
+            if (charCount.get(symbol) > maxCount) {
+                throw new IllegalArgumentException("Predicate has global max of " + maxCount + " but appears " + charCount.get(symbol) + " times.");
+            }
         }
     }
 
