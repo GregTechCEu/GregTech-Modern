@@ -81,8 +81,17 @@ public class CentralMonitorUIFactory implements PanelFactory {
                     .child(new TextWidget<>(Text.dynamic(() -> Component.literal(group.getName())))
                             .paddingLeft(5)
                             .widthRelOffset(1, -18 * 3))
-                    .child(new ItemDisplayWidget()
-                            .item(group.getItemStackHandler().getStackInSlot(0)))
+                    .child(new ItemSlot()
+                            .syncHandler(syncManager.getOrCreateSyncHandler(
+                                    "module_slot", index,
+                                    ItemSlotSyncHandler.class,
+                                    () -> new ItemSlotSyncHandler(new ModularSlot(group.getItemStackHandler(), 0)
+                                            .changeListener((newItem, onlyAmountChanged, client, init) -> {
+                                                if (!init) {
+                                                    groups.set(index, group);
+                                                    groupSync.setValue(groups, true, false);
+                                                }
+                                            })))))
                     .child(new ButtonWidget<>()
                             .overlay(GuiTextures.EDIT)
                             .onMousePressed((context, button) -> {

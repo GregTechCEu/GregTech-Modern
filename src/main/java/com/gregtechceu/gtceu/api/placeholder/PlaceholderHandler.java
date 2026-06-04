@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
-import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -25,16 +24,14 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.value.IBoolValue;
 import brachy.modularui.api.value.IIntValue;
 import brachy.modularui.api.value.IStringValue;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.*;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.SortableListWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
@@ -271,7 +268,7 @@ public class PlaceholderHandler {
                                                 .addTooltipLine(
                                                         Text.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
                         .child(Flow.column()
-                                .widthRel(.8f)
+                                .widthRel(.7f)
                                 .padding(5)
                                 .child(Flow.row()
                                         .height(20)
@@ -295,20 +292,23 @@ public class PlaceholderHandler {
                                                 .marginLeft(4))
                                         .childIf(pause != null, () -> new ToggleButton()
                                                 .value(pause)
-                                                .background(false, GuiTextures.PAUSE)
-                                                .background(true, GuiTextures.PLAY)
+                                                .marginLeft(10)
+                                                .marginRight(10)
+                                                .background(true, GuiTextures.MC_BUTTON)
+                                                .hoverBackground(true, GuiTextures.MC_BUTTON_HOVERED)
+                                                .background(false, GuiTextures.MC_BUTTON)
+                                                .hoverBackground(false, GuiTextures.MC_BUTTON_HOVERED)
+                                                .overlay(false, GuiTextures.PAUSE)
+                                                .overlay(true, GuiTextures.PLAY)
                                                 .addTooltip(false, Text.lang("gtceu.gui.central_monitor.pause"))
-                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume"))
-                                                .margin(4))
+                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume")))
                                         .childIf(updateText != null, () -> new ButtonWidget<>()
-                                                .background(GuiTextures.RIGHTLOAD)
-                                                .hoverBackground(GuiTextures.RIGHTLOAD, new BorderDrawable())
+                                                .overlay(GuiTextures.RIGHTLOAD)
                                                 .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
                                                 .syncHandler(runCodeOnce))
                                         .child(new ButtonWidget<>()
-                                                .background(GuiTextures.HELP)
-                                                .hoverBackground(GuiTextures.HELP, new BorderDrawable())
-                                                .margin(4)
+                                                .right(0)
+                                                .overlay(GuiTextures.HELP)
                                                 .onMousePressed((GuiContext context, int button) -> {
                                                     helpPanel.openPanel();
                                                     return true;
@@ -316,24 +316,24 @@ public class PlaceholderHandler {
                                 .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                         .value(code)
                                         .langContext(ctx)
-                                        .widthRel(.95f)
+                                        .fullWidth()
                                         .heightRelOffset(1, -25)))
-                        .child(new SortableListWidget<String>()
-                                .widthRel(.2f)
+                        .child(new ListWidget<>()
+                                .widthRel(.25f)
+                                .right(0)
                                 .paddingBottom(5)
-                                .excludeAreaInRecipeViewer()
+                                .fullHeight()
                                 .children(PlaceholderHandler.getAllPlaceholderNames()
                                         .stream()
                                         .sorted()
-                                        .map(SortableListWidget.Item::new)
-                                        .map(w -> w
-                                                .child(new TextWidget<>(w.getWidgetValue())
-                                                        .sizeRel(1)
+                                        .map(s -> (IWidget) Flow.row()
+                                                .coverChildren()
+                                                .child(new TextWidget<>(s)
                                                         .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
                                                                 .getSingleOrMultiLang(
-                                                                        "gtceu.placeholder_info." + w.getWidgetValue())
+                                                                        "gtceu.placeholder_info." + s)
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
