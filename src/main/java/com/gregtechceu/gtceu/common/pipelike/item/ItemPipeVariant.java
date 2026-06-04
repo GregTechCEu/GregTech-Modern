@@ -59,7 +59,9 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> 
     }
 
     @Override
-    public ItemPipeProperties modifyProperties(ItemPipeProperties baseProperties) {
+    public ItemPipeProperties createSegmentProperties(MaterialPipeBlock<ItemPipeProperties> block, Material material) {
+        var baseProperties = material.getProperty(PropertyKey.ITEM_PIPE);
+
         return new ItemPipeProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5),
                 baseProperties.getTransferRate() * rateMultiplier);
     }

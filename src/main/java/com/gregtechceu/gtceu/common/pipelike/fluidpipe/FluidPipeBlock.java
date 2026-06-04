@@ -39,11 +39,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeProperties> {
     }
 
     @Override
-    public FluidPipeProperties createRawData() {
-        return material.getProperty(PropertyKey.FLUID_PIPE);
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);

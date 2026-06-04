@@ -21,8 +21,8 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeProperties>, Strin
     }
 
     @Override
-    public LaserPipeProperties modifyProperties(LaserPipeProperties baseProperties) {
-        return baseProperties;
+    public LaserPipeProperties createSegmentProperties(PipeBlock<LaserPipeProperties> block) {
+        return LaserPipeProperties.INSTANCE;
     }
 
     @Override

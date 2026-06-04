@@ -19,16 +19,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class DuctPipeBlock extends PipeBlock<DuctPipeProperties> {
 
-    private final DuctPipeProperties properties;
-
     public DuctPipeBlock(Properties properties, DuctPipeVariant type) {
         super(properties, type, GTPipeNetworks.DUCT);
-        this.properties = new DuctPipeProperties(type.getRateMultiplier());
-    }
-
-    @Override
-    public DuctPipeProperties createRawData() {
-        return properties;
     }
 
     @Override

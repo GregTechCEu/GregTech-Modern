@@ -49,7 +49,9 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeProperties
     }
 
     @Override
-    public FluidPipeProperties modifyProperties(FluidPipeProperties fluidPipeData) {
+    public FluidPipeProperties createSegmentProperties(MaterialPipeBlock<FluidPipeProperties> block, Material material) {
+        var fluidPipeData = material.getProperty(PropertyKey.FLUID_PIPE);
+
         return new FluidPipeProperties(
                 fluidPipeData.getMaxFluidTemperature(),
                 fluidPipeData.getThroughput() * capacityMultiplier,

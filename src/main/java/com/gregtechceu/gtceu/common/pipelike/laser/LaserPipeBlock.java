@@ -52,11 +52,6 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeProperties> {
     }
 
     @Override
-    public LaserPipeProperties createRawData() {
-        return LaserPipeProperties.INSTANCE;
-    }
-
-    @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
     }

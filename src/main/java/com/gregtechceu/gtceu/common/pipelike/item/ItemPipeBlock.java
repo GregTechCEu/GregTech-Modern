@@ -27,11 +27,6 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeProperties> {
     }
 
     @Override
-    public ItemPipeProperties createRawData() {
-        return material.getProperty(PropertyKey.ITEM_PIPE);
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);

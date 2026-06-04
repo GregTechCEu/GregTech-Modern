@@ -21,7 +21,6 @@ public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringR
     HUGE("huge", 0.875f, 16f),
     ;
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("duct");
     public static final DuctPipeVariant[] VALUES = values();
 
     @Getter
@@ -38,8 +37,8 @@ public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringR
     }
 
     @Override
-    public DuctPipeProperties modifyProperties(DuctPipeProperties baseProperties) {
-        return baseProperties;
+    public DuctPipeProperties createSegmentProperties(PipeBlock<DuctPipeProperties> block) {
+        return new DuctPipeProperties(getRateMultiplier());
     }
 
     @Override

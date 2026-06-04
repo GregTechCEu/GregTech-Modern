@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.pipenet;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a variant of a specific pipe type (e.g. sizes of item pipe)
@@ -17,9 +18,10 @@ public interface IPipeVariant<NodeDataType> {
     float getThickness();
 
     /**
-     * modify the node data by the pipe type.
+     * Creates the default segment properties for a specific pipe block.<br>
+     * NOTE: This should always create a new object and never pass a reference to an existing object.
      */
-    NodeDataType modifyProperties(NodeDataType baseProperties);
+    NodeDataType createSegmentProperties(PipeBlock<NodeDataType> block);
 
     /**
      * Used for datagen, creates the model for pipe blocks of this variant.

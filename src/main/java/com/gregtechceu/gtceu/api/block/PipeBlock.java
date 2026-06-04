@@ -120,13 +120,8 @@ public abstract class PipeBlock<NodeDataType>
         return networkType.blockEntityType().get().create(pos, state);
     }
 
-    /**
-     * Add data via placement.
-     */
-    public abstract NodeDataType createRawData();
-
     public NodeDataType createProperties() {
-        return pipeVariant.modifyProperties(createRawData());
+        return pipeVariant.createSegmentProperties(this);
     }
 
     public PipeModel createPipeModel(GTBlockstateProvider provider) {

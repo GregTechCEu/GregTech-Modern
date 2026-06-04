@@ -21,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class OpticalPipeBlock extends PipeBlock<OpticalPipeProperties> {
 
-
     public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeVariant pipeType) {
         super(properties, pipeType, GTPipeNetworks.OPTICAL);
         registerDefaultState(defaultBlockState().setValue(GTBlockStateProperties.ACTIVE, false));
@@ -31,11 +30,6 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeProperties> {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(GTBlockStateProperties.ACTIVE);
-    }
-
-    @Override
-    public OpticalPipeProperties createRawData() {
-        return OpticalPipeProperties.INSTANCE;
     }
 
     @OnlyIn(Dist.CLIENT)

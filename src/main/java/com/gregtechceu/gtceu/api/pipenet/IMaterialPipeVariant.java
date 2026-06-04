@@ -23,6 +23,17 @@ public interface IMaterialPipeVariant<NodeDataType> extends IPipeVariant<NodeDat
     TagPrefix getTagPrefix();
 
     @Override
+    default NodeDataType createSegmentProperties(PipeBlock<NodeDataType> block) {
+        if (block instanceof MaterialPipeBlock<NodeDataType> materialPipeBlock) {
+            return createSegmentProperties(materialPipeBlock, materialPipeBlock.material);
+        }
+        throw new IllegalStateException(
+                "Attempted to create material pipe segment properties for a non-material pipe block");
+    }
+
+    NodeDataType createSegmentProperties(MaterialPipeBlock<NodeDataType> block, Material material);
+
+    @Override
     default PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
         if (block instanceof MaterialPipeBlock<?> materialPipeBlock) {
             return createPipeModel(materialPipeBlock, materialPipeBlock.material, provider);

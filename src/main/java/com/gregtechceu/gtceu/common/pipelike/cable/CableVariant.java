@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
@@ -57,7 +58,9 @@ public enum CableVariant implements IMaterialPipeVariant<WireProperties> {
     }
 
     @Override
-    public WireProperties modifyProperties(WireProperties baseProperties) {
+    public WireProperties createSegmentProperties(MaterialPipeBlock<WireProperties> block, Material material) {
+        var baseProperties = material.getProperty(PropertyKey.WIRE);
+
         int lossPerBlock;
         if (!baseProperties.isSuperconductor() && baseProperties.getLossPerBlock() == 0)
             lossPerBlock = (int) (0.75 * lossMultiplier);
