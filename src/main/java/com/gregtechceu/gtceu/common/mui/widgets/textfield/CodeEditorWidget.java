@@ -9,11 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
+import brachy.modularui.api.value.IStringValue;
 import brachy.modularui.api.value.ISyncOrValue;
 import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.theme.TextFieldTheme;
 import brachy.modularui.value.sync.GenericListSyncHandler;
-import brachy.modularui.value.sync.StringSyncValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -60,7 +60,7 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         return syncOrValue.isTypeOrEmpty(GenericListSyncHandler.class) ||
-                syncOrValue.isTypeOrEmpty(StringSyncValue.class);
+                syncOrValue.isTypeOrEmpty(IStringValue.class);
     }
 
     public List<Component> getTextAsComponents() {
