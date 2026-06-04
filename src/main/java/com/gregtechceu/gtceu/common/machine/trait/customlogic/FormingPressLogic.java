@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -33,7 +34,7 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
             return !mold.isEmpty() && !item.isEmpty();
         }
 
-        GTRecipe buildRecipe() {
+        GTRecipeDefinition buildRecipe() {
             ItemStack output = item.copyWithCount(1);
             output.setHoverName(mold.getHoverName());
             return GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(output))
@@ -46,7 +47,7 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+    public @Nullable GTRecipeDefinition createCustomRecipe(RecipeHandlerGroup holder) {
         var itemHandlers = holder.getInputHandlerMap().getOrDefault(ItemRecipeCapability.CAP, List.of());
         if (itemHandlers.isEmpty()) return null;
 
@@ -87,7 +88,7 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
         toName.setHoverName(Component.translatable("gtceu.forming_press.naming.to_name"));
         ItemStack named = new ItemStack(Items.NAME_TAG);
         named.setHoverName(Component.translatable("gtceu.forming_press.naming.named"));
-        GTRecipe recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("name_item")
+        GTRecipeDefinition recipe = GTRecipeTypes.FORMING_PRESS_RECIPES.recipeBuilder("name_item")
                 .notConsumable(press)
                 .inputItems(toName)
                 .outputItems(named)
@@ -95,7 +96,7 @@ public enum FormingPressLogic implements GTRecipeType.ICustomRecipeLogic {
                 .EUt(4)
                 .buildRawRecipe();
         // for EMI to detect it's a synthetic recipe (not ever in JSON)
-        recipe.setId(recipe.getId().withPrefix("/"));
+        recipe = recipe.withId(recipe.getId().withPrefix("/"));
         GTRecipeTypes.FORMING_PRESS_RECIPES.addToMainCategory(recipe);
     }
 }

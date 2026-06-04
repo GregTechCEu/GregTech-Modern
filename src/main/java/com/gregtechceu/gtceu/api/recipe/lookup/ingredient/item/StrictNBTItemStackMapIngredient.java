@@ -14,12 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class StrictNBTItemStackMapIngredient extends ItemStackMapIngredient {
+public class StrictNBTItemStackMapIngredient extends AbstractMapIngredient {
 
+    protected ItemStack stack;
     protected StrictNBTIngredient nbtIngredient;
 
     public StrictNBTItemStackMapIngredient(ItemStack s, StrictNBTIngredient nbtIngredient) {
-        super(s);
+        this.stack = s;
         this.nbtIngredient = nbtIngredient;
     }
 

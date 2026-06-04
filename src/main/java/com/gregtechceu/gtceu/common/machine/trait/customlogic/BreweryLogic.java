@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
@@ -50,7 +51,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
             brew -> PotionFluidHelper.getPotionFluidIngredientFrom(brew.getInput(), PotionFluidHelper.MB_PER_RECIPE));
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+    public @Nullable GTRecipeDefinition createCustomRecipe(RecipeHandlerGroup holder) {
         var itemHandlers = holder.getInputHandlerMap().getOrDefault(ItemRecipeCapability.CAP, List.of());
         var fluidHandlers = holder.getInputHandlerMap().getOrDefault(FluidRecipeCapability.CAP, List.of());
         if (itemHandlers.isEmpty() || fluidHandlers.isEmpty()) return null;
@@ -94,7 +95,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 Objects.equals(fromFluid.getTag(), fluidStack.getTag());
     }
 
-    private static @NotNull GTRecipe forgePotionRecipe(BrewingRecipe brew, OldFluidIngredient fromFluid) {
+    private static @NotNull GTRecipeDefinition forgePotionRecipe(BrewingRecipe brew, OldFluidIngredient fromFluid) {
         FluidStack toFluid = PotionFluidHelper.getFluidFromPotionItem(brew.getOutput(),
                 PotionFluidHelper.MB_PER_RECIPE);
         String name;
@@ -114,7 +115,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 .buildRawRecipe();
     }
 
-    private static @NotNull GTRecipe vanillaPotionRecipe(PotionBrewing.Mix<Potion> mix, FluidStack fromFluid) {
+    private static @NotNull GTRecipeDefinition vanillaPotionRecipe(PotionBrewing.Mix<Potion> mix, FluidStack fromFluid) {
         FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to.get(), PotionFluidHelper.MB_PER_RECIPE);
         return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_vanilla_" + mix.to.get().getName(""))
                 .inputItems(mix.ingredient)
@@ -155,7 +156,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                     PotionFluidHelper.MB_PER_RECIPE);
             FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to.get(), PotionFluidHelper.MB_PER_RECIPE);
 
-            GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES
+            GTRecipeDefinition recipe = GTRecipeTypes.BREWING_RECIPES
                     .recipeBuilder("potion_vanilla_" + mix.to.get().getName("") + "_" + index++)
                     .inputItems(mix.ingredient)
                     .inputFluids(fromFluid)
@@ -165,7 +166,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                     .EUt(VHA[MV])
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
-            recipe.setId(recipe.getId().withPrefix("/"));
+            recipe = recipe.withId(recipe.getId().withPrefix("/"));
             GTRecipeTypes.BREWING_RECIPES.addToMainCategory(recipe);
         }
 
@@ -185,7 +186,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 name = output.getName("");
             }
 
-            GTRecipe recipe = GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name + "_" + index++)
+            GTRecipeDefinition recipe = GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_forge_" + name + "_" + index++)
                     .inputItems(impl.getIngredient())
                     .inputFluids(fromFluid)
                     .outputFluids(toFluid)
@@ -193,7 +194,7 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                     .EUt(VHA[MV])
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
-            recipe.setId(recipe.getId().withPrefix("/"));
+            recipe = recipe.withId(recipe.getId().withPrefix("/"));
             GTRecipeTypes.BREWING_RECIPES.addToMainCategory(recipe);
         }
     }

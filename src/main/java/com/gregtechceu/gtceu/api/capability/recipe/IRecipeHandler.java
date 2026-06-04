@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -39,6 +40,11 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
 
     @NotNull
     List<Object> getContents();
+
+    @NotNull
+    default List<AbstractMapIngredient> getMapIngredients() {
+        return List.of();
+    }
 
     double getTotalContentAmount();
 

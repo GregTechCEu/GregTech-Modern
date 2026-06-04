@@ -7,6 +7,17 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CircuitMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CustomMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.IntersectionMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemTagMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.PartialNBTItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.StrictNBTItemStackMapIngredient;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -189,6 +200,28 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
             }
         }
         return new ArrayList<>(stacks);
+    }
+
+    @Override
+    public @NotNull List<AbstractMapIngredient> getMapIngredients() {
+        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < getSlots(); ++i) {
+            ItemStack stack = getStackInSlot(i);
+            if (stack.isEmpty()) continue;
+            if (stack.is(GTItems.PROGRAMMED_CIRCUIT.get())) {
+                ingredients.addAll(CircuitMapIngredient.from(IntCircuitBehaviour.getCircuitConfiguration(stack)));
+                continue;
+            }
+            ingredients.addAll(ItemMapIngredient.from(stack));
+            ingredients.addAll(ItemTagMapIngredient.from(stack));
+            ingredients.addAll(StrictNBTItemStackMapIngredient.from(stack));
+            ingredients.addAll(PartialNBTItemStackMapIngredient.from(stack));
+            ingredients.addAll(NBTPredicateItemStackMapIngredient.from(stack));
+            ingredients.addAll(IntersectionMapIngredient.from(stack));
+            ingredients.addAll(CustomMapIngredient.from(stack));
+
+        }
+        return ingredients;
     }
 
     @Override

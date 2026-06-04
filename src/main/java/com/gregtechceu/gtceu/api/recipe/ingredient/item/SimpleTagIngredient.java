@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemTagMapIngredient;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -50,6 +53,11 @@ public final class SimpleTagIngredient extends ItemIngredient{
     @Override
     public ItemStack toStack() {
         return getItems()[0];
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return List.of(new ItemTagMapIngredient(tag));
     }
 
     @Override

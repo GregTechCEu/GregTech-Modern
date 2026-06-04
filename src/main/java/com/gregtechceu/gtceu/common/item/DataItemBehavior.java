@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -103,18 +103,17 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                         Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
             }
         } else {
-            Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
+            Collection<GTRecipeDefinition> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.title",
                         Component.translatable(researchData.recipeType().registryName.toLanguageKey())));
                 Collection<ItemStack> addedItems = new ObjectOpenHashSet<>();
                 Collection<FluidStack> addedFluids = new ObjectOpenHashSet<>();
                 outerItems:
-                for (GTRecipe recipe : recipes) {
+                for (GTRecipeDefinition recipe : recipes) {
                     var contents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                     if (contents.isEmpty()) continue;
-                    ItemStack outputItems = ItemRecipeCapability.CAP
-                            .of(contents.get(0).content).getItems()[0];
+                    ItemStack outputItems = contents.get(0).getItems()[0];
                     for (var item : addedItems) {
                         if (outputItems.is(item.getItem())) continue outerItems;
                     }
@@ -125,11 +124,10 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                     }
                 }
                 outerFluids:
-                for (GTRecipe recipe : recipes) {
+                for (GTRecipeDefinition recipe : recipes) {
                     var contents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                     if (contents.isEmpty()) continue;
-                    FluidStack outputFluids = FluidRecipeCapability.CAP
-                            .of(contents.get(0).content).getFluids()[0];
+                    FluidStack outputFluids = contents.get(0).getFluids()[0];
                     for (var fluid : addedFluids) {
                         if (outputFluids.isFluidStackIdentical(fluid)) continue outerFluids;
                     }

@@ -12,12 +12,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class PartialNBTItemStackMapIngredient extends ItemStackMapIngredient {
+public class PartialNBTItemStackMapIngredient extends AbstractMapIngredient {
 
+    protected ItemStack stack;
     protected PartialNBTIngredient nbtIngredient;
 
     public PartialNBTItemStackMapIngredient(ItemStack stack, PartialNBTIngredient nbtIngredient) {
-        super(stack, nbtIngredient);
+        this.stack = stack;
         this.nbtIngredient = nbtIngredient;
     }
 

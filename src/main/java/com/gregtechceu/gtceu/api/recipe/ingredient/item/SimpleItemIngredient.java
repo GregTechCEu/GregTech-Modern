@@ -1,8 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient;
+
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import lombok.Getter;
+
+import java.util.List;
 
 public final class SimpleItemIngredient extends ItemIngredient {
 
@@ -27,6 +32,11 @@ public final class SimpleItemIngredient extends ItemIngredient {
     @Override
     public ItemStack toStack() {
         return item.getDefaultInstance();
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return ItemMapIngredient.from(toStack());
     }
 
     @Override

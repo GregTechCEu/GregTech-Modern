@@ -1,19 +1,36 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CustomMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.IntersectionMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemTagMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.PartialNBTItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.StrictNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import lombok.Getter;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class VanillaIngredient extends ItemIngredient{
 
-    @Getter
     private final Ingredient inner;
     protected ItemStack[] items;
 
     public VanillaIngredient(Ingredient ingredient, int count) {
         super(count);
         inner = ingredient;
+    }
+
+    public Ingredient getIngredient() {
+        return inner;
     }
 
     @Override
@@ -36,6 +53,24 @@ public class VanillaIngredient extends ItemIngredient{
     @Override
     public ItemStack toStack() {
         return getItems()[0];
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        if (inner instanceof StrictNBTIngredient strictNBTIngredient) {
+            return StrictNBTItemStackMapIngredient.from(strictNBTIngredient);
+        }
+        if (inner instanceof PartialNBTIngredient partialNBTIngredient) {
+            return PartialNBTItemStackMapIngredient.from(partialNBTIngredient);
+        }
+        if (inner instanceof NBTPredicateIngredient predicateIngredient) {
+            return NBTPredicateItemStackMapIngredient.from(predicateIngredient);
+        }
+        if (inner instanceof IntersectionIngredient intersectionIngredient) {
+            return IntersectionMapIngredient.from(intersectionIngredient);
+        }
+
+        return CustomMapIngredient.from(inner);
     }
 
     @Override

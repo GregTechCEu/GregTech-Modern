@@ -84,8 +84,9 @@ public abstract class RecipeCapability<T> {
     /**
      * used for recipe builder via KubeJs.
      */
+    @SuppressWarnings("unchecked")
     public T of(Object o) {
-        return serializer.of(o);
+        return (T) o;
     }
 
     public String slotName(IO io) {
@@ -106,6 +107,10 @@ public abstract class RecipeCapability<T> {
 
     public boolean isRecipeSearchFilter() {
         return false;
+    }
+
+    public List<AbstractMapIngredient> getMapIngredients(T content) {
+        return List.of();
     }
 
     /**

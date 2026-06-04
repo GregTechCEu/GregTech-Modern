@@ -199,6 +199,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     @Override
+    public boolean alwaysTryModifyRecipe() {
+        // overclockTier are not mutable now, so do not always try to modify
+        return false;
+    }
+
+    @Override
     public long getOverclockVoltage() {
         return Math.min(GTValues.V[getOverclockTier()],
                 Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));

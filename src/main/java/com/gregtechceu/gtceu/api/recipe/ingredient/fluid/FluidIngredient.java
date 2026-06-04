@@ -2,6 +2,9 @@ package com.gregtechceu.gtceu.api.recipe.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngredient;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -98,6 +101,16 @@ public class FluidIngredient {
     public FluidStack toStack() {
         FluidStack[] stacks = getFluids();
         return stacks.length == 0 ? FluidStack.EMPTY : stacks[0].copy();
+    }
+
+    public List<AbstractMapIngredient> getMapIngredients() {
+        if (value instanceof FluidValue || value instanceof TagValue tagValue && tagValue.nbt() != null) {
+            return FluidStackMapIngredient.from(this);
+        }
+        if (value instanceof TagValue) {
+            return FluidTagMapIngredient.from(this);
+        }
+        return List.of();
     }
 
     public boolean test(FluidStack fluidStack) {

@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
@@ -102,7 +102,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Nullable
     @Getter
     @Persisted
-    protected GTRecipe lastOriginRecipe;
+    protected GTRecipeDefinition lastOriginRecipe;
     @Persisted
     @Getter
     @Setter
@@ -222,14 +222,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         return matchRecipe(recipe);
     }
 
-    public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.fullModifyRecipe(match, getLastGroup());
+    public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
+        var modified = machine.fullModifyRecipe(match.toRuntime(), getLastGroup());
         if (modified != null) {
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
-            } else {
-                putFailureReason(this, match, recipeMatch.reason());
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
                 lastOriginRecipe = match;
@@ -268,34 +266,16 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         }
     }
 
-    public @NotNull Iterator<GTRecipe> searchRecipe() {
-        for(var group: machine.getRecipeHandlerGroups()) {
-            var iterator = machine.getRecipeType().searchRecipe(group, r -> true);
-            if(iterator.hasNext()) {
-                lastGroup = group;
-                if(group.getColor() != UNDYED) lastGroupColor = group.getColor();
-                return iterator;
-            }
-        }
-        return Collections.emptyIterator();
-    }
-
     public void findAndHandleRecipe() {
         failureReasonMap.clear();
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
-        handleSearchingRecipes(searchRecipe());
-    }
-
-    protected void handleSearchingRecipes(@NotNull Iterator<GTRecipe> matches) {
-        while (matches.hasNext()) {
-            GTRecipe match = matches.next();
-            if (match == null) continue;
-
-            // If a new recipe was found, cache found recipe.
-            if (checkMatchedRecipeAvailable(match))
-                return;
+        for(var group: machine.getRecipeHandlerGroups()) {
+            if(machine.getRecipeType().findRecipe(group, this::checkMatchedRecipeAvailable) != null) {
+                lastGroup = group;
+                if(group.getColor() != UNDYED) lastGroupColor = group.getColor();
+            }
         }
     }
 
@@ -442,40 +422,27 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         machine.afterWorking();
         if (lastRecipe != null) {
             handleRecipeIO(lastRecipe, IO.OUT);
-            // Don't ready the next recipe after finish if suspend is set
-            // so that the modifiers won't be applied until re-starting.
             if (suspendAfterFinish) {
                 setStatus(Status.SUSPEND);
-                progress = 0;
-                duration = 0;
-                isActive = false;
-                // Force a recipe recheck.
-                lastRecipe = null;
-                return;
             }
-            if (machine.alwaysTryModifyRecipe()) {
-                if (lastOriginRecipe != null) {
-                    var modified = machine.fullModifyRecipe(lastOriginRecipe.copy(), getLastGroup());
-                    if (modified == null) {
-                        markLastRecipeDirty();
-                    } else {
-                        lastRecipe = modified;
+            else {
+                if(!recipeDirty) {
+                    if (lastOriginRecipe != null && machine.alwaysTryModifyRecipe()) {
+                        lastRecipe = machine.fullModifyRecipe(lastOriginRecipe.toRuntime(), getLastGroup());
                     }
-                } else {
-                    markLastRecipeDirty();
+                    if (lastRecipe != null && checkRecipe(lastRecipe).isSuccess()) {
+                        setupRecipe(lastRecipe);
+                        return;
+                    }
                 }
-            }
-            // try it again
-
-            if (!recipeDirty && checkRecipe(lastRecipe).isSuccess()) {
-                setupRecipe(lastRecipe);
-            } else {
                 setStatus(Status.IDLE);
-                progress = 0;
-                duration = 0;
-                isActive = false;
             }
         }
+        progress = 0;
+        duration = 0;
+        isActive = false;
+        lastRecipe = null;
+
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {

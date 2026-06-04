@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.core.mixins.forge.IntersectionIngredientAccessor;
@@ -36,7 +37,7 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
         List<Ingredient> originalChildren = ((IntersectionIngredientAccessor) ingredient).getChildren();
         List<AbstractMapIngredient> mapChildren = new ObjectArrayList<>();
         for (var ing : originalChildren) {
-            mapChildren.addAll(MapIngredientTypeManager.getFrom(ing, ItemRecipeCapability.CAP));
+            mapChildren.addAll(ItemIngredient.of(ing).getMapIngredients());
         }
 
         return Collections.singletonList(new IntersectionMapIngredient(mapChildren));
@@ -82,7 +83,7 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
                     return true;
                 }
             }
-        } else if (o instanceof ItemStackMapIngredient stackIngredient) {
+        } else if (o instanceof ItemMapIngredient stackIngredient) {
             for (var child : this.children) {
                 if (!child.equals(stackIngredient)) {
                     return false;

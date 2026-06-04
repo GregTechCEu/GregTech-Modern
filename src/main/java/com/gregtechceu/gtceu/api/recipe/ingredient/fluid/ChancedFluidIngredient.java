@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Range;
+
+import java.util.List;
 
 public final class ChancedFluidIngredient extends FluidIngredient implements IChancedIngredient {
 
@@ -44,6 +47,11 @@ public final class ChancedFluidIngredient extends FluidIngredient implements ICh
         FluidStack stack = stacks[0].copy();
         stack.setAmount(inner.getAmount() * IChancedIngredient.rollSuccesses(multiplier, chance));
         return stack;
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return inner.getMapIngredients();
     }
 
     @Override

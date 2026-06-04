@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -139,8 +140,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         @Override
-        public boolean checkMatchedRecipeAvailable(GTRecipe match) {
-            var modified = machine.fullModifyRecipe(match, getLastGroup());
+        public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
+            var modified = machine.fullModifyRecipe(match.toRuntime(), getLastGroup());
             if (modified != null) {
                 // What is the point of this
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
@@ -196,7 +197,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             ItemStack outputItem = ItemStack.EMPTY;
             var contents = lastRecipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!contents.isEmpty()) {
-                outputItem = ItemRecipeCapability.CAP.of(contents.get(0).content).getItems()[0];
+                outputItem = contents.get(0).getItems()[0];
             }
             if (!outputItem.isEmpty()) {
                 holder.setDataItem(outputItem.copy());

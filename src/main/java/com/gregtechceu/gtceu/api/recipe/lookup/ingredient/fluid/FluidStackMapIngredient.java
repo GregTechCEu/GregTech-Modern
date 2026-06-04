@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraftforge.fluids.FluidStack;
@@ -15,30 +15,24 @@ import java.util.List;
 public class FluidStackMapIngredient extends AbstractMapIngredient {
 
     protected FluidStack stack;
-    protected OldFluidIngredient ingredient = null;
+    protected FluidIngredient ingredient = null;
 
     public FluidStackMapIngredient(FluidStack stack) {
         this.stack = stack;
     }
 
-    public FluidStackMapIngredient(FluidStack stack, OldFluidIngredient ingredient) {
+    public FluidStackMapIngredient(FluidStack stack, FluidIngredient ingredient) {
         this.stack = stack;
         this.ingredient = ingredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull OldFluidIngredient ingredient) {
+    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        for (OldFluidIngredient.Value value : ingredient.values) {
-            if (value instanceof OldFluidIngredient.FluidValue fluidValue) {
-                FluidStack stack = new FluidStack(fluidValue.fluid(),
-                        // wait. that's illegal.
-                        (ingredient instanceof IntProviderFluidIngredient provider ?
-                                provider.getCountProvider().getMaxValue() :
-                                ingredient.getAmount()),
-                        ingredient.getNbt());
-                ingredients.add(new FluidStackMapIngredient(stack, ingredient));
-            }
+        var value = ingredient.getValue();
+        if (value instanceof FluidIngredient.FluidValue fluidValue) {
+            FluidStack stack = new FluidStack(fluidValue.getFluid(), ingredient.getAmount(), value.nbt());
+            ingredients.add(new FluidStackMapIngredient(stack, ingredient));
         }
         return ingredients;
     }
@@ -50,7 +44,7 @@ public class FluidStackMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        return stack.hashCode();
+        return stack.getFluid().hashCode();
     }
 
     @Override

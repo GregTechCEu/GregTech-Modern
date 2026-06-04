@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class HandlerListMap {
@@ -27,8 +25,8 @@ public class HandlerListMap {
                 .add(handler);
     }
 
-    public <T> List<RecipeCapability<T>> getOrDefault(RecipeCapability<T> capability, List<IRecipeHandler<T>> fallback) {
-        return (List<RecipeCapability<T>>) handlersMap.getOrDefault(capability, fallback);
+    public <T> List<IRecipeHandler<T>> getOrDefault(RecipeCapability<T> capability, List<IRecipeHandler<T>> fallback) {
+        return (List<IRecipeHandler<T>>) handlersMap.getOrDefault(capability, fallback);
     }
 
     public boolean isEmpty() {
@@ -37,5 +35,9 @@ public class HandlerListMap {
 
     public Collection<List<? extends IRecipeHandler<?>>> values() {
         return handlersMap.values();
+    }
+
+    public Set<Map.Entry<RecipeCapability<?>, List<? extends IRecipeHandler<?>>>> entrySet() {
+        return handlersMap.entrySet();
     }
 }

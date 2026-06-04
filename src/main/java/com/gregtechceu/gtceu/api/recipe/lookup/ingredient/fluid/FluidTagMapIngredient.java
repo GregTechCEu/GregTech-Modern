@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraft.tags.TagKey;
@@ -21,12 +22,10 @@ public class FluidTagMapIngredient extends AbstractMapIngredient {
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull OldFluidIngredient ingredient) {
+    public static List<AbstractMapIngredient> from(@NotNull FluidIngredient ingredient) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>();
-        for (OldFluidIngredient.Value value : ingredient.values) {
-            if (value instanceof OldFluidIngredient.TagValue tagValue) {
-                ingredients.add(new FluidTagMapIngredient(tagValue.tag()));
-            }
+        if (ingredient.getValue() instanceof FluidIngredient.TagValue tagValue) {
+            ingredients.add(new FluidTagMapIngredient(tagValue.getTag()));
         }
         return ingredients;
     }

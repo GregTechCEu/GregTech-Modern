@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import lombok.Getter;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -89,6 +91,54 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
                 tickInputs.copy(), tickOutputs.copy(),
                 new ArrayList<>(conditions), data.copy(),
                 duration, category);
+    }
+
+    public GTRecipeDefinition withId(ResourceLocation id) {
+        return new GTRecipeDefinition(id, recipeType, category,
+                inputs.copy(), outputs.copy(),
+                tickInputs.copy(), tickOutputs.copy(),
+                duration, new ArrayList<>(conditions), data.copy(), tier);
+    }
+
+    public <T> List<T> getInputContents(RecipeCapability<T> capability) {
+        return inputs.getOrDefault(capability, List.of());
+    }
+
+    public <T> List<T> getOutputContents(RecipeCapability<T> capability) {
+        return outputs.getOrDefault(capability, List.of());
+    }
+
+    public <T> List<T> getTickInputContents(RecipeCapability<T> capability) {
+        return tickInputs.getOrDefault(capability, List.of());
+    }
+
+    public <T> List<T> getTickOutputContents(RecipeCapability<T> capability) {
+        return tickOutputs.getOrDefault(capability, List.of());
+    }
+
+    public List<List<AbstractMapIngredient>> getInputMapIngredients() {
+        return buildMapIngredients(inputs);
+    }
+
+    public List<List<AbstractMapIngredient>> getTickInputMapIngredients() {
+        return buildMapIngredients(tickInputs);
+    }
+
+    private static List<List<AbstractMapIngredient>> buildMapIngredients(ContentListMap contents) {
+        List<List<AbstractMapIngredient>> ingredients = new ArrayList<>();
+        contents.forEachEntry(new ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
+                if (!capability.isRecipeSearchFilter()) return;
+                for(var content: contents) {
+                    List<AbstractMapIngredient> mapIngredients = capability.getMapIngredients(content);
+                    if (!mapIngredients.isEmpty()) {
+                        ingredients.add(mapIngredients);
+                    }
+                }
+            }
+        });
+        return ingredients;
     }
 
 }

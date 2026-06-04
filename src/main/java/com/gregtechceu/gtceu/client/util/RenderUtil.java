@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
@@ -289,14 +289,14 @@ public class RenderUtil {
         ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) return false;
 
-        Collection<GTRecipe> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
+        Collection<GTRecipeDefinition> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
         if (recipes == null || recipes.isEmpty()) return false;
 
         for (var recipe : recipes) {
             // check item outputs first
-            List<Content> outputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
-            if (!outputs.isEmpty()) {
-                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content).getItems();
+            var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
+            if (!itemOutputs.isEmpty()) {
+                ItemStack[] items = itemOutputs.get(0).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
                     if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
@@ -306,9 +306,9 @@ public class RenderUtil {
                 }
             }
             // if there are no item outputs, try to find a fluid output
-            outputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
-            if (!outputs.isEmpty()) {
-                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content).getFluids();
+            var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
+            if (!fluidOutputs.isEmpty()) {
+                FluidStack[] fluids = fluidOutputs.get(0).getFluids();
                 if (fluids.length != 0) {
                     FluidStack output = fluids[0];
                     if (!output.isEmpty()) {

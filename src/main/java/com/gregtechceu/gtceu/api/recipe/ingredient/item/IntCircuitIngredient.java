@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CircuitMapIngredient;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+
+import java.util.List;
 
 public final class IntCircuitIngredient extends ItemIngredient {
 
@@ -50,6 +54,11 @@ public final class IntCircuitIngredient extends ItemIngredient {
     @Override
     public ItemStack toStack() {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return CircuitMapIngredient.from(configuration);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
+
+import java.util.List;
 
 public final class RangedFluidIngredient extends FluidIngredient {
 
@@ -40,6 +43,11 @@ public final class RangedFluidIngredient extends FluidIngredient {
         FluidStack stack = stacks[0].copy();
         stack.setAmount(amountProvider.sample(GTValues.RNG));
         return stack;
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return inner.getMapIngredients();
     }
 
     @Override

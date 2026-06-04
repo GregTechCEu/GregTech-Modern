@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -24,7 +25,7 @@ public enum CannerLogic implements GTRecipeType.ICustomRecipeLogic {
     INSTANCE;
 
     @Override
-    public @Nullable GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+    public @Nullable GTRecipeDefinition createCustomRecipe(RecipeHandlerGroup holder) {
         var itemHandlers = holder.getInputHandlerMap().getOrDefault(ItemRecipeCapability.CAP, List.of());
         var fluidHandlers = holder.getInputHandlerMap().getOrDefault(FluidRecipeCapability.CAP, List.of());
         if (itemHandlers.isEmpty()) return null;

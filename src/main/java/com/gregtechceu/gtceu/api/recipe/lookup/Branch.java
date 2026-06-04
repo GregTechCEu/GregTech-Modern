@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import com.mojang.datafixers.util.Either;
@@ -14,16 +14,16 @@ import java.util.Map;
 final class Branch {
 
     // Keys on this have *(should)* have unique hashcodes.
-    private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> nodes;
+    private Map<AbstractMapIngredient, Either<GTRecipeDefinition, Branch>> nodes;
     // Keys on this have collisions, and must be differentiated by equality.
-    private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> specialNodes;
+    private Map<AbstractMapIngredient, Either<GTRecipeDefinition, Branch>> specialNodes;
 
     public boolean isEmptyBranch() {
         return (nodes == null || nodes.isEmpty()) && (specialNodes == null || specialNodes.isEmpty());
     }
 
     @NotNull
-    public Map<AbstractMapIngredient, Either<GTRecipe, Branch>> getNodes() {
+    public Map<AbstractMapIngredient, Either<GTRecipeDefinition, Branch>> getNodes() {
         if (nodes == null) {
             nodes = new Object2ObjectOpenHashMap<>(2);
         }
@@ -31,7 +31,7 @@ final class Branch {
     }
 
     @NotNull
-    public Map<AbstractMapIngredient, Either<GTRecipe, Branch>> getSpecialNodes() {
+    public Map<AbstractMapIngredient, Either<GTRecipeDefinition, Branch>> getSpecialNodes() {
         if (specialNodes == null) {
             specialNodes = new Object2ObjectOpenHashMap<>(2);
         }

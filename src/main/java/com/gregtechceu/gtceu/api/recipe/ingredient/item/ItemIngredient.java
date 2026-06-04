@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.registries.Registries;
@@ -26,6 +27,7 @@ import com.mojang.serialization.Codec;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import java.util.function.Supplier;
+import java.util.List;
 
 public abstract class ItemIngredient {
 
@@ -82,6 +84,8 @@ public abstract class ItemIngredient {
 
     // for execute
     public abstract ItemStack toStack();
+
+    public abstract List<AbstractMapIngredient> getMapIngredients();
 
     public abstract boolean test(ItemStack itemStack);
 
@@ -242,7 +246,7 @@ public abstract class ItemIngredient {
             buf.writeVarInt(ingredient.getCount());
         } else if (this instanceof VanillaIngredient ingredient) {
             buf.writeByte(TYPE_VANILLA);
-            ingredient.getInner().toNetwork(buf);
+            ingredient.getIngredient().toNetwork(buf);
             buf.writeVarInt(ingredient.getCount());
         } else {
             throw new IllegalArgumentException("Unsupported ItemIngredient implementation: " + getClass().getName());
@@ -314,7 +318,7 @@ public abstract class ItemIngredient {
         } else if (this instanceof SimpleTagIngredient ingredient) {
             json.addProperty("tag", ingredient.getTag().location().toString());
         } else if (this instanceof VanillaIngredient ingredient) {
-            json.add("ingredient", ingredient.getInner().toJson());
+            json.add("ingredient", ingredient.getIngredient().toJson());
         } else {
             throw new JsonParseException("Unsupported ItemIngredient implementation: " + getClass().getName());
         }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.ApiStatus;
@@ -36,7 +36,7 @@ public final class RecipeAdditionHandler {
      * @param recipe the recipe
      */
     @ApiStatus.Internal
-    public void addStaging(@NotNull GTRecipe recipe) {
+    public void addStaging(@NotNull GTRecipeDefinition recipe) {
         if (!isStaging) {
             throw new IllegalStateException("cannot add a staging recipe while not in staging state");
         }

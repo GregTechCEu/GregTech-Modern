@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.category;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -65,7 +65,7 @@ public class GTRecipeCategory {
         return icon;
     }
 
-    public void addRecipe(GTRecipe recipe) {
+    public void addRecipe(GTRecipeDefinition recipe) {
         recipeType.addToCategoryMap(this, recipe);
     }
 

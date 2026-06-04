@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -185,7 +186,7 @@ public final class ResearchManager {
         private static final int DURATION = 100;
 
         @Override
-        public GTRecipe createCustomRecipe(RecipeHandlerGroup holder) {
+        public GTRecipeDefinition createCustomRecipe(RecipeHandlerGroup holder) {
             var itemInputs = holder.getInputHandlerMap().get(ItemRecipeCapability.CAP).stream()
                     .filter(IItemHandlerModifiable.class::isInstance)
                     .map(IItemHandlerModifiable.class::cast)
@@ -193,7 +194,7 @@ public final class ResearchManager {
             var inputs = new CombinedInvWrapper(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
-                GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
+                var recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
                 if (recipe != null) return recipe;
 
                 return createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
@@ -201,7 +202,7 @@ public final class ResearchManager {
             return null;
         }
 
-        private GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
+        private GTRecipeDefinition createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
             CompoundTag compound = second.getTag();
             if (compound == null) return null;
 
@@ -228,7 +229,7 @@ public final class ResearchManager {
             ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
             resultStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_to"));
 
-            GTRecipe recipe = GTRecipeTypes.SCANNER_RECIPES
+            GTRecipeDefinition recipe = GTRecipeTypes.SCANNER_RECIPES
                     .recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
                     .inputItems(emptyStick)
                     .notConsumable(copiedStick)
@@ -236,7 +237,7 @@ public final class ResearchManager {
                     .duration(DURATION).EUt(EUT)
                     .buildRawRecipe();
             // for EMI to detect it's a synthetic recipe (not ever in JSON)
-            recipe.setId(recipe.getId().withPrefix("/"));
+            recipe = recipe.withId(recipe.getId().withPrefix("/"));
             GTRecipeTypes.SCANNER_RECIPES.addToMainCategory(recipe);
         }
     }

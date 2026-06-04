@@ -433,23 +433,22 @@ public class ToolHelper {
 
                 be.getMetaMachine().reinitializeHandlers(group);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(group,
-                        r -> RecipeHelper.matchContents(group, r).isSuccess());
-                GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
-                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(group, hammerRecipe, IO.IN)
+                var hammerRecipe = GTRecipeTypes.FORGE_HAMMER_RECIPES.findRecipe(group,
+                        r -> RecipeHelper.matchContents(group, r.toRuntime()).isSuccess());
+                if (hammerRecipe != null && RecipeHelper.handleRecipeIO(group, hammerRecipe.toRuntime(), IO.IN)
                         .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {
-                        for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                        for (var output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(ItemRecipeCapability.CAP.of(output.content).getItems()[0]);
+                                drops.add(output.toStack());
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
-                        for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                        for (var content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+                                ItemStack output = content.toStack();
                                 // Only apply fortune on ore -> crushed forge hammer recipes
                                 if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
                                     output = output.copy();

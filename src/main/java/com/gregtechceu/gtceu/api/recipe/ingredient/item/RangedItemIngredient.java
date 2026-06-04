@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import lombok.Getter;
+
+import java.util.List;
 
 public final class RangedItemIngredient extends ItemIngredient{
 
@@ -34,6 +37,11 @@ public final class RangedItemIngredient extends ItemIngredient{
     @Override
     public ItemStack toStack() {
         return inner.toStack().copyWithCount(countProvider.sample(GTValues.RNG));
+    }
+
+    @Override
+    public List<AbstractMapIngredient> getMapIngredients() {
+        return inner.getMapIngredients();
     }
 
     @Override

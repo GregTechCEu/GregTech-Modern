@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
 import net.minecraft.resources.ResourceLocation;
@@ -31,7 +31,7 @@ public final class RecipeManagerHandler {
      */
     public static void addProxyRecipesToLookup(@NotNull Map<ResourceLocation, Recipe<?>> recipesByID,
                                                @NotNull GTRecipeType gtRecipeType, @NotNull RecipeType<?> proxyType,
-                                               @NotNull List<GTRecipe> proxyRecipes) {
+                                               @NotNull List<GTRecipeDefinition> proxyRecipes) {
         var lookup = gtRecipeType.getAdditionHandler();
         proxyRecipes.clear();
         recipesByID.forEach((id, recipe) -> {
@@ -39,7 +39,7 @@ public final class RecipeManagerHandler {
                 // do not add recipes of incompatible type
                 return;
             }
-            GTRecipe gtRecipe = gtRecipeType.toGTrecipe(id, recipe);
+            GTRecipeDefinition gtRecipe = gtRecipeType.toGTrecipe(id, recipe);
             proxyRecipes.add(gtRecipe);
             lookup.addStaging(gtRecipe);
         });
@@ -59,7 +59,7 @@ public final class RecipeManagerHandler {
                 // do not add recipes of incompatible type
                 continue;
             }
-            if (r instanceof GTRecipe recipe) {
+            if (r instanceof GTRecipeDefinition recipe) {
                 lookup.addStaging(recipe);
             }
         }

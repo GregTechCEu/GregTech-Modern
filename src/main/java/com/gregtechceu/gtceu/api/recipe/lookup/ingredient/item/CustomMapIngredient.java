@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -13,15 +14,15 @@ import java.util.List;
 
 public class CustomMapIngredient extends AbstractMapIngredient {
 
-    protected ItemStack stack;
+    protected Item item;
     protected Ingredient ingredient = null;
 
     public CustomMapIngredient(ItemStack stack) {
-        this.stack = stack;
+        this.item = stack.getItem();
     }
 
     public CustomMapIngredient(ItemStack stack, Ingredient ingredient) {
-        this.stack = stack;
+        this.item = stack.getItem();
         this.ingredient = ingredient;
     }
 
@@ -43,7 +44,7 @@ public class CustomMapIngredient extends AbstractMapIngredient {
     public boolean equals(Object o) {
         if (super.equals(o)) {
             CustomMapIngredient other = (CustomMapIngredient) o;
-            if (!ItemStack.isSameItem(this.stack, other.stack)) {
+            if (this.item != other.item) {
                 return false;
             }
             if (this.ingredient != null) {
@@ -56,10 +57,10 @@ public class CustomMapIngredient extends AbstractMapIngredient {
                     }
                     return true;
                 } else {
-                    return this.ingredient.test(other.stack);
+                    return this.ingredient.test(other.item.getDefaultInstance());
                 }
             } else if (other.ingredient != null) {
-                return other.ingredient.test(this.stack);
+                return other.ingredient.test(this.item.getDefaultInstance());
             }
         }
         return false;
@@ -67,13 +68,13 @@ public class CustomMapIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        return stack.getItem().hashCode() * 31;
+        return item.hashCode() * 31;
     }
 
     @Override
     public String toString() {
         return "CustomMapIngredient{" +
-                "item=" + stack +
+                "item=" + item +
                 "ingredient=" + ingredient +
                 "}";
     }

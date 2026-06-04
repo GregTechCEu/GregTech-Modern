@@ -1,55 +1,40 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @ApiStatus.Internal
 public final class StagingRecipeDB {
 
-    private final @NotNull ObjectOpenHashSet<GTRecipe> recipes = new ObjectOpenHashSet<>();
+    private final @NotNull ObjectOpenHashSet<GTRecipeDefinition> recipes = new ObjectOpenHashSet<>();
 
-    /**
-     * Add a recipe to the DB
-     *
-     * @param recipe the recipe
-     * @return if successful
-     */
-    public boolean add(@NotNull GTRecipe recipe) {
+    public boolean add(@NotNull GTRecipeDefinition recipe) {
         return recipes.add(recipe);
     }
 
-    /**
-     * Clear the DB
-     */
     public void clear() {
         recipes.clear();
         recipes.trim();
     }
 
-    /**
-     * Populate a DB with the contents of the staging DB
-     *
-     * @param db the db to populate
-     */
     public void populateDB(@NotNull RecipeDB db) {
-        var frequencies = inputFrequencies();
-        for (GTRecipe recipe : recipes) {
-            List<Pair<RecipeCapability<?>, Object>> flattedContent = flattenedContent(recipe);
-            flattedContent.sort(Comparator.comparingInt(entry -> frequencies.getInt(entry.right())));
+        // var frequencies = inputFrequencies();
+        for (GTRecipeDefinition recipe : recipes) {
+            List<List<AbstractMapIngredient>> flattedContent = flattenedContent(recipe);
+            // flattedContent.sort(Comparator.comparingInt(frequencies::getInt));
             List<List<AbstractMapIngredient>> inputs = new ArrayList<>(flattedContent.size());
-            for (var entry : flattedContent) {
-                var ingredients = MapIngredientTypeManager.getFrom(entry.right(), entry.left());
+            for (var ingredients : flattedContent) {
                 MapIngredientPool.applyPooling(ingredients);
                 inputs.add(ingredients);
             }
@@ -60,76 +45,19 @@ public final class StagingRecipeDB {
         }
     }
 
-    /**
-     * @return a map of the amount of times every input is used
-     */
-    private @NotNull Object2IntMap<Object> inputFrequencies() {
-        var map = new Object2IntOpenHashMap<>();
-        for (GTRecipe recipe : recipes) {
-            recipe.inputs.forEach((cap, list) -> {
-                for (var input : compressedContent(list, cap)) {
-                    map.mergeInt(input, 1, Integer::sum);
-                }
-            });
-            recipe.tickInputs.forEach((cap, list) -> {
-                for (var input : compressedContent(list, cap)) {
-                    map.mergeInt(input, 1, Integer::sum);
-                }
-            });
+    private @NotNull Object2IntMap<List<AbstractMapIngredient>> inputFrequencies() {
+        var map = new Object2IntOpenHashMap<List<AbstractMapIngredient>>();
+        for (GTRecipeDefinition recipe : recipes) {
+            recipe.getInputMapIngredients().forEach(list -> map.mergeInt(list, 1, Integer::sum));
+            recipe.getTickInputMapIngredients().forEach(list -> map.mergeInt(list, 1, Integer::sum));
         }
         return map;
     }
 
-    /**
-     * @param list the list of content
-     * @param cap  the RecipeCapability for the content
-     * @return the compressed ingredient form of the content
-     */
-    private static @NotNull List<Object> compressedContent(@NotNull List<Content> list,
-                                                           @NotNull RecipeCapability<?> cap) {
-        var contentList = list.stream()
-                .map(Content::getContent)
-                .toList();
-        return cap.compressIngredients(contentList);
-    }
-
-    /**
-     * Returns the flattened content of a recipe
-     *
-     * @param recipe the recipe
-     * @return the flattened content
-     */
-    private static @NotNull List<Pair<RecipeCapability<?>, Object>> flattenedContent(@NotNull GTRecipe recipe) {
-        var map = new Object2ObjectOpenHashMap<RecipeCapability<?>, List<Content>>();
-        recipe.inputs.forEach((cap, list) -> buildInputsByCap(map, cap, list));
-        recipe.tickInputs.forEach((cap, list) -> buildInputsByCap(map, cap, list));
-        List<Pair<RecipeCapability<?>, Object>> list = new ArrayList<>();
-        map.forEach((k, v) -> {
-            for (var content : v) {
-                list.add(Pair.of(k, content.getContent()));
-            }
-        });
+    private static @NotNull List<List<AbstractMapIngredient>> flattenedContent(@NotNull GTRecipeDefinition recipe) {
+        List<List<AbstractMapIngredient>> list = new ArrayList<>();
+        list.addAll(recipe.getInputMapIngredients());
+        list.addAll(recipe.getTickInputMapIngredients());
         return list;
-    }
-
-    /**
-     * Builds a map of inputs by RecipeCapability
-     *
-     * @param map  the map to populate
-     * @param cap  the recipe capability for the list
-     * @param list the list of inputs
-     */
-    private static void buildInputsByCap(@NotNull Map<RecipeCapability<?>, List<Content>> map,
-                                         @NotNull RecipeCapability<?> cap, @NotNull List<Content> list) {
-        if (!cap.isRecipeSearchFilter()) {
-            return;
-        }
-        map.compute(cap, (k, v) -> {
-            if (v == null) {
-                return new ArrayList<>(list);
-            }
-            v.addAll(list);
-            return v;
-        });
     }
 }

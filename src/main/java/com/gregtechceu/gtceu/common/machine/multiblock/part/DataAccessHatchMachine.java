@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
@@ -50,7 +51,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class DataAccessHatchMachine extends TieredPartMachine
                                     implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
-    private final Set<GTRecipe> recipes;
+    private final Set<GTRecipeDefinition> recipes;
     @Getter
     private final boolean isCreative;
     @Persisted
@@ -129,7 +130,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             ResearchManager.ResearchItem researchData = ResearchManager.readResearchId(stack);
             boolean isValid = ResearchManager.isStackDataItem(stack, isDataBank);
             if (researchData != null && isValid) {
-                Collection<GTRecipe> collection = researchData.recipeType()
+                Collection<GTRecipeDefinition> collection = researchData.recipeType()
                         .getDataStickEntry(researchData.researchId());
                 if (collection != null) {
                     recipes.addAll(collection);
@@ -141,7 +142,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
         seen.add(this);
-        return recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance) || recipes.contains(recipe);
+        return recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance) ||
+                recipes.stream().anyMatch(definition -> definition.getId().equals(recipe.getId()));
     }
 
     @NotNull
@@ -157,7 +159,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
                     Component.translatable(GTRecipeTypes.ASSEMBLY_LINE_RECIPES.registryName.toLanguageKey())));
             list.add(Component.empty());
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
-            for (GTRecipe recipe : recipes) {
+            for (GTRecipeDefinition recipe : recipes) {
                 ItemStack stack = recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
