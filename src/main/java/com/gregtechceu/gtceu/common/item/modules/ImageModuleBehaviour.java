@@ -44,7 +44,8 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
                                 .widthRel(1)
                                 .child(new TextWidget<>(Text.lang("gtceu.gui.central_monitor.url")))
                                 .child(new TextFieldWidget()
-                                        .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s)))
+                                        .value(SyncHandlers.string(() -> getUrl(stack), s -> setUrl(stack, s))
+                                                .allowC2S())
                                         .center()
                                         .widthRel(.8f))));
     }
