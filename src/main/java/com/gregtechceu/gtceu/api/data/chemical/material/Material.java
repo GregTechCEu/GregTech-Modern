@@ -1766,7 +1766,7 @@ public class Material implements Comparable<Material> {
          */
         public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
             properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE, new WireProperties(voltage, amperage, loss, isSuperCon));
+            properties.setProperty(PropertyKey.WIRE, new WireProperty(voltage, amperage, loss, isSuperCon));
             return this;
         }
 
@@ -1786,7 +1786,7 @@ public class Material implements Comparable<Material> {
                                        int criticalTemperature) {
             properties.ensureSet(PropertyKey.DUST);
             properties.setProperty(PropertyKey.WIRE,
-                    new WireProperties(voltage, amperage, loss, isSuperCon, criticalTemperature));
+                    new WireProperty(voltage, amperage, loss, isSuperCon, criticalTemperature));
             return this;
         }
 
@@ -1819,7 +1819,7 @@ public class Material implements Comparable<Material> {
         public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
                                            boolean cryoProof, boolean plasmaProof) {
             properties.setProperty(PropertyKey.FLUID_PIPE,
-                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
+                    new FluidPipeProperty(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
             return this;
         }
 
@@ -1830,7 +1830,7 @@ public class Material implements Comparable<Material> {
          * @param stacksPerSec How many stacks of items can be moved per second (20 ticks).
          */
         public Builder itemPipeProperties(int priority, float stacksPerSec) {
-            properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperties(priority, stacksPerSec));
+            properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperty(priority, stacksPerSec));
             return this;
         }
 

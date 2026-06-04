@@ -58,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType>
+public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType extends PipeSegmentProperties>
                                      extends ManagedSyncBlockEntity
                                      implements ITickSubscription, IPaintable, IGregtechBlockEntity, IToolGridHighlight,
                                      ICopyable {
@@ -104,7 +104,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
         this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
-        this.nodeData = getPipeBlock().createProperties();
+        this.nodeData = getPipeBlock().pipeVariant.createSegmentProperties(getPipeBlock());
     }
 
     //////////////////////////////////////

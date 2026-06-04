@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -20,7 +19,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPipeProperties> {
+public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPipeSegmentProperties> {
 
     public ItemPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -39,7 +38,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPi
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeVariant, ItemPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeVariant, ItemPipeSegmentProperties> other) {
         return other instanceof ItemPipeBlockEntity;
     }
 

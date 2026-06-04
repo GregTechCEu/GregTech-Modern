@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import org.jetbrains.annotations.Nullable;
 
-public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, LaserPipeProperties> {
+public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, LaserPipeSegmentProperties> {
 
     public LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -93,7 +93,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, Lase
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeVariant, LaserPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeVariant, LaserPipeSegmentProperties> other) {
         return other instanceof LaserPipeBlockEntity;
     }
 

@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MaterialPipeBlock<NodeDataType> extends PipeBlock<NodeDataType> {
+public abstract class MaterialPipeBlock<NodeDataType extends PipeSegmentProperties> extends PipeBlock<NodeDataType> {
 
     public final Material material;
     public final IMaterialPipeVariant<NodeDataType> materialPipeType;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
@@ -32,7 +32,7 @@ public class DrumMachineItem extends MetaMachineItem {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        final FluidPipeProperties property = mat.getProperty(PropertyKey.FLUID_PIPE);
+        final FluidPipeProperty property = mat.getProperty(PropertyKey.FLUID_PIPE);
         if (property == null) {
             return null;
         }

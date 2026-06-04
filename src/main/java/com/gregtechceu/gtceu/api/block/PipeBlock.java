@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
+import com.gregtechceu.gtceu.api.pipenet.PipeSegmentProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -23,6 +24,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -33,6 +35,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.*;
@@ -65,7 +68,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock<NodeDataType>
+public class PipeBlock<NodeDataType extends PipeSegmentProperties>
                                extends Block
                                implements EntityBlock, SimpleWaterloggedBlock {
 
@@ -120,8 +123,9 @@ public abstract class PipeBlock<NodeDataType>
         return networkType.blockEntityType().get().create(pos, state);
     }
 
-    public NodeDataType createProperties() {
-        return pipeVariant.createSegmentProperties(this);
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
+        pipeVariant.createSegmentProperties(this).appendBlockTooltips(stack, level, tooltip, flag);
     }
 
     public PipeModel createPipeModel(GTBlockstateProvider provider) {

@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctPipeProperties> {
+public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctSegmentProperties> {
 
     public DuctPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -40,7 +40,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctPi
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeVariant, DuctPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeVariant, DuctSegmentProperties> other) {
         return other instanceof DuctPipeBlockEntity;
     }
 

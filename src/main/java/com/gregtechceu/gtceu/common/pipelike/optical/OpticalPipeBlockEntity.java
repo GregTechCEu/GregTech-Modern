@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> {
+public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, OpticalPipeSegmentProperties> {
 
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -73,7 +73,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, 
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeVariant, OpticalPipeSegmentProperties> other) {
         return other instanceof OpticalPipeBlockEntity;
     }
 

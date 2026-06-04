@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.item;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
@@ -14,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
 
-public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> {
+public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeSegmentProperties> {
 
     SMALL("small", 0.375f, TagPrefix.pipeSmallItem, 0.5f, 1.5f),
     NORMAL("normal", 0.5f, TagPrefix.pipeNormalItem, 1f, 1f),
@@ -59,10 +58,10 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> 
     }
 
     @Override
-    public ItemPipeProperties createSegmentProperties(MaterialPipeBlock<ItemPipeProperties> block, Material material) {
+    public ItemPipeSegmentProperties createSegmentProperties(MaterialPipeBlock<ItemPipeSegmentProperties> block, Material material) {
         var baseProperties = material.getProperty(PropertyKey.ITEM_PIPE);
 
-        return new ItemPipeProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5),
+        return new ItemPipeSegmentProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5),
                 baseProperties.getTransferRate() * rateMultiplier);
     }
 

@@ -1,20 +1,26 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.utils.GTMath;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ItemPipeProperties implements IMaterialProperty {
+public class ItemPipeProperty implements IMaterialProperty {
 
     /**
-     * Items will try to take the path with the lowest priority
+     * Items will try to take the path with the lowest priority.
      */
+    @Getter
+    @Setter
     private int priority;
 
     /**
-     * rate in stacks per sec
+     * Transfer rate in stacks per sec
      */
+    @Getter
+    @Setter
     private float transferRate;
 
-    public ItemPipeProperties(int priority, float transferRate) {
+    public ItemPipeProperty(int priority, float transferRate) {
         this.priority = priority;
         this.transferRate = transferRate;
     }
@@ -22,42 +28,8 @@ public class ItemPipeProperties implements IMaterialProperty {
     /**
      * Default property constructor.
      */
-    public ItemPipeProperties() {
+    public ItemPipeProperty() {
         this(1, 0.25f);
-    }
-
-    /**
-     * Retrieves the priority of the item pipe
-     *
-     * @return The item pipe priority
-     */
-    public int getPriority() {
-        return priority;
-    }
-
-    /**
-     * Sets the Priority of the item pipe
-     */
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    /**
-     * Retrieve the transfer rate of the item pipe
-     *
-     * @return The transfer rate of the item pipe
-     */
-    public float getTransferRate() {
-        return transferRate;
-    }
-
-    /**
-     * Sets the transfer rate of the item pipe
-     *
-     * @param transferRate The transfer rate
-     */
-    public void setTransferRate(float transferRate) {
-        this.transferRate = transferRate;
     }
 
     @Override
@@ -77,7 +49,7 @@ public class ItemPipeProperties implements IMaterialProperty {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ItemPipeProperties that = (ItemPipeProperties) o;
+        ItemPipeProperty that = (ItemPipeProperty) o;
         return priority == that.priority && Float.compare(that.transferRate, transferRate) == 0;
     }
 

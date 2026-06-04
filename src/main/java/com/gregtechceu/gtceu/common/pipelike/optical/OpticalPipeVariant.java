@@ -12,7 +12,7 @@ import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeProperties>, StringRepresentable {
+public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeSegmentProperties>, StringRepresentable {
 
     NORMAL;
 
@@ -24,8 +24,8 @@ public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeProperties>, S
     }
 
     @Override
-    public OpticalPipeProperties createSegmentProperties(PipeBlock<OpticalPipeProperties> block) {
-        return OpticalPipeProperties.INSTANCE;
+    public OpticalPipeSegmentProperties createSegmentProperties(PipeBlock<OpticalPipeSegmentProperties> block) {
+        return OpticalPipeSegmentProperties.INSTANCE;
     }
 
     @Override

@@ -17,17 +17,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DuctPipeBlock extends PipeBlock<DuctPipeProperties> {
+public class DuctPipeBlock extends PipeBlock<DuctSegmentProperties> {
 
     public DuctPipeBlock(Properties properties, DuctPipeVariant type) {
         super(properties, type, GTPipeNetworks.DUCT);
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag) {
-        super.appendHoverText(stack, level, tooltip, flag);
-        tooltip.add(Component.translatable("gtceu.duct_pipe.transfer_rate",
-                createProperties().getTransferRate()));
     }
 }

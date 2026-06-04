@@ -11,7 +11,7 @@ import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum LaserPipeVariant implements IPipeVariant<LaserPipeProperties>, StringRepresentable {
+public enum LaserPipeVariant implements IPipeVariant<LaserPipeSegmentProperties>, StringRepresentable {
 
     NORMAL;
 
@@ -21,8 +21,8 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeProperties>, Strin
     }
 
     @Override
-    public LaserPipeProperties createSegmentProperties(PipeBlock<LaserPipeProperties> block) {
-        return LaserPipeProperties.INSTANCE;
+    public LaserPipeSegmentProperties createSegmentProperties(PipeBlock<LaserPipeSegmentProperties> block) {
+        return LaserPipeSegmentProperties.INSTANCE;
     }
 
     @Override

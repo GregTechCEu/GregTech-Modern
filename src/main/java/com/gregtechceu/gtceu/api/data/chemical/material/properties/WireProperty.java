@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FOIL;
 
-public class WireProperties implements IMaterialProperty {
+public class WireProperty implements IMaterialProperty {
 
     private long voltage;
     private int amperage;
@@ -14,16 +14,16 @@ public class WireProperties implements IMaterialProperty {
     private int superconductorCriticalTemperature;
     private boolean isSuperconductor;
 
-    public WireProperties(long voltage, int baseAmperage, int lossPerBlock) {
+    public WireProperty(long voltage, int baseAmperage, int lossPerBlock) {
         this(voltage, baseAmperage, lossPerBlock, false);
     }
 
-    public WireProperties(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon) {
+    public WireProperty(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon) {
         this(voltage, baseAmperage, lossPerBlock, isSuperCon, 0);
     }
 
-    public WireProperties(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon,
-                          int criticalTemperature) {
+    public WireProperty(long voltage, int baseAmperage, int lossPerBlock, boolean isSuperCon,
+                        int criticalTemperature) {
         this.voltage = voltage;
         this.amperage = baseAmperage;
         this.lossPerBlock = isSuperCon ? 0 : lossPerBlock;
@@ -31,14 +31,14 @@ public class WireProperties implements IMaterialProperty {
         this.isSuperconductor = isSuperCon;
     }
 
-    public WireProperties copy() {
-        return new WireProperties(voltage, amperage, lossPerBlock, isSuperconductor, superconductorCriticalTemperature);
+    public WireProperty copy() {
+        return new WireProperty(voltage, amperage, lossPerBlock, isSuperconductor, superconductorCriticalTemperature);
     }
 
     /**
      * Default values constructor
      */
-    public WireProperties() {
+    public WireProperty() {
         this(8, 1, 1, false);
     }
 
@@ -148,7 +148,7 @@ public class WireProperties implements IMaterialProperty {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof WireProperties that)) return false;
+        if (!(o instanceof WireProperty that)) return false;
         return voltage == that.voltage &&
                 amperage == that.amperage &&
                 lossPerBlock == that.lossPerBlock &&

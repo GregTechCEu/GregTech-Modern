@@ -6,14 +6,13 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.Getter;
 
 import java.util.Locale;
 
-public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringRepresentable {
+public enum DuctPipeVariant implements IPipeVariant<DuctSegmentProperties>, StringRepresentable {
 
     SMALL("small", 0.375f, 2f),
     NORMAL("normal", 0.5f, 4f),
@@ -37,8 +36,8 @@ public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringR
     }
 
     @Override
-    public DuctPipeProperties createSegmentProperties(PipeBlock<DuctPipeProperties> block) {
-        return new DuctPipeProperties(getRateMultiplier());
+    public DuctSegmentProperties createSegmentProperties(PipeBlock<DuctSegmentProperties> block) {
+        return new DuctSegmentProperties(getRateMultiplier());
     }
 
     @Override

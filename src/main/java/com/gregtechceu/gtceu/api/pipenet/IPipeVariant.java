@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.api.pipenet;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
+import com.gregtechceu.gtceu.common.pipelike.cable.CableSegmentProperties;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a variant of a specific pipe type (e.g. sizes of item pipe)
  */
-public interface IPipeVariant<NodeDataType> {
+public interface IPipeVariant<NodeDataType extends PipeSegmentProperties> {
 
     /**
      * The thickness of the pipe, used for rendering/collisions.

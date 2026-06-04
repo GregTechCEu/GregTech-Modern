@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeProperties> {
+public class LaserPipeBlock extends PipeBlock<LaserPipeSegmentProperties> {
 
     public LaserPipeBlock(Properties properties, LaserPipeVariant type) {
         super(properties, type, GTPipeNetworks.LASER);

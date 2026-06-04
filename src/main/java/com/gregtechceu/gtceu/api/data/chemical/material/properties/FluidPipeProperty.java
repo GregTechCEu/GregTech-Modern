@@ -15,7 +15,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collection;
 
-public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFilter {
+public class FluidPipeProperty implements IMaterialProperty, IPropertyFluidFilter {
 
     /**
      * The maximum number of channels any fluid pipe can have
@@ -40,11 +40,11 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     @Getter
     @Setter
     private boolean plasmaProof;
-
+    @Getter
     private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
 
-    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
-                               boolean cryoProof, boolean plasmaProof, int channels) {
+    public FluidPipeProperty(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
+                             boolean cryoProof, boolean plasmaProof, int channels) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;
@@ -57,8 +57,8 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     /**
      * Default property constructor.
      */
-    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
-                               boolean cryoProof, boolean plasmaProof) {
+    public FluidPipeProperty(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
+                             boolean cryoProof, boolean plasmaProof) {
         this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, 1);
     }
 
@@ -78,7 +78,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FluidPipeProperties that)) return false;
+        if (!(o instanceof FluidPipeProperty that)) return false;
         return maxFluidTemperature == that.maxFluidTemperature &&
                 throughput == that.throughput && gasProof == that.gasProof && channels == that.channels;
     }

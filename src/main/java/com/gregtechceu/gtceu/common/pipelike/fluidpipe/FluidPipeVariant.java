@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
@@ -14,7 +13,7 @@ import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
-public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeProperties> {
+public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeSegmentProperties> {
 
     TINY("tiny", 0.25f, 1, pipeTinyFluid),
     SMALL("small", 0.375f, 2, pipeSmallFluid),
@@ -49,17 +48,17 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeProperties
     }
 
     @Override
-    public FluidPipeProperties createSegmentProperties(MaterialPipeBlock<FluidPipeProperties> block, Material material) {
+    public FluidPipeSegmentProperties createSegmentProperties(MaterialPipeBlock<FluidPipeSegmentProperties> block, Material material) {
         var fluidPipeData = material.getProperty(PropertyKey.FLUID_PIPE);
 
-        return new FluidPipeProperties(
+        return new FluidPipeSegmentProperties(
                 fluidPipeData.getMaxFluidTemperature(),
                 fluidPipeData.getThroughput() * capacityMultiplier,
                 fluidPipeData.isGasProof(),
                 fluidPipeData.isAcidProof(),
                 fluidPipeData.isCryoProof(),
                 fluidPipeData.isPlasmaProof(),
-                channels);
+                channels, fluidPipeData.getContainmentPredicate());
     }
 
     public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {

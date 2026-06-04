@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
  * 
  * @param <NodeDataType>
  */
-public interface IMaterialPipeVariant<NodeDataType> extends IPipeVariant<NodeDataType> {
+public interface IMaterialPipeVariant<NodeDataType extends PipeSegmentProperties> extends IPipeVariant<NodeDataType> {
 
     /**
      * Determines tag prefix used for this pipe type, which gives pipe tag key

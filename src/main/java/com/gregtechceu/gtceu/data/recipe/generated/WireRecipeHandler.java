@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -62,7 +62,7 @@ public final class WireRecipeHandler {
     private WireRecipeHandler() {}
 
     public static void run(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material) {
-        WireProperties property = material.getProperty(PropertyKey.WIRE);
+        WireProperty property = material.getProperty(PropertyKey.WIRE);
         if (property == null) {
             return;
         }
@@ -135,7 +135,7 @@ public final class WireRecipeHandler {
     }
 
     private static void generateCableCovering(@NotNull Consumer<FinishedRecipe> provider,
-                                              @NotNull WireProperties property,
+                                              @NotNull WireProperty property,
                                               @NotNull TagPrefix prefix, @NotNull Material material) {
         if (!material.shouldGenerateRecipesFor(prefix) || property.isSuperconductor()) {
             // Superconductors have no Cables, so exit early

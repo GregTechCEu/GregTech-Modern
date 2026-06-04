@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -49,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperties> implements IDataInfoProvider {
+public class CableBlockEntity extends PipeBlockEntity<CableVariant, CableSegmentProperties> implements IDataInfoProvider {
 
     @SideOnly(Side.CLIENT)
     private @Nullable GTOverheatParticle particle;
@@ -80,7 +79,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<CableVariant, WireProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<CableVariant, CableSegmentProperties> other) {
         return other instanceof CableBlockEntity;
     }
 

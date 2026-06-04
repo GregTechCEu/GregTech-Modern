@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
@@ -18,7 +17,7 @@ import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
-public enum CableVariant implements IMaterialPipeVariant<WireProperties> {
+public enum CableVariant implements IMaterialPipeVariant<CableSegmentProperties> {
 
     WIRE_SINGLE("single_wire", 0.1875f, 1, 2, wireGtSingle, -1, false),
     WIRE_DOUBLE("double_wire", 0.3125f, 2, 2, wireGtDouble, -1, false),
@@ -58,15 +57,16 @@ public enum CableVariant implements IMaterialPipeVariant<WireProperties> {
     }
 
     @Override
-    public WireProperties createSegmentProperties(MaterialPipeBlock<WireProperties> block, Material material) {
+    public CableSegmentProperties createSegmentProperties(MaterialPipeBlock<CableSegmentProperties> block, Material material) {
         var baseProperties = material.getProperty(PropertyKey.WIRE);
-
         int lossPerBlock;
+
         if (!baseProperties.isSuperconductor() && baseProperties.getLossPerBlock() == 0)
             lossPerBlock = (int) (0.75 * lossMultiplier);
+
         else lossPerBlock = baseProperties.getLossPerBlock() * lossMultiplier;
 
-        return new WireProperties(baseProperties.getVoltage(), baseProperties.getAmperage() * amperage, lossPerBlock,
+        return new CableSegmentProperties(baseProperties.getVoltage(), baseProperties.getAmperage() * amperage, lossPerBlock,
                 baseProperties.isSuperconductor());
     }
 

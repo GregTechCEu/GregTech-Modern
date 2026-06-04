@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -62,7 +62,7 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, FluidPipeProperties>
+public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, FluidPipeSegmentProperties>
                                   implements IDataInfoProvider {
 
     public static final int FREQUENCY = 5;
@@ -107,7 +107,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeVariant, FluidPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeVariant, FluidPipeSegmentProperties> other) {
         return other instanceof FluidPipeBlockEntity;
     }
 
@@ -286,7 +286,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
 
     public void checkAndDestroy(FluidStack stack) {
         Fluid fluid = stack.getFluid();
-        FluidPipeProperties prop = getNodeData();
+        FluidPipeSegmentProperties prop = getNodeData();
 
         boolean burning = prop.getMaxFluidTemperature() < fluid.getFluidType().getTemperature(stack);
         boolean leaking = !prop.isGasProof() && fluid.getFluidType().getDensity(stack) < 0;
