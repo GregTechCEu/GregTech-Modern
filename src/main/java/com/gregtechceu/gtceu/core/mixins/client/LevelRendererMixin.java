@@ -182,7 +182,7 @@ public abstract class LevelRendererMixin {
                     renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
-        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipe) {
+        } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipe) {
             renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();

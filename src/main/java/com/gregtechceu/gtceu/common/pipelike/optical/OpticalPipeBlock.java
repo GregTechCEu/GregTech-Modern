@@ -36,7 +36,7 @@ public class OpticalPipeBlock extends PipeBlock {
     public static BlockColor tintedColor() {
         return (blockState, level, blockPos, index) -> {
             if (blockPos != null && level != null &&
-                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?, ?> pipe) {
+                    level.getBlockEntity(blockPos) instanceof PipeBlockEntity<?> pipe) {
                 if (!pipe.getFrameMaterial().isNull()) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();

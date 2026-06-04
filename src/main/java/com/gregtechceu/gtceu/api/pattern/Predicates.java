@@ -315,7 +315,7 @@ public class Predicates {
         return blocks(frameBlocks)
                 .or(new TraceabilityPredicate(blockWorldState -> {
                     BlockEntity blockEntity = blockWorldState.getBlockEntity();
-                    if (!(blockEntity instanceof PipeBlockEntity<?, ?> pipeNode)) {
+                    if (!(blockEntity instanceof PipeBlockEntity<?> pipeNode)) {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());

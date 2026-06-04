@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import org.jetbrains.annotations.Nullable;
 
-public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, LaserPipeSegmentProperties> {
+public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeSegmentProperties> {
 
     public LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState, GTPipeNetworks.LASER);
@@ -71,7 +71,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, Lase
         super.setConnection(side, connected, fromNeighbor);
     }
 
-    public static BlockState setPipeActive(PipeBlockEntity<?, ?> blockEntity,
+    public static BlockState setPipeActive(PipeBlockEntity<?> blockEntity,
                                            BlockState state, boolean newActive, int duration) {
         if (!state.hasProperty(GTBlockStateProperties.ACTIVE) ||
                 state.getValue(GTBlockStateProperties.ACTIVE) == newActive) {
@@ -94,7 +94,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, Lase
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeVariant, LaserPipeSegmentProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeSegmentProperties> other) {
         return other instanceof LaserPipeBlockEntity;
     }
 

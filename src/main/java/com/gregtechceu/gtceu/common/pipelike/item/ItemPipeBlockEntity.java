@@ -20,7 +20,7 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPipeSegmentProperties> {
+public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeSegmentProperties> {
 
     public ItemPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState, GTPipeNetworks.ITEM);
@@ -39,7 +39,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPi
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeVariant, ItemPipeSegmentProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeSegmentProperties> other) {
         return other instanceof ItemPipeBlockEntity;
     }
 

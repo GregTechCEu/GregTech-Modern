@@ -353,7 +353,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 list.addAll(provider.getDataInfo(mode));
             }
 
-        } else if (blockEntity instanceof PipeBlockEntity<?, ?> pipe) {
+        } else if (blockEntity instanceof PipeBlockEntity<?> pipe) {
 
             // Pipes need special name handling
             list.add(pipe.getPipeBlock().getName().withStyle(ChatFormatting.BLUE));
@@ -448,7 +448,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         if (mode == DisplayMode.SHOW_INTERNAL_JAVA_INFO &&
                 blockEntity instanceof ManagedSyncBlockEntity syncBlockEntity) {
             MetaMachine machine = (syncBlockEntity instanceof MetaMachine m) ? m : null;
-            PipeBlockEntity<?, ?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?, ?> p) ? p : null;
+            PipeBlockEntity<?> pipe = (syncBlockEntity instanceof PipeBlockEntity<?> p) ? p : null;
 
             list.add(Component.literal(syncBlockEntity.toString()));
             if (pipe != null) {

@@ -142,7 +142,7 @@ public class BlockHighlightRenderer {
             var networkType = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
                     pipeBlockItem.getBlock().getNetworkType() :
                     null;
-            if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
+            if (blockEntity instanceof PipeBlockEntity<?> pipeBlockEntity &&
                     pipeBlockEntity.getNetworkType() == networkType) {
                 poseStack.pushPose();
 

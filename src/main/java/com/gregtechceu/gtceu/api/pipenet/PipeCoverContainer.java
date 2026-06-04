@@ -12,12 +12,9 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlockEntity;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +24,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
-    private final PipeBlockEntity<?, ?> pipeTile;
+    private final PipeBlockEntity<?> pipeTile;
 
     @SyncToClient
     @SaveField
@@ -35,7 +32,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     @Nullable
     private CoverBehavior up, down, north, south, west, east;
 
-    public PipeCoverContainer(PipeBlockEntity<?, ?> pipeTile) {
+    public PipeCoverContainer(PipeBlockEntity<?> pipeTile) {
         this.pipeTile = pipeTile;
     }
 

@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctSegmentProperties> {
+public class DuctPipeBlockEntity extends PipeBlockEntity<DuctSegmentProperties> {
 
     public DuctPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState, GTPipeNetworks.DUCT);
@@ -41,7 +41,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctSe
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeVariant, DuctSegmentProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctSegmentProperties> other) {
         return other instanceof DuctPipeBlockEntity;
     }
 

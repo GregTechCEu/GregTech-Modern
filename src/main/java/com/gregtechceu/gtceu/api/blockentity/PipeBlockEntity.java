@@ -58,7 +58,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType extends PipeSegmentProperties>
+public abstract class PipeBlockEntity<NodeDataType extends PipeSegmentProperties>
                                      extends ManagedSyncBlockEntity
                                      implements ITickSubscription, IPaintable, IGregtechBlockEntity, IToolGridHighlight,
                                      ICopyable {
@@ -282,7 +282,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             }
             BlockEntity tile = getNeighbor(side);
             // block connections if Pipe Types do not match
-            if (connected && tile instanceof PipeBlockEntity<?, ?> pipeTile && pipeTile.getNetworkType() != getNetworkType()) {
+            if (connected && tile instanceof PipeBlockEntity<?> pipeTile && pipeTile.getNetworkType() != getNetworkType()) {
                 return;
             }
 
@@ -294,7 +294,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             this.connections = withSideConnection(connections, side, connected);
             syncDataHolder.markClientSyncFieldDirty("connections");
 
-            if (!fromNeighbor && tile instanceof PipeBlockEntity<?, ?> pipe) {
+            if (!fromNeighbor && tile instanceof PipeBlockEntity<?> pipe) {
                 Direction oppositeSide = side.getOpposite();
                 boolean neighbourOpen = pipe.isConnected(oppositeSide);
                 if (isConnected(side) == neighbourOpen) {
@@ -327,9 +327,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
 
         BlockEntity other = getNeighbor(facing);
 
-        if (other instanceof PipeBlockEntity<?, ?> node) {
+        if (other instanceof PipeBlockEntity<?> node) {
             if (!node.getCoverContainer().canPipePassThrough(facing.getOpposite())) return false;
-            return canPipesConnect(facing, (PipeBlockEntity<PipeType, NodeDataType>) other);
+            return canPipesConnect(facing, (PipeBlockEntity<NodeDataType>) other);
         }
 
         return canPipeConnectToBlock(facing, getLevel().getBlockState(getBlockPos().relative(facing)).getBlock(),
@@ -337,7 +337,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
     }
 
     public abstract boolean canPipesConnect(Direction side,
-                                            PipeBlockEntity<PipeType, NodeDataType> other);
+                                            PipeBlockEntity<NodeDataType> other);
 
     public abstract boolean canPipeConnectToBlock(Direction side, Block block,
                                                   @Nullable BlockEntity blockEntity);

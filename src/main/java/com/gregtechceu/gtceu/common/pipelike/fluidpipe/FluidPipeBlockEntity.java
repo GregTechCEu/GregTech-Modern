@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -63,7 +62,7 @@ import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, FluidPipeSegmentProperties>
+public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeSegmentProperties>
                                   implements IDataInfoProvider {
 
     public static final int FREQUENCY = 5;
@@ -108,7 +107,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeVariant, FluidPipeSegmentProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeSegmentProperties> other) {
         return other instanceof FluidPipeBlockEntity;
     }
 

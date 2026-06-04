@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer,
-                            IBlockEntityRendererBakedModel<PipeBlockEntity<?, ?>> {
+                            IBlockEntityRendererBakedModel<PipeBlockEntity<?>> {
 
     public final static int ITEM_CONNECTIONS = 0b001100;
 
@@ -87,7 +87,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
                 }
             }
         }
-        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode)) {
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeNode)) {
             return quads;
         }
         ICoverableRenderer.super.renderCovers(quads, pipeNode.getCoverContainer(), pos, level, side, rand,
@@ -142,7 +142,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
 
         var builder = modelData.derive();
 
-        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode) {
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeNode) {
             Map<Direction, ModelData> coverModelData = new EnumMap<>(Direction.class);
             for (Direction side : GTUtil.DIRECTIONS) {
                 CoverBehavior coverBehavior = pipeNode.getCoverContainer().getCoverAtSide(side);
@@ -168,7 +168,7 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         BlockAndTintGetter level = modelData.get(GTModelProperties.LEVEL);
         BlockPos pos = modelData.get(GTModelProperties.POS);
 
-        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeNode)) {
+        if (level == null || pos == null || !(level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeNode)) {
             return renderTypes;
         }
 
@@ -184,11 +184,11 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
     }
 
     @Override
-    public @Nullable BlockEntityType<? extends PipeBlockEntity<?, ?>> getBlockEntityType() {
+    public @Nullable BlockEntityType<? extends PipeBlockEntity<?>> getBlockEntityType() {
         return null;
     }
 
     @Override
-    public void render(PipeBlockEntity<?, ?> blockEntity, float partialTick, PoseStack poseStack,
+    public void render(PipeBlockEntity<?> blockEntity, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {}
 }

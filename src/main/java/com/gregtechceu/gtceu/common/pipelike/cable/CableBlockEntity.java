@@ -49,7 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlockEntity extends PipeBlockEntity<CableVariant, CableSegmentProperties> implements IDataInfoProvider {
+public class CableBlockEntity extends PipeBlockEntity<CableSegmentProperties> implements IDataInfoProvider {
 
     @SideOnly(Side.CLIENT)
     private @Nullable GTOverheatParticle particle;
@@ -80,7 +80,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, CableSegment
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<CableVariant, CableSegmentProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<CableSegmentProperties> other) {
         return other instanceof CableBlockEntity;
     }
 

@@ -41,7 +41,7 @@ public class MetaMachineItem extends BlockItem {
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
-        if (level.getBlockEntity(pos.relative(side.getOpposite())) instanceof PipeBlockEntity<?, ?> pipeBE) {
+        if (level.getBlockEntity(pos.relative(side.getOpposite())) instanceof PipeBlockEntity<?> pipeBE) {
             pipeBE.tryConnectToAdjacent(side, false);
         }
 

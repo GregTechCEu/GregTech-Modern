@@ -116,7 +116,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
     }
 
     @Override
-    public final @Nullable PipeBlockEntity<?, ?> newBlockEntity(BlockPos pos, BlockState state) {
+    public final @Nullable PipeBlockEntity<?> newBlockEntity(BlockPos pos, BlockState state) {
         return networkType.blockEntityType().get().create(pos, state);
     }
 
@@ -129,8 +129,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         return pipeVariant.createPipeModel(this, provider);
     }
 
-    public static @Nullable PipeBlockEntity<?, ?> getPipeBE(BlockGetter level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
+    public static @Nullable PipeBlockEntity<?> getPipeBE(BlockGetter level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipeBlockEntity) {
             return pipeBlockEntity;
         }
         return null;
@@ -141,7 +141,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
                             ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
 
-        PipeBlockEntity<?, ?> pipeTile = getPipeBE(level, pos);
+        PipeBlockEntity<?> pipeTile = getPipeBE(level, pos);
 
         if (pipeTile != null && placer instanceof Player player) {
             // Color pipes/cables on place if holding spray can in off-hand
@@ -184,8 +184,8 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         ItemStack itemStack = player.getItemInHand(hand);
         BlockEntity entity = level.getBlockEntity(pos);
 
-        PipeBlockEntity<?, ?> pipeBlockEntity = null;
-        if (entity instanceof PipeBlockEntity<?, ?> pbe) {
+        PipeBlockEntity<?> pipeBlockEntity = null;
+        if (entity instanceof PipeBlockEntity<?> pbe) {
             pipeBlockEntity = pbe;
         }
         if (pipeBlockEntity == null) {
@@ -315,7 +315,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         if (blockEntityType == networkType.blockEntityType().get()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof PipeBlockEntity<?, ?> pipeNode) {
+                    if (pTile instanceof PipeBlockEntity<?> pipeNode) {
                         pipeNode.serverTick();
                     }
                 };
@@ -341,7 +341,7 @@ public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBl
         var context = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
         BlockEntity blockEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
-        if (blockEntity instanceof PipeBlockEntity<?, ?> pipeTile) {
+        if (blockEntity instanceof PipeBlockEntity<?> pipeTile) {
             if (!pipeTile.getFrameMaterial().isNull()) {
                 drops.addAll(Objects
                         .requireNonNull(

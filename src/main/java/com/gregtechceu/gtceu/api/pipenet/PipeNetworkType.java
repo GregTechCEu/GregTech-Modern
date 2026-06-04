@@ -8,6 +8,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import java.util.function.Supplier;
 
 public record PipeNetworkType(ResourceLocation id,
-                              Supplier<BlockEntityType<? extends PipeBlockEntity<?, ?>>> blockEntityType) {
+                              Supplier<BlockEntityType<? extends PipeBlockEntity<?>>> blockEntityType) {
 
 }

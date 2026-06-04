@@ -29,7 +29,7 @@ public class LaserPipeBlock extends PipeBlock {
     public static BlockColor tintedColor() {
         return (state, level, pos, index) -> {
             if (pos != null && level != null &&
-                    level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipe) {
+                    level.getBlockEntity(pos) instanceof PipeBlockEntity<?> pipe) {
                 if (!pipe.getFrameMaterial().isNull()) {
                     if (index == 3) {
                         return pipe.getFrameMaterial().getMaterialRGB();
