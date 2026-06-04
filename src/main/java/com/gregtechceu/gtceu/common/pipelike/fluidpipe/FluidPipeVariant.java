@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -48,7 +50,7 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeSegmentPro
     }
 
     @Override
-    public FluidPipeSegmentProperties createSegmentProperties(MaterialPipeBlock<FluidPipeSegmentProperties> block, Material material) {
+    public FluidPipeSegmentProperties createSegmentProperties(MaterialPipeBlock block, Material material) {
         var fluidPipeData = material.getProperty(PropertyKey.FLUID_PIPE);
 
         return new FluidPipeSegmentProperties(
@@ -61,7 +63,7 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeSegmentPro
                 channels, fluidPipeData.getContainmentPredicate());
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock block, Material material, GTBlockstateProvider provider) {
         String side = "block/pipe/pipe%s_side";
         String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {
@@ -76,5 +78,10 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeSegmentPro
             side = side.formatted("");
         }
         return new PipeModel(block, provider, thickness, GTCEu.id(side), GTCEu.id(end));
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.FLUID;
     }
 }

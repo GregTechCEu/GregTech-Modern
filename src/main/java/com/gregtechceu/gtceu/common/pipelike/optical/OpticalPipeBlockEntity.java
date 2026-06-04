@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -24,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, OpticalPipeSegmentProperties> {
 
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, GTPipeNetworks.OPTICAL);
     }
 
     @Override

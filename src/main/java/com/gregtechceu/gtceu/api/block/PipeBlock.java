@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
-import com.gregtechceu.gtceu.api.pipenet.PipeSegmentProperties;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -68,19 +67,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PipeBlock<NodeDataType extends PipeSegmentProperties>
-                               extends Block
-                               implements EntityBlock, SimpleWaterloggedBlock {
+public class PipeBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
 
     @Getter
-    public final IPipeVariant<NodeDataType> pipeVariant;
+    public final IPipeVariant<?> pipeVariant;
 
     protected final Map<@Nullable Direction, VoxelShape> shapes = new IdentityHashMap<>();
 
     @Getter
     protected final PipeNetworkType networkType;
 
-    public PipeBlock(Properties properties, IPipeVariant<NodeDataType> pipeVariant, PipeNetworkType networkType) {
+    public PipeBlock(Properties properties, IPipeVariant<?> pipeVariant, PipeNetworkType networkType) {
         super(properties);
         this.pipeVariant = pipeVariant;
         this.networkType = networkType;
@@ -288,10 +285,10 @@ public class PipeBlock<NodeDataType extends PipeSegmentProperties>
                 var held = player.getMainHandItem();
                 Set<GTToolType> types = Set.of(getPipeTuneTool());
 
-                PipeBlock<?> block;
+                PipeBlock block;
 
                 if (held.getItem() instanceof BlockItem blockItem) {
-                    block = blockItem.getBlock() instanceof PipeBlock<?> pipeBlock ? pipeBlock : null;
+                    block = blockItem.getBlock() instanceof PipeBlock pipeBlock ? pipeBlock : null;
                 } else {
                     block = null;
                 }

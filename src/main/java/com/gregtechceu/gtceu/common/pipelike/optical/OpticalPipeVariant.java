@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
@@ -24,7 +26,7 @@ public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeSegmentPropert
     }
 
     @Override
-    public OpticalPipeSegmentProperties createSegmentProperties(PipeBlock<OpticalPipeSegmentProperties> block) {
+    public OpticalPipeSegmentProperties createSegmentProperties(PipeBlock block) {
         return OpticalPipeSegmentProperties.INSTANCE;
     }
 
@@ -34,12 +36,17 @@ public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeSegmentPropert
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock block, GTBlockstateProvider provider) {
         ActivablePipeModel pipeModel = new ActivablePipeModel(block, getThickness(),
                 GTCEu.id("block/pipe/pipe_optical_side"), GTCEu.id("block/pipe/pipe_optical_in"),
                 provider);
         pipeModel.setSideOverlay(GTCEu.id("block/pipe/pipe_optical_side_overlay"));
         pipeModel.setSideOverlayActive(GTCEu.id("block/pipe/pipe_optical_side_overlay_active"));
         return pipeModel;
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.OPTICAL;
     }
 }

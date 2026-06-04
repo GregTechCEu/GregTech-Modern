@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, LaserPipeSegmentProperties> {
 
     public LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, GTPipeNetworks.LASER);
     }
 
     @Override

@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -58,14 +60,14 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeSegmentPrope
     }
 
     @Override
-    public ItemPipeSegmentProperties createSegmentProperties(MaterialPipeBlock<ItemPipeSegmentProperties> block, Material material) {
+    public ItemPipeSegmentProperties createSegmentProperties(MaterialPipeBlock block, Material material) {
         var baseProperties = material.getProperty(PropertyKey.ITEM_PIPE);
 
         return new ItemPipeSegmentProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5),
                 baseProperties.getTransferRate() * rateMultiplier);
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock block, Material material, GTBlockstateProvider provider) {
         ResourceLocation sideTexture = GTCEu.id("block/pipe/pipe_side");
         ResourceLocation endTexture = GTCEu.id("block/pipe/pipe_%s_in"
                 .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name));
@@ -79,5 +81,10 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeSegmentPrope
             model.setSideOverlay(GTCEu.id("block/pipe/pipe_restrictive"));
         }
         return model;
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.ITEM;
     }
 }

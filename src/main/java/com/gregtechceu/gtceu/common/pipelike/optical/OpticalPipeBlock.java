@@ -19,7 +19,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpticalPipeBlock extends PipeBlock<OpticalPipeSegmentProperties> {
+public class OpticalPipeBlock extends PipeBlock {
 
     public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeVariant pipeType) {
         super(properties, pipeType, GTPipeNetworks.OPTICAL);

@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -21,7 +23,7 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeSegmentProperties>
     }
 
     @Override
-    public LaserPipeSegmentProperties createSegmentProperties(PipeBlock<LaserPipeSegmentProperties> block) {
+    public LaserPipeSegmentProperties createSegmentProperties(PipeBlock block) {
         return LaserPipeSegmentProperties.INSTANCE;
     }
 
@@ -31,12 +33,17 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeSegmentProperties>
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock block, GTBlockstateProvider provider) {
         ActivablePipeModel model = new ActivablePipeModel(block, getThickness(),
                 GTCEu.id("block/pipe/pipe_laser_side"), GTCEu.id("block/pipe/pipe_laser_in"),
                 provider);
         model.setSideOverlay(GTCEu.id("block/pipe/pipe_laser_side_overlay"));
         model.setSideOverlayActive(GTCEu.id("block/pipe/pipe_laser_side_overlay_emissive"));
         return model;
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.LASER;
     }
 }

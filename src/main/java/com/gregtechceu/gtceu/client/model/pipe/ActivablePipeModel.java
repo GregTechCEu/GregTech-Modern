@@ -37,7 +37,7 @@ public class ActivablePipeModel extends PipeModel {
     /// Use {@link #getOrCreateActiveConnectionElement()} instead of referencing this field directly.
     private BlockModelBuilder activeConnectionElement;
 
-    public ActivablePipeModel(PipeBlock<?> block, float thickness, ResourceLocation side, ResourceLocation end,
+    public ActivablePipeModel(PipeBlock block, float thickness, ResourceLocation side, ResourceLocation end,
                               GTBlockstateProvider provider) {
         super(block, provider, thickness, side, end);
     }

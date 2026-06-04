@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlock extends MaterialPipeBlock<CableSegmentProperties> {
+public class CableBlock extends MaterialPipeBlock {
 
 
 

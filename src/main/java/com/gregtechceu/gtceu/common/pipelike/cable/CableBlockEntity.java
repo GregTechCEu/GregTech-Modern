@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
 import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -67,7 +68,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, CableSegment
     private @Nullable TickableSubscription heatSubs;
 
     public CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, GTPipeNetworks.ENERGY);
     }
 
     @Override

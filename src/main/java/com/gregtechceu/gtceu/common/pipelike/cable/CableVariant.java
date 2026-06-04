@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -57,7 +59,7 @@ public enum CableVariant implements IMaterialPipeVariant<CableSegmentProperties>
     }
 
     @Override
-    public CableSegmentProperties createSegmentProperties(MaterialPipeBlock<CableSegmentProperties> block, Material material) {
+    public CableSegmentProperties createSegmentProperties(MaterialPipeBlock block, Material material) {
         var baseProperties = material.getProperty(PropertyKey.WIRE);
         int lossPerBlock;
 
@@ -74,7 +76,7 @@ public enum CableVariant implements IMaterialPipeVariant<CableSegmentProperties>
         return ordinal() > 4;
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock block, Material material, GTBlockstateProvider provider) {
         ResourceLocation side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         ResourceLocation end = MaterialIconType.wire
@@ -98,5 +100,10 @@ public enum CableVariant implements IMaterialPipeVariant<CableSegmentProperties>
             model.setEndOverlay(GTCEu.id("block/cable/insulation_%s".formatted(insulationLevel)));
         }
         return model;
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.ENERGY;
     }
 }

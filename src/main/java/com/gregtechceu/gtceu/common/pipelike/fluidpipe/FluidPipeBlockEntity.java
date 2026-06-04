@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -81,7 +82,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
     private @Nullable TickableSubscription updateSubs;
 
     public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, GTPipeNetworks.FLUID);
 
         fluidTanks = new CustomFluidTank[getNodeData().getChannels()];
         for (int i = 0; i < getNodeData().getChannels(); i++) {

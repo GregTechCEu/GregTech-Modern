@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.common.pipelike.duct;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.util.StringRepresentable;
 
 import lombok.Getter;
@@ -36,7 +38,7 @@ public enum DuctPipeVariant implements IPipeVariant<DuctSegmentProperties>, Stri
     }
 
     @Override
-    public DuctSegmentProperties createSegmentProperties(PipeBlock<DuctSegmentProperties> block) {
+    public DuctSegmentProperties createSegmentProperties(PipeBlock block) {
         return new DuctSegmentProperties(getRateMultiplier());
     }
 
@@ -46,8 +48,13 @@ public enum DuctPipeVariant implements IPipeVariant<DuctSegmentProperties>, Stri
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock block, GTBlockstateProvider provider) {
         return new PipeModel(block, provider, getThickness(),
                 GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
+    }
+
+    @Override
+    public PipeNetworkType getNetworkType() {
+        return GTPipeNetworks.DUCT;
     }
 }

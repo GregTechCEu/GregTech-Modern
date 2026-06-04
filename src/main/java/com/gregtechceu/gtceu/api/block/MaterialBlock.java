@@ -247,7 +247,7 @@ public class MaterialBlock extends Block {
 
     public boolean replaceWithFramedPipe(Level level, BlockPos pos, BlockState state, Player player,
                                          ItemStack stackInHand, BlockHitResult hit) {
-        PipeBlock<?> pipeBlock = (PipeBlock<?>) ((PipeBlockItem) stackInHand.getItem()).getBlock();
+        PipeBlock pipeBlock = (PipeBlock) ((PipeBlockItem) stackInHand.getItem()).getBlock();
         if (pipeBlock.pipeVariant.getThickness() < 1) {
             PipeBlockItem itemBlock = (PipeBlockItem) stackInHand.getItem();
             BlockState pipeState = pipeBlock.defaultBlockState();

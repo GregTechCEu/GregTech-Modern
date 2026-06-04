@@ -12,11 +12,11 @@ import com.gregtechceu.gtceu.api.item.SurfaceRockBlockItem;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.*;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableBlock;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableVariant;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeVariant;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeVariant;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -45,7 +45,7 @@ public class GTMaterialBlocks {
             .builder();
     static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
 
     // Reference Tables
@@ -53,7 +53,7 @@ public class GTMaterialBlocks {
     public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
+    public static Table<TagPrefix, Material, BlockEntry<MaterialPipeBlock>> ITEM_PIPE_BLOCKS;
 
     // Material Blocks
     public static void generateMaterialBlocks() {
@@ -284,7 +284,7 @@ public class GTMaterialBlocks {
                                               GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name),
-                        p -> new ItemPipeBlock(p, itemPipeType, material))
+                        p -> new MaterialPipeBlock(p, itemPipeType, GTPipeNetworks.ITEM, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
                     if (GTBlocks.doMetalPipe(material)) {

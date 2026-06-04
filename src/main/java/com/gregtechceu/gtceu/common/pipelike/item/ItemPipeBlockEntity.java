@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPipeSegmentProperties> {
 
     public ItemPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        super(type, pos, blockState);
+        super(type, pos, blockState, GTPipeNetworks.ITEM);
     }
 
     public long getLevelTime() {

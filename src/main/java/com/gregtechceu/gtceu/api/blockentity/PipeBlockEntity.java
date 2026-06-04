@@ -99,12 +99,19 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
-    public PipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    @Getter
+    private final PipeNetworkType networkType;
+
+    public PipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState, PipeNetworkType networkType) {
         super(type, pos, blockState);
         this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
-        this.nodeData = getPipeBlock().pipeVariant.createSegmentProperties(getPipeBlock());
+        this.networkType = networkType;
+
+        if (networkType != getPipeBlock().getNetworkType()) throw new IllegalStateException("Pipe BE and pipe block have different network types");
+
+        this.nodeData = getPipeType().createSegmentProperties(getPipeBlock());
     }
 
     //////////////////////////////////////
@@ -163,12 +170,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
     }
 
     @SuppressWarnings("unchecked")
-    public PipeBlock<NodeDataType> getPipeBlock() {
-        return (PipeBlock<NodeDataType>) getBlockState().getBlock();
-    }
-
-    public PipeNetworkType getNetworkType() {
-        return getPipeBlock().getNetworkType();
+    public PipeBlock getPipeBlock() {
+        return (PipeBlock) getBlockState().getBlock();
     }
 
     public int getBlockedConnections() {
@@ -374,8 +377,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
         return count;
     }
 
+    @SuppressWarnings("unchecked")
     public IPipeVariant<NodeDataType> getPipeType() {
-        return getPipeBlock().pipeVariant;
+        return (IPipeVariant<NodeDataType>)getPipeBlock().pipeVariant;
     }
 
     //////////////////////////////////////
@@ -455,7 +459,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
 
     @Override
     public int getDefaultPaintingColor() {
-        return this.getPipeBlock() instanceof MaterialPipeBlock<?> materialPipeBlock ?
+        return this.getPipeBlock() instanceof MaterialPipeBlock materialPipeBlock ?
                 materialPipeBlock.material.getMaterialRGB() : 0xFFFFFF;
     }
 
