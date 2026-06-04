@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -15,16 +15,16 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
 
     private final FluidPipeBlockEntity pipe;
     private final CustomFluidTank[] tanks;
-    private final Direction facing;
+    private final @Nullable Direction facing;
 
-    public PipeTankList(FluidPipeBlockEntity pipe, Direction facing, CustomFluidTank... fluidTanks) {
+    public PipeTankList(FluidPipeBlockEntity pipe, @Nullable Direction facing, CustomFluidTank... fluidTanks) {
         this.tanks = fluidTanks;
         this.pipe = pipe;
         this.facing = facing;
     }
 
     private int findChannel(FluidStack stack) {
-        if (stack.isEmpty() || tanks == null)
+        if (stack.isEmpty())
             return -1;
         int empty = -1;
         for (int i = tanks.length - 1; i >= 0; i--) {
@@ -42,14 +42,13 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
         return tanks.length;
     }
 
-    @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
         return tanks[tank].getFluid();
     }
 
     @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
         tanks[tank].setFluid(fluidStack);
     }
 
@@ -59,7 +58,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
     }
 
     @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         return tanks[tank].isFluidValid(stack);
     }
 
@@ -70,7 +69,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
     @Override
     public int fill(FluidStack resource, FluidAction action) {
         int channel;
-        if (pipe.isBlocked(facing) || resource.getAmount() < 0 || (channel = findChannel(resource)) < 0) return 0;
+        if ((facing != null && pipe.isBlocked(facing)) || resource.getAmount() < 0 || (channel = findChannel(resource)) < 0) return 0;
         return fill(resource, action, channel);
     }
 
@@ -105,7 +104,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
     }
 
     @Override
-    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+    public FluidStack drain(int maxDrain, FluidAction action) {
         if (maxDrain <= 0) return FluidStack.EMPTY;
         for (CustomFluidTank tank : tanks) {
             FluidStack drained = tank.drain(maxDrain, action);
@@ -115,7 +114,7 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
     }
 
     @Override
-    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+    public FluidStack drain(FluidStack resource, FluidAction action) {
         if (resource.getAmount() <= 0) return FluidStack.EMPTY;
         resource = resource.copy();
         for (CustomFluidTank tank : tanks) {
@@ -126,7 +125,6 @@ public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFlu
     }
 
     @Override
-    @NotNull
     public Iterator<CustomFluidTank> iterator() {
         return Arrays.stream(tanks).iterator();
     }

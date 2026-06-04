@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
@@ -22,11 +20,9 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -58,6 +54,7 @@ import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -68,7 +65,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType> extends Block
+public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType>
+                               extends Block
                                implements EntityBlock, SimpleWaterloggedBlock {
 
     public final PipeType pipeType;
@@ -121,8 +119,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
         return networkType.blockEntityType().get().create(pos, state);
     }
 
-    public abstract LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>> getWorldPipeNet(ServerLevel level);
-
     /**
      * Add data via placement.
      */
@@ -137,7 +133,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
     }
 
     public static @Nullable PipeBlockEntity<?, ?> getPipeBE(BlockGetter level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?,?> pipeBlockEntity) {
+        if (level.getBlockEntity(pos) instanceof PipeBlockEntity<?, ?> pipeBlockEntity) {
             return pipeBlockEntity;
         }
         return null;
@@ -252,7 +248,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
         }
         if (!pipeNode.getFrameMaterial().isNull()) {
             BlockState frameState = Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS
-                            .get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
+                    .get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
         }
@@ -295,7 +291,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
                 PipeBlock<?, ?> block;
 
                 if (held.getItem() instanceof BlockItem blockItem) {
-                    block = blockItem.getBlock() instanceof PipeBlock<?,?> pipeBlock ? pipeBlock : null;
+                    block = blockItem.getBlock() instanceof PipeBlock<?, ?> pipeBlock ? pipeBlock : null;
                 } else {
                     block = null;
                 }
@@ -305,7 +301,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
                 if (types.stream().anyMatch(type -> type.matchTags.stream().anyMatch(held::is))) return Shapes.block();
 
                 if (CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
-                        coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) return Shapes.block();
+                        coverDef -> ICoverable.canPlaceCover(coverDef, coverable)))
+                    return Shapes.block();
 
                 if (block != null && block.getNetworkType() == getNetworkType()) return Shapes.block();
             }
@@ -349,7 +346,9 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (blockEntity instanceof PipeBlockEntity<?, ?> pipeTile) {
             if (!pipeTile.getFrameMaterial().isNull()) {
-                drops.addAll(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()))
+                drops.addAll(Objects
+                        .requireNonNull(
+                                GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()))
                         .getDefaultState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {

@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,14 +52,14 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.function.Predicate;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, FluidPipeProperties>
@@ -67,18 +68,30 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
     public static final int FREQUENCY = 5;
 
     public byte lastReceivedFrom = 0, oldLastReceivedFrom = 0;
-    private PipeTankList pipeTankList;
+
+    private final PipeTankList pipeTankList;
+
     private final EnumMap<Direction, PipeTankList> tankLists = new EnumMap<>(Direction.class);
+    @Getter
     @SaveField(nbtKey = "Fluids")
     private CustomFluidTank[] fluidTanks;
     private long timer = 0L;
     private final int offset = GTValues.RNG.nextInt(20);
 
-    private TickableSubscription updateSubs;
+    private @Nullable TickableSubscription updateSubs;
 
     public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-        createTanksList();
+
+        fluidTanks = new CustomFluidTank[getNodeData().getChannels()];
+        for (int i = 0; i < getNodeData().getChannels(); i++) {
+            fluidTanks[i] = new CustomFluidTank(getCapacityPerTank());
+        }
+        pipeTankList = new PipeTankList(this, null, fluidTanks);
+        for (Direction facing : GTUtil.DIRECTIONS) {
+            tankLists.put(facing, new PipeTankList(this, facing, fluidTanks));
+        }
+
     }
 
     public long getOffsetTimer() {
@@ -100,7 +113,8 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
 
     @Override
     public boolean canPipeConnectToBlock(Direction side, Block block, @Nullable BlockEntity blockEntity) {
-        return blockEntity != null && blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent();
+        return blockEntity != null &&
+                blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, side.getOpposite()).isPresent();
     }
 
     @Override
@@ -122,14 +136,11 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
         return fluid -> true;
     }
 
-    @NotNull
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) {
             if (facing != null && isConnected(facing)) {
                 PipeTankList tankList = getTankList(facing);
-                if (tankList == null)
-                    return LazyOptional.empty();
 
                 IOFluidHandlerList list = new IOFluidHandlerList(List.of(tankList), IO.BOTH,
                         getFluidCapFilter(facing, IO.IN), getFluidCapFilter(facing, IO.OUT));
@@ -148,7 +159,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
 
     public void update() {
         timer++;
-        if (!level.isClientSide && getOffsetTimer() % FREQUENCY == 0) {
+        if (!isRemote() && getOffsetTimer() % FREQUENCY == 0) {
             lastReceivedFrom &= 63;
             if (lastReceivedFrom == 63) {
                 lastReceivedFrom = 0;
@@ -273,7 +284,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
         return false;
     }
 
-    public void checkAndDestroy(@NotNull FluidStack stack) {
+    public void checkAndDestroy(FluidStack stack) {
         Fluid fluid = stack.getFluid();
         FluidPipeProperties prop = getNodeData();
 
@@ -313,11 +324,11 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
                             boolean isShattering, boolean isMelting) {
         // prevent the sound from spamming when filled from anything not a pipe
         if (getOffsetTimer() % 10 == 0) {
-            level.playSound(null, this.getBlockPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+            getLevel().playSound(null, this.getBlockPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
         }
 
         if (isLeaking) {
-            FluidPipeBlockEntity.spawnParticles(level, worldPosition, Direction.UP, ParticleTypes.SMOKE,
+            FluidPipeBlockEntity.spawnParticles(getLevel(), worldPosition, Direction.UP, ParticleTypes.SMOKE,
                     7 + GTValues.RNG.nextInt(2));
 
             // voids 10%
@@ -359,12 +370,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
             // 1/10 chance to void everything and destroy the pipe
             if (GTValues.RNG.nextInt(10) == 0) {
                 stack.setAmount(0);
-                level.removeBlock(this.getBlockPos(), false);
+                getLevel().removeBlock(this.getBlockPos(), false);
             }
         }
 
         if (isBurning || isMelting) {
-            FluidPipeBlockEntity.spawnParticles(level, getBlockPos(), Direction.UP, ParticleTypes.FLAME,
+            FluidPipeBlockEntity.spawnParticles(getLevel(), getBlockPos(), Direction.UP, ParticleTypes.FLAME,
                     (isMelting ? 7 : 3) + GTValues.RNG.nextInt(2));
 
             // voids 75%
@@ -372,7 +383,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
 
             // 1/4 chance to burn everything around it
             if (GTValues.RNG.nextInt(4) == 0) {
-                FluidPipeBlockEntity.setNeighboursToFire(level, getBlockPos());
+                FluidPipeBlockEntity.setNeighboursToFire(getLevel(), getBlockPos());
             }
 
             // apply heat damage in area surrounding the pipe
@@ -389,12 +400,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
             // 1/10 chance to void everything and burn the pipe
             if (GTValues.RNG.nextInt(10) == 0) {
                 stack.setAmount(0);
-                level.setBlockAndUpdate(getBlockPos(), Blocks.FIRE.defaultBlockState());
+                getLevel().setBlockAndUpdate(getBlockPos(), Blocks.FIRE.defaultBlockState());
             }
         }
 
         if (isShattering) {
-            FluidPipeBlockEntity.spawnParticles(level, getBlockPos(), Direction.UP, ParticleTypes.CLOUD,
+            FluidPipeBlockEntity.spawnParticles(getLevel(), getBlockPos(), Direction.UP, ParticleTypes.CLOUD,
                     3 + GTValues.RNG.nextInt(2));
 
             // voids 75%
@@ -414,47 +425,23 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
             // 1/10 chance to void everything and freeze the pipe
             if (GTValues.RNG.nextInt(10) == 0) {
                 stack.setAmount(0);
-                level.removeBlock(getBlockPos(), false);
+                getLevel().removeBlock(getBlockPos(), false);
             }
         }
     }
 
-    public void receivedFrom(Direction facing) {
+    public void receivedFrom(@Nullable Direction facing) {
         if (facing != null) {
-            lastReceivedFrom |= (1 << facing.ordinal());
-        }
-    }
-
-    private void createTanksList() {
-        fluidTanks = new CustomFluidTank[getNodeData().getChannels()];
-        for (int i = 0; i < getNodeData().getChannels(); i++) {
-            fluidTanks[i] = new CustomFluidTank(getCapacityPerTank());
-        }
-        pipeTankList = new PipeTankList(this, null, fluidTanks);
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            tankLists.put(facing, new PipeTankList(this, facing, fluidTanks));
+            lastReceivedFrom |= (byte)(1 << facing.ordinal());
         }
     }
 
     public PipeTankList getTankList() {
-        if (pipeTankList == null || fluidTanks == null) {
-            createTanksList();
-        }
         return pipeTankList;
     }
 
     public PipeTankList getTankList(Direction facing) {
-        if (tankLists.isEmpty() || fluidTanks == null) {
-            createTanksList();
-        }
         return tankLists.getOrDefault(facing, pipeTankList);
-    }
-
-    public CustomFluidTank[] getFluidTanks() {
-        if (pipeTankList == null || fluidTanks == null) {
-            createTanksList();
-        }
-        return fluidTanks;
     }
 
     public FluidStack[] getContainedFluids() {
@@ -493,34 +480,30 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, Flui
     }
 
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
                 mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
             FluidStack[] fluids = getContainedFluids();
-            if (fluids != null) {
-                boolean allTanksEmpty = true;
-                for (int i = 0; i < fluids.length; i++) {
-                    if (fluids[i] != null) {
-                        if (fluids[i].getFluid() == null || fluids[i].isEmpty()) {
-                            continue;
-                        }
-
-                        allTanksEmpty = false;
-                        list.add(Component.translatable("behavior.portable_scanner.tank", i,
-                                Component.translatable(FormattingUtil.formatNumbers(fluids[i].getAmount()))
-                                        .withStyle(ChatFormatting.GREEN),
-                                Component.translatable(FormattingUtil.formatNumbers(getCapacityPerTank()))
-                                        .withStyle(ChatFormatting.YELLOW),
-                                fluids[i].getDisplayName().copy()
-                                        .withStyle(ChatFormatting.GOLD)));
-                    }
+            boolean allTanksEmpty = true;
+            for (int i = 0; i < fluids.length; i++) {
+                if (fluids[i].getFluid() == null || fluids[i].isEmpty()) {
+                    continue;
                 }
 
-                if (allTanksEmpty) {
-                    list.add(Component.translatable("behavior.portable_scanner.tanks_empty"));
-                }
+                allTanksEmpty = false;
+                list.add(Component.translatable("behavior.portable_scanner.tank", i,
+                        Component.translatable(FormattingUtil.formatNumbers(fluids[i].getAmount()))
+                                .withStyle(ChatFormatting.GREEN),
+                        Component.translatable(FormattingUtil.formatNumbers(getCapacityPerTank()))
+                                .withStyle(ChatFormatting.YELLOW),
+                        fluids[i].getDisplayName().copy()
+                                .withStyle(ChatFormatting.GOLD)));
+            }
+
+            if (allTanksEmpty) {
+                list.add(Component.translatable("behavior.portable_scanner.tanks_empty"));
             }
         }
 

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.pipelike;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetworkType;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
+
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,5 +20,6 @@ public class GTPipeNetworks {
 
     public static final PipeNetworkType LASER = new PipeNetworkType(GTCEu.id("laser"), GTBlockEntities.LASER_PIPE::get);
 
-    public static final PipeNetworkType OPTICAL = new PipeNetworkType(GTCEu.id("optical"), GTBlockEntities.OPTICAL_PIPE::get);
+    public static final PipeNetworkType OPTICAL = new PipeNetworkType(GTCEu.id("optical"),
+            GTBlockEntities.OPTICAL_PIPE::get);
 }

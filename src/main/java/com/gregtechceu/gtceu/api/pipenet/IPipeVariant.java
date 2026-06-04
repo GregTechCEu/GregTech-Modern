@@ -11,6 +11,7 @@ public interface IPipeVariant<NodeDataType> {
 
     /**
      * The thickness of the pipe, used for rendering/collisions.
+     * 
      * @return Pipe thickness
      */
     float getThickness();
@@ -22,7 +23,8 @@ public interface IPipeVariant<NodeDataType> {
 
     /**
      * Used for datagen, creates the model for pipe blocks of this variant.
-     * @param block The block to create the model for
+     * 
+     * @param block    The block to create the model for
      * @param provider Datagen blockstate provider
      * @return Pipe model
      */

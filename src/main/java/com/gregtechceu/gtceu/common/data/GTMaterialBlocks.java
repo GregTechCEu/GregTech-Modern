@@ -280,7 +280,8 @@ public class GTMaterialBlocks {
         return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
     }
 
-    private static void registerItemPipeBlock(Material material, ItemPipeVariant itemPipeType, GTRegistrate registrate) {
+    private static void registerItemPipeBlock(Material material, ItemPipeVariant itemPipeType,
+                                              GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name),
                         p -> new ItemPipeBlock(p, itemPipeType, material))

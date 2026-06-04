@@ -39,9 +39,10 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 import java.util.function.Function;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
@@ -138,7 +139,8 @@ public class BlockHighlightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var networkType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().getNetworkType() :
+            var networkType = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
+                    pipeBlockItem.getBlock().getNetworkType() :
                     null;
             if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
                     pipeBlockEntity.getNetworkType() == networkType) {

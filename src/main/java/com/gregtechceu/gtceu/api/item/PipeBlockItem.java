@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -15,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -51,7 +49,7 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes"})
+    @SuppressWarnings({ "rawtypes" })
     public boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -80,22 +78,22 @@ public class PipeBlockItem extends BlockItem {
 
             selfTile.tryConnectToAdjacent(side.getOpposite(), false);
 
-//            for (Direction facing : GTUtil.DIRECTIONS) {
-//                var adjacentBE = selfTile.getNeighbor(facing);
-//
-//                if (adjacentBE instanceof PipeBlockEntity otherPipe) {
-//                    if (otherPipe.isConnected(facing.getOpposite())) {
-//                        if (otherPipe.canConnect(facing.getOpposite())) {
-//                            selfTile.setConnection(facing, true, true);
-//                        } else {
-//                            otherPipe.setConnection(facing.getOpposite(), false, true);
-//                        }
-//                    }
-//                } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
-//                    selfTile.tryConnectToAdjacent(facing, false);
-//                }
-//
-//            }
+            // for (Direction facing : GTUtil.DIRECTIONS) {
+            // var adjacentBE = selfTile.getNeighbor(facing);
+            //
+            // if (adjacentBE instanceof PipeBlockEntity otherPipe) {
+            // if (otherPipe.isConnected(facing.getOpposite())) {
+            // if (otherPipe.canConnect(facing.getOpposite())) {
+            // selfTile.setConnection(facing, true, true);
+            // } else {
+            // otherPipe.setConnection(facing.getOpposite(), false, true);
+            // }
+            // }
+            // } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
+            // selfTile.tryConnectToAdjacent(facing, false);
+            // }
+            //
+            // }
         }
         return didPlace;
     }

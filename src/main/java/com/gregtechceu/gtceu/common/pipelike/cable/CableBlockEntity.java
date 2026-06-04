@@ -3,12 +3,10 @@ package com.gregtechceu.gtceu.common.pipelike.cable;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
@@ -44,9 +42,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -55,23 +51,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperties> implements IDataInfoProvider {
 
-    protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
-
     @SideOnly(Side.CLIENT)
-    private GTOverheatParticle particle;
+    private @Nullable GTOverheatParticle particle;
+    @Getter
     private static final int meltTemp = 3000;
 
-    private final EnumMap<Direction, EnergyNetHandler> handlers = new EnumMap<>(Direction.class);
     private final PerTickLongCounter maxVoltageCounter = new PerTickLongCounter();
     private final AveragingPerTickCounter averageVoltageCounter = new AveragingPerTickCounter();
     private final AveragingPerTickCounter averageAmperageCounter = new AveragingPerTickCounter();
-    private EnergyNetHandler defaultHandler;
+
     private int heatQueue;
     @Getter
     @SaveField
     @SyncToClient
     private int temperature = getDefaultTemp();
-    private TickableSubscription heatSubs;
+    private @Nullable TickableSubscription heatSubs;
 
     public CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -80,12 +74,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
-            var container = getEnergyContainer(side);
-            if (container != null) {
-                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> container));
-            }
-        } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
-            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
+            return LazyOptional.empty();
         }
         return super.getCapability(cap, side);
     }
@@ -101,72 +90,15 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
                 blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, side.getOpposite()).isPresent();
     }
 
-    private static LevelPipeNet<WireProperties, EnergyNet> getWorldNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, EnergyNet::new),
-                () -> new LevelPipeNet<>(serverLevel, EnergyNet::new), "gtcue_energy_net");
-    }
-
-    @Nullable
-    private EnergyNet getEnergyNet() {
-        if (!(level instanceof ServerLevel serverLevel))
-            return null;
-        EnergyNet currentEnergyNet = this.currentEnergyNet.get();
-        if (currentEnergyNet != null && currentEnergyNet.isValid() &&
-                currentEnergyNet.containsNode(getBlockPos()))
-            return currentEnergyNet; // return current net if it is still valid
-
-        LevelPipeNet<WireProperties, EnergyNet> worldENet = getWorldNet(serverLevel);
-
-        currentEnergyNet = worldENet.getNetFromPos(getBlockPos());
-        if (currentEnergyNet != null) {
-            this.currentEnergyNet = new WeakReference<>(currentEnergyNet);
-        }
-        return currentEnergyNet;
-    }
-
-    public void checkNetwork() {
-        if (defaultHandler != null) {
-            EnergyNet current = getEnergyNet();
-            if (defaultHandler.getNet() != current) {
-                defaultHandler.updateNetwork(current);
-                for (EnergyNetHandler handler : handlers.values()) {
-                    handler.updateNetwork(current);
-                }
-            }
-        }
-    }
-
-    @Nullable
-    public IEnergyContainer getEnergyContainer(@Nullable Direction side) {
-        if (side != null && !isConnected(side)) return null;
-        // the EnergyNetHandler can only be created on the server, so we have an empty placeholder for the client
-        if (isRemote()) return IEnergyContainer.DEFAULT;
-        if (handlers.isEmpty())
-            initHandlers();
-        checkNetwork();
-        return handlers.getOrDefault(side, defaultHandler);
-    }
-
     @Override
     public boolean canHaveBlockedFaces() {
         return false;
     }
 
-    private void initHandlers() {
-        EnergyNet net = getEnergyNet();
-        if (net == null) {
-            return;
-        }
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            handlers.put(facing, new EnergyNetHandler(net, this, facing));
-        }
-        defaultHandler = new EnergyNetHandler(net, this, null);
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
-        if (!level.isClientSide) {
+        if (!isRemote()) {
             setTemperature(temperature);
             if (temperature > getDefaultTemp()) {
                 subscribeHeat();
@@ -215,10 +147,6 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
         return 293;
     }
 
-    public static int getMeltTemp() {
-        return meltTemp;
-    }
-
     /**
      * Should only be called internally
      *
@@ -247,6 +175,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
 
     @OnlyIn(Dist.CLIENT)
     public void createParticle() {
+        if (level == null) return;
         particle = new GTOverheatParticle(this, meltTemp,
                 getPipeBlock().getShape(getBlockState(), level, getBlockPos(), CollisionContext.empty()),
                 getPipeType().insulationLevel >= 0);
@@ -255,7 +184,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
 
     @OnlyIn(Dist.CLIENT)
     public void killParticle() {
-        if (isParticleAlive()) {
+        if (particle != null && isParticleAlive()) {
             particle.setExpired();
             particle = null;
         }
@@ -263,7 +192,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
 
     public void applyHeat(int amount) {
         heatQueue += amount;
-        if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
+        if (!getLevel().isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
             subscribeHeat();
         }
     }
@@ -276,7 +205,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
 
         if (temperature >= meltTemp) {
             // cable melted
-            level.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
+            getLevel().setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
             return false;
         }
 
@@ -307,8 +236,8 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
         CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS
                 .get(CableVariant.values()[index].tagPrefix, getPipeBlock().material)
                 .get();
-        level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
-        CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
+        getLevel().setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
+        CableBlockEntity newCable = (CableBlockEntity) getLevel().getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
             newCable.setTemperature(temp);
             newCable.subscribeHeat();
@@ -326,8 +255,8 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
-        level.getLightEngine().checkBlock(worldPosition);
-        if (!level.isClientSide && temperature >= meltTemp) {
+        getLevel().getLightEngine().checkBlock(worldPosition);
+        if (!getLevel().isClientSide && temperature >= meltTemp) {
             var facing = Direction.UP;
             float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
             float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;
@@ -338,7 +267,7 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
             float xSpd = (float) Math.sin(temp) * 0.1F;
             float zSpd = (float) Math.cos(temp) * 0.1F;
 
-            ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
+            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.SMOKE,
                     xPos + GTValues.RNG.nextFloat() * 0.5F,
                     yPos + GTValues.RNG.nextFloat() * 0.5F,
                     zPos + GTValues.RNG.nextFloat() * 0.5F,

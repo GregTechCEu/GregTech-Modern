@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -31,12 +29,6 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeVariant, ItemPipePr
     @Override
     public ItemPipeProperties createRawData() {
         return material.getProperty(PropertyKey.ITEM_PIPE);
-    }
-
-    @Override
-    public LevelPipeNet<ItemPipeProperties, ItemPipeNet> getWorldPipeNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, ItemPipeNet::new),
-                () -> new LevelPipeNet<>(serverLevel, ItemPipeNet::new), "gtceu_item_pipe_net");
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.renderer.ItemWithBERModelRenderer;
@@ -42,7 +41,7 @@ public class MetaMachineItem extends BlockItem {
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
-        if (level.getBlockEntity(pos.relative(side.getOpposite())) instanceof PipeBlockEntity<?,?> pipeBE) {
+        if (level.getBlockEntity(pos.relative(side.getOpposite())) instanceof PipeBlockEntity<?, ?> pipeBE) {
             pipeBE.tryConnectToAdjacent(side, false);
         }
 

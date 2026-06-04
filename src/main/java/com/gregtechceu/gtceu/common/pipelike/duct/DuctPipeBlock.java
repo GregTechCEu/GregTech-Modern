@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.common.pipelike.duct;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -31,12 +29,6 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeVariant, DuctPipeProperties
     }
 
     @Override
-    public LevelPipeNet<DuctPipeProperties, DuctPipeNet> getWorldPipeNet(ServerLevel world) {
-        return world.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(world, DuctPipeNet::new),
-                () -> new LevelPipeNet<>(world, DuctPipeNet::new), DATA_ID);
-    }
-
-    @Override
     public DuctPipeProperties createRawData() {
         return properties;
     }
@@ -46,6 +38,6 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeVariant, DuctPipeProperties
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
         tooltip.add(Component.translatable("gtceu.duct_pipe.transfer_rate",
-                this.pipeType.modifyProperties(this.properties).getTransferRate()));
+                createProperties().getTransferRate()));
     }
 }

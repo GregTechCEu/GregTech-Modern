@@ -3,17 +3,11 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlockEntity;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,24 +15,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.EnumMap;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> {
-
-    private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
-    // the OpticalNetHandler can only be created on the server, so we have an empty placeholder for the client
-    private final IDataAccessHatch clientDataHandler = new DefaultDataHandler();
-    private final IOpticalComputationProvider clientComputationHandler = new DefaultComputationHandler();
-    private WeakReference<OpticalPipeNet> currentPipeNet = new WeakReference<>(null);
-    private OpticalNetHandler defaultHandler;
 
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -49,75 +32,17 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, 
         return false;
     }
 
-    private void initHandlers() {
-        OpticalPipeNet net = getOpticalPipeNet();
-        if (net == null) return;
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            handlers.put(facing, new OpticalNetHandler(net, this, facing));
-        }
-        defaultHandler = new OpticalNetHandler(net, this, null);
-    }
-
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == GTCapability.CAPABILITY_DATA_ACCESS) {
-            if (level.isClientSide) {
-                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
-                        LazyOptional.of(() -> clientDataHandler));
-            }
-            if (facing != null && !isConnected(facing)) return LazyOptional.empty();
-            if (handlers.isEmpty()) initHandlers();
-
-            checkNetwork();
-            return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
-                    LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
+            return LazyOptional.empty();
         }
 
         if (capability == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
-            if (level.isClientSide) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,
-                        LazyOptional.of(() -> clientComputationHandler));
-            }
-            if (facing != null && !isConnected(facing)) return LazyOptional.empty();
-            if (handlers.isEmpty()) initHandlers();
-
-            checkNetwork();
-            return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,
-                    LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
-        }
-
-        if (capability == GTCapability.CAPABILITY_COVERABLE) {
-            return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
+            return LazyOptional.empty();
         }
 
         return super.getCapability(capability, facing);
-    }
-
-    public void checkNetwork() {
-        if (defaultHandler != null) {
-            OpticalPipeNet current = getOpticalPipeNet();
-            if (defaultHandler.getNet() != current) {
-                defaultHandler.updateNetwork(current);
-                for (OpticalNetHandler handler : handlers.values()) {
-                    handler.updateNetwork(current);
-                }
-            }
-        }
-    }
-
-    public OpticalPipeNet getOpticalPipeNet() {
-        if (level == null || level.isClientSide)
-            return null;
-        OpticalPipeNet currentPipeNet = this.currentPipeNet.get();
-        if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(this.getBlockPos()))
-            return currentPipeNet; // if current net is valid and does contain position, return it
-        LevelPipeNet<OpticalPipeProperties, OpticalPipeNet> worldNet = (LevelPipeNet<OpticalPipeProperties, OpticalPipeNet>) getPipeBlock()
-                .getWorldPipeNet((ServerLevel) this.getLevel());
-        currentPipeNet = worldNet.getNetFromPos(this.getBlockPos());
-        if (currentPipeNet != null) {
-            this.currentPipeNet = new WeakReference<>(currentPipeNet);
-        }
-        return currentPipeNet;
     }
 
     @Override
@@ -148,12 +73,6 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, 
     }
 
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        this.handlers.clear();
-    }
-
-    @Override
     public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> other) {
         return other instanceof OpticalPipeBlockEntity;
     }
@@ -163,36 +82,5 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, 
         if (blockEntity == null) return false;
         if (blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side.getOpposite()).isPresent()) return true;
         return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, side.getOpposite()).isPresent();
-    }
-
-    private static class DefaultDataHandler implements IDataAccessHatch {
-
-        @Override
-        public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
-            return false;
-        }
-
-        @Override
-        public boolean isCreative() {
-            return false;
-        }
-    }
-
-    private static class DefaultComputationHandler implements IOpticalComputationProvider {
-
-        @Override
-        public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-            return 0;
-        }
-
-        @Override
-        public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-            return 0;
-        }
-
-        @Override
-        public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-            return false;
-        }
     }
 }

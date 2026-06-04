@@ -1,19 +1,13 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.pipe.ActivablePipeModel;
-import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -57,12 +51,6 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeVariant, LaserPipePropert
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(GTBlockStateProperties.ACTIVE);
-    }
-
-    @Override
-    public LevelPipeNet<LaserPipeProperties, LaserPipeNet> getWorldPipeNet(ServerLevel world) {
-        return world.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(world, LaserPipeNet::new),
-                () -> new LevelPipeNet<>(world, LaserPipeNet::new), DATA_ID);
     }
 
     @Override

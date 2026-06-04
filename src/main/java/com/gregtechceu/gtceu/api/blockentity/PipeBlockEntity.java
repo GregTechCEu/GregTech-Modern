@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -118,7 +121,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             serverLevel.getServer().tell(new TickTask(0, () -> {
                 // Initialise pipenet on first tick
 
-                //getPipeBlock().getWorldPipeNet(serverLevel).addNode(getBlockPos(), getNodeData(), activeConnections, isActiveNode);
+                // getPipeBlock().getWorldPipeNet(serverLevel).addNode(getBlockPos(), getNodeData(), activeConnections,
+                // isActiveNode);
             }));
         }
     }
@@ -130,7 +134,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
 
         // Remove segment from pipenet
 
-        //if (getPipeNet() != null) getPipeNet().removeNode(getBlockPos());
+        // if (getPipeNet() != null) getPipeNet().removeNode(getBlockPos());
     }
 
     public void setPaintingColor(int col) {
@@ -254,11 +258,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             // Update routing for this segment
             // Split segment here and create a new edge?
 
-            /*LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet(serverLevel);
-            PipeNet<?> net = worldPipeNet.getNetFromPos(getBlockPos());
-            if (net != null) {
-                net.onPipeConnectionsUpdate();
-            }*/
+            /*
+             * LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet(serverLevel);
+             * PipeNet<?> net = worldPipeNet.getNetFromPos(getBlockPos());
+             * if (net != null) {
+             * net.onPipeConnectionsUpdate();
+             * }
+             */
         }
     }
 
@@ -298,11 +304,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
                 }
             }
 
-
             // Update pipenet to add connection to new segment
 
-            //LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) getLevel());
-            //worldPipeNet.updateBlockedConnections(getBlockPos(), side, !connected);
+            // LevelPipeNet<?, ?> worldPipeNet = getPipeBlock().getWorldPipeNet((ServerLevel) getLevel());
+            // worldPipeNet.updateBlockedConnections(getBlockPos(), side, !connected);
 
             // notify neighbor of change so Auto Output updates its ticking status
             getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
@@ -326,7 +331,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             return canPipesConnect(facing, (PipeBlockEntity<PipeType, NodeDataType>) other);
         }
 
-        return canPipeConnectToBlock(facing, getLevel().getBlockState(getBlockPos().relative(facing)).getBlock(), other);
+        return canPipeConnectToBlock(facing, getLevel().getBlockState(getBlockPos().relative(facing)).getBlock(),
+                other);
     }
 
     public abstract boolean canPipesConnect(Direction side,
@@ -486,5 +492,13 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
                 .with(GTModelProperties.PIPE_CONNECTION_MASK, getVisualConnections())
                 .with(GTModelProperties.PIPE_BLOCKED_MASK, getBlockedConnections())
                 .build();
+    }
+
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
+        if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
+        }
+        return super.getCapability(cap, side);
     }
 }

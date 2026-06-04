@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
 /**
  * A pipe variant for a material pipe block, where each pipe variant has its own tag prefix.
+ * 
  * @param <NodeDataType>
  */
 public interface IMaterialPipeVariant<NodeDataType> extends IPipeVariant<NodeDataType> {
@@ -26,7 +27,8 @@ public interface IMaterialPipeVariant<NodeDataType> extends IPipeVariant<NodeDat
         if (block instanceof MaterialPipeBlock<?, ?> materialPipeBlock) {
             return createPipeModel(materialPipeBlock, materialPipeBlock.material, provider);
         }
-        throw new IllegalStateException("Attempted to create material pipe variant model for a non-material pipe block");
+        throw new IllegalStateException(
+                "Attempted to create material pipe variant model for a non-material pipe block");
     }
 
     PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider);

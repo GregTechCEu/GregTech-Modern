@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -43,12 +41,6 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeVariant, FluidPip
     @Override
     public FluidPipeProperties createRawData() {
         return material.getProperty(PropertyKey.FLUID_PIPE);
-    }
-
-    @Override
-    public LevelPipeNet<FluidPipeProperties, FluidPipeNet> getWorldPipeNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, FluidPipeNet::new),
-                () -> new LevelPipeNet<>(serverLevel, FluidPipeNet::new), "gtcue_fluid_pipe_net");
     }
 
     @Override

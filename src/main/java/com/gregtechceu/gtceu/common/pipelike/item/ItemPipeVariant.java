@@ -38,7 +38,8 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> 
     @Getter
     private final TagPrefix tagPrefix;
 
-    ItemPipeVariant(String name, float thickness, TagPrefix orePrefix, float rateMultiplier, float resistanceMultiplier) {
+    ItemPipeVariant(String name, float thickness, TagPrefix orePrefix, float rateMultiplier,
+                    float resistanceMultiplier) {
         this.name = name;
         this.thickness = thickness;
         this.tagPrefix = orePrefix;

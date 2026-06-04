@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
@@ -19,7 +18,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,12 +56,6 @@ public class CableBlock extends MaterialPipeBlock<CableVariant, WireProperties> 
     }
 
     @Override
-    public LevelPipeNet<WireProperties, EnergyNet> getWorldPipeNet(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelPipeNet<>(serverLevel, EnergyNet::new),
-                () -> new LevelPipeNet<>(serverLevel, EnergyNet::new), "gtcue_energy_net");
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
@@ -95,10 +87,10 @@ public class CableBlock extends MaterialPipeBlock<CableVariant, WireProperties> 
         }
         if (level.isClientSide) return;
 
-        CableVariant cableVariant = (CableVariant)pipe.getPipeType();
+        CableVariant cableVariant = (CableVariant) pipe.getPipeType();
 
         if (cableVariant.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
-            CableBlockEntity cable = (CableBlockEntity)getPipeBE(level, pos);
+            CableBlockEntity cable = (CableBlockEntity) getPipeBE(level, pos);
             if (cable != null && cable.getFrameMaterial().isNull() &&
                     cable.getNodeData().getLossPerBlock() > 0) {
                 long voltage = cable.getCurrentMaxVoltage();

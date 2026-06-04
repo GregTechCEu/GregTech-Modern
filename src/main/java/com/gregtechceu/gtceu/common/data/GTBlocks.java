@@ -97,7 +97,8 @@ public class GTBlocks {
     // ***** Procedural Blocks *****//
 
     public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeVariant.values().length];
-    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeVariant.values().length];
+    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeVariant
+            .values().length];
     public static final BlockEntry<DuctPipeBlock>[] DUCT_PIPES = new BlockEntry[DuctPipeVariant.VALUES.length];
 
     //////////////////////////////////////
