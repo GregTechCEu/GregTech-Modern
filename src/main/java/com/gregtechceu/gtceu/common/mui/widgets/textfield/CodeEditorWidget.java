@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Style;
 
 import brachy.modularui.api.value.ISyncOrValue;
 import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.theme.TextFieldTheme;
 import brachy.modularui.value.sync.GenericListSyncHandler;
 import brachy.modularui.value.sync.StringSyncValue;
 import lombok.AccessLevel;
@@ -97,6 +98,15 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
             this.stringValue.setStringValue(getText());
             lastEdited = -1;
         }
+    }
+
+    @Override
+    protected void drawText(ModularGuiContext context, TextFieldTheme widgetTheme) {
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(-1, 3, 0);
+        this.renderer.draw(context.getGraphics(), getTextAsComponents());
+        context.graphicsPose().popPose();
+        getScrollArea().getScrollX().setScrollSize(Math.max(0, (int) (this.renderer.getLastWidth() + 0.5f)));
     }
 
     public boolean notEditedForSomeTime() {

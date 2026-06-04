@@ -469,36 +469,21 @@ public class PlaceholderHandler {
                         openPlaceholders.pop();
                     }
                     if (!pureStarts.empty()) {
-                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx).toString();
-                        result = result.replaceAll("\\n", "\\\\n");
+                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx)
+                                .toString()
+                                .replaceAll("\\n", "\\\\n");
                         int popped = pureStarts.peek();
                         pureStarts.pop();
                         viewStarts.pop();
                         if (!everything.substring(popped).contains(" ")) return Component.literal(s);
-                        if (result.length() > 10) {
-                            result = result.substring(0, 10) + "…";
-                        }
                         endOfLineValue = null;
                         return Component.literal(s)
-                                .append(Component.literal("='%s'".formatted(result))
-                                        .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
-                                        .withStyle(style -> style.withHoverEvent(new HoverEvent(
-                                                HoverEvent.Action.SHOW_TEXT,
-                                                Component.translatable("gtceu.placeholder_editor.constant_value")))
-                                                .withInsertion("")));
+                                .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Component.translatable("gtceu.placeholder_editor.constant_value", result)))
+                                        .withInsertion(""));
                     }
-                    if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
-                        String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
-                        result = result.replaceAll("\\n", "\\\\n");
-                        if (result.length() > 10) {
-                            result = result.substring(0, 10) + "…";
-                        }
-                        viewStarts.pop();
-                        endOfLineValue = Component.literal("='%s'".formatted(result))
-                                .withStyle(ChatFormatting.DARK_GRAY)
-                                .withStyle(style -> style.withInsertion(""));
-                        return Component.literal(s);
-                    } else if (!viewStarts.empty()) viewStarts.pop();
+                    if (!viewStarts.empty()) viewStarts.pop();
                     return Component.literal(s);
                 }
             }
