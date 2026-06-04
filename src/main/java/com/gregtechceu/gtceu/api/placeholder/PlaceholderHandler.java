@@ -254,7 +254,6 @@ public class PlaceholderHandler {
                 (syncManager1, panelHandler1) -> createHelpPanel());
         InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
         if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
-        syncManager.syncValue("run_code_sync_handler", runCodeOnce);
         // because the args are nullable, intellij complains about everything, even though childIf is used
         // noinspection DataFlowIssue
         return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel<>(name)
@@ -305,7 +304,7 @@ public class PlaceholderHandler {
                                                 .background(GuiTextures.RIGHTLOAD)
                                                 .hoverBackground(GuiTextures.RIGHTLOAD, new BorderDrawable())
                                                 .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
-                                                .syncHandler("run_code_sync_handler"))
+                                                .syncHandler(runCodeOnce))
                                         .child(new ButtonWidget<>()
                                                 .background(GuiTextures.HELP)
                                                 .hoverBackground(GuiTextures.HELP, new BorderDrawable())

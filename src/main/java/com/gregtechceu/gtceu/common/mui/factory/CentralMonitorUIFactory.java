@@ -67,12 +67,16 @@ public class CentralMonitorUIFactory implements PanelFactory {
                 this::createInventoryPanel);
         Function<MonitorGroup, IWidget> processGroupItem = group -> {
             int index = groupSync.getValue().indexOf(group);
+            IPanelHandler moduleEditor = createModulePanelHandler(
+                    syncManager,
+                    group.getItemStackHandler().getStackInSlot(0),
+                    group, machine);
             IPanelHandler panelHandler = syncManager.syncedPanel(
                     "editor_%d".formatted(index), true,
                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
-                            syncManager1, groupSync, index, machine));
+                            syncManager1, groupSync, index, machine, moduleEditor));
             return Flow.row()
-                    .overlay(new BorderDrawable(0xFF888888, 1))
+                    .background(new BorderDrawable(0xFF888888, 1))
                     .height(20)
                     .child(new TextWidget<>(Text.dynamic(() -> Component.literal(group.getName())))
                             .paddingLeft(5)
@@ -92,7 +96,20 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             .setOnMousePressed(mouseData -> {
                                                 groups.remove(index);
                                                 groupSync.setValue(groups, true, false);
-                                            }))));
+                                            }))))
+                    .childIf(moduleEditor != null, () -> new ButtonWidget<>()
+                            .right(36)
+                            .bottom(1)
+                            .background()
+                            .hoverBackground()
+                            .overlay(GuiTextures.MC_BUTTON, GuiTextures.EDIT)
+                            .hoverOverlay(GuiTextures.MC_BUTTON_HOVERED, GuiTextures.EDIT)
+                            .size(8)
+                            .onMousePressed((ctx, button) -> {
+                                assert moduleEditor != null;
+                                moduleEditor.openPanel();
+                                return true;
+                            }));
         };
         DynamicLinkedSyncHandler<GenericListSyncHandler<MonitorGroup>> listHandler = new DynamicLinkedSyncHandler<>(
                 groupSync)
@@ -151,13 +168,15 @@ public class CentralMonitorUIFactory implements PanelFactory {
     private ModularPanel<?> createInventoryPanel(PanelSyncManager psm, IPanelHandler panelHandler) {
         return new ModularPanel<>("inventory")
                 .bindPlayerInventory()
+                .left(30)
                 .height(88);
     }
 
     private ModularPanel<?> createGroupEditorPanel(PanelSyncManager syncManager,
                                                    GenericListSyncHandler<MonitorGroup> groupSync,
                                                    int groupIndex,
-                                                   CentralMonitorMachine machine) {
+                                                   CentralMonitorMachine machine,
+                                                   IPanelHandler moduleEditor) {
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         List<MonitorGroup> groups = List.copyOf(groupSync.getValue());
@@ -225,10 +244,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
             matrixWidth = Math.max(matrixWidth, curRow.size() * 20);
         }
         int matrixHeight = matrix.size() * 20;
-        IPanelHandler moduleEditor = createModulePanelHandler(
-                syncManager,
-                group.getItemStackHandler().getStackInSlot(0),
-                group, machine);
         BoolValue moduleChanged = new BoolValue(false);
         return new ModularPanel<>("editor_%d_panel".formatted(groupIndex))
                 .width(Math.max(matrixWidth, 150))
