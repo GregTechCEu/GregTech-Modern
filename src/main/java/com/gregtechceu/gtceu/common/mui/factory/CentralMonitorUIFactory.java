@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui.factory;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -29,7 +28,6 @@ import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widgets.*;
@@ -64,43 +62,47 @@ public class CentralMonitorUIFactory implements PanelFactory {
         IPanelHandler helpPanel = syncManager.syncedPanel(
                 "help_panel", true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
-        Function<SortableListWidget.Item<MonitorGroup>, SortableListWidget.Item<MonitorGroup>> processGroupItem = item -> {
-            int index = groupSync.getValue().indexOf(item.getWidgetValue());
+        IPanelHandler inventoryPanel = syncManager.syncedPanel(
+                "inventory", true,
+                this::createInventoryPanel);
+        Function<MonitorGroup, IWidget> processGroupItem = group -> {
+            int index = groupSync.getValue().indexOf(group);
             IPanelHandler panelHandler = syncManager.syncedPanel(
                     "editor_%d".formatted(index), true,
                     (syncManager1, panelHandler1) -> this.createGroupEditorPanel(
-                            syncManager1, groupSync, index, machine, helpPanel));
-            return item.child(Flow.row()
+                            syncManager1, groupSync, index, machine));
+            return Flow.row()
+                    .overlay(new BorderDrawable(0xFF888888, 1))
                     .height(20)
-                    .child(new TextWidget<>(Text.dynamic(() -> Component.literal(item.getWidgetValue().getName())))
+                    .child(new TextWidget<>(Text.dynamic(() -> Component.literal(group.getName())))
                             .paddingLeft(5)
-                            .widthRelOffset(1, -38))
+                            .widthRelOffset(1, -18 * 3))
+                    .child(new ItemDisplayWidget()
+                            .item(group.getItemStackHandler().getStackInSlot(0)))
                     .child(new ButtonWidget<>()
-                            .background(GuiTextures.EDIT)
-                            .hoverBackground(GuiTextures.EDIT, new BorderDrawable())
+                            .overlay(GuiTextures.EDIT)
                             .onMousePressed((context, button) -> {
                                 panelHandler.openPanel();
                                 return true;
                             }))
                     .child(new ButtonWidget<>()
-                            .background(GuiTextures.CLOSE)
-                            .hoverBackground(GuiTextures.CLOSE, new BorderDrawable())
-                            .onMousePressed((context, button) -> {
-                                groups.remove(item.getWidgetValue());
-                                groupSync.setValue(groups);
-                                item.removeSelfFromList();
-                                return true;
-                            })));
+                            .overlay(GuiTextures.REMOVE)
+                            .syncHandler(syncManager.getOrCreateSyncHandler("delete_group", index,
+                                    InteractionSyncHandler.class, () -> new InteractionSyncHandler()
+                                            .setOnMousePressed(mouseData -> {
+                                                groups.remove(index);
+                                                groupSync.setValue(groups, true, false);
+                                            }))));
         };
         DynamicLinkedSyncHandler<GenericListSyncHandler<MonitorGroup>> listHandler = new DynamicLinkedSyncHandler<>(
                 groupSync)
-                .widgetProvider((psm, list) -> new SortableListWidget<MonitorGroup>()
+                .widgetProvider((psm, list) -> new ListWidget<>()
                         .children(list.getValue().stream()
-                                .map(SortableListWidget.Item::new)
                                 .map(processGroupItem)
                                 .toList())
-                        .onChange(groupSync::setValue)
-                        .widthRel(1));
+                        .widthRel(1)
+                        .fullHeight()
+                        .horizontalCenter());
         return new Dialog<>("main")
                 .draggable(true)
                 .padding(5)
@@ -110,34 +112,52 @@ public class CentralMonitorUIFactory implements PanelFactory {
                         .heightRel(1)
                         .widthRel(1)
                         .padding(2)
-                        .child(new Flow(GuiAxis.X)
+                        .child(Flow.row()
                                 .child(new TextWidget<>(Text.lang("gtceu.central_monitor.gui.monitor_groups"))
-                                        .leftRel(0))
+                                        .verticalCenter())
                                 .child(new ButtonWidget<>()
-                                        .leftRel(1)
-                                        .background(GuiTextures.MC_BUTTON, GuiTextures.ADD)
-                                        .hoverBackground(GuiTextures.MC_BUTTON_HOVERED, GuiTextures.ADD)
+                                        .overlay(GuiTextures.HELP)
+                                        .right(0)
+                                        .onMousePressed((ctx, button) -> {
+                                            helpPanel.openPanel();
+                                            return true;
+                                        }))
+                                .child(new ButtonWidget<>()
+                                        .overlay(GuiTextures.SERVER)
+                                        .right(18)
+                                        .onMousePressed((ctx, button) -> {
+                                            inventoryPanel.openPanel();
+                                            return true;
+                                        }))
+                                .child(new ButtonWidget<>()
+                                        .overlay(GuiTextures.ADD)
+                                        .right(36)
                                         .syncHandler(new InteractionSyncHandler()
                                                 .setOnMousePressed(mouseData -> {
                                                     MonitorGroup group = new MonitorGroup(getNewGroupName(groupSync));
                                                     groups.add(group);
-                                                    GTCEu.LOGGER.info("adding group: {} isClient = {}", groups,
-                                                            syncManager.isClient());
                                                     groupSync.setValue(groups, true, false);
                                                 })))
                                 .widthRel(1).height(20))
                         .child(new DynamicSyncedWidget<>()
+                                .overlay(new BorderDrawable(0xFF555555, 4))
                                 .syncHandler(listHandler)
+                                .padding(4)
                                 .widthRel(1)
-                                .heightRelOffset(() -> 1, -96))
-                        .child(SlotGroupWidget.playerInventory(false)));
+                                .horizontalCenter()
+                                .heightRelOffset(1, -24)));
+    }
+
+    private ModularPanel<?> createInventoryPanel(PanelSyncManager psm, IPanelHandler panelHandler) {
+        return new ModularPanel<>("inventory")
+                .bindPlayerInventory()
+                .height(88);
     }
 
     private ModularPanel<?> createGroupEditorPanel(PanelSyncManager syncManager,
                                                    GenericListSyncHandler<MonitorGroup> groupSync,
                                                    int groupIndex,
-                                                   CentralMonitorMachine machine,
-                                                   IPanelHandler helpPanel) {
+                                                   CentralMonitorMachine machine) {
         List<List<IWidget>> matrix = new ArrayList<>();
         int matrixWidth = 0;
         List<MonitorGroup> groups = List.copyOf(groupSync.getValue());
@@ -242,15 +262,7 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                                 moduleEditor.openPanel();
                                             return true;
                                         })))
-                        .child(new Grid().grid(matrix).leftRel(0.5f).size(matrixWidth, matrixHeight)))
-                .child(new ButtonWidget<>()
-                        .posRel(Alignment.TopRight)
-                        .background(GuiTextures.HELP)
-                        .hoverBackground(GuiTextures.HELP, new BorderDrawable())
-                        .onMousePressed((context, button) -> {
-                            helpPanel.openPanel();
-                            return true;
-                        }));
+                        .child(new Grid().grid(matrix).leftRel(0.5f).size(matrixWidth, matrixHeight)));
     }
 
     private ModularPanel<?> createHelpPanel() {
