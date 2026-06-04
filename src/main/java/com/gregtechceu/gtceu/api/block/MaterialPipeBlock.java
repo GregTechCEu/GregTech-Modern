@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.pipenet.*;
 
@@ -9,7 +8,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,14 +20,16 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MaterialPipeBlock<
-        PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType>
+        PipeType extends Enum<PipeType> & IMaterialPipeVariant<NodeDataType>, NodeDataType>
                                        extends PipeBlock<PipeType, NodeDataType> {
 
     public final Material material;
+    public final IMaterialPipeVariant<NodeDataType> materialPipeType;
 
-    public MaterialPipeBlock(Properties properties, PipeType pipeType, Material material) {
-        super(properties, pipeType);
+    public MaterialPipeBlock(Properties properties, PipeType pipeType, PipeNetworkType networkType, Material material) {
+        super(properties, pipeType, networkType);
         this.material = material;
+        this.materialPipeType = pipeType;
         if (material.isNull()) throw new IllegalStateException("Cannot create material pipe block with null material");
     }
 
@@ -53,29 +53,12 @@ public abstract class MaterialPipeBlock<
     }
 
     @Override
-    public final NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack) {
-        return createMaterialData();
-    }
-
-    @Override
-    public NodeDataType createProperties(PipeBlockEntity<PipeType, NodeDataType> pipeTile) {
-        PipeType pipeType = pipeTile.getPipeType();
-        Material material = ((MaterialPipeBlock<PipeType, NodeDataType>) pipeTile
-                .getPipeBlock()).material;
-        return createProperties(pipeType, material);
-    }
-
-    protected abstract NodeDataType createProperties(PipeType pipeType, Material material);
-
-    protected abstract NodeDataType createMaterialData();
-
-    @Override
     public String getDescriptionId() {
-        return pipeType.getTagPrefix().getUnlocalizedName(material);
+        return materialPipeType.getTagPrefix().getUnlocalizedName(material);
     }
 
     @Override
     public MutableComponent getName() {
-        return pipeType.getTagPrefix().getLocalizedName(material);
+        return materialPipeType.getTagPrefix().getLocalizedName(material);
     }
 }

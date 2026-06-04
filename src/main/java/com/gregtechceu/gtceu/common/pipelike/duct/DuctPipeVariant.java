@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.common.pipelike.duct;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.pipenet.IPipeVariant;
 
+import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
@@ -10,7 +13,7 @@ import lombok.Getter;
 
 import java.util.Locale;
 
-public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringRepresentable {
+public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringRepresentable {
 
     SMALL("small", 0.375f, 2f),
     NORMAL("normal", 0.5f, 4f),
@@ -19,7 +22,7 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     ;
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("duct");
-    public static final DuctPipeType[] VALUES = values();
+    public static final DuctPipeVariant[] VALUES = values();
 
     @Getter
     public final String name;
@@ -28,7 +31,7 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     @Getter
     private final float rateMultiplier;
 
-    DuctPipeType(String name, float thickness, float rateMultiplier) {
+    DuctPipeVariant(String name, float thickness, float rateMultiplier) {
         this.name = name;
         this.thickness = thickness;
         this.rateMultiplier = rateMultiplier;
@@ -40,12 +43,13 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     }
 
     @Override
-    public ResourceLocation type() {
-        return TYPE_ID;
+    public String getSerializedName() {
+        return name().toLowerCase(Locale.ROOT);
     }
 
     @Override
-    public String getSerializedName() {
-        return name().toLowerCase(Locale.ROOT);
+    public PipeModel createPipeModel(PipeBlock<?, ?> block, GTBlockstateProvider provider) {
+        return new PipeModel(block, provider, getThickness(),
+                GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
     }
 }

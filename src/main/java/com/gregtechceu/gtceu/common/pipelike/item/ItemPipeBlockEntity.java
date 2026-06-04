@@ -32,7 +32,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
-public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
+public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeVariant, ItemPipeProperties> {
 
     protected WeakReference<ItemPipeNet> currentItemPipeNet = new WeakReference<>(null);
     protected boolean hasCurrentNetChanged = false;
@@ -167,7 +167,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeType, ItemPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<ItemPipeVariant, ItemPipeProperties> other) {
         return other instanceof ItemPipeBlockEntity;
     }
 

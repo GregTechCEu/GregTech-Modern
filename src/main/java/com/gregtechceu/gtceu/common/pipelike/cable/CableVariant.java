@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
+import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
@@ -17,7 +17,7 @@ import lombok.Getter;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
-public enum Insulation implements IMaterialPipeType<WireProperties> {
+public enum CableVariant implements IMaterialPipeVariant<WireProperties> {
 
     WIRE_SINGLE("single_wire", 0.1875f, 1, 2, wireGtSingle, -1, false),
     WIRE_DOUBLE("double_wire", 0.3125f, 2, 2, wireGtDouble, -1, false),
@@ -31,8 +31,6 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     CABLE_OCTAL("octal_cable", 0.625f, 8, 1, cableGtOctal, 3, true),
     CABLE_HEX("hex_cable", 0.875f, 16, 1, cableGtHex, 4, true);
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("insulation");
-
     public final String name;
     public final float thickness;
     public final int amperage;
@@ -42,8 +40,8 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     public final int insulationLevel;
     public final boolean isCable;
 
-    Insulation(String name, float thickness, int amperage, int lossMultiplier, TagPrefix TagPrefix, int insulated,
-               boolean isCable) {
+    CableVariant(String name, float thickness, int amperage, int lossMultiplier, TagPrefix TagPrefix, int insulated,
+                 boolean isCable) {
         this.name = name;
         this.thickness = thickness;
         this.amperage = amperage;
@@ -73,12 +71,7 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
         return ordinal() > 4;
     }
 
-    @Override
-    public ResourceLocation type() {
-        return TYPE_ID;
-    }
-
-    public PipeModel createPipeModel(PipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
         ResourceLocation side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         ResourceLocation end = MaterialIconType.wire

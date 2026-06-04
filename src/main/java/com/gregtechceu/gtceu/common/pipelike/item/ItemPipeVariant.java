@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
+import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeVariant;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
 
-public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
+public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> {
 
     SMALL("small", 0.375f, TagPrefix.pipeSmallItem, 0.5f, 1.5f),
     NORMAL("normal", 0.5f, TagPrefix.pipeNormalItem, 1f, 1f),
@@ -26,8 +26,7 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
     RESTRICTIVE_LARGE("large_restrictive", 0.625f, TagPrefix.pipeLargeRestrictive, 2f, 75f),
     RESTRICTIVE_HUGE("huge_restrictive", 0.75f, TagPrefix.pipeHugeRestrictive, 4f, 50f);
 
-    public static final ResourceLocation TYPE_ID = GTCEu.id("item");
-    public static final ItemPipeType[] VALUES = values();
+    public static final ItemPipeVariant[] VALUES = values();
 
     @Getter
     public final String name;
@@ -39,7 +38,7 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
     @Getter
     private final TagPrefix tagPrefix;
 
-    ItemPipeType(String name, float thickness, TagPrefix orePrefix, float rateMultiplier, float resistanceMultiplier) {
+    ItemPipeVariant(String name, float thickness, TagPrefix orePrefix, float rateMultiplier, float resistanceMultiplier) {
         this.name = name;
         this.thickness = thickness;
         this.tagPrefix = orePrefix;
@@ -64,12 +63,7 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
                 baseProperties.getTransferRate() * rateMultiplier);
     }
 
-    @Override
-    public ResourceLocation type() {
-        return TYPE_ID;
-    }
-
-    public PipeModel createPipeModel(PipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
         ResourceLocation sideTexture = GTCEu.id("block/pipe/pipe_side");
         ResourceLocation endTexture = GTCEu.id("block/pipe/pipe_%s_in"
                 .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name));

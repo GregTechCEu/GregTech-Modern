@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
 @ParametersAreNonnullByDefault
-public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeProperties> {
+public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeVariant, LaserPipeProperties> {
 
     @Getter
     protected final EnumMap<Direction, LaserNetHandler> handlers = new EnumMap<>(Direction.class);
@@ -126,9 +126,8 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
 
             // check the same for the targeted pipe
             BlockEntity tile = getLevel().getBlockEntity(getBlockPos().relative(side));
-            if (tile instanceof PipeBlockEntity<?, ?> pipeTile &&
-                    pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
-                connections = pipeTile.getConnections();
+            if (tile instanceof LaserPipeBlockEntity other) {
+                connections = other.getConnections();
                 connections &= ~(1 << side.ordinal());
                 connections &= ~(1 << side.getOpposite().ordinal());
                 if (connections != 0) return;
@@ -160,7 +159,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeType, LaserPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<LaserPipeVariant, LaserPipeProperties> other) {
         return other instanceof LaserPipeBlockEntity;
     }
 

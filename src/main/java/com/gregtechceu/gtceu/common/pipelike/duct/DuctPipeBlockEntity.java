@@ -29,7 +29,7 @@ import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
 @ParametersAreNonnullByDefault
-public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeProperties> {
+public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeVariant, DuctPipeProperties> {
 
     @Getter
     protected final EnumMap<Direction, DuctNetHandler> handlers = new EnumMap<>(Direction.class);
@@ -44,7 +44,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+    public @NotNull <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_HAZARD_CONTAINER) {
             if (getLevel().isClientSide())
                 return GTCapability.CAPABILITY_HAZARD_CONTAINER.orEmpty(cap, LazyOptional.of(() -> clientCapability));
@@ -105,7 +105,7 @@ public class DuctPipeBlockEntity extends PipeBlockEntity<DuctPipeType, DuctPipeP
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeType, DuctPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<DuctPipeVariant, DuctPipeProperties> other) {
         return other instanceof DuctPipeBlockEntity;
     }
 

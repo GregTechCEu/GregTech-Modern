@@ -1,25 +1,18 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -29,25 +22,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeProperties> {
+public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeVariant, ItemPipeProperties> {
 
-    public ItemPipeBlock(Properties properties, ItemPipeType itemPipeType, Material material) {
-        super(properties, itemPipeType, material);
+    public ItemPipeBlock(Properties properties, ItemPipeVariant itemPipeType, Material material) {
+        super(properties, itemPipeType, GTPipeNetworks.ITEM, material);
     }
 
     @Override
-    protected ItemPipeProperties createProperties(ItemPipeType itemPipeType, Material material) {
-        return itemPipeType.modifyProperties(material.getProperty(PropertyKey.ITEM_PIPE));
-    }
-
-    @Override
-    protected ItemPipeProperties createMaterialData() {
+    public ItemPipeProperties createRawData() {
         return material.getProperty(PropertyKey.ITEM_PIPE);
-    }
-
-    @Override
-    public PipeModel createPipeModel(GTBlockstateProvider provider) {
-        return pipeType.createPipeModel(this, material, provider);
     }
 
     @Override
@@ -57,15 +40,10 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<ItemPipeType, ItemPipeProperties>> getBlockEntityType() {
-        return GTBlockEntities.ITEM_PIPE.get();
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        ItemPipeProperties properties = createProperties(defaultBlockState(), stack);
+        ItemPipeProperties properties = createProperties();
 
         if (properties.getTransferRate() % 1 != 0) {
             tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate",

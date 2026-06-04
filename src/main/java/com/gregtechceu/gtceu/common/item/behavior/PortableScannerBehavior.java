@@ -452,8 +452,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             list.add(Component.literal(syncBlockEntity.toString()));
             if (pipe != null) {
-                var net = pipe.getPipeNet();
-                list.add(Component.literal(net == null ? "null" : net.toString()));
+                //var net = pipe.getPipeNet();
+                //list.add(Component.literal(net == null ? "null" : net.toString()));
             }
             list.add(Component.translatable("behavior.portable_scanner.divider"));
 

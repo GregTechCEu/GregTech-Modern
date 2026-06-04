@@ -1,27 +1,15 @@
 package com.gregtechceu.gtceu.common.pipelike.duct;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardCleanerTrait;
-import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
 
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,13 +19,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties> {
+public class DuctPipeBlock extends PipeBlock<DuctPipeVariant, DuctPipeProperties> {
 
     private static final String DATA_ID = "gtceu_duct_pipe_net";
+
     private final DuctPipeProperties properties;
 
-    public DuctPipeBlock(Properties properties, DuctPipeType type) {
-        super(properties, type);
+    public DuctPipeBlock(Properties properties, DuctPipeVariant type) {
+        super(properties, type, GTPipeNetworks.DUCT);
         this.properties = new DuctPipeProperties(type.getRateMultiplier());
     }
 
@@ -48,24 +37,8 @@ public class DuctPipeBlock extends PipeBlock<DuctPipeType, DuctPipeProperties> {
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<DuctPipeType, DuctPipeProperties>> getBlockEntityType() {
-        return GTBlockEntities.DUCT_PIPE.get();
-    }
-
-    @Override
-    public DuctPipeProperties createRawData(BlockState pState, @Nullable ItemStack pStack) {
+    public DuctPipeProperties createRawData() {
         return properties;
-    }
-
-    @Override
-    public DuctPipeProperties createProperties(PipeBlockEntity<DuctPipeType, DuctPipeProperties> pipeTile) {
-        return this.pipeType.modifyProperties(properties);
-    }
-
-    @Override
-    public PipeModel createPipeModel(GTBlockstateProvider provider) {
-        return new PipeModel(this, provider, this.pipeType.getThickness(),
-                GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
     }
 
     @Override

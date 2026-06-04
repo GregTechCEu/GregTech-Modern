@@ -53,7 +53,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties> implements IDataInfoProvider {
+public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperties> implements IDataInfoProvider {
 
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
@@ -91,7 +91,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<Insulation, WireProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<CableVariant, WireProperties> other) {
         return other instanceof CableBlockEntity;
     }
 
@@ -305,7 +305,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         setTemperature(getDefaultTemp());
         int index = getPipeType().insulationLevel;
         CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS
-                .get(Insulation.values()[index].tagPrefix, getPipeBlock().material)
+                .get(CableVariant.values()[index].tagPrefix, getPipeBlock().material)
                 .get();
         level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());

@@ -13,11 +13,11 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableBlock;
-import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.gregtechceu.gtceu.common.pipelike.cable.CableVariant;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeVariant;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeVariant;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.renderer.RenderType;
@@ -177,10 +177,10 @@ public class GTMaterialBlocks {
     // Material Cable & Wire Blocks
     public static void generateCableBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks...");
-        for (Insulation insulation : Insulation.values()) {
+        for (CableVariant cableVariant : CableVariant.values()) {
             for (Material material : GTRegistries.MATERIALS.values()) {
-                if (allowCableBlock(material, insulation)) {
-                    registerCableBlock(material, insulation,
+                if (allowCableBlock(material, cableVariant)) {
+                    registerCableBlock(material, cableVariant,
                             GTRegistrate.createIgnoringListenerErrors(material.getModid()));
                 }
             }
@@ -189,18 +189,18 @@ public class GTMaterialBlocks {
         GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
 
-    private static boolean allowCableBlock(Material material, Insulation insulation) {
-        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
-                !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
+    private static boolean allowCableBlock(Material material, CableVariant cableVariant) {
+        return material.hasProperty(PropertyKey.WIRE) && !cableVariant.tagPrefix.isIgnored(material) &&
+                !(cableVariant.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
 
-    private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
+    private static void registerCableBlock(Material material, CableVariant cableVariant, GTRegistrate registrate) {
         var entry = registrate
-                .block("%s_%s".formatted(material.getName(), insulation.name),
-                        p -> new CableBlock(p, insulation, material))
+                .block("%s_%s".formatted(material.getName(), cableVariant.name),
+                        p -> new CableBlock(p, cableVariant, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
-                .transform(GTBlocks.unificationBlock(insulation.tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(cableVariant.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -212,13 +212,13 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material, entry);
+        CABLE_BLOCKS_BUILDER.put(cableVariant.tagPrefix, material, entry);
     }
 
     // Material Fluid Pipe Blocks
     public static void generateFluidPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks...");
-        for (var fluidPipeType : FluidPipeType.values()) {
+        for (var fluidPipeType : FluidPipeVariant.values()) {
             for (Material material : GTRegistries.MATERIALS.values()) {
                 if (allowFluidPipeBlock(material, fluidPipeType)) {
                     registerFluidPipeBlock(material, fluidPipeType,
@@ -230,11 +230,11 @@ public class GTMaterialBlocks {
         GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
     }
 
-    private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
+    private static boolean allowFluidPipeBlock(Material material, FluidPipeVariant fluidPipeType) {
         return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
     }
 
-    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
+    private static void registerFluidPipeBlock(Material material, FluidPipeVariant fluidPipeType,
                                                GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name),
@@ -264,7 +264,7 @@ public class GTMaterialBlocks {
     // Material Item Pipe Blocks
     public static void generateItemPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks...");
-        for (var itemPipeType : ItemPipeType.values()) {
+        for (var itemPipeType : ItemPipeVariant.values()) {
             for (Material material : GTRegistries.MATERIALS.values()) {
                 if (allowItemPipeBlock(material, itemPipeType)) {
                     registerItemPipeBlock(material, itemPipeType,
@@ -276,11 +276,11 @@ public class GTMaterialBlocks {
         GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
     }
 
-    private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
+    private static boolean allowItemPipeBlock(Material material, ItemPipeVariant itemPipeType) {
         return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
     }
 
-    private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
+    private static void registerItemPipeBlock(Material material, ItemPipeVariant itemPipeType, GTRegistrate registrate) {
         var entry = registrate
                 .block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name),
                         p -> new ItemPipeBlock(p, itemPipeType, material))

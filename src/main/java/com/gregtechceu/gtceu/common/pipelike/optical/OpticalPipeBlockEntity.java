@@ -31,7 +31,7 @@ import java.util.EnumMap;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
+public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> {
 
     private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
     // the OpticalNetHandler can only be created on the server, so we have an empty placeholder for the client
@@ -128,9 +128,8 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
 
             // also check the other pipe
             BlockEntity tile = getLevel().getBlockEntity(this.getBlockPos().relative(side));
-            if (tile instanceof PipeBlockEntity<?, ?> pipeTile &&
-                    pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
-                if (pipeTile.getNumConnections() >= 2) return;
+            if (tile instanceof OpticalPipeBlockEntity other) {
+                if (other.getNumConnections() >= 2) return;
             }
         }
         super.setConnection(side, connected, fromNeighbor);
@@ -155,7 +154,7 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<OpticalPipeVariant, OpticalPipeProperties> other) {
         return other instanceof OpticalPipeBlockEntity;
     }
 

@@ -138,10 +138,10 @@ public class BlockHighlightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
+            var networkType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().getNetworkType() :
                     null;
-            if (pipeType != null && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
-                    pipeBlockEntity.getPipeType().type().equals(pipeType.type())) {
+            if (blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
+                    pipeBlockEntity.getNetworkType() == networkType) {
                 poseStack.pushPose();
 
                 drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,

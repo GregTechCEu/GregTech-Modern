@@ -2,16 +2,13 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -26,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -38,19 +34,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipeProperties> {
+public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeVariant, FluidPipeProperties> {
 
-    public FluidPipeBlock(Properties properties, FluidPipeType fluidPipeType, Material material) {
-        super(properties, fluidPipeType, material);
+    public FluidPipeBlock(Properties properties, FluidPipeVariant fluidPipeType, Material material) {
+        super(properties, fluidPipeType, GTPipeNetworks.FLUID, material);
     }
 
     @Override
-    protected FluidPipeProperties createProperties(FluidPipeType fluidPipeType, Material material) {
-        return fluidPipeType.modifyProperties(material.getProperty(PropertyKey.FLUID_PIPE));
-    }
-
-    @Override
-    protected FluidPipeProperties createMaterialData() {
+    public FluidPipeProperties createRawData() {
         return material.getProperty(PropertyKey.FLUID_PIPE);
     }
 
@@ -61,20 +52,10 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>> getBlockEntityType() {
-        return GTBlockEntities.FLUID_PIPE.get();
-    }
-
-    @Override
-    public PipeModel createPipeModel(GTBlockstateProvider provider) {
-        return pipeType.createPipeModel(this, material, provider);
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        FluidPipeProperties properties = createProperties(defaultBlockState(), stack);
+        FluidPipeProperties properties = createProperties();
 
         tooltip.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", properties.getThroughput()));
         tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature",

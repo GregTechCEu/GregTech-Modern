@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
-public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>
+public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeVariant, FluidPipeProperties>
                                   implements IDataInfoProvider {
 
     public static final int FREQUENCY = 5;
@@ -94,7 +94,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     }
 
     @Override
-    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeType, FluidPipeProperties> other) {
+    public boolean canPipesConnect(Direction side, PipeBlockEntity<FluidPipeVariant, FluidPipeProperties> other) {
         return other instanceof FluidPipeBlockEntity;
     }
 

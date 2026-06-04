@@ -24,13 +24,13 @@ import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
+import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeVariant;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeVariant;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeBlock;
-import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
+import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeVariant;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -96,9 +96,9 @@ public class GTBlocks {
     //////////////////////////////////////
     // ***** Procedural Blocks *****//
 
-    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeType.values().length];
-    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeType.values().length];
-    public static final BlockEntry<DuctPipeBlock>[] DUCT_PIPES = new BlockEntry[DuctPipeType.VALUES.length];
+    public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeVariant.values().length];
+    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeVariant.values().length];
+    public static final BlockEntry<DuctPipeBlock>[] DUCT_PIPES = new BlockEntry[DuctPipeVariant.VALUES.length];
 
     //////////////////////////////////////
     // Pipes Blocks //
@@ -110,14 +110,14 @@ public class GTBlocks {
     // Laser Pipe Blocks
     private static void generateLaserPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks...");
-        for (int i = 0; i < LaserPipeType.values().length; ++i) {
+        for (int i = 0; i < LaserPipeVariant.values().length; ++i) {
             registerLaserPipeBlock(i);
         }
         GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks... Complete!");
     }
 
     private static void registerLaserPipeBlock(int index) {
-        var type = LaserPipeType.values()[index];
+        var type = LaserPipeVariant.values()[index];
         var entry = REGISTRATE
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -139,14 +139,14 @@ public class GTBlocks {
     // Optical Pipe Blocks
     private static void generateOpticalPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks...");
-        for (int i = 0; i < OpticalPipeType.values().length; ++i) {
+        for (int i = 0; i < OpticalPipeVariant.values().length; ++i) {
             registerOpticalPipeBlock(i);
         }
         GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks... Complete!");
     }
 
     private static void registerOpticalPipeBlock(int index) {
-        var type = OpticalPipeType.values()[index];
+        var type = OpticalPipeVariant.values()[index];
         var entry = REGISTRATE
                 .block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
                 .lang("Optical Fiber Cable")
@@ -168,14 +168,14 @@ public class GTBlocks {
     // Duct Pipe Blocks
     private static void generateDuctPipeBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Duct Pipe Blocks...");
-        for (int i = 0; i < DuctPipeType.VALUES.length; ++i) {
+        for (int i = 0; i < DuctPipeVariant.VALUES.length; ++i) {
             registerDuctPipeBlock(i);
         }
         GTCEu.LOGGER.debug("Generating GTCEu Duct Pipe Blocks... Complete!");
     }
 
     private static void registerDuctPipeBlock(int index) {
-        var type = DuctPipeType.VALUES[index];
+        var type = DuctPipeVariant.VALUES[index];
         var entry = REGISTRATE
                 .block("%s_duct_pipe".formatted(type.getSerializedName()), (p) -> new DuctPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)

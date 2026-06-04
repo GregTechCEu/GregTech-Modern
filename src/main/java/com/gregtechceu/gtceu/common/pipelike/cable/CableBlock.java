@@ -4,18 +4,15 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
-import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
+import com.gregtechceu.gtceu.common.pipelike.GTPipeNetworks;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -31,7 +28,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -42,10 +38,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties> {
+public class CableBlock extends MaterialPipeBlock<CableVariant, WireProperties> {
 
-    public CableBlock(Properties properties, Insulation insulation, Material material) {
-        super(properties, insulation, material);
+    public CableBlock(Properties properties, CableVariant cableVariant, Material material) {
+        super(properties, cableVariant, GTPipeNetworks.ENERGY, material);
     }
 
     @Override
@@ -57,12 +53,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties> {
     }
 
     @Override
-    protected WireProperties createProperties(Insulation insulation, Material material) {
-        return insulation.modifyProperties(material.getProperty(PropertyKey.WIRE));
-    }
-
-    @Override
-    protected WireProperties createMaterialData() {
+    public WireProperties createRawData() {
         return material.getProperty(PropertyKey.WIRE);
     }
 
@@ -73,20 +64,10 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties> {
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<Insulation, WireProperties>> getBlockEntityType() {
-        return GTBlockEntities.CABLE.get();
-    }
-
-    @Override
-    public PipeModel createPipeModel(GTBlockstateProvider provider) {
-        return pipeType.createPipeModel(this, material, provider);
-    }
-
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
                                 TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        WireProperties wireProperties = createProperties(defaultBlockState(), stack);
+        WireProperties wireProperties = createProperties();
         int tier = GTUtil.getTierByVoltage(wireProperties.getVoltage());
         if (wireProperties.isSuperconductor())
             tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
@@ -114,9 +95,9 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties> {
         }
         if (level.isClientSide) return;
 
-        Insulation insulation = (Insulation)pipe.getPipeType();
+        CableVariant cableVariant = (CableVariant)pipe.getPipeType();
 
-        if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
+        if (cableVariant.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity)getPipeBE(level, pos);
             if (cable != null && cable.getFrameMaterial().isNull() &&
                     cable.getNodeData().getLossPerBlock() > 0) {

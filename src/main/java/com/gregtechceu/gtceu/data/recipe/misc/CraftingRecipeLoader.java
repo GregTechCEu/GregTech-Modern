@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
+import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeVariant;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -303,16 +303,16 @@ public class CraftingRecipeLoader {
     private static void addDuctRecipes(@NotNull Consumer<FinishedRecipe> provider, @NotNull Material material,
                                        int outputAmount) {
         VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
+                GTBlocks.DUCT_PIPES[DuctPipeVariant.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
                 'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "medium_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
+                GTBlocks.DUCT_PIPES[DuctPipeVariant.NORMAL.ordinal()].asStack(outputAmount), " X ", "wXh", " X ",
                 'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "large_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                GTBlocks.DUCT_PIPES[DuctPipeVariant.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
                 'X', new MaterialEntry(plate, material));
         VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
-                GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
+                GTBlocks.DUCT_PIPES[DuctPipeVariant.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
                 'X', new MaterialEntry(plateDouble, material));
     }
 
