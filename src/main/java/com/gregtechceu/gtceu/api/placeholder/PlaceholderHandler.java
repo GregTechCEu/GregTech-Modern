@@ -250,7 +250,10 @@ public class PlaceholderHandler {
                 true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
         InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
-        if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
+        if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> {
+            if (!mouseData.isClient())
+                updateText.run();
+        });
         // because the args are nullable, intellij complains about everything, even though childIf is used
         // noinspection DataFlowIssue
         return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel<>(name)
