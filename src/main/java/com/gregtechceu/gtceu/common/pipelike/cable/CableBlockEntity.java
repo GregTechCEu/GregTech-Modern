@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
@@ -355,11 +354,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     @Override
     public ResourceTexture getPipeTexture(boolean isBlock) {
         return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
-    }
-
-    @Override
-    public GTToolType getPipeTuneTool() {
-        return GTToolType.WIRE_CUTTER;
     }
 
     @Override

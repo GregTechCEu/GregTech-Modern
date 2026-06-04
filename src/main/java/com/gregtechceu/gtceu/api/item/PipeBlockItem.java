@@ -51,7 +51,7 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "rawtypes"})
     public boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -59,6 +59,7 @@ public class PipeBlockItem extends BlockItem {
 
         var realPos = pos.relative(side.getOpposite());
         var baseNode = PipeBlock.getPipeBE(level, realPos);
+
         if (baseNode != null) {
             var sideAttach = ICoverable
                     .traceCoverSide(new BlockHitResult(context.getClickLocation(), side, realPos, false));
@@ -70,29 +71,32 @@ public class PipeBlockItem extends BlockItem {
             }
         }
 
-        boolean superVal = super.placeBlock(context, state);
-        if (superVal && !level.isClientSide) {
+        boolean didPlace = super.placeBlock(context, state);
+
+        if (didPlace && !level.isClientSide) {
+
             PipeBlockEntity selfTile = PipeBlock.getPipeBE(level, pos);
             if (selfTile == null) return true;
-            if (selfTile.canConnect(side.getOpposite())) {
-                selfTile.setConnection(side.getOpposite(), true, false);
-            }
-            for (Direction facing : GTUtil.DIRECTIONS) {
-                BlockEntity be = selfTile.getNeighbor(facing);
-                if (be instanceof PipeBlockEntity otherPipe) {
-                    if (otherPipe.isConnected(facing.getOpposite())) {
-                        if (otherPipe.canPipesConnect(facing.getOpposite(), selfTile)) {
-                            selfTile.setConnection(facing, true, true);
-                        } else {
-                            otherPipe.setConnection(facing.getOpposite(), false, true);
-                        }
-                    }
-                } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables &&
-                        selfTile.canPipeConnectToBlock(facing, be.getBlockState().getBlock(), be)) {
-                            selfTile.setConnection(facing, true, false);
-                        }
-            }
+
+            selfTile.tryConnectToAdjacent(side.getOpposite(), false);
+
+//            for (Direction facing : GTUtil.DIRECTIONS) {
+//                var adjacentBE = selfTile.getNeighbor(facing);
+//
+//                if (adjacentBE instanceof PipeBlockEntity otherPipe) {
+//                    if (otherPipe.isConnected(facing.getOpposite())) {
+//                        if (otherPipe.canConnect(facing.getOpposite())) {
+//                            selfTile.setConnection(facing, true, true);
+//                        } else {
+//                            otherPipe.setConnection(facing.getOpposite(), false, true);
+//                        }
+//                    }
+//                } else if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
+//                    selfTile.tryConnectToAdjacent(facing, false);
+//                }
+//
+//            }
         }
-        return superVal;
+        return didPlace;
     }
 }

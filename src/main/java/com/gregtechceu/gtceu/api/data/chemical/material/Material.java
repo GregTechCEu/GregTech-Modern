@@ -42,6 +42,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -568,6 +569,7 @@ public class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
+    @Contract(pure = true)
     public boolean isNull() {
         return this == GTMaterials.NULL;
     }

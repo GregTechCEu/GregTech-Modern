@@ -527,6 +527,18 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         return list;
     }
 
+    public void doExplosion(float explosionPower) {
+        getLevel().removeBlock(this.getBlockPos(), false);
+        if (!getLevel().isClientSide) {
+            ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, this.getBlockPos().getX() + 0.5,
+                    this.getBlockPos().getY() + 0.5, this.getBlockPos().getZ() + 0.5,
+                    10, 0.2, 0.2, 0.2, 0.0);
+        }
+        getLevel().explode(null, this.getBlockPos().getX() + 0.5, this.getBlockPos().getY() + 0.5,
+                this.getBlockPos().getZ() + 0.5,
+                explosionPower, Level.ExplosionInteraction.NONE);
+    }
+
     private static class FluidTransaction {
 
         public final IFluidHandler target;

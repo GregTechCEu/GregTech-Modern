@@ -74,11 +74,6 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     }
 
     @Override
-    public boolean isPaintable() {
-        return true;
-    }
-
-    @Override
     public ResourceLocation type() {
         return TYPE_ID;
     }

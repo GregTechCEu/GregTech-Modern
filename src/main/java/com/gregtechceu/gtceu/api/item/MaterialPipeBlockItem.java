@@ -22,7 +22,6 @@ public class MaterialPipeBlockItem extends PipeBlockItem {
     }
 
     @Override
-    @NotNull
     public MaterialPipeBlock getBlock() {
         return (MaterialPipeBlock) super.getBlock();
     }

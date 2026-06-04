@@ -32,6 +32,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     @SyncToClient
     @SaveField
     @RerenderOnChanged
+    @Nullable
     private CoverBehavior up, down, north, south, west, east;
 
     public PipeCoverContainer(PipeBlockEntity<?, ?> pipeTile) {
@@ -71,7 +72,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public IItemHandlerModifiable getItemHandlerCap(Direction side, boolean useCoverCapability) {
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof ItemPipeBlockEntity itemPipe) {
             return getLevel() instanceof ServerLevel ? itemPipe.getHandler(side, useCoverCapability) :
                     (IItemHandlerModifiable) EmptyHandler.INSTANCE;
@@ -81,7 +82,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+    public @Nullable IFluidHandlerModifiable getFluidHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
             return fluidPipe.getTankList(side);
         } else {
@@ -90,7 +91,7 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
     }
 
     @Override
-    public CoverBehavior getCoverAtSide(Direction side) {
+    public @Nullable CoverBehavior getCoverAtSide(Direction side) {
         return switch (side) {
             case UP -> up;
             case SOUTH -> south;
@@ -119,5 +120,10 @@ public class PipeCoverContainer implements ICoverable, ISyncManaged {
             pipeTile.setConnection(side, false, false);
         }
         getSyncDataHolder().resyncAllFields();
+    }
+
+    public boolean canPipePassThrough(Direction side) {
+        var cover = getCoverAtSide(side);
+        return cover == null || cover.canPipePassThrough();
     }
 }

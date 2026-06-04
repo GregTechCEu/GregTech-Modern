@@ -40,11 +40,6 @@ public enum DuctPipeType implements IPipeType<DuctPipeProperties>, StringReprese
     }
 
     @Override
-    public boolean isPaintable() {
-        return true;
-    }
-
-    @Override
     public ResourceLocation type() {
         return TYPE_ID;
     }

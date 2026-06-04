@@ -10,9 +10,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeBlockEntity;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, IForgeBlockEntity {
 
+    @UnknownNullability
     Level getLevel();
 
     BlockPos getBlockPos();
@@ -36,7 +39,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         Level level = getLevel();
         BlockPos pos = getBlockPos();
 
-        if (level == null || pos == null)
+        if (level == null)
             return;
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
@@ -60,7 +63,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         }
     }
 
-    default BlockEntity getNeighbor(Direction direction) {
+    default @Nullable BlockEntity getNeighbor(Direction direction) {
         return getLevel().getBlockEntity(getBlockPos().relative(direction));
     }
 }

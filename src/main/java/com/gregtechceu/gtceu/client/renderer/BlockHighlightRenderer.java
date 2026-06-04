@@ -39,12 +39,14 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 @OnlyIn(Dist.CLIENT)
+@ParametersAreNonnullByDefault
 public class BlockHighlightRenderer {
 
     public static void renderBlockHighlight(PoseStack poseStack, Camera camera, BlockHitResult target,

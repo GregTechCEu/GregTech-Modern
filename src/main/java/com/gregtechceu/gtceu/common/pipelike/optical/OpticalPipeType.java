@@ -25,11 +25,6 @@ public enum OpticalPipeType implements IPipeType<OpticalPipeProperties>, StringR
     }
 
     @Override
-    public boolean isPaintable() {
-        return true;
-    }
-
-    @Override
     public ResourceLocation type() {
         return TYPE;
     }

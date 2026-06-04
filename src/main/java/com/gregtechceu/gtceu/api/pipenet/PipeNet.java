@@ -9,6 +9,7 @@ import net.minecraft.world.level.ChunkPos;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -61,7 +62,7 @@ public abstract class PipeNet<NodeDataType> {
         return unmodifiableNodeByBlockPos;
     }
 
-    public Node<NodeDataType> getNodeAt(BlockPos blockPos) {
+    public @Nullable Node<NodeDataType> getNodeAt(BlockPos blockPos) {
         return nodeByBlockPos.get(blockPos);
     }
 
@@ -221,7 +222,7 @@ public abstract class PipeNet<NodeDataType> {
      * for proper work of network
      */
     protected final boolean canNodesConnect(Node<NodeDataType> first, Direction firstFacing, Node<NodeDataType> second,
-                                            PipeNet<NodeDataType> secondPipeNet) {
+                                            @Nullable PipeNet<NodeDataType> secondPipeNet) {
         return areNodeBlockedConnectionsCompatible(first, firstFacing, second);
     }
 

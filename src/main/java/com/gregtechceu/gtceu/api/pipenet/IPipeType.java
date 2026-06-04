@@ -15,11 +15,6 @@ public interface IPipeType<NodeDataType> {
     NodeDataType modifyProperties(NodeDataType baseProperties);
 
     /**
-     * can the pipe be painted as other color.
-     */
-    boolean isPaintable();
-
-    /**
      * indicate a unique type id.
      */
     ResourceLocation type();

@@ -13,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
@@ -34,26 +33,20 @@ public class MetaMachineItem extends BlockItem {
     }
 
     @Override
-    @SuppressWarnings({ "rawtypes"})
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
+        boolean didPlace = super.placeBlock(context, state);
+
+        if (context.getLevel().isClientSide()) return didPlace;
+
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
 
-        boolean superVal = super.placeBlock(context, state);
-
-        if (!level.isClientSide) {
-            BlockPos possiblePipe = pos.offset(side.getOpposite().getNormal());
-            Block block = level.getBlockState(possiblePipe).getBlock();
-            if (block instanceof PipeBlock<?, ?>) {
-                PipeBlockEntity pipeTile = PipeBlock.getPipeBE(level, possiblePipe);
-                if (pipeTile != null && pipeTile.canPipeConnectToBlock(side.getOpposite(),
-                        level.getBlockState(pos).getBlock(), level.getBlockEntity(pos))) {
-                    pipeTile.setConnection(side, true, false);
-                }
-            }
+        if (level.getBlockEntity(pos.relative(side.getOpposite())) instanceof PipeBlockEntity<?,?> pipeBE) {
+            pipeBE.tryConnectToAdjacent(side, false);
         }
-        return superVal;
+
+        return didPlace;
     }
 
     @Override

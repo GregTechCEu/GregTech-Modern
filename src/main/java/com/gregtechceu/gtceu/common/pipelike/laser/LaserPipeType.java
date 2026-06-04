@@ -25,11 +25,6 @@ public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepre
     }
 
     @Override
-    public boolean isPaintable() {
-        return true;
-    }
-
-    @Override
     public ResourceLocation type() {
         return TYPE_ID;
     }

@@ -9,7 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -70,13 +70,6 @@ public class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>> extends
         if (list != null && list.isEmpty()) this.pipeNetsByChunk.remove(chunkPos);
     }
 
-    public void removeNode(BlockPos nodePos) {
-        T pipeNet = getNetFromPos(nodePos);
-        if (pipeNet != null) {
-            pipeNet.removeNode(nodePos);
-        }
-    }
-
     public void updateBlockedConnections(BlockPos nodePos, Direction side, boolean isBlocked) {
         T pipeNet = getNetFromPos(nodePos);
         if (pipeNet != null) {
@@ -92,7 +85,7 @@ public class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>> extends
         }
     }
 
-    public T getNetFromPos(BlockPos blockPos) {
+    public @Nullable T getNetFromPos(BlockPos blockPos) {
         List<T> pipeNetsInChunk = pipeNetsByChunk.getOrDefault(new ChunkPos(blockPos), Collections.emptyList());
         for (T pipeNet : pipeNetsInChunk) {
             if (pipeNet.containsNode(blockPos))
@@ -102,10 +95,6 @@ public class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>> extends
     }
 
     protected void addPipeNet(T pipeNet) {
-        addPipeNetSilently(pipeNet);
-    }
-
-    protected void addPipeNetSilently(T pipeNet) {
         this.pipeNets.add(pipeNet);
         pipeNet.getContainedChunks().forEach(chunkPos -> addPipeNetToChunk(chunkPos, pipeNet));
         pipeNet.isValid = true;
@@ -123,7 +112,7 @@ public class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>> extends
     }
 
     @Override
-    public @NotNull CompoundTag save(@NotNull CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound) {
         return compound;
     }
 }

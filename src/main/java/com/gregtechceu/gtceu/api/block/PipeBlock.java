@@ -111,13 +111,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public final @Nullable PipeBlockEntity<PipeType, NodeDataType> newBlockEntity(BlockPos pos, BlockState state) {
+    public final @Nullable PipeBlockEntity<?, ?> newBlockEntity(BlockPos pos, BlockState state) {
         return getBlockEntityType().create(pos, state);
     }
 
     public abstract LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>> getWorldPipeNet(ServerLevel level);
 
-    public abstract BlockEntityType<? extends PipeBlockEntity<PipeType, NodeDataType>> getBlockEntityType();
+    public abstract BlockEntityType<? extends PipeBlockEntity<?, ?>> getBlockEntityType();
 
     /**
      * Add data via placement.
@@ -143,18 +143,18 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer,
                             ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
+
         PipeBlockEntity<?, ?> pipeTile = getPipeBE(level, pos);
-        if (pipeTile != null) {
+
+        if (pipeTile != null && placer instanceof Player player) {
             // Color pipes/cables on place if holding spray can in off-hand
-            if (placer instanceof Player player) {
-                ItemStack offhand = placer.getOffhandItem();
-                for (int i = 0; i < DyeColor.values().length; i++) {
-                    if (offhand.is(GTItems.SPRAY_CAN_DYES[i].get())) {
-                        ((IInteractionItem) GTItems.SPRAY_CAN_DYES[i].get().getComponents().get(0))
-                                .useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
-                                        new BlockHitResult(Vec3.ZERO, player.getDirection(), pos, false)));
-                        break;
-                    }
+            ItemStack offhand = placer.getOffhandItem();
+            for (int i = 0; i < DyeColor.values().length; i++) {
+                if (offhand.is(GTItems.SPRAY_CAN_DYES[i].get())) {
+                    ((IInteractionItem) GTItems.SPRAY_CAN_DYES[i].get().getComponents().get(0))
+                            .useOn(new UseOnContext(player, InteractionHand.OFF_HAND,
+                                    new BlockHitResult(Vec3.ZERO, player.getDirection(), pos, false)));
+                    break;
                 }
             }
         }
@@ -196,8 +196,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
 
         if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
-                var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
-                if (frameBlock != null) {
+            var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
+            if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
                 if (!player.isCreative()) itemStack.shrink(1);
                 SoundType type = VanillaRecipeHelper.isMaterialWood(frameBlock.material) ? SoundType.WOOD :
@@ -247,8 +247,8 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             return;
         }
         if (!pipeNode.getFrameMaterial().isNull()) {
-            BlockState frameState = GTMaterialBlocks.MATERIAL_BLOCKS
-                    .get(TagPrefix.frameGt, pipeNode.getFrameMaterial())
+            BlockState frameState = Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS
+                            .get(TagPrefix.frameGt, pipeNode.getFrameMaterial()))
                     .getDefaultState();
             frameState.getBlock().entityInside(frameState, level, pos, entity);
         }
@@ -258,10 +258,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         var pipeNode = getPipeBE(level, pos);
-        if (pipeNode != null && !pipeNode.getFrameMaterial().isNull()) {
-            return false;
-        }
-        return false;
+        return pipeNode != null && !pipeNode.getFrameMaterial().isNull();
     }
 
     @Override
@@ -288,16 +285,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
                 var coverable = pipeNode.getCoverContainer();
                 var held = player.getMainHandItem();
-                Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
-                BlockEntity tile = pLevel.getBlockEntity(pPos);
-                if (tile instanceof PipeBlockEntity<?, ?> pipeTile) {
-                    types = Set.of(pipeTile.getPipeTuneTool());
-                }
+                Set<GTToolType> types = Set.of(getPipeTuneTool());
 
                 if ((player.isShiftKeyDown() && held.isEmpty() && coverable.hasAnyCover()) ||
                         types.stream().anyMatch(type -> type.matchTags.stream().anyMatch(held::is)) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
                                 coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
+
                         (held.getItem() instanceof BlockItem blockItem &&
                                 blockItem.getBlock() instanceof PipeBlock<?, ?> pipeBlock &&
                                 pipeBlock.pipeType.type().equals(pipeType.type()))) {
@@ -344,7 +338,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         List<ItemStack> drops = new ArrayList<>(super.getDrops(state, builder));
         if (blockEntity instanceof PipeBlockEntity<?, ?> pipeTile) {
             if (!pipeTile.getFrameMaterial().isNull()) {
-                drops.addAll(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial())
+                drops.addAll(Objects.requireNonNull(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, pipeTile.getFrameMaterial()))
                         .getDefaultState().getDrops(builder));
             }
             for (Direction direction : GTUtil.DIRECTIONS) {
