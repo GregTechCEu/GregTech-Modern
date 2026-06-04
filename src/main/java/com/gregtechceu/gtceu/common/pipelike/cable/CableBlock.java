@@ -36,15 +36,22 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CableBlock extends MaterialPipeBlock<CableVariant, WireProperties> {
+public class CableBlock extends MaterialPipeBlock<WireProperties> {
+
+
 
     public CableBlock(Properties properties, CableVariant cableVariant, Material material) {
         super(properties, cableVariant, GTPipeNetworks.ENERGY, material);
     }
 
     @Override
+    public CableVariant getPipeVariant() {
+        return (CableVariant)super.getPipeVariant();
+    }
+
+    @Override
     public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
-        if (pipeType.isCable && (index == 0 || index == 2)) {
+        if (getPipeVariant().isCable && (index == 0 || index == 2)) {
             return 0x404040;
         }
         return super.tinted(state, level, pos, index);
@@ -87,7 +94,7 @@ public class CableBlock extends MaterialPipeBlock<CableVariant, WireProperties> 
         }
         if (level.isClientSide) return;
 
-        CableVariant cableVariant = (CableVariant) pipe.getPipeType();
+        CableVariant cableVariant = (CableVariant)pipe.getPipeType();
 
         if (cableVariant.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeBE(level, pos);

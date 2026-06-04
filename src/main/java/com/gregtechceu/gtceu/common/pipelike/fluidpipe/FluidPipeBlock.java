@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeVariant, FluidPipeProperties> {
+public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeProperties> {
 
     public FluidPipeBlock(Properties properties, FluidPipeVariant fluidPipeType, Material material) {
         super(properties, fluidPipeType, GTPipeNetworks.FLUID, material);

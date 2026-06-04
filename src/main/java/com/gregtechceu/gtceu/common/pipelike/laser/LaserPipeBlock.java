@@ -18,9 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeVariant, LaserPipeProperties> {
-
-    private static final String DATA_ID = "gtceu_laser_pipe_net";
+public class LaserPipeBlock extends PipeBlock<LaserPipeProperties> {
 
     public LaserPipeBlock(Properties properties, LaserPipeVariant type) {
         super(properties, type, GTPipeNetworks.LASER);

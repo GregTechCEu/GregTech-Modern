@@ -65,25 +65,26 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<NodeDataType>, NodeDataType>
+public abstract class PipeBlock<NodeDataType>
                                extends Block
                                implements EntityBlock, SimpleWaterloggedBlock {
 
-    public final PipeType pipeType;
+    @Getter
+    public final IPipeVariant<NodeDataType> pipeVariant;
 
     protected final Map<@Nullable Direction, VoxelShape> shapes = new IdentityHashMap<>();
 
     @Getter
     protected final PipeNetworkType networkType;
 
-    public PipeBlock(Properties properties, PipeType pipeType, PipeNetworkType networkType) {
+    public PipeBlock(Properties properties, IPipeVariant<NodeDataType> pipeVariant, PipeNetworkType networkType) {
         super(properties);
-        this.pipeType = pipeType;
+        this.pipeVariant = pipeVariant;
         this.networkType = networkType;
         registerDefaultState(defaultBlockState().setValue(BlockStateProperties.WATERLOGGED, false));
 
-        float min = (16 - pipeType.getThickness() * 16) / 2f;
-        float max = min + pipeType.getThickness() * 16;
+        float min = (16 - pipeVariant.getThickness() * 16) / 2f;
+        float max = min + pipeVariant.getThickness() * 16;
         shapes.put(null, Block.box(min, min, min, max, max, max));
         for (Direction dir : GTUtil.DIRECTIONS) {
             var coords = GTMath.getCoordinates(dir, min, max);
@@ -125,11 +126,11 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
     public abstract NodeDataType createRawData();
 
     public NodeDataType createProperties() {
-        return pipeType.modifyProperties(createRawData());
+        return pipeVariant.modifyProperties(createRawData());
     }
 
     public PipeModel createPipeModel(GTBlockstateProvider provider) {
-        return pipeType.createPipeModel(this, provider);
+        return pipeVariant.createPipeModel(this, provider);
     }
 
     public static @Nullable PipeBlockEntity<?, ?> getPipeBE(BlockGetter level, BlockPos pos) {
@@ -195,7 +196,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
             return InteractionResult.FAIL;
         }
 
-        if (pipeBlockEntity.getFrameMaterial().isNull() && pipeType.getThickness() < 1) {
+        if (pipeBlockEntity.getFrameMaterial().isNull() && pipeVariant.getThickness() < 1) {
             var frameBlock = MaterialBlock.getFrameboxFromItem(itemStack);
             if (frameBlock != null) {
                 pipeBlockEntity.setFrameMaterial(frameBlock.material);
@@ -213,7 +214,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
             BlockPos offsetPos = pos.offset(hit.getDirection().getNormal());
             BlockState stateAtSide = level.getBlockState(offsetPos);
             if (stateAtSide.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
-                if (itemPipe.getBlock().pipeType == pipeType) {
+                if (itemPipe.getBlock().pipeVariant == pipeVariant) {
                     boolean wasPlaced = matBlock.replaceWithFramedPipe(level, offsetPos, stateAtSide, player, itemStack,
                             hit);
                     if (wasPlaced) {
@@ -288,10 +289,10 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeVariant<N
                 var held = player.getMainHandItem();
                 Set<GTToolType> types = Set.of(getPipeTuneTool());
 
-                PipeBlock<?, ?> block;
+                PipeBlock<?> block;
 
                 if (held.getItem() instanceof BlockItem blockItem) {
-                    block = blockItem.getBlock() instanceof PipeBlock<?, ?> pipeBlock ? pipeBlock : null;
+                    block = blockItem.getBlock() instanceof PipeBlock<?> pipeBlock ? pipeBlock : null;
                 } else {
                     block = null;
                 }

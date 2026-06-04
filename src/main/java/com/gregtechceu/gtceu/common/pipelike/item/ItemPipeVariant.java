@@ -64,7 +64,7 @@ public enum ItemPipeVariant implements IMaterialPipeVariant<ItemPipeProperties> 
                 baseProperties.getTransferRate() * rateMultiplier);
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
         ResourceLocation sideTexture = GTCEu.id("block/pipe/pipe_side");
         ResourceLocation endTexture = GTCEu.id("block/pipe/pipe_%s_in"
                 .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name));

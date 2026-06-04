@@ -34,7 +34,7 @@ public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeProperties>, S
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?, ?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
         ActivablePipeModel pipeModel = new ActivablePipeModel(block, getThickness(),
                 GTCEu.id("block/pipe/pipe_optical_side"), GTCEu.id("block/pipe/pipe_optical_in"),
                 provider);

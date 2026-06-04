@@ -19,14 +19,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MaterialPipeBlock<
-        PipeType extends Enum<PipeType> & IMaterialPipeVariant<NodeDataType>, NodeDataType>
-                                       extends PipeBlock<PipeType, NodeDataType> {
+public abstract class MaterialPipeBlock<NodeDataType> extends PipeBlock<NodeDataType> {
 
     public final Material material;
     public final IMaterialPipeVariant<NodeDataType> materialPipeType;
 
-    public MaterialPipeBlock(Properties properties, PipeType pipeType, PipeNetworkType networkType, Material material) {
+    public MaterialPipeBlock(Properties properties, IMaterialPipeVariant<NodeDataType> pipeType, PipeNetworkType networkType, Material material) {
         super(properties, pipeType, networkType);
         this.material = material;
         this.materialPipeType = pipeType;
@@ -41,7 +39,7 @@ public abstract class MaterialPipeBlock<
                     return paintable.getPaintingColor();
                 }
             }
-            if (state.getBlock() instanceof MaterialPipeBlock<?, ?> block) {
+            if (state.getBlock() instanceof MaterialPipeBlock<?> block) {
                 return block.tinted(state, level, pos, index);
             }
             return -1;

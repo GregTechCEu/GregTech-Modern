@@ -71,7 +71,7 @@ public enum CableVariant implements IMaterialPipeVariant<WireProperties> {
         return ordinal() > 4;
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
         ResourceLocation side = MaterialIconType.wire
                 .getBlockTexturePath(material.getMaterialIconSet(), "side", true);
         ResourceLocation end = MaterialIconType.wire

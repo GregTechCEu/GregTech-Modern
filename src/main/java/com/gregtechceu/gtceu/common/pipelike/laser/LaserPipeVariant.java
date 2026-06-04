@@ -31,7 +31,7 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeProperties>, Strin
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?, ?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
         ActivablePipeModel model = new ActivablePipeModel(block, getThickness(),
                 GTCEu.id("block/pipe/pipe_laser_side"), GTCEu.id("block/pipe/pipe_laser_in"),
                 provider);

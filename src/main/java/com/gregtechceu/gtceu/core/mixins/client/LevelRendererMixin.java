@@ -188,7 +188,7 @@ public abstract class LevelRendererMixin {
                 rgb = pipe.getFrameMaterial().getMaterialRGB();
             } else if (pipe instanceof CableBlockEntity cable) {
                 rgb = GTValues.VCM[GTUtil.getTierByVoltage(cable.getNodeData().getVoltage())];
-            } else if (state.getBlock() instanceof MaterialPipeBlock<?,?> materialPipe) {
+            } else if (state.getBlock() instanceof MaterialPipeBlock<?> materialPipe) {
                 rgb = materialPipe.material.getMaterialRGB();
             }
         }

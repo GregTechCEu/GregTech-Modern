@@ -163,8 +163,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
     }
 
     @SuppressWarnings("unchecked")
-    public PipeBlock<PipeType, NodeDataType> getPipeBlock() {
-        return (PipeBlock<PipeType, NodeDataType>) getBlockState().getBlock();
+    public PipeBlock<NodeDataType> getPipeBlock() {
+        return (PipeBlock<NodeDataType>) getBlockState().getBlock();
     }
 
     public PipeNetworkType getNetworkType() {
@@ -279,9 +279,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
             }
             BlockEntity tile = getNeighbor(side);
             // block connections if Pipe Types do not match
-            if (connected &&
-                    tile instanceof PipeBlockEntity<?, ?> pipeTile &&
-                    pipeTile.getPipeType().getClass() != this.getPipeType().getClass()) {
+            if (connected && tile instanceof PipeBlockEntity<?, ?> pipeTile && pipeTile.getNetworkType() != getNetworkType()) {
                 return;
             }
 
@@ -376,8 +374,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
         return count;
     }
 
-    public PipeType getPipeType() {
-        return getPipeBlock().pipeType;
+    public IPipeVariant<NodeDataType> getPipeType() {
+        return getPipeBlock().pipeVariant;
     }
 
     //////////////////////////////////////
@@ -457,7 +455,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeVar
 
     @Override
     public int getDefaultPaintingColor() {
-        return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?> materialPipeBlock ?
+        return this.getPipeBlock() instanceof MaterialPipeBlock<?> materialPipeBlock ?
                 materialPipeBlock.material.getMaterialRGB() : 0xFFFFFF;
     }
 

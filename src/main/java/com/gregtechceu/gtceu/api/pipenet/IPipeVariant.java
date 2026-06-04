@@ -28,5 +28,5 @@ public interface IPipeVariant<NodeDataType> {
      * @param provider Datagen blockstate provider
      * @return Pipe model
      */
-    PipeModel createPipeModel(PipeBlock<?, ?> block, GTBlockstateProvider provider);
+    PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider);
 }

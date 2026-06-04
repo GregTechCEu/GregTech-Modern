@@ -48,7 +48,7 @@ public enum DuctPipeVariant implements IPipeVariant<DuctPipeProperties>, StringR
     }
 
     @Override
-    public PipeModel createPipeModel(PipeBlock<?, ?> block, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(PipeBlock<?> block, GTBlockstateProvider provider) {
         return new PipeModel(block, provider, getThickness(),
                 GTCEu.id("block/pipe/pipe_duct_side"), GTCEu.id("block/pipe/pipe_duct_in"));
     }

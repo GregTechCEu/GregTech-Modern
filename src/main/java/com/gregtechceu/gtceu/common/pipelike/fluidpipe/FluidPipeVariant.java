@@ -60,7 +60,7 @@ public enum FluidPipeVariant implements IMaterialPipeVariant<FluidPipeProperties
                 channels);
     }
 
-    public PipeModel createPipeModel(MaterialPipeBlock<?, ?> block, Material material, GTBlockstateProvider provider) {
+    public PipeModel createPipeModel(MaterialPipeBlock<?> block, Material material, GTBlockstateProvider provider) {
         String side = "block/pipe/pipe%s_side";
         String end = "block/pipe/pipe_%s_in".formatted(name);
         if (material.hasProperty(PropertyKey.WOOD)) {

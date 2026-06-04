@@ -17,9 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DuctPipeBlock extends PipeBlock<DuctPipeVariant, DuctPipeProperties> {
-
-    private static final String DATA_ID = "gtceu_duct_pipe_net";
+public class DuctPipeBlock extends PipeBlock<DuctPipeProperties> {
 
     private final DuctPipeProperties properties;
 

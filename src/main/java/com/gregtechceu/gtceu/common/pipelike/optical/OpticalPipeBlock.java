@@ -19,15 +19,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpticalPipeBlock extends PipeBlock<OpticalPipeVariant, OpticalPipeProperties> {
+public class OpticalPipeBlock extends PipeBlock<OpticalPipeProperties> {
 
-    private final OpticalPipeProperties properties;
-    private static final String DATA_ID = "gtceu_optical_pipe_net";
 
     public OpticalPipeBlock(BlockBehaviour.Properties properties, OpticalPipeVariant pipeType) {
         super(properties, pipeType, GTPipeNetworks.OPTICAL);
-        this.properties = OpticalPipeProperties.INSTANCE;
-
         registerDefaultState(defaultBlockState().setValue(GTBlockStateProperties.ACTIVE, false));
     }
 

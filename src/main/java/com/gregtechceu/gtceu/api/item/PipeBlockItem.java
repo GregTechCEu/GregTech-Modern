@@ -32,8 +32,8 @@ public class PipeBlockItem extends BlockItem {
     }
 
     @Override
-    public PipeBlock<?, ?> getBlock() {
-        return (PipeBlock<?, ?>) super.getBlock();
+    public PipeBlock<?> getBlock() {
+        return (PipeBlock<?>) super.getBlock();
     }
 
     @Override

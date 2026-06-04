@@ -96,6 +96,11 @@ public class CableBlockEntity extends PipeBlockEntity<CableVariant, WireProperti
     }
 
     @Override
+    public CableVariant getPipeType() {
+        return (CableVariant)super.getPipeType();
+    }
+
+    @Override
     public void onLoad() {
         super.onLoad();
         if (!isRemote()) {
