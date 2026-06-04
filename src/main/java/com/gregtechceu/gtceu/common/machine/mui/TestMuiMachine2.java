@@ -1,29 +1,19 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.client.schemarenderer.BaseSchemaRenderer;
-import brachy.modularui.client.schemarenderer.BlockHighlight;
-import brachy.modularui.drawable.SchemaRenderer;
-import brachy.modularui.utils.Color;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.multiblock.MultiblockStructureUtil;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -31,14 +21,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.fakelevel.MapSchema;
+import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
@@ -49,16 +42,15 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
@@ -141,7 +133,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GCYMMachines.MEGA_VACUUM_FREEZER;
+        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ELECTRIC_BLAST_FURNACE;
         var pattern = ((BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get());
         for (int i = 0; i < pattern.getSlices().length; i++) {
             userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
@@ -154,6 +146,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             case NON_Y_AXIS -> upFacing = Direction.UP;
             default -> upFacing = Direction.UP;
         }
+        // frontFacing = Direction.UP;
+        // upFacing = Direction.WEST;
     }
 
     @Override
@@ -190,23 +184,20 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         if (getLevel().isClientSide()) {
             SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema) {
+
                 @Override
                 protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {
                     super.onSuccessfulRayTrace(poseStack, result);
                     System.out.println("guh" + result.getBlockPos().getX());
                 }
             };
-            schemaRenderer.highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+            schemaRenderer
+                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
 
             multiSchema = new SchemaWidget(schemaRenderer);
             schemaCol.child(multiSchema.size(200, 200));
         }
-        schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices)
-                .onMouseReleased((context, button) -> {
-                    slice = ++slice % maxSlices;
-                    this.refreshViewWidget(); // this may not be necessary?
-                    return true;
-                }));
+        schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices));
         col.child(schemaCol);
 
         partsViewWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
@@ -238,313 +229,34 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         resultStructure = new HashMap<>();
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-
-        char[][][] flattenedCharPattern = flattenBlockPattern(pattern, userSliceRepeats);
-        char[][][] adjustedCharPattern = rotateAndFlipCharPattern(flattenedCharPattern, pattern.getDirections(),
+        maxSlices = pattern.getDimensions()[1];
+        char[][][] flattenedCharPattern = MultiblockStructureUtil.flattenBlockPattern(pattern, userSliceRepeats);
+        char[][][] adjustedCharPattern = MultiblockStructureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
+                pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
 
-        populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern, userGlobalBlockPreferences);
+        MultiblockStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+                userBasePredicateMinMaxPreferences);
+        MultiblockStructureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
+                userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-        populateFromPattern(resultStructure, pattern, adjustedCharPattern);
+        MultiblockStructureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
+                frontFacing, upFacing, isFlipped);
 
-        fixRotationsAndFacing(resultStructure, frontFacing, upFacing, multiblockDefinition.getBlock());
+        MultiblockStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+                multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
-        for (var entry : resultStructure.entrySet()){
+        for (var entry : resultStructure.entrySet()) {
             schemaMap.put(entry.getKey().asLong(), entry.getValue().getBlockState());
         }
-        if(mapSchema == null) {
+        if (mapSchema == null) {
             mapSchema = new MutableSchema(schemaMap);
+            mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
         } else {
             mapSchema.setBlocks(schemaMap);
         }
-        mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
     }
-
-    private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern, Map<Integer, Integer> sliceRepeats) {
-        int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
-        int[] dimensions = pattern.getDimensions();
-        char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
-        PatternSlice[] slices = pattern.getSlices();
-        int totalSlicesIndex = 0;
-        for (int sliceIndex = 0; sliceIndex < slices.length; sliceIndex++) {
-            PatternSlice slice = slices[sliceIndex];
-            int repeats = sliceRepeats.getOrDefault(sliceIndex, 1);
-            for (int i = 0; i < repeats; i++) {
-                flattenedPattern[totalSlicesIndex] = slice.getPattern();
-                totalSlicesIndex++;
-            }
-        }
-        assert (totalSlicesIndex == totalSlices);
-        return flattenedPattern;
-    }
-
-    private int[] getDimensions(char[][][] charPattern) {
-        int d0 = charPattern.length;
-        int d1 = d0 > 0 ? charPattern[0].length : 0;
-        int d2 = d1 > 0 ? charPattern[0][0].length : 0;
-        return new int[] { d0, d1, d2 };
-    }
-
-    private char[][][] rotateAndFlipCharPattern(char[][][] localFlattenedPattern, RelativeDirection[] patternDirections,
-                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        Direction absoluteDir0 = patternDirections[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        Direction absoluteDir1 = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        Direction absoluteDir2 = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
-
-        var dimensions = getDimensions(localFlattenedPattern);
-        if (dimensions[0] == 0 || dimensions[1] == 0 || dimensions[2] == 0) return new char[0][0][0];
-
-        // Per-axis step vectors of each absolute direction.
-        int[][] steps = {
-                { absoluteDir0.getStepX(), absoluteDir0.getStepY(), absoluteDir0.getStepZ() },
-                { absoluteDir1.getStepX(), absoluteDir1.getStepY(), absoluteDir1.getStepZ() },
-                { absoluteDir2.getStepX(), absoluteDir2.getStepY(), absoluteDir2.getStepZ() },
-        };
-        // Max local index reached along each local axis.
-        int[] extents = { dimensions[0] - 1, dimensions[1] - 1, dimensions[2] - 1 };
-
-        // World-space bounding box. Each axis contributes monotonically, so the extremes are
-        // reached at index 0 or at extents[axis] depending on the sign of the step.
-        int[] min = new int[3];
-        int[] max = new int[3];
-        for (int axis = 0; axis < 3; axis++) {
-            for (int world = 0; world < 3; world++) {
-                int contribution = steps[axis][world] * extents[axis];
-                min[world] += Math.min(0, contribution);
-                max[world] += Math.max(0, contribution);
-            }
-        }
-
-        int sizeX = max[0] - min[0] + 1;
-        int sizeY = max[1] - min[1] + 1;
-        int sizeZ = max[2] - min[2] + 1;
-        char[][][] result = new char[sizeX][sizeY][sizeZ];
-
-        for (int s = 0; s < dimensions[0]; s++) {
-            for (int t = 0; t < dimensions[1]; t++) {
-                for (int c = 0; c < dimensions[2]; c++) {
-                    int worldX = steps[0][0] * s + steps[1][0] * t + steps[2][0] * c;
-                    int worldY = steps[0][1] * s + steps[1][1] * t + steps[2][1] * c;
-                    int worldZ = steps[0][2] * s + steps[1][2] * t + steps[2][2] * c;
-                    result[worldX - min[0]][worldY - min[1]][worldZ - min[2]] = localFlattenedPattern[s][t][c];
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                                  char[][][] flattenedBlockPattern,
-                                                  Map<Long, BlockInfo> userBlockPreferences) {
-        var dimensions = getDimensions(flattenedBlockPattern);
-        for (Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()) {
-            BlockPos pos = BlockPos.of(blockPreference.getKey());
-            BlockInfo blockInfo = blockPreference.getValue();
-            if (pos.getX() >= dimensions[0] ||
-                    pos.getY() >= dimensions[1] ||
-                    pos.getZ() >= dimensions[2]) {
-                throw new IllegalStateException(
-                        "BlockPos preference " + pos.toString() + "is outside of bounds for pattern of size " +
-                                dimensions[0] + "," + dimensions[1] + "," + dimensions[2]);
-            }
-            if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, blockInfo)) {
-                throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
-                        " for position " + pos);
-            }
-            resultStructure.put(pos, blockInfo);
-        }
-    }
-
-    private void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                     char[][][] flattenedBlockPattern) {
-        /// 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
-        /// get the char at that position,
-        /// 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
-        /// not satisfied yet, then try those
-        /// 4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
-        /// 4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
-        /// 4d. error if none are valid candidates(?)
-        ///
-
-        var dimensions = getDimensions(flattenedBlockPattern);
-
-        Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        int sliceAxis = axisIndex(sliceDir.getAxis());
-        // The two remaining world axes, iterated within each slice.
-        int innerAxisA = (sliceAxis + 1) % 3;
-        int innerAxisB = (sliceAxis + 2) % 3;
-
-        for (int sliceCoord = 0; sliceCoord < dimensions[sliceAxis]; sliceCoord++) {
-            for (int a = 0; a < dimensions[innerAxisA]; a++) {
-                for (int b = 0; b < dimensions[innerAxisB]; b++) {
-                    int[] coords = new int[3];
-                    coords[sliceAxis] = sliceCoord;
-                    coords[innerAxisA] = a;
-                    coords[innerAxisB] = b;
-                    var pos = new BlockPos(coords[0], coords[1], coords[2]);
-                    if (resultStructure.containsKey(pos)) continue;
-                    char c = flattenedBlockPattern[coords[0]][coords[1]][coords[2]];
-                    PatternPredicate predicate = pattern.getPredicates().get(c);
-
-                    if (predicate == PatternPredicate.AIR || predicate == PatternPredicate.ANY) {
-                        continue;
-                    }
-
-                    // Try to find a basePredicate that doesn't have its minCount (global) or minLayerCount (this
-                    // slice) satisfied yet, and if so, place that.
-                    boolean inserted = false;
-                    for (BasePredicate basePredicate : predicate.predicateList) {
-                        int minCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
-                                userBasePredicateMinMaxPreferences.get(predicate, basePredicate).left() :
-                                basePredicate.minCount;
-                        if (minCount == 0) continue;
-                        int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
-                        int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
-                        boolean globalMinUnmet = minCount > 0 && totalAlreadyPopulated < minCount;
-                        boolean layerMinUnmet = basePredicate.minSliceCount > 0 &&
-                                layerAlreadyPopulated < basePredicate.minSliceCount;
-                        if (!globalMinUnmet && !layerMinUnmet) continue;
-                        var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
-                                userBasePredicateBlockPreferences.get(predicate, basePredicate) :
-                                basePredicate.getCandidates().get(0);
-                        // TODO: is this needed? doesn't this just do what we're already doing?
-                        if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
-                        resultStructure.put(pos, toInsert);
-                        inserted = true;
-                        break;
-                    }
-                    if (inserted) continue;
-
-                    // Try to find a basePredicate that doesn't have its maxCount/maxLayerCount filled yet, and if so,
-                    // place that.
-                    inserted = false;
-                    for (BasePredicate basePredicate : predicate.predicateList) {
-                        int maxCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
-                                userBasePredicateMinMaxPreferences.get(predicate, basePredicate).right() :
-                                basePredicate.maxCount;
-                        if (maxCount == 0) continue;
-                        int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
-                        int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
-                        if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-                        if (basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount)
-                            continue;
-                        var toInsert = userBasePredicateBlockPreferences.contains(predicate, basePredicate) ?
-                                userBasePredicateBlockPreferences.get(predicate, basePredicate) :
-                                basePredicate.getCandidates().get(0);
-                        // TODO: is this needed? doesn't this just do what we're already doing?
-                        if (!isValidCandidate(resultStructure, pattern, flattenedBlockPattern, pos, toInsert)) continue;
-                        resultStructure.put(pos, toInsert);
-                        inserted = true;
-                        break;
-                    }
-                    if (inserted) continue;
-                    // If we arrive here, there's nothing we can place that doesn't overflow a maxcount!
-                    throw new IllegalStateException(
-                            "Could not place a block without breaking maxCount requirments for character " + c);
-                }
-            }
-        }
-    }
-
-    private static int axisIndex(Direction.Axis axis) {
-        return switch (axis) {
-            case X -> 0;
-            case Y -> 1;
-            case Z -> 2;
-        };
-    }
-
-    /// Total number of already-placed blocks across the whole structure matching {@code basePredicate}.
-    private int countGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
-        return (int) resultStructure.values()
-                .stream()
-                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
-                .count();
-    }
-
-    /// Number of already-placed blocks matching {@code basePredicate} within a single slice (layer), i.e. those
-    /// whose position shares the given coordinate along the slice axis.
-    private int countInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate, int sliceAxis,
-                             int sliceCoord) {
-        return (int) resultStructure.entrySet()
-                .stream()
-                .filter(e -> coordAlongAxis(e.getKey(), sliceAxis) == sliceCoord)
-                .filter(e -> basePredicate.getCandidates().contains(e.getValue()))
-                .count();
-    }
-
-    private static int coordAlongAxis(BlockPos pos, int axis) {
-        return switch (axis) {
-            case 0 -> pos.getX();
-            case 1 -> pos.getY();
-            default -> pos.getZ();
-        };
-    }
-
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                     char[][][] flattenedBlockPattern, BlockPos pos, BlockInfo newInfo) {
-        char c = flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-        PatternPredicate predicate = pattern.getPredicates().get(c);
-
-        // The slice (layer) this position belongs to.
-        Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        int sliceAxis = axisIndex(sliceDir.getAxis());
-        int sliceCoord = coordAlongAxis(pos, sliceAxis);
-
-        // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
-        // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate.predicateList) {
-            if (!basePredicate.candidates.contains(newInfo)) continue;
-            int maxCount = userBasePredicateMinMaxPreferences.contains(predicate, basePredicate) ?
-                    userBasePredicateMinMaxPreferences.get(predicate, basePredicate).right() :
-                    basePredicate.maxCount;
-            if (maxCount == 0) continue;
-            int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
-            int layerAlreadyPopulated = countInLayer(resultStructure, basePredicate, sliceAxis, sliceCoord);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (basePredicate.maxSliceCount != -1 && layerAlreadyPopulated >= basePredicate.maxSliceCount) continue;
-            return true;
-        }
-        return false;
-    }
-
-    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
-            Direction.EAST, Direction.UP, Direction.DOWN };
-
-    private void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
-                                       Direction upFacing, Block controllerBlock) {
-        Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
-        for (var entry : resultStructure.entrySet()) {
-            BlockPos pos = entry.getKey();
-            BlockState currentState = entry.getValue().getBlockState();
-            Direction valid = null;
-            if (currentState.getBlock() instanceof MetaMachineBlock machineBlock) {
-                if (!currentState.hasProperty(machineBlock.getRotationState().property)) continue;
-                if (machineBlock.equals(controllerBlock)) {
-                    var newState = currentState.setValue(machineBlock.getRotationState().property, frontFacing);
-                    if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING))
-                        newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
-                    toUpdate.put(pos, newState);
-                    continue;
-                }
-                for (var dir : DIRECTIONS_IN_ORDER) {
-                    if (!machineBlock.getRotationState().test(valid)) continue;
-                    if (!resultStructure.containsKey(pos.relative(dir))) {
-                        valid = dir;
-                        break;
-                    }
-                }
-                if (valid != null) {
-                    toUpdate.put(pos, currentState.setValue(machineBlock.getRotationState().property, valid));
-                }
-            }
-        }
-        for (var entry : toUpdate.entrySet()) {
-            resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
-        }
-    };
 
     /// ==== User Preference UI ======
     private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
