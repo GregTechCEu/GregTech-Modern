@@ -314,7 +314,7 @@ public class PlaceholderHandler {
                                                     helpPanel.openPanel();
                                                     return true;
                                                 })))
-                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
+                                .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                         .value(code)
                                         .langContext(ctx)
                                         .widthRel(.95f)

@@ -51,8 +51,8 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
         this.language = language;
         GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
-                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT::deserialize,
-                GTByteBufAdapters.COMPONENT::serialize, GTByteBufAdapters.COMPONENT::areEqual, Component::copy);
+                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT,
+                GTByteBufAdapters.COMPONENT, GTByteBufAdapters.COMPONENT, Component::copy);
         setSyncOrValue(formattedTextSync);
     }
 
