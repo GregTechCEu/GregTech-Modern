@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.client.mui.schema;
 
+import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.schema.ISchema;
@@ -20,12 +24,12 @@ import java.util.function.BiPredicate;
 
 public class MutableSchema implements ISchema {
 
-    private final Level level = new SchemaLevel();
-    private @NotNull BlockPos origin = BlockPos.ZERO;
-    private @NotNull Vector3f center = new Vector3f();
-    private @NotNull BiPredicate<BlockPos, BlockState> renderFilter = ($1, $2) -> true;
+    protected final Level level = new SchemaLevel();
+    protected @NotNull BlockPos origin = BlockPos.ZERO;
+    protected @NotNull Vector3f center = new Vector3f();
+    protected @NotNull BiPredicate<BlockPos, BlockState> renderFilter = ($1, $2) -> true;
     @Getter
-    private final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
+    protected final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
 
     public MutableSchema() {}
 
@@ -45,12 +49,21 @@ public class MutableSchema implements ISchema {
         BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
         for (long l : blocks.keySet()) {
             if (blocks.get(l).isAir()) continue;
-            this.blocks.put(l, blocks.get(l));
-
+            BlockState block = blocks.get(l);
             BlockPos pos = BlockPos.of(l);
-            getLevel().setBlockAndUpdate(pos, blocks.get(l));
+            this.blocks.put(l, block);
+            getLevel().setBlockAndUpdate(pos, block);
             BlockPosUtil.setMin(min, pos);
             BlockPosUtil.setMax(max, pos);
+
+            if(block.getBlock() instanceof EntityBlock entityBlock){
+                BlockEntity newEntity = entityBlock.newBlockEntity(pos, block);
+                if(newEntity == null){
+                    GTCEu.LOGGER.error("Could not create BlockEntity in renderer's MutableSchema for block {} at pos {}", block.getBlock().getName(), pos);
+                } else {
+                    getLevel().setBlockEntity(newEntity);
+                }
+            }
         }
         this.origin = min.immutable();
         this.center = BlockPosUtil.getCenterF(min, max);

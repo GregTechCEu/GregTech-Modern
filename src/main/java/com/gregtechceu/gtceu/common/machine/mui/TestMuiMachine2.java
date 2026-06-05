@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
@@ -275,7 +276,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             schemaMap.put(entry.getKey().asLong(), entry.getValue().getBlockState());
         }
         if (mapSchema == null) {
-            mapSchema = new MutableSchema(schemaMap);
+            mapSchema = new MultiblockSchema(schemaMap);
             mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
         } else {
             mapSchema.setBlocks(schemaMap);
