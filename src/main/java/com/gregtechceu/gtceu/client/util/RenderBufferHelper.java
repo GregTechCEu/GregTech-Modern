@@ -107,12 +107,12 @@ public class RenderBufferHelper {
     }
 
     public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
-                                         int colorARGB, Vec3 pos, Vec3 offset) {
-        renderInWorldText(multiBuf, stack, camera, text, 0.030F, colorARGB, pos, offset);
+                                         int colorARGB, Vec3 pos) {
+        renderInWorldText(multiBuf, stack, camera, text, 0.030F, colorARGB, pos);
     }
 
     public static void renderInWorldText(MultiBufferSource multiBuf, PoseStack stack, Camera camera, String text,
-                                         float scale, int colorARGB, Vec3 pos, Vec3 offset) {
+                                         float scale, int colorARGB, Vec3 pos) {
         Font fontRender = Minecraft.getInstance().font;
         Vec3 c = pos.subtract(camera.getPosition());
         float stringMiddle = (float) fontRender.width(text) / 2.0F;
@@ -126,20 +126,24 @@ public class RenderBufferHelper {
         stack.popPose();
     }
 
-    public static void drawLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, double thickness,
-                                int colorARGB) {
-        Vec3 a = from.getCenter();
-        Vec3 b = to.getCenter();
-        Vec3 law = getFirstPerpendicular(a, b).scale(thickness);
-        Vec3 law2 = getSecondPerpendicular(a, b).scale(thickness);
-        Vec3 topRight = a.add(law2);
-        Vec3 bottomRight = a.subtract(law);
-        Vec3 bottomLeft = a.subtract(law2);
-        Vec3 topLeft = a.add(law);
-        Vec3 topRight2 = b.add(law2);
-        Vec3 bottomRight2 = b.subtract(law);
-        Vec3 bottomLeft2 = b.subtract(law2);
-        Vec3 topLeft2 = b.add(law);
+    public static void renderLine(VertexConsumer buf, PoseStack stack, BlockPos from, BlockPos to, double thickness,
+                                  int colorARGB) {
+        renderLine(buf, stack, from.getCenter(), to.getCenter(), thickness, colorARGB);
+    }
+
+    public static void renderLine(VertexConsumer buf, PoseStack stack, Vec3 from, Vec3 to, double thickness,
+                                  int colorARGB) {
+        Vec3 law = getFirstPerpendicular(from, to).scale(thickness);
+        Vec3 law2 = getSecondPerpendicular(from, to).scale(thickness);
+        Vec3 topRight = from.add(law2);
+        Vec3 bottomRight = from.subtract(law);
+        Vec3 bottomLeft = from.subtract(law2);
+        Vec3 topLeft = from.add(law);
+        Vec3 topRight2 = to.add(law2);
+        Vec3 bottomRight2 = to.subtract(law);
+        Vec3 bottomLeft2 = to.subtract(law2);
+        Vec3 topLeft2 = to.add(law);
+
         renderSide(buf, stack, topRight, topLeft, bottomRight, bottomLeft, colorARGB);
         renderSide(buf, stack, topRight2, topRight, bottomRight2, bottomRight, colorARGB);
         renderSide(buf, stack, topLeft2, topRight2, bottomLeft2, bottomRight2, colorARGB);
@@ -149,10 +153,15 @@ public class RenderBufferHelper {
     }
 
     public static void renderCube(VertexConsumer buf, PoseStack stack, BlockPos pos, float size, int colorARGB) {
+        renderCube(buf, stack, pos.getCenter(), size, colorARGB);
+    }
+
+    public static void renderCube(VertexConsumer buf, PoseStack stack, Vec3 pos, float size, int colorARGB) {
         float half = size / 2.0F;
-        Vec3 c = pos.getCenter();
-        AABB box = new AABB(c.x - (double) half, c.y - (double) half, c.z - (double) half, c.x + (double) half,
-                c.y + (double) half, c.z + (double) half);
+
+        AABB box = new AABB(pos.x - (double) half, pos.y - (double) half, pos.z - (double) half, pos.x + (double) half,
+                pos.y + (double) half, pos.z + (double) half);
+
         Vec3 topRight = new Vec3(box.maxX, box.maxY, box.maxZ);
         Vec3 bottomRight = new Vec3(box.maxX, box.minY, box.maxZ);
         Vec3 bottomLeft = new Vec3(box.minX, box.minY, box.maxZ);
@@ -178,9 +187,9 @@ public class RenderBufferHelper {
         buf.vertex(mat, (float) tl.x, (float) tl.y, (float) tl.z).color(colorARGB).endVertex();
     }
 
-    public static void renderCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
-                                  int color, int combinedLight, TextureAtlasSprite sprite,
-                                  float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
+    public static void renderTexturedCube(VertexConsumer buffer, PoseStack.Pose pose, Set<Direction> sidesToRender,
+                                          int color, int combinedLight, TextureAtlasSprite sprite,
+                                          float minX, float minY, float minZ, float maxX, float maxY, float maxZ) {
         float uMin = sprite.getU0(), uMax = sprite.getU1(), vMin = sprite.getV0(), vMax = sprite.getV1();
 
         if (sidesToRender.contains(Direction.UP))
@@ -228,7 +237,7 @@ public class RenderBufferHelper {
 
     public static void renderColorCube(PoseStack poseStack, VertexConsumer buffer, AABB cuboid,
                                        float r, float g, float b, float a, boolean shade) {
-        renderColorCube(poseStack, buffer,
+        renderColorCube(buffer, poseStack,
                 (float) cuboid.minX, (float) cuboid.minY, (float) cuboid.minZ,
                 (float) cuboid.maxX, (float) cuboid.maxY, (float) cuboid.maxZ,
                 r, g, b, a, shade);
@@ -238,10 +247,10 @@ public class RenderBufferHelper {
                                        float minX, float minY, float minZ,
                                        float maxX, float maxY, float maxZ,
                                        float red, float green, float blue, float alpha) {
-        renderColorCube(poseStack, buffer, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha, false);
+        renderColorCube(buffer, poseStack, minX, minY, minZ, maxX, maxY, maxZ, red, green, blue, alpha, false);
     }
 
-    public static void renderColorCube(PoseStack poseStack, VertexConsumer buffer,
+    public static void renderColorCube(VertexConsumer buffer, PoseStack poseStack,
                                        float minX, float minY, float minZ,
                                        float maxX, float maxY, float maxZ,
                                        float red, float green, float blue, float a,

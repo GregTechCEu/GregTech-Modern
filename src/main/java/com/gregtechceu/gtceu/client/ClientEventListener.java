@@ -8,9 +8,11 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.PipenetDebugRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.mixins.client.AbstractClientPlayerAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.PlayerInfoAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -19,6 +21,7 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -64,6 +67,14 @@ public class ClientEventListener {
             // to render the preview after block entities, before the translucent.
             // so it can be seen through the transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
+        }
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+            LocalPlayer player = Minecraft.getInstance().player;
+
+            if (player != null && player.getMainHandItem().getItem() == GTItems.PIPENET_DEBUG_VIEWER.get()) {
+                PipenetDebugRenderer.INSTANCE.tick(event.getPoseStack(), Minecraft.getInstance().renderBuffers().bufferSource(),
+                        event.getProjectionMatrix(), event.getCamera());
+            }
         }
     }
 
