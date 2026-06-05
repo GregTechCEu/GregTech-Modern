@@ -42,7 +42,8 @@ public final class ProxySlotRecipeHandler {
         syncHandlerCount(patternBuffer.getWorkerSlotCount());
         for (int i = 0; i < proxySlotHandlers.size(); ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
-            proxyRHL.setBuffer(patternBuffer, patternBuffer.getWorkerItemHandler(i), patternBuffer.getWorkerFluidHandler(i));
+            proxyRHL.setBuffer(patternBuffer, patternBuffer.getWorkerItemHandler(i),
+                    patternBuffer.getWorkerFluidHandler(i));
         }
     }
 
