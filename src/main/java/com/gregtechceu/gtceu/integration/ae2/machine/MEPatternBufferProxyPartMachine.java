@@ -46,7 +46,7 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
 
     public MEPatternBufferProxyPartMachine(BlockEntityCreationInfo info) {
         super(info, GTValues.LuV, IO.IN);
-        proxySlotRecipeHandler = new ProxySlotRecipeHandler(this, MEPatternBufferPartMachine.MAX_PATTERN_COUNT);
+        proxySlotRecipeHandler = new ProxySlotRecipeHandler(this);
     }
 
     @Override
@@ -57,6 +57,13 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
+        var buf = getBuffer();
+        if (buf != null) {
+            proxySlotRecipeHandler.syncHandlerCount(buf.getWorkerSlotCount());
+            proxySlotRecipeHandler.updateProxy(buf);
+        } else {
+            proxySlotRecipeHandler.clearProxy();
+        }
         return proxySlotRecipeHandler.getProxySlotHandlers();
     }
 

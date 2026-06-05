@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -13,9 +17,14 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyInvConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.FancyTankConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -25,7 +34,6 @@ import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AETextInputButtonWidget;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.slot.AEPatternViewSlotWidget;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -43,8 +51,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -62,8 +72,6 @@ import appeng.api.storage.StorageHelper;
 import appeng.crafting.pattern.EncodedPatternItem;
 import appeng.crafting.pattern.ProcessingPatternItem;
 import appeng.helpers.patternprovider.PatternContainer;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -74,6 +82,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -119,11 +128,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @SaveField
     protected final NotifiableFluidTank shareTank;
 
-    @Getter
     @SaveField
-    protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
+    protected final InternalSlot[] workerSlotStorage = new InternalSlot[MAX_PATTERN_COUNT];
 
-    private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
+    private final @Nullable IPatternDetails[] patternSlotDetails = new IPatternDetails[MAX_PATTERN_COUNT];
 
     @SyncToClient
     @SaveField
@@ -135,23 +143,30 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
-    @Getter
-    protected final InternalSlotRecipeHandler internalRecipeHandler;
-
     @Nullable
     protected TickableSubscription updateSubs;
+
+    private final List<InternalSlot> workerSlots = new ArrayList<>();
+    private final List<@Nullable IPatternDetails> workerPatterns = new ArrayList<>();
+    private final List<WorkerItemHandler> workerItemHandlers = new ArrayList<>();
+    private final List<WorkerFluidHandler> workerFluidHandlers = new ArrayList<>();
+    private final List<RecipeHandlerList> workerHandlerLists = new ArrayList<>();
+    private @Nullable List<RecipeHandlerList> workerHandlersView;
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
         super(info, IO.IN);
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
-        for (int i = 0; i < this.internalInventory.length; i++) {
-            this.internalInventory[i] = new InternalSlot();
+
+        for (int i = 0; i < this.workerSlotStorage.length; i++) {
+            this.workerSlotStorage[i] = new InternalSlot();
         }
+
         getMainNode().addService(ICraftingProvider.class, this);
+
         this.shareInventory = attachTrait(new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         this.shareTank = attachTrait(new NotifiableFluidTank(9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE));
-        this.internalRecipeHandler = new InternalSlotRecipeHandler(this, internalInventory);
+        addWorkerSlot();
     }
 
     @Override
@@ -159,19 +174,235 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         super.onLoad();
         if (!isRemote()) {
             for (int i = 0; i < patternInventory.getSlots(); i++) {
-                var pattern = patternInventory.getStackInSlot(i);
-                var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
-                if (patternDetails != null) {
-                    this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
-                }
+                patternSlotDetails[i] = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(i),
+                        getLevel());
             }
             needPatternSync = true;
         }
     }
 
+    private void addWorkerSlot() {
+        int idx = workerSlots.size();
+        if (idx >= MAX_PATTERN_COUNT) {
+            return;
+        }
+
+        var slot = workerSlotStorage[idx];
+        workerSlots.add(slot);
+        workerPatterns.add(null);
+
+        var itemH = attachTrait(new WorkerItemHandler(slot, idx));
+        var fluidH = attachTrait(new WorkerFluidHandler(slot, idx));
+        workerItemHandlers.add(itemH);
+        workerFluidHandlers.add(fluidH);
+
+        slot.setOnContentsChanged(() -> {
+            itemH.notifyListeners();
+            fluidH.notifyListeners();
+        });
+
+        workerHandlerLists.add(new WorkerRHL(itemH, fluidH));
+        workerHandlersView = null;
+    }
+
+    private void removeLastWorkerSlot() {
+        if (workerSlots.size() <= 1) {
+            return;
+        }
+
+        int last = workerSlots.size() - 1;
+        var slot = workerSlots.get(last);
+
+        slot.refund();
+        slot.setOnContentsChanged(() -> {});
+
+        workerSlots.remove(last);
+        workerPatterns.remove(last);
+        workerItemHandlers.remove(last);
+        workerFluidHandlers.remove(last);
+        workerHandlerLists.remove(last);
+        workerHandlersView = null;
+    }
+
+    public int getWorkerSlotCount() {
+        return workerSlots.size();
+    }
+
+    public IRecipeHandlerTrait<Ingredient> getWorkerItemHandler(int idx) {
+        return workerItemHandlers.get(idx);
+    }
+
+    public IRecipeHandlerTrait<FluidIngredient> getWorkerFluidHandler(int idx) {
+        return workerFluidHandlers.get(idx);
+    }
+
+    static boolean couldSlotMatchContents(InternalSlot slot, Map<RecipeCapability<?>, List<Object>> contents) {
+        var itemContents = contents.get(ItemRecipeCapability.CAP);
+        if (itemContents != null && !slot.isItemEmpty()) {
+            var itemTypes = slot.getItemTypes();
+            for (var obj : itemContents) {
+                if (!(obj instanceof Ingredient ing) || ing.isEmpty()) {
+                    continue;
+                }
+                for (var stack : ing.getItems()) {
+                    if (itemTypes.contains(stack.getItem())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        var fluidContents = contents.get(FluidRecipeCapability.CAP);
+        if (fluidContents != null && !slot.isFluidEmpty()) {
+            var fluidTypes = slot.getFluidTypes();
+            for (var obj : fluidContents) {
+                if (!(obj instanceof FluidIngredient ing) || ing.isEmpty()) {
+                    continue;
+                }
+                for (var stack : ing.getStacks()) {
+                    if (fluidTypes.contains(stack.getFluid())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    class WorkerRHL extends RecipeHandlerList {
+
+        private final int workerIdx;
+
+        WorkerRHL(WorkerItemHandler itemH, WorkerFluidHandler fluidH) {
+            super(IO.IN);
+            this.workerIdx = itemH.workerIdx;
+            addHandlers(getCircuitInventory(), getShareInventory(), getShareTank(), itemH, fluidH);
+            setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
+        }
+
+        @Override
+        public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
+                                                                   Map<RecipeCapability<?>, List<Object>> contents,
+                                                                   boolean simulate) {
+            if (workerIdx >= workerSlots.size()) {
+                return contents;
+            }
+
+            var slot = workerSlots.get(workerIdx);
+            if (slot.isItemEmpty() && slot.isFluidEmpty()) {
+                return contents;
+            }
+
+            if (!couldSlotMatchContents(slot, contents)) {
+                return contents;
+            }
+
+            return super.handleRecipe(io, recipe, contents, simulate);
+        }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public void setDistinct(boolean ignored, boolean notify) {}
+    }
+
+    @Getter
+    class WorkerItemHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
+
+        static final MachineTraitType<WorkerItemHandler> TYPE = new MachineTraitType<>(WorkerItemHandler.class);
+
+        @Override
+        public MachineTraitType<WorkerItemHandler> getTraitType() {
+            return TYPE;
+        }
+
+        private final InternalSlot slot;
+        final int workerIdx;
+        private final int priority;
+        private final int size = 64;
+        private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
+        private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
+
+        WorkerItemHandler(InternalSlot slot, int idx) {
+            super();
+            this.slot = slot;
+            this.workerIdx = idx;
+            this.priority = IFilteredHandler.HIGH + idx + 1;
+        }
+
+        @Override
+        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                            boolean simulate) {
+            if (io != IO.IN || slot.isItemEmpty()) {
+                return left;
+            }
+            return slot.handleItemInternal(left, simulate);
+        }
+
+        @Override
+        public List<Object> getContents() {
+            return new ArrayList<>(slot.getItems());
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            return slot.getItems().stream().mapToLong(ItemStack::getCount).sum();
+        }
+    }
+
+    @Getter
+    class WorkerFluidHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        static final MachineTraitType<WorkerFluidHandler> TYPE = new MachineTraitType<>(WorkerFluidHandler.class);
+
+        @Override
+        public MachineTraitType<WorkerFluidHandler> getTraitType() {
+            return TYPE;
+        }
+
+        private final InternalSlot slot;
+        final int workerIdx;
+        private final int priority;
+        private final int size = 64;
+        private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
+        private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
+
+        WorkerFluidHandler(InternalSlot slot, int idx) {
+            super();
+            this.slot = slot;
+            this.workerIdx = idx;
+            this.priority = IFilteredHandler.HIGH + idx + 1;
+        }
+
+        @Override
+        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                 boolean simulate) {
+            if (io != IO.IN || slot.isFluidEmpty()) {
+                return left;
+            }
+            return slot.handleFluidInternal(left, simulate);
+        }
+
+        @Override
+        public List<Object> getContents() {
+            return new ArrayList<>(slot.getFluids());
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            return slot.getFluids().stream().mapToLong(FluidStack::getAmount).sum();
+        }
+    }
+
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
-        return internalRecipeHandler.getSlotHandlers();
+        if (workerHandlersView == null)
+            workerHandlersView = Collections.unmodifiableList(workerHandlerLists);
+        return workerHandlersView;
     }
 
     @Override
@@ -221,11 +452,13 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void addProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getBlockPos());
         proxyMachines.add(proxy);
+        addWorkerSlot();
     }
 
     public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.remove(proxy.getBlockPos());
         proxyMachines.remove(proxy);
+        removeLastWorkerSlot();
     }
 
     @UnmodifiableView
@@ -243,8 +476,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     private void refundAll(ClickData clickData) {
         if (!clickData.isRemote) {
-            for (InternalSlot internalSlot : internalInventory) {
-                internalSlot.refund();
+            for (InternalSlot slot : workerSlots) {
+                slot.refund();
             }
         }
     }
@@ -253,14 +486,17 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onPatternChange(int index) {
         if (isRemote()) return;
 
-        // remove old if applicable
-        var internalInv = internalInventory[index];
-        var newPattern = patternInventory.getStackInSlot(index);
-        var newPatternDetails = PatternDetailsHelper.decodePattern(newPattern, getLevel());
-        var oldPatternDetails = detailsSlotMap.inverse().get(internalInv);
-        detailsSlotMap.forcePut(newPatternDetails, internalInv);
-        if (oldPatternDetails != null && !oldPatternDetails.equals(newPatternDetails)) {
-            internalInv.refund();
+        var oldPattern = patternSlotDetails[index];
+        var newPatternDetails = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(index), getLevel());
+        patternSlotDetails[index] = newPatternDetails;
+        if (oldPattern != null && !oldPattern.equals(newPatternDetails)) {
+            for (int i = 0; i < workerPatterns.size(); i++) {
+                if (oldPattern.equals(workerPatterns.get(i))) {
+                    workerSlots.get(i).refund();
+                    workerPatterns.set(i, null);
+                    break;
+                }
+            }
         }
 
         needPatternSync = true;
@@ -330,20 +566,43 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        return detailsSlotMap.keySet().stream().toList();
+        var result = new ArrayList<IPatternDetails>(MAX_PATTERN_COUNT);
+        for (var p : patternSlotDetails) {
+            if (p != null) result.add(p);
+        }
+        return result;
     }
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        if (!isFormed() || !getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) ||
-                !checkInput(inputHolder)) {
+        if (!isFormed() || !getMainNode().isActive() || !checkInput(inputHolder)) {
             return false;
         }
+        boolean knownPattern = false;
+        for (var p : patternSlotDetails) {
+            if (patternDetails.equals(p)) {
+                knownPattern = true;
+                break;
+            }
+        }
+        if (!knownPattern) return false;
 
-        var slot = detailsSlotMap.get(patternDetails);
-        if (slot != null) {
-            slot.pushPattern(patternDetails, inputHolder);
-            return true;
+        for (int i = 0; i < workerSlots.size(); i++) {
+            var slot = workerSlots.get(i);
+            boolean empty = slot.isItemEmpty() && slot.isFluidEmpty();
+            if (empty) workerPatterns.set(i, null);
+            var cur = workerPatterns.get(i);
+
+            if (cur == null) {
+                if (!empty) continue;
+                workerPatterns.set(i, patternDetails);
+                slot.pushPattern(patternDetails, inputHolder);
+                return true;
+            }
+            if (cur.equals(patternDetails)) {
+                slot.pushPattern(patternDetails, inputHolder);
+                return true;
+            }
         }
         return false;
     }
@@ -433,7 +692,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public BufferData mergeInternalSlots() {
         var items = new Object2LongOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
         var fluids = new Object2LongOpenHashMap<FluidStack>();
-        for (InternalSlot slot : internalInventory) {
+        for (InternalSlot slot : workerSlots) {
             slot.itemInventory.object2LongEntrySet().fastForEach(e -> items.addTo(e.getKey(), e.getLongValue()));
             slot.fluidInventory.object2LongEntrySet().fastForEach(e -> fluids.addTo(e.getKey(), e.getLongValue()));
         }
@@ -451,6 +710,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         private final Object2LongOpenHashMap<FluidStack> fluidInventory = new Object2LongOpenHashMap<>();
         private @Nullable List<ItemStack> itemStacks = null;
         private @Nullable List<FluidStack> fluidStacks = null;
+        private @Nullable Set<Item> cachedItemTypes = null;
+        private @Nullable Set<Fluid> cachedFluidTypes = null;
 
         public InternalSlot() {}
 
@@ -462,9 +723,27 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return fluidInventory.isEmpty();
         }
 
+        public Set<Item> getItemTypes() {
+            if (cachedItemTypes == null) {
+                cachedItemTypes = new ReferenceOpenHashSet<>(itemInventory.size());
+                itemInventory.keySet().forEach(s -> cachedItemTypes.add(s.getItem()));
+            }
+            return cachedItemTypes;
+        }
+
+        public Set<Fluid> getFluidTypes() {
+            if (cachedFluidTypes == null) {
+                cachedFluidTypes = new ReferenceOpenHashSet<>(fluidInventory.size());
+                fluidInventory.keySet().forEach(s -> cachedFluidTypes.add(s.getFluid()));
+            }
+            return cachedFluidTypes;
+        }
+
         public void onContentsChanged() {
             itemStacks = null;
             fluidStacks = null;
+            cachedItemTypes = null;
+            cachedFluidTypes = null;
             onContentsChanged.run();
         }
 

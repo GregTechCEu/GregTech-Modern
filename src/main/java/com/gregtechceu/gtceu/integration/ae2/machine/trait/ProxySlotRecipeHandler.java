@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferProxyPartMachine;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler.SlotRHL;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.world.item.crafting.Ingredient;
@@ -22,20 +21,28 @@ public final class ProxySlotRecipeHandler {
 
     @Getter
     private final List<RecipeHandlerList> proxySlotHandlers;
+    private final MEPatternBufferProxyPartMachine machine;
 
-    public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine, int slots) {
-        proxySlotHandlers = new ArrayList<>(slots);
-        for (int i = 0; i < slots; ++i) {
+    public ProxySlotRecipeHandler(MEPatternBufferProxyPartMachine machine) {
+        this.machine = machine;
+        this.proxySlotHandlers = new ArrayList<>();
+    }
+
+    public void syncHandlerCount(int target) {
+        while (proxySlotHandlers.size() < target) {
             proxySlotHandlers.add(new ProxyRHL(machine));
+        }
+        while (proxySlotHandlers.size() > target) {
+            var removed = (ProxyRHL) proxySlotHandlers.remove(proxySlotHandlers.size() - 1);
+            removed.clearBuffer();
         }
     }
 
     public void updateProxy(MEPatternBufferPartMachine patternBuffer) {
-        var slotHandlers = patternBuffer.getInternalRecipeHandler().getSlotHandlers();
+        syncHandlerCount(patternBuffer.getWorkerSlotCount());
         for (int i = 0; i < proxySlotHandlers.size(); ++i) {
             ProxyRHL proxyRHL = (ProxyRHL) proxySlotHandlers.get(i);
-            SlotRHL slotRHL = (SlotRHL) slotHandlers.get(i);
-            proxyRHL.setBuffer(patternBuffer, slotRHL);
+            proxyRHL.setBuffer(patternBuffer, patternBuffer.getWorkerItemHandler(i), patternBuffer.getWorkerFluidHandler(i));
         }
     }
 
@@ -64,12 +71,14 @@ public final class ProxySlotRecipeHandler {
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
 
-        public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
+        public void setBuffer(MEPatternBufferPartMachine buffer,
+                              IRecipeHandlerTrait<Ingredient> itemHandler,
+                              IRecipeHandlerTrait<FluidIngredient> fluidHandler) {
             circuit.setProxy(buffer.getCircuitInventory());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
-            slotItem.setProxy(slotRHL.getItemRecipeHandler());
-            slotFluid.setProxy(slotRHL.getFluidRecipeHandler());
+            slotItem.setProxy(itemHandler);
+            slotFluid.setProxy(fluidHandler);
         }
 
         public void clearBuffer() {
