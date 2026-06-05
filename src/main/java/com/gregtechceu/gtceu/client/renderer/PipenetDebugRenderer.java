@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -83,6 +84,9 @@ public class PipenetDebugRenderer extends RenderType {
     }
 
     private void drawQuads(PoseStack stack, VertexConsumer buf) {
+
+        renderAABBOutline(buf, stack, new AABB(new BlockPos(0, 10, 0)), 0.01, WHITE);
+
         renderCube(buf, stack, BlockPos.ZERO, 1, WHITE);
         renderLine(buf, stack, BlockPos.ZERO, BlockPos.ZERO.below(10), 0.01, WHITE);
     }

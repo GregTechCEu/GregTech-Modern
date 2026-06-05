@@ -178,6 +178,47 @@ public class RenderBufferHelper {
         renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
     }
 
+
+    public static void renderAABBOutline(VertexConsumer buf, PoseStack pose, AABB aabb, double thickness, int colorARGB) {
+        double minX = aabb.minX;
+        double minY = aabb.minY;
+        double minZ = aabb.minZ;
+
+        double maxX = aabb.maxX;
+        double maxY = aabb.maxY;
+        double maxZ = aabb.maxZ;
+
+        // Bottom face vertices
+        Vec3 v000 = new Vec3(minX, minY, minZ);
+        Vec3 v100 = new Vec3(maxX, minY, minZ);
+        Vec3 v110 = new Vec3(maxX, minY, maxZ);
+        Vec3 v010 = new Vec3(minX, minY, maxZ);
+
+        // Top face vertices
+        Vec3 v001 = new Vec3(minX, maxY, minZ);
+        Vec3 v101 = new Vec3(maxX, maxY, minZ);
+        Vec3 v111 = new Vec3(maxX, maxY, maxZ);
+        Vec3 v011 = new Vec3(minX, maxY, maxZ);
+
+        // Bottom rectangle edges
+        renderLine(buf, pose, v000, v100, thickness, colorARGB);
+        renderLine(buf, pose, v100, v110, thickness, colorARGB);
+        renderLine(buf, pose, v110, v010, thickness, colorARGB);
+        renderLine(buf, pose, v010, v000, thickness, colorARGB);
+
+        // Top rectangle edges
+        renderLine(buf, pose, v001, v101, thickness, colorARGB);
+        renderLine(buf, pose, v101, v111, thickness, colorARGB);
+        renderLine(buf, pose, v111, v011, thickness, colorARGB);
+        renderLine(buf, pose, v011, v001, thickness, colorARGB);
+
+        // Vertical edges
+        renderLine(buf, pose, v000, v001, thickness, colorARGB);
+        renderLine(buf, pose, v100, v101, thickness, colorARGB);
+        renderLine(buf, pose, v110, v111, thickness, colorARGB);
+        renderLine(buf, pose, v010, v011, thickness, colorARGB);
+    }
+
     private static void renderSide(VertexConsumer buf, PoseStack pose, Vec3 tr, Vec3 tl, Vec3 br, Vec3 bl,
                                    int colorARGB) {
         Matrix4f mat = pose.last().pose();
