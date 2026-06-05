@@ -136,7 +136,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     ///
     public TestMuiMachine2(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ELECTRIC_BLAST_FURNACE;
+        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
         var pattern = ((BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get());
         for (int i = 0; i < pattern.getSlices().length; i++) {
             userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
@@ -235,7 +235,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
         refreshViewWidget();
         panel.child(col);
-        panel.child(new DynamicWidget<>().syncHandler(partsViewWidget).coverChildren());
+        panel.child(new DynamicWidget<>().syncHandler(partsViewWidget).rightRel(-1.0f).coverChildren());
         panel.child(new DynamicWidget<>().syncHandler(selectedBlockWidget).setEnabledIf((w) -> lastBlock != null));
         return panel;
     }
@@ -272,8 +272,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
+        blockCounts.clear();
         for (var entry : resultStructure.entrySet()) {
-            schemaMap.put(entry.getKey().asLong(), entry.getValue().getBlockState());
+            var state = entry.getValue().getBlockState();
+            schemaMap.put(entry.getKey().asLong(), state);
+            blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
         if (mapSchema == null) {
             mapSchema = new MultiblockSchema(schemaMap);
@@ -331,7 +334,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,
                                                          Pair<BlockPos, BlockInfo> lastBlock) {
-        return new ContextMenuButton<>("selectedBlock")
+        return new ContextMenuButton<>(lastBlock.left().toString())
                 .size(20)
                 .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()))
                 .requiresClick()
