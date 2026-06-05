@@ -26,18 +26,32 @@ public class MultiblockStructureUtil {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    private static Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable.create();
-    private static Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences = HashBasedTable
-            .create();
+    // TODO: Turn this into instance data rather than static data
+    private static Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private static Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences;
+    private static Map<Integer, Integer> sliceRepeats;
 
-    public static PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped, BlockPos pos) {
-
+    public static PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing,
+                                                       boolean isFlipped, BlockPos pos) {
+        char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
+        char[][][] adjustedBlockPattern = rotateAndFlipCharPattern(flattenedBlockPattern, pattern.getDirections(),
+                frontFacing, upFacing, isFlipped);
+        var dimensions = getDimensions(adjustedBlockPattern);
+        if (pos.getX() < 0 || pos.getX() >= dimensions[0] ||
+                pos.getY() < 0 || pos.getY() >= dimensions[1] ||
+                pos.getZ() < 0 || pos.getZ() >= dimensions[2]) {
+            return PatternPredicate.AIR;
+        }
+        char c = adjustedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
+        return pattern.getPredicates().get(c);
     }
 
     public static void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                                Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences) {
+                                                Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences,
+                                                Map<Integer, Integer> sliceRepeats) {
         MultiblockStructureUtil.blockPreferences = blockPreferences;
         MultiblockStructureUtil.minMaxPreferences = minMaxPreferences;
+        MultiblockStructureUtil.sliceRepeats = sliceRepeats;
     }
 
     public static void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
@@ -187,8 +201,7 @@ public class MultiblockStructureUtil {
         return false;
     }
 
-    public static @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern,
-                                                                   Map<Integer, Integer> sliceRepeats) {
+    public static @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
         int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
         int[] dimensions = pattern.getDimensions();
         char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];

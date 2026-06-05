@@ -199,14 +199,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         });
 
         if (getLevel().isClientSide()) {
-            SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema) {
-
-                @Override
-                protected void onSuccessfulRayTrace(PoseStack poseStack, @NotNull BlockHitResult result) {
-                    super.onSuccessfulRayTrace(poseStack, result);
-                    System.out.println("guh" + result.getBlockPos().getX());
-                }
-            };
+            SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema);
             schemaRenderer.highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
 
             multiSchema = new SchemaWidget(schemaRenderer) {
@@ -260,13 +253,14 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         resultStructure = new HashMap<>();
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
-        char[][][] flattenedCharPattern = MultiblockStructureUtil.flattenBlockPattern(pattern, userSliceRepeats);
+
+        MultiblockStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+                userBasePredicateMinMaxPreferences, userSliceRepeats);
+        char[][][] flattenedCharPattern = MultiblockStructureUtil.flattenBlockPattern(pattern);
         char[][][] adjustedCharPattern = MultiblockStructureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
                 pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
 
-        MultiblockStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
-                userBasePredicateMinMaxPreferences);
         MultiblockStructureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
