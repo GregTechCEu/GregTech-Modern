@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.mojang.serialization.Codec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -16,12 +17,14 @@ import brachy.modularui.theme.WidgetTheme;
 import brachy.modularui.theme.WidgetThemeKey;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.serialization.json.JsonBuilder;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 
 @Mod.EventBusSubscriber
 public class GTGuiTheme {
@@ -32,6 +35,7 @@ public class GTGuiTheme {
             .widgetThemeKeyBuilder("textTitle", WidgetTheme.class)
             .defaultTheme(new WidgetTheme(0, 0, null, Color.WHITE.main, 0x404040, false, 0))
             .defaultHoverTheme(null)
+            .fieldsOf(IThemeApi.FALLBACK)
             .register();
 
     public static final GTGuiTheme STANDARD = templateBuilder("gregtech_standard")
@@ -113,7 +117,7 @@ public class GTGuiTheme {
     }
 
     @SubscribeEvent
-    public static void onReloadThemes(ReloadThemeEvent.Pre event) {
+    public static void onReloadThemes(FMLConstructModEvent event) {
         THEMES.forEach(GTGuiTheme::register);
     }
 

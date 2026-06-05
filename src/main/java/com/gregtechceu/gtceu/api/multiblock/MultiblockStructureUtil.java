@@ -30,6 +30,10 @@ public class MultiblockStructureUtil {
     private static Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences = HashBasedTable
             .create();
 
+    public static PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped, BlockPos pos) {
+
+    }
+
     public static void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
                                                 Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences) {
         MultiblockStructureUtil.blockPreferences = blockPreferences;

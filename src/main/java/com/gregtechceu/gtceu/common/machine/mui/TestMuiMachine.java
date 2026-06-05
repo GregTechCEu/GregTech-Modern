@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -277,7 +278,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                             .alignment(Alignment.TopCenter));
                                                                                     tooltip.addLine(Text.str("And here a circle:"));
                                                                                     tooltip.addDrawableLine(new Circle()
-                                                                                                    .setColor(Color.RED.darker(2), Color.RED.brighter(2))
+                                                                                                    .color(Color.RED.darker(2), Color.RED.brighter(2))
                                                                                                     .asIcon()
                                                                                                     .size(20))
                                                                                             .addDrawableLine(new ItemDrawable(Items.DIAMOND).asIcon())
@@ -528,7 +529,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                                 packet -> packet.writeItem(newItem));
                                                                                     }
                                                                                 }))))
-                                                                .child(new DynamicSyncedWidget<>()
+                                                                .child(new DynamicWidget<>()
                                                                         .widthRel(1f)
                                                                         .syncHandler(dynamicSyncHandler))
                                                 /*.child(new DynamicSyncedWidget<>()
@@ -593,7 +594,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)
-                        .overlay((new FluidDrawable().setFluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
+                        .overlay((new FluidDrawable().fluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
                         .size(50, 50)
                         .onMousePressed((context, mouseButton) -> {
                             panelSyncHandler.openPanel();

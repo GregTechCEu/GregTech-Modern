@@ -215,7 +215,7 @@ public class GTMuiWidgets {
                 .gridOfSizeWidth(32, 8, (x, y, i) -> new ToggleButton()
                         .size(18)
                         .padding(1)
-                        .overlay(new ItemDrawable().setItem(IntCircuitBehaviour.stack(i + 1)))
+                        .overlay(new ItemDrawable().item(IntCircuitBehaviour.stack(i + 1)))
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);

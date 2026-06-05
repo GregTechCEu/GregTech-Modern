@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
@@ -48,6 +50,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -62,6 +65,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private SchemaWidget multiSchema;
     private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
+    private DynamicSyncHandler selectedBlockWidget;
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
     // for the slice slider
@@ -72,6 +76,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private boolean isFlipped = false;
     private Direction frontFacing;
     private Direction upFacing;
+    private Pair<BlockPos, BlockInfo> lastBlock = null;
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
     private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
@@ -146,8 +151,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             case NON_Y_AXIS -> upFacing = Direction.UP;
             default -> upFacing = Direction.UP;
         }
-        // frontFacing = Direction.UP;
-        // upFacing = Direction.WEST;
+         //frontFacing = Direction.UP;
+         //upFacing = Direction.WEST;
     }
 
     @Override
@@ -182,6 +187,17 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         Flow schemaCol = Flow.col().coverChildren();
         refreshSchema();
 
+        selectedBlockWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
+            if (lastBlock == null) {
+                return new EmptyWidget();
+            }
+            PatternPredicate predicate = MultiblockStructureUtil.getPredicateFromPos((BlockPattern)multiblockDefinition.getStructurePatterns().get("main").get(),
+                    frontFacing, upFacing, isFlipped, lastBlock.left());
+
+            return createSelectedBlockMenu(predicate, lastBlock);
+            //return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
+        });
+
         if (getLevel().isClientSide()) {
             SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema) {
 
@@ -191,10 +207,21 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     System.out.println("guh" + result.getBlockPos().getX());
                 }
             };
-            schemaRenderer
-                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+            schemaRenderer.highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
 
-            multiSchema = new SchemaWidget(schemaRenderer);
+            multiSchema = new SchemaWidget(schemaRenderer) {
+                @Override
+                public boolean onMouseReleased(int button) {
+                    BlockHitResult rayTraceResult = this.getSchemaRenderer().lastRayTrace();
+                    if (rayTraceResult != null && rayTraceResult.getType() == HitResult.Type.BLOCK) {
+                        BlockState state = this.getSchemaRenderer().schema().getLevel().getBlockState(rayTraceResult.getBlockPos());
+                        lastBlock = Pair.of(rayTraceResult.getBlockPos(), BlockInfo.fromBlockState(state));
+                        selectedBlockWidget.notifyUpdate((packet) -> {});
+                        return true;
+                    }
+                    return false;
+                };
+            };
             schemaCol.child(multiSchema.size(200, 200));
         }
         schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices));
@@ -210,9 +237,12 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             innerCol.childPadding(2).left(2);
             return innerCol;
         }).allowC2S();
+
+
         refreshViewWidget();
         panel.child(col);
-        panel.child(new DynamicSyncedWidget<>().syncHandler(partsViewWidget).coverChildren());
+        panel.child(new DynamicWidget<>().syncHandler(partsViewWidget).coverChildren());
+        panel.child(new DynamicWidget<>().syncHandler(selectedBlockWidget).setEnabledIf((w) -> lastBlock != null));
         return panel;
     }
 
@@ -266,6 +296,13 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         refreshViewWidget();
     }
 
+    private void setUserDefinedBlockInfo(BlockPos pos, BlockInfo blockInfo) {
+        // todo validation testing?
+        userGlobalBlockPreferences.put(pos.asLong(), blockInfo);
+        refreshSchema();
+        refreshViewWidget();
+    }
+
     private void createSliceSliders(Flow col, BlockPattern blockPattern) {
         int repeatSliceIndex = 0;
         for (var patternSlice : blockPattern.getSlices()) {
@@ -295,6 +332,58 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             }
             repeatSliceIndex++;
         }
+    }
+
+    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate, Pair<BlockPos, BlockInfo> lastBlock) {
+        return new ContextMenuButton<>("selectedBlock")
+                .size(20)
+                .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()))
+                .requiresClick()
+                .menuList(l -> l
+                        .maxSize(80)
+                        .coverChildrenWidth()
+                        .collapseDisabledChildren()
+                        .childSeparator(Icon.EMPTY_2PX)
+                        .children(predicate.predicateList, basePredicate -> {
+                            List<BlockInfo> candidates = basePredicate.candidates;
+                            if (candidates == null || candidates.isEmpty())
+                                return new EmptyWidget();
+                            if (candidates.size() > 1) {
+                                return new ContextMenuButton<>(basePredicate.getPredicateName())
+                                        .size(16)
+                                        .tooltip(r -> r.add(basePredicate.getPredicateName()))
+                                        .overlay(new ItemDrawable(
+                                                candidates.get(0).getItemStackForm()))
+                                        .requiresClick()
+                                        .openRightDown()
+                                        .menuList(l1 -> l1
+                                                .maxSize(80)
+                                                .coverChildrenWidth()
+                                                .childSeparator(Icon.EMPTY_2PX)
+                                                .children(candidates, blockInfo -> {
+                                                    Component stackName = blockInfo
+                                                            .getItemStackForm().getHoverName();
+                                                    return new ToggleButton()
+                                                            .value(new BoolValue.Dynamic(
+                                                                    () -> false,
+                                                                    (b) -> setUserDefinedBlockInfo(lastBlock.left(), blockInfo)))
+                                                            .size(16)
+                                                            .tooltip(r -> r.add(stackName))
+                                                            .overlay(new ItemDrawable(
+                                                                    blockInfo.getItemStackForm()));
+                                                }));
+                            } else {
+                                return new ToggleButton()
+                                        .value(new BoolValue.Dynamic(() -> false,
+                                                (b) -> setUserDefinedBlockInfo(lastBlock.left(), candidates.get(0))))
+                                        .size(16)
+                                        .tooltip(r -> r.add(
+                                                basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
+                                        .overlay(new ItemDrawable(
+                                                candidates.get(0).getItemStackForm()));
+                            }
+                        }));
+
     }
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
