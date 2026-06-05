@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -13,7 +12,6 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-import com.gregtechceu.gtceu.common.data.machines.GCYMMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
@@ -25,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.GuiTextures;
@@ -41,18 +40,16 @@ import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.world.phys.HitResult;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -152,8 +149,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             case NON_Y_AXIS -> upFacing = Direction.UP;
             default -> upFacing = Direction.UP;
         }
-         //frontFacing = Direction.UP;
-         //upFacing = Direction.WEST;
+        // frontFacing = Direction.UP;
+        // upFacing = Direction.WEST;
     }
 
     @Override
@@ -192,23 +189,27 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             if (lastBlock == null) {
                 return new EmptyWidget();
             }
-            PatternPredicate predicate = MultiblockStructureUtil.getPredicateFromPos((BlockPattern)multiblockDefinition.getStructurePatterns().get("main").get(),
+            PatternPredicate predicate = MultiblockStructureUtil.getPredicateFromPos(
+                    (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
                     frontFacing, upFacing, isFlipped, lastBlock.left());
 
             return createSelectedBlockMenu(predicate, lastBlock);
-            //return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
+            // return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
         });
 
         if (getLevel().isClientSide()) {
             SchemaRenderer schemaRenderer = new SchemaRenderer(mapSchema);
-            schemaRenderer.highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+            schemaRenderer
+                    .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
 
             multiSchema = new SchemaWidget(schemaRenderer) {
+
                 @Override
                 public boolean onMouseReleased(int button) {
                     BlockHitResult rayTraceResult = this.getSchemaRenderer().lastRayTrace();
                     if (rayTraceResult != null && rayTraceResult.getType() == HitResult.Type.BLOCK) {
-                        BlockState state = this.getSchemaRenderer().schema().getLevel().getBlockState(rayTraceResult.getBlockPos());
+                        BlockState state = this.getSchemaRenderer().schema().getLevel()
+                                .getBlockState(rayTraceResult.getBlockPos());
                         lastBlock = Pair.of(rayTraceResult.getBlockPos(), BlockInfo.fromBlockState(state));
                         selectedBlockWidget.notifyUpdate((packet) -> {});
                         return true;
@@ -231,7 +232,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             innerCol.childPadding(2).left(2);
             return innerCol;
         }).allowC2S();
-
 
         refreshViewWidget();
         panel.child(col);
@@ -329,7 +329,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
-    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate, Pair<BlockPos, BlockInfo> lastBlock) {
+    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,
+                                                         Pair<BlockPos, BlockInfo> lastBlock) {
         return new ContextMenuButton<>("selectedBlock")
                 .size(20)
                 .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()))
@@ -361,7 +362,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                                     return new ToggleButton()
                                                             .value(new BoolValue.Dynamic(
                                                                     () -> false,
-                                                                    (b) -> setUserDefinedBlockInfo(lastBlock.left(), blockInfo)))
+                                                                    (b) -> setUserDefinedBlockInfo(lastBlock.left(),
+                                                                            blockInfo)))
                                                             .size(16)
                                                             .tooltip(r -> r.add(stackName))
                                                             .overlay(new ItemDrawable(
@@ -378,7 +380,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                                 candidates.get(0).getItemStackForm()));
                             }
                         }));
-
     }
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {

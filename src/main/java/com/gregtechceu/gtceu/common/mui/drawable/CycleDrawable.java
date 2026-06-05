@@ -5,7 +5,7 @@ import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.theme.WidgetTheme;
 import org.jetbrains.annotations.Nullable;
 
-public record CycleDrawable(IDrawable... drawables) implements IDrawable{
+public record CycleDrawable(IDrawable... drawables) implements IDrawable {
 
     public @Nullable IDrawable getCurrent() {
         if (this.drawables.length == 0) return null;

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -48,6 +47,7 @@ import brachy.modularui.value.sync.ItemSlotSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.*;
 import brachy.modularui.widgets.textfield.TextFieldWidget;

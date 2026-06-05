@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client.mui.schema;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -56,10 +56,12 @@ public class MutableSchema implements ISchema {
             BlockPosUtil.setMin(min, pos);
             BlockPosUtil.setMax(max, pos);
 
-            if(block.getBlock() instanceof EntityBlock entityBlock){
+            if (block.getBlock() instanceof EntityBlock entityBlock) {
                 BlockEntity newEntity = entityBlock.newBlockEntity(pos, block);
-                if(newEntity == null){
-                    GTCEu.LOGGER.error("Could not create BlockEntity in renderer's MutableSchema for block {} at pos {}", block.getBlock().getName(), pos);
+                if (newEntity == null) {
+                    GTCEu.LOGGER.error(
+                            "Could not create BlockEntity in renderer's MutableSchema for block {} at pos {}",
+                            block.getBlock().getName(), pos);
                 } else {
                     getLevel().setBlockEntity(newEntity);
                 }
