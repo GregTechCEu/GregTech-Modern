@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,18 +40,20 @@ public class ExpandablePattern implements IBlockPattern {
     @FunctionalInterface
     public interface BoundsFunction {
 
-        int @Nullable [] apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+        List<Integer> apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
     }
 
     protected final BoundsFunction boundsFunc;
-    protected final BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc;
+    @Getter
+    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
+    @Getter
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsFunction boundsFunc,
-                             BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc,
+                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc,
                              RelativeDirection[] directions) {
         this.boundsFunc = boundsFunc;
         this.predicateFunc = predicateFunc;
@@ -108,8 +111,8 @@ public class ExpandablePattern implements IBlockPattern {
     public boolean checkPatternAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing,
                                   boolean isFlipped) {
-        int[] bounds = boundsFunc.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
-        if (bounds == null) return false;
+        List<Integer> bounds = boundsFunc.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
+        if (bounds == null || bounds.isEmpty()) return false;
 
         patternState.globalCount.clear();
 
@@ -124,14 +127,14 @@ public class ExpandablePattern implements IBlockPattern {
             absolutes[i] = selected.getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 
             if (i == 0) {
-                negCorner.setX(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setX(bounds[selected.ordinal()]);
+                negCorner.setX(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setX(bounds.get(selected.ordinal()));
             } else if (i == 1) {
-                negCorner.setY(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setY(bounds[selected.ordinal()]);
+                negCorner.setY(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setY(bounds.get(selected.ordinal()));
             } else {
-                negCorner.setZ(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setZ(bounds[selected.ordinal()]);
+                negCorner.setZ(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setZ(bounds.get(selected.ordinal()));
             }
         }
 
@@ -185,9 +188,9 @@ public class ExpandablePattern implements IBlockPattern {
         Direction front = src.getFrontFacing();
         Direction up = src.getUpwardsFacing();
 
-        int[] bounds = boundsFunc.apply(src.getLevel(), src.getBlockPos().mutable(), front, up);
+        List<Integer> bounds = boundsFunc.apply(src.getLevel(), src.getBlockPos().mutable(), front, up);
         if (tag.isEmpty()) {
-            bounds = new int[] { 0, 4, 2, 2, 2, 2 };
+            bounds = new ArrayList<>();
         }
         if (bounds == null) return Long2ObjectSortedMaps.emptyMap();
 
@@ -204,14 +207,14 @@ public class ExpandablePattern implements IBlockPattern {
             absolutes[i] = selected.getRelativeFacing(front, up, false);
 
             if (i == 0) {
-                negCorner.setX(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setX(bounds[selected.ordinal()]);
+                negCorner.setX(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setX(bounds.get(selected.ordinal()));
             } else if (i == 1) {
-                negCorner.setY(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setY(bounds[selected.ordinal()]);
+                negCorner.setY(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setY(bounds.get(selected.ordinal()));
             } else {
-                negCorner.setZ(-bounds[selected.oppositeOrdinal()]);
-                posCorner.setZ(bounds[selected.ordinal()]);
+                negCorner.setZ(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setZ(bounds.get(selected.ordinal()));
             }
         }
 

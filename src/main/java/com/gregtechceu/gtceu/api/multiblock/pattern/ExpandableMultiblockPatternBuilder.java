@@ -7,13 +7,14 @@ import net.minecraft.core.BlockPos;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class ExpandableMultiblockPatternBuilder {
 
     protected @Nullable ExpandablePattern.BoundsFunction boundsFunc;
-    protected @Nullable BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> predicateFunc;
+    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
@@ -39,7 +40,7 @@ public class ExpandableMultiblockPatternBuilder {
         return this;
     }
 
-    public ExpandableMultiblockPatternBuilder predicateFunction(BiFunction<BlockPos.MutableBlockPos, int[], PatternPredicate> func) {
+    public ExpandableMultiblockPatternBuilder predicateFunction(BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> func) {
         this.predicateFunc = func;
         return this;
     }

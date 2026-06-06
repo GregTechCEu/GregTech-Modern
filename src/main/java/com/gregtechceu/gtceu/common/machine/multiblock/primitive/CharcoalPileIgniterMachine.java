@@ -45,7 +45,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static final int MAX_RADIUS = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
-    private final int[] bounds = new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS };
+    private final List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     private int maxTime = 0;
     private boolean hasAir = false;
 
@@ -110,16 +110,16 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
                     // aisle dir is up, so its bounds[0] and bounds[1]
                     // DOWN is negative
-                    boolean topAisle = bp.getX() == b[0];
-                    boolean bottomAisle = bp.getX() == -b[1];
+                    boolean topAisle = bp.getX() == b.get(0);
+                    boolean bottomAisle = bp.getX() == -b.get(1);
 
                     if (topAisle || bottomAisle) intersects++;
 
                     // negative signs for the LEFT and BACK ordinals
                     // string dir is right, so its bounds[2] and bounds[3]
-                    if (bp.getY() == -b[2] || bp.getY() == b[3]) intersects++;
+                    if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
                     // char dir is front, so its bounds[4] and bounds[5]
-                    if (bp.getZ() == b[4] || bp.getZ() == -b[5]) intersects++;
+                    if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
 
                     if (intersects >= 2) return PatternPredicate.ANY;
 
@@ -168,12 +168,13 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             invalidateStructure();
             return;
         }
-
-        bounds[1] = d;
-        bounds[2] = l;
-        bounds[3] = r;
-        bounds[4] = f;
-        bounds[5] = b;
+        bounds.clear();
+        bounds.add(0);
+        bounds.add(d);
+        bounds.add(l);
+        bounds.add(r);
+        bounds.add(f);
+        bounds.add(b);
     }
 
     private int findWallPos(Direction direction, BlockPos.MutableBlockPos bp) {

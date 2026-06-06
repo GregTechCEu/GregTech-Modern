@@ -88,7 +88,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public static final int MAX_RADIUS = 7;
     public static final int MAX_DEPTH = 14;
 
-    private final int[] bounds = { 0, 0, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS };
+    private final List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     @Nullable
     private CleanroomType cleanroomType = null;
     @SaveField
@@ -168,10 +168,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         // minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
         // max sized CR is around 1142 ticks per progression
 
-        int leftRight = bounds[2] + bounds[3] + 1;
-        int frontBack = bounds[4] + bounds[5] + 1;
+        int leftRight = bounds.get(2) + bounds.get(3) + 1;
+        int frontBack = bounds.get(4) + bounds.get(5) + 1;
         var area = (leftRight) * (frontBack);
-        var duration = Math.pow(area, 0.8) * (bounds[1] + 1);
+        var duration = Math.pow(area, 0.8) * (bounds.get(1) + 1);
         this.getRecipeLogic().setDuration(Math.max(100, (int) duration));
     }
 
@@ -266,12 +266,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             invalidateStructure();
             return;
         }
-
-        bounds[1] = d;
-        bounds[2] = l;
-        bounds[3] = r;
-        bounds[4] = f;
-        bounds[5] = b;
+        bounds.clear();
+        bounds.add(0);
+        bounds.add(d);
+        bounds.add(l);
+        bounds.add(r);
+        bounds.add(f);
+        bounds.add(b);
 
         /*
          * BlockPos.MutableBlockPos lPos = getPos().mutable();
@@ -393,14 +394,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         return Predicates.controller(Predicates.blocks(getDefinition().getBlock()));
 
                     int intersections = 0;
-                    boolean topAisle = bp.getX() == b[0];
-                    boolean bottomAisle = bp.getX() == -b[1];
+                    boolean topAisle = bp.getX() == b.get(0);
+                    boolean bottomAisle = bp.getX() == -b.get(1);
                     if (topAisle || bottomAisle) intersections++;
                     // negative signs for the LEFT and BACK ordinals
                     // string dir is right, so its bounds[2] and bounds[3]
-                    if (bp.getY() == -b[2] || bp.getY() == b[3]) intersections++;
+                    if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersections++;
                     // char dir is front, so its bounds[4] and bounds[5]
-                    if (bp.getZ() == b[4] || bp.getZ() == -b[5]) intersections++;
+                    if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersections++;
 
                     if (intersections >= 2) {
                         if (topAisle || bottomAisle) return edgePredicate;
@@ -602,9 +603,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         GenericSyncValue<Component> distComponent = GenericSyncValue.builder(Component.class)
                 .adapter(COMPONENT)
-                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds[3] + bounds[4] + 1,
-                        bounds[1] + 1,
-                        bounds[4] + bounds[5] + 1))
+                .getter(() -> Component.translatable("gtceu.multiblock.dimensions.1", bounds.get(3) + bounds.get(4) + 1,
+                        bounds.get(1) + 1,
+                        bounds.get(4) + bounds.get(5) + 1))
                 .build();
         syncManager.syncValue("distComponent", distComponent);
 

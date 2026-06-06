@@ -1,30 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
-import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
@@ -39,23 +14,54 @@ import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
-import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.SchemaWidget;
+import brachy.modularui.widgets.SliderWidget;
+import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
+import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureUtil;
+import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
-import it.unimi.dsi.fastutil.objects.*;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
-public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
+public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
 
     private final MultiblockMachineDefinition multiblockDefinition;
 
@@ -76,72 +82,17 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private Direction upFacing;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
-    private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
     private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
             .create(); // Min, Max.
-    private final BlockPatternStructureUtil structureUtil = new BlockPatternStructureUtil();
-    // ^ To disable a base predicate, set min to 0
+    private final List<Integer> userDimensions = new ArrayList<>();
+    private final ExpandablePatternStructureUtil structureUtil = new ExpandablePatternStructureUtil();
 
-    /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
-    /// INPUTS:
-    /// User supplied, ordered by priority:
-    /// Layer sizes (layerRepeats) from user,
-    /// Overrides for which candidate to pick per BlockPos
-    /// - e.g. "left of controller should be maintenance hatch"
-    /// - e.g. DT with 10 repeats of the output hatch isle. Default to PatternLayer.minRepeats
-    /// Overrides for which candidate to pick per BasePredicate
-    /// - e.g. "all energy hatches should be HV"
-    /// Overrides for the min/max for each BasePredicate
-    /// - e.g. "only put 1 energy hatch instead of 2"
-    /// - has to be within the BasePredicate's minCount/maxCount
-    /// Disable a BasePredicate in a PatternPredicate
-    /// - has to respect the BasePredicate's minCount
-    /// - e.g. can disable EBF's fluid outputs, but can't disable EBF's casing
-    ///
-    ///
-    /// Machine supplied:
-    /// BlockPattern:
-    /// - PatternLayer[], each PatternLayer:
-    /// - minRepeats
-    /// - maxRepeats
-    /// - Char[][] pattern, NxM array of char
-    /// - Char <-> PatternPredicate, each PatternPredicate:
-    /// - List of BasePredicates, each BasePredicate:
-    /// - candidates, List<BlockInfo> The candidates to place
-    /// - priority, specifically within the PatternPredicate
-    /// - minCount, total minimum across the whole multi
-    /// - maxCount, total maximum across the whole multi
-    /// - minLayerCount, total minimum in one layer (e.g. hatch in DT) TODO: Should this be in BlockPattern instead?
-    /// - maxLayerCount, total maximum in one layer
-    ///
-    /// OUTPUTS:
-    /// Map<BlockPos, BlockInfo> resultStructure
-    /// Descriptive error if not possible
-    ///
-    /// Naive approach:
-    /// 1. Flatten PatternIsle[] (which contains Char[][]) into Char[][][] based on the layerRepeats
-    /// 2. Create the final Map<BlockPos, BlockInfo>
-    /// 3. Fill in the candidate overrides first (e.g. "0,1,0 should be maintenance hatch") if it fits any of the
-    /// BasePredicates, error otherwise(?)
-    /// 4. In any order (probably just naive x,y,z loop), get the char at that position,
-    /// 4a. Go through every BasePredicate in order of priority, see if there's a minCount that's not satisfied yet,
-    /// then try those
-    /// 4b. If all basePredicates with a mincount are satisfied, place the first predicate that works
-    /// 4c. If the BasePredicate is at its max, remove it from the list to be considered (maybe not needed at first, but
-    /// optimization)
-    /// 4d. error if none are valid candidates(?)
-    ///
-    /// note- For this, we should have a isValidCandidate(current resultStructure, new BlockPos, new BlockInfo) function
-    ///
-    public TestMuiMachine2(BlockEntityCreationInfo info) {
+    public TestMuiMachine3(BlockEntityCreationInfo info) {
         super(info);
-        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.ASSEMBLY_LINE;
-        var pattern = ((BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get());
-        for (int i = 0; i < pattern.getSlices().length; i++) {
-            userSliceRepeats.put(i, pattern.getSlices()[i].getMinRepeats());
-        }
+        multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.CLEANROOM;
+        //var pattern = ((ExpandablePattern) multiblockDefinition.getStructurePatterns().get("main").get());
         frontFacing = multiblockDefinition.getRotationState().defaultDirection;
         switch (multiblockDefinition.getRotationState()) {
             case NONE -> upFacing = Direction.UP;
@@ -150,6 +101,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             case NON_Y_AXIS -> upFacing = Direction.UP;
             default -> upFacing = Direction.UP;
         }
+
+        userDimensions.addAll(List.of(0, 3, 2, 2, 2, 2));
         // frontFacing = Direction.UP;
         // upFacing = Direction.WEST;
     }
@@ -175,9 +128,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             .height(20)
                             .coverChildrenWidth();
 
-                    if (pattern instanceof BlockPattern blockPattern) {
-                        createSliceSliders(patternColumn, blockPattern);
-                        createPredicateMenus(predicatesRow, blockPattern);
+                    if (pattern instanceof ExpandablePattern expandablePattern) {
+                        // TODO:
+                        // createDimensionSliders(patternColumn, expandablePattern);
                     }
                     patternColumn.child(predicatesRow);
                     return patternColumn;
@@ -191,8 +144,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 return new EmptyWidget();
             }
             PatternPredicate predicate = structureUtil.getPredicateFromPos(
-                    (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
-                    frontFacing, upFacing, isFlipped, lastBlock.left());
+                    (ExpandablePattern) multiblockDefinition.getStructurePatterns().get("main").get(),
+                    lastBlock.left());
 
             return createSelectedBlockMenu(predicate, lastBlock);
             // return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
@@ -254,22 +207,17 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         Map<BlockPos, BlockInfo> resultStructure;
 
         resultStructure = new HashMap<>();
-        BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-        maxSlices = pattern.getDimensions()[1];
+        ExpandablePattern pattern = (ExpandablePattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+        // maxSlices = userDimension.get(); CONTROLLER->TOP + CONTROLLER->BOTTOM + 1
 
         
         structureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
-                userBasePredicateMinMaxPreferences, userSliceRepeats);
-        char[][][] flattenedCharPattern = structureUtil.flattenBlockPattern(pattern);
-        char[][][] adjustedCharPattern = structureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
-                pattern.getDirections(),
-                frontFacing, upFacing, isFlipped);
+                userBasePredicateMinMaxPreferences, userDimensions);
 
-        structureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
+        structureUtil.populateWithUserBlockPreferences(resultStructure, pattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-        structureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
-                frontFacing, upFacing, isFlipped);
+        structureUtil.populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
 
         structureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
@@ -288,50 +236,13 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
     }
 
-    /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
-                                          BlockInfo blockInfo) {
-        userBasePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
-        refreshSchema();
-        refreshViewWidget();
-    }
+    /// ==== User Preference UI ====
 
     private void setUserDefinedBlockInfo(BlockPos pos, BlockInfo blockInfo) {
         // todo validation testing?
         userGlobalBlockPreferences.put(pos.asLong(), blockInfo);
         refreshSchema();
         refreshViewWidget();
-    }
-
-    private void createSliceSliders(Flow col, BlockPattern blockPattern) {
-        int repeatSliceIndex = 0;
-        for (var patternSlice : blockPattern.getSlices()) {
-            if (patternSlice.getMinRepeats() != 1 || patternSlice.getMaxRepeats() != 1) {
-                if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
-                    userSliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
-                }
-                if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
-
-                } else {
-                    int finalRepeatSliceIndex = repeatSliceIndex;
-                    col.child(new SliderWidget()
-                            .background(GTGuiTextures.FLUID_SLOT)
-                            .height(16)
-                            .width(patternSlice.getMaxRepeats() * 12)
-                            .stopper(1.0f)
-                            .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                            .value(new DoubleValue.Dynamic(() -> {
-                                if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
-                                return userSliceRepeats.get(finalRepeatSliceIndex);
-                            }, (v) -> {
-                                userSliceRepeats.put(finalRepeatSliceIndex, (int) v);
-                                refreshSchema();
-                                refreshViewWidget();
-                            })));
-                }
-            }
-            repeatSliceIndex++;
-        }
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,
@@ -384,71 +295,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                         .overlay(new ItemDrawable(
                                                 candidates.get(0).getItemStackForm()));
                             }
-                        }));
-    }
-
-    private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
-        for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
-            var predicate = entry.getValue();
-            // todo figure out sliders needed for predicate min/max depending on base predicates in the
-            // main predicate
-            if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
-                continue;
-            }
-            var menu = new ContextMenuButton<>(String.valueOf(entry.getCharKey()))
-                    .size(20)
-                    .requiresClick()
-                    .menuList(l -> l
-                            .maxSize(80)
-                            .coverChildrenWidth()
-                            .collapseDisabledChildren()
-                            .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate.predicateList, basePredicate -> {
-                                List<BlockInfo> candidates = basePredicate.candidates;
-                                if (candidates == null || candidates.isEmpty())
-                                    return new EmptyWidget();
-                                if (candidates.size() > 1) {
-                                    return createInnerPredicateMenu(predicate, basePredicate, candidates);
-                                } else {
-                                    return new ToggleButton()
-                                            .value(new BoolValue.Dynamic(() -> false,
-                                                    (b) -> setPredicateDefaultBlock(predicate, basePredicate,
-                                                            candidates.get(0))))
-                                            .size(16)
-                                            .tooltip(r -> r.add(
-                                                    basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
-                                            .overlay(new ItemDrawable(
-                                                    candidates.get(0).getItemStackForm()));
-                                }
-                            }));
-            predicatesRow.child(menu);
-        }
-    }
-
-    private ContextMenuButton<?> createInnerPredicateMenu(PatternPredicate predicate, BasePredicate basePredicate,
-                                                          List<BlockInfo> candidates) {
-        return new ContextMenuButton<>(basePredicate.getPredicateName())
-                .size(16)
-                .tooltip(r -> r.add(basePredicate.getPredicateName()))
-                .overlay(new ItemDrawable(
-                        candidates.get(0).getItemStackForm()))
-                .requiresClick()
-                .openRightDown()
-                .menuList(l1 -> l1
-                        .maxSize(80)
-                        .coverChildrenWidth()
-                        .childSeparator(Icon.EMPTY_2PX)
-                        .children(candidates, blockInfo -> {
-                            Component stackName = blockInfo
-                                    .getItemStackForm().getHoverName();
-                            return new ToggleButton()
-                                    .value(new BoolValue.Dynamic(
-                                            () -> false,
-                                            (b) -> setPredicateDefaultBlock(predicate, basePredicate, blockInfo)))
-                                    .size(16)
-                                    .tooltip(r -> r.add(stackName))
-                                    .overlay(new ItemDrawable(
-                                            blockInfo.getItemStackForm()));
                         }));
     }
 }
