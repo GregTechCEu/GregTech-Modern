@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.client.mui.schema;
 
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -18,16 +19,16 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.function.BiPredicate;
+import java.util.*;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class MutableSchema implements ISchema {
 
     protected final Level level = new SchemaLevel();
     protected @NotNull BlockPos origin = BlockPos.ZERO;
     protected @NotNull Vector3f center = new Vector3f();
-    protected @NotNull BiPredicate<BlockPos, BlockState> renderFilter = ($1, $2) -> true;
+
     @Getter
     protected final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
 
@@ -47,26 +48,34 @@ public class MutableSchema implements ISchema {
         this.blocks.clear();
         BlockPos.MutableBlockPos min = BlockPosUtil.MAX.mutable();
         BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
+        MultiblockControllerMachine controller = null;
+        List<IMultiPart> parts = new ArrayList<>();
+
         for (long l : blocks.keySet()) {
             if (blocks.get(l).isAir()) continue;
             BlockState block = blocks.get(l);
             BlockPos pos = BlockPos.of(l);
             this.blocks.put(l, block);
+
+            // BE creation is already handled through here
             getLevel().setBlockAndUpdate(pos, block);
             BlockPosUtil.setMin(min, pos);
             BlockPosUtil.setMax(max, pos);
 
-            if (block.getBlock() instanceof EntityBlock entityBlock) {
-                BlockEntity newEntity = entityBlock.newBlockEntity(pos, block);
-                if (newEntity == null) {
-                    GTCEu.LOGGER.error(
-                            "Could not create BlockEntity in renderer's MutableSchema for block {} at pos {}",
-                            block.getBlock().getName(), pos);
-                } else {
-                    getLevel().setBlockEntity(newEntity);
-                }
+            BlockEntity blockEntity = getLevel().getBlockEntity(pos);
+            if (blockEntity instanceof MultiblockControllerMachine mcm && controller == null) {
+                controller = mcm;
+            } else if (blockEntity instanceof IMultiPart part) {
+                parts.add(part);
             }
         }
+
+        if (controller != null) {
+            controller.getParts().addAll(parts);
+            controller.getPatternState(DEFAULT_STRUCTURE).setState(PatternState.CheckState.VALID_UNCACHED);
+            controller.formStructure(DEFAULT_STRUCTURE);
+        }
+
         this.origin = min.immutable();
         this.center = BlockPosUtil.getCenterF(min, max);
         return this;
