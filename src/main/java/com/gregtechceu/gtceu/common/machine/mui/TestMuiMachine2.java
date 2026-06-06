@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockStructureUtil;
+import com.gregtechceu.gtceu.api.multiblock.BlockPatternStructureUtil;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -81,6 +81,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             .create();
     private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
             .create(); // Min, Max.
+    private final BlockPatternStructureUtil structureUtil = new BlockPatternStructureUtil();
     // ^ To disable a base predicate, set min to 0
 
     /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
@@ -189,7 +190,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             if (lastBlock == null) {
                 return new EmptyWidget();
             }
-            PatternPredicate predicate = MultiblockStructureUtil.getPredicateFromPos(
+            PatternPredicate predicate = structureUtil.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
                     frontFacing, upFacing, isFlipped, lastBlock.left());
 
@@ -256,20 +257,21 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        MultiblockStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+        
+        structureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
-        char[][][] flattenedCharPattern = MultiblockStructureUtil.flattenBlockPattern(pattern);
-        char[][][] adjustedCharPattern = MultiblockStructureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
+        char[][][] flattenedCharPattern = structureUtil.flattenBlockPattern(pattern);
+        char[][][] adjustedCharPattern = structureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
                 pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
 
-        MultiblockStructureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
+        structureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-        MultiblockStructureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
+        structureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
                 frontFacing, upFacing, isFlipped);
 
-        MultiblockStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+        structureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();

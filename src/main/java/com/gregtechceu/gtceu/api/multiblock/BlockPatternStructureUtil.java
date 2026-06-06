@@ -20,17 +20,16 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
 
-public class MultiblockStructureUtil {
+public class BlockPatternStructureUtil {
 
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    // TODO: Turn this into instance data rather than static data
-    private static Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private static Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences;
-    private static Map<Integer, Integer> sliceRepeats;
+    private Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences;
+    private Map<Integer, Integer> sliceRepeats;
 
-    public static PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing,
+    public PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing,
                                                        boolean isFlipped, BlockPos pos) {
         char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
         char[][][] adjustedBlockPattern = rotateAndFlipCharPattern(flattenedBlockPattern, pattern.getDirections(),
@@ -45,15 +44,15 @@ public class MultiblockStructureUtil {
         return pattern.getPredicates().get(c);
     }
 
-    public static void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+    public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
                                                 Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences,
                                                 Map<Integer, Integer> sliceRepeats) {
-        MultiblockStructureUtil.blockPreferences = blockPreferences;
-        MultiblockStructureUtil.minMaxPreferences = minMaxPreferences;
-        MultiblockStructureUtil.sliceRepeats = sliceRepeats;
+        this.blockPreferences = blockPreferences;
+        this.minMaxPreferences = minMaxPreferences;
+        this.sliceRepeats = sliceRepeats;
     }
 
-    public static void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
+    public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
                                                         char[][][] flattenedBlockPattern,
                                                         Map<Long, BlockInfo> userBlockPreferences,
                                                         Direction frontFacing, Direction upFacing, boolean isFlipped) {
@@ -79,7 +78,7 @@ public class MultiblockStructureUtil {
         }
     }
 
-    public static void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
+    public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
                                            char[][][] flattenedBlockPattern, Direction frontFacing, Direction upFacing,
                                            boolean isFlipped) {
         /// 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
@@ -130,7 +129,7 @@ public class MultiblockStructureUtil {
         }
     }
 
-    private static boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                        BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicateList) {
             int minCount = minMaxPreferences.contains(predicate, basePredicate) ?
@@ -154,7 +153,7 @@ public class MultiblockStructureUtil {
         return false;
     }
 
-    private static boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                        BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicateList) {
             int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
@@ -178,7 +177,7 @@ public class MultiblockStructureUtil {
         return false;
     }
 
-    private static boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                             BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // The slice (layer) this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
@@ -200,7 +199,7 @@ public class MultiblockStructureUtil {
         return false;
     }
 
-    public static @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
+    public @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
         int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
         int[] dimensions = pattern.getDimensions();
         char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
