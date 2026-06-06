@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
-import brachy.modularui.schema.ArraySchema;
+import brachy.modularui.drawable.schema.ArraySchema;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.ListWidget;
@@ -95,7 +95,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             }
 
             ArraySchema array = new ArraySchema(blocks);
-            child(new SchemaWidget.LayerButton(array, 0, dimensions[0]));
+            // TODO: Fix this
+            // child(new SchemaWidget.LayerButton(array, 0, dimensions[0]));
 
             multiSchema = new SchemaWidget(new SchemaRenderer(array));
         }

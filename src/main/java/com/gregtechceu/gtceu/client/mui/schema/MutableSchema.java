@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import brachy.modularui.schema.ISchema;
+import brachy.modularui.drawable.schema.ISchema;
+import brachy.modularui.drawable.schema.SchemaLevel;
 import brachy.modularui.utils.BlockPosUtil;
-import brachy.modularui.utils.fakelevel.SchemaLevel;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import lombok.Getter;
@@ -86,16 +86,6 @@ public class MutableSchema implements ISchema {
     @Override
     public BlockPos getOrigin() {
         return origin;
-    }
-
-    @Override
-    public void setRenderFilter(@NotNull BiPredicate<BlockPos, BlockState> renderFilter) {
-        this.renderFilter = renderFilter;
-    }
-
-    @Override
-    public @NotNull BiPredicate<BlockPos, BlockState> getRenderFilter() {
-        return this.renderFilter;
     }
 
     @Override

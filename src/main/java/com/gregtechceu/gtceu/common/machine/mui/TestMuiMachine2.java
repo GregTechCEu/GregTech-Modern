@@ -25,11 +25,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
+import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
@@ -217,9 +217,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     return false;
                 };
             };
+            multiSchema.getSchemaRenderer().updateRenderFilter((pos, state) -> pos.getY() < slice);
             schemaCol.child(multiSchema.size(200, 200));
+            schemaCol.child(new SchemaWidget.LayerButton(multiSchema.getSchemaRenderer(), 0, maxSlices));
         }
-        schemaCol.child(new SchemaWidget.LayerButton(mapSchema, 0, maxSlices));
         col.child(schemaCol);
 
         partsViewWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
@@ -243,7 +244,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private void refreshViewWidget() {
         partsViewWidget.notifyUpdate((packet) -> {});
         if (multiSchema != null) {
-            multiSchema.getSchemaRenderer().recompile();
+            multiSchema.getSchemaRenderer().notifyRecompile();
         }
     }
 
@@ -280,7 +281,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         }
         if (mapSchema == null) {
             mapSchema = new MultiblockSchema(schemaMap);
-            mapSchema.setRenderFilter((pos, state) -> pos.getY() < slice);
         } else {
             mapSchema.setBlocks(schemaMap);
         }
