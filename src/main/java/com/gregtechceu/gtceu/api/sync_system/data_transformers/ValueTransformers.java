@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.SetTr
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.CoverBehaviorTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.GTRecipeTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.MonitorGroupTransformer;
-import com.gregtechceu.gtceu.api.sync_system.managed.ISyncAnnotated;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
@@ -131,7 +130,7 @@ public final class ValueTransformers {
      * @param type The class to register this {@link ValueTransformer} supplier for
      * @param func Supplier function
      */
-    public static <T> void registerTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
+    public static <T> void registerGenericTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
         if (REGISTERED_SUPPLIERS.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         REGISTERED_SUPPLIERS.put(type, func);
@@ -182,11 +181,10 @@ public final class ValueTransformers {
 
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
         registerTransformer(ISyncManaged.class, new SyncDataHolder.SyncManagedTransformer());
-        registerTransformer(ISyncAnnotated.class, new SyncAnnotatedTransformer());
 
-        registerTransformerSupplier(List.class, ListTransformer::new);
-        registerTransformerSupplier(Map.class, MapTransformer::new);
-        registerTransformerSupplier(Set.class, SetTransformer::new);
+        registerGenericTransformerSupplier(List.class, ListTransformer::new);
+        registerGenericTransformerSupplier(Map.class, MapTransformer::new);
+        registerGenericTransformerSupplier(Set.class, SetTransformer::new);
 
         //// GT specific classes
 
