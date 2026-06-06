@@ -31,13 +31,15 @@ public class ModifiedIntProvider {
     }
 
     public static ClampedNormalInt ofNormal(IntProvider source, ContentModifier modifier) {
-        int min = modifier.apply(source.getMinValue());
-        int max = modifier.apply(source.getMaxValue());
+        int parallel = modifier.apply(1);
+        int min = source.getMinValue();
+        int max = source.getMaxValue();
 
-        float mean = (min + max) / 2f;
-        int s = max - min + 1;
-        float sd = (float) Math.sqrt((s * s - 1) / 12f);
 
-        return ClampedNormalInt.of(mean, sd, min, max);
+        float mean = parallel * ((min + max) / 2.0f);
+        int diff = max - min;
+        float sd = (float)Math.sqrt(parallel * diff * diff / 12.0);
+
+        return ClampedNormalInt.of(mean, sd, min*parallel, max*parallel);
     }
 }
