@@ -35,11 +35,10 @@ public class ModifiedIntProvider {
         int min = source.getMinValue();
         int max = source.getMaxValue();
 
-
         float mean = parallel * ((min + max) / 2.0f);
         int diff = max - min;
-        float sd = (float)Math.sqrt(parallel * diff * diff / 12.0);
+        float sd = (float) Math.sqrt(parallel * diff * diff / 12.0);
 
-        return ClampedNormalInt.of(mean, sd, min*parallel, max*parallel);
+        return ClampedNormalInt.of(mean, sd, min * parallel, max * parallel);
     }
 }
