@@ -4,13 +4,12 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -18,7 +17,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -183,7 +181,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                     return patternColumn;
                 }));
 
-        Flow schemaCol = Flow.col().coverChildren();
+        Flow schemaCol = Flow.col().coverChildren()
+                .name("schema_col");
         refreshSchema();
 
         selectedBlockWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
@@ -216,8 +215,16 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                         return true;
                     }
                     return false;
-                };
+                }
             };
+            multiSchema.tooltipDynamic(text -> {
+                BlockHitResult rayTrace = schemaRenderer.lastRayTrace();
+                if (rayTrace == null || rayTrace.getType() != HitResult.Type.BLOCK)
+                    return;
+
+                BlockState state = mapSchema.getLevel().getBlockState(rayTrace.getBlockPos());
+                text.addFromItem(new ItemStack(state.getBlock()));
+            }).tooltipAutoUpdate(true);
             multiSchema.getSchemaRenderer().updateRenderFilter((pos, state) -> pos.getY() < slice);
             schemaCol.child(multiSchema.size(200, 200));
             schemaCol.child(new SchemaWidget.LayerButton(multiSchema.getSchemaRenderer(), 0, maxSlices));
@@ -227,9 +234,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         partsViewWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
             Flow innerCol = Flow.col().coverChildren().childPadding(2).rightRelOffset(1.0f, -20);
             innerCol.children(blockCounts.reference2IntEntrySet(), (e) -> {
-                Item item = e.getKey().asItem();
-                return new ItemDrawable(new ItemStack(item, e.getIntValue()))
-                        .asWidget().tooltip(r -> r.addLine(item.getDescription()));
+                ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
+                return new ItemDrawable(stack)
+                        .asWidget()
+                        .tooltip(r -> r.addFromItem(stack));
             });
             innerCol.childPadding(2).left(2);
             return innerCol;
@@ -257,7 +265,6 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        
         structureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
         char[][][] flattenedCharPattern = structureUtil.flattenBlockPattern(pattern);
@@ -282,7 +289,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
         if (mapSchema == null) {
-            mapSchema = new MultiblockSchema(schemaMap);
+            mapSchema = new MutableSchema(schemaMap);
         } else {
             mapSchema.setBlocks(schemaMap);
         }
@@ -336,6 +343,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,
                                                          Pair<BlockPos, BlockInfo> lastBlock) {
+        // TODO this can throw invalid state exception when
+        // opening after clicking on a block twice
         return new ContextMenuButton<>(lastBlock.left().toString())
                 .size(20)
                 .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()))
