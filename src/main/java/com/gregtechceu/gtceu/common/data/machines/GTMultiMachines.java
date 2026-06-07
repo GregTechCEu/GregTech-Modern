@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BasicSliceStrategy;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
@@ -42,6 +43,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -877,25 +879,7 @@ public class GTMultiMachines {
                     tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.hold_ctrl"));
                 }
             })
-            .pattern((definition) -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .slice("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
-                    .slice("XXXXX", "X   X", "X   X", "X   X", "XFFFX")
-                    .slice("XXXXX", "X   X", "X   X", "X   X", "XFSFX")
-                    .slice("XXXXX", "X   X", "X   X", "X   X", "XFFFX")
-                    .slice("XXXXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
-                    .where('X', blocks(GTBlocks.PLASTCRETE.get())
-                            .or(blocks(GTBlocks.CLEANROOM_GLASS.get()))
-                            .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30, 3))
-                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3, 2))
-                            .or(blocks(ConfigHolder.INSTANCE.machines.enableMaintenance ?
-                                    GTMachines.MAINTENANCE_HATCH.getBlock() : PLASTCRETE.get()).setExactLimit(1))
-                            .or(blocks(Blocks.IRON_DOOR).setMaxGlobalLimited(8)))
-                    .where('S', controller(blocks(definition.getBlock())))
-                    .where(' ', any())
-                    .where('E', abilities(PartAbility.INPUT_ENERGY))
-                    .where('F', cleanroomFilters())
-                    .where('I', abilities(PartAbility.PASSTHROUGH_HATCH))
-                    .build())
+            .pattern(CleanroomMachine.getPattern())
             .shapeInfos((controller) -> {
                 ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()

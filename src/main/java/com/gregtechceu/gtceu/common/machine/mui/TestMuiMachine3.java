@@ -12,6 +12,7 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widgets.ListWidget;
@@ -54,10 +55,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
@@ -102,7 +100,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
             default -> upFacing = Direction.UP;
         }
 
-        userDimensions.addAll(List.of(0, 3, 2, 2, 2, 2));
+        userDimensions.addAll(List.of(0, 4, 2, 2, 2, 2));
         // frontFacing = Direction.UP;
         // upFacing = Direction.WEST;
     }
@@ -130,6 +128,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
 
                     if (pattern instanceof ExpandablePattern expandablePattern) {
                         // TODO:
+                        createConstraintSliders(patternColumn, expandablePattern);
                         // createDimensionSliders(patternColumn, expandablePattern);
                     }
                     patternColumn.child(predicatesRow);
@@ -243,6 +242,31 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         userGlobalBlockPreferences.put(pos.asLong(), blockInfo);
         refreshSchema();
         refreshViewWidget();
+    }
+
+    private void createConstraintSliders(Flow parent, ExpandablePattern pattern) {
+        if(pattern.getBoundsConstraints() != null) {
+            List<Pair<Integer, Integer>> constraints = pattern.getBoundsConstraints().apply();
+            for (int i = 0; i < constraints.size(); i++) {
+                Pair<Integer, Integer> value = constraints.get(i);
+                if (!Objects.equals(value.left(), value.right())) {
+                    int finalI = i;
+                    parent.child(new SliderWidget()
+                            .background(GTGuiTextures.FLUID_SLOT)
+                            .bounds(value.left(), value.right())
+                            .height(16)
+                            .width(value.right() * 12)
+                            .stopper(1.0f)
+                            .value(new DoubleValue.Dynamic(() -> {
+                                return userDimensions.get(finalI);
+                            }, (v) -> {
+                                userDimensions.set(finalI, (int)v);
+                                refreshSchema();
+                                refreshViewWidget();
+                            })));
+                }
+            }
+        }
     }
 
     private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,

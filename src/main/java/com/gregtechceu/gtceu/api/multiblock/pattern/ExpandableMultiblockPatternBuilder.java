@@ -14,6 +14,7 @@ import java.util.function.BiFunction;
 public class ExpandableMultiblockPatternBuilder {
 
     protected @Nullable ExpandablePattern.BoundsFunction boundsFunc;
+    protected @Nullable ExpandablePattern.BoundsConstraintFunction constraintFunc;
     protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -45,9 +46,18 @@ public class ExpandableMultiblockPatternBuilder {
         return this;
     }
 
+    public ExpandableMultiblockPatternBuilder constraintFunc(ExpandablePattern.BoundsConstraintFunction func) {
+        this.constraintFunc = func;
+        return this;
+    }
+
     public ExpandablePattern build() {
         Objects.requireNonNull(boundsFunc, "Bound function is null, use .boundsFunction(...) on the builder");
         Objects.requireNonNull(predicateFunc, "Predicate function is null, use .predicateFunction(...) on the builder");
-        return new ExpandablePattern(boundsFunc, predicateFunc, directions);
+        ExpandablePattern pattern = new ExpandablePattern(boundsFunc, predicateFunc, directions);
+        if (constraintFunc != null) {
+            pattern.setBoundsConstraints(constraintFunc);
+        }
+        return pattern;
     }
 }

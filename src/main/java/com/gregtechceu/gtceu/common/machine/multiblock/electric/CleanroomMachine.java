@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -42,6 +44,7 @@ import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -50,6 +53,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -69,6 +73,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -88,7 +93,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public static final int MAX_RADIUS = 7;
     public static final int MAX_DEPTH = 14;
 
-    private final List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+    private List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     @Nullable
     private CleanroomType cleanroomType = null;
     @SaveField
@@ -121,6 +126,27 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public void formStructure(@NotNull String substructureName) {
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
+
+        bounds = boundsFunction().apply(getLevel(), getBlockPos().mutable(), getFrontFacing(), getUpwardsFacing());
+        int d = bounds.get(1);
+        int l = bounds.get(2);
+        int r = bounds.get(3);
+        int f = bounds.get(4);
+        int b = bounds.get(5);
+        if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
+            invalidateStructure();
+            return;
+        }
+
+        if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
+            invalidateStructure();
+            return;
+        }
+
         initializeAbilities();
 
         // var cache = getSubstructure(name).getCache();
@@ -239,40 +265,26 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     /**
      * Scans for blocks around the controller to update the dimensions
      */
-    public void updateStructureDimensions() {
-        if (getLevel() == null) return;
-        var pState = patternStates.get(DEFAULT_STRUCTURE);
-        Direction front = getFrontFacing();
-        Direction back = front.getOpposite();
-        Direction left = front.getCounterClockWise();
-        Direction right = left.getOpposite();
+    public static ExpandablePattern.BoundsFunction boundsFunction() {
+        return (level, controllerPos, frontFacing, upFacing) -> {
+            if (level == null) return ExpandablePattern.BoundsFunction.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
+            Direction front = frontFacing;
+            Direction back = frontFacing.getOpposite();
+            Direction left = frontFacing.getCounterClockWise();
+            Direction right = left.getOpposite();
 
-        int l = findWallPos(left, getBlockPos().mutable());
-        int r = findWallPos(right, getBlockPos().mutable());
-        int b = findWallPos(back, getBlockPos().mutable());
-        int f = findWallPos(front, getBlockPos().mutable());
-        int d = findFloorPos(Direction.DOWN, getBlockPos().mutable());
+            int l = findWallPos(level, left, controllerPos.mutable());
+            int r = findWallPos(level, right, controllerPos.mutable());
+            int b = findWallPos(level, back, controllerPos.mutable());
+            int f = findWallPos(level, front, controllerPos.mutable());
+            int d = findFloorPos(level, upFacing.getOpposite(), controllerPos.mutable());
 
-        if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
-            invalidateStructure();
-            return;
-        }
+            if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
+                return new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+            }
 
-        if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
-            pState.setError(
-                    new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
-            invalidateStructure();
-            return;
-        }
-        bounds.clear();
-        bounds.add(0);
-        bounds.add(d);
-        bounds.add(l);
-        bounds.add(r);
-        bounds.add(f);
-        bounds.add(b);
+            return new ArrayList<>(List.of(0, d, l, r, f, b));
+        };
 
         /*
          * BlockPos.MutableBlockPos lPos = getPos().mutable();
@@ -324,9 +336,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
          */
     }
 
-    public int findWallPos(Direction dir, BlockPos.MutableBlockPos pos) {
+    public static int findWallPos(Level level, Direction dir, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_RADIUS; i++) {
-            var state = getLevel().getBlockState(pos.move(dir));
+            var state = level.getBlockState(pos.move(dir));
             if (state == getCasingState() || state == getGlassState()) {
                 return i;
             }
@@ -334,21 +346,21 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return -1;
     }
 
-    public int findFloorPos(Direction dir, BlockPos.MutableBlockPos pos) {
+    public static int findFloorPos(Level level, Direction dir, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_DEPTH; i++) {
-            if (isAllFloorBlocks(getBlockPos().mutable().move(dir, i))) {
+            if (isAllFloorBlocks(level, pos.move(dir, 1).mutable())) {
                 return i;
             }
         }
         return -1;
     }
 
-    private boolean isAllFloorBlocks(BlockPos.MutableBlockPos pos) {
+    private static boolean isAllFloorBlocks(Level level, BlockPos.MutableBlockPos pos) {
         pos.move(Direction.SOUTH, 1).move(Direction.WEST, 1);
         for (int j = 0; j < 3; j++) {
             for (int k = 0; k < 3; k++) {
                 var checkPos = pos.immutable();
-                var s1 = getLevel().getBlockState(checkPos);
+                var s1 = level.getBlockState(checkPos);
                 if (s1 != getCasingState() && s1 != getGlassState() && !(s1.is(CustomTags.CLEANROOM_FLOORS))) {
                     return false;
                 }
@@ -360,60 +372,60 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return true;
     }
 
-    @Override
-    public PatternState checkStructurePattern(String name) {
-        getDefaultStructurePattern();
-        return super.checkStructurePattern(name);
+    public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
+        return (definition) -> {
+            var wallPredicate = Predicates.blocks(getCasingState().getBlock(), getGlassState().getBlock());
+            var energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+                    .setMinGlobalLimited(1).setMaxGlobalLimited(3));
+
+            var edgePredicate = wallPredicate.or(energyPredicate);
+            var facePredicate = wallPredicate.or(energyPredicate)
+                    .or(doorPredicate().setMaxGlobalLimited(8))
+                    .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+            var filterPredicate = cleanroomFilters();
+            var innerPredicate = innerPredicate();
+            var verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+
+            return ExpandableMultiblockPatternBuilder
+                    .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+                    .boundsFunction(boundsFunction())
+                    .constraintFunc(() -> List.of(Pair.of(0, 0), Pair.of(MIN_DEPTH, MAX_DEPTH),
+                            Pair.of(MIN_RADIUS, MAX_RADIUS), Pair.of(MIN_RADIUS, MAX_RADIUS),
+                            Pair.of(MIN_RADIUS, MAX_RADIUS), Pair.of(MIN_RADIUS, MAX_RADIUS)))
+                    .predicateFunction((bp, b) -> {
+                        if (bp.equals(BlockPos.ZERO))
+                            return Predicates.controller(Predicates.blocks(definition.getBlock()));
+
+                        int intersections = 0;
+                        boolean topAisle = bp.getX() == b.get(0);
+                        boolean bottomAisle = bp.getX() == -b.get(1);
+                        if (topAisle || bottomAisle) intersections++;
+                        // negative signs for the LEFT and BACK ordinals
+                        // string dir is right, so its bounds[2] and bounds[3]
+                        if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersections++;
+                        // char dir is front, so its bounds[4] and bounds[5]
+                        if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersections++;
+
+                        if (intersections >= 2) {
+                            if (topAisle || bottomAisle) return edgePredicate;
+                            return verticalEdgePredicate;
+                        }
+                        if (intersections == 1) {
+                            if (topAisle) return filterPredicate;
+                            return facePredicate;
+                        }
+                        return innerPredicate;
+                    })
+                    .build();
+        };
     }
 
-    @Override
-    public IBlockPattern getDefaultStructurePattern() {
         // return the default structure, even if there is no valid size found
         // this means auto-build will still work, and prevents terminal crashes.
         // if (getLevel() == null)
 
-        updateStructureDimensions();
 
-        var wallPredicate = Predicates.blocks(getCasingState().getBlock(), getGlassState().getBlock());
-        var energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
-                .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-        var edgePredicate = wallPredicate.or(energyPredicate);
-        var facePredicate = wallPredicate.or(energyPredicate)
-                .or(doorPredicate().setMaxGlobalLimited(8))
-                .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-        var filterPredicate = cleanroomFilters();
-        var innerPredicate = innerPredicate();
-        var verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
-
-        return ExpandableMultiblockPatternBuilder
-                .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
-                .boundsFunction((l, bp, f, u) -> bounds)
-                .predicateFunction((bp, b) -> {
-                    if (bp.equals(BlockPos.ZERO))
-                        return Predicates.controller(Predicates.blocks(getDefinition().getBlock()));
-
-                    int intersections = 0;
-                    boolean topAisle = bp.getX() == b.get(0);
-                    boolean bottomAisle = bp.getX() == -b.get(1);
-                    if (topAisle || bottomAisle) intersections++;
-                    // negative signs for the LEFT and BACK ordinals
-                    // string dir is right, so its bounds[2] and bounds[3]
-                    if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersections++;
-                    // char dir is front, so its bounds[4] and bounds[5]
-                    if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersections++;
-
-                    if (intersections >= 2) {
-                        if (topAisle || bottomAisle) return edgePredicate;
-                        return verticalEdgePredicate;
-                    }
-                    if (intersections == 1) {
-                        if (topAisle) return filterPredicate;
-                        return facePredicate;
-                    }
-                    return innerPredicate;
-                })
-                .build();
 
         /*
          * // these can sometimes get set to 0 when loading the game, breaking JEI
@@ -510,14 +522,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
          * .where('A', wallPredicate.or(basePredicate)) // floor edges
          * .build();
          */
-    }
 
     // protected to allow easy addition of addon "cleanrooms"
-    protected BlockState getCasingState() {
+    protected static BlockState getCasingState() {
         return GTBlocks.PLASTCRETE.getDefaultState();
     }
 
-    protected BlockState getGlassState() {
+    protected static BlockState getGlassState() {
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
@@ -533,7 +544,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    protected PatternPredicate innerPredicate() {
+    protected static PatternPredicate innerPredicate() {
         return new PatternPredicate(blockWorldState -> {
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = blockWorldState.getBlockEntity();
@@ -541,13 +552,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return Predicates.PLACEHOLDER;
                 }
-                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
+                // todo do this in structure form not in the predicate
+               // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }
             return null;
         }, null);
     }
 
-    protected boolean isMachineBanned(MetaMachine machine) {
+    protected static boolean isMachineBanned(MetaMachine machine) {
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
         if (machine.getTrait(CleanroomProviderTrait.TYPE) != null) return true;
         if (machine instanceof MufflerPartMachine) return true;

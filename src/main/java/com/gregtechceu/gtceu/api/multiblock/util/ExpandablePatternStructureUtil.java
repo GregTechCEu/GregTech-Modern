@@ -36,7 +36,7 @@ public class ExpandablePatternStructureUtil {
     private List<Integer> userDimensions;
 
 
-    public static Pair<Pair<BlockPos, BlockPos>, Direction[]> getCorners(List<Integer> dimensions, ExpandablePattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped){
+    public static Pair<Pair<BlockPos, BlockPos>, Direction[]> getCorners(List<Integer> bounds, ExpandablePattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped){
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
 
@@ -48,14 +48,14 @@ public class ExpandablePatternStructureUtil {
             absolutes[i] = selected.getRelativeFacing(frontFacing, upFacing, isFlipped);
 
             if (i == 0) {
-                negCorner.setX(-dimensions.get(selected.oppositeOrdinal()));
-                posCorner.setX(dimensions.get(selected.ordinal()));
+                negCorner.setX(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setX(bounds.get(selected.ordinal()));
             } else if (i == 1) {
-                negCorner.setY(-dimensions.get(selected.oppositeOrdinal()));
-                posCorner.setY(dimensions.get(selected.ordinal()));
+                negCorner.setY(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setY(bounds.get(selected.ordinal()));
             } else {
-                negCorner.setZ(-dimensions.get(selected.oppositeOrdinal()));
-                posCorner.setZ(dimensions.get(selected.ordinal()));
+                negCorner.setZ(-bounds.get(selected.oppositeOrdinal()));
+                posCorner.setZ(bounds.get(selected.ordinal()));
             }
         }
         return Pair.of(Pair.of(posCorner, negCorner), absolutes);
@@ -74,11 +74,17 @@ public class ExpandablePatternStructureUtil {
 
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, ExpandablePattern pattern,
                                                         Map<Long, BlockInfo> userBlockPreferences, Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        var corners = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped).left();
+        var cornerStuff = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
+        var corners = cornerStuff.left();
+        var absolutes = cornerStuff.right();
         var bounds = new AABB(corners.left(), corners.right());
-        for(var entry : userBlockPreferences.entrySet()){
+        for (var entry : userBlockPreferences.entrySet()) {
             var pos = BlockPos.of(entry.getKey());
-            if(bounds.contains(pos.getX(), pos.getY(), pos.getZ())){
+            var mPos = pos.mutable();
+            mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
+                    pos.getZ());
+
+            if (bounds.contains(mPos.getX(), mPos.getY(), mPos.getZ())){
                 resultStructure.put(pos, entry.getValue());
             }
         }
@@ -126,10 +132,15 @@ public class ExpandablePatternStructureUtil {
             if (minCount == 0) continue;
             int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
             if (!(minCount > 0 && totalAlreadyPopulated < minCount)) continue;
-            var toInsert = blockPreferences.contains(predicate, basePredicate) ?
-                    blockPreferences.get(predicate, basePredicate) :
-                    basePredicate.getCandidates().get(0);
-            resultStructure.put(pos, toInsert);
+            BlockInfo toInsert = null;
+            if (blockPreferences.contains(predicate, basePredicate)) {
+                toInsert = blockPreferences.get(predicate, basePredicate);
+            } else {
+                if (!basePredicate.getCandidates().isEmpty()) {
+                    toInsert = basePredicate.getCandidates().get(0);
+                }
+            }
+            if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
         }
         return false;
@@ -144,10 +155,15 @@ public class ExpandablePatternStructureUtil {
             if (maxCount == 0) continue;
             int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            var toInsert = blockPreferences.contains(predicate, basePredicate) ?
-                    blockPreferences.get(predicate, basePredicate) :
-                    basePredicate.getCandidates().get(0);
-            resultStructure.put(pos, toInsert);
+            BlockInfo toInsert = null;
+            if (blockPreferences.contains(predicate, basePredicate)) {
+                toInsert = blockPreferences.get(predicate, basePredicate);
+            } else {
+                if (!basePredicate.getCandidates().isEmpty()) {
+                    toInsert = basePredicate.getCandidates().get(0);
+                }
+            }
+            if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
         }
         return false;

@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import it.unimi.dsi.fastutil.Pair;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -41,9 +43,21 @@ public class ExpandablePattern implements IBlockPattern {
     public interface BoundsFunction {
 
         List<Integer> apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+
+        public static final BoundsFunction EMPTY = (l, p, f, u) -> {
+            return List.of(0, 0, 0, 0, 0, 0); };
+    }
+
+    @FunctionalInterface
+    public interface BoundsConstraintFunction {
+        List<Pair<Integer, Integer>> apply();
     }
 
     protected final BoundsFunction boundsFunc;
+    @Getter
+    @Setter
+    @Nullable
+    protected BoundsConstraintFunction boundsConstraints = null;
     @Getter
     protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
     @Getter
@@ -112,7 +126,7 @@ public class ExpandablePattern implements IBlockPattern {
                                   Direction upwardsFacing,
                                   boolean isFlipped) {
         List<Integer> bounds = boundsFunc.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
-        if (bounds == null || bounds.isEmpty()) return false;
+        if (bounds.isEmpty()) return false;
 
         patternState.globalCount.clear();
 

@@ -255,9 +255,9 @@ public class Predicates {
                 }
             }
             return Predicates.PLACEHOLDER;
-        }, GTCEuAPI.CLEANROOM_FILTERS.values().stream()
-                .map(e -> BlockInfo
-                        .fromBlockState(e.get().defaultBlockState()))
+        }, GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+                .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
+                .map(e -> new BlockInfo(e.getValue().get()))
                 .toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
     }

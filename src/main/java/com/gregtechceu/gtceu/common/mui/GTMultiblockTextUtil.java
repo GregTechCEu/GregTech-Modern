@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -44,8 +45,8 @@ import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
-    public static DynamicSyncedWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
-                                                            PanelSyncManager syncManager) {
+    public static DynamicWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
+                                                      PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(weMachine::isFormed));
         BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
@@ -99,7 +100,7 @@ public class GTMultiblockTextUtil {
                     return unformed;
                 });
 
-        return new DynamicSyncedWidget<>()
+        return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler);
