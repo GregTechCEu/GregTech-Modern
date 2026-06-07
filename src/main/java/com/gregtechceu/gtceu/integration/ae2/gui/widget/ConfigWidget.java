@@ -84,7 +84,7 @@ public abstract class ConfigWidget extends WidgetGroup {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    abstract void init();
+    protected abstract void init();
 
     public abstract boolean hasStackInConfig(GenericStack stack);
 
