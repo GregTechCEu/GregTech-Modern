@@ -207,7 +207,6 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                         new TextFieldWidget().setNumbers(1, component.getDataItems().getSlots()),
                                         w -> Integer.parseInt(w.getText()),
                                         Text.lang("gtceu.central_monitor.gui.data_slot")).resultConsumer(slot -> {
-                                            group.setTarget(component.getBlockPos());
                                             group.setDataSlot(slot - 1);
                                             groupSync.setValue(groups, true, false);
                                         }).draggable(true).size(160, 80));
@@ -243,9 +242,11 @@ public class CentralMonitorUIFactory implements PanelFactory {
                                             group.add(component.getBlockPos());
                                         }
                                     } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
+                                        group.setTarget(component.getBlockPos());
+                                        groupSync.setValue(groups, true, false);
                                         if (slotDialogHandler != null) {
                                             slotDialogHandler.openPanel();
-                                        } else group.setTarget(component.getBlockPos());
+                                        }
                                     }
                                     groupSync.setValue(groups, true, false);
                                 })));
