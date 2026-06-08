@@ -10,7 +10,7 @@ To make or modify a dimension icon in `Java` you will need to add a listener to 
 
 `modEventBus.addGenericListener(DimensionMarker.class, this::registerDimensionMarkers);`
 
-Below is an example of making new `dimension icons`/`modifying existing ones` in a `Java addon`.
+Below is an example of making new and modifying existing dimension icons in a Java addon.
 
 ```java
 private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, DimensionMarker> event) {
