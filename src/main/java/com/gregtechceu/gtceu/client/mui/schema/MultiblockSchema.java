@@ -15,6 +15,8 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 
 public class MultiblockSchema extends MutableSchema {
 
+    private BlockPos controllerPos = BlockPos.ZERO;
+
     public MultiblockSchema(Long2ReferenceMap<BlockState> schemaMap) {
         super(schemaMap);
     }
@@ -44,6 +46,7 @@ public class MultiblockSchema extends MutableSchema {
                 }
                 if (newEntity instanceof MultiblockControllerMachine newController) {
                     controller = newController;
+                    controllerPos = pos;
                 }
             }
         }

@@ -28,6 +28,8 @@ public class MutableSchema implements ISchema {
     protected final Level level = new SchemaLevel();
     protected @NotNull BlockPos origin = BlockPos.ZERO;
     protected @NotNull Vector3f center = new Vector3f();
+    @Getter
+    private BlockPos controllerPos = BlockPos.ZERO;
 
     @Getter
     protected final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
@@ -69,6 +71,7 @@ public class MutableSchema implements ISchema {
             BlockEntity blockEntity = getLevel().getBlockEntity(pos);
             if (blockEntity instanceof MultiblockControllerMachine mcm && controller == null) {
                 controller = mcm;
+                controllerPos = pos;
             } else if (blockEntity instanceof IMultiPart part) {
                 parts.add(part);
             }

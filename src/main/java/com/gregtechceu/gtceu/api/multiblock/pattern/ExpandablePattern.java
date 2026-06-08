@@ -118,9 +118,17 @@ public class ExpandablePattern implements IBlockPattern {
             return;
         }
 
-        // clearCache();
-        patternState.getCache().clear();
-        patternState.setState(PatternState.CheckState.INVALID_UNCACHED);
+        if (allowsFlip) {
+            valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
+        }
+        if (!valid) {
+            // maybe empty the block info part of the cache?
+            patternState.setState(PatternState.CheckState.INVALID_UNCACHED);
+            return;
+        }
+
+        patternState.setState(PatternState.CheckState.VALID_UNCACHED);
+        patternState.setFlipped(true);
     }
 
     @Override

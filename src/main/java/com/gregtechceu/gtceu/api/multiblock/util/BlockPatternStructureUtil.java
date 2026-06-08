@@ -28,8 +28,9 @@ public class BlockPatternStructureUtil {
     private Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences;
     private Map<Integer, Integer> sliceRepeats;
 
-    public PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing,
-                                                boolean isFlipped, BlockPos pos) {
+    public PatternPredicate getPredicateFromPos(BlockPattern pattern, BlockPos pos, Direction frontFacing,
+                                                Direction upFacing,
+                                                boolean isFlipped) {
         char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
         char[][][] adjustedBlockPattern = rotateAndFlipCharPattern(flattenedBlockPattern, pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);

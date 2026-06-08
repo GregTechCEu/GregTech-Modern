@@ -111,12 +111,11 @@ public class ExpandablePatternStructureUtil {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             PatternPredicate predicate = predicateFunc.apply(mPos, userDimensions);
 
-            // int[] arr = pos.getAll();
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
                     pos.getZ());
             // translate from the origin to the center
-            mPos = mPos.offset(translation).mutable();
+            // mPos = mPos.offset(translation).mutable();
             if (resultStructure.containsKey(mPos)) continue;
 
             // Attempts to first place the predicate if the min(layer)count isn't satisfied, then the

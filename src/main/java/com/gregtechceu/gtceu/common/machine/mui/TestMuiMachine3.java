@@ -218,7 +218,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
 
         structureUtil.populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
 
-        structureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+        ExpandablePatternStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();

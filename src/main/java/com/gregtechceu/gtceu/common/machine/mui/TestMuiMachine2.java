@@ -228,7 +228,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
             PatternPredicate predicate = structureUtil.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
-                    frontFacing, upFacing, isFlipped, lastBlock.left());
+                    lastBlock.left(), frontFacing, upFacing, isFlipped);
 
             return createSelectedBlockMenu(predicate, lastBlock);
         });
@@ -332,7 +332,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             }
             PatternPredicate predicate = structureUtil.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
-                    frontFacing, upFacing, isFlipped, lastBlock.left());
+                    lastBlock.left(), frontFacing, upFacing, isFlipped);
 
             return createSelectedBlockMenu(predicate, lastBlock);
             // return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
@@ -424,7 +424,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         structureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
                 frontFacing, upFacing, isFlipped);
 
-        structureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+        BlockPatternStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
