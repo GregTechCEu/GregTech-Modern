@@ -2,8 +2,7 @@
 title: Dimension Icons
 ---
 
-`Dimension icons` are the icons shown when the `dimension` recipe conditon. 
-They are also used in recipe viewers to show which dimensions an ore vein can be generated in.
+Dimension icons are the icons shown when the `dimension` recipe condition, as well as in recipe viewers to show which dimensions an ore vein can be generated in.
 
 New ones can be made and existing ones can be modified both in `Java` and `Kubejs`.
 
