@@ -45,7 +45,12 @@ public class MutableSchema implements ISchema {
     }
 
     public MutableSchema setBlocks(Long2ReferenceMap<BlockState> blocks) {
+        // clear world
+        for (Map.Entry<BlockPos, BlockState> entry : this) {
+            getLevel().removeBlock(entry.getKey(), false);
+        }
         this.blocks.clear();
+
         BlockPos.MutableBlockPos min = BlockPosUtil.MAX.mutable();
         BlockPos.MutableBlockPos max = BlockPosUtil.MIN.mutable();
         MultiblockControllerMachine controller = null;
@@ -55,10 +60,9 @@ public class MutableSchema implements ISchema {
             if (blocks.get(l).isAir()) continue;
             BlockState block = blocks.get(l);
             BlockPos pos = BlockPos.of(l);
-            this.blocks.put(l, block);
 
             // BE creation is already handled through here
-            getLevel().setBlockAndUpdate(pos, block);
+            updateBlockState(pos, block);
             BlockPosUtil.setMin(min, pos);
             BlockPosUtil.setMax(max, pos);
 
