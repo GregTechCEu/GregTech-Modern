@@ -14,7 +14,8 @@ public class CleanroomType {
 
     private static final Map<String, CleanroomType> CLEANROOM_TYPES = new Object2ObjectOpenHashMap<>();
 
-    public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", 0, "gtceu.recipe.cleanroom.display_name");
+    public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", 0,
+            "gtceu.recipe.cleanroom.display_name");
     public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom", 1,
             "gtceu.recipe.cleanroom_sterile.display_name");
 

@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -44,7 +43,6 @@ import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -68,6 +66,7 @@ import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
+import it.unimi.dsi.fastutil.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -93,7 +92,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public static final int MAX_RADIUS = 7;
     public static final int MAX_DEPTH = 14;
 
-    private List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+    private List<Integer> bounds = new ArrayList<>(
+            List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     @Nullable
     private CleanroomType cleanroomType = null;
     @SaveField
@@ -267,7 +267,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      */
     public static ExpandablePattern.BoundsFunction boundsFunction() {
         return (level, controllerPos, frontFacing, upFacing) -> {
-            if (level == null) return ExpandablePattern.BoundsFunction.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
+            if (level == null)
+                return ExpandablePattern.BoundsFunction.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
             Direction front = frontFacing;
             Direction back = frontFacing.getOpposite();
             Direction left = frontFacing.getCounterClockWise();
@@ -420,108 +421,105 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         };
     }
 
-        // return the default structure, even if there is no valid size found
-        // this means auto-build will still work, and prevents terminal crashes.
-        // if (getLevel() == null)
+    // return the default structure, even if there is no valid size found
+    // this means auto-build will still work, and prevents terminal crashes.
+    // if (getLevel() == null)
 
-
-
-
-        /*
-         * // these can sometimes get set to 0 when loading the game, breaking JEI
-         * if (lDist < MIN_RADIUS) lDist = MIN_RADIUS;
-         * if (rDist < MIN_RADIUS) rDist = MIN_RADIUS;
-         * if (bDist < MIN_RADIUS) bDist = MIN_RADIUS;
-         * if (fDist < MIN_RADIUS) fDist = MIN_RADIUS;
-         * if (hDist < MIN_DEPTH) hDist = MIN_DEPTH;
-         *
-         * if (this.getFrontFacing() == Direction.EAST || this.getFrontFacing() == Direction.WEST) {
-         * int tmp = lDist;
-         * lDist = rDist;
-         * rDist = tmp;
-         * }
-         *
-         * StringBuilder[] floorLayer = new StringBuilder[fDist + bDist + 1];
-         * List<StringBuilder[]> wallLayers = new ArrayList<>();
-         * StringBuilder[] ceilingLayer = new StringBuilder[fDist + bDist + 1];
-         *
-         * for (int i = 0; i < floorLayer.length; i++) {
-         * floorLayer[i] = new StringBuilder(lDist + rDist + 1);
-         * ceilingLayer[i] = new StringBuilder(lDist + rDist + 1);
-         * }
-         *
-         * for (int i = 0; i < hDist - 1; i++) {
-         * wallLayers.add(new StringBuilder[fDist + bDist + 1]);
-         * for (int j = 0; j < fDist + bDist + 1; j++) {
-         * var s = new StringBuilder(lDist + rDist + 1);
-         * wallLayers.get(i)[j] = s;
-         * }
-         * }
-         *
-         * for (int i = 0; i < lDist + rDist + 1; i++) {
-         * for (int j = 0; j < fDist + bDist + 1; j++) {
-         * if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
-         * floorLayer[j].append('A'); // floor edge
-         * for (int k = 0; k < hDist - 1; k++) {
-         * wallLayers.get(k)[j].append('W'); // walls
-         * }
-         * ceilingLayer[j].append('D'); // ceiling edge
-         * } else { // not edges
-         * if (i == lDist && j == fDist) { // very center
-         * floorLayer[j].append('K');
-         * } else {
-         * floorLayer[j].append('E'); // floor valid blocks
-         * }
-         * for (int k = 0; k < hDist - 1; k++) {
-         * wallLayers.get(k)[j].append(' ');
-         * }
-         * if (i == lDist && j == fDist) { // very center
-         * ceilingLayer[j].append('C'); // controller
-         * } else {
-         * ceilingLayer[j].append('F'); // filter
-         * }
-         * }
-         * }
-         * }
-         *
-         * String[] f = new String[bDist + fDist + 1];
-         * for (int i = 0; i < floorLayer.length; i++) {
-         * f[i] = floorLayer[i].toString();
-         * }
-         * String[] m = new String[bDist + fDist + 1];
-         * for (int i = 0; i < wallLayers.get(0).length; i++) {
-         * m[i] = wallLayers.get(0)[i].toString();
-         * }
-         * String[] c = new String[bDist + fDist + 1];
-         * for (int i = 0; i < ceilingLayer.length; i++) {
-         * c[i] = ceilingLayer[i].toString();
-         * }
-         *
-         * TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
-         * TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-         * .setMaxGlobalLimited(2)
-         * .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
-         * .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
-         * .setMaxGlobalLimited(1))
-         * .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-         *
-         * return FactoryBlockPattern.start(LEFT, FRONT, UP)
-         * .aisle(f)
-         * .aisle(m).setRepeatable(wallLayers.size())
-         * .aisle(c)
-         * .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
-         * .where('F', Predicates.cleanroomFilters())
-         * .where('D', states(getCasingState())) // ceiling edges
-         * .where(' ', innerPredicate())
-         * .where('E', wallPredicate.or(basePredicate) // inner floor
-         * .or(getValidFloorBlocks().setMaxGlobalLimited(4)))
-         * .where('K', wallPredicate // very center floor, needed for height check
-         * .or(getValidFloorBlocks()))
-         * .where('W', wallPredicate.or(basePredicate)// walls
-         * .or(doorPredicate().setMaxGlobalLimited(8)))
-         * .where('A', wallPredicate.or(basePredicate)) // floor edges
-         * .build();
-         */
+    /*
+     * // these can sometimes get set to 0 when loading the game, breaking JEI
+     * if (lDist < MIN_RADIUS) lDist = MIN_RADIUS;
+     * if (rDist < MIN_RADIUS) rDist = MIN_RADIUS;
+     * if (bDist < MIN_RADIUS) bDist = MIN_RADIUS;
+     * if (fDist < MIN_RADIUS) fDist = MIN_RADIUS;
+     * if (hDist < MIN_DEPTH) hDist = MIN_DEPTH;
+     *
+     * if (this.getFrontFacing() == Direction.EAST || this.getFrontFacing() == Direction.WEST) {
+     * int tmp = lDist;
+     * lDist = rDist;
+     * rDist = tmp;
+     * }
+     *
+     * StringBuilder[] floorLayer = new StringBuilder[fDist + bDist + 1];
+     * List<StringBuilder[]> wallLayers = new ArrayList<>();
+     * StringBuilder[] ceilingLayer = new StringBuilder[fDist + bDist + 1];
+     *
+     * for (int i = 0; i < floorLayer.length; i++) {
+     * floorLayer[i] = new StringBuilder(lDist + rDist + 1);
+     * ceilingLayer[i] = new StringBuilder(lDist + rDist + 1);
+     * }
+     *
+     * for (int i = 0; i < hDist - 1; i++) {
+     * wallLayers.add(new StringBuilder[fDist + bDist + 1]);
+     * for (int j = 0; j < fDist + bDist + 1; j++) {
+     * var s = new StringBuilder(lDist + rDist + 1);
+     * wallLayers.get(i)[j] = s;
+     * }
+     * }
+     *
+     * for (int i = 0; i < lDist + rDist + 1; i++) {
+     * for (int j = 0; j < fDist + bDist + 1; j++) {
+     * if (i == 0 || i == lDist + rDist || j == 0 || j == fDist + bDist) { // all edges
+     * floorLayer[j].append('A'); // floor edge
+     * for (int k = 0; k < hDist - 1; k++) {
+     * wallLayers.get(k)[j].append('W'); // walls
+     * }
+     * ceilingLayer[j].append('D'); // ceiling edge
+     * } else { // not edges
+     * if (i == lDist && j == fDist) { // very center
+     * floorLayer[j].append('K');
+     * } else {
+     * floorLayer[j].append('E'); // floor valid blocks
+     * }
+     * for (int k = 0; k < hDist - 1; k++) {
+     * wallLayers.get(k)[j].append(' ');
+     * }
+     * if (i == lDist && j == fDist) { // very center
+     * ceilingLayer[j].append('C'); // controller
+     * } else {
+     * ceilingLayer[j].append('F'); // filter
+     * }
+     * }
+     * }
+     * }
+     *
+     * String[] f = new String[bDist + fDist + 1];
+     * for (int i = 0; i < floorLayer.length; i++) {
+     * f[i] = floorLayer[i].toString();
+     * }
+     * String[] m = new String[bDist + fDist + 1];
+     * for (int i = 0; i < wallLayers.get(0).length; i++) {
+     * m[i] = wallLayers.get(0)[i].toString();
+     * }
+     * String[] c = new String[bDist + fDist + 1];
+     * for (int i = 0; i < ceilingLayer.length; i++) {
+     * c[i] = ceilingLayer[i].toString();
+     * }
+     *
+     * TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
+     * TraceabilityPredicate basePredicate = Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+     * .setMaxGlobalLimited(2)
+     * .or(blocks(GTMachines.MAINTENANCE_HATCH.get(), GTMachines.AUTO_MAINTENANCE_HATCH.get())
+     * .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+     * .setMaxGlobalLimited(1))
+     * .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
+     *
+     * return FactoryBlockPattern.start(LEFT, FRONT, UP)
+     * .aisle(f)
+     * .aisle(m).setRepeatable(wallLayers.size())
+     * .aisle(c)
+     * .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
+     * .where('F', Predicates.cleanroomFilters())
+     * .where('D', states(getCasingState())) // ceiling edges
+     * .where(' ', innerPredicate())
+     * .where('E', wallPredicate.or(basePredicate) // inner floor
+     * .or(getValidFloorBlocks().setMaxGlobalLimited(4)))
+     * .where('K', wallPredicate // very center floor, needed for height check
+     * .or(getValidFloorBlocks()))
+     * .where('W', wallPredicate.or(basePredicate)// walls
+     * .or(doorPredicate().setMaxGlobalLimited(8)))
+     * .where('A', wallPredicate.or(basePredicate)) // floor edges
+     * .build();
+     */
 
     // protected to allow easy addition of addon "cleanrooms"
     protected static BlockState getCasingState() {
@@ -553,7 +551,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     return Predicates.PLACEHOLDER;
                 }
                 // todo do this in structure form not in the predicate
-               // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
+                // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }
             return null;
         }, null);

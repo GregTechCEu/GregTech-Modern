@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -36,6 +35,7 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,5 +1,30 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureUtil;
+import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
@@ -12,7 +37,6 @@ import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
-import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widgets.ListWidget;
@@ -25,36 +49,11 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureUtil;
-import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
-import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 
 import java.util.*;
 
@@ -91,7 +90,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
     public TestMuiMachine3(BlockEntityCreationInfo info) {
         super(info);
         multiblockDefinition = (MultiblockMachineDefinition) GTMultiMachines.CLEANROOM;
-        //var pattern = ((ExpandablePattern) multiblockDefinition.getStructurePatterns().get("main").get());
+        // var pattern = ((ExpandablePattern) multiblockDefinition.getStructurePatterns().get("main").get());
         frontFacing = multiblockDefinition.getRotationState().defaultDirection;
         switch (multiblockDefinition.getRotationState()) {
             case NONE -> upFacing = Direction.UP;
@@ -190,7 +189,8 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         refreshViewWidget();
         panel.child(col);
         panel.child(new DynamicWidget<>().syncHandler(partsViewWidget).rightRel(-1.0f).coverChildren());
-        panel.child(new DynamicWidget<>().clientOnlyHandler(selectedBlockHandler).setEnabledIf((w) -> lastBlock != null));
+        panel.child(
+                new DynamicWidget<>().clientOnlyHandler(selectedBlockHandler).setEnabledIf((w) -> lastBlock != null));
         return panel;
     }
 
@@ -206,10 +206,10 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         Map<BlockPos, BlockInfo> resultStructure;
 
         resultStructure = new HashMap<>();
-        ExpandablePattern pattern = (ExpandablePattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+        ExpandablePattern pattern = (ExpandablePattern) multiblockDefinition.getStructurePatterns()
+                .get(DEFAULT_STRUCTURE).get();
         // maxSlices = userDimension.get(); CONTROLLER->TOP + CONTROLLER->BOTTOM + 1
 
-        
         structureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userDimensions);
 
@@ -245,7 +245,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
     }
 
     private void createConstraintSliders(Flow parent, ExpandablePattern pattern) {
-        if(pattern.getBoundsConstraints() != null) {
+        if (pattern.getBoundsConstraints() != null) {
             List<Pair<Integer, Integer>> constraints = pattern.getBoundsConstraints().apply();
             for (int i = 0; i < constraints.size(); i++) {
                 Pair<Integer, Integer> value = constraints.get(i);
@@ -260,7 +260,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
                             .value(new DoubleValue.Dynamic(() -> {
                                 return userDimensions.get(finalI);
                             }, (v) -> {
-                                userDimensions.set(finalI, (int)v);
+                                userDimensions.set(finalI, (int) v);
                                 refreshSchema();
                                 refreshViewWidget();
                             })));

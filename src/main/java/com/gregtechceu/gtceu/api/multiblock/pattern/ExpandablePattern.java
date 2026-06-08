@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import it.unimi.dsi.fastutil.Pair;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,10 +22,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -45,11 +45,13 @@ public class ExpandablePattern implements IBlockPattern {
         List<Integer> apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
 
         public static final BoundsFunction EMPTY = (l, p, f, u) -> {
-            return List.of(0, 0, 0, 0, 0, 0); };
+            return List.of(0, 0, 0, 0, 0, 0);
+        };
     }
 
     @FunctionalInterface
     public interface BoundsConstraintFunction {
+
         List<Pair<Integer, Integer>> apply();
     }
 

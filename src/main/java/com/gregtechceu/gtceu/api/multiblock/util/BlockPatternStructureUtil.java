@@ -29,7 +29,7 @@ public class BlockPatternStructureUtil {
     private Map<Integer, Integer> sliceRepeats;
 
     public PatternPredicate getPredicateFromPos(BlockPattern pattern, Direction frontFacing, Direction upFacing,
-                                                       boolean isFlipped, BlockPos pos) {
+                                                boolean isFlipped, BlockPos pos) {
         char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
         char[][][] adjustedBlockPattern = rotateAndFlipCharPattern(flattenedBlockPattern, pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
@@ -44,17 +44,17 @@ public class BlockPatternStructureUtil {
     }
 
     public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                                Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences,
-                                                Map<Integer, Integer> sliceRepeats) {
+                                         Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences,
+                                         Map<Integer, Integer> sliceRepeats) {
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
         this.sliceRepeats = sliceRepeats;
     }
 
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                                        char[][][] flattenedBlockPattern,
-                                                        Map<Long, BlockInfo> userBlockPreferences,
-                                                        Direction frontFacing, Direction upFacing, boolean isFlipped) {
+                                                 char[][][] flattenedBlockPattern,
+                                                 Map<Long, BlockInfo> userBlockPreferences,
+                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
         var dimensions = getDimensions(flattenedBlockPattern);
         Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
         for (Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()) {
@@ -78,8 +78,8 @@ public class BlockPatternStructureUtil {
     }
 
     public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                           char[][][] flattenedBlockPattern, Direction frontFacing, Direction upFacing,
-                                           boolean isFlipped) {
+                                    char[][][] flattenedBlockPattern, Direction frontFacing, Direction upFacing,
+                                    boolean isFlipped) {
         /// 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
         /// get the char at that position,
         /// 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
@@ -129,7 +129,7 @@ public class BlockPatternStructureUtil {
     }
 
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
-                                       BlockPos pos, Direction dir, int offset) {
+                                BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicateList) {
             int minCount = minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).left() :
@@ -153,7 +153,7 @@ public class BlockPatternStructureUtil {
     }
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
-                                       BlockPos pos, Direction dir, int offset) {
+                                BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.predicateList) {
             int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).right() :
@@ -177,7 +177,7 @@ public class BlockPatternStructureUtil {
     }
 
     private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
-                                            BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
+                                     BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // The slice (layer) this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
 

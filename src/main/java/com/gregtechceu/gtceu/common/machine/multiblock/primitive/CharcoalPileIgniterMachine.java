@@ -45,7 +45,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static final int MAX_RADIUS = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
-    private final List<Integer> bounds = new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+    private final List<Integer> bounds = new ArrayList<>(
+            List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     private int maxTime = 0;
     private boolean hasAir = false;
 

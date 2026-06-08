@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.IIcon;
-import brachy.modularui.value.ObjectValue;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -29,6 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
 import brachy.modularui.api.widget.IWidget;
@@ -45,6 +44,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
+import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
@@ -277,8 +277,9 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                         .listenGuiAction(setBlockOnClick)
                                         .tooltipDynamic(text -> {
                                             BlockHitResult rayTrace = this.renderer.lastRayTrace();
-                                            if  (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
-                                                BlockState state = mapSchema.getLevel().getBlockState(rayTrace.getBlockPos());
+                                            if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
+                                                BlockState state = mapSchema.getLevel()
+                                                        .getBlockState(rayTrace.getBlockPos());
                                                 text.addFromItem(new ItemStack(state.getBlock()));
                                             }
                                         }).tooltipAutoUpdate(true)
