@@ -385,7 +385,7 @@ public class GTMultiblockTextUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
+    public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
                                                         PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(
                 "GTRecipe",
@@ -422,7 +422,7 @@ public class GTMultiblockTextUtil {
                     return list;
                 });
 
-        return new DynamicSyncedWidget<>()
+        return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler);
