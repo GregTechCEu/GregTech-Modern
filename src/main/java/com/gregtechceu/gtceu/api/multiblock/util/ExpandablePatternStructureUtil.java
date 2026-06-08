@@ -60,8 +60,14 @@ public class ExpandablePatternStructureUtil {
         }
         return Pair.of(Pair.of(posCorner, negCorner), absolutes);
     }
-    public PatternPredicate getPredicateFromPos(ExpandablePattern pattern, BlockPos pos) {
-        return pattern.getPredicateFunc().apply(pos.mutable(), userDimensions);
+    public PatternPredicate getPredicateFromPos(ExpandablePattern pattern, BlockPos absPos,
+                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        Direction[] absolutes = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped).right();
+        // Reverse the absolute→relative transform (transpose of orthogonal rotation matrix)
+        int relX = absPos.getX() * absolutes[0].getStepX() + absPos.getY() * absolutes[0].getStepY() + absPos.getZ() * absolutes[0].getStepZ();
+        int relY = absPos.getX() * absolutes[1].getStepX() + absPos.getY() * absolutes[1].getStepY() + absPos.getZ() * absolutes[1].getStepZ();
+        int relZ = absPos.getX() * absolutes[2].getStepX() + absPos.getY() * absolutes[2].getStepY() + absPos.getZ() * absolutes[2].getStepZ();
+        return pattern.getPredicateFunc().apply(new BlockPos(relX, relY, relZ).mutable(), userDimensions);
     }
 
     public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
@@ -77,14 +83,17 @@ public class ExpandablePatternStructureUtil {
         var cornerStuff = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
         var corners = cornerStuff.left();
         var absolutes = cornerStuff.right();
-        var bounds = new AABB(corners.left(), corners.right());
+        // contains is min<=x<max, inflate to make sure all pos are inside
+        // kinda gross but it's the least invasive way I guess, maybe lookf or something better
+        var bounds = new AABB(corners.left(), corners.right()).inflate(0.5);
         for (var entry : userBlockPreferences.entrySet()) {
-            var pos = BlockPos.of(entry.getKey());
-            var mPos = pos.mutable();
-            mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
-                    pos.getZ());
+            var pos = BlockPos.of(entry.getKey()); // absolute-space
+            // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
+            int relX = pos.getX() * absolutes[0].getStepX() + pos.getY() * absolutes[0].getStepY() + pos.getZ() * absolutes[0].getStepZ();
+            int relY = pos.getX() * absolutes[1].getStepX() + pos.getY() * absolutes[1].getStepY() + pos.getZ() * absolutes[1].getStepZ();
+            int relZ = pos.getX() * absolutes[2].getStepX() + pos.getY() * absolutes[2].getStepY() + pos.getZ() * absolutes[2].getStepZ();
 
-            if (bounds.contains(mPos.getX(), mPos.getY(), mPos.getZ())){
+            if (bounds.contains(relX, relY, relZ)) {
                 resultStructure.put(pos, entry.getValue());
             }
         }
@@ -113,6 +122,7 @@ public class ExpandablePatternStructureUtil {
                     pos.getZ());
             // translate from the origin to the center
             mPos = mPos.offset(translation).mutable();
+            if (resultStructure.containsKey(mPos)) continue;
 
             // Attempts to first place the predicate if the min(layer)count isn't satisfied, then the
             // max(layer)count

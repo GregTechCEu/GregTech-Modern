@@ -19,6 +19,7 @@ import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.SchemaWidget;
 import brachy.modularui.widgets.SliderWidget;
 import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
@@ -67,7 +68,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
     private SchemaWidget multiSchema;
     private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
-    private DynamicSyncHandler selectedBlockWidget;
+    private final DynamicHandler selectedBlockHandler = new DynamicHandler();
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
     // for the slice slider
@@ -138,16 +139,15 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         Flow schemaCol = Flow.col().coverChildren();
         refreshSchema();
 
-        selectedBlockWidget = new DynamicSyncHandler().widgetProvider((sm, buf) -> {
+        selectedBlockHandler.widgetProvider(() -> {
             if (lastBlock == null) {
                 return new EmptyWidget();
             }
             PatternPredicate predicate = structureUtil.getPredicateFromPos(
                     (ExpandablePattern) multiblockDefinition.getStructurePatterns().get("main").get(),
-                    lastBlock.left());
+                    lastBlock.left(), frontFacing, upFacing, isFlipped);
 
             return createSelectedBlockMenu(predicate, lastBlock);
-            // return new ItemDrawable(lastBlock.right().getItemStackForm()).asWidget();
         });
 
         if (getLevel().isClientSide()) {
@@ -164,7 +164,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
                         BlockState state = this.getSchemaRenderer().schema().getLevel()
                                 .getBlockState(rayTraceResult.getBlockPos());
                         lastBlock = Pair.of(rayTraceResult.getBlockPos(), BlockInfo.fromBlockState(state));
-                        selectedBlockWidget.notifyUpdate((packet) -> {});
+                        selectedBlockHandler.notifyUpdate();
                         return true;
                     }
                     return false;
@@ -190,7 +190,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         refreshViewWidget();
         panel.child(col);
         panel.child(new DynamicWidget<>().syncHandler(partsViewWidget).rightRel(-1.0f).coverChildren());
-        panel.child(new DynamicWidget<>().syncHandler(selectedBlockWidget).setEnabledIf((w) -> lastBlock != null));
+        panel.child(new DynamicWidget<>().clientOnlyHandler(selectedBlockHandler).setEnabledIf((w) -> lastBlock != null));
         return panel;
     }
 
