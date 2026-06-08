@@ -33,7 +33,6 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -386,7 +385,7 @@ public class GTMultiblockTextUtil {
 
     @SuppressWarnings("unchecked")
     public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
-                                                        PanelSyncManager syncManager) {
+                                                  PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(
                 "GTRecipe",
                 GenericSyncValue.class,

@@ -101,6 +101,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
             .create();
 
+    private int yLevel = -1;
+    private int maxHeight = 0;
+
     private final BlockPatternStructureUtil blockPatternStructureUtil = new BlockPatternStructureUtil();
     private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
     private final ExpandablePatternStructureUtil expandablePatternStructureUtil = new ExpandablePatternStructureUtil();
@@ -239,6 +242,24 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
+        this.multiSchema = this.renderer.asWidget()
+                .listenGuiAction(setBlockOnClick)
+                .tooltipDynamic(text -> {
+                    BlockHitResult rayTrace = this.renderer.lastRayTrace();
+                    if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
+                        BlockState state = mapSchema.getLevel()
+                                .getBlockState(rayTrace.getBlockPos());
+                        text.addFromItem(new ItemStack(state.getBlock()));
+                    }
+                }).tooltipAutoUpdate(true)
+                .size(200);
+        this.multiSchema.getSchemaRenderer().updateRenderFilter((pos, state) -> {
+            if (yLevel == -1) {
+                return true;
+            }
+            return pos.getY() >= yLevel;
+        });
+
         return ModularPanel.defaultPanel("client_test")
                 .coverChildren()
                 .padding(7)
@@ -273,17 +294,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                                         .name("selected_block")
                                         .coverChildren(20)
                                         .clientOnlyHandler(this.selectedBlockHandler))
-                                .child(this.multiSchema = this.renderer.asWidget()
-                                        .listenGuiAction(setBlockOnClick)
-                                        .tooltipDynamic(text -> {
-                                            BlockHitResult rayTrace = this.renderer.lastRayTrace();
-                                            if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
-                                                BlockState state = mapSchema.getLevel()
-                                                        .getBlockState(rayTrace.getBlockPos());
-                                                text.addFromItem(new ItemStack(state.getBlock()));
-                                            }
-                                        }).tooltipAutoUpdate(true)
-                                        .size(200))
+                                .child(this.multiSchema)
                                 .child(new DynamicWidget<>()
                                         .coverChildrenWidth()
                                         .heightRel(1f)
