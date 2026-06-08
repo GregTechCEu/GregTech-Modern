@@ -4,7 +4,7 @@ title: Dimension Icons
 
 Dimension icons are the icons shown when the `dimension` recipe condition, as well as in recipe viewers to show which dimensions an ore vein can be generated in.
 
-New ones can be made and existing ones can be modified both in `Java` and `Kubejs`.
+New ones can be made and existing ones can be modified both in `Java` and `KubeJS`.
 
 To make or modify a dimension icon in `Java` you will need to add a listener to the mod's constructor.
 
@@ -34,15 +34,12 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
 }
 ```
 
-`Dimension Icons` also can be made/edited using `KubeJs` scripts using similar syntax.
+`Dimension Icons` also can be made/edited using `KubeJS` scripts using similar syntax.
 
 ```js
 GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
     // Edit existing dimension icon,
-    const GTRegistries = Java.loadClass('com.gregtechceu.gtceu.api.registry.GTRegistries')
     const DimensionMarker = Java.loadClass('com.gregtechceu.gtceu.api.data.DimensionMarker')
-    const ResourceLocation = Java.loadClass('net.minecraft.resources.ResourceLocation')
-    const Items = Java.loadClass('net.minecraft.world.item.Items')
     
     let netherKey = new ResourceLocation("minecraft", "the_nether")
 
