@@ -18,7 +18,7 @@ public class RendererMaterialBlock extends MaterialBlock implements IBlockRender
 
     public RendererMaterialBlock(Properties properties, TagPrefix tagPrefix, Material material,
                                  @Nullable IRenderer renderer) {
-        super(properties, tagPrefix, material, false);
+        super(properties, tagPrefix, material);
         this.renderer = renderer;
     }
 

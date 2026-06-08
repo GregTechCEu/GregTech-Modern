@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ArmorProperty;
-import com.gregtechceu.gtceu.client.renderer.item.ArmorItemRenderer;
+import com.gregtechceu.gtceu.client.model.runtimegen.ArmorItemModelGenerator;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public class GTArmorItem extends ArmorItem {
         this.material = material;
         this.armorProperty = armorProperty;
         if (GTCEu.isClientSide()) {
-            ArmorItemRenderer.create(this, type);
+            ArmorItemModelGenerator.add(this, type);
         }
     }
 

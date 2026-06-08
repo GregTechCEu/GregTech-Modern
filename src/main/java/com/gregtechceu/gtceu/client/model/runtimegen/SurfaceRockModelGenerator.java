@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.renderer.block;
+package com.gregtechceu.gtceu.client.model.runtimegen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
@@ -22,16 +22,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class SurfaceRockRenderer {
+public class SurfaceRockModelGenerator {
 
-    private static final Set<SurfaceRockRenderer> MODELS = new HashSet<>();
-
-    public static void create(Block block) {
-        MODELS.add(new SurfaceRockRenderer(block));
-    }
+    private static final Set<SurfaceRockModelGenerator> MODELS = new HashSet<>();
 
     public static void reinitModels() {
-        for (SurfaceRockRenderer model : MODELS) {
+        for (SurfaceRockModelGenerator model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
 
@@ -56,7 +52,11 @@ public class SurfaceRockRenderer {
 
     private final Block block;
 
-    protected SurfaceRockRenderer(Block block) {
+    protected SurfaceRockModelGenerator(Block block) {
         this.block = block;
+    }
+
+    public static void add(Block block) {
+        MODELS.add(new SurfaceRockModelGenerator(block));
     }
 }

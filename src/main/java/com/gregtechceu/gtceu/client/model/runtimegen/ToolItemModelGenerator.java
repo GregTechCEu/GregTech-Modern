@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.renderer.item;
+package com.gregtechceu.gtceu.client.model.runtimegen;
 
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
@@ -10,12 +10,12 @@ import net.minecraft.world.item.Item;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ToolItemRenderer {
+public class ToolItemModelGenerator {
 
-    private static final Set<ToolItemRenderer> MODELS = new HashSet<>();
+    private static final Set<ToolItemModelGenerator> MODELS = new HashSet<>();
 
     public static void reinitModels() {
-        for (ToolItemRenderer model : MODELS) {
+        for (ToolItemModelGenerator model : MODELS) {
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.item),
                     new DelegatedModel(model.toolType.modelLocation));
         }
@@ -24,12 +24,12 @@ public class ToolItemRenderer {
     private final Item item;
     private final GTToolType toolType;
 
-    protected ToolItemRenderer(Item item, GTToolType toolType) {
+    protected ToolItemModelGenerator(Item item, GTToolType toolType) {
         this.item = item;
         this.toolType = toolType;
     }
 
-    public static void create(Item item, GTToolType toolType) {
-        MODELS.add(new ToolItemRenderer(item, toolType));
+    public static void add(Item item, GTToolType toolType) {
+        MODELS.add(new ToolItemModelGenerator(item, toolType));
     }
 }

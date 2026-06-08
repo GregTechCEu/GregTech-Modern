@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
+import com.gregtechceu.gtceu.client.model.runtimegen.ToolItemModelGenerator;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public class GTToolItem extends DiggerItem implements IGTTool {
         this.electricTier = toolType.electricTier;
         this.toolStats = definition;
         if (GTCEu.isClientSide()) {
-            ToolItemRenderer.create(this, toolType);
+            ToolItemModelGenerator.add(this, toolType);
         }
         definition$init();
     }

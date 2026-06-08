@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.renderer.block;
+package com.gregtechceu.gtceu.client.model.runtimegen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
@@ -30,25 +30,25 @@ import java.util.Optional;
 import java.util.Set;
 
 @MethodsReturnNonnullByDefault
-public class OreBlockRenderer {
+public class OreBlockModelGenerator {
 
-    protected static final Set<OreBlockRenderer> MODELS = new HashSet<>();
+    protected static final Set<OreBlockModelGenerator> MODELS = new HashSet<>();
 
     protected static final JsonObject NULL_ELEMENT_MARKER = new JsonObject();
     protected static final MemoizedBiFunction<MaterialIconType, MaterialIconSet, JsonObject> TEMPLATE_MODEL_CACHE = GTMemoizer
-            .memoizeFunctionWeakIdent(OreBlockRenderer::loadTemplateOreModel);
+            .memoizeFunctionWeakIdent(OreBlockModelGenerator::loadTemplateOreModel);
 
     // First format key is material set name, 2nd is stone type prefix's name, 3rd is icon type's name
     public static final String ORE_MODEL_NAME_FORMAT = "block/material_sets/%s/ores/%s/%s";
 
     protected final MaterialBlock block;
 
-    public static void create(MaterialBlock block) {
-        MODELS.add(new OreBlockRenderer(block));
+    protected OreBlockModelGenerator(MaterialBlock block) {
+        this.block = block;
     }
 
-    public OreBlockRenderer(MaterialBlock block) {
-        this.block = block;
+    public static void add(MaterialBlock block) {
+        MODELS.add(new OreBlockModelGenerator(block));
     }
 
     @ApiStatus.Internal
@@ -64,7 +64,7 @@ public class OreBlockRenderer {
         }
 
         // then create block state JSONs for all ore blocks with those models
-        for (OreBlockRenderer model : MODELS) {
+        for (OreBlockModelGenerator model : MODELS) {
             Material material = model.block.material;
             TagPrefix tagPrefix = model.block.tagPrefix;
             MaterialIconSet iconSet = material.getMaterialIconSet();

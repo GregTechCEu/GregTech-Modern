@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.client.renderer.block;
+package com.gregtechceu.gtceu.client.model.runtimegen;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -13,16 +13,12 @@ import net.minecraft.world.level.block.Block;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MaterialBlockRenderer {
+public class MaterialBlockModelGenerator {
 
-    private static final Set<MaterialBlockRenderer> MODELS = new HashSet<>();
-
-    public static void create(Block block, MaterialIconType type, MaterialIconSet iconSet) {
-        MODELS.add(new MaterialBlockRenderer(block, type, iconSet));
-    }
+    private static final Set<MaterialBlockModelGenerator> MODELS = new HashSet<>();
 
     public static void reinitModels() {
-        for (MaterialBlockRenderer model : MODELS) {
+        for (MaterialBlockModelGenerator model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = model.type.getBlockModelPath(model.iconSet, true);
 
@@ -36,9 +32,13 @@ public class MaterialBlockRenderer {
     private final MaterialIconType type;
     private final MaterialIconSet iconSet;
 
-    protected MaterialBlockRenderer(Block block, MaterialIconType type, MaterialIconSet iconSet) {
+    protected MaterialBlockModelGenerator(Block block, MaterialIconType type, MaterialIconSet iconSet) {
         this.block = block;
         this.type = type;
         this.iconSet = iconSet;
+    }
+
+    public static void add(Block block, MaterialIconType type, MaterialIconSet iconSet) {
+        MODELS.add(new MaterialBlockModelGenerator(block, type, iconSet));
     }
 }
