@@ -331,7 +331,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                 if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
                                 return userSliceRepeats.get(finalRepeatSliceIndex);
                             }, (v) -> {
-                                userSliceRepeats.put(finalRepeatSliceIndex, (int) v);
+                                int oldVal = userSliceRepeats.getOrDefault(finalRepeatSliceIndex, 0);
+                                int newVal = (int) v;
+                                if (oldVal == newVal) return;
+                                userSliceRepeats.put(finalRepeatSliceIndex, newVal);
                                 refreshSchema();
                                 refreshViewWidget();
                             })));
