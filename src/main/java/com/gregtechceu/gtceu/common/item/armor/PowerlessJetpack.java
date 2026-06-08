@@ -140,15 +140,15 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             if (data != null) {
                 if (data.contains("enabled")) {
                     Component status = (data.getBoolean("enabled") ?
-                            Component.translatable("armor.gtceu.hud.status.enabled") :
-                            Component.translatable("armor.gtceu.hud.status.disabled"));
-                    Component result = Component.translatable("armor.gtceu.hud.engine_enabled", status);
+                            Component.translatable("armor.gtceu.hud.enabled") :
+                            Component.translatable("armor.gtceu.hud.disabled"));
+                    Component result = Component.translatable("armor.gtceu.hud.engine", status);
                     this.HUD.newString(result);
                 }
                 if (data.contains("hover")) {
                     Component status = (data.getBoolean("hover") ?
-                            Component.translatable("armor.gtceu.hud.status.enabled") :
-                            Component.translatable("armor.gtceu.hud.status.disabled"));
+                            Component.translatable("armor.gtceu.hud.enabled") :
+                            Component.translatable("armor.gtceu.hud.disabled"));
                     Component result = Component.translatable("armor.gtceu.hud.hover_mode", status);
                     this.HUD.newString(result);
                 }
@@ -263,13 +263,13 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             CompoundTag data = stack.getOrCreateTag();
             Component state;
             boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-            state = enabled ? Component.translatable("armor.gtceu.hud.status.enabled") :
-                    Component.translatable("armor.gtceu.hud.status.disabled");
-            tooltipComponents.add(Component.translatable("armor.gtceu.hud.engine_enabled", state));
+            state = enabled ? Component.translatable("armor.gtceu.hud.enabled") :
+                    Component.translatable("armor.gtceu.hud.disabled");
+            tooltipComponents.add(Component.translatable("armor.gtceu.hud.engine", state));
 
             boolean hover = data.contains("hover") && data.getBoolean("hover");
-            state = hover ? Component.translatable("armor.gtceu.hud.status.enabled") :
-                    Component.translatable("armor.gtceu.hud.status.disabled");
+            state = hover ? Component.translatable("armor.gtceu.hud.enabled") :
+                    Component.translatable("armor.gtceu.hud.disabled");
             tooltipComponents.add(Component.translatable("armor.gtceu.hud.hover_mode", state));
         }
 

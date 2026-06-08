@@ -99,10 +99,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     player.displayClientMessage(
-                            Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                            Component.translatable("armor.gtceu.quark_tech_suite.night_vision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
+                            .translatable("armor.gtceu.quark_tech_suite.night_vision." +
                                     (nightVision ? "enabled" : "disabled")),
                             true);
                 }
@@ -210,7 +210,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 stepAssist = !stepAssist;
                 toggleBootsTimer = 5;
                 if (world.isClientSide()) player.displayClientMessage(Component
-                        .translatable("metaarmor.qts.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
+                        .translatable("armor.gtceu.quark_tech_suite.step_assist." + (stepAssist ? "enabled" : "disabled")), true);
                 data.putBoolean("stepAssist", stepAssist);
             }
 
@@ -363,7 +363,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             }
             lines.add(Component.translatable("armor.gtceu.tooltip.potions"));
             lines.add(Component.translatable("armor.gtceu.tooltip.breath"));
-            lines.add(Component.translatable("armor.gtceu.tooltip.autoeat"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.auto_eat"));
         } else if (type == ArmorItem.Type.CHESTPLATE) {
             lines.add(Component.translatable("armor.gtceu.tooltip.burning"));
             lines.add(Component.translatable("armor.gtceu.tooltip.freezing"));
@@ -374,7 +374,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (nbtData.getBoolean("stepAssist"))
                 lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.enabled"));
             else lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.disabled"));
-            lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.fall_damage"));
             lines.add(Component.translatable("armor.gtceu.tooltip.jump"));
         }
     }

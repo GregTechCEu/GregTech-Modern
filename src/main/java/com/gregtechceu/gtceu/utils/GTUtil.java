@@ -633,12 +633,12 @@ public class GTUtil {
 
     public static void addPotionTooltip(List<Pair<MobEffectInstance, Float>> effects, List<Component> list) {
         if (!effects.isEmpty()) {
-            list.add(Component.translatable("gtceu.tooltip.potion.header"));
+            list.add(Component.translatable("tooltip.gtceu.potion.header"));
         }
         effects.forEach(pair -> {
             var effect = pair.getFirst();
             float probability = pair.getSecond();
-            list.add(Component.translatable("gtceu.tooltip.potion.each",
+            list.add(Component.translatable("tooltip.gtceu.potion.each",
                     Component.translatable(effect.getDescriptionId())
                             .setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW)),
                     Component.translatable("enchantment.level." + (effect.getAmplifier() + 1))

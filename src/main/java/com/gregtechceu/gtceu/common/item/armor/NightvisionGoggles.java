@@ -47,10 +47,10 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 if (item.getCharge() < ArmorUtils.MIN_NIGHTVISION_CHARGE) {
                     nightVision = false;
                     player.displayClientMessage(
-                            Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                            Component.translatable("armor.gtceu.nano_muscle_suite.night_vision.error"), true);
                 } else {
                     player.displayClientMessage(Component
-                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
+                            .translatable("armor.gtceu.nano_muscle_suite.night_vision." +
                                     (nightVision ? "enabled" : "disabled")),
                             true);
                 }

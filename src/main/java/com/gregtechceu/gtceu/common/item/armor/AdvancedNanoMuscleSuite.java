@@ -147,19 +147,19 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         CompoundTag data = itemStack.getOrCreateTag();
         Component state;
         boolean enabled = !data.contains("enabled") || data.getBoolean("enabled");
-        state = enabled ? Component.translatable("armor.gtceu.hud.status.enabled") :
-                Component.translatable("armor.gtceu.hud.status.disabled");
-        lines.add(Component.translatable("armor.gtceu.hud.engine_enabled", state));
+        state = enabled ? Component.translatable("armor.gtceu.hud.enabled") :
+                Component.translatable("armor.gtceu.hud.disabled");
+        lines.add(Component.translatable("armor.gtceu.hud.engine", state));
 
         boolean canShare = data.contains("canShare") && data.getBoolean("canShare");
-        state = canShare ? Component.translatable("armor.gtceu.hud.status.enabled") :
-                Component.translatable("armor.gtceu.hud.status.disabled");
+        state = canShare ? Component.translatable("armor.gtceu.hud.enabled") :
+                Component.translatable("armor.gtceu.hud.disabled");
         lines.add(Component.translatable("armor.gtceu.energy_share.tooltip", state));
         lines.add(Component.translatable("armor.gtceu.energy_share.tooltip.info"));
 
         boolean hover = data.contains("hover") && data.getBoolean("hover");
-        state = hover ? Component.translatable("armor.gtceu.hud.status.enabled") :
-                Component.translatable("armor.gtceu.hud.status.disabled");
+        state = hover ? Component.translatable("armor.gtceu.hud.enabled") :
+                Component.translatable("armor.gtceu.hud.disabled");
         lines.add(Component.translatable("armor.gtceu.hud.hover_mode", state));
     }
 
@@ -205,21 +205,21 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         if (data != null) {
             if (data.contains("enabled")) {
                 Component status = (data.getBoolean("enabled") ?
-                        Component.translatable("armor.gtceu.hud.status.enabled") :
-                        Component.translatable("armor.gtceu.hud.status.disabled"));
-                Component result = Component.translatable("armor.gtceu.hud.engine_enabled", status);
+                        Component.translatable("armor.gtceu.hud.enabled") :
+                        Component.translatable("armor.gtceu.hud.disabled"));
+                Component result = Component.translatable("armor.gtceu.hud.engine", status);
                 this.HUD.newString(result);
             }
             if (data.contains("canShare")) {
-                String status = data.getBoolean("canShare") ? "armor.gtceu.hud.status.enabled" :
-                        "armor.gtceu.hud.status.disabled";
+                String status = data.getBoolean("canShare") ? "armor.gtceu.hud.enabled" :
+                        "armor.gtceu.hud.disabled";
                 this.HUD.newString(
                         Component.translatable("armor.gtceu.hud.supply_mode", Component.translatable(status)));
             }
 
             if (data.contains("hover")) {
-                String status = data.getBoolean("hover") ? "armor.gtceu.hud.status.enabled" :
-                        "armor.gtceu.hud.status.disabled";
+                String status = data.getBoolean("hover") ? "armor.gtceu.hud.enabled" :
+                        "armor.gtceu.hud.disabled";
                 this.HUD.newString(
                         Component.translatable("armor.gtceu.hud.hover_mode", Component.translatable(status)));
             }

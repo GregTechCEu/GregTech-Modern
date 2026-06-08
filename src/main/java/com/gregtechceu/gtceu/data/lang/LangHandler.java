@@ -26,15 +26,15 @@ public class LangHandler {
         BlockLang.init(provider);
         CommandLang.init(provider);
         ConfigurationLang.init(provider);
-        CoverLang.init(provider);
-        GUILang.init(provider);
+        CoverLang.init(provider); // TODO
+        GUILang.init(provider); // TODO
         HazardLang.init(provider);
-        IntegrationLang.init(provider);
-        ItemLang.init(provider);
-        MachineLang.init(provider);
-        MaterialLang.init(provider);
-        RecipeLang.init(provider);
-        SubtitleLang.init(provider);
-        ToolLang.init(provider);
+        IntegrationLang.init(provider); // TODO
+        ItemLang.init(provider); // TODO
+        MachineLang.init(provider); // TODO
+        MaterialLang.init(provider); // TODO
+        RecipeLang.init(provider); // TODO
+        SubtitleLang.init(provider); // TODO
+        ToolLang.init(provider); // TODO
     }
 }

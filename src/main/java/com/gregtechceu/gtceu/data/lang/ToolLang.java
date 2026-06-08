@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTLangProvider;
 public class ToolLang {
 
     public static void init(GTLangProvider provider) {
-        initDeathMessages(provider);
+        generateDeathMessages(provider);
         generateToolClassKeys(provider);
         generateToolKeys(provider);
         generateTooltips(provider);
@@ -14,7 +14,7 @@ public class ToolLang {
         generateEnchantKeys(provider);
     }
 
-    private static void initDeathMessages(GTLangProvider provider) {
+    private static void generateDeathMessages(GTLangProvider provider) {
         // Death Messages
         provider.add("death.attack.gtceu.heat", "%s was boiled alive");
         provider.add("death.attack.gtceu.frost", "%s explored cryogenics");
@@ -115,23 +115,6 @@ public class ToolLang {
         provider.add("item.behavior.mode_switch.tooltip", "Use while sneaking to switch mode");
         provider.add("item.behavior.mode_switch.mode_switched", "§eMode Set to: %s");
         provider.add("item.behavior.mode_switch.current_mode", "Mode: %s");
-
-        provider.add("death.attack.gtceu.medical_condition/asbestosis", "%s got mesothelioma");
-        provider.add("death.attack.gtceu.medical_condition/chemical_burns", "%s had a chemical accident");
-        provider.add("death.attack.gtceu.medical_condition/poison",
-                "%s forgot that poisonous materials are, in fact, poisonous");
-        provider.add("death.attack.gtceu.medical_condition/silicosis",
-                "%s didn't die of tuberculosis. It was silicosis");
-        provider.add("death.attack.gtceu.medical_condition/arsenicosis", "%s got arsenic poisoning");
-        provider.add("death.attack.gtceu.medical_condition/berylliosis", "%s mined emeralds a bit too greedily");
-        provider.add("death.attack.gtceu.medical_condition/carcinogen", "%s got leukemia");
-        provider.add("death.attack.gtceu.medical_condition/irritant", "%s got a §n§lREALLY§r bad rash");
-        provider.add("death.attack.gtceu.medical_condition/methanol_poisoning",
-                "%s tried to drink moonshine during the prohibition");
-        provider.add("death.attack.gtceu.medical_condition/nausea", "%s succumbed to nausea");
-        provider.add("death.attack.gtceu.medical_condition/none", "%s died of... nothing?");
-        provider.add("death.attack.gtceu.medical_condition/weak_poison", "%s ate lead");
-        provider.add("death.attack.gtceu.medical_condition/carbon_monoxide_poisoning", "%s left the stove on");
     }
 
     public static void generateToolKeys(GTLangProvider provider) {

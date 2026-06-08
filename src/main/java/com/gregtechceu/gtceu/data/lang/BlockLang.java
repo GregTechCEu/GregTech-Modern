@@ -91,10 +91,10 @@ public class BlockLang {
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
 
         // Decor Stuff
-        provider.add("block.gtceu.yellow_stripes_block_a", "Yellow Stripes Block");
-        provider.add("block.gtceu.yellow_stripes_block_b", "Yellow Stripes Block");
-        provider.add("block.gtceu.yellow_stripes_block_c", "Yellow Stripes Block");
-        provider.add("block.gtceu.yellow_stripes_block_d", "Yellow Stripes Block");
+        provider.add("block.gtceu.yellow_stripes_block_a", "Yellow Stripes Block (A)");
+        provider.add("block.gtceu.yellow_stripes_block_b", "Yellow Stripes Block (B)");
+        provider.add("block.gtceu.yellow_stripes_block_c", "Yellow Stripes Block (C)");
+        provider.add("block.gtceu.yellow_stripes_block_d", "Yellow Stripes Block (D)");
 
         // Extra stone blocks
         provider.add("block.gtceu.seal", "Sealed Block");
@@ -152,8 +152,9 @@ public class BlockLang {
 
         // Fluid Pipes
         provider.add("tooltip.gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
-        provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
+        provider.add("tooltip.gtceu.fluid_pipe.throughput", "§bTransfer Rate: §f%d mB/t");
         provider.add("tooltip.gtceu.fluid_pipe.channels", "§eChannels: §f%d");
+        provider.add("tooltip.gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%s");
         provider.add("tooltip.gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");
         provider.add("tooltip.gtceu.fluid_pipe.not_gas_proof", "§4Gases may leak!");
         provider.add("tooltip.gtceu.fluid_pipe.acid_proof", "§6Can handle Acids");

@@ -55,36 +55,36 @@ public class HazardLang {
         provider.add("tooltip.gtceu.hazard_trigger.none", "Nothing");
 
         // Antidote
-        provider.add("gtceu.medical_condition.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("gtceu.medical_condition.antidote.description_shift", "§aCures these conditions:");
-        provider.add("gtceu.medical_condition.antidote.description.effect_removed",
+        provider.add("tooltip.gtceu.antidote.description", "§aAntidote §7Hold Shift to show details");
+        provider.add("tooltip.gtceu.antidote.description_shift", "§aCures these conditions:");
+        provider.add("tooltip.gtceu.antidote.description.effect_removed",
                 "Removes %s%% of current conditions' effects");
         provider.add("tooltip.gtceu.antidote.description.effect_removed.all",
                 "Removes all of current conditions' effects");
 
         // Potion
-        provider.add("gtceu.tooltip.potion.header", "§6Contains effects:");
-        provider.add("gtceu.tooltip.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
+        provider.add("tooltip.gtceu.potion.header", "§6Contains effects:");
+        provider.add("tooltip.gtceu.potion.each", "%s %s §7for§r %s §7ticks with a§r %s%% §7chance of happening§r");
 
         // Poison
         provider.add("effect.gtceu.weak_poison", "Weak Poison");
 
         // Medical Deaths
-        provider.add("death.attack.gtceu.medical_condition.asbestosis", "%s got mesothelioma");
-        provider.add("death.attack.gtceu.medical_condition.chemical_burns", "%s had a chemical accident");
-        provider.add("death.attack.gtceu.medical_condition.poison",
+        provider.add("death.attack.gtceu.medical_condition/asbestosis", "%s got mesothelioma");
+        provider.add("death.attack.gtceu.medical_condition/chemical_burns", "%s had a chemical accident");
+        provider.add("death.attack.gtceu.medical_condition/poison",
                 "%s forgot that poisonous materials are, in fact, poisonous");
-        provider.add("death.attack.gtceu.medical_condition.silicosis",
-                "%s didn't die of tuberculosis. it was silicosis.");
-        provider.add("death.attack.gtceu.medical_condition.arsenicosis", "%s got arsenic poisoning");
-        provider.add("death.attack.gtceu.medical_condition.berylliosis", "%s mined emeralds a bit too greedily");
-        provider.add("death.attack.gtceu.medical_condition.carcinogen", "%s got leukemia");
-        provider.add("death.attack.gtceu.medical_condition.irritant", "%s got a §n§lREALLY§r bad rash");
-        provider.add("death.attack.gtceu.medical_condition.methanol_poisoning",
+        provider.add("death.attack.gtceu.medical_condition/silicosis",
+                "%s didn't die of tuberculosis. It was silicosis");
+        provider.add("death.attack.gtceu.medical_condition/arsenicosis", "%s got arsenic poisoning");
+        provider.add("death.attack.gtceu.medical_condition/berylliosis", "%s mined emeralds a bit too greedily");
+        provider.add("death.attack.gtceu.medical_condition/carcinogen", "%s got leukemia");
+        provider.add("death.attack.gtceu.medical_condition/irritant", "%s got a §n§lREALLY§r bad rash");
+        provider.add("death.attack.gtceu.medical_condition/methanol_poisoning",
                 "%s tried to drink moonshine during the prohibition");
-        provider.add("death.attack.gtceu.medical_condition.nausea", "%s died of nausea");
-        provider.add("death.attack.gtceu.medical_condition.none", "%s died of... nothing?");
-        provider.add("death.attack.gtceu.medical_condition.weak_poison", "%s ate lead (or mercury!)");
-        provider.add("death.attack.gtceu.medical_condition.carbon_monoxide_poisoning", "%s left the stove on");
+        provider.add("death.attack.gtceu.medical_condition/nausea", "%s succumbed to nausea");
+        provider.add("death.attack.gtceu.medical_condition/none", "%s died of... nothing?");
+        provider.add("death.attack.gtceu.medical_condition/weak_poison", "%s ate lead");
+        provider.add("death.attack.gtceu.medical_condition/carbon_monoxide_poisoning", "%s left the stove on");
     }
 }

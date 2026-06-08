@@ -60,37 +60,37 @@ public enum KeyBind {
      * @deprecated {@link SyncedKeyMappings#ARMOR_MODE_SWITCH}
      */
     @Deprecated
-    ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
+    ARMOR_MODE_SWITCH("keybind.gtceu.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
     /**
      * @deprecated {@link SyncedKeyMappings#ARMOR_HOVER}
      */
     @Deprecated
-    ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
+    ARMOR_HOVER("keybind.gtceu.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
     /**
      * @deprecated {@link SyncedKeyMappings#JETPACK_ENABLE}
      */
     @Deprecated
-    JETPACK_ENABLE("gtceu.key.enable_jetpack", KeyConflictContext.IN_GAME, InputConstants.KEY_G),
+    JETPACK_ENABLE("keybind.gtceu.enable_jetpack", KeyConflictContext.IN_GAME, InputConstants.KEY_G),
     /**
      * @deprecated {@link SyncedKeyMappings#BOOTS_ENABLE}
      */
     @Deprecated
-    BOOTS_ENABLE("gtceu.key.enable_boots", KeyConflictContext.IN_GAME, InputConstants.KEY_PERIOD),
+    BOOTS_ENABLE("keybind.gtceu.enable_boots", KeyConflictContext.IN_GAME, InputConstants.KEY_PERIOD),
     /**
      * @deprecated {@link SyncedKeyMappings#ARMOR_CHARGING}
      */
     @Deprecated
-    ARMOR_CHARGING("gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N),
+    ARMOR_CHARGING("keybind.gtceu.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N),
     /**
      * @deprecated {@link SyncedKeyMappings#TOOL_AOE_CHANGE}
      */
     @Deprecated
-    TOOL_AOE_CHANGE("gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V),
+    TOOL_AOE_CHANGE("keybind.gtceu.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V),
     /**
      * @deprecated removed
      */
     @Deprecated(forRemoval = true)
-    ACTION("gtceu.key.action", KeyConflictContext.GUI, InputConstants.KEY_DELETE),
+    ACTION("keybind.gtceu.action", KeyConflictContext.GUI, InputConstants.KEY_DELETE),
     ;
 
     /**

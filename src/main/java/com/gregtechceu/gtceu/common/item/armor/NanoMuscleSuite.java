@@ -79,10 +79,10 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
                     nightVision = false;
                     if (world.isClientSide())
                         player.displayClientMessage(
-                                Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.error"), true);
+                                Component.translatable("armor.gtceu.nano_muscle_suite.night_vision.error"), true);
                 } else {
                     if (world.isClientSide()) player.displayClientMessage(Component
-                            .translatable("armor.gtceu.nano_muscle_suite.nightvision." +
+                            .translatable("armor.gtceu.nano_muscle_suite.night_vision." +
                                     (nightVision ? "enabled" : "disabled")),
                             true);
                 }
@@ -113,7 +113,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             player.removeEffect(MobEffects.NIGHT_VISION);
             if (sendMsg)
                 player.displayClientMessage(
-                        Component.translatable("armor.gtceu.nano_muscle_suite.nightvision.disabled"), true);
+                        Component.translatable("armor.gtceu.nano_muscle_suite.night_vision.disabled"), true);
         }
     }
 
@@ -194,7 +194,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             if (nbtData.getBoolean("stepAssist"))
                 lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.enabled"));
             else lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.disabled"));
-            lines.add(Component.translatable("armor.gtceu.tooltip.falldamage"));
+            lines.add(Component.translatable("armor.gtceu.tooltip.fall_damage"));
         }
     }
 }
