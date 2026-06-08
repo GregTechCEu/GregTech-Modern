@@ -364,8 +364,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             }
             IDrawable overlay;
             if (predicate.predicateList.size() == 1 && predicate.predicateList.get(0).candidates.size() == 1) {
-                overlay = new ItemDrawable(predicate.predicateList.get(0).candidates.get(0).getItemStackForm())
-                        .asIcon().margin(1);
+                continue;
             } else {
                 overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
             }
