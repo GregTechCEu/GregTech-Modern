@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.mui;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.IIcon;
+import brachy.modularui.value.ObjectValue;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -17,20 +20,28 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IGuiAction;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
+import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
@@ -38,11 +49,13 @@ import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
@@ -50,6 +63,7 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
@@ -153,6 +167,132 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     }
 
     @Override
+    public InteractionResult tryToOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
+        if (true) {
+            // test client only ui
+            if (isRemote()) {
+                PosGuiData guiData = new PosGuiData(player, getBlockPos());
+                ModularPanel<?> clientPanel = clientPanel(guiData);
+                ClientGUI.open(createScreen(guiData, clientPanel));
+            }
+            return InteractionResult.sidedSuccess(isRemote());
+        } else {
+            return IMuiMachine.super.tryToOpenUI(player, hand, hit);
+        }
+    }
+
+    private SchemaRenderer renderer;
+    private final DynamicHandler partsHandler = new DynamicHandler();
+    private final DynamicHandler selectedBlockHandler = new DynamicHandler();
+
+    private ModularPanel<?> clientPanel(PosGuiData guiData) {
+        refreshSchema();
+
+        this.renderer = new SchemaRenderer(this.mapSchema)
+                .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+
+        ItemDrawable selectedBlockDrawable = new ItemDrawable();
+        ObjectValue<ItemStack> selectedBlock = new ObjectValue<>(ItemStack.class, ItemStack.EMPTY);
+        IGuiAction.MouseReleased setBlockOnClick = (ctx, m) -> {
+            if (m == InputConstants.MOUSE_BUTTON_LEFT) {
+                BlockHitResult rayTrace = this.renderer.lastRayTrace();
+                if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
+                    BlockState state = this.mapSchema.getLevel().getBlockState(rayTrace.getBlockPos());
+                    this.lastBlock = Pair.of(rayTrace.getBlockPos(), BlockInfo.fromBlockState(state));
+                    selectedBlock.setValue(new ItemStack(state.getBlock()));
+                    selectedBlockDrawable.item(selectedBlock.getValue());
+                    this.selectedBlockHandler.notifyUpdate();
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        Supplier<IWidget> partWidgetSupplier = () -> Flow.col()
+                .name("wrapping_parts_col")
+                // NOTE wrapped flows require a fixed size in their axis, relative/coverChildren does not work
+                .wrap()
+                .coverChildrenWidth(20)
+                .height(200)
+                .children(blockCounts.reference2IntEntrySet(), e -> {
+                    ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
+                    return new ItemDrawable(stack)
+                            .asWidget().size(18).margin(1)
+                            .tooltip(r -> r.addFromItem(stack));
+                });
+
+        this.partsHandler.widgetProvider(partWidgetSupplier);
+        this.selectedBlockHandler.widgetProvider(() -> {
+            ItemStack selected = selectedBlock.getValue();
+            if (selected.isEmpty()) return new EmptyWidget();
+
+            PatternPredicate predicate = structureUtil.getPredicateFromPos(
+                    (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
+                    frontFacing, upFacing, isFlipped, lastBlock.left());
+
+            return createSelectedBlockMenu(predicate, lastBlock);
+        });
+
+        List<Map.Entry<String, BlockPattern>> blockPatterns = multiblockDefinition.getStructurePatterns()
+                .entrySet().stream().map(e -> {
+                    if (e.getValue().get() instanceof BlockPattern bp) {
+                        return Map.entry(e.getKey(), bp);
+                    }
+                    return null;
+                }).filter(Objects::nonNull).toList();
+
+        return ModularPanel.defaultPanel("client_test")
+                .coverChildren()
+                .padding(7)
+                .child(Flow.col()
+                        .coverChildren()
+                        .child(new ListWidget<>()
+                                .name("structure_patterns")
+                                .widthRel(1f)
+                                .coverChildrenHeight()
+                                .children(blockPatterns, e -> {
+                                    BlockPattern blockPattern = e.getValue();
+
+                                    Flow patternColumn = Flow.col()
+                                            .coverChildren();
+                                    Flow predicatesRow = Flow.row()
+                                            .name("predicates")
+                                            .height(20)
+                                            .coverChildrenWidth();
+
+                                    createSliceSliders(patternColumn, blockPattern);
+                                    createPredicateMenus(predicatesRow, blockPattern);
+
+                                    patternColumn.child(predicatesRow);
+                                    return patternColumn;
+                                }))
+                        .child(Flow.row()
+                                .crossAxisAlignment(Alignment.CrossAxis.START)
+                                .coverChildren()
+                                .child(new DynamicWidget<>()
+                                        .name("selected_block")
+                                        .coverChildren(20)
+                                        .clientOnlyHandler(this.selectedBlockHandler))
+                                .child(this.multiSchema = this.renderer.asWidget()
+                                        .listenGuiAction(setBlockOnClick)
+                                        .tooltipDynamic(text -> {
+                                            BlockHitResult rayTrace = this.renderer.lastRayTrace();
+                                            if  (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
+                                                BlockState state = mapSchema.getLevel().getBlockState(rayTrace.getBlockPos());
+                                                text.addFromItem(new ItemStack(state.getBlock()));
+                                            }
+                                        }).tooltipAutoUpdate(true)
+                                        .size(200))
+                                .child(new DynamicWidget<>()
+                                        .coverChildrenWidth()
+                                        .heightRel(1f)
+                                        .name("parts_view")
+                                        // TODO remove this method call when mui updates
+                                        .initialChild(partWidgetSupplier.get())
+                                        .clientOnlyHandler(partsHandler))));
+    }
+
+    @Override
     public ModularPanel<?> buildUI(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel<?> panel = new ModularPanel<>("test_tile2")
                 // .size(200, 200)
@@ -251,7 +391,12 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     }
 
     private void refreshViewWidget() {
-        partsViewWidget.notifyUpdate((packet) -> {});
+        if (partsViewWidget != null) {
+            partsViewWidget.notifyUpdate((packet) -> {});
+        }
+        if (partsHandler != null) {
+            partsHandler.notifyUpdate();
+        }
         if (multiSchema != null) {
             multiSchema.getSchemaRenderer().notifyRecompile();
         }
@@ -350,7 +495,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         // opening after clicking on a block twice
         return new ContextMenuButton<>(lastBlock.left().toString())
                 .size(20)
-                .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()))
+                .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()).asIcon().center())
+                .tooltip(text -> text.addFromItem(lastBlock.right().getItemStackForm()))
                 .requiresClick()
                 .menuList(l -> l
                         .maxSize(80)
@@ -401,13 +547,29 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
-            var predicate = entry.getValue();
+            PatternPredicate predicate = entry.getValue();
             // todo figure out sliders needed for predicate min/max depending on base predicates in the
             // main predicate
             if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
                 continue;
             }
+            IDrawable overlay;
+            if (predicate.predicateList.size() == 1 && predicate.predicateList.get(0).candidates.size() == 1) {
+                overlay = new ItemDrawable(predicate.predicateList.get(0).candidates.get(0).getItemStackForm())
+                        .asIcon().margin(1);
+            } else {
+                overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
+            }
+
             var menu = new ContextMenuButton<>(String.valueOf(entry.getCharKey()))
+                    .overlay(overlay)
+                    .tooltip(text -> {
+                        if (overlay instanceof IIcon icon && icon.getWrappedDrawable() instanceof ItemDrawable item) {
+                            ItemStack stack = item.getItemList().get(0);
+                            text.addFromItem(stack);
+                        }
+                        text.addLine(Text.str("Multiblock Key: %s", String.valueOf(entry.getCharKey())));
+                    })
                     .size(20)
                     .requiresClick()
                     .menuList(l -> l
