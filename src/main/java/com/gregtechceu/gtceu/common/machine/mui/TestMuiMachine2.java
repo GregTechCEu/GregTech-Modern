@@ -224,7 +224,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         this.partsHandler.widgetProvider(partWidgetSupplier);
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = selectedBlock.getValue();
-            if (selected.isEmpty()) return new EmptyWidget();
+            if (selected.isEmpty()) return null; // TIL you can return null for the dynamic handler
 
             PatternPredicate predicate = structureUtil.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
@@ -245,6 +245,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 .coverChildren()
                 .padding(7)
                 .child(Flow.col()
+                        .name("main")
                         .coverChildren()
                         .child(new ListWidget<>()
                                 .name("structure_patterns")
@@ -267,6 +268,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                                     return patternColumn;
                                 }))
                         .child(Flow.row()
+                                .name("schema_widgets")
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .coverChildren()
                                 .child(new DynamicWidget<>()
