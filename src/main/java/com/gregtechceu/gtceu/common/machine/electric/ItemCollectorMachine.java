@@ -35,8 +35,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -146,10 +144,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         super.onLoad();
         if (isRemote()) return;
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-
-            serverLevel.getServer().tell(new TickTask(0, this::updateCollectionSubscription));
-        }
+        scheduleForNextServerTick(this::updateCollectionSubscription);
 
         energySubs = energyContainer.addChangedListener(() -> {
             this.updateBatterySubscription();

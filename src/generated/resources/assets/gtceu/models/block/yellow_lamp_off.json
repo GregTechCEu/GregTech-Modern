@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/lamp_off",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "inactive": "gtceu:block/lamps/yellow_off"
+    "all": "gtceu:block/lamps/yellow_off"
   }
 }

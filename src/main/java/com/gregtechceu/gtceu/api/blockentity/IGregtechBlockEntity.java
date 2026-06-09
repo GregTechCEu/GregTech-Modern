@@ -42,8 +42,6 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
 
-    void markAsChanged();
-
     default boolean isRemote() {
         return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
     }

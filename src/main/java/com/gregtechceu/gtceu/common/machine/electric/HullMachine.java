@@ -18,8 +18,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +36,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     public HullMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
-            this.gridNodeHost = attachTrait(new GridNodeHostTrait(this));
+            this.gridNodeHost = GridNodeHostTransformer.attachToMachine(this);
         } else {
             this.gridNodeHost = null;
         }
@@ -52,9 +50,8 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity &&
-                getLevel() instanceof ServerLevel level) {
-            level.getServer().tell(new TickTask(0, connectedBlockEntity::init));
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
+            scheduleForNextServerTick(connectedBlockEntity::init);
         }
     }
 
@@ -82,6 +79,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
 
     private static class GridNodeHostTransformer implements ValueTransformer<Object> {
 
+        private static Object attachToMachine(HullMachine machine) {
+            return machine.attachTrait(new GridNodeHostTrait(machine));
+        }
+
         @Override
         public Tag serializeNBT(Object value, TransformerContext<Object> context) {
             if (GTCEu.Mods.isAE2Loaded() &&
@@ -106,8 +107,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     static {
-        ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
-                new GridNodeHostTransformer());
+        if (GTCEu.Mods.isAE2Loaded()) {
+            ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+                    new GridNodeHostTransformer());
+        }
     }
 
     @Override
