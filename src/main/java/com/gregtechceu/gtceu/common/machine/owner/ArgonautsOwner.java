@@ -17,7 +17,7 @@ import java.util.*;
 @SuppressWarnings({ "UnstableApiUsage", "removal", "deprecation" })
 public non-sealed class ArgonautsOwner extends MachineOwner {
 
-    private static final Component displayName = Component.translatable("gtceu.ownership.name.argonauts");
+    private static final Component displayName = Component.translatable("ownership.gtceu.name.argonauts");
 
     public ArgonautsOwner(UUID playerUUID) {
         super(playerUUID);

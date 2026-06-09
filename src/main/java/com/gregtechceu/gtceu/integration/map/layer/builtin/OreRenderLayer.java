@@ -36,7 +36,7 @@ public class OreRenderLayer extends MapRenderLayer {
         // noinspection ConstantValue IDK, it crashed
         if (vein == null || vein.definition() == null ||
                 ClientProxy.CLIENT_ORE_VEINS.inverse().get(vein.definition()) == null) {
-            return Component.translatable("gtceu.minimap.ore_vein.depleted");
+            return Component.translatable("minimap.gtceu.ore_vein.depleted");
         }
         return Component.translatable("gtceu.jei.ore_vein." + GTOreVeinWidget.getOreName(vein.definition()));
     }
@@ -62,7 +62,7 @@ public class OreRenderLayer extends MapRenderLayer {
         final List<Component> tooltip = new ArrayList<>();
         var title = Component.literal(name);
         if (vein.depleted()) {
-            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+            title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         }
         tooltip.add(title);
 

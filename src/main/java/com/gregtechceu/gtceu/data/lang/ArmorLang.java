@@ -48,9 +48,9 @@ public class ArmorLang {
         provider.add("armor.gtceu.jetpack.emergency_hover_mode", "§aEmergency Hover Mode Enabled!");
 
         // Night Vision Goggles
-        provider.add("armor.gtceu.message.nightvision.enabled", "§7NightVision: §aOn");
-        provider.add("armor.gtceu.message.nightvision.disabled", "§7NightVision: §cOff");
-        provider.add("armor.gtceu.message.nightvision.error", "§cNot enough power!");
+        provider.add("armor.gtceu.message.night_vision.enabled", "§7NightVision: §aOn");
+        provider.add("armor.gtceu.message.night_vision.disabled", "§7NightVision: §cOff");
+        provider.add("armor.gtceu.message.night_vision.error", "§7NightVision Goggles: §cNot enough power!");
     }
 
     private static void generateTooltipKeys(GTLangProvider provider) {

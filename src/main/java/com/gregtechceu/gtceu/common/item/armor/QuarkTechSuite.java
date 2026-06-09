@@ -357,9 +357,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.enabled"));
             } else {
-                lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.disabled"));
             }
             lines.add(Component.translatable("armor.gtceu.tooltip.potions"));
             lines.add(Component.translatable("armor.gtceu.tooltip.breath"));

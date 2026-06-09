@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public non-sealed class PlayerOwner extends MachineOwner {
 
-    private static final Component displayName = Component.translatable("gtceu.ownership.name.player");
+    private static final Component displayName = Component.translatable("ownership.gtceu.name.player");
 
     public PlayerOwner(UUID playerUUID) {
         super(playerUUID);

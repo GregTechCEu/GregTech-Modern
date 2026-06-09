@@ -32,7 +32,7 @@ public class GTClientCache extends WorldCache implements IClientCache {
         LocalPlayer player = Minecraft.getInstance().player;
 
         if (player == null) return;
-
+        if (veins.length > 1) player.sendSystemMessage(Component.translatable("message.gtceu.new_veins.amount", veins.length));
         for (var vein : veins) {
             var veinId = vein.id().toString();
             var name = Component.translatable(veinId.replace("gtceu:", "gtceu.jei.ore_vein."));

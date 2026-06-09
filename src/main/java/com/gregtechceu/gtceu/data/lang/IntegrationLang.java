@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 public class IntegrationLang {
 
     public static void init(GTLangProvider provider) {
-        initRecipeViewerLang(provider);
-        initWailaLikeLang(provider);
+        initRecipeViewerLang(provider); // TODO
+        initWailaLikeLang(provider); // TODO
         initMinimapLang(provider);
         initOwnershipLang(provider);
 
@@ -238,7 +238,7 @@ public class IntegrationLang {
 
     private static void initMinimapLang(GTLangProvider provider) {
         // Tooltip/Name
-        provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
+        provider.add("minimap.gtceu.ore_vein.depleted", "Depleted");
 
         // Chat Messages
         provider.add("message.gtceu.new_veins.amount", "Prospected %d new veins!");
@@ -253,16 +253,16 @@ public class IntegrationLang {
         // Buttons
         provider.add("button.gtceu.mark_as_depleted.name", "Mark as Depleted");
         provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
-        provider.add("gtceu.button.ore_veins", "Show GT Ore Veins");
-        provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
-        provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
+        provider.add("button.gtceu.ore_veins", "Show GT Ore Veins");
+        provider.add("button.gtceu.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("button.gtceu.hide_depleted", "Hide Depleted Veins");
+        provider.add("button.gtceu.show_depleted", "Show Depleted Veins");
     }
 
     private static void initOwnershipLang(GTLangProvider provider) {
         // Team Names
-        provider.add("gtceu.ownership.name.player", "Player");
-        provider.add("gtceu.ownership.name.ftb", "FTB Teams");
-        provider.add("gtceu.ownership.name.argonauts", "Argonauts Guild");
+        provider.add("ownership.gtceu.name.player", "Player");
+        provider.add("ownership.gtceu.name.ftb", "FTB Teams");
+        provider.add("ownership.gtceu.name.argonauts", "Argonauts Guild");
     }
 }

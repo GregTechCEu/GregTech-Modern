@@ -33,7 +33,7 @@ public abstract class LargeMapScreenMixin extends BaseScreen {
     private void gtceu$injectAddWidgets(CallbackInfo ci) {
         if (!ConfigHolder.INSTANCE.compat.minimap.toggle.ftbChunksIntegration) return;
         gtceu$injectedWidgets.clear();
-        var prefix = "gtceu.button.";
+        var prefix = "button.gtceu.";
         for (var button : ButtonState.getAllButtons()) {
             var icon = switch (button.name) {
                 case "ore_veins" -> ItemIcon.getItemIcon(Items.RAW_IRON);

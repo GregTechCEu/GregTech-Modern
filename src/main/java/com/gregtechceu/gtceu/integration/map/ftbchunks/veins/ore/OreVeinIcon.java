@@ -86,7 +86,7 @@ public class OreVeinIcon implements MapIcon {
     private void openContextMenu(LargeMapScreen screen) {
         var title = Component.literal(getName());
         if (veinMetadata.depleted()) {
-            title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
+            title.append(" (").append(Component.translatable("minimap.gtceu.ore_vein.depleted")).append(")");
         }
         var markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
                 Icons.REMOVE,

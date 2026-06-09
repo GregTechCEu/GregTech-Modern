@@ -29,7 +29,7 @@ public class LangHandler {
         CoverLang.init(provider); // TODO
         GUILang.init(provider); // TODO
         HazardLang.init(provider);
-        IntegrationLang.init(provider); // TODO
+        IntegrationLang.init(provider);
         ItemLang.init(provider); // TODO
         MachineLang.init(provider); // TODO
         MaterialLang.init(provider); // TODO

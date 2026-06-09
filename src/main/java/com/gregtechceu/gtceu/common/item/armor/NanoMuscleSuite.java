@@ -186,14 +186,14 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
             boolean nv = nbtData.getBoolean("nightVision");
             if (nv) {
-                lines.add(Component.translatable("armor.gtceu.message.nightvision.enabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.enabled"));
             } else {
-                lines.add(Component.translatable("armor.gtceu.message.nightvision.disabled"));
+                lines.add(Component.translatable("armor.gtceu.message.night_vision.disabled"));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (nbtData.getBoolean("stepAssist"))
-                lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.enabled"));
-            else lines.add(Component.translatable("armor.gtceu.tooltip.stepassist.disabled"));
+                lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.enabled"));
+            else lines.add(Component.translatable("armor.gtceu.tooltip.step_assist.disabled"));
             lines.add(Component.translatable("armor.gtceu.tooltip.fall_damage"));
         }
     }

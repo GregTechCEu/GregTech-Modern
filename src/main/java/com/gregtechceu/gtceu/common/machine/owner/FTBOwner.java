@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public non-sealed class FTBOwner extends MachineOwner {
 
-    private static final Component displayName = Component.translatable("gtceu.ownership.name.ftb");
+    private static final Component displayName = Component.translatable("ownership.gtceu.name.ftb");
 
     public FTBOwner(UUID playerUUID) {
         super(playerUUID);
