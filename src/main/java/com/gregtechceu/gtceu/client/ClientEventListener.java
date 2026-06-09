@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
@@ -64,6 +65,9 @@ public class ClientEventListener {
             // to render the preview after block entities, before the translucent.
             // so it can be seen through the transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
+            AABBHighlightRenderer.INSTANCE.tick(event.getPoseStack(),
+                    Minecraft.getInstance().renderBuffers().bufferSource(),
+                    event.getCamera());
         }
     }
 
