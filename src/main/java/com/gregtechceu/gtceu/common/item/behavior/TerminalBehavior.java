@@ -236,7 +236,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
                 return createSelectedBlockMenu(predicate, lastBlock);
             }
-            return new EmptyWidget();
+            return null;
         });
 
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
