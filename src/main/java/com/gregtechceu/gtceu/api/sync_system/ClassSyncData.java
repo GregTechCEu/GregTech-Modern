@@ -137,6 +137,7 @@ public final class ClassSyncData {
 
     /**
      * Allows this class to be instantiated on the client when being synced.
+     * 
      * @param ctor The constructor/supplier to be called when instantiating this class on the client.
      */
     public void setClientsideConstructor(@Nullable Supplier<?> ctor) {

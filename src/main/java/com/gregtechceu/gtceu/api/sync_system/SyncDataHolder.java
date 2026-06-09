@@ -102,7 +102,7 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     private static Tag serializeField(Object holder, FieldSyncData field,
-                                     boolean writeClientFields, boolean fullSync) {
+                                      boolean writeClientFields, boolean fullSync) {
         Object currentValue = field.handle.get(holder);
 
         if (currentValue == null) {
@@ -134,8 +134,8 @@ public class SyncDataHolder {
 
     @SuppressWarnings("unchecked")
     private static void deserializeField(Object holder, FieldSyncData field,
-                                        @Nullable Tag newValue,
-                                        boolean readingClientFields) {
+                                         @Nullable Tag newValue,
+                                         boolean readingClientFields) {
         if (newValue == null || newValue instanceof CompoundTag compound && compound.isEmpty()) return;
 
         if (newValue instanceof CompoundTag compound && compound.getBoolean("null")) {
@@ -188,7 +188,7 @@ public class SyncDataHolder {
 
             if (syncManaged == null && clazz != null && ISyncManaged.class.isAssignableFrom(clazz)) {
                 var ctor = ClassSyncData.getClassData(clazz).getClientsideConstructor();
-                if (ctor != null) syncManaged = (ISyncManaged)ctor.get();
+                if (ctor != null) syncManaged = (ISyncManaged) ctor.get();
             }
 
             if (syncManaged == null) {
