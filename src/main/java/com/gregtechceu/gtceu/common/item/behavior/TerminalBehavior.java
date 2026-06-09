@@ -223,7 +223,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         this.partsHandler.widgetProvider(partWidgetSupplier);
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = selectedBlock.getValue();
-            if (selected.isEmpty() || multiblockDefinition == null) return new EmptyWidget();
+            if (selected.isEmpty() || multiblockDefinition == null) return null;
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
                 PatternPredicate predicate = blockPatternStructureUtil.getPredicateFromPos(
@@ -264,6 +264,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 .coverChildren()
                 .padding(7)
                 .child(Flow.col()
+                        .name("main")
                         .coverChildren()
                         .child(new ListWidget<>()
                                 .name("structure_patterns")
@@ -288,6 +289,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                                     return patternColumn;
                                 }))
                         .child(Flow.row()
+                                .name("schema_widgets")
                                 .crossAxisAlignment(Alignment.CrossAxis.START)
                                 .coverChildren()
                                 .child(new DynamicWidget<>()
