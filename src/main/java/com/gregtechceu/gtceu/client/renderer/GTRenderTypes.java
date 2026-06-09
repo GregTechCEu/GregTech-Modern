@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -71,6 +73,24 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
+    private static final RenderType BLOCK_HIGHLIGHT_QUADS = RenderType.create("gt_block_highlight_quads",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false,
+            false, CompositeState.builder()
+                    .setTransparencyState(new TransparencyStateShard("sto", () -> {
+                        RenderSystem.enableBlend();
+                        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    }, () -> {
+                        RenderSystem.disableBlend();
+                        RenderSystem.defaultBlendFunc();
+                    }))
+                    .setDepthTestState(NO_DEPTH_TEST)
+                    .setCullState(NO_CULL)
+                    .setShaderState(POSITION_COLOR_SHADER)
+                    .setLightmapState(NO_LIGHTMAP)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
+                    .setTextureState(NO_TEXTURE)
+                    .createCompositeState(true));
+
     private static final Function<ResourceLocation, RenderType> GUI_TEXTURE = Util.memoize((texture) -> {
         return create("gui_texture", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, false, true,
@@ -81,6 +101,7 @@ public class GTRenderTypes extends RenderType {
                         .setLightmapState(LIGHTMAP)
                         .createCompositeState(false));
     });
+
 
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
@@ -104,9 +125,12 @@ public class GTRenderTypes extends RenderType {
         return entityBloom(TextureAtlas.LOCATION_BLOCKS);
     }
 
+    public static RenderType blockHighlightQuads() { return BLOCK_HIGHLIGHT_QUADS; }
+
     public static RenderType getMonitor() {
         return MONITOR;
     }
+
 
     public static RenderType guiTexture(ResourceLocation texture) {
         return GUI_TEXTURE.apply(texture);

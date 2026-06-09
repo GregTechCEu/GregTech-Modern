@@ -48,7 +48,7 @@ import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 @OnlyIn(Dist.CLIENT)
 @ParametersAreNonnullByDefault
-public class BlockHighlightRenderer {
+public class BlockOverlayRenderer {
 
     public static void renderBlockHighlight(PoseStack poseStack, Camera camera, BlockHitResult target,
                                             MultiBufferSource multiBufferSource, float partialTick) {

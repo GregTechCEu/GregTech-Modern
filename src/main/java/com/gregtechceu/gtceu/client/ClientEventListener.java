@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
+import com.gregtechceu.gtceu.client.renderer.BlockOverlayRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.PipenetDebugRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
@@ -67,8 +67,7 @@ public class ClientEventListener {
             // to render the preview after block entities, before the translucent.
             // so it can be seen through the transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
-        }
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES) {
+
             LocalPlayer player = Minecraft.getInstance().player;
 
             if (player != null && player.getMainHandItem().getItem() == GTItems.PIPENET_DEBUG_VIEWER.get()) {
@@ -145,7 +144,7 @@ public class ClientEventListener {
 
     @SubscribeEvent
     public static void onBlockHighlightEvent(RenderHighlightEvent.Block event) {
-        BlockHighlightRenderer.renderBlockHighlight(event.getPoseStack(), event.getCamera(), event.getTarget(),
+        BlockOverlayRenderer.renderBlockHighlight(event.getPoseStack(), event.getCamera(), event.getTarget(),
                 event.getMultiBufferSource(), event.getPartialTick());
     }
 

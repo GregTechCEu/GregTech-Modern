@@ -189,34 +189,34 @@ public class RenderBufferHelper {
         double maxZ = aabb.maxZ;
 
         // Bottom face vertices
-        Vec3 v000 = new Vec3(minX, minY, minZ);
-        Vec3 v100 = new Vec3(maxX, minY, minZ);
-        Vec3 v110 = new Vec3(maxX, minY, maxZ);
-        Vec3 v010 = new Vec3(minX, minY, maxZ);
+        Vec3 bot00 = new Vec3(minX, minY, minZ);
+        Vec3 bot10 = new Vec3(maxX, minY, minZ);
+        Vec3 bot11 = new Vec3(maxX, minY, maxZ);
+        Vec3 bot01 = new Vec3(minX, minY, maxZ);
 
         // Top face vertices
-        Vec3 v001 = new Vec3(minX, maxY, minZ);
-        Vec3 v101 = new Vec3(maxX, maxY, minZ);
-        Vec3 v111 = new Vec3(maxX, maxY, maxZ);
-        Vec3 v011 = new Vec3(minX, maxY, maxZ);
+        Vec3 top00 = new Vec3(minX, maxY, minZ);
+        Vec3 top10 = new Vec3(maxX, maxY, minZ);
+        Vec3 top11 = new Vec3(maxX, maxY, maxZ);
+        Vec3 top01 = new Vec3(minX, maxY, maxZ);
 
         // Bottom rectangle edges
-        renderLine(buf, pose, v000, v100, thickness, colorARGB);
-        renderLine(buf, pose, v100, v110, thickness, colorARGB);
-        renderLine(buf, pose, v110, v010, thickness, colorARGB);
-        renderLine(buf, pose, v010, v000, thickness, colorARGB);
+        renderLine(buf, pose, bot00, bot10, thickness, colorARGB);
+        renderLine(buf, pose, bot10, bot11, thickness, colorARGB);
+        renderLine(buf, pose, bot11, bot01, thickness, colorARGB);
+        renderLine(buf, pose, bot01, bot00, thickness, colorARGB);
 
         // Top rectangle edges
-        renderLine(buf, pose, v001, v101, thickness, colorARGB);
-        renderLine(buf, pose, v101, v111, thickness, colorARGB);
-        renderLine(buf, pose, v111, v011, thickness, colorARGB);
-        renderLine(buf, pose, v011, v001, thickness, colorARGB);
+        renderLine(buf, pose, top00, top10, thickness, colorARGB);
+        renderLine(buf, pose, top10, top11, thickness, colorARGB);
+        renderLine(buf, pose, top11, top01, thickness, colorARGB);
+        renderLine(buf, pose, top01, top00, thickness, colorARGB);
 
         // Vertical edges
-        renderLine(buf, pose, v000, v001, thickness, colorARGB);
-        renderLine(buf, pose, v100, v101, thickness, colorARGB);
-        renderLine(buf, pose, v110, v111, thickness, colorARGB);
-        renderLine(buf, pose, v010, v011, thickness, colorARGB);
+        renderLine(buf, pose, bot00, top00, thickness, colorARGB);
+        renderLine(buf, pose, bot10, top10, thickness, colorARGB);
+        renderLine(buf, pose, bot11, top11, thickness, colorARGB);
+        renderLine(buf, pose, bot01, top01, thickness, colorARGB);
     }
 
     private static void renderSide(VertexConsumer buf, PoseStack pose, Vec3 tr, Vec3 tl, Vec3 br, Vec3 bl,
