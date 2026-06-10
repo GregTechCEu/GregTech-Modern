@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -88,7 +89,13 @@ public class GTMultiblockTextUtil {
                     unformed.child(new ButtonWidget<>()
                             .onMousePressed((c, b) -> {
                                 ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
-                                // todo in world block highlighting here
+                                AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
+                                        .aabb(pos)
+                                        .colorARGB(255, 255, 0, 0)
+                                        .thickness(0.025)
+                                        .durationMillis(10000)
+                                        .phaseMillis(300)
+                                        .build());
                                 return true;
                             })
                             .tooltip(r -> r.add("Highlight the missing predicate in world")));
