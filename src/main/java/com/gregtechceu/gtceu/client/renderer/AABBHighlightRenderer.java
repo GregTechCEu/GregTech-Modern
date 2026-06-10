@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
+import lombok.experimental.Tolerate;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -80,7 +81,7 @@ public class AABBHighlightRenderer {
     }
 
     public static AABBHighlightBuilder builder() {
-        return new AABBHighlightBuilder();
+        return new AABBHighlightBuilder().aa;
     }
 
     @Setter
@@ -94,12 +95,9 @@ public class AABBHighlightRenderer {
         long phaseMillis = 300;
         double thickness = 0.01;
 
+        @Tolerate
         public AABBHighlightBuilder aabb(BlockPos pos) {
-            return this.aabb(new AABB(pos));
-        }
-
-        public AABBHighlightBuilder aabb(AABB aabb) {
-            this.aabb = aabb;
+            this.aabb = new AABB(pos);
             return this;
         }
 
