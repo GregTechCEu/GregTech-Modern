@@ -151,7 +151,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private final List<WorkerItemHandler> workerItemHandlers = new ArrayList<>();
     private final List<WorkerFluidHandler> workerFluidHandlers = new ArrayList<>();
     private final List<RecipeHandlerList> workerHandlerLists = new ArrayList<>();
-    private @Nullable List<RecipeHandlerList> workerHandlersView;
+    private final @UnmodifiableView List<RecipeHandlerList> workerHandlersView = Collections.unmodifiableList(workerHandlerLists);
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
         super(info, IO.IN);
