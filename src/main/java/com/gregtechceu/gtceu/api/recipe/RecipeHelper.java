@@ -221,7 +221,7 @@ public class RecipeHelper {
                                             boolean isTick, boolean simulated) {
         if (contents.isEmpty()) {
             return ActionResult.PASS_NO_CONTENTS;
-        } ;
+        }
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
