@@ -398,8 +398,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<RecipeHandlerList> getRecipeHandlers() {
-        if (workerHandlersView == null)
-            workerHandlersView = Collections.unmodifiableList(workerHandlerLists);
         return workerHandlersView;
     }
 
