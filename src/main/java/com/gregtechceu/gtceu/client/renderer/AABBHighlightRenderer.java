@@ -95,7 +95,11 @@ public class AABBHighlightRenderer {
         double thickness = 0.01;
 
         public AABBHighlightBuilder aabb(BlockPos pos) {
-            this.aabb = new AABB(pos);
+            return this.aabb(new AABB(pos));
+        }
+
+        public AABBHighlightBuilder aabb(AABB aabb) {
+            this.aabb = aabb;
             return this;
         }
 
