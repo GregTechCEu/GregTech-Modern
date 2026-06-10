@@ -397,7 +397,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     @Override
-    public List<RecipeHandlerList> getRecipeHandlers() {
+    public @UnmodifiableView List<RecipeHandlerList> getRecipeHandlers() {
         return workerHandlersView;
     }
 
