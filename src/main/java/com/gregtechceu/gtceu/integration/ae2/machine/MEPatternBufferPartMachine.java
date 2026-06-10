@@ -220,7 +220,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         workerItemHandlers.remove(last);
         workerFluidHandlers.remove(last);
         workerHandlerLists.remove(last);
-        workerHandlersView = null;
     }
 
     public int getWorkerSlotCount() {
