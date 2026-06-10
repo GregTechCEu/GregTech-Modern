@@ -688,10 +688,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
                 tooltip.add(Component.translatable("tool.gtceu.tooltip.crafting_uses", FormattingUtil
                         .formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
             }
-            tooltip.add(Component.translatable("tool.gtceu.tooltip.max_uses",
-                    FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack))));
+            //tooltip.add(Component.translatable("tool.gtceu.tooltip.max_uses",
+            //        FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack))));
             tooltip.add(Component.translatable("tool.gtceu.tooltip.general_uses",
-                    FormattingUtil.formatNumbers(damageRemaining)));
+                    FormattingUtil.formatNumbers(damageRemaining), FormattingUtil.formatNumbers(tool.getTotalMaxDurability(stack) + 1)));
 
         }
 
@@ -743,13 +743,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
         // unique tooltip
-        String uniqueTooltip = this.getToolType().getUnlocalizedName() + ".tooltip";
-        if (Language.getInstance().has(uniqueTooltip)) {
-            tooltip.add(CommonComponents.EMPTY);
-            tooltip.add(Component.translatable(uniqueTooltip));
-        }
 
-        tooltip.add(CommonComponents.EMPTY);
+
+
 
         var defaultEnchants = getDefaultEnchantments(stack);
         if (!defaultEnchants.isEmpty()) {
@@ -760,9 +756,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
                 tooltip.add(enchant.getFullname(entry.getValue()));
             }
+            tooltip.add(CommonComponents.EMPTY);
         }
 
-        tooltip.add(CommonComponents.EMPTY);
+
 
         // valid tools
         tooltip.add(Component.translatable("tool.gtceu.tooltip.usable_as",

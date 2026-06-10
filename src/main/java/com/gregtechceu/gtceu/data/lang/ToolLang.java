@@ -84,7 +84,7 @@ public class ToolLang {
     public static void generateBehaviorKeys(GTLangProvider provider) {
         // Generic Tool Behaviors
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
-        provider.add("item.gtceu.tool.behavior.torch_place", "§eSpelunker: §fPlaces Torches on Right-Click");
+        provider.add("item.gtceu.tool.behavior.torch_place", "§eSpelunker: §fPlaces Torches on RIGHT CLICK");
         provider.add("item.gtceu.tool.behavior.tree_felling", "§4Lumberjack: §fTree Felling");
         provider.add("item.gtceu.tool.behavior.strip_log", "§5Artisan: §fStrips Logs");
         provider.add("item.gtceu.tool.behavior.scrape", "§bPolisher: §fRemoves Oxidation");
@@ -194,8 +194,8 @@ public class ToolLang {
 
         // Tool Stats Tooltips
         provider.add("tool.gtceu.tooltip.crafting_uses", "%s §aCrafting Uses");
-        provider.add("tool.gtceu.tooltip.max_uses", "%s §eTotal Durability");
-        provider.add("tool.gtceu.tooltip.general_uses", "%s §bDurability");
+        // provider.add("tool.gtceu.tooltip.max_uses", "%s §eTotal Durability");
+        provider.add("tool.gtceu.tooltip.general_uses", "%s / %s §bDurability");
         provider.add("tool.gtceu.tooltip.attack_damage", "%s §cAttack Damage");
         provider.add("tool.gtceu.tooltip.attack_speed", "%s §9Attack Speed");
         provider.add("tool.gtceu.tooltip.mining_speed", "%s §dMining Speed");

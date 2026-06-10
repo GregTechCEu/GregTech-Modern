@@ -34,7 +34,7 @@ public class LangHandler {
         MachineLang.init(provider); // TODO
         MaterialLang.init(provider); // TODO
         RecipeLang.init(provider); // TODO
-        SubtitleLang.init(provider); // TODO
+        SubtitleLang.init(provider);
         ToolLang.init(provider); // TODO
     }
 }

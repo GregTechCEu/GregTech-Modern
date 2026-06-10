@@ -41,7 +41,7 @@ public abstract class SoundEntry {
     public abstract SoundEvent getMainEvent();
 
     public String getSubtitleKey() {
-        return id.getNamespace() + ".subtitle." + id.getPath();
+        return "subtitles." + id.getNamespace() + "." + id.getPath();
     }
 
     public ResourceLocation getId() {
