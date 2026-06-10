@@ -202,7 +202,6 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         });
 
         workerHandlerLists.add(new WorkerRHL(itemH, fluidH));
-        workerHandlersView = null;
     }
 
     private void removeLastWorkerSlot() {
