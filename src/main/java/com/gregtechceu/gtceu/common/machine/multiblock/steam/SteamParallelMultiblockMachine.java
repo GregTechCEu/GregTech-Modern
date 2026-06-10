@@ -90,9 +90,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
         long eut = recipe.getInputEUt().getTotalEU();
         int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels);
-        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
-        recipe.multiplyInputs(parallelAmount);
-        recipe.multiplyOutputs(parallelAmount);
+        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? 0.8888 : (32.0 / (eut * parallelAmount));
+        recipe.multiplyAllContents(parallelAmount);
         recipe.multiplyDuration(1.5);
         recipe.multiplyEUt(eutMultiplier);
         recipe.parallels *= parallelAmount;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,24 +35,24 @@ public class FluidContainerIngredient extends Ingredient {
 
     public static final ResourceLocation TYPE = GTCEu.id("fluid_container");
 
-    public static final Codec<FluidContainerIngredient> CODEC = OldFluidIngredient.CODEC.xmap(
+    public static final Codec<FluidContainerIngredient> CODEC = FluidIngredient.CODEC.xmap(
             FluidContainerIngredient::new, FluidContainerIngredient::getFluid);
 
     @Getter
-    private final OldFluidIngredient fluid;
+    private final FluidIngredient fluid;
 
-    public FluidContainerIngredient(OldFluidIngredient fluid) {
+    public FluidContainerIngredient(FluidIngredient fluid) {
         super(Stream.empty());
         this.fluid = fluid;
     }
 
     public FluidContainerIngredient(FluidStack fluidStack) {
-        this(OldFluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
+        this(FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).getPath()),
                 fluidStack.getAmount(), fluidStack.getTag()));
     }
 
     public FluidContainerIngredient(TagKey<Fluid> tag, int amount) {
-        this(OldFluidIngredient.of(tag, amount, null));
+        this(FluidIngredient.of(tag, amount, null));
     }
 
     private ItemStack[] cachedStacks;
@@ -60,7 +61,7 @@ public class FluidContainerIngredient extends Ingredient {
     @Override
     public ItemStack[] getItems() {
         if (cachedStacks == null)
-            cachedStacks = Arrays.stream(this.fluid.getStacks())
+            cachedStacks = Arrays.stream(this.fluid.getFluids())
                     .map(FluidUtil::getFilledBucket)
                     .filter(s -> !s.isEmpty())
                     .toArray(ItemStack[]::new);
@@ -77,7 +78,7 @@ public class FluidContainerIngredient extends Ingredient {
 
     @Override
     public boolean isEmpty() {
-        return this.fluid.isEmpty();
+        return this.fluid.getFluids().length == 0;
     }
 
     @Override
@@ -118,13 +119,13 @@ public class FluidContainerIngredient extends Ingredient {
 
         @Override
         public @NotNull FluidContainerIngredient parse(FriendlyByteBuf buffer) {
-            OldFluidIngredient fluid = OldFluidIngredient.fromNetwork(buffer);
+            FluidIngredient fluid = FluidIngredient.fromNetwork(buffer);
             return new FluidContainerIngredient(fluid);
         }
 
         @Override
         public @NotNull FluidContainerIngredient parse(JsonObject json) {
-            OldFluidIngredient fluid = OldFluidIngredient.fromJson(GsonHelper.getAsJsonObject(json, "fluid"));
+            FluidIngredient fluid = FluidIngredient.fromJson(GsonHelper.getAsJsonObject(json, "fluid"));
             return new FluidContainerIngredient(fluid);
         }
 

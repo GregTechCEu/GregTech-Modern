@@ -131,7 +131,7 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
             public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
                 if (!capability.isRecipeSearchFilter()) return;
                 for(var content: contents) {
-                    List<AbstractMapIngredient> mapIngredients = capability.getMapIngredients(content);
+                    List<AbstractMapIngredient> mapIngredients = new ArrayList<>(capability.getMapIngredients(content));
                     if (!mapIngredients.isEmpty()) {
                         ingredients.add(mapIngredients);
                     }

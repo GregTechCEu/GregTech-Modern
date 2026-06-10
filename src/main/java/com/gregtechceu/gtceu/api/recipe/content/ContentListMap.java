@@ -100,6 +100,11 @@ public class ContentListMap{
         return contentsMap.size();
     }
 
+    public int sizeOf(RecipeCapability<?> capability) {
+        List<?> contents = contentsMap.get(capability);
+        return contents == null ? 0 : contents.size();
+    }
+
     public ObjectIterator<Reference2ObjectMap.Entry<RecipeCapability<?>, List<?>>> fastIterator() {
         if(contentsMap instanceof Reference2ObjectArrayMap<RecipeCapability<?>, List<?>> r) {
             return r.reference2ObjectEntrySet().fastIterator();
@@ -152,6 +157,26 @@ public class ContentListMap{
         Map<RecipeCapability<?>, List<?>> newMap = new Reference2ObjectArrayMap<>();
         contentsMap.forEach((k ,v) -> newMap.put(k, new ArrayList<>(v)));
         return new ContentListMap(newMap);
+    }
+
+    public ContentListMap copyAndAppend(ContentListMap other) {
+        ContentListMap copy = copy();
+        copy.appendAll(other);
+        return copy;
+    }
+
+    public void appendAll(ContentListMap other) {
+        other.forEachEntry(new EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
+                List<T> list = get(capability);
+                if (list == null) {
+                    put(capability, new ArrayList<>(contents));
+                } else {
+                    list.addAll(contents);
+                }
+            }
+        });
     }
 
     public ContentListMap copyWithMultiplier(int multiplier) {

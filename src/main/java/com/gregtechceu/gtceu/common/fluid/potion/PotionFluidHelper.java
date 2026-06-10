@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.fluid.potion;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTFluids;
 import com.gregtechceu.gtceu.core.mixins.forge.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -50,27 +50,26 @@ public class PotionFluidHelper {
         return Pair.of(fluid, new ItemStack(Items.GLASS_BOTTLE));
     }
 
-    public static OldFluidIngredient potionIngredient(Potion potion, int amount) {
+    public static FluidIngredient potionIngredient(Potion potion, int amount) {
         FluidStack stack = PotionFluidHelper
                 .getFluidFromPotionItem(PotionUtils.setPotion(new ItemStack(Items.POTION), potion), amount);
         stack.setAmount(amount);
-        return OldFluidIngredient.of(stack);
+        return FluidIngredient.of(stack);
     }
 
-    public static OldFluidIngredient getPotionFluidIngredientFrom(Ingredient potion, int amount) {
+    public static List<FluidIngredient> getPotionFluidIngredientsFrom(Ingredient potion, int amount) {
         if (potion instanceof StrictNBTIngredientAccessor strict) {
-            return OldFluidIngredient.fromValue(new OldFluidIngredient.FluidValue(GTFluids.POTION.get()),
-                    amount, strict.getStack().getTag());
+            return List.of(FluidIngredient.of(GTFluids.POTION.get(), amount, strict.getStack().getTag()));
         }
 
-        List<FluidStack> fluids = new ArrayList<>();
+        List<FluidIngredient> fluids = new ArrayList<>();
         for (ItemStack stack : potion.getItems()) {
             FluidStack fluidStack = getFluidFromPotionItem(stack, amount);
             if (!fluidStack.isEmpty()) {
-                fluids.add(fluidStack);
+                fluids.add(FluidIngredient.of(fluidStack));
             }
         }
-        return OldFluidIngredient.of(fluids);
+        return fluids;
     }
 
     public static FluidStack getFluidFromPotionItem(ItemStack stack, int amount) {

@@ -8,8 +8,9 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.RangedItemIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -439,27 +440,28 @@ public class MultiblockDisplayText {
                     double countD = 1;
                     // number of items output which is actually displayed. Can be either a number, or a range.
                     Component displaycount;
-                    if (item.content instanceof IntProviderIngredient provider) {
+                    if (item instanceof RangedItemIngredient ranged) {
                         rounded = true;
-                        stack = provider.getMaxSizeStack();
+                        ItemStack[] stacks = ranged.getInner().getItems();
+                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
+                        stack = stacks[0].copyWithCount(ranged.getCount());
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue(),
-                                provider.getCountProvider().getMaxValue());
-                        if (item.chance < item.maxChance) {
-                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                                ranged.getMinCount(), ranged.getCount());
+                        if (item.isChanced()) {
+                            countD = countD * runs * function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
+                                    IChancedIngredient.MAX_CHANCE;
                         }
-                        countD = countD * provider.getMidRoll();
+                        countD = countD * ((ranged.getMinCount() + ranged.getCount()) / 2.0);
                     } else {
-                        var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        var stacks = item.getItems();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         count = stack.getCount();
                         countD *= count;
-                        if (item.chance < item.maxChance) {
+                        if (item.isChanced()) {
                             rounded = true;
-                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                            countD = countD * runs * function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
+                                    IChancedIngredient.MAX_CHANCE;
                         }
                         count = Math.max(1, (int) Math.round(countD));
                         displaycount = Component.literal(String.valueOf(count));
@@ -483,27 +485,29 @@ public class MultiblockDisplayText {
                     double amountD = 1;
                     // amount of fluid output which is actually displayed. Can be either a number, or a range.
                     Component displaycount;
-                    if (fluid.content instanceof IntProviderFluidIngredient provider) {
+                    if (fluid instanceof RangedFluidIngredient ranged) {
                         rounded = true;
-                        stack = provider.getMaxSizeStack();
+                        FluidStack[] stacks = ranged.getInner().getFluids();
+                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
+                        stack = stacks[0].copy();
+                        stack.setAmount(ranged.getAmount());
                         displaycount = Component.translatable("gtceu.gui.content.range",
-                                provider.getCountProvider().getMinValue(),
-                                provider.getCountProvider().getMaxValue());
-                        if (fluid.chance < fluid.maxChance) {
-                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                                ranged.getMinAmount(), ranged.getAmount());
+                        if (fluid.isChanced()) {
+                            amountD = amountD * runs * function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
+                                    IChancedIngredient.MAX_CHANCE;
                         }
-                        amountD = amountD * provider.getMidRoll();
+                        amountD = amountD * ((ranged.getMinAmount() + ranged.getAmount()) / 2.0);
                     } else {
-                        var stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
+                        var stacks = fluid.getFluids();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         amount = stack.getAmount();
                         amountD *= amount;
-                        if (fluid.chance < fluid.maxChance) {
+                        if (fluid.isChanced()) {
                             rounded = true;
-                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                            amountD = amountD * runs * function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
+                                    IChancedIngredient.MAX_CHANCE;
                         }
                         amount = Math.max(1, (int) Math.round(amountD));
                         displaycount = Component.literal(String.valueOf(amount));

@@ -4,8 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
@@ -49,7 +48,6 @@ import net.minecraftforge.fluids.FluidStack;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
@@ -176,23 +174,22 @@ public class RenderUtil {
         if (recipe == null) {
             return null;
         }
-        var contents = new ObjectArrayList<Content>();
-        var empty = new ArrayList<Content>();
-        contents.addAll(recipe.outputs.getOrDefault(FluidRecipeCapability.CAP, empty));
-        contents.addAll(recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, empty));
+        var contents = new ArrayList<FluidIngredient>();
+        contents.addAll(recipe.outputs.getOrDefault(FluidRecipeCapability.CAP, List.of()));
+        contents.addAll(recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, List.of()));
         if (contents.isEmpty()) {
             return null;
         }
 
         var fluidContent = contents.stream()
-                .filter(content -> content.content instanceof OldFluidIngredient ingredient && !ingredient.isEmpty())
+                .filter(ingredient -> ingredient.getFluids().length > 0)
                 .findAny();
         if (fluidContent.isEmpty()) {
             return null;
         }
-        var ingredient = (OldFluidIngredient) fluidContent.get().content;
+        var ingredient = fluidContent.get();
 
-        var stacks = ingredient.getStacks();
+        var stacks = ingredient.getFluids();
         if (stacks.length == 0) {
             return null;
         }

@@ -214,9 +214,8 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
         if (iterator == null) {
             return null;
         }
-        var result = iterator.next();
-        if(result != null) {
-            return result;
+        if(iterator.hasNext()) {
+            return iterator.next();
         }
 
         for (ICustomRecipeLogic logic : customRecipeLogicRunners) {

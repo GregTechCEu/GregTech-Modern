@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
@@ -68,13 +67,8 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     }
 
     @Override
-    public ItemIngredient of(Object o) {
-        if (o instanceof ItemIngredient ingredient) return ingredient;
-        if (o instanceof ItemStack stack) return ItemIngredient.of(stack);
-        if (o instanceof Ingredient ingredient) return ItemIngredient.of(ingredient);
-        if (o instanceof ItemLike itemLike) return ItemIngredient.of(itemLike);
-        if (o instanceof Supplier<?> supplier) return of(supplier.get());
-        return super.of(o);
+    public boolean isChanced(ItemIngredient content) {
+        return content.isChanced();
     }
 
     @Override
@@ -254,7 +248,6 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
             }
         }
 
-        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
         return entryLists;
     }
 

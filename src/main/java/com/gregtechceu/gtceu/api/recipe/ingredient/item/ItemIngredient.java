@@ -8,6 +8,9 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.registries.Registries;
@@ -141,6 +144,18 @@ public abstract class ItemIngredient {
     }
 
     public static ItemIngredient of(Ingredient ingredient, int count) {
+        if(ingredient.getClass() == Ingredient.class) {
+            var values = ((IngredientAccessor)ingredient).getValues();
+            if(values.length == 1) {
+                var value = values[0];
+                if(value instanceof ItemValueAccessor itemValue) {
+                    return new SimpleItemIngredient(itemValue.getItem().getItem(), count);
+                }
+                else if (value instanceof TagValueAccessor tagValue) {
+                    return new SimpleTagIngredient(tagValue.getTag(), 1);
+                }
+            }
+        }
         return new VanillaIngredient(ingredient, count);
     }
 

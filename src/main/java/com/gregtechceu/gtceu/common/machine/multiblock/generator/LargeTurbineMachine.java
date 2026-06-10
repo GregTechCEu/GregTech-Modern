@@ -162,11 +162,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         int actualParallel = ParallelLogic.getParallelAmountFast(group, recipe, maxParallel);
         double eutMultiplier = (maxParallel == actualParallel) ?
-                turbineMachine.productionBoost() * turbineMaxVoltage / EUt.voltage() :
-                turbineMachine.productionBoost() * actualParallel;
+                turbineMachine.productionBoost() * turbineMaxVoltage / (EUt.voltage() * actualParallel) :
+                turbineMachine.productionBoost();
 
-        recipe.multiplyInputs(actualParallel);
-        recipe.multiplyOutputs(actualParallel);
+        recipe.multiplyAllContents(actualParallel);
         recipe.multiplyEUt(eutMultiplier);
         recipe.parallels *= actualParallel;
         recipe.multiplyDuration(holderEfficiency);

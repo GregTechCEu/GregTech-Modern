@@ -101,7 +101,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputItems(stack)
-                    .buildRawRecipe();
+                    .buildRawRecipe()
+                    .toRuntime();
             if (RecipeHelper.matchContents(getLastGroup(), recipe).isSuccess()) {
                 return recipe;
             }

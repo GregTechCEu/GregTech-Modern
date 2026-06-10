@@ -37,7 +37,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -99,11 +98,12 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     protected GTRecipe getLubricantRecipe() {
-        return GTRecipeBuilder.ofRaw().inputFluids(LUBRICANT_STACK).buildRawRecipe();
+        return GTRecipeBuilder.ofRaw().inputFluids(LUBRICANT_STACK).buildRawRecipe().toRuntime();
     }
 
     protected GTRecipe getBoostRecipe() {
-        return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe();
+        return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe()
+                .toRuntime();
     }
 
     /**
@@ -136,11 +136,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                 RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
             int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
             int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
-            double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
 
-            recipe.multiplyInputs(actualParallel);
-            recipe.multiplyOutputs(actualParallel);
-            recipe.multiplyEUt(eutMultiplier);
+            recipe.multiplyAllContents(actualParallel);
+            recipe.multiplyEUt(engineMachine.getProductionBoost());
             recipe.parallels *= actualParallel;
             return null;
         }
@@ -216,8 +214,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // Previous Recipe is always null on first world load, so try to acquire a new recipe
         GTRecipe recipe = recipeLogic.getLastRecipe();
         if (recipe == null) {
-            Iterator<GTRecipe> iterator = recipeLogic.searchRecipe();
-            recipe = iterator.hasNext() ? iterator.next() : null;
+            var group = recipeLogic.getLastGroup();
+            var match = getRecipeType().findRecipe(group,
+                    definition -> RecipeHelper.matchContents(group, definition.toRuntime()).isSuccess());
+            recipe = match == null ? null : match.toRuntime();
             if (recipe == null) return null;
         }
         FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe).get(0);

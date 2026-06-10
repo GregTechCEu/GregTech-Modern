@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EURecipeCapability extends RecipeCapability<EnergyStack> {
@@ -128,7 +129,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
      * @param eu       EU value to put inside content map
      */
     public static void putEUContent(ContentListMap contents, EnergyStack eu) {
-        contents.put(EURecipeCapability.CAP, List.of(eu));
+        contents.put(EURecipeCapability.CAP, new ArrayList<>(Collections.singleton(eu)));
     }
 
 }

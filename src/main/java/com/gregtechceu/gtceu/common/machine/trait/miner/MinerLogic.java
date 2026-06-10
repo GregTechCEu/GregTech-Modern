@@ -371,15 +371,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
         outputItemHandler.storage.clear();
 
-        var matches = searchRecipe();
-
-        GTRecipe recipe = null; // attempt ore block that has a static gt recipe
-        while (matches.hasNext()) {
-            GTRecipe match = matches.next();
-            if (match == null) continue;
-            recipe = match;
-            break;
-        }
+        var match = machine.getRecipeType().findRecipe(getLastGroup(), definition -> checkRecipe(definition.toRuntime())
+                .isSuccess());
+        GTRecipe recipe = match == null ? null : match.toRuntime(); // attempt ore block that has a static gt recipe
 
         if (recipe != null) {
             long eut = recipe.getInputEUt().getTotalEU();

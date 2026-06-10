@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -69,23 +68,19 @@ public abstract class RecipeCapability<T> {
     public abstract T copyInner(T content, int multiplier);
 
     /**
-     * deep copy and modify the size attribute for those Content that have the size attribute.
+     * deep copy and modify the size attribute for contents that have the size attribute.
      */
     public T copyWithMultiplier(T content, int multiplier) {
         return copyInner(content, multiplier);
     }
 
+    public boolean isChanced(T content) {
+        return false;
+    }
+
     @SuppressWarnings("unchecked")
     public final T copyContent(Object content) {
         return copyInner((T) content);
-    }
-
-    /**
-     * used for recipe builder via KubeJs.
-     */
-    @SuppressWarnings("unchecked")
-    public T of(Object o) {
-        return (T) o;
     }
 
     public String slotName(IO io) {

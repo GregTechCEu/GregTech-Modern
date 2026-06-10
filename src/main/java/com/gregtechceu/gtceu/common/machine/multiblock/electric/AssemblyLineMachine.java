@@ -17,13 +17,11 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
@@ -81,8 +79,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         for (int i = 0; i < inputsSize; i++) {
             var itemStack = itemInventory.get(i);
-            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
-            if (!recipeStack.test(itemStack)) {
+            var recipeStack = itemInputs.get(i);
+            if (!recipeStack.test(itemStack) || recipeStack.getCount() > itemStack.getCount()) {
                 return false;
             }
         }
@@ -104,22 +102,22 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (itemInventory.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
 
         for (int i = 0; i < inputsSize; i++) {
-            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
+            var recipeStack = itemInputs.get(i);
             var currentBus = itemInventory.get(i);
             if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
-            var left = itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true);
-            if (!(left == null || left.isEmpty())) return ActionResult.FAIL_NO_REASON;
+            if (!itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true)) {
+                return ActionResult.FAIL_NO_REASON;
+            }
         }
         // If we get here, the recipe should be consumable
 
         for (int i = 0; i < inputsSize; i++) {
-            Ingredient recipeStack = ItemRecipeCapability.CAP.of(itemInputs.get(i).content);
+            var recipeStack = itemInputs.get(i);
             var currentBus = itemInventory.get(i);
             if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
-            var left = itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false);
-            if (!(left == null || left.isEmpty())) {
+            if (!itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false)) {
                 GTCEu.LOGGER.error(
                         "Recipe in Assline.consumeItemContents was true when simulating, but false when consuming.");
                 return ActionResult.FAIL_NO_REASON;
@@ -152,7 +150,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         for (int i = 0; i < inputsSize; i++) {
             var fluidStack = fluidInventory.get(i);
-            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            var recipeStack = fluidInputs.get(i);
             if (!recipeStack.test(fluidStack) || recipeStack.getAmount() > fluidStack.getAmount()) {
                 return false;
             }
@@ -174,22 +172,22 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (fluidInventory.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
 
         for (int i = 0; i < fluidsSize; i++) {
-            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            var recipeStack = fluidInputs.get(i);
             var currentBus = fluidInventory.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
-            var left = fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true);
-            if (!(left == null || left.isEmpty())) return ActionResult.FAIL_NO_REASON;
+            if (!fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true)) {
+                return ActionResult.FAIL_NO_REASON;
+            }
         }
         // If we get here, the recipe should be consumable
 
         for (int i = 0; i < fluidsSize; i++) {
-            OldFluidIngredient recipeStack = FluidRecipeCapability.CAP.of(fluidInputs.get(i).content);
+            var recipeStack = fluidInputs.get(i);
             var currentBus = fluidInventory.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
-            var left = fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false);
-            if (!(left == null || left.isEmpty())) {
+            if (!fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false)) {
                 GTCEu.LOGGER.error(
                         "Recipe in Assline.consumeFluidContents was true when simulating, but false when consuming.");
                 return ActionResult.FAIL_NO_REASON;
@@ -212,24 +210,32 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         copyWithoutItemsFluids.inputs.clear();
         copyWithoutItemsFluids.tickInputs.clear();
 
-        for (var entry : recipe.inputs.entrySet()) {
-            if (entry.getKey().equals(FluidRecipeCapability.CAP)) {
-                copyWithFluids.inputs.put(entry.getKey(), entry.getValue());
-            } else if (entry.getKey().equals(ItemRecipeCapability.CAP)) {
-                copyWithItems.inputs.put(entry.getKey(), entry.getValue());
-            } else {
-                copyWithoutItemsFluids.inputs.put(entry.getKey(), entry.getValue());
+        recipe.inputs.forEachEntry(new com.gregtechceu.gtceu.api.recipe.content.ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability<T> capability,
+                                   List<T> contents) {
+                if (capability == FluidRecipeCapability.CAP) {
+                    copyWithFluids.inputs.put(capability, contents);
+                } else if (capability == ItemRecipeCapability.CAP) {
+                    copyWithItems.inputs.put(capability, contents);
+                } else {
+                    copyWithoutItemsFluids.inputs.put(capability, contents);
+                }
             }
-        }
-        for (var entry : recipe.tickInputs.entrySet()) {
-            if (entry.getKey().equals(FluidRecipeCapability.CAP)) {
-                copyWithFluids.tickInputs.put(entry.getKey(), entry.getValue());
-            } else if (entry.getKey().equals(ItemRecipeCapability.CAP)) {
-                copyWithItems.tickInputs.put(entry.getKey(), entry.getValue());
-            } else {
-                copyWithoutItemsFluids.tickInputs.put(entry.getKey(), entry.getValue());
+        });
+        recipe.tickInputs.forEachEntry(new com.gregtechceu.gtceu.api.recipe.content.ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability<T> capability,
+                                   List<T> contents) {
+                if (capability == FluidRecipeCapability.CAP) {
+                    copyWithFluids.tickInputs.put(capability, contents);
+                } else if (capability == ItemRecipeCapability.CAP) {
+                    copyWithItems.tickInputs.put(capability, contents);
+                } else {
+                    copyWithoutItemsFluids.tickInputs.put(capability, contents);
+                }
             }
-        }
+        });
         var config = ConfigHolder.INSTANCE.machines;
         ActionResult result;
         if (config.orderedAssemblyLineItems) {

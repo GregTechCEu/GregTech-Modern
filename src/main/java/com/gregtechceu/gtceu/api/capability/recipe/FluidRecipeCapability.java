@@ -61,11 +61,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public FluidIngredient of(Object o) {
-        if (o instanceof FluidIngredient ingredient) return ingredient;
-        if (o instanceof FluidStack stack) return FluidIngredient.of(stack);
-        if (o instanceof Supplier<?> supplier) return of(supplier.get());
-        return super.of(o);
+    public boolean isChanced(FluidIngredient content) {
+        return content.isChanced();
     }
 
     @Override
@@ -208,7 +205,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
 
-        while (entryLists.size() < recipe.recipeType.getMaxOutputs(this)) entryLists.add(null);
         return entryLists;
     }
 

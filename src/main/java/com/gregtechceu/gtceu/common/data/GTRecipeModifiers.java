@@ -94,7 +94,6 @@ public class GTRecipeModifiers {
 
             if (parallels == 1) return null;
             recipe.multiplyAllContents(parallels);
-            recipe.multiplyEUt(parallels);
             recipe.parallels *= parallels;
         }
         return null;

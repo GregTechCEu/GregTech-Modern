@@ -347,7 +347,7 @@ public interface OverclockingLogic {
 
         public void applyTo(GTRecipe recipe) {
             recipe.multiplyAllContents(parallels);
-            recipe.multiplyEUt(eutMultiplier);
+            recipe.multiplyTickContents(GTMath.saturatedCast(Math.round(eutMultiplier)));
             if (!recipe.data.getBoolean("duration_is_total_cwu")) {
                 recipe.multiplyDuration(durationMultiplier);
             }

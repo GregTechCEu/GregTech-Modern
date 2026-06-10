@@ -18,9 +18,8 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -187,12 +186,14 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
             batch = Math.max(1, batchResult.amount() / parallel);
         }
 
-        int contentMultiplier = saturatedMultiply(parallel, batch);
-        if (contentMultiplier != 1) {
-            recipe.multiplyAllContents(contentMultiplier);
-            recipe.multiplyEUt(parallel);
-            recipe.multiplyDuration(batch);
+        if (parallel != 1) {
+            recipe.multiplyAllContents(parallel);
             recipe.parallels *= parallel;
+        }
+        if (batch != 1) {
+            recipe.multiplyInputs(batch);
+            recipe.multiplyOutputs(batch);
+            recipe.multiplyDuration(batch);
             recipe.batchParallels *= batch;
         }
         return null;
@@ -281,10 +282,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
     private static List<FluidStack> getOutputFluids(GTRecipe recipe) {
         return recipe.getOutputContents(FluidRecipeCapability.CAP)
                 .stream()
-                .map(Content::getContent)
-                .map(FluidRecipeCapability.CAP::of)
-                .filter(ingredient -> !ingredient.isEmpty() && ingredient.getFluids().length > 0)
-                .map(OldFluidIngredient::getStacks)
+                .map(FluidIngredient::getFluids)
+                .filter(stacks -> stacks.length > 0 && !stacks[0].isEmpty())
                 .map(stacks -> stacks[0])
                 .toList();
     }
@@ -347,7 +346,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
-                Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
+                ContentListMap out = new ContentListMap();
+                out.put(ItemRecipeCapability.CAP, items);
                 result = RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.OUT, out, false, true);
                 if (!result.isSuccess()) return result;
             }
@@ -396,7 +396,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
-                Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
+                ContentListMap out = new ContentListMap();
+                out.put(ItemRecipeCapability.CAP, items);
                 var result = RecipeHelper.handleRecipe(getLastGroup(), recipe, io, out, false, false);
                 if (!result.isSuccess()) return result;
             }

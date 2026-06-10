@@ -178,6 +178,11 @@ public class GTRecipe{
         tickOutputs.multiply(multiplier);
     }
 
+    public void multiplyTickContents(int multiplier) {
+        multiplyTickInputs(multiplier);
+        multiplyTickOutputs(multiplier);
+    }
+
     public void multiplyAllContents(int multiplier) {
         multiplyInputs(multiplier);
         multiplyOutputs(multiplier);

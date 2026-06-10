@@ -103,9 +103,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
         int parallels = ParallelLogic.getParallelAmountFast(group, recipe, maxParallel);
 
-        recipe.multiplyInputs(parallels);
-        recipe.multiplyOutputs(parallels);
-        recipe.multiplyEUt(parallels);
+        recipe.multiplyAllContents(parallels);
         recipe.parallels *= parallels;
         return null;
     }

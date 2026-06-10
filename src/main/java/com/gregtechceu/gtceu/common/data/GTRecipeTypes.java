@@ -11,8 +11,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -38,6 +37,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.ModLoader;
 
 import java.util.ArrayList;
@@ -536,23 +536,19 @@ public class GTRecipeTypes {
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.data.getBoolean("disable_distillery")) return;
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
-                    Content inputContent = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
-                    OldFluidIngredient input = FluidRecipeCapability.CAP.of(inputContent.getContent());
+                    FluidIngredient input = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ?
-                            ItemRecipeCapability.CAP
-                                    .of(recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getContent())
-                                    .getItems() :
-                            null;
+                            recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getItems(): null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
-                    if (input.isEmpty()) return;
-                    List<Content> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
+                    if (input.getFluids().length == 0) return;
+                    List<FluidIngredient> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);
                     for (int i = 0; i < contents.size(); ++i) {
-                        Content outputContent = contents.get(i);
-                        OldFluidIngredient output = FluidRecipeCapability.CAP.of(outputContent.getContent());
-                        if (output.isEmpty()) continue;
+                        FluidIngredient output = contents.get(i);
+                        FluidStack outputStack = output.toStack();
+                        if (outputStack.isEmpty()) continue;
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
-                                        BuiltInRegistries.FLUID.getKey(output.getStacks()[0].getFluid()).getPath())
+                                        BuiltInRegistries.FLUID.getKey(outputStack.getFluid()).getPath())
                                 .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4), recipeBuilder.EUt().amperage())
                                 .circuitMeta(i + 1);
 
@@ -563,17 +559,13 @@ public class GTRecipeTypes {
                         boolean fluidsDivisible = RecipeHelper.isFluidStackDivisibleForDistillery(input, ratio) &&
                                 RecipeHelper.isFluidStackDivisibleForDistillery(output, ratio);
 
-                        OldFluidIngredient dividedInputFluid = input.copy();
-                        dividedInputFluid.setAmount(Math.max(1, dividedInputFluid.getAmount() / ratio));
-                        OldFluidIngredient dividedOutputFluid = output.copy();
-                        dividedOutputFluid.setAmount(Math.max(1, dividedOutputFluid.getAmount() / ratio));
+                        FluidIngredient dividedInputFluid = copyFluidWithAmountPreservingChance(input,
+                                Math.max(1, input.getAmount() / ratio));
+                        FluidIngredient dividedOutputFluid = copyFluidWithAmountPreservingChance(output,
+                                Math.max(1, output.getAmount() / ratio));
 
                         if (shouldDivide && fluidsDivisible) {
-                            builder.chance(inputContent.chance)
-                                    .tierChanceBoost(inputContent.tierChanceBoost)
-                                    .inputFluids(dividedInputFluid)
-                                    .chance(outputContent.chance)
-                                    .tierChanceBoost(outputContent.tierChanceBoost)
+                            builder.inputFluids(dividedInputFluid)
                                     .outputFluids(dividedOutputFluid)
                                     .duration(Math.max(1, recipeDuration / ratio));
                         } else if (!shouldDivide) {
@@ -581,11 +573,7 @@ public class GTRecipeTypes {
                                 builder.outputItems(outputItem);
                             }
                             builder.conditions.addAll(recipeBuilder.conditions);
-                            builder.chance(inputContent.chance)
-                                    .tierChanceBoost(inputContent.tierChanceBoost)
-                                    .inputFluids(input)
-                                    .chance(outputContent.chance)
-                                    .tierChanceBoost(outputContent.tierChanceBoost)
+                            builder.inputFluids(input)
                                     .outputFluids(output)
                                     .duration(recipeDuration)
                                     .save(provider);
@@ -692,5 +680,10 @@ public class GTRecipeTypes {
 
     public static GTRecipeType get(String name) {
         return GTRegistries.RECIPE_TYPES.get(GTCEu.id(name));
+    }
+
+    private static FluidIngredient copyFluidWithAmountPreservingChance(FluidIngredient ingredient, int amount) {
+        FluidIngredient copy = ingredient.getInner().copyWithAmount(amount);
+        return ingredient.isChanced() ? copy.copyWithChance(ingredient.getChance()) : copy;
     }
 }

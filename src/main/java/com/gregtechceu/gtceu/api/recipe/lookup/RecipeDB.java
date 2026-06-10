@@ -74,27 +74,6 @@ public final class RecipeDB {
     }
 
     /**
-     * Find a GT Recipe
-     *
-     * @param inputs    the input capabilities and their associated contents to search with
-     * @param predicate the predicate to determine recipe validity
-     * @return the recipe
-     */
-    public @Nullable GTRecipeDefinition find(@NotNull Map<RecipeCapability<?>, List<Object>> inputs,
-                                             @NotNull Predicate<GTRecipeDefinition> predicate) {
-        List<AbstractMapIngredient> list = new ArrayList<>();
-        inputs.forEach((cap, content) -> {
-            if (!cap.isRecipeSearchFilter()) {
-                return;
-            }
-            for (var ingredient : content) {
-                list.addAll(getMapIngredients(cap, ingredient));
-            }
-        });
-        return find(list, predicate);
-    }
-
-    /**
      * Create an iterator for a search space
      *
      * @param group    the group to search
@@ -342,10 +321,5 @@ public final class RecipeDB {
             stack.clear();
             stack.push(new SearchFrame(db.rootBranch));
         }
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static List<AbstractMapIngredient> getMapIngredients(RecipeCapability<?> cap, Object ingredient) {
-        return ((RecipeCapability) cap).getMapIngredients(ingredient);
     }
 }

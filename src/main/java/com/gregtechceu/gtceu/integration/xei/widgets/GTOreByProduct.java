@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
@@ -46,7 +45,7 @@ public class GTOreByProduct {
 
     private static ImmutableList<ItemStack> ALWAYS_MACHINES;
 
-    private final Int2ObjectMap<Content> chances = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<ChanceInfo> chances = new Int2ObjectOpenHashMap<>();
     protected final List<ItemEntryList> itemInputs = new ArrayList<>();
     protected final NonNullList<ItemStack> itemOutputs = NonNullList.create();
     protected final List<FluidEntryList> fluidInputs = new ArrayList<>();
@@ -289,10 +288,10 @@ public class GTOreByProduct {
 
     public void getTooltip(int slotIndex, List<Component> tooltips) {
         if (chances.containsKey(slotIndex)) {
-            Content entry = chances.get(slotIndex);
-            float chance = 100 * (float) entry.chance / entry.maxChance;
-            if (entry.tierChanceBoost != 0) {
-                float boost = entry.tierChanceBoost / 100.0f;
+            ChanceInfo entry = chances.get(slotIndex);
+            float chance = 100 * (float) entry.chance() / entry.maxChance();
+            if (entry.tierChanceBoost() != 0) {
+                float boost = entry.tierChanceBoost() / 100.0f;
                 tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
                 tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
             } else {
@@ -301,7 +300,7 @@ public class GTOreByProduct {
         }
     }
 
-    public Content getChance(int slot) {
+    public ChanceInfo getChance(int slot) {
         return chances.get(slot);
     }
 
@@ -343,8 +342,10 @@ public class GTOreByProduct {
     private void addChance(int base, int tier) {
         // this is solely for the chance overlay and tooltip, neither of which care about the ItemStack
         chances.put(currentSlot - 1,
-                new Content(ItemStack.EMPTY, base, 10000, tier));
+                new ChanceInfo(base, 10000, tier));
     }
+
+    public record ChanceInfo(int chance, int maxChance, int tierChanceBoost) {}
 
     // make the code less :weary:
     private void addGemChance(int baseLow, int tierLow, int baseHigh, int tierHigh, boolean high) {

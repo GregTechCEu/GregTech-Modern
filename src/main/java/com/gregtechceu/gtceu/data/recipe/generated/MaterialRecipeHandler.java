@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -195,8 +194,6 @@ public final class MaterialRecipeHandler {
                 .EUt(EUt);
 
         if (gasTier != null) {
-            OldFluidIngredient gas = gasTier.getFluid();
-
             blastBuilder.copy("blast_" + material.getName())
                     .circuitMeta(1)
                     .duration(duration)
@@ -204,7 +201,7 @@ public final class MaterialRecipeHandler {
 
             blastBuilder.copy("blast_" + material.getName() + "_gas")
                     .circuitMeta(2)
-                    .inputFluids(gas)
+                    .inputFluids(gasTier.getFluid())
                     .duration((int) (duration * 0.67))
                     .save(provider);
         } else {

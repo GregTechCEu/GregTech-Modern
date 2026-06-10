@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.*;
 import com.gregtechceu.gtceu.core.mixins.forge.*;
 
@@ -114,9 +113,6 @@ public class IngredientEquality {
     public static boolean ingredientEquals(Ingredient first, Ingredient second) {
         if (first == second) return true;
         if (first == null || second == null) return false;
-
-        first = SizedIngredient.getInner(first);
-        second = SizedIngredient.getInner(second);
         return cmp(first, second);
     }
 

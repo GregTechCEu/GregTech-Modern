@@ -207,20 +207,26 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
         List<AbstractMapIngredient> ingredients = new ArrayList<>();
         for (int i = 0; i < getSlots(); ++i) {
             ItemStack stack = getStackInSlot(i);
-            if (stack.isEmpty()) continue;
-            if (stack.is(GTItems.PROGRAMMED_CIRCUIT.get())) {
-                ingredients.addAll(CircuitMapIngredient.from(IntCircuitBehaviour.getCircuitConfiguration(stack)));
-                continue;
-            }
-            ingredients.addAll(ItemMapIngredient.from(stack));
-            ingredients.addAll(ItemTagMapIngredient.from(stack));
-            ingredients.addAll(StrictNBTItemStackMapIngredient.from(stack));
-            ingredients.addAll(PartialNBTItemStackMapIngredient.from(stack));
-            ingredients.addAll(NBTPredicateItemStackMapIngredient.from(stack));
-            ingredients.addAll(IntersectionMapIngredient.from(stack));
-            ingredients.addAll(CustomMapIngredient.from(stack));
+            ingredients.addAll(mapItemStack(stack));
 
         }
+        return ingredients;
+    }
+
+    public static List<AbstractMapIngredient> mapItemStack(ItemStack stack) {
+        List<AbstractMapIngredient> ingredients = new ArrayList<>();
+        if (stack.isEmpty()) return ingredients;
+        if (stack.is(GTItems.PROGRAMMED_CIRCUIT.get())) {
+            ingredients.addAll(CircuitMapIngredient.from(IntCircuitBehaviour.getCircuitConfiguration(stack)));
+            return ingredients;
+        }
+        ingredients.addAll(ItemMapIngredient.from(stack));
+        ingredients.addAll(ItemTagMapIngredient.from(stack));
+        ingredients.addAll(StrictNBTItemStackMapIngredient.from(stack));
+        ingredients.addAll(PartialNBTItemStackMapIngredient.from(stack));
+        ingredients.addAll(NBTPredicateItemStackMapIngredient.from(stack));
+        ingredients.addAll(IntersectionMapIngredient.from(stack));
+        ingredients.addAll(CustomMapIngredient.from(stack));
         return ingredients;
     }
 

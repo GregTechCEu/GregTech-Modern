@@ -35,7 +35,7 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
     final GTRecipeDefinition recipe;
 
     public GTEmiRecipe(GTRecipeDefinition recipe, EmiRecipeCategory category) {
-        super(() -> new GTRecipeWidget(recipe.toRuntime()));
+        super(() -> new GTRecipeWidget(recipe));
         this.category = category;
         this.recipe = recipe;
     }

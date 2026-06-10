@@ -4,11 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -20,7 +19,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -275,47 +273,46 @@ public class RecipeHelper {
      * @return All recipe outputs, limited by some factor(s)
      */
     @Contract(pure = true)
-    public static Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
-                                                                 Reference2IntMap<RecipeCapability<?>> trimLimits) {
-        Map<RecipeCapability<?>, List<Content>> outputs = new Reference2ObjectOpenHashMap<>(current.size());
+    public static ContentListMap doTrim(ContentListMap current, Reference2IntMap<RecipeCapability<?>> trimLimits) {
+        ContentListMap outputs = new ContentListMap();
 
-        for (var entry : current.entrySet()) {
-            var cap = entry.getKey();
-            var contents = entry.getValue();
-            if (contents.isEmpty()) continue;
-            int N = trimLimits.getOrDefault(cap, -1);
-            if (N == 0) continue; // Skip this cap if limit is 0
+        current.forEachEntry(new ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> cap, List<T> contents) {
+                if (contents.isEmpty()) return;
+                int N = trimLimits.getOrDefault(cap, -1);
+                if (N == 0) return; // Skip this cap if limit is 0
 
-            List<Content> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
-            if (N == -1) { // Add all if limit is -1/not in map
-                list.addAll(contents);
-                continue;
-            }
+                List<T> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
+                if (N == -1) { // Add all if limit is -1/not in map
+                    list.addAll(contents);
+                    return;
+                }
 
-            int added = 0;
-            List<Content> chanced = new ArrayList<>();
-            // Add non-chanced contents with priority and store chanced contents for later
-            for (var content : contents) {
-                if (added == N) break;
-                if (0 < content.chance && content.chance < content.maxChance) {
-                    chanced.add(content);
-                } else {
-                    list.add(content);
-                    added++;
+                int added = 0;
+                List<T> chanced = new ArrayList<>();
+                // Add non-chanced contents with priority and store chanced contents for later
+                for (T content : contents) {
+                    if (added == N) break;
+                    if (cap.isChanced(content)) {
+                        chanced.add(content);
+                    } else {
+                        list.add(content);
+                        added++;
+                    }
+                }
+
+                // Add as many chanced contents as needed
+                if (added < N) {
+                    int rem = Math.min(chanced.size(), N - added);
+                    list.addAll(chanced.subList(0, rem));
                 }
             }
-
-            // Add as many chanced contents as needed
-            if (added < N) {
-                int rem = Math.min(chanced.size(), N - added);
-                list.addAll(chanced.subList(0, rem));
-            }
-        }
-
+        });
         return outputs;
     }
 
-    public static int getRatioForDistillery(OldFluidIngredient fluidInput, OldFluidIngredient fluidOutput,
+    public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,
                                             @Nullable ItemStack output) {
         int[] divisors = new int[] { 2, 5, 10, 25, 50 };
         int ratio = -1;
@@ -337,7 +334,7 @@ public class RecipeHelper {
         return Math.max(1, ratio);
     }
 
-    public static boolean isFluidStackDivisibleForDistillery(OldFluidIngredient fluidStack, int divisor) {
+    public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
     }
 }

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -93,7 +93,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
                     fluidTank.handleRecipe(IO.OUT, null,
-                            List.of(OldFluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), false);
+                            List.of(FluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), false);
                 }
             }
         }
