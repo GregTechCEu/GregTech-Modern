@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.MapIngredientTypeManager;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -21,7 +21,6 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
@@ -79,12 +78,12 @@ public class RecipeIteratorStressTest {
             helper.succeed();
             return;
         }
-        List<List<AbstractMapIngredient>> list = new ArrayList();
+        List<AbstractMapIngredient> list = new ArrayList<>();
         for (var item : BuiltInRegistries.ITEM) {
-            list.add(MapIngredientTypeManager.getFrom(Ingredient.of(item), ItemRecipeCapability.CAP));
+            list.addAll(ItemRecipeCapability.CAP.getMapIngredients(ItemIngredient.of(item)));
         }
         for (var block : BuiltInRegistries.BLOCK) {
-            list.add(MapIngredientTypeManager.getFrom(Ingredient.of(block), ItemRecipeCapability.CAP));
+            list.addAll(ItemRecipeCapability.CAP.getMapIngredients(ItemIngredient.of(block)));
         }
 
         long start = System.nanoTime();
@@ -114,7 +113,6 @@ public class RecipeIteratorStressTest {
         BusHolder busHolder = getBussesAndForm(helper);
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.COBBLESTONE));
         busHolder.inputBus1.getInventory().setStackInSlot(1, new ItemStack(Blocks.ACACIA_WOOD));
-        busHolder.controller.recipeLogic.searchRecipe();
         long start = System.nanoTime();
 
         for (int i = 0; i < 1000; i++) {

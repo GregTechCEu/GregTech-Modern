@@ -12,6 +12,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
@@ -265,6 +266,7 @@ public class GTRecipe{
 
     public CompoundTag toNBT() {
         CompoundTag tag = new CompoundTag();
+        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         tag.putString("recipeType", recipeType.registryName.toString());
         tag.putString("id", id.toString());
         tag.putInt("duration", duration);
@@ -272,7 +274,7 @@ public class GTRecipe{
         tag.put("outputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, outputs).getOrThrow(false, GTCEu.LOGGER::error));
         tag.put("tickInputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickInputs).getOrThrow(false, GTCEu.LOGGER::error));
         tag.put("tickOutputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickOutputs).getOrThrow(false, GTCEu.LOGGER::error));
-        tag.put("conditions", Codec.list(RecipeCondition.CODEC).encodeStart(NbtOps.INSTANCE, conditions).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("conditions", Codec.list(RecipeCondition.CODEC).encodeStart(ops, conditions).getOrThrow(false, GTCEu.LOGGER::error));
         tag.put("data", data);
         tag.putString("category", recipeCategory.registryKey.toString());
         tag.putInt("parallels", parallels);
@@ -283,6 +285,7 @@ public class GTRecipe{
     }
 
     public static GTRecipe fromNBT(CompoundTag tag) {
+        var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(tag.getString("recipeType")));
         ResourceLocation id = new ResourceLocation(tag.getString("id"));
         int duration = tag.getInt("duration");
@@ -290,7 +293,7 @@ public class GTRecipe{
         ContentListMap outputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("outputs")).getOrThrow(false, GTCEu.LOGGER::error);
         ContentListMap tickInputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickInputs")).getOrThrow(false, GTCEu.LOGGER::error);
         ContentListMap tickOutputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickOutputs")).getOrThrow(false, GTCEu.LOGGER::error);
-        List<RecipeCondition<?>> conditions = Codec.list(RecipeCondition.CODEC).parse(NbtOps.INSTANCE, tag.get("conditions")).getOrThrow(false, GTCEu.LOGGER::error);
+        List<RecipeCondition<?>> conditions = Codec.list(RecipeCondition.CODEC).parse(ops, tag.get("conditions")).getOrThrow(false, GTCEu.LOGGER::error);
         CompoundTag data = tag.getCompound("data");
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(new ResourceLocation(tag.getString("category")));
         int parallels = tag.getInt("parallels");

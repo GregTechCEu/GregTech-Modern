@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidStackMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
@@ -32,10 +32,10 @@ import java.util.function.Predicate;
 public class GTRecipeLookupTest {
 
     private static RecipeDB DB;
-    private static final Predicate<GTRecipe> ALWAYS_TRUE = gtRecipe -> true;
-    private static final Predicate<GTRecipe> ALWAYS_FALSE = gtRecipe -> false;
-    private static GTRecipe SMELT_STONE, SMELT_ACACIA_WOOD, SMELT_BIRCH_WOOD, SMELT_CHERRY_WOOD;
-    private static GTRecipe RANGED_INPUT_ITEM, RANGED_INPUT_FLUID, RANGED_INPUT_BOTH;
+    private static final Predicate<GTRecipeDefinition> ALWAYS_TRUE = gtRecipe -> true;
+    private static final Predicate<GTRecipeDefinition> ALWAYS_FALSE = gtRecipe -> false;
+    private static GTRecipeDefinition SMELT_STONE, SMELT_ACACIA_WOOD, SMELT_BIRCH_WOOD, SMELT_CHERRY_WOOD;
+    private static GTRecipeDefinition RANGED_INPUT_ITEM, RANGED_INPUT_FLUID, RANGED_INPUT_BOTH;
 
     @BeforeBatch(batch = "GTRecipeLookup")
     public static void prepare(ServerLevel level) {
@@ -74,7 +74,7 @@ public class GTRecipeLookupTest {
                 .buildRawRecipe();
 
         handler.beginStaging();
-        for (GTRecipe recipe : List.of(SMELT_STONE,
+        for (GTRecipeDefinition recipe : List.of(SMELT_STONE,
                 SMELT_ACACIA_WOOD,
                 SMELT_BIRCH_WOOD,
                 SMELT_CHERRY_WOOD,
@@ -86,21 +86,19 @@ public class GTRecipeLookupTest {
         handler.completeStaging();
     }
 
-    private static List<List<AbstractMapIngredient>> createIngredients(ItemStack... stacks) {
-        return List.of(
-                Arrays.stream(stacks)
-                        .map(stack -> (AbstractMapIngredient) new ItemStackMapIngredient(stack))
-                        .toList());
+    private static List<AbstractMapIngredient> createIngredients(ItemStack... stacks) {
+        return Arrays.stream(stacks)
+                .map(stack -> (AbstractMapIngredient) new ItemMapIngredient(stack.getItem()))
+                .toList();
     }
 
-    private static List<List<AbstractMapIngredient>> createIngredients(FluidStack... stacks) {
-        return List.of(
-                Arrays.stream(stacks)
-                        .map(stack -> (AbstractMapIngredient) new FluidStackMapIngredient(stack))
-                        .toList());
+    private static List<AbstractMapIngredient> createIngredients(FluidStack... stacks) {
+        return Arrays.stream(stacks)
+                .map(stack -> (AbstractMapIngredient) new FluidStackMapIngredient(stack))
+                .toList();
     }
 
-    private static List<List<AbstractMapIngredient>> createIngredients(List<List<AbstractMapIngredient>>... stacks) {
+    private static List<AbstractMapIngredient> createIngredients(List<AbstractMapIngredient>... stacks) {
         return Arrays.stream(stacks).flatMap(Collection::stream).toList();
     }
 
@@ -108,7 +106,7 @@ public class GTRecipeLookupTest {
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
-        GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+        GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(SMELT_STONE.equals(resultRecipe),
                 "GT Recipe should be smelt_stone, instead was " + resultRecipe);
         helper.succeed();
@@ -119,7 +117,7 @@ public class GTRecipeLookupTest {
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupSimpleFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.REDSTONE_TORCH, 1));
-        GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+        GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
         helper.succeed();
     }
@@ -129,7 +127,7 @@ public class GTRecipeLookupTest {
     @GameTest(template = "empty", batch = "GTRecipeLookup")
     public static void recipeLookupFalsePredicateFailureTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1));
-        GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_FALSE);
+        GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_FALSE);
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
         helper.succeed();
     }
@@ -139,7 +137,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupMultipleIngredientsSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.COBBLESTONE, 1),
                 new ItemStack(Items.REDSTONE_TORCH, 1));
-        GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+        GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
         helper.assertTrue(SMELT_STONE.equals(resultRecipe),
                 "GT Recipe should be smelt_stone, instead was " + resultRecipe);
         helper.succeed();
@@ -151,7 +149,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupIngredientCountSucceedTest(GameTestHelper helper) {
         // NOTE: RecipeLookup only checks item type, not item count, so this will still work
         var notEnoughIngredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 8));
-        GTRecipe resultRecipe = DB.find(notEnoughIngredients, ALWAYS_TRUE);
+        GTRecipeDefinition resultRecipe = DB.find(notEnoughIngredients, ALWAYS_TRUE);
         helper.assertTrue(SMELT_CHERRY_WOOD.equals(resultRecipe),
                 "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
 
@@ -168,11 +166,11 @@ public class GTRecipeLookupTest {
         var ingredients = createIngredients(new ItemStack(Items.CHERRY_WOOD, 16));
         // Do a recipe check with a condition that requires at least 4 ingredients in the inputs
         // The recipe has 8, so this should succeed
-        GTRecipe resultRecipe = DB.find(ingredients,
+        GTRecipeDefinition resultRecipe = DB.find(ingredients,
                 recipe -> recipe.inputs
                         .getOrDefault(ItemRecipeCapability.CAP, List.of())
                         .stream()
-                        .allMatch(content -> ((SizedIngredient) content.getContent()).getAmount() > 4));
+                        .allMatch(content -> ((ItemIngredient) content).getCount() > 4));
         helper.assertTrue(SMELT_CHERRY_WOOD.equals(resultRecipe),
                 "GT Recipe should be smelt_cherry_wood, instead was " + resultRecipe);
 
@@ -181,7 +179,7 @@ public class GTRecipeLookupTest {
         resultRecipe = DB.find(ingredients, recipe -> recipe.inputs
                 .getOrDefault(ItemRecipeCapability.CAP, List.of())
                 .stream()
-                .allMatch(content -> ((SizedIngredient) content.getContent()).getAmount() > 32));
+                .allMatch(content -> ((ItemIngredient) content).getCount() > 32));
         helper.assertTrue(resultRecipe == null, "GT Recipe should be empty (null), instead was " + resultRecipe);
 
         helper.succeed();
@@ -193,7 +191,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupSimpleRangedItemSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(new ItemStack(Items.RED_WOOL, 4));
         for (int i = 0; i < 100; i++) {
-            GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+            GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
             helper.assertTrue(RANGED_INPUT_ITEM.equals(resultRecipe),
                     "GT Recipe should be ranged_input_item, instead was " + resultRecipe + ". Failed on check " + i);
         }
@@ -206,7 +204,7 @@ public class GTRecipeLookupTest {
     public static void recipeLookupSimpleRangedFluidSuccessTest(GameTestHelper helper) {
         var ingredients = createIngredients(GTMaterials.Helium.getFluid(4));
         for (int i = 0; i < 100; i++) {
-            GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+            GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
             helper.assertTrue(RANGED_INPUT_FLUID.equals(resultRecipe),
                     "GT Recipe should be ranged_input_fluid, instead was " + resultRecipe + ". Failed on check " + i);
         }
@@ -221,7 +219,7 @@ public class GTRecipeLookupTest {
                 createIngredients(new ItemStack(Items.BLUE_WOOL, 4)),
                 createIngredients(GTMaterials.Iron.getFluid(4)));
         for (int i = 0; i < 100; i++) {
-            GTRecipe resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
+            GTRecipeDefinition resultRecipe = DB.find(ingredients, ALWAYS_TRUE);
             helper.assertTrue(RANGED_INPUT_BOTH.equals(resultRecipe),
                     "GT Recipe should be raged_input_both, instead was " + resultRecipe + ". Failed on check " + i);
         }

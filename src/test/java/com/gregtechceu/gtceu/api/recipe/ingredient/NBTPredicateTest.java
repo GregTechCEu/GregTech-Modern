@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
@@ -16,7 +17,6 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -48,9 +48,7 @@ public class NBTPredicateTest {
 
         CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced")
-                        .chance(4000)
-                        .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("bin", "bar"))
-                        .chance(10000)
+                        .chancedInput(ItemIngredient.of(new ItemStack(Items.FEATHER), eq("bin", "bar")), 4000, 0)
                         .outputItems(new ItemStack(Items.CHARCOAL))
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)
@@ -58,8 +56,8 @@ public class NBTPredicateTest {
 
         CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_ranged")
-                        .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
-                                new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0, 4)))
+                        .inputItemRanged(ItemIngredient.ranged(
+                                ItemIngredient.of(new ItemStack(Items.FEATHER), eq("bash", "bar")), 0, 4))
                         .outputItems(new ItemStack(Items.COBBLESTONE))
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)
@@ -67,10 +65,8 @@ public class NBTPredicateTest {
 
         CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced_ranged")
-                        .chance(4000)
-                        .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
-                                new ItemStack(Items.FEATHER), eq("bash", "botch")), UniformInt.of(0, 4)))
-                        .chance(10000)
+                        .chancedInput(ItemIngredient.ranged(
+                                ItemIngredient.of(new ItemStack(Items.FEATHER), eq("bash", "botch")), 0, 4), 4000, 0)
                         .outputItems(new ItemStack(Items.DEEPSLATE))
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)

@@ -47,7 +47,7 @@ public class GTRecipeSerializerTest {
         // Serialize and immediately deserialize
         JsonObject json = new JsonObject();
         GTRecipeBuilder.ofRaw().addCondition(fluidCondition).toJson(json);
-        GTRecipe recipe = GTRecipeSerializer.SERIALIZER.fromJson(GTCEu.id("test"), json);
+        GTRecipeDefinition recipe = GTRecipeSerializer.SERIALIZER.fromJson(GTCEu.id("test"), json);
 
         // Validate
         boolean foundFluid = false;
@@ -81,7 +81,7 @@ public class GTRecipeSerializerTest {
         // Serialize and back
         JsonObject json = new JsonObject();
         GTRecipeBuilder.ofRaw().addCondition(blockCondition).toJson(json);
-        GTRecipe recipe = GTRecipeSerializer.SERIALIZER.fromJson(GTCEu.id("test"), json);
+        GTRecipeDefinition recipe = GTRecipeSerializer.SERIALIZER.fromJson(GTCEu.id("test"), json);
 
         // Validate
         boolean foundBlock = false;

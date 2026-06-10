@@ -195,6 +195,10 @@ public abstract class ItemIngredient {
         return IntCircuitIngredient.of(configuration);
     }
 
+    public static ItemIngredient ranged(ItemIngredient ingredient, int minCount, int maxCount) {
+        return new RangedItemIngredient(ingredient.copyWithCount(1), minCount, maxCount);
+    }
+
     public static ItemIngredient ranged(ItemStack stack, int minCount, int maxCount) {
         return new RangedItemIngredient(of(stack, 1), minCount, maxCount);
     }
