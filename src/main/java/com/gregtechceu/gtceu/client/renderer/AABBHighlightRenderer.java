@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,6 +18,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -61,15 +61,16 @@ public class AABBHighlightRenderer {
         highlights.add(highlight);
     }
 
-    public record AABBHighlight(AABB aabb, int colorARGB, long startMillis, long durationMillis, long phaseMillis, double thickness) {
+    public record AABBHighlight(AABB aabb, int colorARGB, long startMillis, long durationMillis, long phaseMillis,
+                                double thickness) {
 
         public void renderTick(VertexConsumer buf, PoseStack pose, long currentTimeMillis) {
-            if(currentTimeMillis >= startMillis + durationMillis){
+            if (currentTimeMillis >= startMillis + durationMillis) {
                 this.remove();
                 return;
             }
-            if(currentTimeMillis < startMillis) return;
-            if((currentTimeMillis - startMillis) / phaseMillis % 2 == 1) return;
+            if (currentTimeMillis < startMillis) return;
+            if ((currentTimeMillis - startMillis) / phaseMillis % 2 == 1) return;
             RenderBufferHelper.renderAABBOutline(buf, pose, aabb(), thickness, colorARGB());
         }
 
@@ -77,13 +78,15 @@ public class AABBHighlightRenderer {
             AABBHighlightRenderer.INSTANCE.highlights.remove(this);
         }
     }
-    public static AABBHighlightBuilder builder(){
+
+    public static AABBHighlightBuilder builder() {
         return new AABBHighlightBuilder();
     }
 
     @Setter
     @Accessors(chain = true, fluent = true)
     public static class AABBHighlightBuilder {
+
         AABB aabb = null;
         int colorARGB = 0xFFFFFFFF;
         long startMillis = -1;
@@ -91,25 +94,24 @@ public class AABBHighlightRenderer {
         long phaseMillis = 300;
         double thickness = 0.01;
 
-        public AABBHighlightBuilder aabb(BlockPos pos){
+        public AABBHighlightBuilder aabb(BlockPos pos) {
             this.aabb = new AABB(pos);
             return this;
         }
 
-        public AABBHighlightBuilder colorARGB(int alpha, int red, int green, int blue){
+        public AABBHighlightBuilder colorARGB(int alpha, int red, int green, int blue) {
             this.colorARGB = FastColor.ARGB32.color(alpha, red, green, blue);
             return this;
         }
 
-        public AABBHighlight build(){
-            if(aabb == null) {
+        public AABBHighlight build() {
+            if (aabb == null) {
                 throw new IllegalArgumentException("AABB can't be null in AABBHighlightBuilder");
             }
-            if(startMillis == -1) {
+            if (startMillis == -1) {
                 this.startMillis = System.currentTimeMillis();
             }
             return new AABBHighlight(aabb, colorARGB, startMillis, durationMillis, phaseMillis, thickness);
         }
-
     }
 }
