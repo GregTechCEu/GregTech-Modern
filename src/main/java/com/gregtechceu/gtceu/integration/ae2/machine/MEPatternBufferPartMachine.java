@@ -129,7 +129,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     protected final NotifiableFluidTank shareTank;
 
     @SaveField
-    protected final InternalSlot[] workerSlotStorage = new InternalSlot[MAX_PATTERN_COUNT];
+    protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
     private final @Nullable IPatternDetails[] patternSlotDetails = new IPatternDetails[MAX_PATTERN_COUNT];
 
@@ -158,8 +158,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
 
-        for (int i = 0; i < this.workerSlotStorage.length; i++) {
-            this.workerSlotStorage[i] = new InternalSlot();
+        for (int i = 0; i < this.internalInventory.length; i++) {
+            this.internalInventory[i] = new InternalSlot();
         }
 
         getMainNode().addService(ICraftingProvider.class, this);
@@ -187,12 +187,12 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return;
         }
 
-        var slot = workerSlotStorage[idx];
+        InternalSlot slot = internalInventory[idx];
         workerSlots.add(slot);
         workerPatterns.add(null);
 
-        var itemH = attachTrait(new WorkerItemHandler(slot, idx));
-        var fluidH = attachTrait(new WorkerFluidHandler(slot, idx));
+        WorkerItemHandler itemH = attachTrait(new WorkerItemHandler(slot, idx));
+        WorkerFluidHandler fluidH = attachTrait(new WorkerFluidHandler(slot, idx));
         workerItemHandlers.add(itemH);
         workerFluidHandlers.add(fluidH);
 
@@ -211,7 +211,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         }
 
         int last = workerSlots.size() - 1;
-        var slot = workerSlots.get(last);
+        InternalSlot slot = workerSlots.get(last);
 
         slot.refund();
         slot.setOnContentsChanged(() -> {});
@@ -237,28 +237,28 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     static boolean couldSlotMatchContents(InternalSlot slot, Map<RecipeCapability<?>, List<Object>> contents) {
-        var itemContents = contents.get(ItemRecipeCapability.CAP);
+        List<Object> itemContents = contents.get(ItemRecipeCapability.CAP);
         if (itemContents != null && !slot.isItemEmpty()) {
-            var itemTypes = slot.getItemTypes();
-            for (var obj : itemContents) {
+            Set<Item> itemTypes = slot.getItemTypes();
+            for (Object obj : itemContents) {
                 if (!(obj instanceof Ingredient ing) || ing.isEmpty()) {
                     continue;
                 }
-                for (var stack : ing.getItems()) {
+                for (ItemStack stack : ing.getItems()) {
                     if (itemTypes.contains(stack.getItem())) {
                         return true;
                     }
                 }
             }
         }
-        var fluidContents = contents.get(FluidRecipeCapability.CAP);
+        List<Object> fluidContents = contents.get(FluidRecipeCapability.CAP);
         if (fluidContents != null && !slot.isFluidEmpty()) {
-            var fluidTypes = slot.getFluidTypes();
-            for (var obj : fluidContents) {
+            Set<Fluid> fluidTypes = slot.getFluidTypes();
+            for (Object obj : fluidContents) {
                 if (!(obj instanceof FluidIngredient ing) || ing.isEmpty()) {
                     continue;
                 }
-                for (var stack : ing.getStacks()) {
+                for (FluidStack stack : ing.getStacks()) {
                     if (fluidTypes.contains(stack.getFluid())) {
                         return true;
                     }
@@ -287,7 +287,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                 return contents;
             }
 
-            var slot = workerSlots.get(workerIdx);
+            InternalSlot slot = workerSlots.get(workerIdx);
             if (slot.isItemEmpty() && slot.isFluidEmpty()) {
                 return contents;
             }
@@ -465,7 +465,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public Set<MEPatternBufferProxyPartMachine> getProxies() {
         if (proxyMachines.size() != proxies.size()) {
             proxyMachines.clear();
-            for (var pos : proxies) {
+            for (BlockPos pos : proxies) {
                 if (MetaMachine.getMachine(getLevel(), pos) instanceof MEPatternBufferProxyPartMachine proxy) {
                     proxyMachines.add(proxy);
                 }
@@ -486,8 +486,9 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onPatternChange(int index) {
         if (isRemote()) return;
 
-        var oldPattern = patternSlotDetails[index];
-        var newPatternDetails = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(index), getLevel());
+        IPatternDetails oldPattern = patternSlotDetails[index];
+        IPatternDetails newPatternDetails = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(index),
+                getLevel());
         patternSlotDetails[index] = newPatternDetails;
         if (oldPattern != null && !oldPattern.equals(newPatternDetails)) {
             for (int i = 0; i < workerPatterns.size(); i++) {
@@ -566,8 +567,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        var result = new ArrayList<IPatternDetails>(MAX_PATTERN_COUNT);
-        for (var p : patternSlotDetails) {
+        ArrayList<IPatternDetails> result = new ArrayList<>(MAX_PATTERN_COUNT);
+        for (IPatternDetails p : patternSlotDetails) {
             if (p != null) result.add(p);
         }
         return result;
@@ -579,7 +580,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return false;
         }
         boolean knownPattern = false;
-        for (var p : patternSlotDetails) {
+        for (IPatternDetails p : patternSlotDetails) {
             if (patternDetails.equals(p)) {
                 knownPattern = true;
                 break;
@@ -588,18 +589,18 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         if (!knownPattern) return false;
 
         for (int i = 0; i < workerSlots.size(); i++) {
-            var slot = workerSlots.get(i);
+            InternalSlot slot = workerSlots.get(i);
             boolean empty = slot.isItemEmpty() && slot.isFluidEmpty();
             if (empty) workerPatterns.set(i, null);
-            var cur = workerPatterns.get(i);
+            IPatternDetails currentPattern = workerPatterns.get(i);
 
-            if (cur == null) {
+            if (currentPattern == null) {
                 if (!empty) continue;
                 workerPatterns.set(i, patternDetails);
                 slot.pushPattern(patternDetails, inputHolder);
                 return true;
             }
-            if (cur.equals(patternDetails)) {
+            if (currentPattern.equals(patternDetails)) {
                 slot.pushPattern(patternDetails, inputHolder);
                 return true;
             }
