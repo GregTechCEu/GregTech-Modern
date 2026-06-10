@@ -15,15 +15,23 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidStackList;
 import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -63,6 +71,49 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public boolean isChanced(FluidIngredient content) {
         return content.isChanced();
+    }
+
+    @Override
+    public IGuiTexture createXEIOverlay(FluidIngredient content, boolean perTick) {
+        if (!content.isChanced() && !(content instanceof RangedFluidIngredient) && !perTick) return null;
+        return new IGuiTexture() {
+
+            @Override
+            public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
+                drawChance(graphics, x, y, width, height, content.getChance());
+                if (content instanceof RangedFluidIngredient ranged) {
+                    drawString(graphics, x, y, width, height,
+                            "%s-%s".formatted(ranged.getMinAmount(), ranged.getAmount()), 0xFFFFFF, false);
+                } else if (content.getAmount() > 0) {
+                    drawString(graphics, x, y, width, height, FormattingUtil.formatBuckets(content.getAmount()),
+                            0xFFFFFF, false);
+                }
+                if (perTick) {
+                    drawString(graphics, x, y, width, height,
+                            LocalizationUtils.format("gtceu.gui.content.tips.per_tick_short"), 0xFFFF00, true);
+                }
+            }
+        };
+    }
+
+    private static void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int chance) {
+        if (chance == IChancedIngredient.MAX_CHANCE) return;
+        float chanceFloat = 1f * chance / IChancedIngredient.MAX_CHANCE;
+        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
+                FormattingUtil.formatNumber2Places(100 * chanceFloat) + "%";
+        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
+        drawString(graphics, x, y, width, height, s, color, true);
+    }
+
+    private static void drawString(GuiGraphics graphics, float x, float y, int width, int height, String s, int color,
+                                   boolean top) {
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().scale(0.5f, 0.5f, 1);
+        Font fontRenderer = Minecraft.getInstance().font;
+        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
+                (int) ((y + (height / 3f) + 6) * 2 - (top ? height : 0)), color, true);
+        graphics.pose().popPose();
     }
 
     @Override

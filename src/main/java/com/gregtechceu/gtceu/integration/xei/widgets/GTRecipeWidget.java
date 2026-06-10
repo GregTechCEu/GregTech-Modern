@@ -325,6 +325,8 @@ public class GTRecipeWidget extends WidgetGroup {
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> list) {
+                int nonTickCount = (io == IO.IN ? recipe.getInputContents(capability) :
+                        recipe.getOutputContents(capability)).size();
                 var widgetClass = capability.getWidgetClass();
                 if (widgetClass == null) return;
                 WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(capability.slotName(io)), widgetClass,
@@ -333,6 +335,7 @@ public class GTRecipeWidget extends WidgetGroup {
                             if (index < 0 || index >= list.size()) return;
                             capability.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe,
                                     list.get(index), null, minTier, tier);
+                            widget.setOverlay(capability.createXEIOverlay(list.get(index), index >= nonTickCount));
                         });
             }
         });

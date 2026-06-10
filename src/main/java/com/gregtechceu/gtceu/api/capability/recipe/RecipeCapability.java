@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
@@ -76,6 +77,10 @@ public abstract class RecipeCapability<T> {
 
     public boolean isChanced(T content) {
         return false;
+    }
+
+    public @Nullable IGuiTexture createXEIOverlay(T content, boolean perTick) {
+        return null;
     }
 
     @SuppressWarnings("unchecked")

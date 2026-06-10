@@ -10,13 +10,20 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidEntryList;
 import com.gregtechceu.gtceu.integration.xei.entry.item.ItemEntryList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.integration.xei.handlers.item.CycleItemEntryHandler;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
@@ -145,6 +152,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             IGuiTexture overlay = null;
             if (chance != null) {
                 xeiChance = (float) chance.chance() / chance.maxChance();
+                overlay = createChanceOverlay(chance);
             }
             if (itemOutputs.get(slotIndex).isEmpty()) {
                 itemOutputExists.add(false);
@@ -188,5 +196,27 @@ public class GTOreByProductWidget extends WidgetGroup {
                         ITEM_OUTPUT_LOCATIONS.getInt(i + 1), 18, 18, GuiTextures.SLOT));
             }
         }
+    }
+
+    private static IGuiTexture createChanceOverlay(GTOreByProduct.ChanceInfo chance) {
+        return new IGuiTexture() {
+
+            @Override
+            public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
+                float chanceFloat = 1f * chance.chance() / chance.maxChance();
+                String s = chance.chance() == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
+                        FormattingUtil.formatNumber2Places(100 * chanceFloat) + "%";
+                int color = chance.chance() == 0 ? 0xFF0000 :
+                        GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
+
+                graphics.pose().pushPose();
+                graphics.pose().translate(0, 0, 400);
+                graphics.pose().scale(0.5f, 0.5f, 1);
+                Font fontRenderer = Minecraft.getInstance().font;
+                graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
+                        (int) ((y + (height / 3f) + 6) * 2 - height), color, true);
+                graphics.pose().popPose();
+            }
+        };
     }
 }
