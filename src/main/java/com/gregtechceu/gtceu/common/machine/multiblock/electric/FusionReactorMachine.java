@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -168,18 +167,17 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
      * 
      * @param machine a {@link FusionReactorMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Fusion Reactor and recipe
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @org.jetbrains.annotations.Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                                               @NotNull GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
-            return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+            return Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion");
         }
 
         long heatDiff = recipe.data.getLong("eu_to_start") - fusionReactorMachine.heat;
@@ -190,8 +188,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         }
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
-            return ModifierFunction
-                    .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion"));
+            return Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion");
 
         // remove the energy needed
         fusionReactorMachine.energyContainer.removeEnergy(heatDiff);

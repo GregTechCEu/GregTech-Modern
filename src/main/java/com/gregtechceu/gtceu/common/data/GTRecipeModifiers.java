@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -25,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -38,10 +37,9 @@ public class GTRecipeModifiers {
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
             .memoize(logic -> (machine, group, recipe) -> {
-                if (!(machine instanceof IOverclockMachine overclockMachine)) return ModifierFunction.IDENTITY;
+                if (!(machine instanceof IOverclockMachine overclockMachine)) return null;
                 if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
-                    return ModifierFunction
-                            .cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+                    return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
                 }
                 return logic.getModifier(machine, group, recipe, overclockMachine.getOverclockVoltage());
             });
@@ -54,23 +52,22 @@ public class GTRecipeModifiers {
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, group, recipe) -> {
-                if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return ModifierFunction.IDENTITY;
-                if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
+                if (!ConfigHolder.INSTANCE.gameplay.environmentalHazards) return null;
+                if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return RecipeModifier.DEFAULT_FAILURE;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
                 BlockPos machinePos = machine.getPos();
                 var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
-                if (zone == null) return ModifierFunction.IDENTITY;
+                if (zone == null) return null;
 
                 float strength = zone.strength();
-                if (strength > maxAllowedStrength) return ModifierFunction.NULL;
+                if (strength > maxAllowedStrength) return RecipeModifier.DEFAULT_FAILURE;
 
                 int multiplier = (1 + (int) (strength * 5 / maxAllowedStrength));
-                if (multiplier > 5) return ModifierFunction.NULL;
+                if (multiplier > 5) return RecipeModifier.DEFAULT_FAILURE;
 
-                return ModifierFunction.builder()
-                        .durationMultiplier(multiplier)
-                        .build();
+                recipe.multiplyDuration(multiplier);
+                return null;
             });
 
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
@@ -87,42 +84,38 @@ public class GTRecipeModifiers {
      *
      * @param machine an {@link IMultiController} machine
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Parallel Multiblock
+     * @return the failure reason, or {@code null} on success
      */
-    public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
+    public static @Nullable Component hatchParallel(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(group, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
 
-            if (parallels == 1) return ModifierFunction.IDENTITY;
-            return ModifierFunction.builder()
-                    .modifyAllContents(ContentModifier.multiplier(parallels))
-                    .eutMultiplier(parallels)
-                    .parallels(parallels)
-                    .build();
+            if (parallels == 1) return null;
+            recipe.multiplyAllContents(parallels);
+            recipe.multiplyEUt(parallels);
+            recipe.parallels *= parallels;
         }
-        return ModifierFunction.IDENTITY;
+        return null;
     }
 
-    public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
+    public static @Nullable Component batchMode(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
                 parallel = ParallelLogic.getParallelAmountWithoutEU(group, recipe, parallel);
 
-                if (parallel == 0) return ModifierFunction.NULL;
-                if (parallel == 1) return ModifierFunction.IDENTITY;
+                if (parallel == 0) return RecipeModifier.DEFAULT_FAILURE;
+                if (parallel == 1) return null;
 
-                return ModifierFunction.builder()
-                        .inputModifier(ContentModifier.multiplier(parallel))
-                        .outputModifier(ContentModifier.multiplier(parallel))
-                        .durationMultiplier(parallel)
-                        .batchParallels(parallel)
-                        .build();
+                recipe.multiplyInputs(parallel);
+                recipe.multiplyOutputs(parallel);
+                recipe.multiplyDuration(parallel);
+                recipe.batchParallels *= parallel;
             }
         }
-        return ModifierFunction.IDENTITY;
+        return null;
     }
 
     /**
@@ -134,24 +127,22 @@ public class GTRecipeModifiers {
      *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Cracking
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Cracker
+     * @return the failure reason, or {@code null} on success
      */
-    public static @NotNull ModifierFunction crackerOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                             @NotNull GTRecipe recipe) {
+    public static @Nullable Component crackerOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                       @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return RecipeModifier.DEFAULT_FAILURE;
 
-        var oc = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe,
+        var failReason = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe,
                 coilMachine.getOverclockVoltage());
+        if (failReason != null) return failReason;
         if (coilMachine.getCoilTier() > 0) {
-            var coilModifier = ModifierFunction.builder()
-                    .eutMultiplier(1.0 - coilMachine.getCoilTier() * 0.1)
-                    .build();
-            oc = oc.andThen(coilModifier);
+            recipe.multiplyEUt(1.0 - coilMachine.getCoilTier() * 0.1);
         }
-        return oc;
+        return null;
     }
 
     /**
@@ -167,10 +158,10 @@ public class GTRecipeModifiers {
      *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Blasting
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Blast Furnace
+     * @return the failure reason, or {@code null} on success
      */
-    public static @NotNull ModifierFunction ebfOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                         @NotNull GTRecipe recipe) {
+    public static @Nullable Component ebfOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                   @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
@@ -179,21 +170,17 @@ public class GTRecipeModifiers {
                 (100 * Math.max(0, coilMachine.getTier() - GTValues.MV));
         int recipeTemp = recipe.data.getInt("ebf_temp");
         if (!recipe.data.contains("ebf_temp") || recipeTemp > blastFurnaceTemperature) {
-            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low"));
+            return Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low");
         }
 
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-            return ModifierFunction.cancel(Component.translatable("gtceu.recipe_modifier.insufficient_voltage"));
+            return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
 
-        var discount = ModifierFunction.builder()
-                .eutMultiplier(getCoilEUtDiscount(recipeTemp, blastFurnaceTemperature))
-                .build();
+        recipe.multiplyEUt(getCoilEUtDiscount(recipeTemp, blastFurnaceTemperature));
 
         OverclockingLogic logic = (p, v) -> OverclockingLogic.heatingCoilOC(p, v, recipeTemp, blastFurnaceTemperature);
-        var oc = logic.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
-
-        return oc.compose(discount);
+        return logic.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
     }
 
     /**
@@ -206,24 +193,23 @@ public class GTRecipeModifiers {
      *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Pyrolysis
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Pyrolyse Oven
+     * @return the failure reason, or {@code null} on success
      */
-    public static @NotNull ModifierFunction pyrolyseOvenOverclock(@NotNull MetaMachine machine,
-                                                                  RecipeHandlerGroup group,
-                                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable Component pyrolyseOvenOverclock(@NotNull MetaMachine machine,
+                                                            RecipeHandlerGroup group,
+                                                            @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return ModifierFunction.NULL;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return RecipeModifier.DEFAULT_FAILURE;
 
         int tier = coilMachine.getCoilTier();
         double durationMultiplier = (tier == 0) ? (4.0 / 3.0) : (2.0 / (tier + 1)); // 75% speed with cupro coils
-        var durationModifier = ModifierFunction.builder()
-                .durationMultiplier(durationMultiplier)
-                .build();
 
-        var oc = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
-        return oc.andThen(durationModifier);
+        var failReason = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
+        if (failReason != null) return failReason;
+        recipe.multiplyDuration(durationMultiplier);
+        return null;
     }
 
     /**
@@ -242,35 +228,28 @@ public class GTRecipeModifiers {
      *
      * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for parallel smelting
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Multi Smelter
+     * @return the failure reason, or {@code null} on success
      */
-    public static @NotNull ModifierFunction multiSmelterParallel(@NotNull MetaMachine machine,
-                                                                 RecipeHandlerGroup group,
-                                                                 @NotNull GTRecipe recipe) {
+    public static @Nullable Component multiSmelterParallel(@NotNull MetaMachine machine,
+                                                           RecipeHandlerGroup group,
+                                                           @NotNull GTRecipe recipe) {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();
         int parallels = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
-        if (parallels == 0) return ModifierFunction.NULL;
+        if (parallels == 0) return RecipeModifier.DEFAULT_FAILURE;
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
         long eut = (long) (4 * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
-        ModifierFunction baseModifier = r -> {
-            var copy = r.copy();
-            EURecipeCapability.putEUContent(copy.tickInputs, new EnergyStack(Math.max(1, eut)));
-            copy.duration = Math.max(1, duration);
-            return copy;
-        };
+        EURecipeCapability.putEUContent(recipe.tickInputs, new EnergyStack(Math.max(1, eut)));
+        recipe.duration = Math.max(1, duration);
 
-        GTRecipe copy = baseModifier.apply(recipe);
-        var ocModifier = NON_PERFECT_OVERCLOCK.getModifier(machine, group, copy, coilMachine.getOverclockVoltage());
-        var parallelModifier = ModifierFunction.builder()
-                .modifyAllContents(ContentModifier.multiplier(parallels))
-                .parallels(parallels)
-                .build();
-
-        return baseModifier.andThen(ocModifier).andThen(parallelModifier);
+        var failReason = NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
+        if (failReason != null) return failReason;
+        recipe.multiplyAllContents(parallels);
+        recipe.parallels *= parallels;
+        return null;
     }
 }

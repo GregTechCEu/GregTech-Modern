@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -198,11 +197,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
      * 
      * @param machine a {@link LargeBoilerMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Large Boiler and recipe
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
-        return ModifierFunction.IDENTITY;
+    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                     @NotNull GTRecipe recipe) {
+        return null;
     }
 
     public void addDisplayText(List<Component> textList) {

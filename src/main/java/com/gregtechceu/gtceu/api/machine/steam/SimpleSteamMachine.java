@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
@@ -38,6 +37,7 @@ import com.google.common.collect.Tables;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -174,20 +174,20 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
      *
      * @param machine a {@link SimpleSteamMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Steam Machine
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                                                @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
-            return ModifierFunction.NULL;
+            return RecipeModifier.DEFAULT_FAILURE;
         }
 
-        var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
-        if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
-        return builder.build();
+        recipe.conditions.add(VentCondition.INSTANCE);
+        if (!steamMachine.isHighPressure) recipe.multiplyDuration(2);
+        return null;
     }
 
     @Override

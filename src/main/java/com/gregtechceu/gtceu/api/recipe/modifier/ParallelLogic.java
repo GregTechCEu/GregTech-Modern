@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import net.minecraft.MethodsReturnNonnullByDefault;

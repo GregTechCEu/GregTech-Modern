@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,9 +45,10 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @NotNull
     RecipeLogic getRecipeLogic();
 
-    default GTRecipe fullModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
-        return doModifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()), group);
-    }
+//    default GTRecipe fullModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+//        TODO: fix trimRecipeOutputs
+//        return modifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()), group);
+//    }
 
     /**
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
@@ -56,8 +58,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default GTRecipe doModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), group, recipe);
+    default Component modifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+        for(var modifier: self().getDefinition().getRecipeModifiers()) {
+            var failReason = modifier.applyModifier(self(), group, recipe);
+            if (failReason != null) return failReason;
+        }
+        return null;
     }
 
     /**

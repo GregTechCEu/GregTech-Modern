@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
@@ -25,10 +23,9 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
@@ -182,12 +179,16 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe doModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
+    public final Component modifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), group, recipe);
+        for(var modifier: self().getDefinition().getRecipeModifiers()) {
+            var failReason = modifier.applyModifier(self(), group, recipe);
+            if (failReason != null) return failReason;
+        }
+        return null;
     }
 
     public void updateActiveBlocks(boolean active) {

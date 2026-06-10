@@ -23,12 +23,14 @@ public class ContentListMap{
             ContentListMap::contentListCodec)
             .xmap(ContentListMap::new, ContentListMap::asMap);
 
-    private final Map<RecipeCapability<?>, List<?>> contentsMap = new Reference2ObjectArrayMap<>();
+    private final Map<RecipeCapability<?>, List<?>> contentsMap;
 
-    public ContentListMap() {}
+    public ContentListMap() {
+        contentsMap = new Reference2ObjectArrayMap<>();
+    }
 
     private ContentListMap(Map<RecipeCapability<?>, List<?>> contentsMap) {
-        this.contentsMap.putAll(contentsMap);
+        this.contentsMap = contentsMap;
     }
 
     public <T> List<T> get(RecipeCapability<T> capability) {
@@ -167,13 +169,29 @@ public class ContentListMap{
         return new ContentListMap(newMap);
     }
 
+    public void multiply(int multiplier) {
+        replaceContents(multiplier);
+    }
+
+    public void multiply(double multiplier) {
+        replaceContents(multiplier);
+    }
+
+    private <N extends Number> void replaceContents(N multiplier) {
+        forEachEntry(new EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> cap, List<T> list) {
+                list.replaceAll(content -> cap.copyWithMultiplier(content, multiplier.intValue()));
+            }
+        });
+    }
+
     public void forEachEntry(EntryConsumer consumer) {
         contentsMap.forEach((capability, contents) ->
                 acceptCaptured(consumer, capability, contents)
         );
     }
 
-    @SuppressWarnings("unchecked")
     private static <T> void acceptCaptured(
             EntryConsumer consumer,
             RecipeCapability<?> capability,

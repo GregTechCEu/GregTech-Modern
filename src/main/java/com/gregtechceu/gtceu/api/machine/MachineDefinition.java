@@ -72,7 +72,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private int defaultPaintingColor;
     @Getter
     @Setter
-    private RecipeModifier recipeModifier;
+    private RecipeModifier[] recipeModifiers;
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;

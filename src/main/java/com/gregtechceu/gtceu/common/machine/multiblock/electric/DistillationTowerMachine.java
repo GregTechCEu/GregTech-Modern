@@ -19,10 +19,9 @@ import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -164,8 +163,8 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
         super.onStructureInvalid();
     }
 
-    public static ModifierFunction recipeModifier(MetaMachine machine, RecipeHandlerGroup group,
-                                                  GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group,
+                                                     GTRecipe recipe) {
         if (!(machine instanceof DistillationTowerMachine tower)) {
             return RecipeModifier.nullWrongType(DistillationTowerMachine.class, machine);
         }
@@ -174,29 +173,29 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
                 .map(IParallelHatch::getCurrentParallel)
                 .orElse(1);
         var parallelResult = tower.getMaxParallel(group, recipe, maxParallel, Collections.emptyList(), FLUID_CAP);
-        if (parallelResult.failReason() != null) return ModifierFunction.cancel(parallelResult.failReason());
+        if (parallelResult.failReason() != null) return parallelResult.failReason();
         int parallel = parallelResult.amount();
-        if (parallel == 0) return ModifierFunction.NULL;
+        if (parallel == 0) return RecipeModifier.DEFAULT_FAILURE;
 
         int batch = 1;
         if (tower.isBatchEnabled() && recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
             int desiredBatch = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
             int maxTotalRuns = saturatedMultiply(parallel, desiredBatch);
             var batchResult = tower.getMaxParallel(group, recipe, maxTotalRuns, EU_CAP, EU_AND_FLUID_CAP);
-            if (batchResult.failReason() != null) return ModifierFunction.cancel(batchResult.failReason());
-            if (batchResult.amount() == 0) return ModifierFunction.NULL;
+            if (batchResult.failReason() != null) return batchResult.failReason();
+            if (batchResult.amount() == 0) return RecipeModifier.DEFAULT_FAILURE;
             batch = Math.max(1, batchResult.amount() / parallel);
         }
 
         int contentMultiplier = saturatedMultiply(parallel, batch);
-        if (contentMultiplier == 1) return ModifierFunction.IDENTITY;
-        return ModifierFunction.builder()
-                .modifyAllContents(ContentModifier.multiplier(contentMultiplier))
-                .eutMultiplier(parallel)
-                .durationMultiplier(batch)
-                .parallels(parallel)
-                .batchParallels(batch)
-                .build();
+        if (contentMultiplier != 1) {
+            recipe.multiplyAllContents(contentMultiplier);
+            recipe.multiplyEUt(parallel);
+            recipe.multiplyDuration(batch);
+            recipe.parallels *= parallel;
+            recipe.batchParallels *= batch;
+        }
+        return null;
     }
 
     private ParallelResult getMaxParallel(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit,
@@ -376,7 +375,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine 
             this.workingRecipe = recipe.copy();
             var contents = recipe.getOutputContents(FluidRecipeCapability.CAP);
             var outputs = getMachine().getFluidOutputs();
-            List<Content> trimmed = new ArrayList<>(12);
+            List<FluidIngredient> trimmed = new ArrayList<>(12);
             for (int i = 0; i < Math.min(contents.size(), outputs.size()); ++i) {
                 if (!(outputs.get(i) instanceof VoidFluidHandler)) trimmed.add(contents.get(i));
             }

@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -28,6 +26,7 @@ import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -91,25 +90,24 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * 
      * @param machine a {@link SimpleGeneratorMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Simple Generator
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                                                @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
         long EUt = recipe.getOutputEUt().getTotalEU();
-        if (EUt <= 0) return ModifierFunction.NULL;
+        if (EUt <= 0) return RecipeModifier.DEFAULT_FAILURE;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);
         int parallels = ParallelLogic.getParallelAmountFast(group, recipe, maxParallel);
 
-        return ModifierFunction.builder()
-                .inputModifier(ContentModifier.multiplier(parallels))
-                .outputModifier(ContentModifier.multiplier(parallels))
-                .eutMultiplier(parallels)
-                .parallels(parallels)
-                .build();
+        recipe.multiplyInputs(parallels);
+        recipe.multiplyOutputs(parallels);
+        recipe.multiplyEUt(parallels);
+        recipe.parallels *= parallels;
+        return null;
     }
 
     @Override

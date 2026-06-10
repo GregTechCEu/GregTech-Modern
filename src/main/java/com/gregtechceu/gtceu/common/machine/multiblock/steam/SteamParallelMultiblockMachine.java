@@ -13,9 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -79,27 +77,26 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
      *
      * @param machine a {@link SteamParallelMultiblockMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Steam Multiblock Machine and recipe
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                     @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return ModifierFunction.NULL;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return RecipeModifier.DEFAULT_FAILURE;
 
         // Duration = 1.5x base duration
         // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
         long eut = recipe.getInputEUt().getTotalEU();
         int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels);
         double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (0.8888 * parallelAmount) : (32.0 / eut);
-        return ModifierFunction.builder()
-                .inputModifier(ContentModifier.multiplier(parallelAmount))
-                .outputModifier(ContentModifier.multiplier(parallelAmount))
-                .durationMultiplier(1.5)
-                .eutMultiplier(eutMultiplier)
-                .parallels(parallelAmount)
-                .build();
+        recipe.multiplyInputs(parallelAmount);
+        recipe.multiplyOutputs(parallelAmount);
+        recipe.multiplyDuration(1.5);
+        recipe.multiplyEUt(eutMultiplier);
+        recipe.parallels *= parallelAmount;
+        return null;
     }
 
     @Override

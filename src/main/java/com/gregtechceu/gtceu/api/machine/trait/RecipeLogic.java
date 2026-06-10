@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -223,8 +223,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
-        var modified = machine.fullModifyRecipe(match.toRuntime(), getLastGroup());
-        if (modified != null) {
+        var modified = match.toRuntime();
+        var failReason = machine.modifyRecipe(modified, getLastGroup());
+        if (failReason == null) {
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
@@ -233,6 +234,9 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 lastOriginRecipe = match;
                 return true;
             }
+        }
+        else {
+            failureReasonMap.put(modified, failReason);
         }
         return false;
     }
@@ -428,7 +432,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             else {
                 if(!recipeDirty) {
                     if (lastOriginRecipe != null && machine.alwaysTryModifyRecipe()) {
-                        lastRecipe = machine.fullModifyRecipe(lastOriginRecipe.toRuntime(), getLastGroup());
+                        lastRecipe = lastOriginRecipe.toRuntime();
+                        var failReason = machine.modifyRecipe(lastOriginRecipe.toRuntime(), getLastGroup());
+                        if(failReason != null) {
+                            failureReasonMap.put(lastRecipe, failReason);
+                            lastRecipe = null;
+                        }
                     }
                     if (lastRecipe != null && checkRecipe(lastRecipe).isSuccess()) {
                         setupRecipe(lastRecipe);
@@ -533,7 +542,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     public static void putFailureReason(RecipeLogic logic, GTRecipe recipe, Component reason) {
         var map = logic.getFailureReasonMap();
         if (map.containsKey(recipe)) {
-            if (reason != ModifierFunction.DEFAULT_FAILURE) {
+            if (reason != RecipeModifier.DEFAULT_FAILURE) {
                 map.put(recipe, reason);
             }
         } else {

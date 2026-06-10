@@ -24,7 +24,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class Content {
@@ -59,28 +58,6 @@ public class Content {
      */
     public Content copy(RecipeCapability<?> capability) {
         return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
-    }
-
-    /**
-     * Applies a {@link ContentModifier} to a Content. Does not apply the Modifier if the Content has a Chance.
-     */
-    public Content copy(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
-        if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
-            return copy(capability);
-        } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
-        }
-    }
-
-    /**
-     * Applies a {@link ContentModifier} to a Content. Even if the content has a Chance.
-     */
-    public Content copyChanced(RecipeCapability<?> capability, @NotNull ContentModifier modifier) {
-        if (modifier == ContentModifier.IDENTITY) {
-            return copy(capability);
-        } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
-        }
     }
 
     public boolean isChanced() {

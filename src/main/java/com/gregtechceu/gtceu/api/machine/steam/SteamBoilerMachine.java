@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
@@ -56,6 +55,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -260,18 +260,17 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
      * 
      * @param machine a {@link SteamBoilerMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Steam Boiler
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                                                @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
             return RecipeModifier.nullWrongType(SteamBoilerMachine.class, machine);
         }
-        if (!boilerMachine.isHighPressure) return ModifierFunction.IDENTITY;
+        if (!boilerMachine.isHighPressure) return null;
 
-        return ModifierFunction.builder()
-                .durationMultiplier(0.5)
-                .build();
+        recipe.multiplyDuration(0.5);
+        return null;
     }
 
     @Override

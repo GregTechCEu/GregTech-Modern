@@ -141,7 +141,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         @Override
         public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
-            var modified = machine.fullModifyRecipe(match.toRuntime(), getLastGroup());
+            var modified = machine.modifyRecipe(match.toRuntime(), getLastGroup());
             if (modified != null) {
                 // What is the point of this
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&

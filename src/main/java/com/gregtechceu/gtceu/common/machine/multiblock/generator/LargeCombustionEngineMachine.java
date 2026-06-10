@@ -15,10 +15,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -125,10 +123,10 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
      *
      * @param machine a {@link LargeCombustionEngineMachine}
      * @param recipe  recipe
-     * @return A {@link ModifierFunction} for the given Combustion Engine
+     * @return the failure reason, or {@code null} on success
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                  @NotNull GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                     @NotNull GTRecipe recipe) {
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
@@ -140,14 +138,13 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
             double eutMultiplier = actualParallel * engineMachine.getProductionBoost();
 
-            return ModifierFunction.builder()
-                    .inputModifier(ContentModifier.multiplier(actualParallel))
-                    .outputModifier(ContentModifier.multiplier(actualParallel))
-                    .eutMultiplier(eutMultiplier)
-                    .parallels(actualParallel)
-                    .build();
+            recipe.multiplyInputs(actualParallel);
+            recipe.multiplyOutputs(actualParallel);
+            recipe.multiplyEUt(eutMultiplier);
+            recipe.parallels *= actualParallel;
+            return null;
         }
-        return ModifierFunction.NULL;
+        return RecipeModifier.DEFAULT_FAILURE;
     }
 
     @Override

@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -123,7 +122,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private final List<Component> tooltips = new ArrayList<>();
     @Nullable
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
+    private RecipeModifier[] recipeModifiers = new RecipeModifier[]{GTRecipeModifiers.OC_NON_PERFECT};
     private boolean alwaysTryModifyRecipe;
     @NotNull
     @Getter
@@ -554,8 +553,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE recipeModifier(RecipeModifier recipeModifier) {
-        this.recipeModifier = recipeModifier instanceof RecipeModifierList list ? list :
-                new RecipeModifierList(recipeModifier);
+        this.recipeModifiers = new RecipeModifier[]{recipeModifier};
         return getThis();
     }
 
@@ -565,17 +563,18 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE recipeModifiers(RecipeModifier... recipeModifiers) {
-        this.recipeModifier = new RecipeModifierList(recipeModifiers);
+        this.recipeModifiers = Arrays.stream(recipeModifiers).toArray(RecipeModifier[]::new);
         return getThis();
     }
 
     public TYPE recipeModifiers(boolean alwaysTryModifyRecipe,
                                 RecipeModifier... recipeModifiers) {
-        return this.recipeModifier(new RecipeModifierList(recipeModifiers), alwaysTryModifyRecipe);
+        this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this.recipeModifiers(recipeModifiers);
     }
 
     public TYPE noRecipeModifier() {
-        this.recipeModifier = new RecipeModifierList(RecipeModifier.NO_MODIFIER);
+        this.recipeModifiers = new RecipeModifier[]{RecipeModifier.NO_MODIFIER};
         this.alwaysTryModifyRecipe = false;
         return getThis();
     }
@@ -656,7 +655,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
-        definition.setRecipeModifier(recipeModifier);
+        definition.setRecipeModifiers(recipeModifiers);
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
         definition.setBeforeWorking(this.beforeWorking);
         definition.setOnWorking(this.onWorking);

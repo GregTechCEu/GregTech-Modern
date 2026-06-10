@@ -3,23 +3,16 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
@@ -53,11 +46,13 @@ public class GTRecipe{
     public int batchParallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
-    // Lazy fields, since we need the recipe EUt very often
-    @Getter(lazy = true)
-    private final @NotNull EnergyStack inputEUt = calculateEUt(tickInputs);
-    @Getter(lazy = true)
-    private final @NotNull EnergyStack outputEUt = calculateEUt(tickOutputs);
+    public EnergyStack getInputEUt() {
+        return calculateEUt(tickInputs);
+    }
+
+    public EnergyStack getOutputEUt() {
+        return calculateEUt(tickOutputs);
+    }
 
     public GTRecipe(GTRecipeType recipeType,
                     @Nullable ResourceLocation id,
@@ -152,7 +147,7 @@ public class GTRecipe{
     }
 
     // Technically should account for overflow but realistically not an issue.
-    protected @NotNull EnergyStack calculateEUt(ContentListMap contents) {
+    protected EnergyStack calculateEUt(ContentListMap contents) {
         var outputs = contents.get(EURecipeCapability.CAP);
         if (outputs == null) return EnergyStack.EMPTY;
         long v = 0, a = 0;
@@ -165,6 +160,48 @@ public class GTRecipe{
 
     public int getTotalRuns() {
         return parallels * subtickParallels * batchParallels;
+    }
+
+    public void multiplyInputs(int multiplier) {
+        inputs.multiply(multiplier);
+    }
+
+    public void multiplyOutputs(int multiplier) {
+        outputs.multiply(multiplier);
+    }
+
+    public void multiplyTickInputs(int multiplier) {
+        tickInputs.multiply(multiplier);
+    }
+
+    public void multiplyTickOutputs(int multiplier) {
+        tickOutputs.multiply(multiplier);
+    }
+
+    public void multiplyAllContents(int multiplier) {
+        multiplyInputs(multiplier);
+        multiplyOutputs(multiplier);
+        multiplyTickInputs(multiplier);
+        multiplyTickOutputs(multiplier);
+    }
+
+    public void multiplyDuration(double multiplier) {
+        duration = Math.max(1, (int) (duration * multiplier));
+    }
+
+    public void multiplyEUt(double multiplier) {
+        var eut = RecipeHelper.getRealEUtWithIO(this);
+        EnergyStack stack = eut.stack();
+        if (stack.isEmpty()) return;
+        EnergyStack modified = stack.withAmperage(Math.max(1, (long) (stack.amperage() * multiplier)));
+        EURecipeCapability.putEUContent(eut.isInput() ? tickInputs : tickOutputs, modified);
+    }
+
+    public void addOCs(int amount) {
+        ocLevel += amount;
+        if (data.getBoolean("duration_is_total_cwu")) {
+            duration = (int) Math.max(1, duration * (1f - 0.025f * amount));
+        }
     }
 
     @Override

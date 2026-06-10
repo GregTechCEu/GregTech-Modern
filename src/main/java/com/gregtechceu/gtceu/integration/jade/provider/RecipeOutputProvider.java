@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.OldFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
@@ -73,15 +72,12 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (var item : itemContents) {
                     CompoundTag itemTag;
                     if (item.content instanceof IntProviderIngredient provider) {
-                        // don't roll for output but do copy for chance and batch
-                        IntProviderIngredient chanced = provider;
+                        itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, provider.toJson());
                         if (item.chance < item.maxChance) {
                             double countD = (double) runs *
                                     function.getBoostedChance(item, recipeTier, chanceTier) / item.maxChance;
-                            chanced = (IntProviderIngredient) ItemRecipeCapability.CAP.copyWithMultiplier(provider,
-                                    ContentModifier.multiplier(countD));
+                            itemTag.putInt("sampledCount", Math.max(1, (int) Math.round(countD)));
                         }
-                        itemTag = (CompoundTag) JsonOps.INSTANCE.convertTo(NbtOps.INSTANCE, chanced.toJson());
                     } else {
                         var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
                         if (stacks.length == 0 || stacks[0].isEmpty()) continue;
@@ -107,15 +103,12 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (var fluid : fluidContents) {
                     CompoundTag fluidTag;
                     if (fluid.content instanceof IntProviderFluidIngredient provider) {
-                        // don't bother rolling output for nothing
-                        IntProviderFluidIngredient chanced = provider;
+                        fluidTag = provider.toNBT();
                         if (fluid.chance < fluid.maxChance) {
                             double countD = (double) runs *
                                     function.getBoostedChance(fluid, recipeTier, chanceTier) / fluid.maxChance;
-                            chanced = (IntProviderFluidIngredient) FluidRecipeCapability.CAP.copyWithMultiplier(provider,
-                                    ContentModifier.multiplier(countD));
+                            fluidTag.putInt("sampledCount", Math.max(1, (int) Math.round(countD)));
                         }
-                        fluidTag = chanced.toNBT();
                     } else {
                         FluidStack[] stacks = FluidRecipeCapability.CAP.of(fluid.content).getFluids();
                         if (stacks.length == 0) continue;

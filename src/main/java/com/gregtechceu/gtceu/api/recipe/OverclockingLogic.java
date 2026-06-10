@@ -2,15 +2,15 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.google.common.math.IntMath;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.RoundingMode;
 
@@ -60,24 +60,24 @@ public interface OverclockingLogic {
     }
 
     /**
-     * Determines overclocking parameters from the given arguments, runs the overclock, and returns a ModifierFunction
+     * Determines overclocking parameters from the given arguments, runs the overclock, and applies it to the recipe.
      * 
      * @param machine        machine
      * @param recipe         recipe
      * @param maxVoltage     max overclock voltage
      * @param shouldParallel whether the OC Logic should parallel or not
-     * @return A {@link ModifierFunction} describing how the OC application should modify the recipe
+     * @return the failure reason, or {@code null} on success
      */
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
-                                                  long maxVoltage, boolean shouldParallel) {
+    default @Nullable Component getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
+                                            long maxVoltage, boolean shouldParallel) {
         long EUt = RecipeHelper.getRealEUt(recipe).getTotalEU();
-        if (EUt == 0) return ModifierFunction.IDENTITY;
+        if (EUt == 0) return null;
 
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = GTUtil.getOCTierByVoltage(maxVoltage);
         int OCs = maximumTier - recipeTier;
         if (recipeTier == GTValues.ULV) OCs--;
-        if (OCs == 0) return ModifierFunction.IDENTITY;
+        if (OCs == 0) return null;
 
         int maxParallels;
         if (!shouldParallel || this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // don't parallel
@@ -99,11 +99,12 @@ public interface OverclockingLogic {
 
         OCParams params = new OCParams(EUt, recipe.duration, OCs, maxParallels);
         OCResult result = runOverclockingLogic(params, maxVoltage);
-        return result.toModifier();
+        result.applyTo(recipe);
+        return null;
     }
 
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
-                                                  long maxVoltage) {
+    default @Nullable Component getModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe,
+                                            long maxVoltage) {
         return getModifier(machine, group, recipe, maxVoltage, true);
     }
 
@@ -344,14 +345,14 @@ public interface OverclockingLogic {
 
     record OCResult(double eutMultiplier, double durationMultiplier, int ocLevel, int parallels) {
 
-        public ModifierFunction toModifier() {
-            return ModifierFunction.builder()
-                    .modifyAllContents(ContentModifier.multiplier(parallels))
-                    .eutMultiplier(eutMultiplier)
-                    .durationMultiplier(durationMultiplier)
-                    .addOCs(ocLevel)
-                    .subtickParallels(parallels)
-                    .build();
+        public void applyTo(GTRecipe recipe) {
+            recipe.multiplyAllContents(parallels);
+            recipe.multiplyEUt(eutMultiplier);
+            if (!recipe.data.getBoolean("duration_is_total_cwu")) {
+                recipe.multiplyDuration(durationMultiplier);
+            }
+            recipe.addOCs(ocLevel);
+            recipe.subtickParallels *= parallels;
         }
     }
 }
