@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMac
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -125,25 +124,19 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
         private final FusionReactorMachine machine;
 
-        private static final BufferBuilder lightRingBuffer = new BufferBuilder(GTRenderTypes.lightRing().bufferSize());
-
         private static final IRenderSetup SETUP = new IRenderSetup() {
 
             @Override
             @OnlyIn(Dist.CLIENT)
             public void preDraw(BufferBuilder buffer) {
-                lightRingBuffer.begin(GTRenderTypes.lightRing().mode(), GTRenderTypes.lightRing().format());
+                RenderSystem.setShader(GameRenderer::getPositionColorShader);
+                buffer.begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             }
 
             @Override
             @OnlyIn(Dist.CLIENT)
             public void postDraw(BufferBuilder buffer) {
-                ShaderInstance lastShader = RenderSystem.getShader();
-                RenderSystem.setShader(GameRenderer::getPositionColorShader);
-
-                BufferUploader.drawWithShader(lightRingBuffer.end());
-
-                RenderSystem.setShader(() -> lastShader);
+                BufferUploader.drawWithShader(buffer.end());
             }
         };
 
@@ -153,9 +146,7 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
             poseStack.pushPose();
             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-
-            FusionRingRender.this.renderLightRing(machine, context.partialTicks(), poseStack, lightRingBuffer);
-
+            FusionRingRender.this.renderLightRing(machine, context.partialTicks(), poseStack, buffer);
             poseStack.popPose();
         }
 

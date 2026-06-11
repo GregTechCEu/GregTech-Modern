@@ -107,8 +107,10 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     static {
-        ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
-                new GridNodeHostTransformer());
+        if (GTCEu.Mods.isAE2Loaded()) {
+            ClassSyncData.getClassData(HullMachine.class).setCustomTransformerForField("gridNodeHost",
+                    new GridNodeHostTransformer());
+        }
     }
 
     @Override
