@@ -185,7 +185,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             if (failReason != null) return failReason;
         }
         for(var modifier: self().getDefinition().getRecipeModifiers()) {
-            var failReason = modifier.applyModifier(self(), group, recipe);
+            var failReason = modifier.apply(self(), group, recipe);
             if (failReason != null) return failReason;
         }
         return null;
@@ -239,10 +239,11 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+    public Component beforeWorking(@Nullable GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
-            if (!part.beforeWorking(this)) {
-                return false;
+            Component failReason = part.beforeWorking(this);
+            if (failReason != null) {
+                return failReason;
             }
         }
         return IWorkableMultiController.super.beforeWorking(recipe);

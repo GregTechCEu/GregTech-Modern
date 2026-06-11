@@ -102,7 +102,7 @@ public class GTRecipeModifiers {
         if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
-                parallel = ParallelLogic.getParallelAmountWithoutEU(group, recipe, parallel);
+                parallel = ParallelLogic.getParallelAmount(group, recipe, parallel, false);
 
                 if (parallel == 0) return RecipeModifier.DEFAULT_FAILURE;
                 if (parallel == 1) return null;

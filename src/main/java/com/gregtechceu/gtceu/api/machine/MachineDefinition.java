@@ -79,7 +79,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    private BiFunction<IRecipeLogicMachine, GTRecipe, Component> beforeWorking = (machine, recipe) -> null;
     @NotNull
     @Getter
     @Setter

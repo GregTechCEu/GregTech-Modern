@@ -624,7 +624,7 @@ public class GCYMMachines {
                     Component.translatable("gtceu.distillation_tower"), Component.translatable("gtceu.distillery")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(DISTILLATION_RECIPES, DISTILLERY_RECIPES)
-            .recipeModifiers(OC_NON_PERFECT, DistillationTowerMachine::recipeModifier)
+            .recipeModifiers(DistillationTowerMachine::DTParallel, OC_NON_PERFECT, DistillationTowerMachine::DTBatch)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);

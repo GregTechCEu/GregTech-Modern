@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardCleaner;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -18,6 +19,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
@@ -69,13 +71,15 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        if (super.beforeWorking(recipe) && recipe != null) {
+    public Component beforeWorking(@Nullable GTRecipe recipe) {
+        if (recipe != null) {
             // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
+            var failReason = super.beforeWorking(recipe);
+            if(failReason != null) return failReason;
             this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1);
-            return true;
+            return null;
         }
-        return false;
+        return RecipeModifier.DEFAULT_FAILURE;
     }
 
     @Override

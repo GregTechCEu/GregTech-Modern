@@ -62,8 +62,8 @@ public class EfficiencyModifier implements RecipeModifier {
      * @return Efficiency Modifier
      */
     @Override
-    public @Nullable Component applyModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                             @NotNull GTRecipe recipe) {
+    public @Nullable Component apply(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                     @NotNull GTRecipe recipe) {
         if (!(machine instanceof IRecipeLogicMachine rlm)) {
             return RecipeModifier.nullWrongType(IRecipeLogicMachine.class, machine);
         }

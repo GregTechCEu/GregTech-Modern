@@ -165,13 +165,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
         protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
             if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
-            return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.inputs, false, true);
+            return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.inputs, true);
         }
 
         protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
             if (recipe.hasTick()) {
                 if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
-                return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.tickInputs, false, true);
+                return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.tickInputs, true);
             }
             return ActionResult.SUCCESS;
         }

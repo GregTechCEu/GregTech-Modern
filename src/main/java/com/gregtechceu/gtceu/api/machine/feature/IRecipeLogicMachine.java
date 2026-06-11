@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
@@ -60,7 +59,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @Nullable
     default Component modifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
         for(var modifier: self().getDefinition().getRecipeModifiers()) {
-            var failReason = modifier.applyModifier(self(), group, recipe);
+            var failReason = modifier.apply(self(), group, recipe);
             if (failReason != null) return failReason;
         }
         return null;
@@ -85,8 +84,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default boolean beforeWorking(@Nullable GTRecipe recipe) {
-        return self().getDefinition().getBeforeWorking().test(this, recipe);
+    default Component beforeWorking(@Nullable GTRecipe recipe) {
+        return self().getDefinition().getBeforeWorking().apply(this, recipe);
     }
 
     /**

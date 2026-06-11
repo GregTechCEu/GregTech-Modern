@@ -315,11 +315,13 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public void setupRecipe(GTRecipe recipe) {
-        if (!machine.beforeWorking(recipe)) {
+        var failReason = machine.beforeWorking(recipe);
+        if (failReason != null) {
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
             isActive = false;
+            failureReasonMap.put(recipe, failReason);
             return;
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);

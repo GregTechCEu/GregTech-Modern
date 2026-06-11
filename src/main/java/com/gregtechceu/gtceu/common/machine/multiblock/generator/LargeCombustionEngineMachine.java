@@ -214,13 +214,9 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         // Previous Recipe is always null on first world load, so try to acquire a new recipe
         GTRecipe recipe = recipeLogic.getLastRecipe();
         if (recipe == null) {
-            var group = recipeLogic.getLastGroup();
-            var match = getRecipeType().findRecipe(group,
-                    definition -> RecipeHelper.matchContents(group, definition.toRuntime()).isSuccess());
-            recipe = match == null ? null : match.toRuntime();
-            if (recipe == null) return null;
+            return null;
         }
-        FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe).get(0);
+        FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe, false).get(0);
 
         long ocAmount = getOverclockVoltage() / recipe.getOutputEUt().getTotalEU();
         int neededAmount = GTMath.saturatedCast(ocAmount * requiredFluidInput.getAmount());

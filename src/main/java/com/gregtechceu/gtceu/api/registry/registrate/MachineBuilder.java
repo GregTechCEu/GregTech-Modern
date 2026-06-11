@@ -126,7 +126,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private boolean alwaysTryModifyRecipe;
     @NotNull
     @Getter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    private BiFunction<IRecipeLogicMachine, GTRecipe, Component> beforeWorking = (machine, recipe) -> null;
     @NotNull
     @Getter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
@@ -263,7 +263,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE beforeWorking(BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking) {
+    public TYPE beforeWorking(BiFunction<IRecipeLogicMachine, GTRecipe, Component> beforeWorking) {
         this.beforeWorking = beforeWorking;
         return getThis();
     }

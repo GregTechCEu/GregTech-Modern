@@ -32,14 +32,18 @@ public class ParallelLogic {
      * @return The number of possible parallels, 0 if the recipe cannot be done
      */
     public static int getParallelAmount(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit) {
+        return getParallelAmount(group, recipe, parallelLimit, true);
+    }
+
+    public static int getParallelAmount(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit, boolean includeTick) {
         if (parallelLimit <= 1) return parallelLimit;
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, Collections.emptyList());
+        int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, includeTick, List.of());
         if (maxInputMultiplier == 0) return 0;
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        return limitByOutputMerging(group, recipe, maxInputMultiplier, Collections.emptyList());
+        return limitByOutputMerging(group, recipe, maxInputMultiplier, List.of());
     }
 
     /**
@@ -49,7 +53,7 @@ public class ParallelLogic {
      * @param capsToSkip    the capabilities to skip parallel testing
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int getMaxByInput(RecipeHandlerGroup holder, GTRecipe recipe, int parallelLimit,
+    public static int getMaxByInput(RecipeHandlerGroup holder, GTRecipe recipe, int parallelLimit, boolean includeTick,
                                     List<RecipeCapability<?>> capsToSkip) {
         int minimum = Integer.MAX_VALUE;
 
@@ -70,20 +74,23 @@ public class ParallelLogic {
         }
 
         // tick inputs.
-        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
-            if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
-                // Find the maximum number of recipes that can be performed from the contents of the input inventories
-                var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, true);
-                if (capParallel == 0) {
-                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
-                            .append(": ")
-                            .append(cap.getName());
-                    RecipeLogic.putFailureReason(holder, recipe, reason);
-                    return 0;
+        if(includeTick) {
+            for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
+                if (cap.doMatchInRecipe() && !capsToSkip.contains(cap)) {
+                    // Find the maximum number of recipes that can be performed from the contents of the input inventories
+                    var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, true);
+                    if (capParallel == 0) {
+                        Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
+                                .append(": ")
+                                .append(cap.getName());
+                        RecipeLogic.putFailureReason(holder, recipe, reason);
+                        return 0;
+                    }
+                    minimum = Math.min(minimum, capParallel);
                 }
-                minimum = Math.min(minimum, capParallel);
             }
         }
+
         if (minimum == Integer.MAX_VALUE) {
             Component reason = Component.translatable("gtceu.recipe_logic.no_capabilities")
                     .append(Component.literal(": "))
@@ -98,7 +105,6 @@ public class ParallelLogic {
      * @param holder        the inventories
      * @param recipe        The recipe
      * @param parallelLimit the maximum allowed amount
-     * @param canVoid       predicate for what parallel limits should be ignored
      * @param capsToSkip    the capabilities to skip parallel testing
      * @return returns the amount of recipes that can be merged successfully into a given output inventory
      */
@@ -142,25 +148,6 @@ public class ParallelLogic {
             }
         }
         return max;
-    }
-
-    /**
-     * Calculates the maximum parallel amount that can be done for the given machine and recipe, up to the passed limit
-     *
-     * @param machine       machine to test against
-     * @param recipe        recipe to test with
-     * @param parallelLimit hard upper limit of parallels that can be done
-     * @return The number of possible parallels, 0 if the recipe cannot be done
-     */
-    public static int getParallelAmountWithoutEU(RecipeHandlerGroup group, GTRecipe recipe, int parallelLimit) {
-        if (parallelLimit <= 1) return parallelLimit;
-        // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
-        int maxInputMultiplier = getMaxByInput(group, recipe, parallelLimit, List.of(EURecipeCapability.CAP));
-        if (maxInputMultiplier == 0) return 0;
-
-        // Simulate the merging of the maximum amount of recipes that can be run with these items
-        // and limit by the amount we can successfully merge
-        return limitByOutputMerging(group, recipe, maxInputMultiplier, List.of(EURecipeCapability.CAP));
     }
 
     /**

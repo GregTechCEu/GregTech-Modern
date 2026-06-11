@@ -441,7 +441,7 @@ public class GTMultiMachines {
             .multiblock("distillation_tower", DistillationTowerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
-            .recipeModifiers(OC_NON_PERFECT, DistillationTowerMachine::recipeModifier)
+            .recipeModifiers(DistillationTowerMachine::DTParallel, OC_NON_PERFECT, DistillationTowerMachine::DTBatch)
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
                 TraceabilityPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);

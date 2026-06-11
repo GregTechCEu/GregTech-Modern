@@ -176,7 +176,7 @@ public class OverclockLogicTest {
 
         int originalDuration = recipeBeforeModifiers.duration;
         long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
-        var failReason = OC_PERFECT.applyModifier(busHolder.controller, firstGroup(busHolder.controller),
+        var failReason = OC_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.duration == (originalDuration / PERFECT_DURATION_FACTOR_INV),
@@ -206,7 +206,7 @@ public class OverclockLogicTest {
 
         int originalDuration = recipeBeforeModifiers.duration;
         long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
-        var failReason = OC_NON_PERFECT.applyModifier(busHolder.controller, firstGroup(busHolder.controller),
+        var failReason = OC_NON_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.duration == (originalDuration / STD_DURATION_FACTOR_INV),
@@ -236,7 +236,7 @@ public class OverclockLogicTest {
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
         long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
-        var failReason = OC_PERFECT_SUBTICK.applyModifier(busHolder.controller, firstGroup(busHolder.controller),
+        var failReason = OC_PERFECT_SUBTICK.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
 
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
@@ -265,7 +265,7 @@ public class OverclockLogicTest {
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
         long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
-        var failReason = OC_NON_PERFECT.applyModifier(busHolder.controller, firstGroup(busHolder.controller),
+        var failReason = OC_NON_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
 
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
@@ -294,7 +294,7 @@ public class OverclockLogicTest {
                 .toRuntime();
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
-        var failReason = OC_NON_PERFECT.applyModifier(busHolder.controller, firstGroup(busHolder.controller),
+        var failReason = OC_NON_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
 
         helper.assertTrue(failReason != null, "Applied EV overclock to HV recipe when it shouldn't have");

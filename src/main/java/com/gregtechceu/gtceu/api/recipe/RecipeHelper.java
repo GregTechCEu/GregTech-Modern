@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
@@ -61,14 +60,6 @@ public class RecipeHelper {
         return GTUtil.getTierByVoltage(EUt);
     }
 
-    public static <T> List<T> getInputContents(GTRecipe recipe, RecipeCapability<T> capability) {
-        return recipe.getInputContents(capability);
-    }
-
-    public static <T> List<T> getOutputContents(GTRecipe recipe, RecipeCapability<T> capability) {
-        return recipe.getOutputContents(capability);
-    }
-
     /*
      * Those who use these methods should note that these methods do not guarantee that the returned values are valid,
      * because the relevant data, such as tag information, may not be loaded at the time these methods are called.
@@ -82,9 +73,9 @@ public class RecipeHelper {
      * @param recipe GTRecipe
      * @return all input items
      */
-    public static List<ItemStack> getInputItems(GTRecipe recipe) {
+    public static List<ItemStack> getInputItems(GTRecipe recipe, boolean simulate) {
         return recipe.getInputContents(ItemRecipeCapability.CAP).stream()
-                .map(ingredient -> ingredient.getItems()[0])
+                .map(ingredient -> simulate ? ingredient.getItems()[0] : ingredient.toStack())
                 .collect(Collectors.toList());
     }
 
@@ -94,9 +85,9 @@ public class RecipeHelper {
      * @param recipe GTRecipe
      * @return all input fluids
      */
-    public static List<FluidStack> getInputFluids(GTRecipe recipe) {
+    public static List<FluidStack> getInputFluids(GTRecipe recipe, boolean simulate) {
         return recipe.getInputContents(FluidRecipeCapability.CAP).stream()
-                .map(ingredient -> ingredient.getFluids()[0])
+                .map(ingredient -> simulate ? ingredient.getFluids()[0] : ingredient.toStack())
                 .collect(Collectors.toList());
     }
 
@@ -106,21 +97,9 @@ public class RecipeHelper {
      * @param recipe GTRecipe
      * @return all output items
      */
-    public static List<ItemStack> getOutputItems(GTRecipe recipe) {
+    public static List<ItemStack> getOutputItems(GTRecipe recipe, boolean simulate) {
         return recipe.getOutputContents(ItemRecipeCapability.CAP).stream()
-                .map(ingredient -> ingredient.getItems()[0])
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * get all output items from GTRecipeBuilder
-     *
-     * @param builder GTRecipeBuilder
-     * @return all output items
-     */
-    public static List<ItemStack> getOutputItems(GTRecipeBuilder builder) {
-        return builder.output.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList()).stream()
-                .map(ingredient -> ingredient.getItems()[0])
+                .map(ingredient -> simulate ? ingredient.getItems()[0] : ingredient.toStack())
                 .collect(Collectors.toList());
     }
 
@@ -130,21 +109,9 @@ public class RecipeHelper {
      * @param recipe GTRecipe
      * @return all output fluids
      */
-    public static List<FluidStack> getOutputFluids(GTRecipe recipe) {
+    public static List<FluidStack> getOutputFluids(GTRecipe recipe, boolean simulate) {
         return recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
-                .map(ingredient -> ingredient.getFluids()[0])
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * get all output fluids from GTRecipeBuilder
-     *
-     * @param builder GTRecipeBuilder
-     * @return all output fluids
-     */
-    public static List<FluidStack> getOutputFluids(GTRecipeBuilder builder) {
-        return builder.output.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).stream()
-                .map(ingredient -> ingredient.getFluids()[0])
+                .map(ingredient -> simulate ? ingredient.getFluids()[0] : ingredient.toStack())
                 .collect(Collectors.toList());
     }
 
@@ -159,40 +126,51 @@ public class RecipeHelper {
     private static ActionResult matchRecipe(RecipeHandlerGroup holder, GTRecipe recipe, boolean tick) {
         if (holder.isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
 
-        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs, tick, true);
+        var result = handleRecipe(holder, recipe, IO.IN, tick ? recipe.tickInputs : recipe.inputs, true);
         if (!result.isSuccess()) return result;
 
-        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs, tick, true);
+        result = handleRecipe(holder, recipe, IO.OUT, tick ? recipe.tickOutputs : recipe.outputs, true);
         return result;
     }
 
     public static ActionResult handleRecipeIO(RecipeHandlerGroup holder, GTRecipe recipe, IO io) {
         if (holder.isEmpty() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, false, false);
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.inputs : recipe.outputs, false);
     }
 
     public static ActionResult handleTickRecipeIO(RecipeHandlerGroup holder, GTRecipe recipe, IO io) {
         if (holder.isEmpty() || io == IO.BOTH) return ActionResult.FAIL_NO_CAPABILITIES;
-        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, true, false);
+        return handleRecipe(holder, recipe, io, io == IO.IN ? recipe.tickInputs : recipe.tickOutputs, false);
     }
 
     /**
-     * Checks if all the contents of the recipe are located in the holder.
+     * Checks if all the contents of the recipe are located in the group.
      *
-     * @param simulated checks that the recipe ingredients are in the holder if true,
+     * @param simulated checks that the recipe ingredients are in the group if true,
      *                  process the recipe contents if false
      */
-    public static ActionResult handleRecipe(RecipeHandlerGroup holder, GTRecipe recipe, IO io,
+    public static ActionResult handleRecipe(RecipeHandlerGroup group, GTRecipe recipe, IO io,
                                             ContentListMap contents,
-                                            boolean isTick, boolean simulated) {
-        RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, simulated);
-        var result = runner.handle(contents.copy());
+                                            boolean simulated) {
+        var recipeContents = contents.copy();
+        group.handleRecipe(io, recipe, recipeContents, simulated);
+        ActionResult result = ActionResult.SUCCESS;
+        for (var entry : recipeContents.entrySet()) {
+            // void excess real output contents if it can be voided
+            if (!simulated && io == IO.OUT && group.getOutputVoid().test(entry.getKey())) {
+                entry.getValue().clear();
+            }
+            if (entry.getValue() != null && !entry.getValue().isEmpty()) {
+                result = ActionResult.fail(null, entry.getKey(), io);
+                break;
+            }
+        }
 
         if (result.isSuccess() || result.capability() == null) return result;
 
         if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
-                    Component.translatable(io.tooltip).getString(), recipe, holder);
+                    Component.translatable(io.tooltip).getString(), recipe, group);
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
