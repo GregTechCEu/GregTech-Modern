@@ -242,41 +242,8 @@ public class OverclockLogicTest {
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.subtickParallels == PERFECT_DURATION_FACTOR_INV,
                 "Perfect subtick overclock didn't multiply parallels by 4");
-        helper.assertTrue(
-                recipeBeforeModifiers.getInputEUt().getTotalEU() ==
-                        (originalEUt * STD_VOLTAGE_FACTOR * (long) PERFECT_DURATION_FACTOR_INV),
+        helper.assertTrue(recipeBeforeModifiers.getInputEUt().getTotalEU() == (originalEUt * STD_VOLTAGE_FACTOR),
                 "Perfect subtick overclock didn't multiply EU by 4");
-        helper.succeed();
-    }
-
-    // Test for code wise calculating subtick non-perfect OC
-    @GameTest(template = "lcr_input_separation", batch = "OverclockLogic")
-    public static void overclockLogicApplyNonPerfectParallelOverclockTest(GameTestHelper helper) {
-        BusHolder busHolder = getBussesAndForm(helper);
-        // An HV LCR can overclock an MV recipe once
-        // We pass the controller because it is used to fetch .getMaxVoltageTier() and check input ingredients for
-        // parallel
-        GTRecipe recipeBeforeModifiers = LARGE_CHEMICAL_RECIPES
-                .recipeBuilder(GTCEu.id("test-multiblock-overclock-test-npsto"))
-                .id(GTCEu.id("test-multiblock-overclock-test-npsto"))
-                .inputItems(new ItemStack(Blocks.COBBLESTONE))
-                .outputItems(new ItemStack(Blocks.STONE))
-                .EUt(GTValues.VA[GTValues.MV]).duration(1)
-                .buildRawRecipe()
-                .toRuntime();
-        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
-
-        long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
-        var failReason = OC_NON_PERFECT_SUBTICK.applyModifier(busHolder.controller,
-                firstGroup(busHolder.controller), recipeBeforeModifiers);
-
-        helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
-        helper.assertTrue(recipeBeforeModifiers.subtickParallels == STD_DURATION_FACTOR_INV,
-                "Non-Perfect subtick overclock didn't multiply parallels by 2");
-        helper.assertTrue(
-                recipeBeforeModifiers.getInputEUt().getTotalEU() ==
-                        (originalEUt * STD_VOLTAGE_FACTOR * (long) STD_DURATION_FACTOR_INV),
-                "Non-Perfect subtick overclock didn't multiply EU by 4");
         helper.succeed();
     }
 

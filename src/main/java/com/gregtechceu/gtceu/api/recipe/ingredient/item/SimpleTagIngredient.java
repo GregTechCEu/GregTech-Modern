@@ -39,7 +39,7 @@ public final class SimpleTagIngredient extends ItemIngredient{
             List<ItemStack> list = new ArrayList<>();
 
             for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                list.add(new ItemStack(holder));
+                list.add(new ItemStack(holder, count));
             }
 
             if (list.isEmpty()) {
@@ -48,11 +48,6 @@ public final class SimpleTagIngredient extends ItemIngredient{
             items = list.toArray(new ItemStack[0]);
         }
         return items;
-    }
-
-    @Override
-    public ItemStack toStack() {
-        return getItems()[0];
     }
 
     @Override

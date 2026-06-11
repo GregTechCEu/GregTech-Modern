@@ -26,12 +26,7 @@ public final class SimpleItemIngredient extends ItemIngredient {
 
     @Override
     public ItemStack[] getItems() {
-        return new ItemStack[]{item.getDefaultInstance()};
-    }
-
-    @Override
-    public ItemStack toStack() {
-        return item.getDefaultInstance();
+        return new ItemStack[]{new ItemStack(item, count)};
     }
 
     @Override

@@ -51,11 +51,6 @@ public class VanillaIngredient extends ItemIngredient{
     }
 
     @Override
-    public ItemStack toStack() {
-        return getItems()[0];
-    }
-
-    @Override
     public List<AbstractMapIngredient> getMapIngredients() {
         if (inner instanceof StrictNBTIngredient strictNBTIngredient) {
             return StrictNBTItemStackMapIngredient.from(strictNBTIngredient);

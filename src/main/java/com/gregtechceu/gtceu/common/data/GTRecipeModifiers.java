@@ -48,7 +48,6 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
-    public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, group, recipe) -> {
@@ -120,7 +119,7 @@ public class GTRecipeModifiers {
     /**
      * Recipe Modifier for <b>Cracker Multiblocks</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.
+     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK}.
      * Then, EUt is multiplied by {@code 1 - (0.1 × coilTier)}
      * </p>
      *
@@ -135,7 +134,7 @@ public class GTRecipeModifiers {
         }
         if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return RecipeModifier.DEFAULT_FAILURE;
 
-        var failReason = OverclockingLogic.NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe,
+        var failReason = OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe,
                 coilMachine.getOverclockVoltage());
         if (failReason != null) return failReason;
         if (coilMachine.getCoilTier() > 0) {
@@ -185,7 +184,7 @@ public class GTRecipeModifiers {
     /**
      * Recipe Modifier for <b>Pyrolyse Oven Multiblocks</b> - can be used as a valid {@link RecipeModifier}
      * <p>
-     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK_SUBTICK}.<br>
+     * Recipe is OC'd via {@link OverclockingLogic#NON_PERFECT_OVERCLOCK}.<br>
      * Then, duration is multiplied by {@code 1.333×} for Cupronickel Coils
      * or {@code 2 / (tier + 1)} for higher tiercoils.
      * </p>
@@ -205,7 +204,7 @@ public class GTRecipeModifiers {
         int tier = coilMachine.getCoilTier();
         double durationMultiplier = (tier == 0) ? (4.0 / 3.0) : (2.0 / (tier + 1)); // 75% speed with cupro coils
 
-        var failReason = NON_PERFECT_OVERCLOCK_SUBTICK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
+        var failReason = NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());
         if (failReason != null) return failReason;
         recipe.multiplyDuration(durationMultiplier);
         return null;

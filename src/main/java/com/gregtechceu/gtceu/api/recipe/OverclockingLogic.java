@@ -44,8 +44,6 @@ public interface OverclockingLogic {
     OverclockingLogic NON_PERFECT_OVERCLOCK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
 
     OverclockingLogic PERFECT_OVERCLOCK_SUBTICK = create(PERFECT_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
-    OverclockingLogic NON_PERFECT_OVERCLOCK_SUBTICK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
-
     /**
      * Create a standard OverclockingLogic using either {@link #standardOC} or {@link #subTickParallelOC}
      * 
@@ -225,6 +223,7 @@ public interface OverclockingLogic {
         double parallel = 1;
         boolean shouldParallel = false;
         int ocLevel = 0;
+        int nonSubtickOCs = 0;
         double durationMultiplier = 1;
 
         while (ocAmount-- > 0) {
@@ -242,6 +241,7 @@ public interface OverclockingLogic {
             } else {
                 duration *= durationFactor;
                 durationMultiplier *= durationFactor;
+                nonSubtickOCs ++;
             }
 
             // Only set EUt after checking parallels - no need to OC if parallels would be too high
@@ -249,7 +249,7 @@ public interface OverclockingLogic {
             ocLevel++;
         }
 
-        return new OCResult(Math.pow(voltageFactor, ocLevel), durationMultiplier, ocLevel, (int) parallel);
+        return new OCResult(Math.pow(voltageFactor, nonSubtickOCs), durationMultiplier, ocLevel, (int) parallel);
     }
 
     /**

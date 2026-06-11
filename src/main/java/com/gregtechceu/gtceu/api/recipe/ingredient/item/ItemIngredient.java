@@ -86,7 +86,9 @@ public abstract class ItemIngredient {
     public abstract ItemStack[] getItems();
 
     // for execute
-    public abstract ItemStack toStack();
+    public ItemStack toStack() {
+        return getItems()[0];
+    };
 
     public abstract List<AbstractMapIngredient> getMapIngredients();
 

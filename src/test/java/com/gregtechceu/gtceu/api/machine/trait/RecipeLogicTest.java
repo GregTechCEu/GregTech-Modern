@@ -120,7 +120,7 @@ public class RecipeLogicTest {
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         recipeLogic.serverTick();
-        helper.assertTrue(recipeLogic.getLastRecipe().equals(prev), "lastRecipe is wrong");
+        helper.assertTrue(recipeLogic.getLastRecipe().id.equals(prev.id), "lastRecipe is wrong");
         helper.assertTrue(
                 TestUtils.isItemStackEqual(outputSlots.getStackInSlot(0),
                         new ItemStack(Blocks.STONE, 1)),

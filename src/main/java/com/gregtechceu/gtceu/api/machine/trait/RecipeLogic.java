@@ -101,8 +101,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
 
     @Nullable
     @Getter
-    @Persisted
     protected GTRecipeDefinition lastOriginRecipe;
+
     @Persisted
     @Getter
     @Setter
@@ -279,6 +279,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             if(machine.getRecipeType().findRecipe(group, this::checkMatchedRecipeAvailable) != null) {
                 lastGroup = group;
                 if(group.getColor() != UNDYED) lastGroupColor = group.getColor();
+                break;
             }
         }
     }
@@ -433,7 +434,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                 if(!recipeDirty) {
                     if (lastOriginRecipe != null && machine.alwaysTryModifyRecipe()) {
                         lastRecipe = lastOriginRecipe.toRuntime();
-                        var failReason = machine.modifyRecipe(lastOriginRecipe.toRuntime(), getLastGroup());
+                        var failReason = machine.modifyRecipe(lastRecipe, getLastGroup());
                         if(failReason != null) {
                             failureReasonMap.put(lastRecipe, failReason);
                             lastRecipe = null;
