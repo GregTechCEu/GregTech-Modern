@@ -81,7 +81,7 @@ public class AABBHighlightRenderer {
     }
 
     public static AABBHighlightBuilder builder() {
-        return new AABBHighlightBuilder().aa;
+        return new AABBHighlightBuilder();
     }
 
     @Setter
