@@ -172,6 +172,11 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     }
 
     @Override
+    public boolean shouldOpenUI() {
+        return this.multiblockDefinition != null;
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (!shouldOpenUI()) return IItemUIHolder.super.use(item, level, player, usedHand);
 
@@ -207,7 +212,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             return false;
         };
 
-        Supplier<IWidget> partWidgetSupplier = () -> Flow.col()
+        this.partsHandler.widgetProvider(() -> Flow.col()
                 .name("wrapping_parts_col")
                 // NOTE wrapped flows require a fixed size in their axis, relative/coverChildren does not work
                 .wrap()
@@ -218,9 +223,8 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                     return new ItemDrawable(stack)
                             .asWidget().size(18).margin(1)
                             .tooltip(r -> r.addFromItem(stack));
-                });
+                }));
 
-        this.partsHandler.widgetProvider(partWidgetSupplier);
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = selectedBlock.getValue();
             if (selected.isEmpty() || multiblockDefinition == null) return null;
@@ -301,8 +305,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                                         .coverChildrenWidth()
                                         .heightRel(1f)
                                         .name("parts_view")
-                                        // TODO remove this method call when mui updates
-                                        .initialChild(partWidgetSupplier.get())
                                         .clientOnlyHandler(partsHandler))));
     }
 
