@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,13 +31,13 @@ public interface IDataAccessHatch {
     boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen);
 
     // REMEMBER TO CALL THIS FOR YOUR CUSTOM DATA HATCH TO WORK.
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default Component modifyRecipe(GTRecipe recipe) {
         // creative hatches do not need to check, they always have the recipe
-        if (this.isCreative()) return recipe;
+        if (this.isCreative()) return null;
 
         // hatches need to have the recipe available
-        if (this.isRecipeAvailable(recipe)) return recipe;
-        return null;
+        if (this.isRecipeAvailable(recipe)) return null;
+        return Component.translatable("gtceu.recipe_modifier.missing_research_data");
     }
 
     /**

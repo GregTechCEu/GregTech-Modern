@@ -183,7 +183,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
+    public Component modifyRecipe(GTRecipe recipe) {
         return IDataAccessHatch.super.modifyRecipe(recipe);
     }
 

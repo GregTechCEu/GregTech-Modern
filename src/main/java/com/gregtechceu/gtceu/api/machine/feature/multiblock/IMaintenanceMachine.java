@@ -134,18 +134,17 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default Component modifyRecipe(GTRecipe recipe) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (hasMaintenanceProblems()) {
-                return null;
+                return Component.translatable("gtceu.top.maintenance_broken");
             }
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
-                recipe = recipe.copy();
                 recipe.duration = (int) (recipe.duration * durationMultiplier);
             }
         }
-        return recipe;
+        return null;
     }
 
     //////////////////////////////////////

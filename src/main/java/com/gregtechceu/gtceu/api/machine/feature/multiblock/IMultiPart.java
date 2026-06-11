@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -119,11 +120,11 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
      * 
      * @param recipe recipe from detected from GTRecipeType
-     * @return modified recipe.
-     *         null -- this recipe is unavailable
+     * @return fail reason.
+     *         null -- successfully modified the recipe
      */
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
-        return recipe;
+    default Component modifyRecipe(GTRecipe recipe) {
+        return null;
     }
 
     /**
@@ -137,4 +138,11 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      * Attach part's tooltips to the controller.
      */
     default void attachFancyTooltipsToController(IMultiController controller, TooltipsPanel tooltipsPanel) {}
+
+    default void notifyController() {
+        getControllers().stream()
+                .filter(IRecipeLogicMachine.class::isInstance)
+                .map(IRecipeLogicMachine.class::cast)
+                .forEach(m -> m.getRecipeLogic().updateTickSubscription());
+    }
 }

@@ -181,8 +181,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public final Component modifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
         for (IMultiPart part : getParts()) {
-            recipe = part.modifyRecipe(recipe);
-            if (recipe == null) return null;
+            var failReason = part.modifyRecipe(recipe);
+            if (failReason != null) return failReason;
         }
         for(var modifier: self().getDefinition().getRecipeModifiers()) {
             var failReason = modifier.applyModifier(self(), group, recipe);

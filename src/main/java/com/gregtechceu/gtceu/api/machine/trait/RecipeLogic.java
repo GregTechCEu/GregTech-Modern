@@ -229,6 +229,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             var recipeMatch = checkRecipe(modified);
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
+            } else {
+                failureReasonMap.put(modified, recipeMatch.reason());
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
                 lastOriginRecipe = match;

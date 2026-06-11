@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -167,6 +168,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
             // Fix automatically on slot click by player in Creative Mode
             if (entityPlayer.isCreative()) {
                 fixAllMaintenanceProblems();
+                notifyController();
                 return;
             }
             // Then for every slot in the player's main inventory, try to duct tape fix
@@ -174,11 +176,13 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                 if (consumeDuctTape(new InvWrapper(entityPlayer.getInventory()), i)) {
                     fixAllMaintenanceProblems();
                     setTaped(true);
+                    notifyController();
                     return;
                 }
             }
             // Lastly for each problem the multi has, try to fix with tools
             fixProblemsWithTools(getMaintenanceProblems(), entityPlayer);
+            notifyController();
         }
     }
 

@@ -58,9 +58,9 @@ public interface IMufflerMachine extends IMultiPart, IEnvironmentalHazardEmitter
     }
 
     @Override
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default Component modifyRecipe(GTRecipe recipe) {
         if (!isFrontFaceFree()) {
-            return null;
+            return Component.translatable("gtceu.multiblock.universal.muffler_obstructed");
         }
         return IMultiPart.super.modifyRecipe(recipe);
     }

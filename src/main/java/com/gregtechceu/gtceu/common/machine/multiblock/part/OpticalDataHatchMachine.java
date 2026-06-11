@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -109,7 +110,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
     }
 
     @Override
-    public GTRecipe modifyRecipe(GTRecipe recipe) {
+    public Component modifyRecipe(GTRecipe recipe) {
         return IOpticalDataAccessHatch.super.modifyRecipe(recipe);
     }
 }
