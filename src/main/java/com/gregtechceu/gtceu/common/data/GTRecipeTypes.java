@@ -32,6 +32,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.ModLoader;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.progress.CircularProgressDrawable;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.widgets.ProgressWidget;
 import brachy.modularui.widgets.layout.Flow;
 
@@ -180,7 +182,14 @@ public class GTRecipeTypes {
             .setMaxIOSize(1, 6, 1, 1).setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.EUt(GTValues.VA[GTValues.LV]))
             .UI(builder -> builder
-                    .setProgressBar(GTGuiTextures.PROGRESS_MIXER)
+                    .setProgressBarSupplier((l, v, m) -> {
+                        return new CircularProgressDrawable()
+                                .emptyTexture(GTGuiTextures.PROGRESS_BATH[0])
+                                .filledTexture(GTGuiTextures.PROGRESS_BATH[1])
+                                .clockwise()
+                                .asWidget()
+                                .value(v);
+                    })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.BREWER_OVERLAY)
                     .setItemSlotsOverlay(IO.OUT, 0, 5, GTGuiTextures.DUST_OVERLAY)
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.CENTRIFUGE_OVERLAY))
@@ -323,10 +332,8 @@ public class GTRecipeTypes {
                                                                                                                .texture(
                                                                                                                        GTGuiTextures.PROGRESS_HAMMER
                                                                                                                                .get(machine),
-                                                                                                                       20)
-                                                                                                               .size(20)
-                                                                                                               .direction(
-                                                                                                                       ProgressWidget.Direction.DOWN))
+                                                                                                                       ProgressDrawable.Direction.DOWN)
+                                                                                                               .size(20))
                                                                                                        .child(GTGuiTextures.PROGRESS_HAMMER_BASE
                                                                                                                .get(machine)
                                                                                                                .asWidget()
@@ -355,15 +362,21 @@ public class GTRecipeTypes {
                             .child(new ProgressWidget()
                                     .value(value)
                                     .name("progressBar")
-                                    .texture(GTGuiTextures.PROGRESS_BAR_LATHE, 20)
-                                    .size(20)
-                                    .direction(ProgressWidget.Direction.RIGHT))
+                                    .texture(GTGuiTextures.PROGRESS_BAR_LATHE, ProgressDrawable.Direction.RIGHT)
+                                    .size(20))
                             .child(GTGuiTextures.PROGRESS_BAR_LATHE_BASE.asWidget().width(5))))
             .setSound(GTSoundEntries.CUT);
 
     public final static GTRecipeType MIXER_RECIPES = register("mixer", ELECTRIC).setMaxIOSize(6, 1, 2, 1).setEUIO(IO.IN)
             .UI(builder -> builder
-                    .setProgressBar(GTGuiTextures.PROGRESS_MIXER)
+                    .setProgressBarSupplier((l, v, m) -> {
+                        return new CircularProgressDrawable()
+                                .emptyTexture(GTGuiTextures.PROGRESS_MIXER[0])
+                                .filledTexture(GTGuiTextures.PROGRESS_MIXER[1])
+                                .clockwise()
+                                .asWidget()
+                                .value(v);
+                    })
                     .setItemSlotsOverlay(IO.IN, 0, 5, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
             .setSound(GTSoundEntries.MIXER);
@@ -372,7 +385,14 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(400).EUt(16))
             .UI(builder -> builder
-                    .setProgressBar(GTGuiTextures.PROGRESS_BATH)
+                    .setProgressBarSupplier((l, v, m) -> {
+                        return new CircularProgressDrawable()
+                                .emptyTexture(GTGuiTextures.PROGRESS_BATH[0])
+                                .filledTexture(GTGuiTextures.PROGRESS_BATH[1])
+                                .clockwise()
+                                .asWidget()
+                                .value(v);
+                    })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.DUST_OVERLAY))
             .setSound(GTSoundEntries.BATH);
@@ -461,6 +481,10 @@ public class GTRecipeTypes {
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_MACERATE)
+                    .setMachineLayoutGridBuilder(ItemRecipeCapability.CAP, IO.OUT, (machine, layout) -> {
+
+                        return GTMuiWidgets.createGrid(4, 2, true, 's');
+                    })
                     .setItemSlotOverlay(IO.IN, 0, GTGuiTextures.DUST_OVERLAY)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.CRUSHED_ORE_OVERLAY))
             .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())

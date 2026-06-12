@@ -133,6 +133,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
 
         column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
                 .value(voidingMode)
+                .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
                 .overlay(16, GTGuiTextures.VOIDING_MODES)
                 .lang(Text.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
                 .build()

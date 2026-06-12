@@ -152,7 +152,7 @@ public abstract class ProspectorMode<T> {
         @Override
         public Either<Material, BlockState> deserialize(FriendlyByteBuf buf) {
             if (buf.readBoolean()) {
-                return Either.left(GTCEuAPI.materialManager.getMaterial(buf.readResourceLocation()));
+                return Either.left(GTRegistries.MATERIALS.get(buf.readResourceLocation()));
             } else {
                 CompoundTag tag = buf.readNbt();
                 assert tag != null;

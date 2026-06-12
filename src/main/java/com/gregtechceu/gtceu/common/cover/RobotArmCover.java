@@ -6,21 +6,18 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
-import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.SidedPosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.EnumSyncValue;
@@ -40,13 +37,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RobotArmCover extends ConveyorCover {
 
     @SaveField
-    @SyncToClient
     @Getter
     protected TransferMode transferMode;
-
+    @Setter
     @SaveField
     @Getter
-    @Setter
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
@@ -166,17 +161,14 @@ public class RobotArmCover extends ConveyorCover {
                                   UISettings settings) {
         super.createCoverUIRows(column, data, syncManager, settings);
 
-        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode);
-        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, v -> this.globalTransferLimit = v);
+        var transferMode = new EnumSyncValue<>(TransferMode.class, this::getTransferMode, this::setTransferMode)
+                .allowC2S();
+        var transferSize = new IntSyncValue(this::getGlobalTransferLimit, this::setGlobalTransferLimit).allowC2S();
 
         syncManager.syncValue("transferMode", transferMode);
         syncManager.syncValue("transferSize", transferSize);
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(TransferMode.class)
-                .value(transferMode)
-                .overlay(16, GTGuiTextures.TRANSFER_MODE_OVERLAY)
-                .lang(Text.dynamic(() -> Component.translatable(getTransferMode().tooltip)))
-                .build());
+        GTMuiCoverUtil.addTransferModeRow(column, transferMode);
 
         column.child(GTMuiWidgets.createIntInputWithButtons(transferSize, () -> 1, () -> getTransferMode().maxStackSize)
                 .setEnabledIf($ -> shouldShowStackSize()));
@@ -186,7 +178,6 @@ public class RobotArmCover extends ConveyorCover {
         this.transferMode = transferMode;
 
         if (!this.isRemote()) {
-            syncDataHolder.markClientSyncFieldDirty("transferMode");
             configureFilter();
         }
     }

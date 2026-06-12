@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -45,6 +45,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -69,12 +70,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     @Getter
     @RerenderOnChanged
     protected IO io;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected DistributionMode distributionMode;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @SaveField
@@ -123,11 +124,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
                 .resolve().orElse(null);
     }
 
-    public void setDistributionMode(DistributionMode mode) {
-        distributionMode = mode;
-        syncDataHolder.markClientSyncFieldDirty("distributionMode");
-    }
-
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
@@ -148,10 +144,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
             this.io = io;
         }
         subscriptionHandler.updateSubscription();
-    }
-
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
     }
 
     @Override
@@ -418,13 +410,13 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
         EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
-                this::getManualIOMode, this::setManualIOMode);
+                this::getManualIOMode, this::setManualIOMode).allowC2S();
 
         EnumSyncValue<DistributionMode> distMode = new EnumSyncValue<>(DistributionMode.class,
-                this::getDistributionMode, this::setDistributionMode);
+                this::getDistributionMode, this::setDistributionMode).allowC2S();
 
-        IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+        IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate).allowC2S();
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("manualMode", manualMode);
@@ -436,25 +428,19 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
         }
 
         if (createFilterRow()) {
-            column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                    .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
+            column.child(Flow.row()
+                    .coverChildrenHeight()
+                    .widthRel(1.0f)
+                    .child(GTMuiWidgets.createIOCycleButton(ioSync, false).left(0))
+                    .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
+            column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));
         }
 
         if (createDistributionModeRow()) {
-            column.child(new GTMuiWidgets.EnumRowBuilder<>(DistributionMode.class)
-                    .value(distMode)
-                    .overlay(16, GTGuiTextures.DISTRIBUTION_MODE_OVERLAY)
-                    .lang(Text.dynamic(() -> Component.translatable(distributionMode.localeName)))
-                    .build());
+            GTMuiCoverUtil.addDistributionModeRow(column, distMode);
         }
-
         if (createManualIOModeRow()) {
-            column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
-                    .value(manualMode)
-                    .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                    .lang(Text.dynamic(() -> Component.translatable(manualIOMode.localeName)))
-                    .build());
-
+            GTMuiCoverUtil.addManualIORow(column, manualMode);
         }
     }
 

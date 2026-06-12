@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -43,6 +43,7 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -67,12 +68,12 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     @Getter
     @RerenderOnChanged
     protected IO io = IO.OUT;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
@@ -179,16 +180,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         this.transferRate = Math.min(Math.max(milliBucketsPerTick, 0), maxFluidTransferRate);
     }
 
-    public void setBucketMode(BucketMode bucketMode) {
-        this.bucketMode = bucketMode;
-        syncDataHolder.markClientSyncFieldDirty("bucketMode");
-    }
-
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
-        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
-    }
-
     protected void update() {
         long timer = coverHolder.getOffsetTimer();
         if (timer % 5 != 0)
@@ -268,12 +259,12 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate);
+        IntSyncValue transferRateSync = new IntSyncValue(this::getTransferRate, this::setTransferRate).allowC2S();
         EnumSyncValue<BucketMode> bucketModeSync = new EnumSyncValue<>(BucketMode.class, this::getBucketMode,
-                this::setBucketMode);
+                this::setBucketMode).allowC2S();
         EnumSyncValue<ManualIOMode> manualIOModeSync = new EnumSyncValue<>(ManualIOMode.class, this::getManualIOMode,
-                this::setManualIOMode);
-        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
+                this::setManualIOMode).allowC2S();
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
         syncManager.syncValue("io", ioSync);
         syncManager.syncValue("transferRate", transferRateSync);
@@ -282,14 +273,14 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         column.child(GTMuiWidgets.createIntInputWithBucketMode(transferRateSync, bucketModeSync,
                 () -> maxFluidTransferRate));
 
-        column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings)
-                .child(0, GTMuiWidgets.createIOCycleButton(ioSync, false)));
+        column.child(Flow.row()
+                .coverChildrenHeight()
+                .widthRel(1.0f)
+                .child(GTMuiWidgets.createIOCycleButton(ioSync, false)).left(0)
+                .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
+        column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));
 
-        column.child(new GTMuiWidgets.EnumRowBuilder<>(ManualIOMode.class)
-                .value(manualIOModeSync)
-                .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
-                .lang(Text.dynamic(() -> Component.translatable(manualIOMode.localeName)))
-                .build());
+        GTMuiCoverUtil.addManualIORow(column, manualIOModeSync);
     }
 
     protected void configureFilter() {

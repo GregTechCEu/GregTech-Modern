@@ -119,8 +119,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     @Override
     public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
                                   UISettings settings) {
-        var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue);
-        var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue);
+        var minValueSync = new IntSyncValue(this::getMinValue, this::setMinValue).allowC2S();
+        var maxValueSync = new IntSyncValue(this::getMaxValue, this::setMaxValue).allowC2S();
 
         syncManager.syncValue("minValue", minValueSync);
         syncManager.syncValue("maxValue", maxValueSync);

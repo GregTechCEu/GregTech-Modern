@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -84,8 +85,10 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
                 }));
 
         mainWidget.child(new ProgressWidget()
+                .right(20)
+                .top(30)
                 .size(18)
-                .texture(progressTexture, 20)
+                .texture(progressTexture, ProgressDrawable.Direction.UP)
                 .value(canSeeSun));
     }
 

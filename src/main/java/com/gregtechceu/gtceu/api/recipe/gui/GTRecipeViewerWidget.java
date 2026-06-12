@@ -88,7 +88,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);
 
-        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3));
+        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3)
+                .paddingLeft(2).paddingRight(2));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
         loadContentIntoSlots();
@@ -183,7 +184,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         childIf(!FMLLoader.isProduction(), () -> new ButtonWidget<>()
                 .overlay(Text.str("ID"))
                 .decoration()
-                .top(3).right(3)
+                .bottom(16).right(3)
                 .size(15, 15)
                 .tooltip(r -> r.addLine("Click to copy recipe ID: " + baseRecipe.id))
                 .onMousePressed((ctx, b) -> {

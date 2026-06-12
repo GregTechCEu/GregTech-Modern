@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import brachy.modularui.drawable.UITexture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionfc;
 import org.joml.Vector3f;

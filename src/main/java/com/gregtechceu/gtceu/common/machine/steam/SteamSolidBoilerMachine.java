@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
@@ -139,9 +140,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
                         .slot(new ModularSlot(this.fuelHandler, 0)))
                 .child(new ProgressWidget()
                         .size(18)
-                        .texture(progressTexture, 18)
-                        .value(progressPercent)
-                        .direction(ProgressWidget.Direction.UP))
+                        .texture(progressTexture, ProgressDrawable.Direction.UP)
+                        .value(progressPercent))
                 .child(new ItemSlot()
                         .slot(new ModularSlot(this.ashHandler, 0))));
     }

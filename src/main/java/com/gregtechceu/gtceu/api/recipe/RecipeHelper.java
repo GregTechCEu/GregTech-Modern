@@ -229,7 +229,7 @@ public class RecipeHelper {
 
         if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
-                    Component.translatable(io.tooltip).getString(), recipe, holder);
+                    Component.translatable(io.getTooltip()).getString(), recipe, holder);
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)

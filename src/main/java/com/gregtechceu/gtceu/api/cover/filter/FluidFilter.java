@@ -9,6 +9,7 @@ import brachy.modularui.factory.GuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
@@ -57,6 +58,11 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
 
         @Override
         public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+            return null;
+        }
+
+        @Override
+        public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
             return null;
         }
 

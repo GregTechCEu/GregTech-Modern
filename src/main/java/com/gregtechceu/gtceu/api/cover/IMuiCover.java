@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,8 +47,8 @@ public interface IMuiCover extends IUIHolder<SidedPosGuiData> {
     @Override
     default ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
         ModularPanel<?> panel = ModularPanel.defaultPanel(this.self().coverDefinition.getId().getPath(), 176, 192 + 18);
-
-        panel.child(GTMuiWidgets.createTitleBar(this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+        ItemStack stack = this.self().coverHolder.getCoverAtSide(this.self().attachedSide).getAttachItem();
+        panel.child(GTMuiWidgets.createTitleBar(() -> stack, 176, GTGuiTextures.BACKGROUND));
 
         Flow column = Flow.column()
                 .top(7).margin(7, 0)

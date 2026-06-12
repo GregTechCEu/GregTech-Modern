@@ -13,6 +13,14 @@ repositories {
         }
     }
 
+    exclusiveContent { // Create, Ponder, Flywheel
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
+    }
+
     maven {
         name 'GTCEu Maven'
         url 'https://maven.gtceu.com'
@@ -33,7 +41,8 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
-        exclusiveContent { // Create, Ponder, Flywheel
+
+    exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
             includeGroup("net.createmod.ponder")

@@ -214,7 +214,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         tag.putString("colorStr", colorStr);
         tag.putInt("permission", getPermission().ordinal());
         tag.putInt("io", getIo().ordinal());
-        tag.putInt("manualIO", getManualIOMode().ordinal());
     }
 
     @Override

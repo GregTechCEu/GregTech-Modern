@@ -94,7 +94,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         EnumSyncValue<Filter> filterSync = new EnumSyncValue<>(Filter.class,
                 () -> Filter.get(data.getUsedItemStack().getOrCreateTag().getInt(FILTER_ORDINAL_TAG)),
-                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()));
+                filter -> data.getUsedItemStack().getOrCreateTag().putInt(FILTER_ORDINAL_TAG, filter.ordinal()))
+                .allowC2S();
 
         PagedWidget<?> pages = new PagedWidget<>()
                 .left((176 - 80) / 2)
@@ -130,8 +131,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                         .size(20)
                         .value(filterSync)
                         .stateCount(Filter.values().length)
-                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()))
-                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()))
+                        .stateOverlay(Filter.SIMPLE, new ItemDrawable(GTItems.ITEM_FILTER.asItem()).asIcon().size(16))
+                        .stateOverlay(Filter.TAG, new ItemDrawable(GTItems.TAG_FILTER.asItem()).asIcon().size(16))
                         .tooltipBuilder(r -> r.addLine(Text.dynamic(
                                 () -> Component.translatable(filterSync.getValue().getTooltip())))))
                 .child(pages)
@@ -149,9 +150,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
                                 .changeListener((stack, amount, client, init) -> handler.setStackInSlot(i, stack))
                                 .ignoreMaxStackSize(true).accessibility(true, false))));
 
-        BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList);
+        BooleanSyncValue blacklist = new BooleanSyncValue(filter::isBlackList, filter::setBlackList).allowC2S();
 
-        BooleanSyncValue ignoreNBT = new BooleanSyncValue(filter::isIgnoreNbt, filter::setIgnoreNbt);
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(filter::isIgnoreNbt, filter::setIgnoreNbt).allowC2S();
 
         Flow filterButtons = Flow.col()
                 .coverChildren()
@@ -165,7 +166,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private ParentWidget<?> createTagFilterPage(TagItemFilter filter) {
-        StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString);
+        StringSyncValue filterString = new StringSyncValue(filter::getFilterString, filter::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
 
         return new ParentWidget<>()
