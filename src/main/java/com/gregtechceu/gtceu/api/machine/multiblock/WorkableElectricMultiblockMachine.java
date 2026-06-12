@@ -130,8 +130,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-                .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                        .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
+                .addWidget(new ComponentPanelWidget(4, 17, getLevel().isClientSide ? text -> {} : this::addDisplayText)
                         .setMaxWidthLimit(200)
                         .clickHandler(this::handleDisplayClick)));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);

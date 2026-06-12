@@ -36,21 +36,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
     @Getter
     private IOpticalComputationProvider computationProvider;
-    @Getter
-    private IObjectHolder objectHolder;
 
     public ResearchStationMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new ResearchStationRecipeLogic(this);
-    }
-
-    @Override
-    public ResearchStationRecipeLogic getRecipeLogic() {
-        return (ResearchStationRecipeLogic) super.getRecipeLogic();
     }
 
     @Override
@@ -62,7 +50,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                     onStructureInvalid();
                     return;
                 }
-                this.objectHolder = iObjectHolder;
             }
 
             part.self().holder.self()
@@ -71,32 +58,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         // should never happen, but would rather do this than have an obscure NPE
-        if (computationProvider == null || objectHolder == null) {
+        if (computationProvider == null) {
             onStructureInvalid();
         }
-    }
-
-    @Override
-    public boolean checkPattern() {
-        boolean isFormed = super.checkPattern();
-        if (isFormed && objectHolder != null && objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
-            onStructureInvalid();
-        }
-        return isFormed;
     }
 
     @Override
     public void onStructureInvalid() {
         computationProvider = null;
-        // recheck the ability to make sure it wasn't the one broken
-        for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder holder) {
-                if (holder == objectHolder) {
-                    objectHolder.setLocked(false);
-                }
-            }
-        }
-        objectHolder = null;
         super.onStructureInvalid();
     }
 
@@ -114,105 +83,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
                 .addWorkingStatusLine()
-                // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
+                .addComputationUsageLine(computationProvider.getMaxCWUt())
                 .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
-    }
-
-    public static class ResearchStationRecipeLogic extends RecipeLogic {
-
-        public ResearchStationRecipeLogic(ResearchStationMachine metaTileEntity) {
-            super(metaTileEntity);
-        }
-
-        @NotNull
-        @Override
-        public ResearchStationMachine getMachine() {
-            return (ResearchStationMachine) super.getMachine();
-        }
-
-        // skip "can fit" checks, it can always fit
-        @Override
-        protected ActionResult matchRecipe(GTRecipe recipe) {
-            var match = matchRecipeNoOutput(recipe);
-            if (!match.isSuccess()) return match;
-
-            return matchTickRecipeNoOutput(recipe);
-        }
-
-        @Override
-        public boolean checkMatchedRecipeAvailable(GTRecipeDefinition match) {
-            var modified = match.toRuntime();
-            var failReason = machine.modifyRecipe(modified, getLastGroup());
-            if (failReason == null) {
-                // What is the point of this
-                if (!modified.inputs.containsKey(CWURecipeCapability.CAP) &&
-                        !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
-                    return true;
-                }
-                var recipeMatch = checkRecipe(modified);
-                if (recipeMatch.isSuccess()) {
-                    setupRecipe(modified);
-                } else {
-                    setWaiting(recipeMatch.reason());
-                }
-                if (lastRecipe != null && getStatus() == Status.WORKING) {
-                    lastOriginRecipe = match;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        protected ActionResult matchRecipeNoOutput(GTRecipe recipe) {
-            if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
-            return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.inputs, true);
-        }
-
-        protected ActionResult matchTickRecipeNoOutput(GTRecipe recipe) {
-            if (recipe.hasTick()) {
-                if (getLastGroup().isEmpty()) return ActionResult.FAIL_NO_CAPABILITIES;
-                return RecipeHelper.handleRecipe(getLastGroup(), recipe, IO.IN, recipe.tickInputs, true);
-            }
-            return ActionResult.SUCCESS;
-        }
-
-        // Handle RecipeIO manually
-        @Override
-        protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-            if (io == IO.IN) {
-                // lock the object holder on recipe start
-                IObjectHolder holder = getMachine().getObjectHolder();
-                holder.setLocked(true);
-                return ActionResult.SUCCESS;
-            }
-
-            // "replace" the items in the slots rather than outputting elsewhere
-            // unlock the object holder
-            IObjectHolder holder = getMachine().getObjectHolder();
-            if (lastRecipe == null) {
-                holder.setLocked(false);
-                return ActionResult.SUCCESS;
-            }
-
-            holder.setHeldItem(ItemStack.EMPTY);
-            ItemStack outputItem = ItemStack.EMPTY;
-            var contents = lastRecipe.getOutputContents(ItemRecipeCapability.CAP);
-            if (!contents.isEmpty()) {
-                outputItem = contents.get(0).getItems()[0];
-            }
-            if (!outputItem.isEmpty()) {
-                holder.setDataItem(outputItem.copy());
-            }
-            holder.setLocked(false);
-            return ActionResult.SUCCESS;
-        }
-
-        @Override
-        protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-            if (io != IO.OUT) {
-                return super.handleTickRecipeIO(recipe, io);
-            }
-            return ActionResult.SUCCESS;
-        }
     }
 }

@@ -10,8 +10,11 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -27,76 +30,53 @@ import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder, IMachineLife {
 
-    // purposefully not exposed to automation or capabilities
     @Persisted
-    private final ObjectHolderHandler heldItems;
-    @Getter
-    @Setter
+    private final NotifiableItemStackHandler inputItemHandler = new NotifiableItemStackHandler(this, 1, IO.IN, IO.BOTH);
+    @Persisted
+    private final DataItemHandler dataItemHandler;
+
     @Persisted
     @DescSynced
     private boolean isLocked;
 
     public ObjectHolderMachine(IMachineBlockEntity holder) {
         super(holder);
-        heldItems = new ObjectHolderHandler(this);
-    }
-
-    @Override
-    public @NotNull ItemStack getHeldItem(boolean remove) {
-        return getHeldItem(0, remove);
-    }
-
-    @Override
-    public void setHeldItem(@NotNull ItemStack heldItem) {
-        heldItems.setStackInSlot(0, heldItem);
-    }
-
-    @Override
-    public @NotNull ItemStack getDataItem(boolean remove) {
-        return getHeldItem(1, remove);
-    }
-
-    @Override
-    public void setDataItem(@NotNull ItemStack dataItem) {
-        heldItems.setStackInSlot(1, dataItem);
-    }
-
-    @Override
-    public @NotNull NotifiableItemStackHandler getAsHandler() {
-        return heldItems;
-    }
-
-    @NotNull
-    private ItemStack getHeldItem(int slot, boolean remove) {
-        ItemStack stackInSlot = heldItems.getStackInSlot(slot);
-        if (remove && stackInSlot != ItemStack.EMPTY) {
-            heldItems.setStackInSlot(slot, ItemStack.EMPTY);
-        }
-        return stackInSlot;
+        dataItemHandler = new DataItemHandler(this);
+        inputItemHandler.setCapabilityValidator(direction -> !isDataItemFacing(direction));
     }
 
     @Override
     public void onMachineRemoved() {
-        clearInventory(this.heldItems.storage);
+        clearInventory(this.dataItemHandler.storage);
+    }
+
+    @Override
+    public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
+
+        return super.getItemHandlerCap(side, useCoverCapability);
     }
 
     @Override
     public Widget createUIWidget() {
         return new WidgetGroup(new Position(0, 0))
                 .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
-                .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)
-                        .setIsBlocked(this::isLocked)
+                .addWidget(new BlockableSlotWidget(inputItemHandler, 0, 79, 36)
+                        .setIsBlocked(() -> isLocked)
                         .setBackground(GuiTextures.SLOT, GuiTextures.RESEARCH_STATION_OVERLAY))
-                .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 36)
-                        .setIsBlocked(this::isLocked)
+                .addWidget(new BlockableSlotWidget(dataItemHandler, 0, 15, 36)
+                        .setIsBlocked(() -> isLocked)
                         .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
     }
 
@@ -111,16 +91,28 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
         }
     }
 
-    private class ObjectHolderHandler extends NotifiableItemStackHandler {
+    @MustBeInvokedByOverriders
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        isLocked = false;
+    }
 
-        public ObjectHolderHandler(MetaMachine metaTileEntity) {
-            super(metaTileEntity, 2, IO.IN, IO.BOTH, size -> new CustomItemStackHandler(size) {
+    private boolean isDataItemFacing(@Nullable Direction direction) {
+        return direction == getFrontFacing() || direction == getFrontFacing().getOpposite();
+    }
+
+    private class DataItemHandler extends NotifiableItemStackHandler {
+
+        public DataItemHandler(MetaMachine metaTileEntity) {
+            super(metaTileEntity, 1, IO.BOTH, IO.BOTH, size -> new CustomItemStackHandler(size) {
 
                 @Override
                 public int getSlotLimit(int slot) {
                     return 1;
                 }
             });
+            capabilityValidator = ObjectHolderMachine.this::isDataItemFacing;
         }
 
         // only allow a single item, no stack size
@@ -133,13 +125,21 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
         @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            if (!isLocked()) {
+            if (!isLocked) {
                 return super.extractItem(slot, amount, simulate);
             }
             return ItemStack.EMPTY;
         }
 
-        // only allow data items in the second slot
+        @Override
+        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            if (!isLocked) {
+                return super.insertItem(slot, stack, simulate);
+            }
+            return stack;
+        }
+
+        // only allow data items
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             if (stack.isEmpty()) {
@@ -156,9 +156,19 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
                 }
             }
 
-            if (slot == 0 && !isDataItem) {
+            return isDataItem;
+        }
+
+        @Override
+        public boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate) {
+            if(io == IO.OUT && simulate) {
                 return true;
-            } else return slot == 1 && isDataItem;
+            }
+            boolean result = super.handleRecipe(io, recipe, left, simulate);
+            if(result && !simulate) {
+                isLocked = (io == IO.IN);
+            }
+            return result;
         }
     }
 }

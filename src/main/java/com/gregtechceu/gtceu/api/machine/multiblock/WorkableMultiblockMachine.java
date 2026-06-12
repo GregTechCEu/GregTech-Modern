@@ -137,14 +137,16 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public void onStructureInvalid() {
+        // reset recipe logic first
+        recipeLogic.resetRecipeLogic();
+
         super.onStructureInvalid();
         updateActiveBlocks(false);
         activeBlocks = null;
         recipeHandlerLists.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        // reset recipe Logic
-        recipeLogic.resetRecipeLogic();
+
     }
 
     @Override

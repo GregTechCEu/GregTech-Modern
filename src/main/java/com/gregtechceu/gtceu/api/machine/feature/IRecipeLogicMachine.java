@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -36,7 +38,11 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called when recipe logic status changed
      */
-    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
+    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        if(this instanceof MetaMachine metaMachine && metaMachine.getRenderState().hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
+            metaMachine.setRenderState(metaMachine.getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus)) ;
+        }
+    }
 
     /**
      * Recipe logic
@@ -117,7 +123,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
+     * Always try {@link IRecipeLogicMachine#modifyRecipe(GTRecipe, RecipeHandlerGroup)} before setting up recipe.
      * 
      * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
      *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
