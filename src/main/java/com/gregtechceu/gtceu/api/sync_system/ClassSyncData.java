@@ -54,7 +54,7 @@ public final class ClassSyncData {
         var isManaged = ISyncManaged.class.isAssignableFrom(clazz);
 
         if (!isManaged)
-            throw new IllegalArgumentException("Cannot create class sync data for non sync managed class.");
+            throw new IllegalArgumentException("Cannot create class sync data for non sync managed class " + clazz.getName());
 
         MethodHandles.Lookup privateLookup;
         try {
