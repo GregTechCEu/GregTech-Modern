@@ -379,7 +379,6 @@ public class PlaceholderHandler {
         private final Stack<Integer> viewStarts = new Stack<>();
         private final Stack<String> openPlaceholders = new Stack<>();
         private int ifDepth = 0;
-        private Component endOfLineValue = null;
 
         @Override
         public Component apply(String s, @Nullable PlaceholderContext ctx) {
@@ -478,7 +477,6 @@ public class PlaceholderHandler {
                         pureStarts.pop();
                         viewStarts.pop();
                         if (!everything.substring(popped).contains(" ")) return Component.literal(s);
-                        endOfLineValue = null;
                         return Component.literal(s)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
@@ -520,13 +518,6 @@ public class PlaceholderHandler {
                 }
             }
             everything.append(s);
-            if (s.contains("\n") && endOfLineValue != null) {
-                String start = s.substring(0, s.indexOf('\n'));
-                String end = s.substring(s.indexOf('\n'));
-                Component ret = Component.literal(start).append(endOfLineValue).append(end);
-                endOfLineValue = null;
-                return ret;
-            }
             return Component.literal(s);
         }
 
@@ -534,7 +525,6 @@ public class PlaceholderHandler {
             viewStarts.clear();
             pureStarts.clear();
             openPlaceholders.clear();
-            endOfLineValue = null;
             ifDepth = 0;
             unclosedSingleEscapes = 0;
         }

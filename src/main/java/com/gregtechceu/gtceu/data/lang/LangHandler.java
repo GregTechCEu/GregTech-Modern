@@ -1833,7 +1833,7 @@ public class LangHandler {
         provider.add("gtceu.placeholder_editor.extra_closing_bracket", "Extra closing bracket");
         provider.add("gtceu.placeholder_editor.no_placeholder", "Placeholder with name '%s' does not exist");
         provider.add("gtceu.placeholder_editor.constant_value",
-                "This expression always evaluates to the same result.\nConsider replacing it with a constant.");
+                "This expression always evaluates to '%s'.\nConsider replacing it with a constant.");
         provider.add("gtceu.placeholder_editor.write_in_if", """
                 Placeholders inside {if} are executed regardless of the condition.
                 This means that, for example, "{if 0 {redstone set 15}}" will produce redstone output.
