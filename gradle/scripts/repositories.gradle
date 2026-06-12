@@ -33,8 +33,7 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
-
-    exclusiveContent { // Create, Ponder, Flywheel
+        exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
             includeGroup("net.createmod.ponder")
@@ -51,7 +50,7 @@ repositories {
     }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
-        filter { includeGroup("dev.latvian.mods")}
+        filter { includeGroup("dev.latvian.mods") }
     }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.component.prospector;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -9,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.mui.drawable.CycleDrawable;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockStateAccessor;
@@ -365,7 +365,7 @@ public abstract class ProspectorMode<T> {
         public BedrockOreInfo deserialize(FriendlyByteBuf buf) {
             ResourceLocation materialId = buf.readResourceLocation();
             return new BedrockOreInfo(
-                    GTCEuAPI.materialManager.getRegistry(materialId.getNamespace()).get(materialId.getPath()),
+                    GTRegistries.MATERIALS.get(materialId),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 

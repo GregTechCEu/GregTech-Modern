@@ -48,8 +48,7 @@ dependencies {
     modCompileOnly(forge.architectury)
     modCompileOnly(forge.rhino)
 
-    // Shimmer
-    modCompileOnly(forge.shimmer)
+    // Performance
     modCompileOnly(forge.embeddium)
     modCompileOnly(forge.oculus)
     modCompileOnly(forge.modernfix)

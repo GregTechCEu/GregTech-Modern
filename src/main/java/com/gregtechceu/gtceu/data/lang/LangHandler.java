@@ -234,6 +234,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.block_rotation", "§2Mechanic: §fRotates Blocks");
         provider.add("item.gtceu.tool.behavior.dowse_campfire", "§6Firefighter: §fDowses Campfires");
         provider.add("item.gtceu.tool.behavior.damage_boost", "§4Damage Boost: §fExtra damage against %s");
+        provider.add("item.gtceu.tool.behavior.shears", "§aGardener: §fShears blocks and mobs");
         provider.add("item.gtceu.tool.behavior.prospecting.ore", "Found ore: %s");
         provider.add("item.gtceu.tool.behavior.prospecting.air", "Found an air pocket");
         provider.add("item.gtceu.tool.behavior.prospecting.water", "Found water");
@@ -751,6 +752,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
         provider.add("behaviour.soft_hammer.disabled_cycle", "Working Disabled after current cycle");
+        provider.add("behaviour.soft_hammer.ignored", "Machine cannot be disabled");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");
