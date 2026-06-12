@@ -46,7 +46,7 @@ class MySyncObject implements ISyncManaged {
       setSyncString("abcd");
     }
     
-    // It is often good practice to wrap client sync fields in getters/setters, and have the setter update the sync staus.
+    // It is often good practice to wrap client sync fields in getters/setters, and have the setter update the sync status.
     public void setSyncString(String syncString) {
         this.syncString = syncString;
         getSyncDataHolder().markClientSyncFieldDirty("syncString");
