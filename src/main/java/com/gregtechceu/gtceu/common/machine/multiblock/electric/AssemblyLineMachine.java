@@ -19,32 +19,22 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
-import lombok.Getter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
-    @Accessors(fluent = true)
-    @Getter
-    @Persisted
-    protected boolean allowCircuitSlots;
-
-    public AssemblyLineMachine(IMachineBlockEntity holder, boolean allowCircuitSlots) {
-        super(holder);
-        this.allowCircuitSlots = allowCircuitSlots;
-    }
-
     public AssemblyLineMachine(IMachineBlockEntity holder) {
-        this(holder, false);
+        super(holder);
     }
+
+    List<IRecipeHandler<?>> itemHandlers;
+    List<IRecipeHandler<?>> fluidHandlers;
 
     @Override
     protected RecipeLogic createRecipeLogic(Object... args) {
@@ -56,16 +46,34 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).stream()
+                .filter(IRecipeHandler::shouldSearchContent)
+                .toList();
+
+        fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).stream()
+                .filter(IRecipeHandler::shouldSearchContent)
+                .toList();
+
+    }
+
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        itemHandlers = null;
+        fluidHandlers = null;
+    }
+
     private boolean checkItemInputs(@NotNull GTRecipe recipe, boolean isTick) {
         var itemInputs = (isTick ? recipe.tickInputs : recipe.inputs).getOrDefault(ItemRecipeCapability.CAP,
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return true;
         int inputsSize = itemInputs.size();
-        var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         if (itemHandlers.size() < inputsSize) return false;
 
         var itemInventory = itemHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(ItemStack.class::isInstance)
                         .map(ItemStack.class::cast)
@@ -93,17 +101,11 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 Collections.emptyList());
         if (itemInputs.isEmpty()) return ActionResult.SUCCESS;
         int inputsSize = itemInputs.size();
-        var itemHandlers = getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP);
         if (itemHandlers.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
-
-        var itemInventory = itemHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent).toList();
-
-        if (itemInventory.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
 
         for (int i = 0; i < inputsSize; i++) {
             var recipeStack = itemInputs.get(i);
-            var currentBus = itemInventory.get(i);
+            var currentBus = itemHandlers.get(i);
             if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
             if (!itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true)) {
@@ -114,7 +116,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         for (int i = 0; i < inputsSize; i++) {
             var recipeStack = itemInputs.get(i);
-            var currentBus = itemInventory.get(i);
+            var currentBus = itemHandlers.get(i);
             if (!(currentBus instanceof NotifiableItemStackHandler itemBus)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's ItemRecipeCapability.IN was not of type NotifiableItemStackHandler");
             if (!itemBus.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false)) {
@@ -132,11 +134,9 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return true;
         int inputsSize = fluidInputs.size();
-        var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
         if (fluidHandlers.size() < inputsSize) return false;
 
         var fluidInventory = fluidHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent)
                 .map(container -> container.getContents().stream()
                         .filter(FluidStack.class::isInstance)
                         .map(FluidStack.class::cast)
@@ -163,17 +163,12 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
                 Collections.emptyList());
         if (fluidInputs.isEmpty()) return ActionResult.SUCCESS;
         int fluidsSize = fluidInputs.size();
-        var fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP);
+
         if (fluidHandlers.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
-
-        var fluidInventory = fluidHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent).toList();
-
-        if (fluidInventory.size() < fluidsSize) return ActionResult.FAIL_NO_REASON;
 
         for (int i = 0; i < fluidsSize; i++) {
             var recipeStack = fluidInputs.get(i);
-            var currentBus = fluidInventory.get(i);
+            var currentBus = fluidHandlers.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
             if (!fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), true)) {
@@ -184,7 +179,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         for (int i = 0; i < fluidsSize; i++) {
             var recipeStack = fluidInputs.get(i);
-            var currentBus = fluidInventory.get(i);
+            var currentBus = fluidHandlers.get(i);
             if (!(currentBus instanceof NotifiableFluidTank fluidTank)) throw new RuntimeException(
                     "Handler in Assline.consumeItemContent's FluidRecipeCapability.IN was not of type NotifiableFluidTank");
             if (!fluidTank.handleRecipe(IO.IN, recipe, new ArrayList<>(List.of(recipeStack)), false)) {
@@ -198,78 +193,48 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     }
 
     private ActionResult consumeAll(@NotNull GTRecipe recipe, boolean isTick) {
-        GTRecipe copyWithItems = recipe.copy();
-        copyWithItems.inputs.clear();
-        copyWithItems.tickInputs.clear();
-
-        GTRecipe copyWithFluids = recipe.copy();
-        copyWithFluids.inputs.clear();
-        copyWithFluids.tickInputs.clear();
-
-        GTRecipe copyWithoutItemsFluids = recipe.copy();
-        copyWithoutItemsFluids.inputs.clear();
-        copyWithoutItemsFluids.tickInputs.clear();
-
-        recipe.inputs.forEachEntry(new com.gregtechceu.gtceu.api.recipe.content.ContentListMap.EntryConsumer() {
-            @Override
-            public <T> void accept(com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability<T> capability,
-                                   List<T> contents) {
-                if (capability == FluidRecipeCapability.CAP) {
-                    copyWithFluids.inputs.put(capability, contents);
-                } else if (capability == ItemRecipeCapability.CAP) {
-                    copyWithItems.inputs.put(capability, contents);
-                } else {
-                    copyWithoutItemsFluids.inputs.put(capability, contents);
-                }
-            }
-        });
-        recipe.tickInputs.forEachEntry(new com.gregtechceu.gtceu.api.recipe.content.ContentListMap.EntryConsumer() {
-            @Override
-            public <T> void accept(com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability<T> capability,
-                                   List<T> contents) {
-                if (capability == FluidRecipeCapability.CAP) {
-                    copyWithFluids.tickInputs.put(capability, contents);
-                } else if (capability == ItemRecipeCapability.CAP) {
-                    copyWithItems.tickInputs.put(capability, contents);
-                } else {
-                    copyWithoutItemsFluids.tickInputs.put(capability, contents);
-                }
-            }
-        });
         var config = ConfigHolder.INSTANCE.machines;
         ActionResult result;
+
         if (config.orderedAssemblyLineItems) {
-            result = consumeItemContents(copyWithItems, isTick);
-        } else {
-            result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithItems, IO.IN) :
-                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithItems, IO.IN);
-        }
-        if (!result.isSuccess()) return result;
+            result = consumeItemContents(recipe, isTick);
+            if (!result.isSuccess()) return result;
+            result = consumeFluidContents(recipe, isTick);
+            if (!result.isSuccess()) return result;
+            var copyWithoutItemsFluids = ((AsslineRecipeLogic)getRecipeLogic()).getCachedCopy(recipe);
+            return isTick ?
+                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN) :
+                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN);
 
-        if (config.orderedAssemblyLineFluids) {
-            result = consumeFluidContents(copyWithFluids, isTick);
         } else {
-            result = isTick ?
-                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithFluids, IO.IN) :
-                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithFluids, IO.IN);
+           return isTick ?
+                    RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), recipe, IO.IN) :
+                    RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), recipe, IO.IN);
         }
-        if (!result.isSuccess()) return result;
-
-        return isTick ?
-                RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN) :
-                RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN);
     }
 
     class AsslineRecipeLogic extends RecipeLogic {
+
+        GTRecipe copyWithoutItemsFluids;
 
         public AsslineRecipeLogic(IRecipeLogicMachine machine) {
             super(machine);
         }
 
+        GTRecipe getCachedCopy(GTRecipe recipe) {
+            if (copyWithoutItemsFluids == null || !copyWithoutItemsFluids.id.equals(recipe.id)) {
+                copyWithoutItemsFluids = recipe.copy();
+                copyWithoutItemsFluids.inputs.remove(ItemRecipeCapability.CAP);
+                copyWithoutItemsFluids.tickInputs.remove(ItemRecipeCapability.CAP);
+                copyWithoutItemsFluids.inputs.remove(FluidRecipeCapability.CAP);
+                copyWithoutItemsFluids.tickInputs.remove(FluidRecipeCapability.CAP);
+            }
+            return copyWithoutItemsFluids;
+        }
+
         @Override
         protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
-            if (io.equals(IO.IN)) {
+            if (io == IO.IN) {
                 return consumeAll(recipe, false);
             }
             return RecipeHelper.handleRecipeIO(getLastGroup(), recipe, io);
@@ -277,7 +242,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         @Override
         protected ActionResult handleTickRecipeIO(GTRecipe recipe, IO io) {
-            if (io.equals(IO.IN)) {
+            if (io == IO.IN) {
                 return consumeAll(recipe, true);
             }
             return RecipeHelper.handleTickRecipeIO(getLastGroup(), recipe, io);
@@ -291,13 +256,19 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             var config = ConfigHolder.INSTANCE.machines;
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!checkItemInputs(recipe, false)) return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"), ItemRecipeCapability.CAP, IO.IN);
+            if (!checkItemInputs(recipe, true)) return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"), ItemRecipeCapability.CAP, IO.IN);
 
             if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
-            if (!checkFluidInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
-            if (!checkFluidInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;
+            if (!checkFluidInputs(recipe, false)) return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"), FluidRecipeCapability.CAP, IO.IN);
+            if (!checkFluidInputs(recipe, true)) return ActionResult.fail(
+                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"), FluidRecipeCapability.CAP, IO.IN);
             return ActionResult.SUCCESS;
         }
+
+
     }
 }

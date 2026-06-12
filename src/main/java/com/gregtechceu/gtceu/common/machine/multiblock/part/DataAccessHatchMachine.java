@@ -65,8 +65,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        if (isCreative) return new NotifiableItemStackHandler(this, 0, IO.BOTH);
-        return new NotifiableItemStackHandler(this, getInventorySize(), IO.BOTH) {
+        if (isCreative) return new NotifiableItemStackHandler(this, 0, IO.NONE);
+        return new NotifiableItemStackHandler(this, getInventorySize(), IO.NONE, IO.BOTH) {
 
             @Override
             public void onContentsChanged() {
