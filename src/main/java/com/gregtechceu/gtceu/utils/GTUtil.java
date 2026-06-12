@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -39,7 +36,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.ForgeHooks;
@@ -487,19 +483,6 @@ public class GTUtil {
         // preserve existing opacity if present
         if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
         return opacity << 24 | colorValue;
-    }
-
-    /**
-     * @param material the material to use
-     * @return the correct "molten" fluid for a material
-     */
-    @Nullable
-    public static Fluid getMoltenFluid(@NotNull Material material) {
-        if (material.hasProperty(PropertyKey.ALLOY_BLAST))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
-        if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
-        return null;
     }
 
     public static int getFluidColor(FluidStack fluid) {
