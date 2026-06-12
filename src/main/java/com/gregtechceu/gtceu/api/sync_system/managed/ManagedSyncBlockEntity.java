@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.sync_system;
+package com.gregtechceu.gtceu.api.sync_system.managed;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -120,6 +121,9 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
         }
     }
 
+    /**
+     * Called each tick on the server side.
+     */
     @MustBeInvokedByOverriders
     public void serverTick() {
         setChanged();
@@ -129,4 +133,9 @@ public abstract class ManagedSyncBlockEntity extends BlockEntity implements ISyn
             isDirty = false;
         }
     }
+
+    /**
+     * Called each tick on the client side.
+     */
+    public void clientTick() {}
 }

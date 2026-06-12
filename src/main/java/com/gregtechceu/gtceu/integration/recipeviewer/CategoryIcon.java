@@ -47,7 +47,7 @@ public class CategoryIcon {
     private static class EmiCallWrapper {
 
         public static EmiRenderable getRenderable(ResourceLocation location) {
-            return new EmiTexture(location, 0, 0, 16, 16);
+            return new EmiTexture(location, 0, 0, 16, 16, 16, 16, 16, 16);
         }
 
         public static EmiRenderable getRenderable(ItemStack stack) {

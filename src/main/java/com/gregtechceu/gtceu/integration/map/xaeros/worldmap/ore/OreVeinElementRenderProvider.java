@@ -21,7 +21,7 @@ public class OreVeinElementRenderProvider extends MapElementRenderProvider<OreVe
 
     public void begin(int location, OreVeinElementContext context) {
         if (WorldMap.INSTANCE.getConfigs().getClientConfigManager().getEffective(
-                WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS)) {
+                WorldMapProfiledConfigOptions.WAYPOINTS)) {
             ResourceKey<Level> currentDim = Minecraft.getInstance().level.dimension();
             this.iterator = XaerosRenderer.oreElements.row(currentDim).values().iterator();
 

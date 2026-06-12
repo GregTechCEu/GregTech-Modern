@@ -769,6 +769,7 @@ public class LangHandler {
         provider.add("behaviour.soft_hammer.enabled", "Working Enabled");
         provider.add("behaviour.soft_hammer.disabled", "Working Disabled");
         provider.add("behaviour.soft_hammer.disabled_cycle", "Working Disabled after current cycle");
+        provider.add("behaviour.soft_hammer.ignored", "Machine cannot be disabled");
         provider.add("behaviour.lighter.tooltip.description", "Can light things on fire");
         provider.add("behaviour.lighter.tooltip.usage", "Shift-right click to open/close");
         provider.add("behaviour.lighter.fluid.tooltip", "Can light things on fire with Butane or Propane");

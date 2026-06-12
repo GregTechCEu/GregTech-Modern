@@ -148,12 +148,12 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("min", minValue);
         tag.putInt("max", maxValue);
         tag.putBoolean("latched", isLatched);
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

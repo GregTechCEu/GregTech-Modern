@@ -133,11 +133,10 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("manualIO", getAllowFlow().ordinal());
         tag.putInt("filterMode", getFilterMode().ordinal());
         tag.put("filter", attachItem.serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

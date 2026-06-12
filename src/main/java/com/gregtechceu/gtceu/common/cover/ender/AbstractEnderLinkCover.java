@@ -210,11 +210,10 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putString("colorStr", colorStr);
         tag.putInt("permission", getPermission().ordinal());
         tag.putInt("io", getIo().ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override
