@@ -60,7 +60,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
     // runtime
     @Getter
-    private @Nullable String selected = null;
+    private Set<String> selected = new HashSet<>();
     private final Set<T> items = new HashSet<>();
     private int chunkIndex = 0;
 
@@ -104,8 +104,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                 Component description = mode.getDescription(item);
 
                                 BoolValue.Dynamic selected = new BoolValue.Dynamic(
-                                        () -> Objects.equals(this.getSelected(), uniqueId),
-                                        v -> this.setSelected(v ? uniqueId : null, syncManager.isClient()));
+                                        () -> this.getSelected().contains(uniqueId),
+                                        v -> this.setSelected(uniqueId, v, syncManager.isClient()));
 
                                 return new ToggleButton().widgetTheme(IThemeApi.TOGGLE_BUTTON)
                                         .value(selected)
@@ -174,13 +174,15 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         }
     }
 
-    public void setSelected(@Nullable String uniqueID, boolean isClient) {
-        if (!Objects.equals(this.selected, uniqueID)) {
-            this.selected = uniqueID;
+    public void setSelected(String uniqueID, boolean select, boolean isClient) {
+        if (select) {
+            this.selected.add(uniqueID);
+        } else {
+            this.selected.remove(uniqueID);
+        }
 
-            if (isClient) {
-                this.texture.loadToImage();
-            }
+        if (isClient) {
+            this.texture.loadToImage();
         }
     }
 

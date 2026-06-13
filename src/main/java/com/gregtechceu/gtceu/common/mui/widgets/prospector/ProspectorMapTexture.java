@@ -92,7 +92,8 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
                 boolean drewColor = false;
                 // draw items
                 for (T item : items) {
-                    if (mapHandler.getSelected() == null || mapHandler.getSelected().equals(mode.getUniqueId(item))) {
+                    if (mapHandler.getSelected().isEmpty() ||
+                            mapHandler.getSelected().contains(mode.getUniqueId(item))) {
                         int color = mode.getItemColor(item);
                         image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
 
