@@ -33,6 +33,11 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
+    public boolean skipEmptyContentCheck() {
+        return true;
+    }
+
+    @Override
     public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
                            boolean isInput, MutableInt yOffset) {
         if (perTick) {

@@ -223,4 +223,13 @@ public abstract class RecipeCapability<T> {
     public boolean shouldBypassDistinct() {
         return true;
     }
+
+    /**
+     * Should handlers of this capability be tried even when {@link IRecipeHandler#getTotalContentAmount()} is zero?
+     * E.g. should this capability bypass the empty handler optimization for rate-based capabilities.
+     * for example: CWU, where stored amount is zero but the handler can still provide computation.
+     */
+    public boolean skipEmptyContentCheck() {
+        return false;
+    }
 }

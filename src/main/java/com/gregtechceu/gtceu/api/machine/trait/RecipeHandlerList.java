@@ -183,7 +183,8 @@ public class RecipeHandlerList {
             var entry = it.next();
             var handlerList = getCapability(entry.getKey());
             for (var handler : handlerList) {
-                if (io == IO.IN && handler.getTotalContentAmount() == 0) {
+                if (io == IO.IN && handler.getTotalContentAmount() == 0 &&
+                        !handler.getCapability().skipEmptyContentCheck()) {
                     continue;
                 }
                 var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
