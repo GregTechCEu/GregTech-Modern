@@ -209,10 +209,11 @@ public class CreativeEnergyContainerMachine extends TieredMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         // syncing
-        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v);
-        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = Math.max(a, 1));
-        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t);
-        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b);
+        LongSyncValue voltage = new LongSyncValue(() -> this.voltage, (v) -> this.voltage = v).allowC2S();
+        IntSyncValue amps = new IntSyncValue(() -> this.amps, (a) -> this.amps = Math.max(a, 1)).allowC2S();
+        IntSyncValue tier = new IntSyncValue(() -> this.tier, (t) -> this.setTier = t).allowC2S();
+        BooleanSyncValue sourceSync = new BooleanSyncValue(() -> this.source, (b) -> this.source = b).allowC2S();
+        BooleanSyncValue sinkSync = new BooleanSyncValue(() -> !this.source, (b) -> this.source = !b).allowC2S();
         syncManager.syncValue("tier", tier);
 
         IPanelHandler panelSyncHandler = syncManager.syncedPanel("voltage popup", false,
@@ -228,7 +229,7 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .child(createAmpRow(amps))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
-                        .child(createSourceSelector(sourceSync)));
+                        .child(createSourceSelector(sourceSync, sinkSync)));
     }
 
     private Flow createVoltageRow(IPanelHandler panel, LongSyncValue voltage) {
@@ -306,12 +307,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .marginLeft(4));
     }
 
-    private Flow createSourceSelector(BooleanSyncValue sourceSync) {
+    private Flow createSourceSelector(BooleanSyncValue sourceSync, BooleanSyncValue sinkSync) {
         return Flow.column()
                 .coverChildrenHeight()
                 .child(Flow.row()
                         .coverChildrenHeight()
-                        .name("button")
+                        .name("source")
                         .childPadding(2)
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
@@ -325,17 +326,17 @@ public class CreativeEnergyContainerMachine extends TieredMachine
                         .paddingBottom(2))
                 .child(Flow.row()
                         .coverChildrenHeight()
-                        .name("button")
+                        .name("sink")
                         .coverChildrenHeight()
                         .childPadding(2)
                         .child(new ToggleButton()
                                 .overlay(new DynamicDrawable(() -> {
-                                    if (!sourceSync.getValue()) {
+                                    if (sinkSync.getValue()) {
                                         return GuiTextures.CHECK_BOX.getSubArea(0, .5f, 1, 1f);
                                     }
                                     return IDrawable.EMPTY;
                                 }))
-                                .value(new BooleanSyncValue(() -> !source, bool -> source = !bool)))
+                                .value(sinkSync))
                         .child(Text.lang("gtceu.creative.energy.sink").asWidget()));
     }
 
