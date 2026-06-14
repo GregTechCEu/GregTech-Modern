@@ -1,21 +1,17 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -23,12 +19,12 @@ import java.util.Map;
 // TODO make into a subclass of BlockPatternStructureHelper
 public class ExpandablePatternStructureHelper {
 
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private final Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
+    private final @Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private final @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
     private final List<Integer> userDimensions;
 
-    public ExpandablePatternStructureHelper(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                            Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+    public ExpandablePatternStructureHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                            @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
                                             List<Integer> userDimensions) {
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
@@ -67,7 +63,7 @@ public class ExpandablePatternStructureHelper {
     public PatternPredicate getPredicateFromPos(ExpandablePattern pattern, BlockPos absPos,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
         Direction[] absolutes = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped).right();
-        // Reverse the absolute→relative transform (transpose of orthogonal rotation matrix)
+        // Reverse the absolute->relative transform (transpose of orthogonal rotation matrix)
         int relX = getOffsetFromDirection(absolutes[0], absPos);
         int relY = getOffsetFromDirection(absolutes[1], absPos);
         int relZ = getOffsetFromDirection(absolutes[2], absPos);
@@ -75,14 +71,19 @@ public class ExpandablePatternStructureHelper {
     }
 
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, ExpandablePattern pattern,
-                                                 Map<Long, BlockInfo> userBlockPreferences, Direction frontFacing,
-                                                 Direction upFacing, boolean isFlipped) {
+                                                 @Nullable Map<Long, BlockInfo> userBlockPreferences,
+                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        if (userBlockPreferences == null || userBlockPreferences.isEmpty()) {
+            return;
+        }
+
         var cornerData = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
         BoundingBox corners = cornerData.left();
         Direction[] absolutes = cornerData.right();
         // contains is min<=x<max, inflate to make sure all positions are inside
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
+
         for (var entry : userBlockPreferences.entrySet()) {
             BlockPos pos = BlockPos.of(entry.getKey()); // absolute-space
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
@@ -98,7 +99,6 @@ public class ExpandablePatternStructureHelper {
 
     public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, ExpandablePattern pattern,
                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        BlockPos.MutableBlockPos translation = BlockPos.ZERO.mutable();
         var corners = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
         Direction[] absolutes = corners.right();
 
@@ -129,7 +129,7 @@ public class ExpandablePatternStructureHelper {
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int minCount = minMaxPreferences.contains(predicate, basePredicate) ?
+            int minCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).leftInt() :
                     basePredicate.minCount;
             if (minCount == 0) continue;
@@ -138,7 +138,7 @@ public class ExpandablePatternStructureHelper {
             if (minCount <= 0 || totalAlreadyPopulated >= minCount) continue;
 
             BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
+            if (blockPreferences != null && blockPreferences.contains(predicate, basePredicate)) {
                 toInsert = blockPreferences.get(predicate, basePredicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
@@ -152,7 +152,7 @@ public class ExpandablePatternStructureHelper {
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
+            int maxCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).rightInt() :
                     basePredicate.maxCount;
             if (maxCount == 0) continue;
@@ -160,7 +160,7 @@ public class ExpandablePatternStructureHelper {
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
 
             BlockInfo toInsert = null;
-            if (blockPreferences.contains(predicate, basePredicate)) {
+            if (blockPreferences != null && blockPreferences.contains(predicate, basePredicate)) {
                 toInsert = blockPreferences.get(predicate, basePredicate);
             } else if (!basePredicate.getCandidates().isEmpty()) {
                 toInsert = basePredicate.getCandidates().get(0);
@@ -173,45 +173,6 @@ public class ExpandablePatternStructureHelper {
 
     private static int getOffsetFromDirection(Direction dir, BlockPos pos) {
         return dir.getAxis().choose(pos.getX(), pos.getY(), pos.getZ()) * dir.getAxisDirection().getStep();
-    }
-
-    public static void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
-                                             Direction upFacing, Block controllerBlock) {
-        Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
-        for (var entry : resultStructure.entrySet()) {
-            BlockPos pos = entry.getKey();
-            BlockState currentState = entry.getValue().getBlockState();
-            if (!(currentState.getBlock() instanceof MetaMachineBlock machine)) {
-                continue;
-            }
-            if (!currentState.hasProperty(machine.getRotationState().property)) continue;
-
-            if (machine == controllerBlock) {
-                BlockState newState = currentState.setValue(machine.getRotationState().property, frontFacing);
-                if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING)) {
-                    newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
-                }
-                toUpdate.put(pos, newState);
-                continue;
-            }
-
-            Direction validFacing = null;
-            for (Direction dir : BlockPatternStructureHelper.DIRECTIONS_IN_ORDER) {
-                // make sure the machine can face this way
-                if (!machine.getRotationState().test(dir)) continue;
-                // and that there won't be a block in front of it
-                if (!resultStructure.containsKey(pos.relative(dir))) {
-                    validFacing = dir;
-                    break;
-                }
-            }
-            if (validFacing != null) {
-                toUpdate.put(pos, currentState.setValue(machine.getRotationState().property, validFacing));
-            }
-        }
-        for (var entry : toUpdate.entrySet()) {
-            resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
-        }
     }
 
     private static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {

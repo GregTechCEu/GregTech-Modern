@@ -16,7 +16,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -26,21 +28,20 @@ public class BlockPatternStructureHelper {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private final Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
+    private final @Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private final @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
     private final Int2IntMap sliceRepeats;
 
-    public BlockPatternStructureHelper(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                         Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                         Int2IntMap sliceRepeats) {
+    public BlockPatternStructureHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                       @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                                       Int2IntMap sliceRepeats) {
         this.blockPreferences = blockPreferences;
         this.minMaxPreferences = minMaxPreferences;
         this.sliceRepeats = sliceRepeats;
     }
 
-    public PatternPredicate getPredicateFromPos(BlockPattern pattern, BlockPos pos, Direction frontFacing,
-                                                Direction upFacing,
-                                                boolean isFlipped) {
+    public PatternPredicate getPredicateFromPos(BlockPattern pattern, BlockPos pos,
+                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
         char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
         char[][][] adjustedBlockPattern = rotateAndFlipPattern(flattenedBlockPattern, pattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
@@ -56,12 +57,17 @@ public class BlockPatternStructureHelper {
 
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
                                                  char[][][] flattenedBlockPattern,
-                                                 Map<Long, BlockInfo> userBlockPreferences,
+                                                 @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                  Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        if (userBlockPreferences == null || userBlockPreferences.isEmpty()) {
+            return;
+        }
+
         Vec3i dimensions = getDimensions(flattenedBlockPattern);
         Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        for (Map.Entry<Long, BlockInfo> blockPreference : userBlockPreferences.entrySet()) {
-            BlockPos pos = BlockPos.of(blockPreference.getKey());
+
+        for (var blockPreference : userBlockPreferences.long2ObjectEntrySet()) {
+            BlockPos pos = BlockPos.of(blockPreference.getLongKey());
             BlockInfo blockInfo = blockPreference.getValue();
             if (pos.getX() >= dimensions.getX() ||
                     pos.getY() >= dimensions.getY() ||
@@ -132,7 +138,7 @@ public class BlockPatternStructureHelper {
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int minCount = minMaxPreferences.contains(predicate, basePredicate) ?
+            int minCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).leftInt() :
                     basePredicate.minCount;
             if (minCount == 0) continue;
@@ -144,7 +150,10 @@ public class BlockPatternStructureHelper {
                     layerAlreadyPopulated < basePredicate.minSliceCount;
             if (!globalMinUnmet && !layerMinUnmet) continue;
 
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            BlockInfo toInsert = null;
+            if (blockPreferences != null) {
+                toInsert = blockPreferences.get(predicate, basePredicate);
+            }
             if (toInsert == null) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -160,8 +169,8 @@ public class BlockPatternStructureHelper {
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).right() :
+            int maxCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
+                    minMaxPreferences.get(predicate, basePredicate).rightInt() :
                     basePredicate.maxCount;
             if (maxCount == 0) continue;
 
@@ -172,7 +181,10 @@ public class BlockPatternStructureHelper {
                 continue;
             }
 
-            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            BlockInfo toInsert = null;
+            if (blockPreferences != null) {
+                toInsert = blockPreferences.get(predicate, basePredicate);
+            }
             if (toInsert == null) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
@@ -195,7 +207,7 @@ public class BlockPatternStructureHelper {
         for (BasePredicate basePredicate : predicate.subPredicates) {
             if (!basePredicate.candidates.contains(newInfo)) continue;
 
-            int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
+            int maxCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
                     minMaxPreferences.get(predicate, basePredicate).rightInt() :
                     basePredicate.maxCount;
             if (maxCount == 0) continue;
@@ -212,7 +224,7 @@ public class BlockPatternStructureHelper {
     }
 
     public @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
-        int totalSlices = sliceRepeats.values().stream().reduce(0, Integer::sum);
+        int totalSlices = sliceRepeats.values().intStream().sum();
         int[] dimensions = pattern.getDimensions();
         char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
         PatternSlice[] slices = pattern.getSlices();
