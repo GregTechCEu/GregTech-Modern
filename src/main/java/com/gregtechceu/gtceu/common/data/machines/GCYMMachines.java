@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
@@ -13,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -28,14 +24,10 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.level.block.Blocks;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.multiblock.PartAbility.*;
@@ -464,30 +456,6 @@ public class GCYMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
-                        .slice("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .slice("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
-                        .slice("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .slice("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
-                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                        .where('S', definition, Direction.NORTH)
-                        .where('G', HEAT_VENT.getDefaultState())
-                        .where('A', Blocks.AIR.defaultBlockState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.WEST)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH);
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
-            })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"))
             .additionalDisplay((controller, components) -> {
@@ -650,55 +618,6 @@ public class GCYMMachines {
                         .where('#', any())
                         .build();
             })
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .where('S', definition, Direction.NORTH)
-                        .where('C', CASING_WATERTIGHT.getDefaultState())
-                        .where('X', PARALLEL_HATCH[IV], Direction.NORTH)
-                        .where('H', FLUID_IMPORT_HATCH[IV], Direction.NORTH)
-                        .where('B', ITEM_EXPORT_BUS[IV], Direction.NORTH)
-                        .where('N', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('P', CASING_STEEL_PIPE.getDefaultState())
-                        .where('F', FLUID_EXPORT_HATCH[IV], Direction.SOUTH)
-                        .where('E', ENERGY_INPUT_HATCH[IV], Direction.SOUTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
-                List<String> slice1 = new ArrayList<>(16);
-                slice1.add("#HCB#");
-                slice1.add("#NSX#");
-                slice1.add("#####");
-                List<String> slice2 = new ArrayList<>(16);
-                slice2.add("CCCCC");
-                slice2.add("C###C");
-                slice2.add("#CCC#");
-                List<String> slice3 = new ArrayList<>(16);
-                slice3.add("CCCCC");
-                slice3.add("C###C");
-                slice3.add("#CCC#");
-                List<String> slice4 = new ArrayList<>(16);
-                slice4.add("CCCCC");
-                slice4.add("C###C");
-                slice4.add("#CCC#");
-                List<String> slice5 = new ArrayList<>(16);
-                slice5.add("#CEC#");
-                slice5.add("#CCC#");
-                slice5.add("#####");
-                for (int i = 1; i <= 12; ++i) {
-                    slice1.add(2, "##C##");
-                    slice2.add(2, "#C#C#");
-                    slice3.add(2, "C#P#C");
-                    slice4.add(2, "#C#C#");
-                    slice5.add(2, "##F##");
-                    var copy = builder.shallowCopy()
-                            .slice(slice1.toArray(String[]::new))
-                            .slice(slice2.toArray(String[]::new))
-                            .slice(slice3.toArray(String[]::new))
-                            .slice(slice4.toArray(String[]::new))
-                            .slice(slice5.toArray(String[]::new));
-                    shapeInfos.add(copy.build());
-                }
-                return shapeInfos;
-            })
             .allowExtendedFacing(false)
             .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
@@ -859,83 +778,6 @@ public class GCYMMachines {
                         .where('A', air())
                         .where('#', any())
                         .build();
-            })
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
-                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
-                                "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
-                                "###PTAAATP###", "##TPPPHPPPT##")
-                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .slice("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .slice("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .slice("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                        .where('S', definition, Direction.NORTH)
-                        .where('A', Blocks.AIR.defaultBlockState())
-                        .where('T', CASING_TUNGSTENSTEEL_ROBUST.getDefaultState())
-                        .where('B', FIREBOX_TUNGSTENSTEEL.getDefaultState())
-                        .where('P', CASING_TUNGSTENSTEEL_PIPE.getDefaultState())
-                        .where('I', CASING_EXTREME_ENGINE_INTAKE.getDefaultState())
-                        .where('F', ChemicalHelper.getBlock(TagPrefix.frameGt, NaquadahAlloy))
-                        .where('V', HEAT_VENT.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('L', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('Q', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
             })
             .workableCasingModel(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/mega_blast_furnace"))

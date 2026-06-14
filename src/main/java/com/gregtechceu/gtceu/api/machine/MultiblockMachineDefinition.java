@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 
 import net.minecraft.core.Direction;
@@ -30,10 +29,6 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Getter
     @NonNull
     private Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
-    @Setter
-    @Getter
-    private Supplier<List<MultiblockShapeInfo>> shapes;
-    /** Set this to false only if your multiblock is set up such that it could have a wall-shared controller. */
     @Getter
     @Setter
     private boolean allowFlip;
@@ -60,15 +55,5 @@ public class MultiblockMachineDefinition extends MachineDefinition {
 
     public void setPattern(String structureName, Supplier<IBlockPattern> pattern) {
         structurePatterns.put(structureName, pattern);
-    }
-
-    public List<MultiblockShapeInfo> getMatchingShapes() {
-        var designs = shapes.get();
-        if (!designs.isEmpty()) return designs;
-        // var structurePattern = patternFactory.get();
-        return new ArrayList<>();
-        // return null;
-        // int[][] sliceRepetitions = structurePattern.sliceRepetitions;
-        // return repetitionDFS(structurePattern, new ArrayList<>(), sliceRepetitions, new IntArrayList());
     }
 }

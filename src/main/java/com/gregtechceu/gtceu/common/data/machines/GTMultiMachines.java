@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -15,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
@@ -42,23 +40,18 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Locale;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -161,28 +154,6 @@ public class GTMultiMachines {
                     .where('C', heatingCoils())
                     .where('#', air())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("ISO", "CCC", "CCC", "XMX")
-                        .slice("FXD", "C#C", "C#C", "XHX")
-                        .slice("EEX", "CCC", "CCC", "XXX")
-                        .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
-                        .where('S', definition, Direction.NORTH)
-                        .where('#', Blocks.AIR.defaultBlockState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH);
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
-            })
             .recoveryItems(
                     () -> new ItemLike[] {
                             GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
@@ -228,46 +199,6 @@ public class GTMultiMachines {
                                 .or(casing))
                         .build();
             })
-            .shapeInfos(definition -> {
-                ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var baseBuilder = MultiblockShapeInfo.builder()
-                        .where('S', definition, Direction.NORTH)
-                        .where('X', CASING_PTFE_INERT.getDefaultState())
-                        .where('P', CASING_POLYTETRAFLUOROETHYLENE_PIPE.getDefaultState())
-                        .where('C', COIL_CUPRONICKEL.getDefaultState())
-                        .where('I', ITEM_IMPORT_BUS[3], Direction.NORTH)
-                        .where('E', ENERGY_INPUT_HATCH[3], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[3], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[3], Direction.NORTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('H', FLUID_EXPORT_HATCH[3], Direction.NORTH);
-                shapeInfo.add(baseBuilder.shallowCopy()
-                        .slice("IXO", "FSH", "XMX")
-                        .slice("XXX", "XPX", "XXX")
-                        .slice("XEX", "XCX", "XXX")
-                        .build());
-                shapeInfo.add(baseBuilder.shallowCopy()
-                        .slice("IXO", "FSH", "XMX")
-                        .slice("XXX", "XPX", "XCX")
-                        .slice("XEX", "XXX", "XXX")
-                        .build());
-                shapeInfo.add(baseBuilder.shallowCopy()
-                        .slice("IXO", "FSH", "XMX")
-                        .slice("XCX", "XPX", "XXX")
-                        .slice("XEX", "XXX", "XXX")
-                        .build());
-                shapeInfo.add(baseBuilder.shallowCopy()
-                        .slice("IXO", "FSH", "XMX")
-                        .slice("XXX", "CPX", "XXX")
-                        .slice("XEX", "XXX", "XXX")
-                        .build());
-                shapeInfo.add(baseBuilder.shallowCopy()
-                        .slice("IXO", "FSH", "XMX")
-                        .slice("XXX", "XPC", "XXX")
-                        .slice("XEX", "XXX", "XXX")
-                        .build());
-                return shapeInfo;
-            })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"),
                     GTCEu.id("block/multiblock/large_chemical_reactor"))
             .register();
@@ -311,29 +242,6 @@ public class GTMultiMachines {
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("IXO", "XSX", "FMD")
-                        .slice("CCC", "C#C", "CCC")
-                        .slice("CCC", "C#C", "CCC")
-                        .slice("EEX", "XHX", "XXX")
-                        .where('S', definition, Direction.NORTH)
-                        .where('X', MACHINE_CASING_ULV.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
-            })
             .workableCasingModel(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"))
             .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
@@ -365,26 +273,6 @@ public class GTMultiMachines {
                     .where('C', heatingCoils())
                     .where('#', air())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("ISO", "CCC", "XMX")
-                        .slice("XXX", "C#C", "XHX")
-                        .slice("EEX", "CCC", "XXX")
-                        .where('S', definition, Direction.NORTH)
-                        .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
-            })
             .recoveryItems(
                     () -> new ItemLike[] {
                             GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
@@ -417,27 +305,6 @@ public class GTMultiMachines {
                     .where('#', Predicates.air())
                     .where('C', Predicates.heatingCoils())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .slice("FCICD", "HCSCH", "HCMCH")
-                        .slice("ECHCH", "H###H", "HCHCH")
-                        .slice("ECHCH", "HCXCH", "HCHCH")
-                        .where('S', definition, Direction.NORTH)
-                        .where('H', CASING_STAINLESS_CLEAN.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('X', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
-                GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(
-                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
-                return shapeInfo;
-            })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"))
             .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
@@ -481,38 +348,6 @@ public class GTMultiMachines {
                         .where('X', blocks(CASING_STAINLESS_CLEAN.get()).or(exportPredicate))
                         .where('#', Predicates.air())
                         .build();
-            })
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .where('C', definition, Direction.NORTH)
-                        .where('S', CASING_STAINLESS_CLEAN.getDefaultState())
-                        .where('X', ITEM_EXPORT_BUS[HV], Direction.NORTH)
-                        .where('I', FLUID_IMPORT_HATCH[HV], Direction.NORTH)
-                        .where('E', ENERGY_INPUT_HATCH[HV], Direction.SOUTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH)
-                        .where('#', Blocks.AIR.defaultBlockState())
-                        .where('F', FLUID_EXPORT_HATCH[HV], Direction.SOUTH);
-                List<String> front = new ArrayList<>(15);
-                front.add("XCI");
-                front.add("SSS");
-                List<String> middle = new ArrayList<>(15);
-                middle.add("SSS");
-                middle.add("SSS");
-                List<String> back = new ArrayList<>(15);
-                back.add("MES");
-                back.add("SFS");
-                for (int i = 1; i <= 11; ++i) {
-                    front.add("SSS");
-                    middle.add(1, "S#S");
-                    back.add("SFS");
-                    var copy = builder.shallowCopy()
-                            .slice(front.toArray(String[]::new))
-                            .slice(middle.toArray(String[]::new))
-                            .slice(back.toArray(String[]::new));
-                    shapeInfos.add(copy.build());
-                }
-                return shapeInfos;
             })
             .allowExtendedFacing(false)
             .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
@@ -708,47 +543,6 @@ public class GTMultiMachines {
                                 .where('#', any())
                                 .build();
                     })
-                    .shapeInfos((controller) -> {
-                        List<MultiblockShapeInfo> shapeInfos = new ArrayList<>();
-
-                        MultiblockShapeInfo.ShapeInfoBuilder baseBuilder = MultiblockShapeInfo.builder()
-                                .slice("###############", "######NMN######", "###############")
-                                .slice("######DCD######", "####GG###GG####", "######UCU######")
-                                .slice("####CC###CC####", "###w##SGS##e###", "####CC###CC####")
-                                .slice("###C#######C###", "##nKsG###GsKn##", "###C#######C###")
-                                .slice("##C#########C##", "#G#e#######w#G#", "##C#########C##")
-                                .slice("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                .slice("#D###########D#", "W#E#########W#E", "#U###########U#")
-                                .slice("#C###########C#", "G#G#########G#G", "#C###########C#")
-                                .slice("#D###########D#", "W#E#########W#E", "#U###########U#")
-                                .slice("##C#########C##", "#G#G#######G#G#", "##C#########C##")
-                                .slice("##C#########C##", "#G#e#######w#G#", "##C#########C##")
-                                .slice("###C#######C###", "##sKnG###GnKs##", "###C#######C###")
-                                .slice("####CC###CC####", "###w##NGN##e###", "####CC###CC####")
-                                .slice("######DCD######", "####GG###GG####", "######UCU######")
-                                .slice("###############", "######SGS######", "###############")
-                                .where('M', controller, Direction.NORTH)
-                                .where('C', FusionReactorMachine.getCasingState(tier))
-                                .where('G', FUSION_GLASS.get())
-                                .where('K', FusionReactorMachine.getCoilState(tier))
-                                .where('W', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.WEST)
-                                .where('E', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.EAST)
-                                .where('S', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.SOUTH)
-                                .where('N', GTMachines.FLUID_EXPORT_HATCH[tier], Direction.NORTH)
-                                .where('w', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.WEST)
-                                .where('e', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.EAST)
-                                .where('s', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.SOUTH)
-                                .where('n', GTMachines.ENERGY_INPUT_HATCH[tier], Direction.NORTH)
-                                .where('U', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.UP)
-                                .where('D', GTMachines.FLUID_IMPORT_HATCH[tier], Direction.DOWN)
-                                .where('#', Blocks.AIR.defaultBlockState());
-
-                        shapeInfos.add(baseBuilder.shallowCopy()
-                                .where('G', FusionReactorMachine.getCasingState(tier))
-                                .build());
-                        shapeInfos.add(baseBuilder.build());
-                        return shapeInfos;
-                    })
                     .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
@@ -878,37 +672,6 @@ public class GTMultiMachines {
                 }
             })
             .pattern(CleanroomMachine.getPattern())
-            .shapeInfos((controller) -> {
-                ArrayList<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .slice("XXXXX", "XIHLX", "XXDXX", "XXXXX", "XXXXX")
-                        .slice("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
-                        .slice("XXXXX", "X   X", "G   G", "X   X", "XFSFX")
-                        .slice("XXXXX", "X   X", "G   G", "X   X", "XFFFX")
-                        .slice("XMXEX", "XXOXX", "XXRXX", "XXXXX", "XXXXX")
-                        .where('X', GTBlocks.PLASTCRETE)
-                        .where('G', GTBlocks.CLEANROOM_GLASS)
-                        .where('S', GTMultiMachines.CLEANROOM.getBlock())
-                        .where(' ', Blocks.AIR)
-                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', GTMachines.ITEM_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('L', GTMachines.FLUID_PASSTHROUGH_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('H', GTMachines.HULL[GTValues.HV], Direction.NORTH)
-                        .where('D', GTMachines.DIODE[GTValues.HV], Direction.NORTH)
-                        .where('O',
-                                Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH)
-                                        .setValue(DoorBlock.HALF, DoubleBlockHalf.LOWER))
-                        .where('R', Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.FACING, Direction.NORTH)
-                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER));
-                if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
-                    builder.where('M', GTMachines.MAINTENANCE_HATCH, Direction.SOUTH);
-                } else {
-                    builder.where('M', GTBlocks.PLASTCRETE.get());
-                }
-                GTCEuAPI.CLEANROOM_FILTERS.values()
-                        .forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
-                return shapeInfo;
-            })
             .allowExtendedFacing(false)
             .allowFlip(false)
             .workableCasingModel(GTCEu.id("block/casings/cleanroom/plascrete"),
@@ -1011,37 +774,6 @@ public class GTMultiMachines {
                     .where('G', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('B', Predicates.powerSubstationBatteries())
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .slice("ICSCO", "NCMCT", "GGGGG", "GGGGG", "GGGGG")
-                        .slice("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
-                        .slice("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
-                        .slice("CCCCC", "CCCCC", "GBBBG", "GBBBG", "GGGGG")
-                        .slice("CCCCC", "CCCCC", "GGGGG", "GGGGG", "GGGGG")
-                        .where('S', definition, Direction.NORTH)
-                        .where('C', CASING_PALLADIUM_SUBSTATION)
-                        .where('G', CASING_LAMINATED_GLASS)
-                        .where('I', GTMachines.ENERGY_INPUT_HATCH[HV], Direction.NORTH)
-                        .where('N', GTMachines.SUBSTATION_ENERGY_INPUT_HATCH[EV], Direction.NORTH)
-                        .where('O', GTMachines.ENERGY_OUTPUT_HATCH[HV], Direction.NORTH)
-                        .where('T', GTMachines.SUBSTATION_ENERGY_OUTPUT_HATCH[EV], Direction.NORTH)
-                        .where('M',
-                                ConfigHolder.INSTANCE.machines.enableMaintenance ?
-                                        GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(
-                                                GTMachines.MAINTENANCE_HATCH.get().getRotationState().property,
-                                                Direction.NORTH) :
-                                        CASING_PALLADIUM_SUBSTATION.get().defaultBlockState());
-
-                GTCEuAPI.PSS_BATTERIES.entrySet().stream()
-                        // filter out empty batteries in example structures, though they are still
-                        // allowed in the predicate (so you can see them on right-click)
-                        .filter(entry -> entry.getKey().getCapacity() > 0)
-                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(entry -> shapeInfo.add(builder.where('B', entry.getValue().get()).build()));
-
-                return shapeInfo;
-            })
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_palladium_substation"),
                     GTCEu.id("block/multiblock/power_substation"))
             .register();

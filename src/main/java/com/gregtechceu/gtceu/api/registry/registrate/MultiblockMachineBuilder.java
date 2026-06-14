@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -41,10 +40,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
 
     private boolean generator;
     private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
-    private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
-    /**
-     * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
-     */
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
@@ -101,16 +96,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
-        this.shapeInfos.add(d -> List.of(shape.apply(d)));
-        return getThis();
-    }
-
-    public TYPE shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
-        this.shapeInfos.add(shapes);
-        return getThis();
-    }
-
     public TYPE recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
@@ -140,8 +125,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
             definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));
         }
 
-        definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
-                .flatMap(Collection::stream).toList());
         definition.setAllowFlip(allowFlip);
         if (!recoveryItems.isEmpty()) {
             definition.setRecoveryItems(
