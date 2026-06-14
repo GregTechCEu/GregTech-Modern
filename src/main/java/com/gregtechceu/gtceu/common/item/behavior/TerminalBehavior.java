@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
 import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureUtil;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.BlockPos;
@@ -37,7 +38,6 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IGuiAction;
-import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
@@ -55,10 +55,7 @@ import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.EmptyWidget;
-import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.SchemaWidget;
-import brachy.modularui.widgets.SliderWidget;
-import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
@@ -74,7 +71,6 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
@@ -94,6 +90,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     private boolean isFlipped = false;
     private Direction frontFacing;
     private Direction upFacing;
+    private BlockPos controllerPos;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
@@ -152,6 +149,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                         var patterns = controller.getStructurePatterns();
 
                         multiblockDefinition = controller.getDefinition();
+                        controllerPos = controller.getBlockPos();
                         frontFacing = controller.getFrontFacing();
                         upFacing = controller.getUpwardsFacing();
                         isFlipped = controller.isFlipped();
@@ -267,6 +265,17 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         return ModularPanel.defaultPanel("client_test")
                 .coverChildren()
                 .padding(7)
+                .child(new ButtonWidget<>()
+                        .tooltip(r -> r.addLine(Component.literal("Press to display preview in world!")))
+                        .rightRel(1.0f)
+                        .onMousePressed((c, b) -> {
+                            if (!structureBlocks.isEmpty()) {
+                                BlockPos origin = controllerPos.mutable()
+                                        .move(mapSchema.getControllerPos().multiply(-1));
+                                PatternPreviewRenderer.INSTANCE.setPreview(origin, structureBlocks, 20000);
+                            }
+                            return true;
+                        }))
                 .child(Flow.col()
                         .name("main")
                         .coverChildren()

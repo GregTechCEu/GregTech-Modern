@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.client.util.RenderBufferHelper;
 
-import lombok.experimental.Tolerate;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,6 +20,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 
 import java.util.List;
 
