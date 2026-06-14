@@ -1,84 +1,192 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
-import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
-import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
-
-import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Function;
 
-public class BasePredicate {
+@Accessors(chain=true)
+public abstract class BasePredicate {
 
-    @Getter
-    public List<BlockInfo> candidates;
-    public Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate;
-    public @Nullable List<Component> tooltips;
-    public int priority = 0;
-    public int minCount = -1;
-    public int maxCount = -1;
-    public int minSliceCount = -1;
-    public int maxSliceCount = -1;
-    public int previewCount = -1;
-    public boolean disableRenderFormed = false;
-    public @Nullable String nbtParser;
+    public static final BasePredicate AIR = new BasePredicate() {
 
-    protected String debugName;
+        @Override
+        public String getDebugName() {
+            return "Air";
+        }
+    };
 
-    public BasePredicate() {
-        this.debugName = "Unknown";
-        this.errorPredicate = $ -> null;
-        this.candidates = Collections.emptyList();
+    public static final BasePredicate ANY = new BasePredicate() {
+
+        @Override
+        public String getDebugName() {
+            return "Any";
+        }
+    };
+
+    private @Nullable List<BlockInfo> candidates;
+    private @Nullable List<Component> tooltips;
+    @Getter @Setter
+    private int priority = 0;
+    @Getter @Setter
+    private int minCount = -1;
+    @Getter @Setter
+    private int maxCount = -1;
+    @Getter @Setter
+    private int minSliceCount = -1;
+    @Getter @Setter
+    private int maxSliceCount = -1;
+    @Getter @Setter
+    private int previewCount = -1;
+    @Getter @Setter
+    private boolean disableRenderFormed = false;
+    @Getter @Setter
+    private @Nullable String nbtParser; // unsure what this does
+
+    /// custom testing logic, usually checking if blockstate/entity is correct
+    public boolean testInternal(PredicateContext ctx) {
+        return true;
+    }
+
+    /// computes the candidates for this predicate, called only once
+    public List<BlockInfo> computeCandidates() {
+        return Collections.emptyList();
+    }
+
+    public abstract String getDebugName();
+
+    /// the main testing method
+    public boolean test(PredicateContext ctx) {
+        return testInternal(ctx) && testGlobal(ctx) && testLayer(ctx);
+    }
+
+    /// test against global max count
+    public boolean testGlobal(PredicateContext ctx) {
+        ctx.globalCache().merge(this, 1, Integer::sum);
+        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
+        int count = ctx.globalCache().getInt(this);
+        if (maxCount == -1 || count <= maxCount) return true;
+        return ctx.error(SinglePredicateError.maxCount(this, count));
+    }
+
+    /// test against slice max count
+    public boolean testLayer(PredicateContext ctx) {
+        if (ctx.layerCache() == null) return true;
+        ctx.layerCache().mergeInt(this, 1, Integer::sum);
+        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
+        int count = ctx.layerCache().getInt(this);
+        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+    }
+
+    public boolean isAir() {
+        return this == AIR;
+    }
+
+    public boolean isAny() {
+        return this == ANY;
+    }
+
+    /// used for tooltips
+    public boolean hasAir() {
+        return isAir();
+    }
+
+    /// used for tooltips
+    public boolean isSingle() {
+        return getCandidates().size() == 1;
+    }
+
+    public boolean isController() {
+        return false;
+    }
+
+    public BasePredicate setMinGlobalLimited(int min) {
+        return this.setMinCount(min);
+    }
+
+    public BasePredicate setMinGlobalLimited(int min, int previewCount) {
+        return this.setMinCount(min).setPreviewCount(previewCount);
+    }
+
+    public BasePredicate setMaxGlobalLimited(int max) {
+        return this.setMaxCount(max);
+    }
+
+    public BasePredicate setMaxGlobalLimited(int max, int previewCount) {
+        return this.setMaxCount(max).setPreviewCount(previewCount);
+    }
+
+    public BasePredicate setGlobalMinMax(int min, int max) {
+        return this.setMinCount(min).setMaxCount(max);
+    }
+
+    public BasePredicate setMinLayerLimited(int min) {
+        return this.setMinSliceCount(min);
+    }
+
+    public BasePredicate setMinLayerLimited(int min, int previewCount) {
+        return this.setMinSliceCount(min).setPreviewCount(previewCount);
+    }
+
+    public BasePredicate setMaxLayerLimited(int max) {
+        return this.setMaxSliceCount(max);
+    }
+
+    public BasePredicate setMaxLayerLimited(int max, int previewCount) {
+        return this.setMaxSliceCount(max).setPreviewCount(previewCount);
+    }
+
+    public BasePredicate setLayerMinMax(int min, int max) {
+        return this.setMinSliceCount(min).setMaxSliceCount(max);
     }
 
     /**
-     * @param errorPredicate The predicate function for being a valid block state or tile entity in a pattern
-     * @param candidates     The qualifying blocks or item stacks valid in this predicate based on information from
-     *                       either the
-     *                       {@link TerminalBehavior#use(Item, Level, Player, InteractionHand)
-     *                       Terminal Auto-Builder},
-     *                       {@link PatternPreviewRenderer#draw(PoseStack, MultiBufferSource.BufferSource, Camera, RenderLevelStageEvent.Stage, float)
-     *                       In-world Preview} or
-     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition, MultiblockSchemaInfo, int, int)
-     *                       XEI Preview}
+     * Sets the Minimum and Maximum limit to the passed value
+     *
+     * @param limit The Maximum and Minimum limit
      */
-    public BasePredicate(Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
-                         @Nullable List<BlockInfo> candidates) {
-        this("Unknown", errorPredicate, candidates);
+    public BasePredicate setExactLimit(int limit) {
+        return this.setMinCount(limit).setMaxCount(limit);
     }
 
-    public BasePredicate(String debugName, Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
-                         @Nullable List<BlockInfo> candidates) {
-        this.debugName = debugName;
-        this.errorPredicate = errorPredicate;
-        this.candidates = candidates != null ? candidates : Collections.emptyList();
+    public BasePredicate disabledRenderFormed() {
+        return setDisableRenderFormed(true);
+    }
+
+    public List<Component> additionalTooltips() {
+        if (this.tooltips == null) {
+            this.tooltips = new ArrayList<>();
+        }
+        return this.tooltips;
+    }
+
+    public BasePredicate addTooltips(Component tooltip) {
+        this.additionalTooltips().add(tooltip);
+        return this;
+    }
+
+    public BasePredicate addTooltips(Component... tooltips) {
+        Collections.addAll(this.additionalTooltips(), tooltips);
+        return this;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public List<Component> getTooltips(@Nullable PatternPredicate predicates) {
+    public List<Component> getTooltips(@Nullable BasePredicate predicate) {
         List<Component> result = new ArrayList<>();
         if (tooltips != null) {
             result.addAll(tooltips);
@@ -95,58 +203,77 @@ public class BasePredicate {
                 result.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 0, maxCount));
             }
         }
-        if (predicates == null) return result;
-        if (predicates.isSingle()) {
+        if (predicate == null) return result;
+        if (predicate.isSingle()) {
             result.add(Component.translatable("gtceu.multiblock.pattern.single"));
         }
-        if (predicates.hasAir()) {
+        if (predicate.hasAir()) {
             result.add(Component.translatable("gtceu.multiblock.pattern.replaceable_air"));
         }
         return result;
     }
 
-    public @Nullable PatternError testRaw(CurrentBlockInfo currBlock) {
-        return errorPredicate.apply(currBlock);
+    public List<ItemStack> getCandidateStacks() {
+        return getCandidates().stream()
+                .filter(BlockInfo::nonAir)
+                .map(info -> {
+                    if (GTCEu.isClientSide()) {
+                        Level level = Objects.requireNonNull(Minecraft.getInstance().level);
+                        return info.getItemStackForm(level, BlockPos.ZERO);
+                    }
+
+                    return info.getItemStackForm();
+                })
+                .toList();
     }
 
-    public @Nullable PatternError testLimited(CurrentBlockInfo currBlock,
-                                              Object2IntMap<BasePredicate> globalCache,
-                                              @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = testGlobal(currBlock, globalCache, layerCache);
-        if (error != null) return error;
-        return testLayer(currBlock, layerCache);
-    }
-
-    public @Nullable PatternError testGlobal(CurrentBlockInfo currentBlock,
-                                             Object2IntMap<BasePredicate> globalCache,
-                                             @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = errorPredicate.apply(currentBlock);
-        globalCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || error != null || layerCache == null) return error;
-
-        int count = globalCache.getInt(this);
-        if (maxCount == -1 || count <= maxCount) return null;
-
-        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
-    }
-
-    public @Nullable PatternError testLayer(CurrentBlockInfo currBlock,
-                                            @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError error = errorPredicate.apply(currBlock);
-        if (layerCache == null) return error;
-
-        layerCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1) || error != null) return error;
-
-        if (maxSliceCount != -1 && layerCache.getInt(this) > maxSliceCount) {
-            return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT,
-                    layerCache.getInt(this));
+    public List<BlockInfo> getCandidates() {
+        if (candidates == null) {
+            candidates = computeCandidates();
         }
-
-        return null;
+        return candidates;
     }
 
-    public String getPredicateName() {
-        return debugName;
+    public Optional<BlockInfo> getFirstCandidate() {
+        return Optional.of(getCandidates())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0));
+    }
+
+    public List<BasePredicate> expand() {
+        return List.of(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Predicate{" + getDebugName() + "}";
+    }
+
+    public BasePredicate or(BasePredicate other) {
+        return or(this, other);
+    }
+
+    public BasePredicate and(BasePredicate other) {
+        return and(this, other);
+    }
+
+    private static BasePredicate or(BasePredicate a, BasePredicate b) {
+        return or("OR", List.of(a, b));
+    }
+
+    private static BasePredicate and(BasePredicate a, BasePredicate b) {
+        return and("AND", List.of(a, b));
+    }
+
+    public static BasePredicate or(String debugName, List<BasePredicate> predicates) {
+        MultiPredicate predicate = new MultiPredicate(debugName);
+        predicates.forEach(predicate::or);
+        return predicate;
+    }
+
+    public static BasePredicate and(String debugName, List<BasePredicate> predicates) {
+        MultiPredicate predicate = new MultiPredicate(debugName);
+        predicates.forEach(predicate::and);
+        return predicate;
     }
 }

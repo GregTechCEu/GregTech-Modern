@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -19,8 +18,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiPredicate;
 
 public class BlockPattern implements IBlockPattern {
 
@@ -39,12 +38,12 @@ public class BlockPattern implements IBlockPattern {
     @Getter
     protected final SliceStrategy sliceStrategy;
     @Getter
-    protected final Char2ObjectMap<PatternPredicate> predicates;
+    protected final Char2ObjectMap<BasePredicate> predicates;
 
     public BlockPattern(PatternSlice[] slices, SliceStrategy sliceStrategy,
                         int[] dimensions, RelativeDirection[] directions,
                         @Nullable OriginOffset offset, @Nullable OriginOffset anchorOffset,
-                        Char2ObjectMap<PatternPredicate> predicates,
+                        Char2ObjectMap<BasePredicate> predicates,
                         char centerChar) {
         this.slices = slices;
         this.sliceStrategy = sliceStrategy;
@@ -148,9 +147,9 @@ public class BlockPattern implements IBlockPattern {
         patternState.globalCount.clear();
         patternState.layerCount.clear();
         // Make sure every prerdicate with a minvalue is checked
-        for (PatternPredicate predicate : predicates.values()) {
-            for (BasePredicate basePredicate : predicate.subPredicates) {
-                if (basePredicate.minCount > 0) {
+        for (BasePredicate predicate : predicates.values()) {
+            for (BasePredicate basePredicate : predicate.expand()) {
+                if (basePredicate.getMinCount() > 0) {
                     patternState.globalCount.putIfAbsent(basePredicate, 0);
                 }
             }
@@ -170,10 +169,9 @@ public class BlockPattern implements IBlockPattern {
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().minCount) {
-                patternState
-                        .setError(new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_COUNT,
-                                entry.getIntValue()));
+            if (entry.getIntValue() < entry.getKey().getMinCount()) {
+                patternState.setError(SinglePredicateError
+                        .minCount(entry.getKey(), entry.getIntValue()));
                 return false;
             }
         }
@@ -214,18 +212,19 @@ public class BlockPattern implements IBlockPattern {
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 patternState.currentBlockInfo.setCurrentPos(charPos);
-                PatternPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
+                BasePredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
-                if (!pred.equals(PatternPredicate.ANY)) {
+                if (!pred.isAny()) {
                     BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
                     BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
 
-                List<PatternError> errors = pred.test(patternState.currentBlockInfo, patternState.globalCount,
-                        patternState.layerCount);
-                if (!errors.isEmpty()) {
-                    patternState.setErrors(errors);
+
+                List<PatternError> res = new ArrayList<>();
+                boolean passed = pred.test(patternState.toContext(res::add));
+                if (!passed) {
+                    patternState.setErrors(res);
                     return false;
                 }
 
@@ -237,10 +236,9 @@ public class BlockPattern implements IBlockPattern {
         }
 
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().minSliceCount) {
+            if (entry.getIntValue() < entry.getKey().getMinSliceCount()) {
                 patternState.setError(
-                        new SinglePredicateError(entry.getKey(), SinglePredicateError.ErrorType.MIN_LAYER_COUNT,
-                                entry.getIntValue()));
+                        SinglePredicateError.minLayerCount(entry.getKey(), entry.getIntValue()));
                 return false;
             }
         }

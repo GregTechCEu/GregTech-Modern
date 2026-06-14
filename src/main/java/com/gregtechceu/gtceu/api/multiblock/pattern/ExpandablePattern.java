@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -46,7 +46,7 @@ public class ExpandablePattern implements IBlockPattern {
     @Setter
     protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider;
+    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, BasePredicate> predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
@@ -54,7 +54,7 @@ public class ExpandablePattern implements IBlockPattern {
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider,
+                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, BasePredicate> predicateProvider,
                              RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
@@ -155,7 +155,7 @@ public class ExpandablePattern implements IBlockPattern {
         // aisle count, y is str count, and z is char count.
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            PatternPredicate pred = predicateProvider.apply(mPos, bounds);
+            BasePredicate pred = predicateProvider.apply(mPos, bounds);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
@@ -164,23 +164,24 @@ public class ExpandablePattern implements IBlockPattern {
             mPos = mPos.offset(translation).mutable();
             patternState.currentBlockInfo.setCurrentPos(mPos);
 
-            if (!pred.equals(PatternPredicate.ANY)) {
+            if (!pred.isAny()) {
                 BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
                 BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
                 patternState.cache.put(mPos.asLong(), new BlockInfo(state, blockEntity));
             }
 
-            List<PatternError> res = pred.test(patternState.currentBlockInfo, patternState.globalCount, null);
-            if (!res.isEmpty()) {
+            List<PatternError> res = new ArrayList<>();
+            boolean passed = pred.test(patternState.noLayer(res::add));
+            if (!passed) {
                 patternState.setErrors(res);
                 return false;
             }
         }
 
         for (var entry : patternState.globalCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().minCount) {
-                patternState.setError(new SinglePredicateError(entry.getKey(),
-                        SinglePredicateError.ErrorType.MIN_COUNT, entry.getIntValue()));
+            if (entry.getIntValue() < entry.getKey().getMinCount()) {
+                patternState.setError(SinglePredicateError.minCount(entry.getKey(),
+                        entry.getIntValue()));
                 return false;
             }
         }

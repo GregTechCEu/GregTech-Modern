@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -741,23 +741,36 @@ public class GTMachineUtils {
                 .register();
     }
 
-    private static PatternPredicate rotorHolder(int tier) {
-        return new PatternPredicate(new BasePredicate((worldState) -> {
-            if (MetaMachine.getMachine(worldState.getLevel(),
-                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
-                    worldState.getLevel()
-                            .getBlockState(worldState.getPos().immutable()
-                                    .relative(rotorHolder.getFrontFacing()))
-                            .isAir()) {
-                return null;
+    private static BasePredicate rotorHolder(int tier) {
+        return new BasePredicate() {{
+            addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"));
+            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
+        }
+            @Override
+            public boolean testInternal(@NotNull PredicateContext ctx) {
+                if (MetaMachine.getMachine(ctx.level(),
+                        ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&
+                        ctx.level().getBlockState(ctx.pos()
+                                        .relative(rotorHolder.getFrontFacing()))
+                                .isAir()) {
+                    return true;
+                }
+                return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
             }
-            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
-        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
-                .map(BlockInfo::fromBlock)
-                .toList()))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                        VN[tier]));
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return PartAbility.ROTOR_HOLDER.getAllBlocks()
+                        .stream()
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "RotorHolder";
+            }
+        };
     }
 
     // Tooltips

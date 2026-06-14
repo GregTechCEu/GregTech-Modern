@@ -15,13 +15,14 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
-import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -313,17 +314,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            BasePredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
+            BasePredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            PatternPredicate edgePredicate = wallPredicate.or(energyPredicate);
-            PatternPredicate facePredicate = wallPredicate.or(energyPredicate)
+            BasePredicate edgePredicate = wallPredicate.or(energyPredicate);
+            BasePredicate facePredicate = wallPredicate.or(energyPredicate)
                     .or(doorPredicate().setMaxGlobalLimited(8))
                     .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            PatternPredicate filterPredicate = cleanroomFilters();
-            PatternPredicate innerPredicate = innerPredicate();
-            PatternPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            BasePredicate filterPredicate = cleanroomFilters();
+            BasePredicate innerPredicate = innerPredicate();
+            BasePredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
@@ -468,29 +469,43 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    protected static PatternPredicate doorPredicate() {
-        return Predicates.custom(
-                blockWorldState -> blockWorldState.retrieveCurrentBlockState().getBlock() instanceof DoorBlock ? null :
-                        Predicates.PLACEHOLDER,
+    protected static BasePredicate doorPredicate() {
+        return Predicates.customPredicate(
+                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
                 List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
                         Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
 
-    private static PatternPredicate getValidFloorBlocks() {
+    private static BasePredicate getValidFloorBlocks() {
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    protected static PatternPredicate innerPredicate() {
-        return new PatternPredicate(blockWorldState -> {
-            // all non-GTMachines are allowed inside by default
-            BlockEntity blockEntity = blockWorldState.getBlockEntity();
-            if (blockEntity instanceof MetaMachine machine) {
-                if (isMachineBanned(machine)) {
-                    return Predicates.PLACEHOLDER;
+    protected static BasePredicate innerPredicate() {
+        return new BasePredicate() {
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                // all non-GTMachines are allowed inside by default
+                BlockEntity blockEntity = ctx.blockEntity();
+                if (blockEntity instanceof MetaMachine machine) {
+                    if (isMachineBanned(machine)) {
+                        return ctx.error(Predicates.PLACEHOLDER);
+                    }
+                    // todo do this in structure form not in the predicate
+                    // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
                 }
+                return true;
             }
-            return null;
-        }, null);
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return List.of();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "InnerPredicate";
+            }
+        };
     }
 
     protected static boolean isMachineBanned(MetaMachine machine) {

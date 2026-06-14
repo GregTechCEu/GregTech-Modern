@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
@@ -128,7 +128,7 @@ public class GTMultiMachines {
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
                     .where('#', Predicates.air())
                     .where('&', Predicates.air()
-                            .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.retrieveCurrentBlockState()) ?
+                            .or(Predicates.customFunction(bws -> GTUtil.isBlockSnow(bws.retrieveCurrentBlockState()) ?
                                     null : Predicates.PLACEHOLDER,
                                     null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
@@ -354,12 +354,12 @@ public class GTMultiMachines {
             .recipeModifiers(OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
-                PatternPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                BasePredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded()) {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 }
                 exportPredicate.setMaxLayerLimited(1);
-                PatternPredicate maint = autoAbilities(true, false, false)
+                BasePredicate maint = autoAbilities(true, false, false)
                         .setMaxGlobalLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .slice("YSY", "YYY", "YYY")

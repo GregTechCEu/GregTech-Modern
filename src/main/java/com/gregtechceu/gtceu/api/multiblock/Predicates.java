@@ -13,16 +13,17 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.predicates.*;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -30,15 +31,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import dev.latvian.mods.rhino.util.HideFromJS;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public class Predicates {
 
@@ -48,111 +50,349 @@ public class Predicates {
      */
     public static final PlaceholderError PLACEHOLDER = new PlaceholderError(BlockPos.ZERO, Collections.emptyList());
 
-    public static PatternPredicate controller(MultiblockMachineDefinition def) {
+    public static BasePredicate controller(MultiblockMachineDefinition def) {
         return controller(blocks(def.getBlock()));
     }
 
-    public static PatternPredicate controller(PatternPredicate predicate) {
-        return predicate.setController();
+    public static BasePredicate controller(BasePredicate predicate) {
+        return new BasePredicate() {
+
+            @Override
+            public boolean test(PredicateContext ctx) {
+                return predicate.test(ctx);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return predicate.computeCandidates();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Controller{" + predicate + "}";
+            }
+
+            @Override
+            public boolean isController() {
+                return true;
+            }
+        };
     }
 
-    public static PatternPredicate states(BlockState... allowedStates) {
-        var candidates = new ArrayList<BlockState>();
+    public static BasePredicate states(@Nullable String debugName, BlockState... allowedStates) {
+        List<BlockState> states = new ArrayList<>();
         for (BlockState state : allowedStates) {
-            candidates.add(state);
+            states.add(state);
             if (state.getBlock() instanceof ActiveBlock block) {
-                candidates.add(block.changeActive(state, !block.isActive(state)));
+                states.add(block.changeActive(state, !block.isActive(state)));
             }
         }
-        return new PatternPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));
+        return new BasePredicate() {
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return states.contains(ctx.state()) || ctx.error(PLACEHOLDER);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return states.stream().map(BlockInfo::fromBlockState).toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                if (debugName == null) {
+                    return "States{" + states.size() + "}";
+                } else {
+                    return "States#" + debugName + "{" + states.size() + "}";
+
+                }
+            }
+        };
     }
 
-    @HideFromJS
-    public static PatternPredicate blocks(String debugName, Block... blocks) {
-        return new PatternPredicate(new PredicateBlocks(debugName, blocks));
+    public static BasePredicate blocks(Block block) {
+        return new BasePredicate() {
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block)));
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return List.of(BlockInfo.fromBlock(block));
+            }
+
+            @Override
+            public String getDebugName() {
+                return block.toString();
+            }
+        };
     }
 
-    public static PatternPredicate blocks(Block... blocks) {
-        return new PatternPredicate(new PredicateBlocks(blocks));
+    public static BasePredicate blocks(Block... blocks) {
+        return blocks(null, blocks);
     }
 
-    /*
-     * public static PatternPredicate blocks(IMachineBlock... blocks) {
-     * return new PatternPredicate(
-     * new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
-     * }
-     */
+    public static BasePredicate blocks(@Nullable String debugName, Block... blocks) {
+        return new BasePredicate() {
 
-    public static PatternPredicate machines(@Nullable MachineDefinition... definitions) {
-        return blocks(Arrays.stream(definitions).filter(Objects::nonNull).map(MachineDefinition::get)
-                .toArray(MetaMachineBlock[]::new));
+            private final List<Block> blockList = Arrays.asList(blocks);
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return blockList.contains(ctx.state().getBlock()) ||
+                        ctx.error(new BlockMatchingError(ctx.pos(), this.blockList));
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return blockList.stream()
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                if (debugName == null) {
+                    return "Blocks{" + blockList.size() + "}";
+                } else {
+                    return "Blocks#" + debugName + "{" + blockList.size() + "}";
+                }
+            }
+        };
     }
 
-    public static PatternPredicate blockTag(TagKey<Block> tag) {
-        return new PatternPredicate(new PredicateBlockTag(tag));
+    public static BasePredicate machines(MachineDefinition... definitions) {
+        Validate.noNullElements(definitions, "MachineDefinition array has null element at index %s");
+        return blocks(Arrays.stream(definitions).map(MachineDefinition::get).toArray(MetaMachineBlock[]::new));
     }
 
-    public static PatternPredicate fluids(Fluid... fluids) {
-        return new PatternPredicate(new PredicateFluids(fluids));
+    public static BasePredicate blockTag(TagKey<Block> tag) {
+        return new BasePredicate() {
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return ctx.state().is(tag) || ctx.error(PLACEHOLDER);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+                        .getTag(tag)
+                        .stream()
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "BlockTag{" + tag.location() + "}";
+            }
+        };
     }
 
-    public static PatternPredicate fluidTag(TagKey<Fluid> tag) {
-        return new PatternPredicate(new PredicateFluidTag(tag));
+    public static BasePredicate fluids(Fluid... fluids) {
+        return new BasePredicate() {
+
+            final List<Fluid> fluidList = Arrays.asList(fluids);
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return fluidList.contains(ctx.fluid()) || ctx.error(PLACEHOLDER);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return fluidList.stream()
+                        .map(Fluid::defaultFluidState)
+                        .map(FluidState::createLegacyBlock)
+                        .map(BlockInfo::fromBlockState)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Fluids{" + fluidList.size() + "}";
+            }
+        };
     }
 
-    public static PatternPredicate custom(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
-                                          @Nullable List<BlockInfo> candidates) {
-        return new PatternPredicate(predicate, candidates);
+    public static BasePredicate fluidTag(TagKey<Fluid> tag) {
+        return new BasePredicate() {
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return ctx.fluidState().is(tag) || ctx.error(PLACEHOLDER);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+                        .getTag(tag).stream()
+                        .map(BlockInfo::fromFluid)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Fluids{" + tag.location() + "}";
+            }
+        };
     }
 
-    public static PatternPredicate any() {
-        return PatternPredicate.ANY;
+    public static BasePredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
+                                               @Nullable List<BlockInfo> candidates) {
+        return customPredicate(ctx -> {
+            PatternError error = predicate.apply(ctx.blockInfo());
+            return error == null || ctx.error(error);
+        }, candidates);
     }
 
-    public static PatternPredicate air() {
-        return PatternPredicate.AIR;
+    public static BasePredicate customPredicate(Predicate<PredicateContext> predicate,
+                                                @Nullable List<BlockInfo> candidates) {
+        return new BasePredicate() {
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return predicate.test(ctx);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return Optional.ofNullable(candidates).orElse(Collections.emptyList());
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Custom";
+            }
+        };
     }
 
-    public static PatternPredicate abilities(PartAbility... abilities) {
-        StringJoiner sb = new StringJoiner("-");
-        for (PartAbility ability : abilities) {
-            sb.add(ability.getName());
-        }
-        String debugName = sb.toString();
-
-        PatternPredicate predicate = new PatternPredicate();
-        for (var ability : abilities) {
-            predicate.subPredicates.add(new PredicatePartAbility(debugName, ability));
-        }
-        return predicate;
+    public static BasePredicate any() {
+        return BasePredicate.ANY;
     }
 
-    public static PatternPredicate ability(PartAbility ability, int... tiers) {
-        StringJoiner sb = new StringJoiner("-");
-        for (int tier : tiers) {
-            sb.add(GTValues.VN[tier]);
-        }
-        String debugName = ability.getName() + sb;
-
-        return new PatternPredicate(new PredicatePartAbility(debugName, ability, tiers));
+    public static BasePredicate air() {
+        return BasePredicate.AIR;
     }
 
-    public static PatternPredicate autoAbilities(GTRecipeType... recipeType) {
+    public static BasePredicate abilities(PartAbility ability) {
+        return new BasePredicate() {
+
+            final Collection<Block> blockList = ability.getAllBlocks();
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return blockList.contains(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability));
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return blockList.stream()
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Ability{" + ability.getName() + "}";
+            }
+        };
+    }
+
+    public static BasePredicate abilities(PartAbility... abilities) {
+        return new BasePredicate() {
+
+            final List<PartAbility> abilityList = List.of(abilities);
+            final String debugName = computeDebugName();
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                List<PartAbilityError> errors = new ArrayList<>();
+                for (PartAbility ability : this.abilityList) {
+                    if (ability.getAllBlocks().contains(ctx.state().getBlock())) {
+                        return true;
+                    } else {
+                        errors.add(new PartAbilityError(ctx.pos(), ability));
+                    }
+                }
+                errors.forEach(ctx::error);
+                return false;
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return this.abilityList.stream()
+                        .flatMap(ability -> ability.getAllBlocks().stream())
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            private String computeDebugName() {
+                StringJoiner sb = new StringJoiner(", ");
+                for (PartAbility ability : this.abilityList) {
+                    sb.add(ability.getName());
+                }
+                return sb.toString();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Abilities{" + debugName + "}";
+            }
+        };
+    }
+
+    public static BasePredicate ability(PartAbility ability, int... tiers) {
+        return new BasePredicate() {
+
+            final Collection<Block> blockList = ability.getBlocks(tiers);
+            final String debugName = computeDebugName();
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                return blockList.contains(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability));
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return blockList.stream()
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            private String computeDebugName() {
+                StringJoiner sb = new StringJoiner("-");
+                for (int tier : tiers) {
+                    sb.add(GTValues.VN[tier]);
+                }
+                return ability.getName() + sb;
+            }
+
+            @Override
+            public String getDebugName() {
+                return "Ability{" + debugName + "}";
+            }
+        };
+    }
+
+    public static BasePredicate autoAbilities(GTRecipeType... recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }
 
-    public static PatternPredicate autoAbilities(GTRecipeType[] recipeType,
+    public static BasePredicate autoAbilities(GTRecipeType[] recipeType,
                                                  boolean checkEnergyIn, boolean checkEnergyOut,
                                                  boolean checkItemIn, boolean checkItemOut,
                                                  boolean checkFluidIn, boolean checkFluidOut) {
-        PatternPredicate predicate = new PatternPredicate();
+        List<BasePredicate> predicates = new ArrayList<>();
 
         if (checkEnergyIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                            .setMaxGlobalLimited(2).setPreviewCount(1)
-                            .setPriority(1));
+                    predicates.add(abilities(PartAbility.INPUT_ENERGY)
+                            .setMinCount(1).setMaxCount(2)
+                            .setPreviewCount(1).setPriority(1));
                     break;
                 }
             }
@@ -160,9 +400,9 @@ public class Predicates {
         if (checkEnergyOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1)
-                            .setMaxGlobalLimited(2).setPreviewCount(1)
-                            .setPriority(1));
+                    predicates.add(abilities(PartAbility.OUTPUT_ENERGY)
+                            .setMinCount(1).setMaxCount(2)
+                            .setPreviewCount(1).setPriority(1));
                     break;
                 }
             }
@@ -170,8 +410,8 @@ public class Predicates {
         if (checkItemIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1)
-                            .setPriority(2));
+                    predicates.add(abilities(PartAbility.IMPORT_ITEMS)
+                            .setPreviewCount(1).setPriority(2));
                     break;
                 }
             }
@@ -179,8 +419,8 @@ public class Predicates {
         if (checkItemOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1)
-                            .setPriority(2));
+                    predicates.add(abilities(PartAbility.EXPORT_ITEMS)
+                            .setPreviewCount(1).setPriority(2));
                     break;
                 }
             }
@@ -188,8 +428,8 @@ public class Predicates {
         if (checkFluidIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1)
-                            .setPriority(3));
+                    predicates.add(abilities(PartAbility.IMPORT_FLUIDS)
+                            .setPreviewCount(1).setPriority(3));
                     break;
                 }
             }
@@ -197,88 +437,140 @@ public class Predicates {
         if (checkFluidOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1)
-                            .setPriority(3));
+                    predicates.add(abilities(PartAbility.EXPORT_FLUIDS)
+                            .setPreviewCount(1).setPriority(3));
                     break;
                 }
             }
         }
-        return predicate;
+        return BasePredicate.or("AutoAbilities", predicates);
     }
 
-    public static PatternPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+    public static BasePredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
                                                  boolean checkParallel) {
-        PatternPredicate predicate = new PatternPredicate();
+        List<BasePredicate> predicates = new ArrayList<>();
         if (checkMaintenance) {
-            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
-                    .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
-                    .setMaxGlobalLimited(1)
+            predicates.add(abilities(PartAbility.MAINTENANCE)
+                    .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+                    .setMaxCount(1)
                     .setPriority(1));
         }
         if (checkMuffler) {
-            predicate = predicate.or(abilities(PartAbility.MUFFLER)
+            predicates.add(abilities(PartAbility.MUFFLER)
                     .setExactLimit(1)
                     .setPriority(2));
         }
         if (checkParallel) {
-            predicate = predicate.or(abilities(PartAbility.PARALLEL_HATCH)
-                    .setMaxGlobalLimited(1)
+            predicates.add(abilities(PartAbility.PARALLEL_HATCH)
+                    .setMaxCount(1)
                     .setPreviewCount(1)
                     .setPriority(3));
         }
-        return predicate;
+        return BasePredicate.or("AutoAbilities", predicates);
     }
 
-    public static PatternPredicate heatingCoils() {
-        return new PatternPredicate("Heating Coils", worldState -> {
-            var blockState = worldState.getBlockState();
-            for (var entry : GTCEuAPI.HEATING_COILS.entrySet()) {
-                if (blockState.is(entry.getValue().get())) {
-                    return null;
-                }
+    public static BasePredicate heatingCoils() {
+        return new BasePredicate() {{
+            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
+            setPriority(0);
+        }
+
+            private List<Block> getCoils() {
+                return GTCEuAPI.HEATING_COILS.values()
+                        .stream()
+                        .map(Supplier::get)
+                        .map(Block.class::cast)
+                        .toList();
             }
-            return new BlockMatchingError(worldState.getBlockPos(), GTCEuAPI.HEATING_COILS.values().stream()
-                    .map(coilBlockSupplier -> (Block) coilBlockSupplier.get()).toList());
-        }, GTCEuAPI.HEATING_COILS.entrySet().stream()
-                // sort to make autogenerated jei previews not pick random coils each game load
-                .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                .map(e -> new BlockInfo(e.getValue().get()))
-                .toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
-                .setPriority(0);
+
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                var blockState = ctx.state();
+                List<Block> coils = this.getCoils();
+                for (var blockCoil : coils) {
+                    if (blockState.is(blockCoil)) {
+                        return true;
+                    }
+                }
+                return ctx.error(new BlockMatchingError(ctx.pos(), coils));
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return GTCEuAPI.HEATING_COILS.entrySet().stream()
+                        // sort to make autogenerated jei previews not pick random coils each game load
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                        .map(Map.Entry::getValue)
+                        .map(Supplier::get)
+                        .map(BlockInfo::fromBlock)
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "HeatingCoils";
+            }
+        };
     }
 
-    public static PatternPredicate cleanroomFilters() {
-        return new PatternPredicate("Cleanroom Filters", worldState -> {
-            var blockState = worldState.getBlockState();
-            for (var entry : GTCEuAPI.CLEANROOM_FILTERS.entrySet()) {
-                if (blockState.is(entry.getValue().get())) {
-                    return null;
+    public static BasePredicate cleanroomFilters() {
+        return new BasePredicate() {{
+            addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
+        }
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                var blockState = ctx.state();
+                for (var entry : GTCEuAPI.CLEANROOM_FILTERS.entrySet()) {
+                    if (blockState.is(entry.getValue().get())) {
+                        return true;
+                    }
                 }
+                return ctx.error(PLACEHOLDER);
             }
-            return new BlockMatchingError(worldState.getBlockPos(),
-                    GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream().map(e -> e.getValue().get()).toList());
-        }, GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
-                .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
-                .map(e -> new BlockInfo(e.getValue().get()))
-                .toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
+                        .map(e -> new BlockInfo(e.getValue().get()))
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "CleanroomFilters";
+            }
+        };
     }
 
-    public static PatternPredicate powerSubstationBatteries() {
-        return new PatternPredicate("PSS Batteries", worldState -> {
-            var state = worldState.getBlockState();
-            for (var entry : GTCEuAPI.PSS_BATTERIES.entrySet()) {
-                if (state.is(entry.getValue().get())) {
-                    return null;
+    public static BasePredicate powerSubstationBatteries() {
+        return new BasePredicate() {{
+            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+        }
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                var state = ctx.state();
+                for (var entry : GTCEuAPI.PSS_BATTERIES.entrySet()) {
+                    if (state.is(entry.getValue().get())) {
+                        return true;
+                    }
                 }
+                return ctx.error(PLACEHOLDER);
             }
-            return Predicates.PLACEHOLDER;
-        }, GTCEuAPI.PSS_BATTERIES.entrySet().stream()
-                .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                .map(e -> new BlockInfo(e.getValue().get().defaultBlockState()))
-                .toList())
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return GTCEuAPI.PSS_BATTERIES.entrySet().stream()
+                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
+                        .map(e -> new BlockInfo(e.getValue().get().defaultBlockState(), null))
+                        .toList();
+            }
+
+            @Override
+            public String getDebugName() {
+                return "PSSBatteries";
+            }
+        };
 
         /*
          * return new TraceabilityPredicate(blockWorldState -> {
@@ -306,24 +598,13 @@ public class Predicates {
          */
     }
 
-    public static @Nullable PatternPredicate dataHatchPredicate() {
+    public static @Nullable BasePredicate dataHatchPredicate() {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             // TODO xor predicate matching :)
-            return new PatternPredicate(state -> {
-                Block block = state.retrieveCurrentBlockState().getBlock();
-                if (PartAbility.DATA_ACCESS.isApplicable(block) ||
-                        PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
-                    return null;
-                }
-                List<Block> blocks = new ArrayList<>(
-                        List.of(PartAbility.DATA_ACCESS.getAllBlocks().toArray(new Block[0])));
-                blocks.addAll(PartAbility.OPTICAL_DATA_RECEPTION.getAllBlocks());
-                return new BlockMatchingError(state.getBlockPos(), blocks);
-            }, Stream
-                    .concat(PartAbility.DATA_ACCESS.getAllBlocks().stream(),
-                            PartAbility.OPTICAL_DATA_RECEPTION.getAllBlocks().stream())
-                    .map(BlockInfo::fromBlock).toList()).setExactLimit(1);
+            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+                    .setExactLimit(1)
+                    .setPriority(1);
         }
         return null;
     }
@@ -331,7 +612,7 @@ public class Predicates {
     /**
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */
-    public static PatternPredicate frames(Material... frameMaterials) {
+    public static BasePredicate frames(Material... frameMaterials) {
         var frameBlocks = Arrays.stream(frameMaterials)
                 .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                 .filter(Objects::nonNull)
@@ -339,13 +620,26 @@ public class Predicates {
                 .map(RegistryEntry::get)
                 .toArray(Block[]::new);
         return blocks(frameBlocks)
-                .or(new PatternPredicate(blockWorldState -> {
-                    BlockEntity tileEntity = blockWorldState.getBlockEntity();
-                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                        return Predicates.PLACEHOLDER;
+                .or(new BasePredicate() {
+                    @Override
+                    public boolean testInternal(PredicateContext ctx) {
+                        BlockEntity tileEntity = ctx.blockEntity();
+                        if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                            return ctx.error(PLACEHOLDER);
+                        }
+                        return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
+                                ctx.error(PLACEHOLDER);
                     }
-                    return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ? null :
-                            Predicates.PLACEHOLDER;
-                }, Arrays.stream(frameBlocks).map(BlockInfo::fromBlock).toList()));
+
+                    @Override
+                    public List<BlockInfo> computeCandidates() {
+                        return Arrays.stream(frameBlocks).map(BlockInfo::fromBlock).toList();
+                    }
+
+                    @Override
+                    public String getDebugName() {
+                        return "FramedPipes";
+                    }
+                });
     }
 }

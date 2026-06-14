@@ -62,13 +62,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private static @Nullable PatternPredicate MULTI_PREDICATE = null;
+    private static @Nullable BasePredicate MULTI_PREDICATE = null;
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
         super(info, new CentralMonitorLogic());
     }
 
-    public static PatternPredicate getMultiPredicate() {
+    public static BasePredicate getMultiPredicate() {
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY)

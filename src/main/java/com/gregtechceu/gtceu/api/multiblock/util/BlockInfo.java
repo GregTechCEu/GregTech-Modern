@@ -13,6 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -51,6 +53,14 @@ public class BlockInfo {
         this.blockEntity = blockEntity;
 
         FAKE_LEVEL.setState(blockState);
+    }
+
+    public static BlockInfo fromFluid(Fluid fluid) {
+        return fromFluidState(fluid.defaultFluidState());
+    }
+
+    public static BlockInfo fromFluidState(FluidState fluidState) {
+        return fromBlockState(fluidState.createLegacyBlock());
     }
 
     public static BlockInfo fromBlockState(BlockState state) {
@@ -92,6 +102,14 @@ public class BlockInfo {
         if (blockEntity != null) {
             level.setBlockEntity(blockEntity);
         }
+    }
+
+    public boolean isAir() {
+        return blockState.getBlock() == Blocks.AIR;
+    }
+
+    public boolean nonAir() {
+        return !isAir();
     }
 
     @Override

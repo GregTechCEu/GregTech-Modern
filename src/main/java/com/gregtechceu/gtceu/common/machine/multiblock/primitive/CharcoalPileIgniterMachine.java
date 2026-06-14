@@ -7,12 +7,13 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
@@ -116,7 +117,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return (definition) -> {
 
             var floor = Predicates.blocks(Blocks.BRICKS);
-            var logs = PatternPredicate.AIR.or(logPredicate());
+            var logs = BasePredicate.AIR.or(logPredicate());
             var walls = wallPredicate();
 
             return ExpandableMultiblockPatternBuilder
@@ -138,7 +139,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                         if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
                         if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
 
-                        if (intersects >= 2) return PatternPredicate.ANY;
+                        if (intersects >= 2) return BasePredicate.ANY;
 
                         if (intersects == 1) {
                             if (bottomAisle) return floor;
@@ -150,9 +151,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         };
     }
 
-    private static PatternPredicate wallPredicate() {
-        return new PatternPredicate("Wall Blocks",
-                multiblockState -> {
+    private BasePredicate wallPredicate() {
+        return Predicates.customFunction(multiblockState -> {
                     BlockPos p = multiblockState.getBlockPos();
                     return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
                             null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
@@ -160,8 +160,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 }, null);
     }
 
-    private static PatternPredicate logPredicate() {
-        return new PatternPredicate(multiblockState -> {
+    private BasePredicate logPredicate() {
+        return Predicates.customFunction(multiblockState -> {
             boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
             return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
         }, null);

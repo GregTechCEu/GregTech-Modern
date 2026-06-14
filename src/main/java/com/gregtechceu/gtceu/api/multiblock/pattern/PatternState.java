@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /*
  * Contains vital information to an instanced version of a structure pattern.
@@ -107,6 +109,14 @@ public class PatternState {
                 }
             }
         }
+    }
+
+    public PredicateContext toContext(Consumer<PatternError> errorConsumer) {
+        return PredicateContext.of(this.cbi, errorConsumer, this.globalCount, this.layerCount);
+    }
+
+    public PredicateContext noLayer(Consumer<PatternError> errorConsumer) {
+        return PredicateContext.of(this.cbi, errorConsumer, this.globalCount, null);
     }
 
     @Getter

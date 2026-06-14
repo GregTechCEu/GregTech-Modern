@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -30,9 +29,10 @@ public abstract class PatternError {
         this.candidates = candidates;
     }
 
-    public PatternError(@Nullable BlockPos pos, PatternPredicate predicate) {
-        this(pos, predicate.getCandidates());
-    }
+    // TODO FIX
+//    public PatternError(@Nullable BlockPos pos, PatternPredicate predicate) {
+//        this(pos, predicate.getCandidates());
+//    }
 
     public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
         this(pos, Collections.singletonList(failingPredicate.getCandidates()));
