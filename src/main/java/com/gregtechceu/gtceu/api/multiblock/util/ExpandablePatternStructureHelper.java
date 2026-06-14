@@ -104,7 +104,7 @@ public class ExpandablePatternStructureHelper {
 
         var predicateProvider = pattern.getPredicateProvider();
         // SOUTH, UP, EAST means point is +z, line is +y, plane is +x.
-        //  this basically means the x val of the iter is aisle count, y is str count, and z is char count.
+        // this basically means the x val of the iter is aisle count, y is str count, and z is char count.
         for (BlockPos pos : betweenClosed(corners.left())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
             PatternPredicate predicate = predicateProvider.apply(mutablePos, userDimensions);

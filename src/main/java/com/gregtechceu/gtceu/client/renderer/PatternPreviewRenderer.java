@@ -49,11 +49,12 @@ public class PatternPreviewRenderer {
 
     public static final PatternPreviewRenderer INSTANCE = new PatternPreviewRenderer();
 
-    private static final Map<RenderLevelStageEvent.Stage, RenderType> STAGE_RENDER_TYPES = Util.make(new IdentityHashMap<>(), map -> {
-        for (RenderType renderType : RenderType.chunkBufferLayers()) {
-            map.put(RenderLevelStageEvent.Stage.fromRenderType(renderType), renderType);
-        }
-    });
+    private static final Map<RenderLevelStageEvent.Stage, RenderType> STAGE_RENDER_TYPES = Util
+            .make(new IdentityHashMap<>(), map -> {
+                for (RenderType renderType : RenderType.chunkBufferLayers()) {
+                    map.put(RenderLevelStageEvent.Stage.fromRenderType(renderType), renderType);
+                }
+            });
 
     private @Nullable ISchema schema;
     private @Nullable RenderLevel renderLevel;
@@ -65,7 +66,6 @@ public class PatternPreviewRenderer {
     private final AtomicReference<CompileStatus> compileStatus = new AtomicReference<>();
     private final AtomicReference<RenderCompileResults> compiledRenderResult = new AtomicReference<>();
     private boolean dirty = true;
-
 
     public void showPreview(BlockPos controllerPos, ISchema schema, RenderFilter renderFilter, int duration) {
         this.controllerPos = controllerPos;
@@ -130,8 +130,9 @@ public class PatternPreviewRenderer {
 
         RenderCompileResults compileResults = new RenderCompileResults();
         CompletableFuture.supplyAsync(
-                        Util.wrapThreadWithTaskName("scm_chk_rebuild", () -> this.lastRenderCompileTask.compileBlockBuffers(compileResults, cameraPos)),
-                        Util.backgroundExecutor())
+                Util.wrapThreadWithTaskName("preview_chunk_rebuild",
+                        () -> this.lastRenderCompileTask.compileBlockBuffers(compileResults, cameraPos)),
+                Util.backgroundExecutor())
                 .thenCompose(Function.identity())
                 .whenComplete((result, error) -> {
                     if (error != null) {
@@ -406,7 +407,8 @@ public class PatternPreviewRenderer {
             if (startedBuffers.contains(RenderType.translucent())) {
                 BufferBuilder bufferBuilder = chunkBufferBuilders.builder(RenderType.translucent());
                 if (!bufferBuilder.isCurrentBatchEmpty()) {
-                    bufferBuilder.setQuadSorting(VertexSorting.byDistance((float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z));
+                    bufferBuilder.setQuadSorting(
+                            VertexSorting.byDistance((float) cameraPos.x, (float) cameraPos.y, (float) cameraPos.z));
                 }
             }
 
@@ -442,7 +444,8 @@ public class PatternPreviewRenderer {
             });
         }
 
-        protected CompletableFuture<Void> uploadChunkLayer(RenderCompileResults results, BufferBuilder.RenderedBuffer builder,
+        protected CompletableFuture<Void> uploadChunkLayer(RenderCompileResults results,
+                                                           BufferBuilder.RenderedBuffer builder,
                                                            RenderType renderType) {
             return CompletableFuture.runAsync(() -> {
                 VertexBuffer buffer = results.getOrCreateChunkBuffers().get(renderType);

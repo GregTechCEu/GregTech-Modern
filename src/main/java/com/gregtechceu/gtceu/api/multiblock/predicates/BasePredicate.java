@@ -176,7 +176,8 @@ public class BasePredicate {
         if ((minSliceCount == -1 && maxSliceCount == -1) || error != null) return error;
 
         if (maxSliceCount != -1 && layerCache.getInt(this) > maxSliceCount) {
-            return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
+            return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT,
+                    layerCache.getInt(this));
         }
 
         return null;

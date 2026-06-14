@@ -59,7 +59,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
     private Direction upFacing;
     private boolean isFlipped = false;
 
-
     private Long2ObjectMap<BlockInfo> userGlobalBlockPreferences;
     private @Nullable Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences;
     private @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences;

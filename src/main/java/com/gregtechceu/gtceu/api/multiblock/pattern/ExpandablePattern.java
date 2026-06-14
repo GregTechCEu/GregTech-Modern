@@ -42,7 +42,8 @@ public class ExpandablePattern implements IBlockPattern {
     @FunctionalInterface
     public interface BoundsProvider {
 
-        @Nullable IntList apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+        @Nullable
+        IntList apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
 
         BoundsProvider EMPTY = (l, p, f, u) -> new IntArrayList(new int[] { 0, 0, 0, 0, 0, 0 });
     }
@@ -341,8 +342,7 @@ public class ExpandablePattern implements IBlockPattern {
         }
         predicateIndex.clear();
 
-        // FIXME why is this loop duplicated twice?
-        //  also, why is this copy-pasted from BlockPattern?
+        // FIXME why is this loop duplicated twice? also, why is this copy-pasted from BlockPattern?
         for (var entry : predicates.long2ObjectEntrySet()) {
             PatternPredicate predicate = entry.getValue();
             if (predicate == null || predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;

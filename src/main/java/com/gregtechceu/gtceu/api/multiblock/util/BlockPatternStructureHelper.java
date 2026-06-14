@@ -89,6 +89,7 @@ public class BlockPatternStructureHelper {
     public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
                                     char[][][] flattenedBlockPattern, Direction frontFacing, Direction upFacing,
                                     boolean isFlipped) {
+        // spotless:off
         // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
         // get the char at that position,
         // 4a. Go through every BasePredicate in order of priority, see if there's a minCount/minLayerCount that's
@@ -96,6 +97,7 @@ public class BlockPatternStructureHelper {
         // 4b. If all basePredicates with a mincount/minLayerCount are satisfied, place the first predicate that works
         // 4c. If the BasePredicate is at its max (maxCount/maxLayerCount), remove it from the list to be considered
         // 4d. error if none are valid candidates(?)
+        // spotless:on
 
         Vec3i dimensions = getDimensions(flattenedBlockPattern);
         Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
@@ -124,7 +126,7 @@ public class BlockPatternStructureHelper {
                     }
 
                     // Attempts to first place the predicate if the minimum (layer) count isn't satisfied, then the
-                    //  maximum (layer) count
+                    // maximum (layer) count
                     if (tryMinCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
                     if (tryMaxCount(resultStructure, predicate, pos, sliceDir, sliceCoord)) continue;
                     // If we arrive here, there's nothing we can place that doesn't overflow a max count!
@@ -267,7 +269,7 @@ public class BlockPatternStructureHelper {
         };
 
         // World-space bounding box. Each axis contributes monotonically, so the extremes are reached at index 0 or at
-        //  (dimensions[axis] - 1) depending on the sign of the step.
+        // (dimensions[axis] - 1) depending on the sign of the step.
         BlockPos.MutableBlockPos min = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos max = new BlockPos.MutableBlockPos();
         for (Direction.Axis axis : Direction.Axis.VALUES) {
@@ -288,7 +290,8 @@ public class BlockPatternStructureHelper {
                     int worldX = absoluteX.getStepX() * x + absoluteY.getStepX() * y + absoluteZ.getStepX() * z;
                     int worldY = absoluteX.getStepY() * x + absoluteY.getStepY() * y + absoluteZ.getStepY() * z;
                     int worldZ = absoluteX.getStepZ() * x + absoluteY.getStepZ() * y + absoluteZ.getStepZ() * z;
-                    result[worldX - min.getX()][worldY - min.getY()][worldZ - min.getZ()] = localFlattenedPattern[x][y][z];
+                    result[worldX - min.getX()][worldY - min.getY()][worldZ -
+                            min.getZ()] = localFlattenedPattern[x][y][z];
                 }
             }
         }
@@ -361,7 +364,8 @@ public class BlockPatternStructureHelper {
         };
     }
 
-    public static BlockPos.MutableBlockPos setFromDirection(BlockPos.MutableBlockPos pos, Direction direction, int amount) {
+    public static BlockPos.MutableBlockPos setFromDirection(BlockPos.MutableBlockPos pos,
+                                                            Direction direction, int amount) {
         return switch (direction) {
             case DOWN -> pos.setY(-amount);
             case UP -> pos.setY(amount);

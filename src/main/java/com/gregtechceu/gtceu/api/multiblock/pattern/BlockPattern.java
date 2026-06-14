@@ -234,7 +234,8 @@ public class BlockPattern implements IBlockPattern {
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
 
-                List<PatternError> errors = pred.test(patternState.currentBlockInfo, patternState.globalCount, patternState.layerCount);
+                List<PatternError> errors = pred.test(patternState.currentBlockInfo, patternState.globalCount,
+                        patternState.layerCount);
                 if (!errors.isEmpty()) {
                     patternState.setErrors(errors);
                     return false;
