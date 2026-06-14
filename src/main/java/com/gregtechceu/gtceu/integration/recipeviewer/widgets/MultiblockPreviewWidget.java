@@ -7,9 +7,10 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.*;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
-import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureUtil;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.core.BlockPos;
@@ -33,6 +34,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.DoubleValue;
+import brachy.modularui.value.IntValue;
 import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
@@ -46,48 +48,57 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
+@Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
 
-    private MultiblockMachineDefinition multiblockDefinition = null;
+    private final MultiblockMachineDefinition multiblockDefinition;
 
     // schema stuff
-    private SchemaWidget multiSchema;
+    private final SchemaWidget multiSchema;
     private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
-    private SchemaRenderer renderer;
+    private final SchemaRenderer renderer;
     private final DynamicHandler partsHandler = new DynamicHandler();
     private final DynamicHandler selectedBlockHandler = new DynamicHandler();
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
 
+    @Setter
     private boolean isFlipped = false;
-    private final Direction frontFacing;
-    private final Direction upFacing;
+    @Setter
+    private Direction frontFacing;
+    @Setter
+    private Direction upFacing;
+    @Setter
+    private @Nullable BlockPos controllerPos;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
     private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
-    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
+    private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
             .create();
 
     private int yLevel = -1;
     private int maxHeight = 0;
 
-    private final BlockPatternStructureUtil blockPatternStructureUtil = new BlockPatternStructureUtil();
-    private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
-    private final ExpandablePatternStructureUtil expandablePatternStructureUtil = new ExpandablePatternStructureUtil();
-    private final List<Integer> userDimensions = new ArrayList<>();
+    private final BlockPatternStructureHelper structureHelper = new BlockPatternStructureHelper();
+    private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
+    private final ExpandablePatternStructureHelper expandableStructureHelper = new ExpandablePatternStructureHelper();
+    private @Nullable IntList userDimensions = null;
 
-    private Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
+    private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
 
     public MultiblockPreviewWidget(MultiblockMachineDefinition definition) {
         this.multiblockDefinition = definition;
@@ -134,15 +145,16 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
         this.selectedBlockHandler.widgetProvider(() -> {
             ItemStack selected = selectedBlock.getValue();
-            if (selected.isEmpty() || multiblockDefinition == null) return null;
+            if (selected.isEmpty()) return null;
+
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
-                PatternPredicate predicate = blockPatternStructureUtil.getPredicateFromPos(
+                PatternPredicate predicate = structureHelper.getPredicateFromPos(
                         blockPattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate, lastBlock);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
-                PatternPredicate predicate = expandablePatternStructureUtil.getPredicateFromPos(
+                PatternPredicate predicate = expandableStructureHelper.getPredicateFromPos(
                         expandablePattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate, lastBlock);
@@ -156,11 +168,12 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         this.multiSchema = this.renderer.asWidget()
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
-                    BlockHitResult rayTrace = this.renderer.lastRayTrace();
-                    if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
-                        BlockState state = mapSchema.getLevel()
-                                .getBlockState(rayTrace.getBlockPos());
-                        text.addFromItem(new ItemStack(state.getBlock()));
+                    BlockHitResult hit = this.renderer.lastRayTrace();
+                    if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
+                        BlockState state = mapSchema.getLevel().getBlockState(hit.getBlockPos());
+                        ItemStack pickedItem = state.getCloneItemStack(hit, mapSchema.getLevel(), hit.getBlockPos(),
+                                this.getContext().getMC().player);
+                        text.addFromItem(pickedItem);
                     }
                 }).tooltipAutoUpdate(true)
                 .size(200);
@@ -171,11 +184,18 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             return pos.getY() >= yLevel;
         });
 
-        coverChildren()
+        this.coverChildren()
                 .padding(7)
                 .child(new ButtonWidget<>()
                         .tooltip(r -> r.addLine(Component.literal("Press to display preview in world!")))
-                        .rightRel(1.0f))
+                        .rightRel(1.0f)
+                        .onMousePressed((c, b) -> {
+                            if (controllerPos != null && !structureBlocks.isEmpty()) {
+                                BlockPos origin = controllerPos.offset(mapSchema.getControllerPos().multiply(-1));
+                                PatternPreviewRenderer.INSTANCE.setPreview(origin, this.structureBlocks, 20000);
+                            }
+                            return true;
+                        }))
                 .child(Flow.col()
                         .name("main")
                         .coverChildren()
@@ -231,7 +251,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        .children(predicate.predicateList, basePredicate -> {
+                        .children(predicate.subPredicates, basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.candidates;
                             if (candidates.isEmpty())
                                 return new EmptyWidget();
@@ -282,7 +302,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 continue;
             }
             IDrawable overlay;
-            if (predicate.predicateList.size() == 1 && predicate.predicateList.get(0).candidates.size() == 1) {
+            if (predicate.subPredicates.size() == 1 && predicate.subPredicates.get(0).candidates.size() == 1) {
                 continue;
             } else {
                 overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
@@ -304,7 +324,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate.predicateList, basePredicate -> {
+                            .children(predicate.subPredicates, basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.candidates;
                                 if (candidates == null || candidates.isEmpty())
                                     return new EmptyWidget();
@@ -367,45 +387,46 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 }
             }
             // reinterpret slider values as slice repeats?
-            blockPatternStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+            structureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
                     userBasePredicateMinMaxPreferences, userSliceRepeats);
-            char[][][] flattenedCharPattern = blockPatternStructureUtil.flattenBlockPattern(blockPattern);
-            char[][][] adjustedCharPattern = blockPatternStructureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
+            char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(blockPattern);
+            char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
                     blockPattern.getDirections(),
                     frontFacing, upFacing, isFlipped);
 
-            blockPatternStructureUtil.populateWithUserBlockPreferences(resultStructure, blockPattern,
+            structureHelper.populateWithUserBlockPreferences(resultStructure, blockPattern,
                     adjustedCharPattern,
                     userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-            blockPatternStructureUtil.populateFromPattern(resultStructure, blockPattern, adjustedCharPattern,
+            structureHelper.populateFromPattern(resultStructure, blockPattern, adjustedCharPattern,
                     frontFacing, upFacing, isFlipped);
 
-            BlockPatternStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                     multiblockDefinition.getBlock());
         } else if (pattern instanceof ExpandablePattern expandablePattern) {
-            if (userDimensions.isEmpty()) {
-                userDimensions
-                        .addAll(expandablePattern.getBoundsConstraints().apply().stream().map(Pair::left).toList());
+            if (userDimensions == null || userDimensions.isEmpty()) {
+                userDimensions = expandablePattern.getBoundsConstraints().apply().stream()
+                        .mapToInt(Pair::left)
+                        .collect(IntArrayList::new, IntList::add, IntList::addAll);
             }
             // reinterpret slider values as bounds?
-            expandablePatternStructureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+            expandableStructureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
                     userBasePredicateMinMaxPreferences, userDimensions);
 
-            expandablePatternStructureUtil.populateWithUserBlockPreferences(resultStructure, expandablePattern,
+            expandableStructureHelper.populateWithUserBlockPreferences(resultStructure, expandablePattern,
                     userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-            expandablePatternStructureUtil.populateFromPattern(resultStructure, expandablePattern, frontFacing,
+            expandableStructureHelper.populateFromPattern(resultStructure, expandablePattern, frontFacing,
                     upFacing, isFlipped);
 
-            ExpandablePatternStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+            ExpandablePatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                     multiblockDefinition.getBlock());
         }
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         blockCounts.clear();
         for (var entry : resultStructure.entrySet()) {
-            var state = entry.getValue().getBlockState();
+            BlockState state = entry.getValue().getBlockState();
             schemaMap.put(entry.getKey().asLong(), state);
             blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
@@ -446,29 +467,28 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     private void createConstraintSliders(Flow parent, ExpandablePattern pattern) {
-        if (pattern.getBoundsConstraints() != null) {
-            List<Pair<Integer, Integer>> constraints = pattern.getBoundsConstraints().apply();
-            for (int i = 0; i < constraints.size(); i++) {
-                Pair<Integer, Integer> value = constraints.get(i);
-                if (!Objects.equals(value.left(), value.right())) {
-                    int finalI = i;
-                    parent.child(new SliderWidget()
-                            .background(GTGuiTextures.FLUID_SLOT)
-                            .bounds(value.left(), value.right())
-                            .height(16)
-                            .width(value.right() * 12)
-                            .stopper(1.0f)
-                            .value(new DoubleValue.Dynamic(() -> {
-                                return userDimensions.get(finalI);
-                            }, (v) -> {
-                                int oldVal = userDimensions.get(finalI);
-                                int newVal = (int) v;
-                                if (oldVal == newVal) return;
-                                userDimensions.set(finalI, (int) v);
-                                refreshSchema();
-                                refreshViewWidget();
-                            })));
-                }
+        if (pattern.getBoundsConstraints() == null) {
+            return;
+        }
+        List<IntIntPair> constraints = pattern.getBoundsConstraints().apply();
+        for (int i = 0; i < constraints.size(); i++) {
+            IntIntPair value = constraints.get(i);
+            if (value.leftInt() != value.rightInt()) {
+                final int index = i;
+                parent.child(new SliderWidget()
+                        .background(GTGuiTextures.FLUID_SLOT)
+                        .bounds(value.leftInt(), value.rightInt())
+                        .height(16)
+                        .width(value.rightInt() * 12)
+                        .stopper(1.0f)
+                        .value(new IntValue.Dynamic(() -> userDimensions.getInt(index), v -> {
+                            int oldVal = userDimensions.getInt(index);
+                            int newVal = v;
+                            if (oldVal == newVal) return;
+                            userDimensions.set(index, v);
+                            refreshSchema();
+                            refreshViewWidget();
+                        })));
             }
         }
     }

@@ -98,14 +98,14 @@ public class BlockInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BlockInfo blockInfo = (BlockInfo) o;
-        return Objects.equals(blockState, blockInfo.blockState);
+        return Objects.equals(this.blockState, blockInfo.blockState);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(blockState);
+        return this.blockState.hashCode();
     }
 }

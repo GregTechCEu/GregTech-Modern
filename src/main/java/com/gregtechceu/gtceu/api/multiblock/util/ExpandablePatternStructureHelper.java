@@ -10,28 +10,28 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.List;
 import java.util.Map;
 
-public class ExpandablePatternStructureUtil {
-
-    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
-            Direction.EAST, Direction.UP, Direction.DOWN };
+// why is this class mostly just a copy-paste of BlockPatternStructureHelper?
+public class ExpandablePatternStructureHelper {
 
     private Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences;
+    private Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
     private List<Integer> userDimensions;
 
-    public static Pair<Pair<BlockPos, BlockPos>, Direction[]> getCorners(List<Integer> bounds,
-                                                                         ExpandablePattern pattern,
-                                                                         Direction frontFacing, Direction upFacing,
-                                                                         boolean isFlipped) {
+    // TODO use a record for this ffs
+    public static Pair<BoundingBox, Direction[]> getCorners(List<Integer> bounds,
+                                                            ExpandablePattern pattern,
+                                                            Direction frontFacing, Direction upFacing,
+                                                            boolean isFlipped) {
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
 
@@ -53,7 +53,7 @@ public class ExpandablePatternStructureUtil {
                 posCorner.setZ(bounds.get(selected.ordinal()));
             }
         }
-        return Pair.of(Pair.of(posCorner, negCorner), absolutes);
+        return Pair.of(BoundingBox.fromCorners(posCorner, negCorner), absolutes);
     }
 
     public PatternPredicate getPredicateFromPos(ExpandablePattern pattern, BlockPos absPos,
@@ -63,7 +63,7 @@ public class ExpandablePatternStructureUtil {
         int relX = getOffsetFromDirection(absolutes[0], absPos);
         int relY = getOffsetFromDirection(absolutes[1], absPos);
         int relZ = getOffsetFromDirection(absolutes[2], absPos);
-        return pattern.getPredicateFunc().apply(new BlockPos(relX, relY, relZ).mutable(), userDimensions);
+        return pattern.getPredicateProvider().apply(new BlockPos(relX, relY, relZ).mutable(), userDimensions);
     }
 
     public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
@@ -77,20 +77,20 @@ public class ExpandablePatternStructureUtil {
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, ExpandablePattern pattern,
                                                  Map<Long, BlockInfo> userBlockPreferences, Direction frontFacing,
                                                  Direction upFacing, boolean isFlipped) {
-        var cornerStuff = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
-        var corners = cornerStuff.left();
-        var absolutes = cornerStuff.right();
+        var cornerData = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
+        BoundingBox corners = cornerData.left();
+        Direction[] absolutes = cornerData.right();
         // contains is min<=x<max, inflate to make sure all pos are inside
         // kinda gross but it's the least invasive way I guess, maybe lookf or something better
-        var bounds = new AABB(corners.left(), corners.right()).inflate(1.0);
+        BoundingBox bounds = corners.inflatedBy(1);
         for (var entry : userBlockPreferences.entrySet()) {
-            var pos = BlockPos.of(entry.getKey()); // absolute-space
+            BlockPos pos = BlockPos.of(entry.getKey()); // absolute-space
             // Reverse-transform to relative/pattern space (transpose of orthogonal rotation) to check against bounds
             int relX = getOffsetFromDirection(absolutes[0], pos);
             int relY = getOffsetFromDirection(absolutes[1], pos);
             int relZ = getOffsetFromDirection(absolutes[2], pos);
 
-            if (bounds.contains(relX, relY, relZ)) {
+            if (bounds.isInside(relX, relY, relZ)) {
                 resultStructure.put(pos, entry.getValue());
             }
         }
@@ -100,28 +100,27 @@ public class ExpandablePatternStructureUtil {
                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPos.MutableBlockPos translation = BlockPos.ZERO.mutable();
         var corners = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
-        var negCorner = corners.left().left();
-        var posCorner = corners.left().right();
-        var absolutes = corners.right();
+        Direction[] absolutes = corners.right();
 
-        var predicateFunc = pattern.getPredicateFunc();
-        // SOUTH, UP, EAST means point is +z, line is +y, plane is +x. this basically means the x val of the iter is
-        // aisle count, y is str count, and z is char count.
-        for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
-            BlockPos.MutableBlockPos mPos = pos.mutable();
-            PatternPredicate predicate = predicateFunc.apply(mPos, userDimensions);
+        var predicateProvider = pattern.getPredicateProvider();
+        // SOUTH, UP, EAST means point is +z, line is +y, plane is +x.
+        //  this basically means the x val of the iter is aisle count, y is str count, and z is char count.
+        for (BlockPos pos : betweenClosed(corners.left())) {
+            BlockPos.MutableBlockPos mutablePos = pos.mutable();
+            PatternPredicate predicate = predicateProvider.apply(mutablePos, userDimensions);
 
             // this basically reshuffles the coordinates into absolute form from relative form
-            mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
-                    pos.getZ());
+            BlockPatternStructureHelper.setFromDirection(mutablePos, absolutes[0], pos.getX());
+            BlockPatternStructureHelper.setFromDirection(mutablePos, absolutes[1], pos.getY());
+            BlockPatternStructureHelper.setFromDirection(mutablePos, absolutes[2], pos.getZ());
             // translate from the origin to the center
-            // mPos = mPos.offset(translation).mutable();
-            if (resultStructure.containsKey(mPos)) continue;
+            // mutablePos = mutablePos.move(translation);
+            if (resultStructure.containsKey(mutablePos)) continue;
 
             // Attempts to first place the predicate if the min(layer)count isn't satisfied, then the
             // max(layer)count
-            if (tryMinCount(resultStructure, predicate, mPos)) continue;
-            if (tryMaxCount(resultStructure, predicate, mPos)) continue;
+            if (tryMinCount(resultStructure, predicate, mutablePos)) continue;
+            if (tryMaxCount(resultStructure, predicate, mutablePos)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!
             throw new IllegalStateException("Could not place a block without breaking maxCount requirements");
         }
@@ -129,20 +128,20 @@ public class ExpandablePatternStructureUtil {
 
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicateList) {
+        for (BasePredicate basePredicate : predicate.subPredicates) {
             int minCount = minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).left() :
+                    minMaxPreferences.get(predicate, basePredicate).leftInt() :
                     basePredicate.minCount;
             if (minCount == 0) continue;
-            int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
-            if (!(minCount > 0 && totalAlreadyPopulated < minCount)) continue;
+
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
+            if (minCount <= 0 || totalAlreadyPopulated >= minCount) continue;
+
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
                 toInsert = blockPreferences.get(predicate, basePredicate);
-            } else {
-                if (!basePredicate.getCandidates().isEmpty()) {
-                    toInsert = basePredicate.getCandidates().get(0);
-                }
+            } else if (!basePredicate.getCandidates().isEmpty()) {
+                toInsert = basePredicate.getCandidates().get(0);
             }
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
@@ -152,20 +151,19 @@ public class ExpandablePatternStructureUtil {
 
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.predicateList) {
+        for (BasePredicate basePredicate : predicate.subPredicates) {
             int maxCount = minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).right() :
+                    minMaxPreferences.get(predicate, basePredicate).rightInt() :
                     basePredicate.maxCount;
             if (maxCount == 0) continue;
-            int totalAlreadyPopulated = countGlobal(resultStructure, basePredicate);
+            int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
                 toInsert = blockPreferences.get(predicate, basePredicate);
-            } else {
-                if (!basePredicate.getCandidates().isEmpty()) {
-                    toInsert = basePredicate.getCandidates().get(0);
-                }
+            } else if (!basePredicate.getCandidates().isEmpty()) {
+                toInsert = basePredicate.getCandidates().get(0);
             }
             if (toInsert != null) resultStructure.put(pos, toInsert);
             return true;
@@ -183,37 +181,52 @@ public class ExpandablePatternStructureUtil {
         for (var entry : resultStructure.entrySet()) {
             BlockPos pos = entry.getKey();
             BlockState currentState = entry.getValue().getBlockState();
-            Direction valid = null;
-            if (currentState.getBlock() instanceof MetaMachineBlock machineBlock) {
-                if (!currentState.hasProperty(machineBlock.getRotationState().property)) continue;
-                if (machineBlock.equals(controllerBlock)) {
-                    var newState = currentState.setValue(machineBlock.getRotationState().property, frontFacing);
-                    if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING))
-                        newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
-                    toUpdate.put(pos, newState);
-                    continue;
+            if (!(currentState.getBlock() instanceof MetaMachineBlock machine)) {
+                continue;
+            }
+            if (!currentState.hasProperty(machine.getRotationState().property)) continue;
+
+            if (machine == controllerBlock) {
+                BlockState newState = currentState.setValue(machine.getRotationState().property, frontFacing);
+                if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING)) {
+                    newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
                 }
-                for (var dir : DIRECTIONS_IN_ORDER) {
-                    if (!machineBlock.getRotationState().test(valid)) continue;
-                    if (!resultStructure.containsKey(pos.relative(dir))) {
-                        valid = dir;
-                        break;
-                    }
+                toUpdate.put(pos, newState);
+                continue;
+            }
+
+            Direction validFacing = null;
+            for (Direction dir : BlockPatternStructureHelper.DIRECTIONS_IN_ORDER) {
+                // make sure the machine can face this way
+                if (!machine.getRotationState().test(dir)) continue;
+                // and that there won't be a block in front of it
+                if (!resultStructure.containsKey(pos.relative(dir))) {
+                    validFacing = dir;
+                    break;
                 }
-                if (valid != null) {
-                    toUpdate.put(pos, currentState.setValue(machineBlock.getRotationState().property, valid));
-                }
+            }
+            if (validFacing != null) {
+                toUpdate.put(pos, currentState.setValue(machine.getRotationState().property, validFacing));
             }
         }
         for (var entry : toUpdate.entrySet()) {
             resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
         }
-    };
+    }
 
-    private static int countGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
+    private static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
         return (int) resultStructure.values()
                 .stream()
                 .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
                 .count();
+    }
+
+    public static Iterable<BlockPos> betweenClosed(BoundingBox box) {
+        return BlockPos.betweenClosed(Math.min(box.minX(), box.maxX()),
+                Math.min(box.minY(), box.maxY()),
+                Math.min(box.minZ(), box.maxZ()),
+                Math.max(box.minX(), box.maxX()),
+                Math.max(box.minY(), box.maxY()),
+                Math.max(box.minZ(), box.maxZ()));
     }
 }

@@ -15,14 +15,15 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -30,7 +31,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,39 +40,36 @@ import java.util.function.BiPredicate;
 public class ExpandablePattern implements IBlockPattern {
 
     @FunctionalInterface
-    public interface BoundsFunction {
+    public interface BoundsProvider {
 
-        List<Integer> apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
+        @Nullable IntList apply(Level level, BlockPos.MutableBlockPos pos, Direction front, Direction upwards);
 
-        public static final BoundsFunction EMPTY = (l, p, f, u) -> {
-            return List.of(0, 0, 0, 0, 0, 0);
-        };
+        BoundsProvider EMPTY = (l, p, f, u) -> new IntArrayList(new int[] { 0, 0, 0, 0, 0, 0 });
     }
 
     @FunctionalInterface
-    public interface BoundsConstraintFunction {
+    public interface BoundsConstraintProvider {
 
-        List<Pair<Integer, Integer>> apply();
+        List<IntIntPair> apply();
     }
 
-    protected final BoundsFunction boundsFunc;
+    protected final BoundsProvider boundsProvider;
     @Getter
     @Setter
-    @Nullable
-    protected BoundsConstraintFunction boundsConstraints = null;
+    protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
+    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
     @Getter
     protected final RelativeDirection[] directions;
 
-    public ExpandablePattern(BoundsFunction boundsFunc,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc,
+    public ExpandablePattern(BoundsProvider boundsProvider,
+                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider,
                              RelativeDirection[] directions) {
-        this.boundsFunc = boundsFunc;
-        this.predicateFunc = predicateFunc;
+        this.boundsProvider = boundsProvider;
+        this.predicateProvider = predicateProvider;
         this.directions = directions;
     }
 
@@ -135,7 +132,7 @@ public class ExpandablePattern implements IBlockPattern {
     public boolean checkPatternAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                   Direction upwardsFacing,
                                   boolean isFlipped) {
-        List<Integer> bounds = boundsFunc.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
+        List<Integer> bounds = boundsProvider.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
         if (bounds.isEmpty()) return false;
 
         patternState.globalCount.clear();
@@ -162,7 +159,7 @@ public class ExpandablePattern implements IBlockPattern {
             }
         }
 
-        patternState.cbi.setLevel(level);
+        patternState.currentBlockInfo.setLevel(level);
 
         BlockPos.MutableBlockPos translation = centerPos.mutable();
 
@@ -170,7 +167,7 @@ public class ExpandablePattern implements IBlockPattern {
         // aisle count, y is str count, and z is char count.
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            PatternPredicate pred = predicateFunc.apply(mPos, bounds);
+            PatternPredicate pred = predicateProvider.apply(mPos, bounds);
 
             // int[] arr = pos.getAll();
             // this basically reshuffles the coordinates into absolute form from relative form
@@ -178,16 +175,16 @@ public class ExpandablePattern implements IBlockPattern {
                     pos.getZ());
             // translate from the origin to the center
             mPos = mPos.offset(translation).mutable();
-            patternState.cbi.setCurrentPos(mPos);
+            patternState.currentBlockInfo.setCurrentPos(mPos);
 
             if (!pred.equals(PatternPredicate.ANY)) {
-                var bstate = patternState.cbi.retrieveCurrentBlockState();
-                BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
+                var bstate = patternState.currentBlockInfo.retrieveCurrentBlockState();
+                BlockEntity be = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
                 patternState.cache.put(mPos.asLong(), new BlockInfo(bstate, be));
                 // patternState.posCache.add(mPos.immutable());
             }
 
-            List<PatternError> res = pred.test(patternState.cbi, patternState.globalCount, null);
+            List<PatternError> res = pred.test(patternState.currentBlockInfo, patternState.globalCount, null);
             if (!res.isEmpty()) {
                 patternState.setErrors(res);
                 return false;
@@ -212,11 +209,11 @@ public class ExpandablePattern implements IBlockPattern {
         Direction front = src.getFrontFacing();
         Direction up = src.getUpwardsFacing();
 
-        List<Integer> bounds = boundsFunc.apply(src.getLevel(), src.getBlockPos().mutable(), front, up);
+        IntList bounds = boundsProvider.apply(src.getLevel(), src.getBlockPos().mutable(), front, up);
         if (tag.isEmpty()) {
-            bounds = new ArrayList<>();
+            bounds = new IntArrayList();
         }
-        if (bounds == null) return Long2ObjectSortedMaps.emptyMap();
+        if (bounds == null || bounds.isEmpty()) return Long2ObjectSortedMaps.emptyMap();
 
         Long2ObjectSortedMap<PatternPredicate> predicates = new Long2ObjectRBTreeMap<>();
 
@@ -231,14 +228,14 @@ public class ExpandablePattern implements IBlockPattern {
             absolutes[i] = selected.getRelativeFacing(front, up, false);
 
             if (i == 0) {
-                negCorner.setX(-bounds.get(selected.oppositeOrdinal()));
-                posCorner.setX(bounds.get(selected.ordinal()));
+                negCorner.setX(-bounds.getInt(selected.oppositeOrdinal()));
+                posCorner.setX(bounds.getInt(selected.ordinal()));
             } else if (i == 1) {
-                negCorner.setY(-bounds.get(selected.oppositeOrdinal()));
-                posCorner.setY(bounds.get(selected.ordinal()));
+                negCorner.setY(-bounds.getInt(selected.oppositeOrdinal()));
+                posCorner.setY(bounds.getInt(selected.ordinal()));
             } else {
-                negCorner.setZ(-bounds.get(selected.oppositeOrdinal()));
-                posCorner.setZ(bounds.get(selected.ordinal()));
+                negCorner.setZ(-bounds.getInt(selected.oppositeOrdinal()));
+                posCorner.setZ(bounds.getInt(selected.ordinal()));
             }
         }
 
@@ -247,7 +244,7 @@ public class ExpandablePattern implements IBlockPattern {
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             BlockPos.MutableBlockPos adjustPos = pos.mutable();
-            PatternPredicate pred = predicateFunc.apply(mPos, bounds);
+            PatternPredicate pred = predicateProvider.apply(mPos, bounds);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO)
@@ -264,7 +261,7 @@ public class ExpandablePattern implements IBlockPattern {
     }
 
     @Override
-    public void autobuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    public void autoBuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, new CompoundTag());
 
@@ -282,7 +279,7 @@ public class ExpandablePattern implements IBlockPattern {
                 return true;
             }
 
-            var removed = IBlockPattern.tryRemoveItem(context.getPlayer(), info.getItemStackForm());
+            ItemStack removed = IBlockPattern.tryRemoveItem(context.getPlayer(), info.getItemStackForm());
             if (removed.isEmpty()) return false;
 
             level.setBlockAndUpdate(p, info.getBlockState());
@@ -312,71 +309,61 @@ public class ExpandablePattern implements IBlockPattern {
         };
 
         for (var entry : predicates.long2ObjectEntrySet()) {
-            var pred = entry.getValue();
-            if (pred == null) continue;
-            if (predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
+            PatternPredicate predicate = entry.getValue();
+            if (predicate == null) continue;
+            if (predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;
 
-            int pointer = predicateIndex.getInt(pred);
-            BasePredicate simplePred = pred.predicateList.get(pointer);
-            int count = globalCache.getInt(simplePred);
+            int pointer = predicateIndex.getInt(predicate);
+            BasePredicate simplePredicate = predicate.subPredicates.get(pointer);
+            int count = globalCache.getInt(simplePredicate);
 
             try {
-                while ((simplePred.previewCount == -1 || count == simplePred.previewCount) &&
-                        (simplePred.minCount == -1 || count == simplePred.minCount)) {
+                while ((simplePredicate.previewCount == -1 || count == simplePredicate.previewCount) &&
+                        (simplePredicate.minCount == -1 || count == simplePredicate.minCount)) {
                     pointer++;
-                    simplePred = pred.predicateList.get(pointer);
-                    count = globalCache.getInt(simplePred);
+                    simplePredicate = predicate.subPredicates.get(pointer);
+                    count = globalCache.getInt(simplePredicate);
                 }
-                predicateIndex.put(pred, pointer);
+                predicateIndex.put(predicate, pointer);
             } catch (IndexOutOfBoundsException e) {
                 continue;
             }
 
-            globalCache.mergeInt(simplePred, 1, Integer::sum);
-            if (simplePred.candidates == null) continue;
+            globalCache.mergeInt(simplePredicate, 1, Integer::sum);
+            if (simplePredicate.candidates.isEmpty()) continue;
 
-            var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.get(0));
+            cache.computeIfAbsent(simplePredicate, pred -> pred.candidates.get(0));
 
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
+            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePredicate))) {
+                return;
+            }
             entry.setValue(null);
         }
         predicateIndex.clear();
 
         for (var entry : predicates.long2ObjectEntrySet()) {
-            var pred = entry.getValue();
-            if (pred == null || predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
+            PatternPredicate predicate = entry.getValue();
+            if (predicate == null || predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;
 
-            BasePredicate simplePred = pred.predicateList.get(predicateIndex.getInt(pred));
-            int count = globalCache.getInt(simplePred);
+            BasePredicate simplePredicate = predicate.subPredicates.get(predicateIndex.getInt(predicate));
+            int count = globalCache.getInt(simplePredicate);
 
-            while (count == simplePred.previewCount || count == simplePred.maxCount) {
-                int newIdx = predicateIndex.mergeInt(pred, 1, Integer::sum);
-                if (newIdx >= pred.predicateList.size()) {
+            while (count == simplePredicate.previewCount || count == simplePredicate.maxCount) {
+                int newIdx = predicateIndex.mergeInt(predicate, 1, Integer::sum);
+                if (newIdx >= predicate.subPredicates.size()) {
                     GTCEu.LOGGER.warn("failed to generate default structure pattern");
                     return;
                 }
-                simplePred = pred.predicateList.get(newIdx);
-                count = globalCache.getInt(simplePred);
+                simplePredicate = predicate.subPredicates.get(newIdx);
+                count = globalCache.getInt(simplePredicate);
             }
-            globalCache.mergeInt(simplePred, 1, Integer::sum);
-            if (simplePred.candidates == null) continue;
-            var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.get(0));
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
-        }
-    }
+            globalCache.mergeInt(simplePredicate, 1, Integer::sum);
+            if (simplePredicate.candidates.isEmpty()) continue;
 
-    private static ItemStack tryRemoveItem(Player player, ItemStack stack) {
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (player.isCreative()) return stack.copy();
-
-        for (var item : player.getInventory().items) {
-            if (stack.is(stack.getItem()) && stack.getCount() <= item.getCount()) {
-                item.setCount(item.getCount() - stack.getCount());
-                return item.copy();
+            cache.computeIfAbsent(simplePredicate, pred -> pred.candidates.get(0));
+            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePredicate))) {
+                return;
             }
         }
-        return ItemStack.EMPTY;
     }
 }

@@ -7,8 +7,10 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -20,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -53,6 +54,7 @@ public class BasePredicate {
     public BasePredicate() {
         this.debugName = "Unknown";
         this.errorPredicate = $ -> null;
+        this.candidates = Collections.emptyList();
     }
 
     /**
@@ -61,9 +63,9 @@ public class BasePredicate {
      *                       either the
      *                       {@link TerminalBehavior#use(Item, Level, Player, InteractionHand)
      *                       Terminal Auto-Builder},
-     *                       {@link com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer#tick(PoseStack, MultiBufferSource.BufferSource, Camera)
+     *                       {@link PatternPreviewRenderer#tick(PoseStack, MultiBufferSource.BufferSource, Camera)
      *                       In-world Preview} or
-     *                       {@link com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition)
+     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition)
      *                       XEI Preview}
      */
     public BasePredicate(Function<CurrentBlockInfo, PatternError> errorPredicate,
@@ -71,7 +73,7 @@ public class BasePredicate {
         this("Unknown", errorPredicate, candidates);
     }
 
-    public BasePredicate(String debugName, Function<CurrentBlockInfo, PatternError> errorPredicate,
+    public BasePredicate(String debugName, Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
                          @Nullable List<BlockInfo> candidates) {
         this.debugName = debugName;
         this.errorPredicate = errorPredicate;
@@ -152,39 +154,43 @@ public class BasePredicate {
      * }
      */
 
-    public @Nullable PatternError testGlobal(CurrentBlockInfo currBlock,
+    public @Nullable PatternError testGlobal(CurrentBlockInfo currentBlock,
                                              Object2IntMap<BasePredicate> globalCache,
                                              @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError res = errorPredicate.apply(currBlock);
-        // if (!globalCache.containsKey(this)) globalCache.put(this, 0);
-        globalCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || res != null || layerCache == null) return res;
+        PatternError error = errorPredicate.apply(currentBlock);
+        globalCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
+        if ((minCount == -1 && maxCount == -1) || error != null || layerCache == null) return error;
+
         int count = globalCache.getInt(this);
-        // int count = layerCache.put(this, layerCache.getInt(this) + 1) + 1 + globalCache.getInt(this);
         if (maxCount == -1 || count <= maxCount) return null;
+
         return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_COUNT, count);
     }
 
     public @Nullable PatternError testLayer(CurrentBlockInfo currBlock,
                                             @Nullable Object2IntMap<BasePredicate> layerCache) {
-        PatternError res = errorPredicate.apply(currBlock);
-        if (layerCache == null) return res;
-        layerCache.mergeInt(this, (res == null ? 1 : 0), Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1) || res != null) return res;
-        if (maxSliceCount == -1 || layerCache.getInt(this) <= maxSliceCount) return null;
-        return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
+        PatternError error = errorPredicate.apply(currBlock);
+        if (layerCache == null) return error;
+
+        layerCache.mergeInt(this, (error == null ? 1 : 0), Integer::sum);
+        if ((minSliceCount == -1 && maxSliceCount == -1) || error != null) return error;
+
+        if (maxSliceCount != -1 && layerCache.getInt(this) > maxSliceCount) {
+            return new SinglePredicateError(this, SinglePredicateError.ErrorType.MAX_LAYER_COUNT, layerCache.getInt(this));
+        }
+
+        return null;
     }
 
     public List<ItemStack> getCandidateStacks() {
         if (GTCEu.isClientSide()) {
             return this.candidates.stream()
-                    .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                    .map(blockInfo -> blockInfo.getItemStackForm(
-                            Objects.requireNonNull(Minecraft.getInstance().level), BlockPos.ZERO))
+                    .filter(info -> !info.getBlockState().isAir())
+                    .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
                     .collect(Collectors.toList());
         }
         return this.candidates.stream()
-                .filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                .filter(info -> !info.getBlockState().isAir())
                 .map(BlockInfo::getItemStackForm)
                 .collect(Collectors.toList());
     }

@@ -5,17 +5,23 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
 
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+@Accessors(fluent = true, chain = true)
 public class ExpandableMultiblockPatternBuilder {
 
-    protected @Nullable ExpandablePattern.BoundsFunction boundsFunc;
-    protected @Nullable ExpandablePattern.BoundsConstraintFunction constraintFunc;
-    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateFunc;
+    @Setter
+    protected @Nullable ExpandablePattern.BoundsProvider boundsProvider;
+    @Setter
+    protected @Nullable ExpandablePattern.BoundsConstraintProvider constraintProvider;
+    @Setter
+    protected @Nullable BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> predicateProvider;
     protected final RelativeDirection[] directions = new RelativeDirection[3];
 
     private ExpandableMultiblockPatternBuilder(RelativeDirection aisleDir, RelativeDirection stringDir,
@@ -36,27 +42,12 @@ public class ExpandableMultiblockPatternBuilder {
                 RelativeDirection.RIGHT);
     }
 
-    public ExpandableMultiblockPatternBuilder boundsFunction(ExpandablePattern.BoundsFunction boundsFunc) {
-        this.boundsFunc = boundsFunc;
-        return this;
-    }
-
-    public ExpandableMultiblockPatternBuilder predicateFunction(BiFunction<BlockPos.MutableBlockPos, List<Integer>, PatternPredicate> func) {
-        this.predicateFunc = func;
-        return this;
-    }
-
-    public ExpandableMultiblockPatternBuilder constraintFunc(ExpandablePattern.BoundsConstraintFunction func) {
-        this.constraintFunc = func;
-        return this;
-    }
-
     public ExpandablePattern build() {
-        Objects.requireNonNull(boundsFunc, "Bound function is null, use .boundsFunction(...) on the builder");
-        Objects.requireNonNull(predicateFunc, "Predicate function is null, use .predicateFunction(...) on the builder");
-        ExpandablePattern pattern = new ExpandablePattern(boundsFunc, predicateFunc, directions);
-        if (constraintFunc != null) {
-            pattern.setBoundsConstraints(constraintFunc);
+        Objects.requireNonNull(boundsProvider, "Bound function is null");
+        Objects.requireNonNull(predicateProvider, "Predicate function is null");
+        ExpandablePattern pattern = new ExpandablePattern(boundsProvider, predicateProvider, directions);
+        if (constraintProvider != null) {
+            pattern.setBoundsConstraints(constraintProvider);
         }
         return pattern;
     }

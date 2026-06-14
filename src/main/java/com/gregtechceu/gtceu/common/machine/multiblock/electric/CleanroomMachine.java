@@ -66,7 +66,8 @@ import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
-import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -265,10 +266,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     /**
      * Scans for blocks around the controller to update the dimensions
      */
-    public static ExpandablePattern.BoundsFunction boundsFunction() {
+    public static ExpandablePattern.BoundsProvider boundsFunction() {
         return (level, controllerPos, frontFacing, upFacing) -> {
-            if (level == null)
-                return ExpandablePattern.BoundsFunction.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
+            if (level == null) {
+                return ExpandablePattern.BoundsProvider.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
+            }
             Direction front = frontFacing;
             Direction back = frontFacing.getOpposite();
             Direction left = frontFacing.getCounterClockWise();
@@ -281,10 +283,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             int d = findFloorPos(level, upFacing.getOpposite(), controllerPos.mutable());
 
             if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-                return new ArrayList<>(List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+                return new IntArrayList(new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
             }
 
-            return new ArrayList<>(List.of(0, d, l, r, f, b));
+            return new IntArrayList(new int[] { 0, d, l, r, f, b });
         };
 
         /*
@@ -389,11 +391,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
-                    .boundsFunction(boundsFunction())
-                    .constraintFunc(() -> List.of(Pair.of(0, 0), Pair.of(MIN_DEPTH, MAX_DEPTH),
-                            Pair.of(MIN_RADIUS, MAX_RADIUS), Pair.of(MIN_RADIUS, MAX_RADIUS),
-                            Pair.of(MIN_RADIUS, MAX_RADIUS), Pair.of(MIN_RADIUS, MAX_RADIUS)))
-                    .predicateFunction((bp, b) -> {
+                    .boundsProvider(boundsFunction())
+                    .constraintProvider(() -> List.of(IntIntPair.of(0, 0), IntIntPair.of(MIN_DEPTH, MAX_DEPTH),
+                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS),
+                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
+                    .predicateProvider((bp, b) -> {
                         if (bp.equals(BlockPos.ZERO))
                             return Predicates.controller(Predicates.blocks(definition.getBlock()));
 

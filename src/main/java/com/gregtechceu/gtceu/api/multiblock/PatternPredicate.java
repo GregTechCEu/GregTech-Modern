@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -21,11 +20,11 @@ public class PatternPredicate {
 
     public static PatternPredicate ANY = new PatternPredicate("Any", currentBlockInfo -> null, null);
     public static PatternPredicate AIR = new PatternPredicate("Air",
-            currentBlockInfo -> currentBlockInfo.getBlockState().isAir() ? null :
+            currentBlockInfo -> currentBlockInfo.retrieveCurrentBlockState().isAir() ? null :
                     new SimplePatternError(currentBlockInfo.getBlockPos(), Collections.emptyList()),
             Collections.singletonList(BlockInfo.EMPTY));
     private static final Comparator<BasePredicate> predicateComparator = Comparator.comparingInt(p -> p.priority);
-    public List<BasePredicate> predicateList = new ArrayList<>();
+    public List<BasePredicate> subPredicates = new ArrayList<>();
     @Getter
     protected boolean isController;
     protected boolean hasAir = false;
@@ -35,7 +34,7 @@ public class PatternPredicate {
     public PatternPredicate() {}
 
     public PatternPredicate(PatternPredicate predicate) {
-        predicateList.addAll(predicate.predicateList);
+        subPredicates.addAll(predicate.subPredicates);
         isController = predicate.isController;
         hasAir = predicate.hasAir;
         isSingle = predicate.isSingle;
@@ -48,7 +47,7 @@ public class PatternPredicate {
      */
     public PatternPredicate(String debugName, Function<CurrentBlockInfo, @Nullable PatternError> predicate,
                             @Nullable List<BlockInfo> candidates) {
-        predicateList.add(new BasePredicate(debugName, predicate, candidates));
+        subPredicates.add(new BasePredicate(debugName, predicate, candidates));
     }
 
     /**
@@ -66,7 +65,7 @@ public class PatternPredicate {
     }
 
     public PatternPredicate(BasePredicate basePredicate) {
-        predicateList.add(basePredicate);
+        subPredicates.add(basePredicate);
     }
 
     /**
@@ -87,7 +86,7 @@ public class PatternPredicate {
     public PatternPredicate addTooltips(Component... tips) {
         if (tips.length > 0) {
             List<Component> tooltips = Arrays.stream(tips).toList();
-            predicateList.forEach(predicate -> {
+            subPredicates.forEach(predicate -> {
                 if (predicate.tooltips == null) {
                     predicate.tooltips = new ArrayList<>();
                 }
@@ -98,7 +97,7 @@ public class PatternPredicate {
     }
 
     public List<List<BlockInfo>> getCandidates() {
-        return predicateList.stream()
+        return subPredicates.stream()
                 .map(BasePredicate::getCandidates)
                 .collect(Collectors.toList());
     }
@@ -107,7 +106,7 @@ public class PatternPredicate {
      * Set the minimum number of candidate blocks.
      */
     public PatternPredicate setMinGlobalLimited(int min) {
-        predicateList.forEach(p -> p.minCount = min);
+        subPredicates.forEach(p -> p.minCount = min);
         return this;
     }
 
@@ -119,7 +118,7 @@ public class PatternPredicate {
      * Set the maximum number of candidate blocks.
      */
     public PatternPredicate setMaxGlobalLimited(int max) {
-        predicateList.forEach(p -> p.maxCount = max);
+        subPredicates.forEach(p -> p.maxCount = max);
         return this;
     }
 
@@ -131,7 +130,7 @@ public class PatternPredicate {
      * Set the minimum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMinLayerLimited(int min) {
-        predicateList.forEach(p -> p.minSliceCount = min);
+        subPredicates.forEach(p -> p.minSliceCount = min);
         return this;
     }
 
@@ -143,7 +142,7 @@ public class PatternPredicate {
      * Set the maximum number of candidate blocks for each slice layer.
      */
     public PatternPredicate setMaxLayerLimited(int max) {
-        predicateList.forEach(p -> p.maxSliceCount = max);
+        subPredicates.forEach(p -> p.maxSliceCount = max);
         return this;
     }
 
@@ -164,12 +163,12 @@ public class PatternPredicate {
      * Set the number of it appears in JEI pages. It only affects JEI preview. (The specific number)
      */
     public PatternPredicate setPreviewCount(int count) {
-        predicateList.forEach(p -> p.previewCount = count);
+        subPredicates.forEach(p -> p.previewCount = count);
         return this;
     }
 
     public PatternPredicate setPriority(int priority) {
-        predicateList.forEach(p -> p.priority = priority);
+        subPredicates.forEach(p -> p.priority = priority);
         return this;
     }
 
@@ -177,19 +176,19 @@ public class PatternPredicate {
      * Set renderMask.
      */
     public PatternPredicate disableRenderFormed() {
-        predicateList.forEach(p -> p.disableRenderFormed = true);
+        subPredicates.forEach(p -> p.disableRenderFormed = true);
         return this;
     }
 
     public PatternPredicate setNBTParser(String nbtParser) {
-        predicateList.forEach(predicate -> predicate.nbtParser = nbtParser);
+        subPredicates.forEach(p -> p.nbtParser = nbtParser);
         return this;
     }
 
-    public @NotNull List<PatternError> test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
-                                            @Nullable Object2IntMap<BasePredicate> layerCache) {
+    public List<PatternError> test(CurrentBlockInfo currBlock, Object2IntMap<BasePredicate> globalCache,
+                                   @Nullable Object2IntMap<BasePredicate> layerCache) {
         List<PatternError> lastErrors = new ArrayList<>();
-        for (BasePredicate p : predicateList) {
+        for (BasePredicate p : subPredicates) {
             PatternError error = p.testLimited(currBlock, globalCache, layerCache);
             if (error == null) return List.of();
             lastErrors.add(error);
@@ -201,8 +200,8 @@ public class PatternPredicate {
         if (other != null) {
             PatternPredicate newPredicate = new PatternPredicate(this);
             newPredicate.hasAir = newPredicate.hasAir || this == AIR || other == AIR;
-            newPredicate.predicateList.addAll(other.predicateList);
-            newPredicate.predicateList.sort(predicateComparator);
+            newPredicate.subPredicates.addAll(other.subPredicates);
+            newPredicate.subPredicates.sort(predicateComparator);
             return newPredicate;
         }
         return this;
@@ -215,6 +214,6 @@ public class PatternPredicate {
 
         return this.hasAir == pred.hasAir &&
                 this.isController == pred.isController &&
-                this.predicateList.equals(pred.predicateList);
+                this.subPredicates.equals(pred.subPredicates);
     }
 }

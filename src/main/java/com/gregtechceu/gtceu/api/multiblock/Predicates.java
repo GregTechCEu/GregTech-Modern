@@ -120,7 +120,7 @@ public class Predicates {
 
         PatternPredicate predicate = new PatternPredicate();
         for (var ability : abilities) {
-            predicate.predicateList.add(new PredicatePartAbility(debugName, ability));
+            predicate.subPredicates.add(new PredicatePartAbility(debugName, ability));
         }
         return predicate;
     }
@@ -273,7 +273,7 @@ public class Predicates {
             return Predicates.PLACEHOLDER;
         }, GTCEuAPI.PSS_BATTERIES.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                .map(e -> new BlockInfo(e.getValue().get().defaultBlockState(), null))
+                .map(e -> new BlockInfo(e.getValue().get().defaultBlockState()))
                 .toList())
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
 
