@@ -2,28 +2,30 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.common.item.behavior.TerminalBehavior;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,11 +58,10 @@ public class BasePredicate {
     /**
      * @param errorPredicate The predicate function for being a valid block state or tile entity in a pattern
      * @param candidates     The qualifying blocks or item stacks valid in this predicate based on information from
-     *                       either
-     *                       the
-     *                       {@link com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern#autobuild(Object2ObjectMap, MultiblockControllerMachine, CompoundTag, UseOnContext)
+     *                       either the
+     *                       {@link TerminalBehavior#use(Item, Level, Player, InteractionHand)
      *                       Terminal Auto-Builder},
-     *                       {@link com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer#renderInWorldPreview(PoseStack, Camera, float)
+     *                       {@link com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer#tick(PoseStack, MultiBufferSource.BufferSource, Camera)
      *                       In-world Preview} or
      *                       {@link com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget#getPatternWidget(MultiblockMachineDefinition)
      *                       XEI Preview}

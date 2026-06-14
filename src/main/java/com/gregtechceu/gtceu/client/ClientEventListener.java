@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
-import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
@@ -67,7 +66,6 @@ public class ClientEventListener {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             // to render the preview after block entities, before the translucent.
             // so it can be seen through the transparent blocks.
-            MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
             AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
             PatternPreviewRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
         }
@@ -153,7 +151,6 @@ public class ClientEventListener {
     public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             TooltipHelper.onClientTick();
-            MultiblockInWorldPreviewRenderer.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
             GTValues.CLIENT_TIME++;
         }
