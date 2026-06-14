@@ -98,6 +98,7 @@ public class GTMultiblockTextUtil {
                                         .build());
                                 return true;
                             })
+                            .setEnabledIf(w -> pos != null)
                             .tooltip(r -> r.add("Highlight the missing predicate in world")));
 
                     for (var error : listSyncHandler.getValue()) {

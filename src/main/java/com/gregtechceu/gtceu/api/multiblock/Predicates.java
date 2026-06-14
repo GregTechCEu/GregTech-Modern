@@ -306,6 +306,7 @@ public class Predicates {
     public static @Nullable PatternPredicate dataHatchPredicate() {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
+            // TODO xor predicate matching :)
             return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
                     .setExactLimit(1)
                     .setPriority(1);
