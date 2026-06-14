@@ -64,8 +64,8 @@ public class ClientEventListener {
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            // to render the preview after block entities, before the translucent.
-            // so it can be seen through the transparent blocks.
+            // render the preview after block entities but before translucent blocks so it can be seen through
+            // transparent blocks.
             AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
             PatternPreviewRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
         }

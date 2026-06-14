@@ -27,34 +27,36 @@ public class PatternPreviewRenderer {
     private BlockAndTintGetter level = Minecraft.getInstance().level;
     private BlockPos controllerPos = BlockPos.ZERO;
     public Map<BlockPos, BlockInfo> blocks = new HashMap<>();
-    private long durationMillis = 0;
+    private long timeoutMillis = 0;
     private long startTime = 0;
 
     public void tick(PoseStack pose, MultiBufferSource.BufferSource bufferSource, Camera camera) {
-        if (GameRenderer.getPositionColorShader() == null || !camera.isInitialized()) return;
-        if (level == null) return;
-        if (System.currentTimeMillis() > this.startTime + this.durationMillis) return;
-        if (blocks.isEmpty()) return;
+        if (!camera.isInitialized()) return;
+        if (System.currentTimeMillis() - this.startTime >= this.timeoutMillis) return;
+        if (this.blocks.isEmpty()) return;
 
-        Vec3 offset = camera.getPosition().reverse();
+        Vec3 camPos = camera.getPosition();
 
         RenderSystem.disableDepthTest();
         RenderSystem.disableCull();
 
         pose.pushPose();
-        pose.translate(offset.x + controllerPos.getX(), offset.y + controllerPos.getY(),
-                offset.z + controllerPos.getZ());
+        pose.translate(-camPos.x, -camPos.y, -camPos.z);
+        pose.translate(controllerPos.getX(), controllerPos.getY(), controllerPos.getZ());
 
         // TODO instancing of some sort cause this kills fps :wilted_rose:
         for (var entry : blocks.entrySet()) {
-            var realState = level.getBlockState(controllerPos.mutable().move(entry.getKey()));
-            if (entry.getValue().getBlockState().is(realState.getBlock())) continue;
+            BlockPos pos = entry.getKey();
+            BlockState realState = level.getBlockState(controllerPos.mutable().move(pos));
+            BlockState drawnState = entry.getValue().getBlockState();
+            if (drawnState.is(realState.getBlock())) continue;
+
             pose.pushPose();
-            pose.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
-            // to make the block smaller/non-full
+            pose.translate(pos.getX(), pos.getY(), pos.getZ());
+            // make the block smaller
             pose.scale(0.8f, 0.8f, 0.8f);
             pose.translate(0.1f, 0.1f, 0.1f);
-            RenderUtil.drawBlock(level, BlockPos.ZERO, entry.getValue().getBlockState(), bufferSource, pose);
+            RenderUtil.drawBlock(level, pos, drawnState, bufferSource, pose);
             pose.popPose();
         }
 
@@ -65,10 +67,10 @@ public class PatternPreviewRenderer {
         RenderSystem.enableDepthTest();
     }
 
-    public void setPreview(BlockPos controllerPos, Map<BlockPos, BlockInfo> blocks, long durationMillis) {
+    public void setPreview(BlockPos controllerPos, Map<BlockPos, BlockInfo> blocks, long timeoutMillis) {
         this.controllerPos = controllerPos;
         this.blocks = blocks;
         this.startTime = System.currentTimeMillis();
-        this.durationMillis = durationMillis;
+        this.timeoutMillis = timeoutMillis;
     }
 }

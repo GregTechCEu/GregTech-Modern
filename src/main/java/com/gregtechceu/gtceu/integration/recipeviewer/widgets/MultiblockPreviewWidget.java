@@ -33,7 +33,6 @@ import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.DoubleValue;
 import brachy.modularui.value.IntValue;
 import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
@@ -326,9 +325,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .childSeparator(Icon.EMPTY_2PX)
                             .children(predicate.subPredicates, basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.candidates;
-                                if (candidates == null || candidates.isEmpty())
+                                if (candidates.isEmpty()) {
                                     return new EmptyWidget();
-                                if (candidates.size() > 1) {
+                                } else if (candidates.size() > 1) {
                                     return createInnerPredicateMenu(predicate, basePredicate, candidates);
                                 } else {
                                     return new ToggleButton()
@@ -430,10 +429,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             schemaMap.put(entry.getKey().asLong(), state);
             blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
-        if (mapSchema == null) {
-            mapSchema = new MutableSchema(schemaMap);
+        if (this.mapSchema == null) {
+            this.mapSchema = new MutableSchema(schemaMap);
         } else {
-            mapSchema.setBlocks(schemaMap);
+            this.mapSchema.setBlocks(schemaMap);
         }
         structureBlocks.clear();
         structureBlocks.putAll(resultStructure);
@@ -496,32 +495,31 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private void createSliceSliders(Flow col, BlockPattern blockPattern) {
         int repeatSliceIndex = 0;
         for (var patternSlice : blockPattern.getSlices()) {
-            if (patternSlice.getMinRepeats() != 1 || patternSlice.getMaxRepeats() != 1) {
-                if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
-                    userSliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
-                }
-                if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
-
-                } else {
-                    int finalRepeatSliceIndex = repeatSliceIndex;
-                    col.child(new SliderWidget()
-                            .background(GTGuiTextures.FLUID_SLOT)
-                            .height(16)
-                            .width(patternSlice.getMaxRepeats() * 12)
-                            .stopper(1.0f)
-                            .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                            .value(new DoubleValue.Dynamic(() -> {
-                                if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
-                                return userSliceRepeats.get(finalRepeatSliceIndex);
-                            }, (v) -> {
-                                int oldVal = userSliceRepeats.getOrDefault(finalRepeatSliceIndex, 0);
-                                int newVal = (int) v;
-                                if (oldVal == newVal) return;
-                                userSliceRepeats.put(finalRepeatSliceIndex, newVal);
-                                refreshSchema();
-                                refreshViewWidget();
-                            })));
-                }
+            if (patternSlice.getMinRepeats() == 1 && patternSlice.getMaxRepeats() == 1) {
+                continue;
+            }
+            if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
+                userSliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
+            }
+            if (patternSlice.getMinRepeats() != patternSlice.getMaxRepeats()) {
+                final int index = repeatSliceIndex;
+                col.child(new SliderWidget()
+                        .background(GTGuiTextures.FLUID_SLOT)
+                        .height(16)
+                        .width(patternSlice.getMaxRepeats() * 12)
+                        .stopper(1.0f)
+                        .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
+                        .value(new IntValue.Dynamic(() -> {
+                            if (!userSliceRepeats.containsKey(index)) return 0;
+                            return userSliceRepeats.get(index);
+                        }, v -> {
+                            int oldVal = userSliceRepeats.getOrDefault(index, 0);
+                            int newVal = v;
+                            if (oldVal == newVal) return;
+                            userSliceRepeats.put(index, newVal);
+                            refreshSchema();
+                            refreshViewWidget();
+                        })));
             }
             repeatSliceIndex++;
         }
