@@ -63,11 +63,13 @@ public class ClientEventListener {
         float partialTick = event.getPartialTick();
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
+        // render the preview in every stage; it filters itself
+        PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, event.getStage(), partialTick);
+
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            // render the preview after block entities but before translucent blocks so it can be seen through
+            // render the highlight after block entities but before translucent blocks so it can be seen through
             // transparent blocks.
             AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
-            PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, partialTick);
         }
     }
 
@@ -152,6 +154,8 @@ public class ClientEventListener {
         if (event.phase == TickEvent.Phase.END) {
             TooltipHelper.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
+            PatternPreviewRenderer.INSTANCE.clientTick();
+
             GTValues.CLIENT_TIME++;
         }
     }

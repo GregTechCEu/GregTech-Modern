@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelpe
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -200,7 +201,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .onMousePressed((c, b) -> {
                             if (controllerPos != null && !structureBlocks.isEmpty()) {
                                 BlockPos origin = controllerPos.offset(mapSchema.getControllerPos().multiply(-1));
-                                PatternPreviewRenderer.INSTANCE.setPreview(origin, this.mapSchema, 20000);
+                                PatternPreviewRenderer.INSTANCE.showPreview(origin, this.mapSchema,
+                                        ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
                             return true;
                         }))
@@ -383,11 +385,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     /// ==== Schema setup ====
     private void refreshSchema() {
-        Map<BlockPos, BlockInfo> resultStructure;
-
-        resultStructure = new HashMap<>();
+        Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
         IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-        // maxSlices = pattern.getDimensions()[1];
+
         if (pattern instanceof BlockPattern blockPattern) {
             if (userSliceRepeats.isEmpty()) {
                 for (int i = 0; i < blockPattern.getSlices().length; i++) {
