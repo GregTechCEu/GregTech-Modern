@@ -21,7 +21,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.factory.ClientGUI;
 import brachy.modularui.factory.PlayerInventoryGuiData;
@@ -35,17 +34,15 @@ import java.util.*;
 
 public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
 
+    // FIXME these are global for all terminal items rn
     private MultiblockMachineDefinition multiblockDefinition = null;
-
-    // schema stuff
     private MutableSchema mapSchema;
-
-    private boolean isFlipped = false;
+    private BlockPos controllerPos;
     private Direction frontFacing;
     private Direction upFacing;
-    private BlockPos controllerPos;
+    private boolean isFlipped = false;
 
-    private Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
+    private Map<BlockPos, BlockInfo> structureBlocks = null;
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
@@ -63,43 +60,39 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (controller.getDefaultPatternState().isFormed()) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide) {
-            for (var entry : structureBlocks.entrySet()) {
-                BlockPos.MutableBlockPos mPos = entry.getKey().mutable();
-                mPos.move(controller.getBlockPos()).move(mapSchema.getControllerPos().multiply(-1));
-                level.setBlock(mPos, entry.getValue().getBlockState(), Block.UPDATE_ALL_IMMEDIATE);
-            }
+        if (this.structureBlocks == null || this.structureBlocks.isEmpty()) {
+            return InteractionResult.PASS;
+        }
+
+        BlockPos controllerOffset = controller.getBlockPos().offset(mapSchema.getControllerPos().multiply(-1));
+        for (var entry : structureBlocks.entrySet()) {
+            level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        if (context.getPlayer() == null) return InteractionResult.PASS;
         Player player = context.getPlayer();
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
 
-        if (!(MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller)) {
-            return InteractionResult.PASS;
-        }
         if (player == null || player.isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
-        if (!controller.getDefaultPatternState().isFormed() || true) {
-            if (!level.isClientSide) {
-                multiblockDefinition = controller.getDefinition();
-                controllerPos = controller.getBlockPos();
-                frontFacing = controller.getFrontFacing();
-                upFacing = controller.getUpwardsFacing();
-                isFlipped = controller.isFlipped();
-
-                player.displayClientMessage(Component.literal("Loaded up controller information"), false);
-            }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+        if (!(MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller)) {
+            return InteractionResult.PASS;
         }
+        this.multiblockDefinition = controller.getDefinition();
+        this.controllerPos = controller.getBlockPos();
+        this.frontFacing = controller.getFrontFacing();
+        this.upFacing = controller.getUpwardsFacing();
+        this.isFlipped = controller.isFlipped();
 
-        return InteractionResult.PASS;
+        if (level.isClientSide) {
+            player.displayClientMessage(Component.literal("Loaded controller information"), false);
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override
@@ -124,6 +117,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         MultiblockPreviewWidget previewWidget = new MultiblockPreviewWidget(this.multiblockDefinition);
         previewWidget.setControllerPos(this.controllerPos)
                 .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
+        previewWidget.setOnSchemaRefresh(() -> {
+            this.mapSchema = previewWidget.getMapSchema();
+            this.structureBlocks = previewWidget.getStructureBlocks();
+        });
 
         return ModularPanel.defaultPanel("multiblock_preview").child(previewWidget);
     }

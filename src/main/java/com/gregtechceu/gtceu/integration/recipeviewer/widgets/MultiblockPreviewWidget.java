@@ -52,8 +52,10 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -67,6 +69,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     // schema stuff
     private final SchemaWidget multiSchema;
+    @Getter
+    @ApiStatus.Internal
     private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
     private final SchemaRenderer renderer;
@@ -94,10 +98,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     private @Nullable BlockPatternStructureHelper structureHelper;
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
+
     private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
     private @Nullable IntList userDimensions = null;
 
+    @Getter
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
+
+    @Setter
+    private @Nullable Runnable onSchemaRefresh;
 
     public MultiblockPreviewWidget(MultiblockMachineDefinition definition) {
         this.multiblockDefinition = definition;
@@ -436,6 +445,10 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         }
         structureBlocks.clear();
         structureBlocks.putAll(resultStructure);
+
+        if (onSchemaRefresh != null) {
+            onSchemaRefresh.run();
+        }
     }
 
     private void refreshViewWidget() {
