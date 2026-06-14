@@ -10,8 +10,8 @@ dependencies {
     // Math Parser
     compileOnly(libs.evalEx.get())
 
-    // ModularUI
-    jarJar(modImplementation(forge.modularUI.get()))
+    // MUI
+    jarJar(modImplementation(forge.mui.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
