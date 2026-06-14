@@ -155,8 +155,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             this.userSliceRepeats = previewWidget.getUserSliceRepeats();
             this.userDimensions = previewWidget.getUserDimensions();
         });
+        previewWidget.refreshSchema();
 
         return ModularPanel.defaultPanel("terminal")
+                .coverChildren()
                 .child(previewWidget);
     }
 

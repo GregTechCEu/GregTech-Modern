@@ -394,7 +394,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     /// ==== Schema setup ====
-    private void refreshSchema() {
+    @ApiStatus.Internal
+    public void refreshSchema() {
         Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
         IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
 
@@ -518,6 +519,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         int repeatSliceIndex = 0;
         for (var patternSlice : blockPattern.getSlices()) {
             if (patternSlice.getMinRepeats() == 1 && patternSlice.getMaxRepeats() == 1) {
+                repeatSliceIndex++;
                 continue;
             }
             if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
