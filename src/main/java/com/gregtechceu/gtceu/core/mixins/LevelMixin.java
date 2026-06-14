@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.core.mixins;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
-import com.lowdragmc.lowdraglib.async.AsyncThreadData;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -39,7 +37,6 @@ public abstract class LevelMixin implements LevelAccessor {
     private void gtceu$getBlockEntityOffThread(BlockPos pos, CallbackInfoReturnable<BlockEntity> cir) {
         if (Thread.currentThread() == this.thread) return;
         if (this.isClientSide) return;
-        if (!AsyncThreadData.isThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;
@@ -54,7 +51,6 @@ public abstract class LevelMixin implements LevelAccessor {
     private void gtceu$getBlockStateOffThread(BlockPos pos, CallbackInfoReturnable<BlockState> cir) {
         if (Thread.currentThread() == this.thread) return;
         if (this.isClientSide) return;
-        if (!AsyncThreadData.isThreadService()) return;
 
         int chunkX = pos.getX() >> 4, chunkZ = pos.getZ() >> 4;
         if (!this.getChunkSource().hasChunk(chunkX, chunkZ)) return;

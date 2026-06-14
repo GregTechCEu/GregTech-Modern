@@ -49,8 +49,6 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -255,10 +253,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
             return subscription;
-        } else if (getLevel() instanceof DummyWorld) {
-            var subscription = new TickableSubscription(runnable);
-            waitingToAdd.add(subscription);
-            return subscription;
         }
         return null;
     }
@@ -275,21 +269,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         executeTick();
     }
 
-    public boolean isFirstDummyWorldTick = true;
-
     /**
      * Called every tick on the client side.
      */
     @OnlyIn(Dist.CLIENT)
-    public void clientTick() {
-        if (getLevel() instanceof DummyWorld) {
-            if (isFirstDummyWorldTick) {
-                isFirstDummyWorldTick = false;
-                onLoad();
-            }
-            executeTick();
-        }
-    }
+    public void clientTick() {}
 
     private void executeTick() {
         if (!waitingToAdd.isEmpty()) {
