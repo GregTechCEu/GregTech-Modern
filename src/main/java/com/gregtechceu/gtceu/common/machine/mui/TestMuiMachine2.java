@@ -43,7 +43,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.DoubleValue;
+import brachy.modularui.value.IntValue;
 import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -471,21 +471,20 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
 
                 } else {
-                    int finalRepeatSliceIndex = repeatSliceIndex;
+                    final int index = repeatSliceIndex;
                     col.child(new SliderWidget()
                             .background(GTGuiTextures.FLUID_SLOT)
                             .height(16)
                             .width(patternSlice.getMaxRepeats() * 12)
                             .stopper(1.0f)
                             .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                            .value(new DoubleValue.Dynamic(() -> {
-                                if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
-                                return userSliceRepeats.get(finalRepeatSliceIndex);
+                            .value(new IntValue.Dynamic(() -> {
+                                if (!userSliceRepeats.containsKey(index)) return 0;
+                                return userSliceRepeats.get(index);
                             }, (v) -> {
-                                int oldVal = userSliceRepeats.getOrDefault(finalRepeatSliceIndex, 0);
-                                int newVal = (int) v;
-                                if (oldVal == newVal) return;
-                                userSliceRepeats.put(finalRepeatSliceIndex, newVal);
+                                int oldVal = userSliceRepeats.getOrDefault(index, 0);
+                                if (oldVal == v) return;
+                                userSliceRepeats.put(index, v);
                                 refreshSchema();
                                 refreshViewWidget();
                             })));
@@ -554,8 +553,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
             PatternPredicate predicate = entry.getValue();
-            // todo figure out sliders needed for predicate min/max depending on base predicates in the
-            // main predicate
+            // todo figure out sliders needed for predicate min/max depending on base predicates in the main predicate
             if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
                 continue;
             }

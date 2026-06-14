@@ -100,7 +100,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
 
     private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
-    private @Nullable IntList userDimensions = null;
+    private IntList userDimensions = IntLists.emptyList();
 
     @Getter
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
@@ -412,7 +412,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                     multiblockDefinition.getBlock());
         } else if (pattern instanceof ExpandablePattern expandablePattern) {
-            if (userDimensions == null || userDimensions.isEmpty()) {
+            if (userDimensions.isEmpty()) {
                 userDimensions = expandablePattern.getBoundsConstraints().apply().stream()
                         .mapToInt(Pair::left)
                         .collect(IntArrayList::new, IntList::add, IntList::addAll);
@@ -494,9 +494,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .width(value.rightInt() * 12)
                         .stopper(1.0f)
                         .value(new IntValue.Dynamic(() -> userDimensions.getInt(index), v -> {
-                            int oldVal = userDimensions.getInt(index);
-                            int newVal = v;
-                            if (oldVal == newVal) return;
+                            int oldValue = userDimensions.getInt(index);
+                            if (oldValue == v) return;
                             userDimensions.set(index, v);
                             refreshSchema();
                             refreshViewWidget();
@@ -526,10 +525,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             if (!userSliceRepeats.containsKey(index)) return 0;
                             return userSliceRepeats.get(index);
                         }, v -> {
-                            int oldVal = userSliceRepeats.getOrDefault(index, 0);
-                            int newVal = v;
-                            if (oldVal == newVal) return;
-                            userSliceRepeats.put(index, newVal);
+                            int oldValue = userSliceRepeats.getOrDefault(index, 0);
+                            if (oldValue == v) return;
+                            userSliceRepeats.put(index, v);
                             refreshSchema();
                             refreshViewWidget();
                         })));
