@@ -63,7 +63,7 @@ public class BasePredicate {
      *                       Terminal Auto-Builder},
      *                       {@link com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer#tick(PoseStack, MultiBufferSource.BufferSource, Camera)
      *                       In-world Preview} or
-     *                       {@link com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget#getPatternWidget(MultiblockMachineDefinition)
+     *                       {@link com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition)
      *                       XEI Preview}
      */
     public BasePredicate(Function<CurrentBlockInfo, PatternError> errorPredicate,
