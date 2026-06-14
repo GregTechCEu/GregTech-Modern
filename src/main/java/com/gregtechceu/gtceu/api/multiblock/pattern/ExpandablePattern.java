@@ -341,6 +341,8 @@ public class ExpandablePattern implements IBlockPattern {
         }
         predicateIndex.clear();
 
+        // FIXME why is this loop duplicated twice?
+        //  also, why is this copy-pasted from BlockPattern?
         for (var entry : predicates.long2ObjectEntrySet()) {
             PatternPredicate predicate = entry.getValue();
             if (predicate == null || predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;

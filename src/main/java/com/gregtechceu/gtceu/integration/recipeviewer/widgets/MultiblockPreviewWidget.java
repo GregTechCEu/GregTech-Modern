@@ -93,9 +93,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private int yLevel = -1;
     private int maxHeight = 0;
 
-    private final BlockPatternStructureHelper structureHelper = new BlockPatternStructureHelper();
+    private @Nullable BlockPatternStructureHelper structureHelper;
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
-    private final ExpandablePatternStructureHelper expandableStructureHelper = new ExpandablePatternStructureHelper();
+    private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
     private @Nullable IntList userDimensions = null;
 
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
@@ -387,7 +387,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 }
             }
             // reinterpret slider values as slice repeats?
-            structureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
+            structureHelper = new BlockPatternStructureHelper(userBasePredicateBlockPreferences,
                     userBasePredicateMinMaxPreferences, userSliceRepeats);
             char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(blockPattern);
             char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
@@ -410,7 +410,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .collect(IntArrayList::new, IntList::add, IntList::addAll);
             }
             // reinterpret slider values as bounds?
-            expandableStructureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
+            expandableStructureHelper = new ExpandablePatternStructureHelper(userBasePredicateBlockPreferences,
                     userBasePredicateMinMaxPreferences, userDimensions);
 
             expandableStructureHelper.populateWithUserBlockPreferences(resultStructure, expandablePattern,

@@ -63,6 +63,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -93,10 +94,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
+    /// pair is Min, Max.
+    /// To disable a base predicate, set min to 0
     private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
-            .create(); // Min, Max.
-    private final BlockPatternStructureHelper structureHelper = new BlockPatternStructureHelper();
-    // ^ To disable a base predicate, set min to 0
+            .create();
+    private @Nullable BlockPatternStructureHelper structureHelper;
 
     /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
     /// INPUTS:
@@ -415,12 +417,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        structureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
+        structureHelper = new BlockPatternStructureHelper(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
         char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(pattern);
-        char[][][] adjustedCharPattern = structureHelper.rotateAndFlipPattern(flattenedCharPattern,
-                pattern.getDirections(),
-                frontFacing, upFacing, isFlipped);
+        char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
+                pattern.getDirections(), frontFacing, upFacing, isFlipped);
 
         structureHelper.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);

@@ -26,9 +26,17 @@ public class BlockPatternStructureHelper {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
-    private Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
-    private Int2IntMap sliceRepeats;
+    private final Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private final Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
+    private final Int2IntMap sliceRepeats;
+
+    public BlockPatternStructureHelper(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                         Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                                         Int2IntMap sliceRepeats) {
+        this.blockPreferences = blockPreferences;
+        this.minMaxPreferences = minMaxPreferences;
+        this.sliceRepeats = sliceRepeats;
+    }
 
     public PatternPredicate getPredicateFromPos(BlockPattern pattern, BlockPos pos, Direction frontFacing,
                                                 Direction upFacing,
@@ -44,14 +52,6 @@ public class BlockPatternStructureHelper {
         }
         char c = adjustedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
         return pattern.getPredicates().get(c);
-    }
-
-    public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                         Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                         Int2IntMap sliceRepeats) {
-        this.blockPreferences = blockPreferences;
-        this.minMaxPreferences = minMaxPreferences;
-        this.sliceRepeats = sliceRepeats;
     }
 
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,

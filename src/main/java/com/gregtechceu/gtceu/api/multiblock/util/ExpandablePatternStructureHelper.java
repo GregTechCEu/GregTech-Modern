@@ -23,9 +23,17 @@ import java.util.Map;
 // why is this class mostly just a copy-paste of BlockPatternStructureHelper?
 public class ExpandablePatternStructureHelper {
 
-    private Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
-    private List<Integer> userDimensions;
+    private final Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
+    private final Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
+    private final List<Integer> userDimensions;
+
+    public ExpandablePatternStructureHelper(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+                                            Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                                            List<Integer> userDimensions) {
+        this.blockPreferences = blockPreferences;
+        this.minMaxPreferences = minMaxPreferences;
+        this.userDimensions = userDimensions;
+    }
 
     // TODO use a record for this ffs
     public static Pair<BoundingBox, Direction[]> getCorners(List<Integer> bounds,
@@ -66,22 +74,14 @@ public class ExpandablePatternStructureHelper {
         return pattern.getPredicateProvider().apply(new BlockPos(relX, relY, relZ).mutable(), userDimensions);
     }
 
-    public void populatePreferenceTables(Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                         Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> minMaxPreferences,
-                                         List<Integer> userDimensions) {
-        this.blockPreferences = blockPreferences;
-        this.minMaxPreferences = minMaxPreferences;
-        this.userDimensions = userDimensions;
-    }
-
     public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, ExpandablePattern pattern,
                                                  Map<Long, BlockInfo> userBlockPreferences, Direction frontFacing,
                                                  Direction upFacing, boolean isFlipped) {
         var cornerData = getCorners(userDimensions, pattern, frontFacing, upFacing, isFlipped);
         BoundingBox corners = cornerData.left();
         Direction[] absolutes = cornerData.right();
-        // contains is min<=x<max, inflate to make sure all pos are inside
-        // kinda gross but it's the least invasive way I guess, maybe lookf or something better
+        // contains is min<=x<max, inflate to make sure all positions are inside
+        // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
         for (var entry : userBlockPreferences.entrySet()) {
             BlockPos pos = BlockPos.of(entry.getKey()); // absolute-space
@@ -117,8 +117,8 @@ public class ExpandablePatternStructureHelper {
             // mutablePos = mutablePos.move(translation);
             if (resultStructure.containsKey(mutablePos)) continue;
 
-            // Attempts to first place the predicate if the min(layer)count isn't satisfied, then the
-            // max(layer)count
+            // Attempts to first place the predicate if the min (layer) count isn't satisfied, then the
+            // max (layer) count
             if (tryMinCount(resultStructure, predicate, mutablePos)) continue;
             if (tryMaxCount(resultStructure, predicate, mutablePos)) continue;
             // If we arrive here, there's nothing we can place that doesn't overflow a max count!

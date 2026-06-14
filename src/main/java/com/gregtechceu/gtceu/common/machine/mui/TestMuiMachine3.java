@@ -87,7 +87,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
     private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
             .create(); // Min, Max.
     private final List<Integer> userDimensions = new ArrayList<>();
-    private ExpandablePatternStructureHelper structureHelper = new ExpandablePatternStructureHelper();
+    private @Nullable ExpandablePatternStructureHelper structureHelper;
 
     public TestMuiMachine3(BlockEntityCreationInfo info) {
         super(info);
@@ -210,9 +210,8 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         resultStructure = new HashMap<>();
         ExpandablePattern pattern = (ExpandablePattern) multiblockDefinition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
-        // maxSlices = userDimension.get(); CONTROLLER->TOP + CONTROLLER->BOTTOM + 1
 
-        structureHelper.populatePreferenceTables(userBasePredicateBlockPreferences,
+        structureHelper = new ExpandablePatternStructureHelper(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userDimensions);
         structureHelper.populateWithUserBlockPreferences(resultStructure, pattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
