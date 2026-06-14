@@ -20,7 +20,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.List;
 import java.util.Map;
 
-// why is this class mostly just a copy-paste of BlockPatternStructureHelper?
+// TODO make into a subclass of BlockPatternStructureHelper
 public class ExpandablePatternStructureHelper {
 
     private final Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;

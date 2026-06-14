@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
-import com.gregtechceu.gtceu.client.mui.schema.MultiblockSchema;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -229,7 +228,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
             blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
         if (mapSchema == null) {
-            mapSchema = new MultiblockSchema(schemaMap);
+            mapSchema = new MutableSchema(schemaMap);
         } else {
             mapSchema.setBlocks(schemaMap);
         }
