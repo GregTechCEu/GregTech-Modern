@@ -5,10 +5,10 @@ import com.gregtechceu.gtceu.client.util.RenderUtil;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -24,7 +24,6 @@ public class PatternPreviewRenderer {
 
     public static final PatternPreviewRenderer INSTANCE = new PatternPreviewRenderer();
 
-    private BlockAndTintGetter level = Minecraft.getInstance().level;
     private BlockPos controllerPos = BlockPos.ZERO;
     public Map<BlockPos, BlockInfo> blocks = new HashMap<>();
     private long timeoutMillis = 0;
@@ -35,6 +34,7 @@ public class PatternPreviewRenderer {
         if (System.currentTimeMillis() - this.startTime >= this.timeoutMillis) return;
         if (this.blocks.isEmpty()) return;
 
+        Level level = Minecraft.getInstance().level;
         Vec3 camPos = camera.getPosition();
 
         RenderSystem.disableDepthTest();
@@ -61,7 +61,6 @@ public class PatternPreviewRenderer {
         }
 
         pose.popPose();
-        bufferSource.endBatch();
 
         RenderSystem.enableCull();
         RenderSystem.enableDepthTest();
