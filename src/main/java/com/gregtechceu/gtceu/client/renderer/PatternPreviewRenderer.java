@@ -47,6 +47,8 @@ public class PatternPreviewRenderer {
 
         // TODO instancing of some sort cause this kills fps :wilted_rose:
         for (var entry : blocks.entrySet()) {
+            var realState = level.getBlockState(controllerPos.mutable().move(entry.getKey()));
+            if (entry.getValue().getBlockState().is(realState.getBlock())) continue;
             pose.pushPose();
             pose.translate(entry.getKey().getX(), entry.getKey().getY(), entry.getKey().getZ());
             // to make the block smaller/non-full
