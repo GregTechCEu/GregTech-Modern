@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
+import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.CrashReport;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -356,7 +358,7 @@ public class PatternPreviewRenderer {
                     BufferBuilder builder = chunkBufferBuilders.builder(renderType);
                     if (startedBuffers.add(renderType)) {
                         if (builder.building()) {
-                            ModularUI.LOGGER.warn("Buffer is already building for RenderType: {}!", renderType);
+                            GTCEu.LOGGER.warn("Buffer is already building for RenderType: {}!", renderType);
                             return CompletableFuture.completedFuture(compileResults.withStatus(CompileStatus.CANCELED));
                         }
                         builder.begin(renderType.mode(), renderType.format());
