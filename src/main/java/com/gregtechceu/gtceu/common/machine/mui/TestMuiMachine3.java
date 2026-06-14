@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
@@ -217,7 +218,7 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
 
         structureHelper.populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
 
-        ExpandablePatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+        BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();

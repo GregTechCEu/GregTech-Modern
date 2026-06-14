@@ -31,6 +31,8 @@ import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
+import brachy.modularui.screen.viewport.GuiContext;
+import brachy.modularui.theme.WidgetTheme;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
@@ -47,8 +49,12 @@ import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.systems.RenderSystem;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -88,9 +94,12 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     @Setter
     private @Nullable BlockPos controllerPos;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
-    private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
+    @Getter
+    private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+    @Getter
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
+    @Getter
     private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
             .create();
 
@@ -98,9 +107,11 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private int maxHeight = 0;
 
     private @Nullable BlockPatternStructureHelper structureHelper;
+    @Getter
     private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
 
     private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
+    @Getter
     private IntList userDimensions = IntLists.emptyList();
 
     @Getter
@@ -158,11 +169,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
+                @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
                 PatternPredicate predicate = structureHelper.getPredicateFromPos(
                         blockPattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate, lastBlock);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
                 PatternPredicate predicate = expandableStructureHelper.getPredicateFromPos(
                         expandablePattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
@@ -201,7 +214,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .onMousePressed((c, b) -> {
                             if (controllerPos != null && !structureBlocks.isEmpty()) {
                                 BlockPos origin = controllerPos.offset(mapSchema.getControllerPos().multiply(-1));
-                                PatternPreviewRenderer.INSTANCE.showPreview(origin, this.mapSchema,
+                                PatternPreviewRenderer.INSTANCE.showPreview(origin,
+                                        this.mapSchema, this.multiSchema.getSchemaRenderer().renderFilter(),
                                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
                             return true;
@@ -427,7 +441,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             expandableStructureHelper.populateFromPattern(resultStructure, expandablePattern, frontFacing,
                     upFacing, isFlipped);
 
-            ExpandablePatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                     multiblockDefinition.getBlock());
         }
 

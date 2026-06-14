@@ -11,7 +11,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,6 +56,7 @@ public class PatternPreviewRenderer {
     });
 
     private @Nullable ISchema schema;
+    private @Nullable RenderLevel renderLevel;
     private @Nullable BlockPos controllerPos;
     private final AtomicInteger timeout = new AtomicInteger(-1);
 
@@ -67,9 +67,10 @@ public class PatternPreviewRenderer {
     private boolean dirty = true;
 
 
-    public void showPreview(BlockPos controllerPos, ISchema schema, int duration) {
+    public void showPreview(BlockPos controllerPos, ISchema schema, RenderFilter renderFilter, int duration) {
         this.controllerPos = controllerPos;
         this.schema = schema;
+        this.renderLevel = new RenderLevel(schema, renderFilter);
         timeout.set(duration);
 
         notifyRecompile();
@@ -324,11 +325,10 @@ public class PatternPreviewRenderer {
             if (this.isCanceled.get()) {
                 return CompletableFuture.completedFuture(compileResults.withStatus(CompileStatus.CANCELED));
             }
-            if (PatternPreviewRenderer.this.schema == null) {
+            if (PatternPreviewRenderer.this.schema == null || PatternPreviewRenderer.this.renderLevel == null) {
                 return CompletableFuture.completedFuture(compileResults.withStatus(CompileStatus.CANCELED));
             }
-
-            Level fakeLevel = PatternPreviewRenderer.this.schema.getLevel();
+            RenderLevel fakeLevel = PatternPreviewRenderer.this.renderLevel;
 
             var blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
             ChunkBufferBuilderPack chunkBufferBuilders = PatternPreviewRenderer.this.chunkBufferBuilders;
