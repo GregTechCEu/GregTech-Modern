@@ -1,23 +1,17 @@
 package com.gregtechceu.gtceu.client.renderer;
 
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.client.util.RenderUtil;
-
 import net.minecraft.client.Camera;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import brachy.modularui.drawable.schema.BaseSchemaRenderer;
+import brachy.modularui.drawable.schema.ISchema;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewRenderer {
@@ -25,50 +19,38 @@ public class PatternPreviewRenderer {
     public static final PatternPreviewRenderer INSTANCE = new PatternPreviewRenderer();
 
     private BlockPos controllerPos = BlockPos.ZERO;
-    public Map<BlockPos, BlockInfo> blocks = new HashMap<>();
+    public @Nullable BaseSchemaRenderer schemaRenderer;
     private long timeoutMillis = 0;
     private long startTime = 0;
 
-    public void tick(PoseStack pose, MultiBufferSource.BufferSource bufferSource, Camera camera) {
+    public void draw(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Camera camera,
+                     float partialTick) {
         if (!camera.isInitialized()) return;
         if (System.currentTimeMillis() - this.startTime >= this.timeoutMillis) return;
-        if (this.blocks.isEmpty()) return;
+        if (this.schemaRenderer == null) return;
 
-        Level level = Minecraft.getInstance().level;
         Vec3 camPos = camera.getPosition();
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableCull();
+        poseStack.pushPose();
+        poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+        poseStack.translate(controllerPos.getX(), controllerPos.getY(), controllerPos.getZ());
 
-        pose.pushPose();
-        pose.translate(-camPos.x, -camPos.y, -camPos.z);
-        pose.translate(controllerPos.getX(), controllerPos.getY(), controllerPos.getZ());
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+        modelViewStack.mulPoseMatrix(poseStack.last().pose());
+        RenderSystem.applyModelViewMatrix();
 
-        // TODO instancing of some sort cause this kills fps :wilted_rose:
-        for (var entry : blocks.entrySet()) {
-            BlockPos pos = entry.getKey();
-            BlockState realState = level.getBlockState(controllerPos.mutable().move(pos));
-            BlockState drawnState = entry.getValue().getBlockState();
-            if (drawnState.is(realState.getBlock())) continue;
+        this.schemaRenderer.renderWorld(bufferSource, partialTick);
 
-            pose.pushPose();
-            pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            // make the block smaller
-            pose.scale(0.8f, 0.8f, 0.8f);
-            pose.translate(0.1f, 0.1f, 0.1f);
-            RenderUtil.drawBlock(level, pos, drawnState, bufferSource, pose);
-            pose.popPose();
-        }
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
 
-        pose.popPose();
-
-        RenderSystem.enableCull();
-        RenderSystem.enableDepthTest();
+        poseStack.popPose();
     }
 
-    public void setPreview(BlockPos controllerPos, Map<BlockPos, BlockInfo> blocks, long timeoutMillis) {
+    public void setPreview(BlockPos controllerPos, ISchema schema, long timeoutMillis) {
         this.controllerPos = controllerPos;
-        this.blocks = blocks;
+        this.schemaRenderer = new BaseSchemaRenderer(schema);
         this.startTime = System.currentTimeMillis();
         this.timeoutMillis = timeoutMillis;
     }

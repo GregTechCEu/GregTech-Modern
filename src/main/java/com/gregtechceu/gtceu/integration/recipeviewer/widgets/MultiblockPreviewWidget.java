@@ -200,7 +200,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .onMousePressed((c, b) -> {
                             if (controllerPos != null && !structureBlocks.isEmpty()) {
                                 BlockPos origin = controllerPos.offset(mapSchema.getControllerPos().multiply(-1));
-                                PatternPreviewRenderer.INSTANCE.setPreview(origin, this.structureBlocks, 20000);
+                                PatternPreviewRenderer.INSTANCE.setPreview(origin, this.mapSchema, 20000);
                             }
                             return true;
                         }))

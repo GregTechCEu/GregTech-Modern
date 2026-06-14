@@ -67,7 +67,7 @@ public class ClientEventListener {
             // render the preview after block entities but before translucent blocks so it can be seen through
             // transparent blocks.
             AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
-            PatternPreviewRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
+            PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, partialTick);
         }
     }
 
