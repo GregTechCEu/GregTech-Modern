@@ -176,7 +176,7 @@ public class MultiblockPatternBuilder {
             if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
 
             int maxCount = -1;
-            for (var basePredicate : predicate.predicateList) {
+            for (var basePredicate : predicate.subPredicates) {
                 if (basePredicate.maxCount == -1) {
                     maxCount = -1;
                     break;

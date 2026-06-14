@@ -161,7 +161,7 @@ public class BlockPattern implements IBlockPattern {
         patternState.layerCount.clear();
         // Make sure every prerdicate with a minvalue is checked
         for (PatternPredicate predicate : predicates.values()) {
-            for (BasePredicate basePredicate : predicate.predicateList) {
+            for (BasePredicate basePredicate : predicate.subPredicates) {
                 if (basePredicate.minCount > 0) {
                     patternState.globalCount.putIfAbsent(basePredicate, 0);
                 }
@@ -173,7 +173,7 @@ public class BlockPattern implements IBlockPattern {
             patternState.cache.clear();
         }
 
-        patternState.cbi.setLevel(level);
+        patternState.currentBlockInfo.setLevel(level);
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
@@ -225,18 +225,19 @@ public class BlockPattern implements IBlockPattern {
 
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
-                patternState.cbi.setCurrentPos(charPos);
+                patternState.currentBlockInfo.setCurrentPos(charPos);
                 PatternPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
                 if (!pred.equals(PatternPredicate.ANY)) {
-                    BlockEntity be = patternState.cbi.retrieveCurrentBlockEntity();
-                    BlockState state = patternState.cbi.retrieveCurrentBlockState();
-                    patternState.cache.put(charPos.asLong(), new BlockInfo(state, be));
+                    BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
+                    BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
+                    patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
 
-                List<PatternError> res = pred.test(patternState.cbi, patternState.globalCount, patternState.layerCount);
-                if (!res.isEmpty()) {
-                    patternState.setErrors(res);
+                List<PatternError> errors = pred.test(patternState.currentBlockInfo, patternState.globalCount,
+                        patternState.layerCount);
+                if (!errors.isEmpty()) {
+                    patternState.setErrors(errors);
                     return false;
                 }
 
@@ -302,7 +303,7 @@ public class BlockPattern implements IBlockPattern {
     }
 
     @Override
-    public void autobuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
+    public void autoBuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
                           CompoundTag tag, UseOnContext context) {
         var predicates = getDefaultShape(controller, tag);
 
@@ -350,59 +351,57 @@ public class BlockPattern implements IBlockPattern {
         };
 
         for (var entry : predicates.long2ObjectEntrySet()) {
-            var pred = entry.getValue();
-            if (pred == null) continue;
-            if (predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
+            PatternPredicate predicate = entry.getValue();
+            if (predicate == null) continue;
+            if (predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;
 
-            int pointer = predicateIndex.getInt(pred);
-            BasePredicate simplePred = pred.predicateList.get(pointer);
-            int count = globalCache.getInt(simplePred);
+            int pointer = predicateIndex.getInt(predicate);
+            BasePredicate basePredicate = predicate.subPredicates.get(pointer);
+            int count = globalCache.getInt(basePredicate);
 
             try {
-                while ((simplePred.previewCount == -1 || count == simplePred.previewCount) &&
-                        (simplePred.minCount == -1 || count == simplePred.minCount)) {
+                while ((basePredicate.previewCount == -1 || count == basePredicate.previewCount) &&
+                        (basePredicate.minCount == -1 || count == basePredicate.minCount)) {
                     pointer++;
-                    simplePred = pred.predicateList.get(pointer);
-                    count = globalCache.getInt(simplePred);
+                    basePredicate = predicate.subPredicates.get(pointer);
+                    count = globalCache.getInt(basePredicate);
                 }
-                predicateIndex.put(pred, pointer);
+                predicateIndex.put(predicate, pointer);
             } catch (IndexOutOfBoundsException e) {
                 continue;
             }
 
-            globalCache.mergeInt(simplePred, 1, Integer::sum);
-            if (simplePred.candidates == null) continue;
+            globalCache.mergeInt(basePredicate, 1, Integer::sum);
+            if (basePredicate.candidates.isEmpty()) continue;
 
-            var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred,
-                    k -> finalSimple.getCandidates() != null ? finalSimple.getCandidates().get(0) : null);
+            cache.computeIfAbsent(basePredicate, pred -> pred.getCandidates().get(0));
 
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
+            if (!placePredicate.test(entry.getLongKey(), cache.get(basePredicate))) return;
             entry.setValue(null);
         }
         predicateIndex.clear();
 
         for (var entry : predicates.long2ObjectEntrySet()) {
             var pred = entry.getValue();
-            if (pred == null || predicateIndex.getInt(pred) >= pred.predicateList.size()) continue;
+            if (pred == null || predicateIndex.getInt(pred) >= pred.subPredicates.size()) continue;
 
-            BasePredicate simplePred = pred.predicateList.get(predicateIndex.getInt(pred));
-            int count = globalCache.getInt(simplePred);
+            BasePredicate simplePredicate = pred.subPredicates.get(predicateIndex.getInt(pred));
+            int count = globalCache.getInt(simplePredicate);
 
-            while (count == simplePred.previewCount || count == simplePred.maxCount) {
+            while (count == simplePredicate.previewCount || count == simplePredicate.maxCount) {
                 int newIdx = predicateIndex.mergeInt(pred, 1, Integer::sum);
-                if (newIdx >= pred.predicateList.size()) {
+                if (newIdx >= pred.subPredicates.size()) {
                     GTCEu.LOGGER.warn("failed to generate default structure pattern");
                     return;
                 }
-                simplePred = pred.predicateList.get(newIdx);
-                count = globalCache.getInt(simplePred);
+                simplePredicate = pred.subPredicates.get(newIdx);
+                count = globalCache.getInt(simplePredicate);
             }
-            globalCache.mergeInt(simplePred, 1, Integer::sum);
-            if (simplePred.candidates == null) continue;
-            var finalSimple = simplePred;
-            cache.computeIfAbsent(simplePred, k -> finalSimple.candidates.get(0));
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePred))) return;
+            globalCache.mergeInt(simplePredicate, 1, Integer::sum);
+            if (simplePredicate.candidates.isEmpty()) continue;
+
+            cache.computeIfAbsent(simplePredicate, k -> k.candidates.get(0));
+            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePredicate))) return;
         }
     }
 
@@ -414,10 +413,10 @@ public class BlockPattern implements IBlockPattern {
             var predicate = mapping.getValue();
             if (predicate.equals(PatternPredicate.ANY)) continue;
 
-            if (predicate.predicateList.size() == 1) {
+            if (predicate.subPredicates.size() == 1) {
                 CompoundTag predicateTag = new CompoundTag();
 
-                BasePredicate simplePred = predicate.predicateList.get(0);
+                BasePredicate simplePred = predicate.subPredicates.get(0);
                 predicateTag.putInt("min", simplePred.minCount);
                 predicateTag.putInt("max", simplePred.maxCount);
                 predicateTag.putInt("minLayer", simplePred.minSliceCount);

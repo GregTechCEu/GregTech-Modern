@@ -24,7 +24,7 @@ public class CurrentBlockInfo {
     private @Nullable BlockState blockState;
     @Getter
     private @Nullable BlockEntity blockEntity;
-    private boolean teResolved;
+    private boolean resolvedBlockEntity;
 
     public BlockState retrieveCurrentBlockState() {
         if (this.blockState == null && level != null) {
@@ -35,13 +35,13 @@ public class CurrentBlockInfo {
     }
 
     public @Nullable BlockEntity retrieveCurrentBlockEntity() {
-        var blockState = retrieveCurrentBlockState();
-        if (!blockState.hasBlockEntity()) {
+        BlockState state = retrieveCurrentBlockState();
+        if (!state.hasBlockEntity()) {
             return null;
         }
-        if (blockEntity == null && !teResolved && level != null) {
+        if (blockEntity == null && !resolvedBlockEntity && level != null) {
             blockEntity = level.getBlockEntity(pos);
-            teResolved = true;
+            resolvedBlockEntity = true;
         }
         return blockEntity;
     }
@@ -67,7 +67,7 @@ public class CurrentBlockInfo {
         }
         blockState = level.getBlockState(pos);
         blockEntity = level.getBlockEntity(pos);
-        teResolved = true;
+        resolvedBlockEntity = true;
     }
 
     public CurrentBlockInfo shallowCopy() {

@@ -25,7 +25,9 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 
 public class MutableSchema implements ISchema {
 
+    @Getter
     protected final Level level = new SchemaLevel();
+    @Getter
     protected @NotNull BlockPos origin = BlockPos.ZERO;
     protected @NotNull Vector3f center = new Vector3f();
     @Getter
@@ -41,11 +43,6 @@ public class MutableSchema implements ISchema {
         setBlocks(blocks);
     }
 
-    @Override
-    public Level getLevel() {
-        return this.level;
-    }
-
     public MutableSchema setBlocks(Long2ReferenceMap<BlockState> blocks) {
         // clear world
         for (Map.Entry<BlockPos, BlockState> entry : this) {
@@ -58,10 +55,10 @@ public class MutableSchema implements ISchema {
         MultiblockControllerMachine controller = null;
         List<IMultiPart> parts = new ArrayList<>();
 
-        for (long l : blocks.keySet()) {
-            if (blocks.get(l).isAir()) continue;
-            BlockState block = blocks.get(l);
-            BlockPos pos = BlockPos.of(l);
+        for (long packed : blocks.keySet()) {
+            BlockState block = blocks.get(packed);
+            if (block.isAir()) continue;
+            BlockPos pos = BlockPos.of(packed);
 
             // BE creation is already handled through here
             updateBlockState(pos, block);
@@ -97,11 +94,6 @@ public class MutableSchema implements ISchema {
     @Override
     public Vector3fc getFocus() {
         return center;
-    }
-
-    @Override
-    public BlockPos getOrigin() {
-        return origin;
     }
 
     @Override

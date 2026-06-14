@@ -145,10 +145,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     String name = item.getName(itemStack).toString();
                     Flow flow = Flow.row();
                     for (int i = 0; i < handler.getSlots(); i++) {
-                        int finalI = i;
+                        final int index = i;
                         flow.child(new ItemSlot()
                                 .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSyncHandler.class,
-                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, finalI)))));
+                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, index)))));
                     }
                     return flow;
                 });

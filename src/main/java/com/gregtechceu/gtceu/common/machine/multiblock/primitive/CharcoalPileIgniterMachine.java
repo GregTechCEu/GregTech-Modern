@@ -32,6 +32,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,8 +47,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static final int MAX_RADIUS = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
-    private final List<Integer> bounds = new ArrayList<>(
-            List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
+    private final IntList bounds = new IntArrayList(
+            new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
     private int maxTime = 0;
     private boolean hasAir = false;
 
@@ -102,8 +104,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
         return ExpandableMultiblockPatternBuilder
                 .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
-                .boundsFunction((l, b, f, u) -> bounds)
-                .predicateFunction((bp, b) -> {
+                .boundsProvider((l, b, f, u) -> bounds)
+                .predicateProvider((bp, b) -> {
                     if (bp.equals(BlockPos.ZERO))
                         return Predicates.controller(Predicates.blocks(getDefinition().getBlock()));
 

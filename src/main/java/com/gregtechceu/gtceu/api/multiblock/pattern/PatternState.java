@@ -46,7 +46,7 @@ public class PatternState {
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
     @Getter
-    protected CurrentBlockInfo cbi = new CurrentBlockInfo();
+    protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
     @Getter
@@ -79,7 +79,7 @@ public class PatternState {
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
-        if (!(cbi.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(currentBlockInfo.getLevel() instanceof ServerLevel serverLevel)) return;
         if (pos.equals(controllerPos)) {
             if (controller != null && !newState.is(controller.self().getBlockState().getBlock())) {
                 controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);

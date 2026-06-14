@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureUtil;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -43,7 +43,7 @@ import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.DoubleValue;
+import brachy.modularui.value.IntValue;
 import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -58,9 +58,14 @@ import com.google.common.collect.Table;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -87,14 +92,15 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private Direction frontFacing;
     private Direction upFacing;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
-    private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
-    private final Map<Integer, Integer> userSliceRepeats = new Int2IntArrayMap();
+    private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+    private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
-    private final Table<PatternPredicate, BasePredicate, Pair<Integer, Integer>> userBasePredicateMinMaxPreferences = HashBasedTable
-            .create(); // Min, Max.
-    private final BlockPatternStructureUtil structureUtil = new BlockPatternStructureUtil();
-    // ^ To disable a base predicate, set min to 0
+    /// pair is Min, Max.
+    /// To disable a base predicate, set min to 0
+    private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
+            .create();
+    private @Nullable BlockPatternStructureHelper structureHelper;
 
     /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
     /// INPUTS:
@@ -226,7 +232,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             ItemStack selected = selectedBlock.getValue();
             if (selected.isEmpty()) return null; // TIL you can return null for the dynamic handler
 
-            PatternPredicate predicate = structureUtil.getPredicateFromPos(
+            PatternPredicate predicate = structureHelper.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
                     lastBlock.left(), frontFacing, upFacing, isFlipped);
 
@@ -332,7 +338,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
             if (lastBlock == null) {
                 return new EmptyWidget();
             }
-            PatternPredicate predicate = structureUtil.getPredicateFromPos(
+            PatternPredicate predicate = structureHelper.getPredicateFromPos(
                     (BlockPattern) multiblockDefinition.getStructurePatterns().get("main").get(),
                     lastBlock.left(), frontFacing, upFacing, isFlipped);
 
@@ -413,26 +419,25 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        structureUtil.populatePreferenceTables(userBasePredicateBlockPreferences,
+        structureHelper = new BlockPatternStructureHelper(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
-        char[][][] flattenedCharPattern = structureUtil.flattenBlockPattern(pattern);
-        char[][][] adjustedCharPattern = structureUtil.rotateAndFlipCharPattern(flattenedCharPattern,
-                pattern.getDirections(),
-                frontFacing, upFacing, isFlipped);
+        char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(pattern);
+        char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
+                pattern.getDirections(), frontFacing, upFacing, isFlipped);
 
-        structureUtil.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
+        structureHelper.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
                 userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
-        structureUtil.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
+        structureHelper.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
                 frontFacing, upFacing, isFlipped);
 
-        BlockPatternStructureUtil.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
+        BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
                 multiblockDefinition.getBlock());
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         blockCounts.clear();
         for (var entry : resultStructure.entrySet()) {
-            var state = entry.getValue().getBlockState();
+            BlockState state = entry.getValue().getBlockState();
             schemaMap.put(entry.getKey().asLong(), state);
             blockCounts.merge(state.getBlock(), 1, Integer::sum);
         }
@@ -468,21 +473,20 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                 if (patternSlice.getMinRepeats() == patternSlice.getMaxRepeats()) {
 
                 } else {
-                    int finalRepeatSliceIndex = repeatSliceIndex;
+                    final int index = repeatSliceIndex;
                     col.child(new SliderWidget()
                             .background(GTGuiTextures.FLUID_SLOT)
                             .height(16)
                             .width(patternSlice.getMaxRepeats() * 12)
                             .stopper(1.0f)
                             .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
-                            .value(new DoubleValue.Dynamic(() -> {
-                                if (!userSliceRepeats.containsKey(finalRepeatSliceIndex)) return 0;
-                                return userSliceRepeats.get(finalRepeatSliceIndex);
+                            .value(new IntValue.Dynamic(() -> {
+                                if (!userSliceRepeats.containsKey(index)) return 0;
+                                return userSliceRepeats.get(index);
                             }, (v) -> {
-                                int oldVal = userSliceRepeats.getOrDefault(finalRepeatSliceIndex, 0);
-                                int newVal = (int) v;
-                                if (oldVal == newVal) return;
-                                userSliceRepeats.put(finalRepeatSliceIndex, newVal);
+                                int oldVal = userSliceRepeats.getOrDefault(index, 0);
+                                if (oldVal == v) return;
+                                userSliceRepeats.put(index, v);
                                 refreshSchema();
                                 refreshViewWidget();
                             })));
@@ -506,11 +510,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        .children(predicate.predicateList, basePredicate -> {
+                        .children(predicate.subPredicates, basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.candidates;
-                            if (candidates == null || candidates.isEmpty())
+                            if (candidates.isEmpty()) {
                                 return new EmptyWidget();
-                            if (candidates.size() > 1) {
+                            } else if (candidates.size() > 1) {
                                 return new ContextMenuButton<>(basePredicate.getPredicateName())
                                         .size(16)
                                         .tooltip(r -> r.add(basePredicate.getPredicateName()))
@@ -551,14 +555,13 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
             PatternPredicate predicate = entry.getValue();
-            // todo figure out sliders needed for predicate min/max depending on base predicates in the
-            // main predicate
+            // todo figure out sliders needed for predicate min/max depending on base predicates in the main predicate
             if (predicate.equals(PatternPredicate.ANY) || predicate.equals(PatternPredicate.AIR)) {
                 continue;
             }
             IDrawable overlay;
-            if (predicate.predicateList.size() == 1 && predicate.predicateList.get(0).candidates.size() == 1) {
-                overlay = new ItemDrawable(predicate.predicateList.get(0).candidates.get(0).getItemStackForm())
+            if (predicate.subPredicates.size() == 1 && predicate.subPredicates.get(0).candidates.size() == 1) {
+                overlay = new ItemDrawable(predicate.subPredicates.get(0).candidates.get(0).getItemStackForm())
                         .asIcon().margin(1);
             } else {
                 overlay = Text.str(String.valueOf(entry.getCharKey())).asIcon().size(8).center();
@@ -580,11 +583,11 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate.predicateList, basePredicate -> {
+                            .children(predicate.subPredicates, basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.candidates;
-                                if (candidates == null || candidates.isEmpty())
+                                if (candidates.isEmpty()) {
                                     return new EmptyWidget();
-                                if (candidates.size() > 1) {
+                                } else if (candidates.size() > 1) {
                                     return createInnerPredicateMenu(predicate, basePredicate, candidates);
                                 } else {
                                     return new ToggleButton()

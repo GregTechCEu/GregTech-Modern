@@ -44,10 +44,10 @@ public class AABBHighlightRenderer {
 
         stack.pushPose();
         stack.translate(offset.x, offset.y, offset.z);
-        var buf = multiBuf.getBuffer(GTRenderTypes.blockHighlightQuads());
+        VertexConsumer buffer = multiBuf.getBuffer(GTRenderTypes.blockHighlightQuads());
 
-        var time = System.currentTimeMillis();
-        highlights.forEach(h -> h.renderTick(buf, stack, time));
+        long time = System.currentTimeMillis();
+        highlights.forEach(h -> h.render(buffer, stack, time));
 
         stack.popPose();
         multiBuf.endBatch();
@@ -65,17 +65,19 @@ public class AABBHighlightRenderer {
     public record AABBHighlight(AABB aabb, int colorARGB, long startMillis, long durationMillis, long phaseMillis,
                                 double thickness) {
 
-        public void renderTick(VertexConsumer buf, PoseStack pose, long currentTimeMillis) {
-            if (currentTimeMillis >= startMillis + durationMillis) {
+        public void render(VertexConsumer buf, PoseStack pose, long currentTimeMillis) {
+            if (currentTimeMillis - startMillis >= durationMillis) {
                 this.remove();
                 return;
             }
             if (currentTimeMillis < startMillis) return;
             if ((currentTimeMillis - startMillis) / phaseMillis % 2 == 1) return;
+
             RenderBufferHelper.renderAABBOutline(buf, pose, aabb(), thickness, colorARGB());
         }
 
         public void remove() {
+            // FIXME CME inbound here!
             AABBHighlightRenderer.INSTANCE.highlights.remove(this);
         }
     }
@@ -84,16 +86,21 @@ public class AABBHighlightRenderer {
         return new AABBHighlightBuilder();
     }
 
-    @Setter
     @Accessors(chain = true, fluent = true)
     public static class AABBHighlightBuilder {
 
-        AABB aabb = null;
-        int colorARGB = 0xFFFFFFFF;
-        long startMillis = -1;
-        long durationMillis = 10000;
-        long phaseMillis = 300;
-        double thickness = 0.01;
+        @Setter
+        private AABB aabb = null;
+        @Setter
+        private int colorARGB = 0xFFFFFFFF;
+        @Setter
+        private long startMillis = -1;
+        @Setter
+        private long durationMillis = 10000;
+        @Setter
+        private long phaseMillis = 300;
+        @Setter
+        private double thickness = 0.01D;
 
         @Tolerate
         public AABBHighlightBuilder aabb(BlockPos pos) {
@@ -111,7 +118,7 @@ public class AABBHighlightRenderer {
                 throw new IllegalArgumentException("AABB can't be null in AABBHighlightBuilder");
             }
             if (startMillis == -1) {
-                this.startMillis = System.currentTimeMillis();
+                startMillis = System.currentTimeMillis();
             }
             return new AABBHighlight(aabb, colorARGB, startMillis, durationMillis, phaseMillis, thickness);
         }

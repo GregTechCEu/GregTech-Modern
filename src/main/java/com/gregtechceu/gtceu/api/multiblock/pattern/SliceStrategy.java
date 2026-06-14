@@ -50,7 +50,7 @@ public abstract class SliceStrategy {
      * Gets the order in which slices should be displayed (recipe viewers) or built (terminal structure builder).
      *
      * @param tag The tag information, the same one that is passed through
-     *            {@link IBlockPattern#autobuild}
+     *            {@link IBlockPattern#autoBuild}
      * @return Array where the i-th element specifies that at offset i there would be slice a_i
      */
     public abstract int[] getDefaultSlices(CompoundTag tag);

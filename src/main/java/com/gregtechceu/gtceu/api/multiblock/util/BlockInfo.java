@@ -28,7 +28,6 @@ public class BlockInfo {
 
     @Getter
     private final BlockState blockState;
-    private final boolean hasBlockEntity;
     private final @Nullable ItemStack itemStack;
     @Getter
     private final @Nullable BlockEntity blockEntity;
@@ -38,21 +37,16 @@ public class BlockInfo {
     }
 
     public BlockInfo(BlockState blockState) {
-        this(blockState, false);
-    }
-
-    public BlockInfo(BlockState blockState, boolean hasBlockEntity) {
-        this(blockState, hasBlockEntity, null, null);
+        this(blockState, null, null);
     }
 
     public BlockInfo(BlockState blockState, @Nullable BlockEntity blockEntity) {
-        this(blockState, true, null, blockEntity);
+        this(blockState, null, blockEntity);
     }
 
-    public BlockInfo(BlockState blockState, boolean hasBlockEntity, @Nullable ItemStack itemStack,
+    public BlockInfo(BlockState blockState, @Nullable ItemStack itemStack,
                      @Nullable BlockEntity blockEntity) {
         this.blockState = blockState;
-        this.hasBlockEntity = hasBlockEntity;
         this.itemStack = itemStack;
         this.blockEntity = blockEntity;
 
@@ -60,15 +54,11 @@ public class BlockInfo {
     }
 
     public static BlockInfo fromBlockState(BlockState state) {
-        return new BlockInfo(state, state.hasBlockEntity());
+        return new BlockInfo(state);
     }
 
     public static BlockInfo fromBlock(Block block) {
         return fromBlockState(block.defaultBlockState());
-    }
-
-    public boolean hasBlockEntity() {
-        return hasBlockEntity;
     }
 
     public @Nullable BlockEntity getBlockEntity(Level level, BlockPos pos) {
@@ -85,9 +75,16 @@ public class BlockInfo {
 
     public ItemStack getItemStackForm(BlockAndTintGetter level, BlockPos pos) {
         if (itemStack != null) return itemStack;
-        FAKE_LEVEL.setParent(level);
-        FAKE_LEVEL.setPos(pos);
-        return blockState.getBlock().getCloneItemStack(FAKE_LEVEL, pos, blockState);
+
+        BlockAndTintGetter oldParent = FAKE_LEVEL.parent;
+        try {
+            FAKE_LEVEL.setParent(level);
+            FAKE_LEVEL.setState(this.blockState);
+            FAKE_LEVEL.setPos(pos);
+            return blockState.getBlock().getCloneItemStack(FAKE_LEVEL, pos, this.blockState);
+        } finally {
+            FAKE_LEVEL.setParent(oldParent);
+        }
     }
 
     public void apply(Level level, BlockPos pos) {
@@ -98,14 +95,14 @@ public class BlockInfo {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BlockInfo blockInfo = (BlockInfo) o;
-        return Objects.equals(blockState, blockInfo.blockState);
+        return Objects.equals(this.blockState, blockInfo.blockState);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(blockState);
+        return this.blockState.hashCode();
     }
 }

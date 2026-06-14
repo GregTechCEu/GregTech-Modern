@@ -25,22 +25,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -322,33 +317,13 @@ public class RenderUtil {
                                  MultiBufferSource bufferSource, PoseStack poseStack) {
         int packedLight = LevelRenderer.getLightColor(level, state, pos);
 
-        RenderShape renderShape = state.getRenderShape();
-        if (renderShape == RenderShape.INVISIBLE) {
-            return;
-        } else if (renderShape == RenderShape.ENTITYBLOCK_ANIMATED) {
-            // if it's a block entity, use the BEWLR to render it instead of the empty block model
-            ItemStack stack = new ItemStack(state.getBlock());
-            IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemDisplayContext.NONE,
-                    poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
-            return;
-        }
-
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = blockRenderer.getBlockModel(state);
         ModelData modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
 
-        int blockColor = Minecraft.getInstance().getBlockColors().getColor(state, level, pos, 0);
-        float r = (float) (blockColor >> 16 & 0xFF) / 255.0F;
-        float g = (float) (blockColor >> 8 & 0xFF) / 255.0F;
-        float b = (float) (blockColor & 0xFF) / 255.0F;
-
-        for (RenderType renderType : model.getRenderTypes(state, RandomSource.create(42), modelData)) {
-            blockRenderer.getModelRenderer().renderModel(poseStack.last(),
-                    bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType, false)),
-                    state, model, r, g, b,
-                    packedLight, OverlayTexture.NO_OVERLAY,
-                    modelData, renderType);
-        }
+        // noinspection DataFlowIssue renderType is nullable, just not marked as such
+        blockRenderer.renderSingleBlock(state, poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY,
+                modelData, null);
     }
 
     /**
