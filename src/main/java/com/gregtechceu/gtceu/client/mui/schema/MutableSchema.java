@@ -25,6 +25,7 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerM
 
 public class MutableSchema implements ISchema {
 
+    @Getter
     protected final Level level = new SchemaLevel();
     @Getter
     protected @NotNull BlockPos origin = BlockPos.ZERO;
@@ -40,11 +41,6 @@ public class MutableSchema implements ISchema {
     public MutableSchema(Long2ReferenceMap<BlockState> blocks) {
         this();
         setBlocks(blocks);
-    }
-
-    @Override
-    public Level getLevel() {
-        return this.level;
     }
 
     public MutableSchema setBlocks(Long2ReferenceMap<BlockState> blocks) {

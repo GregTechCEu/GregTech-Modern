@@ -144,9 +144,10 @@ public class BlockPatternStructureHelper {
                     layerAlreadyPopulated < basePredicate.minSliceCount;
             if (!globalMinUnmet && !layerMinUnmet) continue;
 
-            BlockInfo toInsert = blockPreferences.contains(predicate, basePredicate) ?
-                    blockPreferences.get(predicate, basePredicate) :
-                    basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            if (toInsert == null) {
+                toInsert = basePredicate.getCandidates().get(0);
+            }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
@@ -171,9 +172,10 @@ public class BlockPatternStructureHelper {
                 continue;
             }
 
-            BlockInfo toInsert = blockPreferences.contains(predicate, basePredicate) ?
-                    blockPreferences.get(predicate, basePredicate) :
-                    basePredicate.getCandidates().get(0);
+            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
+            if (toInsert == null) {
+                toInsert = basePredicate.getCandidates().get(0);
+            }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
@@ -259,28 +261,12 @@ public class BlockPatternStructureHelper {
         for (Direction.Axis axis : Direction.Axis.VALUES) {
             for (Direction.Axis world : Direction.Axis.VALUES) {
                 int contribution = steps[axis.ordinal()][world.ordinal()] * (dimensions.get(axis) - 1);
-                // this
-                switch (world) {
-                    case X -> {
-                        min.setX(min.getX() + Math.min(0, contribution));
-                        max.setX(max.getX() + Math.max(0, contribution));
-                    }
-                    case Y -> {
-                        min.setY(min.getY() + Math.min(0, contribution));
-                        max.setY(max.getY() + Math.max(0, contribution));
-                    }
-                    case Z -> {
-                        min.setZ(min.getZ() + Math.min(0, contribution));
-                        max.setZ(max.getZ() + Math.max(0, contribution));
-                    }
-                }
-                // or this
                 Direction worldDir = Direction.fromAxisAndDirection(world, Direction.AxisDirection.POSITIVE);
                 min.move(worldDir, Math.min(0, contribution));
                 max.move(worldDir, Math.max(0, contribution));
             }
         }
-
+        // this *should* be the same as dimensions. I think?
         Vec3i size = max.move(-min.getX() + 1, -min.getY() + 1, -min.getZ() + 1);
         char[][][] result = new char[size.getX()][size.getY()][size.getZ()];
 
