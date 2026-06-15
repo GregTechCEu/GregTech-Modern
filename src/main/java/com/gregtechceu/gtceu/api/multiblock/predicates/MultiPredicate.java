@@ -19,11 +19,12 @@ public class MultiPredicate extends BasePredicate {
 
     public MultiPredicate() {}
 
-    public MultiPredicate(String debugName) {
+    public MultiPredicate(@Nullable String debugName) {
         this.debugName = debugName;
     }
 
-    protected MultiPredicate(List<BasePredicate> predicates, Logic type) {
+    protected MultiPredicate(@Nullable String debugName, List<BasePredicate> predicates, Logic type) {
+        this(debugName);
         this.type = type;
         addPredicates(predicates);
     }
@@ -135,7 +136,7 @@ public class MultiPredicate extends BasePredicate {
     public MultiPredicate or(BasePredicate other) {
         if (!isValid()) this.type = Logic.OR;
 
-        var predicate = new MultiPredicate(this.predicateList, this.getType());
+        var predicate = new MultiPredicate(this.debugName, this.predicateList, this.getType());
         if (!(other instanceof MultiPredicate multi)) {
             return predicate.addPredicates(other);
         }
@@ -157,7 +158,7 @@ public class MultiPredicate extends BasePredicate {
     public MultiPredicate and(BasePredicate other) {
         if (!isValid()) this.type = Logic.AND;
 
-        var predicate = new MultiPredicate(this.predicateList, this.getType());
+        var predicate = new MultiPredicate(this.debugName, this.predicateList, this.getType());
         if (!(other instanceof MultiPredicate multi)) {
             return predicate.addPredicates(other);
         }
@@ -175,7 +176,7 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public String getDebugName() {
+    public @Nullable String getDebugName() {
         StringBuilder builder = new StringBuilder("Multi")
                 .append('(')
                 .append(this.type == null ? "INVAlID" : this.type)

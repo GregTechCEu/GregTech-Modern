@@ -67,7 +67,7 @@ public abstract class BasePredicate {
         return Collections.emptyList();
     }
 
-    public abstract String getDebugName();
+    public abstract @Nullable String getDebugName();
 
     /// the main testing method
     public boolean test(PredicateContext ctx) {
@@ -258,22 +258,40 @@ public abstract class BasePredicate {
     }
 
     private static BasePredicate or(BasePredicate a, BasePredicate b) {
+        String name1 = a.getDebugName();
+        String name2 = b.getDebugName();
+        if (name1 != null) {
+            return or(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
+        } else if (name2 != null) {
+            return or(name2, List.of(a, b));
+        }
         return or("OR", List.of(a, b));
     }
 
     private static BasePredicate and(BasePredicate a, BasePredicate b) {
+        String name1 = a.getDebugName();
+        String name2 = b.getDebugName();
+        if (name1 != null) {
+            return and(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
+        } else if (name2 != null) {
+            return and(name2, List.of(a, b));
+        }
         return and("AND", List.of(a, b));
     }
 
     public static BasePredicate or(String debugName, List<BasePredicate> predicates) {
         MultiPredicate predicate = new MultiPredicate(debugName);
-        predicates.forEach(predicate::or);
+        for (BasePredicate basePredicate : predicates) {
+            predicate = predicate.or(basePredicate);
+        }
         return predicate;
     }
 
     public static BasePredicate and(String debugName, List<BasePredicate> predicates) {
         MultiPredicate predicate = new MultiPredicate(debugName);
-        predicates.forEach(predicate::and);
+        for (BasePredicate basePredicate : predicates) {
+            predicate = predicate.and(basePredicate);
+        }
         return predicate;
     }
 }
