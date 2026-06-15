@@ -21,6 +21,7 @@ public final class GTRecipeConditions {
 
     // spotless:off
     public static final RecipeConditionType<BiomeCondition> BIOME = register("biome", BiomeCondition::new, BiomeCondition.CODEC);
+    public static final RecipeConditionType<BiomeTagCondition> BIOME_TAG = register("biome_tag", BiomeTagCondition::new, BiomeTagCondition.CODEC);
     public static final RecipeConditionType<DimensionCondition> DIMENSION = register("dimension", DimensionCondition::new, DimensionCondition.CODEC);
     public static final RecipeConditionType<PositionYCondition> POSITION_Y = register("pos_y", PositionYCondition::new, PositionYCondition.CODEC);
     public static final RecipeConditionType<RainingCondition> RAINING = register("rain", RainingCondition::new, RainingCondition.CODEC);
@@ -57,9 +58,9 @@ public final class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 
-    private static <T extends RecipeCondition> RecipeConditionType<T> register(String name,
-                                                                               RecipeConditionType.ConditionFactory<T> factory,
-                                                                               Codec<T> codec) {
+    private static <T extends RecipeCondition<T>> RecipeConditionType<T> register(String name,
+                                                                                  RecipeConditionType.ConditionFactory<T> factory,
+                                                                                  Codec<T> codec) {
         return GTRegistries.RECIPE_CONDITIONS.register(name, new RecipeConditionType<>(factory, codec));
     }
 }

@@ -15,10 +15,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
+import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.item.LampBlockItem;
+import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
@@ -46,6 +50,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -114,7 +119,7 @@ public class GTBlocks {
                 .block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
                 .addLayer(() -> RenderType::cutoutMipped)
@@ -144,13 +149,13 @@ public class GTBlocks {
                 .lang("Optical Fiber Cable")
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
                 .color(() -> OpticalPipeBlock::tintedColor)
-                .item(OpticalPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
@@ -172,12 +177,12 @@ public class GTBlocks {
                 .block("%s_duct_pipe".formatted(type.getSerializedName()), (p) -> new DuctPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
-                .blockstate(NonNullBiConsumer.noop())
+                .gtBlockstate(GTModels::createPipeBlockModel)
                 .defaultLoot()
                 .tag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
                 .addLayer(() -> RenderType::cutoutMipped)
                 .addLayer(() -> RenderType::translucent)
-                .item(DuctPipeBlockItem::new)
+                .item(PipeBlockItem::new)
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
@@ -1164,6 +1169,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/signs/machine_casing_stripes_b"));
 
     public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
+    public static Map<TagPrefix, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
 
     public static BlockEntry<Block> RED_GRANITE;
     public static BlockEntry<Block> MARBLE;
@@ -1238,6 +1244,12 @@ public class GTBlocks {
             }
         }
         STONE_BLOCKS = builder.build();
+
+        STONE_BLOCKS.row(StoneBlockType.COBBLE).forEach((ore, block) -> {
+            if (ore.generateBlocks) {
+                GTBlocks.registerCobbleBlock(ore.getTagPrefix(), block::getDefaultState);
+            }
+        });
 
         RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.RED_GRANITE);
         MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.MARBLE);
@@ -1320,6 +1332,8 @@ public class GTBlocks {
                             .addLayer(() -> RenderType::cutout)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
+                            .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
+                                    .customLoader(CustomItemRendererWrapperModel.Builder::begin).end())
                             .build()
                             .register());
         }
@@ -1333,6 +1347,8 @@ public class GTBlocks {
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                     .blockstate(GTModels.lampModel(dyeColor, false))
                     .item(LampBlockItem::new)
+                    .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
+                            .customLoader(CustomItemRendererWrapperModel.Builder::begin).end())
                     .build()
                     .register());
         }
@@ -1403,9 +1419,18 @@ public class GTBlocks {
         };
     }
 
+    public static void registerCobbleBlock(TagPrefix orePrefix, Supplier<BlockState> state) {
+        COBBLE_BLOCKS.put(orePrefix, state);
+    }
+
+    public static void removeCobbleBlock(TagPrefix orePrefix) {
+        COBBLE_BLOCKS.remove(orePrefix);
+    }
+
     public static void init() {
         // Decor Blocks
         generateStoneBlocks();
+        initializeCobbleReplacements();
 
         // Procedural Blocks
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
@@ -1432,6 +1457,32 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+
+        // Dev-only test blocks
+        if (GTCEu.isDev()) {
+            GTDevBlocks.init();
+        }
+    }
+
+    private static void initializeCobbleReplacements() {
+        // replacement blocks for mc based stone types
+        registerCobbleBlock(TagPrefix.ore, Blocks.COBBLESTONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreDeepslate, Blocks.COBBLED_DEEPSLATE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreAndesite, Blocks.ANDESITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreDiorite, Blocks.DIORITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreGranite, Blocks.GRANITE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreRedGranite,
+                STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.RED_GRANITE)::getDefaultState);
+        registerCobbleBlock(TagPrefix.oreMarble,
+                STONE_BLOCKS.get(StoneBlockType.COBBLE, StoneTypes.MARBLE)::getDefaultState);
+        registerCobbleBlock(TagPrefix.oreSand, Blocks.SAND::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreGravel, Blocks.GRAVEL::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreRedSand, Blocks.RED_SAND::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreBasalt, Blocks.BASALT::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreBlackstone, Blocks.BLACKSTONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreEndstone, Blocks.END_STONE::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreNetherrack, Blocks.NETHERRACK::defaultBlockState);
+        registerCobbleBlock(TagPrefix.oreTuff, Blocks.TUFF::defaultBlockState);
     }
 
     public static boolean doMetalPipe(Material material) {

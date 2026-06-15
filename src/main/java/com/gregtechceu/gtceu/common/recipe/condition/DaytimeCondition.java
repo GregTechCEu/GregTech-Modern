@@ -10,25 +10,24 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
-public class DaytimeCondition extends RecipeCondition {
+public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
-    public static final Codec<DaytimeCondition> CODEC = RecordCodecBuilder
-            .create(instance -> RecipeCondition.isReverse(instance)
-                    .apply(instance, DaytimeCondition::new));
+    // spotless:off
+    public static final Codec<DaytimeCondition> CODEC = RecipeCondition.simpleCodec(DaytimeCondition::new);
+    // spotless:off
 
     public DaytimeCondition(boolean isReverse) {
         super(isReverse);
     }
 
     @Override
-    public RecipeConditionType<?> getType() {
+    public RecipeConditionType<DaytimeCondition> getType() {
         return GTRecipeConditions.DAYTIME;
     }
 
@@ -43,12 +42,12 @@ public class DaytimeCondition extends RecipeCondition {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.machine.self().getLevel();
-        return level != null && !level.isNight();
+        Level level = recipeLogic.getLevel();
+        return level.isDay();
     }
 
     @Override
-    public RecipeCondition createTemplate() {
+    public DaytimeCondition createTemplate() {
         return new DaytimeCondition();
     }
 }

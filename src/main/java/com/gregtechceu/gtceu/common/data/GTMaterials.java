@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -184,7 +184,7 @@ public class GTMaterials {
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
-            if (oreType.shouldDropAsItem() && oreType.material() != null) {
+            if (oreType.material() != null) {
                 prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), dust.materialAmount()));
             }
         }
@@ -272,7 +272,7 @@ public class GTMaterials {
 
     @NotNull
     public static Material get(String name) {
-        var mat = GTCEuAPI.materialManager.getMaterial(name);
+        var mat = GTRegistries.MATERIALS.get(name);
         // material could be null here due to the registry grabbing a material that isn't in the map
         if (mat == null) {
             GTCEu.LOGGER.warn("{} is not a known Material", name);
@@ -959,6 +959,7 @@ public class GTMaterials {
     public static Material Redstone;
     public static Material Dichloroethane;
     public static Material Diethylenetriamine;
+    public static Material Tuff;
 
     /**
      * Third Degree Materials

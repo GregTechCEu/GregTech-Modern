@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -26,8 +26,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -43,7 +43,7 @@ import java.util.function.*;
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<IMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -59,8 +59,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
-    @Setter
-    private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
     @Getter
     @Setter
     private @NotNull GTRecipeType @NotNull [] recipeTypes;
@@ -127,7 +125,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private EditableMachineUI editableUI;
     @Getter
     @Setter
-    private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
+    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
 
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
@@ -156,10 +154,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
         return blockEntityTypeSupplier.get();
     }
 
-    public MetaMachine createMetaMachine(IMachineBlockEntity blockEntity) {
-        return machineSupplier.apply(blockEntity);
-    }
-
     public ItemStack asStack() {
         return new ItemStack(getItem());
     }
@@ -174,8 +168,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     @Override
-    public IMachineBlock get() {
-        return (IMachineBlock) blockSupplier.get();
+    public MetaMachineBlock get() {
+        return (MetaMachineBlock) blockSupplier.get();
     }
 
     public String getName() {

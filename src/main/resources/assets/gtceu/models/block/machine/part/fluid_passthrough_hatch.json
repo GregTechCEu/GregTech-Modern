@@ -1,52 +1,10 @@
 {
-    "credit": "Made with Blockbench",
-    "parent": "block/block",
-    "textures": {
-        "particle": "#side",
-        "overlay_pipe": "gtceu:block/overlay/machine/overlay_pipe",
-        "overlay_pipe_in": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-        "overlay_fluid_hatch_input": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
-        "overlay_fluid_hatch_output": "gtceu:block/overlay/machine/overlay_fluid_hatch_output",
-        "overlay_pipe_out": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
-    },
-    "elements": [
-        {
-            "from": [  0,  0,  0 ],
-            "to":   [ 16, 16, 16 ],
-            "faces": {
-                "down":  { "texture": "#bottom", "cullface": "down",  "tintindex": 1 },
-                "up":    { "texture": "#top",    "cullface": "up",    "tintindex": 1 },
-                "north": { "texture": "#side",   "cullface": "north", "tintindex": 1 },
-                "south": { "texture": "#side",   "cullface": "south", "tintindex": 1 },
-                "west":  { "texture": "#side",   "cullface": "west",  "tintindex": 1 },
-                "east":  { "texture": "#side",   "cullface": "east",  "tintindex": 1 }
-            }
-        },
-        {
-            "from": [ -0.01, -0.01, -0.01 ],
-            "to":   [ 16.01, 16.01, 16.01 ],
-            "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe",  "cullface": "north" },
-                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "south" }
-            }
-        },
-        {
-            "from": [ -0.02, -0.02, -0.02 ],
-            "to":   [ 16.02, 16.02, 16.02 ],
-            "forge_data": { "block_light": 15, "sky_light": 15 },
-            "shade": false,
-            "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in",  "cullface": "north" },
-                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out", "cullface": "south" }
-            }
-        },
-        {
-            "from": [ -0.02, -0.02, -0.02 ],
-            "to":   [ 16.02, 16.02, 16.02 ],
-            "faces": {
-                "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_input",  "cullface": "north" },
-                "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_fluid_hatch_output", "cullface": "south" }
-            }
-        }
-    ]
+  "parent": "gtceu:block/machine/template/pipeline_endpoint_machine",
+  "textures": {
+    "overlay_side": "gtceu:block/void",
+    "overlay_side_emissive": "gtceu:block/void",
+
+    "overlay_hatch_in": "gtceu:block/overlay/machine/overlay_fluid_hatch_input",
+    "overlay_hatch_out": "gtceu:block/overlay/machine/overlay_fluid_hatch_output"
+  }
 }

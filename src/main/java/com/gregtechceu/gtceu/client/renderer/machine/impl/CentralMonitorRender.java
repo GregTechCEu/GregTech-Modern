@@ -54,7 +54,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                         continue;
                     }
                     poseStack.pushPose();
-                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group)
+                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0))
                             .render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                     poseStack.popPose();
                 }
@@ -75,7 +75,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
 
     @Override
     public AABB getRenderBoundingBox(CentralMonitorMachine machine) {
-        BlockPos pos = machine.getPos();
+        BlockPos pos = machine.getBlockPos();
         BoundingBox bounds = new BoundingBox(
                 pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1,
                 pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
@@ -85,7 +85,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                 IMonitorComponent component = machine.getComponent(row, col);
                 if (component != null && component.isMonitor()) {
                     // noinspection deprecation
-                    bounds.encapsulate(component.getPos());
+                    bounds.encapsulate(component.getBlockPos());
                 }
             }
         }

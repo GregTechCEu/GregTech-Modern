@@ -141,6 +141,7 @@ You can change the properties of the material by adding any combination of the f
 
 === "JavaScript"
     ```js title="fluid.js"
+    // const $FluidBuilder = Java.loadClass('com.gregtechceu.gtceu.api.fluids.FluidBuilder'); Uncomment if you want to use the Fluid Builder.
     GTCEuStartupEvents.registry('gtceu:material', event => {
         event.create('mysterious_ooze')
           .fluid() // Or .liquid(Int Temperature)
@@ -159,6 +160,10 @@ You can change the properties of the material by adding any combination of the f
             .buildAndRegister();
         }
     ```
+
+!!! note
+    - To create a placeable fluid, you need to call a new instance of the FluidBuilder class and call .block() inside of it. The syntax for this will be the same in java and kubejs but you will need to load the FluidBuilder class for kubejs.
+        - For example: `.liquid(new $FluidBuilder().block().temperature(3100))`.
 
 
 !!! tip "Further Material Information"

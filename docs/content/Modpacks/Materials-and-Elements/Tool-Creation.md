@@ -14,7 +14,7 @@ toolStats has the following arguments:
     - This applies to both crafting use and in-world use.
       Crafting generally consumes 2 points of durability per use.
 - `harvestLevel: int` is the tier of block it can break. 
-    - Can take an integer between 1-6 with 1 being wood, 6 being neutronium.
+    - Can take an integer between 0-6 with 0 being wood, 6 being neutronium.
 - `types: GTToolType[]` is an array of tools in an object.
     - Must pass these as an array, using the [] notation.  
       This argument can be left out if you want your material to apply to all tool types.
@@ -59,7 +59,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 - `ignoreCraftingTools()`
     - Disable crafting tools being made from this Material.
 
-- `addEnchantmentForTools(Enchantment enchantment, int level)`
+- `.enchantment(Enchantment enchantment, int level)`
     - Enchantment is the default enchantment applied on tool creation.  
       Level is the level of said enchantment.
 - `enchantability(int enchantability)`
@@ -82,7 +82,7 @@ Here is an example of using the builder in a material:
                     ]
                 )
                 .unbreakable()
-                .addEnchantmentForTools(silk_touch, 1)
+                .enchantment(SILK_TOUCH, 1)
                 .build()
             ) 
     });

@@ -100,7 +100,6 @@ public class ElementMaterials {
                 .ore()
                 .color(0x73d73d).secondaryColor(0x184537).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
-                .hazard(HazardProperty.HazardTrigger.SKIN_CONTACT, GTMedicalConditions.BERYLLIOSIS, false)
                 .element(GTElements.Be)
                 .buildAndRegister();
 
@@ -1026,7 +1025,7 @@ public class ElementMaterials {
         Trinium = new Material.Builder(GTCEu.id("trinium"))
                 .ingot(7).fluid()
                 .color(0x81808a).secondaryColor(0x351d4b).iconSet(SHINY)
-                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR)
+                .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW, GENERATE_GEAR, GENERATE_SPRING)
                 .element(GTElements.Ke)
                 .cableProperties(V[ZPM], 6, 4)
                 .blast(b -> b.temp(7200, GasTier.HIGH)

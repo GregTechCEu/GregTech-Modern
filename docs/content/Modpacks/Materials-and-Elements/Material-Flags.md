@@ -32,8 +32,11 @@ can influence how the material behaves, as well as which items are generated for
 # Generic Flags
 
 - `NO_UNIFICATION`
-    - Description: Add to material to disable it's unification fully.
-    
+  - Description: Add to material to disable automatic recipe generation for it fully. This flag is deprecated, please use DISABLE_MATERIAL_RECIPES instead.
+
+- `DISABLE_MATERIAL_RECIPES`
+  - Description: Add to material to disable automatic recipe generation for it fully. This replaces NO_UNIFICATION.
+
 - `DECOMPOSITION_BY_ELECTROLYZING`
     - Description: Enables electrolyzer decomposition recipe generation Requires `.components(...)` to be set.
 
@@ -205,7 +208,7 @@ can influence how the material behaves, as well as which items are generated for
     - Required Properties: `PropertyKey.INGOT`.
 
 - `IS_MAGNETIC`
-    - Description: Add this to your Material if it is a magnetized form of another material.
+    - Description: Add this to your Material if it is a magnetized form of another Material. When this flag is on a Material, it macerates into the non-magnetic version of said Material, which is then used for certain crafting recipes.
     - Required Properties: `PropertyKey.INGOT`.
 
 # Gem Flags

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
@@ -10,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSave
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -309,16 +309,12 @@ public abstract class ProspectorMode<T> {
         @Override
         public IGuiTexture getItemIcon(OreInfo item) {
             Material material = item.material;
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
-                    material);
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material); // backup 1: crushed; if raw
-                                                                                          // ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material); // backup 2: gem; if crushed ore
-                                                                                      // doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: ore; if gem doesn't
-                                                                                      // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material); // backup 4: just fallback to
-                                                                                       // dust...
+            ItemStack stack = GTUtil.getFirstNonEmpty(
+                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
+                    ChemicalHelper.get(TagPrefix.crushed, material),
+                    ChemicalHelper.get(TagPrefix.gem, material),
+                    ChemicalHelper.get(TagPrefix.ore, material),
+                    ChemicalHelper.get(TagPrefix.dust, material));
             return new ItemStackTexture(stack).scale(0.8f);
         }
 
@@ -344,7 +340,7 @@ public abstract class ProspectorMode<T> {
         public OreInfo deserialize(FriendlyByteBuf buf) {
             ResourceLocation materialId = buf.readResourceLocation();
             return new OreInfo(
-                    GTCEuAPI.materialManager.getRegistry(materialId.getNamespace()).get(materialId.getPath()),
+                    GTRegistries.MATERIALS.get(materialId),
                     buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 

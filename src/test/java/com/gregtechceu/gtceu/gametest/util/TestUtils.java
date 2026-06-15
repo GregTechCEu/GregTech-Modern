@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.gametest.util;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -10,31 +9,44 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedstoneLampBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTRIC;
 
@@ -43,7 +55,7 @@ public class TestUtils {
     /**
      * Compares two itemstacks' items and amounts
      * DOES NOT CHECK TAGS OR NBT ETC!
-     * 
+     *
      * @return {@code true} if items and amounts are equal
      */
     public static boolean isItemStackEqual(ItemStack stack1, ItemStack stack2) {
@@ -52,7 +64,7 @@ public class TestUtils {
 
     /**
      * Compares two itemstacks and a range.
-     * 
+     *
      * @return {@code true} if items are equal, and if stack2's amount is within range.
      */
     public static boolean isItemStackWithinRange(ItemStack stack1, ItemStack stack2, int min, int max) {
@@ -65,7 +77,7 @@ public class TestUtils {
      * multiplied.
      * This test can trigger false positives from bad luck and should be run more than once to reduce the odds of bad
      * luck.
-     * 
+     *
      * @return {@code true} if the size is an exact multiple of the total run count. TRUE INDICATES FAILURE.
      */
     public static boolean isStackSizeExactlyEvenMultiple(int size, int batches, int parallels, int runs) {
@@ -73,9 +85,24 @@ public class TestUtils {
     }
 
     /**
+     * Compares two itemstack[]s' items and amounts
+     * Necessary because itemStack does not implement .equals()
+     */
+    public static boolean areItemStacksEqual(ItemStack[] stack1, ItemStack[] stack2) {
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i = 0; i < stack1.length; i++) {
+            if (!isItemStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Compares two fluidstacks' fluids and amounts
      * DOES NOT CHECK TAGS OR NBT ETC!
-     * 
+     *
      * @return {@code true} if fluids and amounts are equal
      */
     public static boolean isFluidStackEqual(FluidStack stack1, FluidStack stack2) {
@@ -84,7 +111,7 @@ public class TestUtils {
 
     /**
      * Compares two fluidstacks and a range.
-     * 
+     *
      * @return {@code true} if items are equal, and if stack2's amount is within range.
      */
     public static boolean isFluidStackWithinRange(FluidStack stack1, FluidStack stack2, int min, int max) {
@@ -92,8 +119,23 @@ public class TestUtils {
     }
 
     /**
+     * Compares two fluidstack[]s' fluids and amounts
+     * Necessary because fluidStack's implementation of .equals() does not check amounts
+     */
+    public static boolean areFluidStacksEqual(FluidStack[] stack1, FluidStack[] stack2) {
+        if (stack1.length != stack2.length)
+            return false;
+
+        for (int i = 0; i < stack1.length; i++) {
+            if (!isFluidStackEqual(stack1[i], stack2[i]))
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * Compares an ItemStack with a range
-     * 
+     *
      * @return {@code true} if the ItemStack's count is within range
      */
     public static boolean isItemWithinRange(ItemStack stack, int min, int max) {
@@ -102,11 +144,20 @@ public class TestUtils {
 
     /**
      * Compares a FluidStack with a range
-     * 
+     *
      * @return {@code true} if the FluidStack's amount is within range
      */
     public static boolean isFluidWithinRange(FluidStack stack, int min, int max) {
         return stack.getAmount() <= max && stack.getAmount() >= min;
+    }
+
+    /**
+     * compares an integer with a range
+     *
+     * @return {@code true} if the integer count is within range
+     */
+    public static boolean isCountWithinRange(int stack, int min, int max) {
+        return stack <= max && stack >= min;
     }
 
     /**
@@ -124,7 +175,8 @@ public class TestUtils {
      */
     public static GTRecipeType createRecipeTypeAndInsertRecipe(String name, GTRecipeType original) {
         GTRecipeType type = createRecipeType(name, original);
-        type.getLookup().addRecipe(type
+        type.getAdditionHandler().beginStaging();
+        type.getAdditionHandler().addStaging(type
                 .recipeBuilder(GTCEu.id("test_recipe"))
                 .inputItems(new ItemStack(Items.COBBLESTONE))
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -172,6 +224,21 @@ public class TestUtils {
         return type;
     }
 
+    /**
+     * Fetches the set of Failed Recipes and Reasons from a machine's {@link RecipeLogic}
+     * Returns a newline-separated string of all failed recipes and their failure reasons
+     */
+    public static String getFailures(RecipeLogic recipeLogic) {
+        var reasons = recipeLogic.getFailureReasonMap();
+        StringBuilder failures = new StringBuilder();
+        if (!reasons.isEmpty()) {
+            for (var reason : reasons.entrySet()) {
+                failures.append(reason.getKey().id).append(" - ").append(reason).append("\n");
+            }
+        }
+        return failures.toString();
+    }
+
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
                                            Direction direction) {
         return placeCover(helper, machine, stack, direction, false);
@@ -197,7 +264,7 @@ public class TestUtils {
 
     public static MetaMachine setMachine(GameTestHelper helper, BlockPos pos, MachineDefinition machineDefinition) {
         helper.setBlock(pos, machineDefinition.getBlock());
-        return ((IMachineBlockEntity) Objects.requireNonNull(helper.getBlockEntity(pos))).getMetaMachine();
+        return ((MetaMachine) Objects.requireNonNull(helper.getBlockEntity(pos)));
     }
 
     public static void assertEqual(GameTestHelper helper, List<MutableComponent> text, String s) {
@@ -212,9 +279,10 @@ public class TestUtils {
     }
 
     public static void assertEqual(GameTestHelper helper, FluidStack stack1, FluidStack stack2) {
-        helper.assertTrue(isFluidStackEqual(stack1, stack2), "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
-                stack1.getDisplayName().getString(), stack1.getAmount(),
-                stack2.getDisplayName().getString(), stack2.getAmount()));
+        helper.assertTrue(stack1.isFluidStackIdentical(stack2),
+                "Fluid stacks not equal: \"%s %d\" != \"%s %d\"".formatted(
+                        stack1.getDisplayName().getString(), stack1.getAmount(),
+                        stack2.getDisplayName().getString(), stack2.getAmount()));
     }
 
     public static void assertLampOn(GameTestHelper helper, BlockPos pos) {
@@ -226,18 +294,8 @@ public class TestUtils {
     }
 
     /**
-     * Shortcut function to retrieve a metamachine from a blockentity's
-     * 
-     * @param entity The MetaMachineBlockEntity
-     * @return the machine held, if any
-     */
-    public static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
-    }
-
-    /**
      * Helper function to succeed after the test is over
-     * 
+     *
      * @param helper GameTestHelper
      */
     public static void succeedAfterTest(GameTestHelper helper) {
@@ -246,7 +304,7 @@ public class TestUtils {
 
     /**
      * Helper function to succeed after the test is over
-     * 
+     *
      * @param helper  GameTestHelper
      * @param timeout Ticks to wait until succeeding
      */
@@ -256,5 +314,98 @@ public class TestUtils {
 
     public static void assertEqual(GameTestHelper helper, @Nullable BlockPos pos1, @Nullable BlockPos pos2) {
         helper.assertTrue(pos1 != null && pos1.equals(pos2), "Expected %s to equal to %s".formatted(pos1, pos2));
+    }
+
+    public static void assertRedstone(GameTestHelper helper, BlockPos pos, int min, int max) {
+        BlockPos absolutePos = helper.absolutePos(pos);
+        int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
+        if (strength > max || strength < min) {
+            throw new GameTestAssertPosException(
+                    "Expected redstone signal between %d and %d, got %d".formatted(min, max, strength),
+                    absolutePos, pos, helper.getTick());
+        }
+    }
+
+    public static void assertRedstoneEither(GameTestHelper helper, BlockPos pos, int... values) {
+        BlockPos absolutePos = helper.absolutePos(pos);
+        int strength = helper.getLevel().getBestNeighborSignal(absolutePos);
+        boolean pass = false;
+        for (int i : values) {
+            if (i == strength) {
+                pass = true;
+                break;
+            }
+        }
+        if (!pass) {
+            throw new GameTestAssertPosException(
+                    "Expected redstone signal to be one of %s, got %d".formatted(values, strength),
+                    absolutePos, pos, helper.getTick());
+        }
+    }
+
+    public static ServerPlayer makeMockSurvivalServerPlayer(GameTestHelper helper) {
+        MinecraftServer server = helper.getLevel().getServer();
+        ServerPlayer player = new ServerPlayer(server, helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "test-mock-player")) {
+
+            @Override
+            public void tick() {
+                super.tick();
+                this.doTick();
+            }
+        };
+        player.setGameMode(GameType.SURVIVAL);
+
+        player.connection = new FakeServerGamePacketListenerImpl(server, player);
+        return player;
+    }
+
+    /**
+     * This function bypasses the requirement to register the entity to the world to tick it.<br>
+     * Basically a duplicate of {@link net.minecraft.server.level.ServerLevel#tick ServerLevel:329-353}.
+     * Do note that this method does <b>not</b> check whether the entity should be removed via despawn, or otherwise.
+     */
+    public static void tickEntity(GameTestHelper helper, Entity entity) {
+        if (entity.isRemoved()) return;
+        if (!(entity.level() instanceof ServerLevel level)) return;
+        ProfilerFiller profiler = level.getProfiler();
+
+        // don't tick the entity if it's in a vehicle to follow Vanilla ticking rules
+        Entity vehicle = entity.getVehicle();
+        if (vehicle != null) {
+            if (!vehicle.isRemoved() && vehicle.hasPassenger(entity)) return;
+            entity.stopRiding();
+        }
+
+        profiler.push("tick");
+        // don't tick part entities, like vanilla
+        if (!entity.isRemoved() && !(entity instanceof net.minecraftforge.entity.PartEntity)) {
+            level.guardEntityTick(level::tickNonPassenger, entity);
+        }
+        profiler.pop();
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item) {
+        return useItem(helper, player, item, InteractionHand.MAIN_HAND);
+    }
+
+    public static InteractionResultHolder<ItemStack> useItem(GameTestHelper helper, Player player, ItemStack item,
+                                                             InteractionHand hand) {
+        return item.use(helper.getLevel(), player, hand);
+    }
+
+    public static void assertHeldItemCountIs(GameTestHelper helper, Player player,
+                                             @Nullable Item item, int count, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (item != null && item != Items.AIR) {
+            helper.assertTrue(stack.is(item), "Item stack " + stack + " in hand " + hand + " is not a " + item);
+        }
+        helper.assertTrue(stack.getCount() == count,
+                "Item stack " + stack + " in hand " + hand + " should have " + count + " items, has " +
+                        stack.getCount());
+    }
+
+    public static void assertEntityAlive(GameTestHelper helper, Entity entity) {
+        helper.assertTrue(entity.isAlive(), "Entity " + entity + " should be alive");
     }
 }

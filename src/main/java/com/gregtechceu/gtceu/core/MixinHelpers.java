@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
@@ -124,7 +123,7 @@ public class MixinHelpers {
             }
             // If AE2 is loaded, add the Fluid P2P attunement tag to all the buckets
             var p2pFluidAttunements = new ResourceLocation(GTValues.MODID_APPENG, "p2p_attunements/fluid_p2p_tunnel");
-            for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            for (Material material : GTRegistries.MATERIALS.values()) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
                 if (property == null) {
                     continue;
@@ -176,6 +175,16 @@ public class MixinHelpers {
                         }
                     }
                 }
+
+                if (entry.tagPrefix() == TagPrefix.oreEndstone) {
+                    // Make endstone-based ores dragon-immune
+                    tagMap.computeIfAbsent(BlockTags.DRAGON_IMMUNE.location(), $ -> new ArrayList<>()).addAll(entries);
+                }
+
+                if (entry.tagPrefix() == TagPrefix.frameGt) {
+                    tagMap.computeIfAbsent(CustomTags.SLOW_WALKABLE_BLOCKS.location(), path -> new ArrayList<>())
+                            .addAll(entries);
+                }
             });
 
             GTRegistries.MACHINES.forEach(machine -> {
@@ -192,7 +201,7 @@ public class MixinHelpers {
                 tagList.add(makeTagEntry(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER));
             }
         } else if (registry == BuiltInRegistries.FLUID) {
-            for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
+            for (Material material : GTRegistries.MATERIALS.values()) {
                 FluidProperty property = material.getProperty(PropertyKey.FLUID);
                 if (property == null) {
                     continue;
@@ -269,11 +278,6 @@ public class MixinHelpers {
                             "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
-                        block = ChemicalHelper.getBlock(orePrefix, material);
-                    }
-
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
@@ -284,8 +288,8 @@ public class MixinHelpers {
                                     LootItem.lootTableItem(dropItem.getItem())
                                             .apply(SetItemCountFunction
                                                     .setCount(ConstantValue.exactly(oreMultiplier)))));
-                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for
-                    // balance reasons. (for now, until we can think of a better solution.)
+                    // disable fortune for balance reasons. (for now, until we can think of a better solution.)
+                    // .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))));
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
@@ -295,7 +299,6 @@ public class MixinHelpers {
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
                                     .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                                     .apply(LimitCount.limitCount(IntRange.range(0, 2)))
                                     .apply(ApplyExplosionDecay.explosionDecay()));
                             isEmpty = false;

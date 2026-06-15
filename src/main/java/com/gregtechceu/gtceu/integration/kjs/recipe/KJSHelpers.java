@@ -3,12 +3,21 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 
+import net.minecraft.core.Holder;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
+
+import com.google.common.collect.Lists;
+import dev.latvian.mods.kubejs.item.ingredient.TagContext;
+import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
 import dev.latvian.mods.kubejs.util.MapJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.Wrapper;
 import it.unimi.dsi.fastutil.longs.LongLongPair;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -103,5 +112,22 @@ public class KJSHelpers {
             }
         }
         return LongLongPair.of(voltage, amperage);
+    }
+
+    /**
+     * Resolves a fluid tag using KubeJS's TagContext during recipe (re)loading, since the server registry
+     * hasn't bound the tags yet. Returns null if a recipe event is not currently active.
+     * Analogous to KubeJS' TagContext::patchIngredientTags for items.
+     */
+    @Nullable
+    public static Collection<Fluid> getFluidsDuringLoad(TagKey<Fluid> tag) {
+        if (RecipesEventJS.instance == null) return null;
+
+        var holders = TagContext.INSTANCE.getValue().getTag(tag);
+        ArrayList<Fluid> list = Lists.newArrayList();
+        for (Holder<Fluid> holder : holders) {
+            list.add(holder.value());
+        }
+        return list;
     }
 }

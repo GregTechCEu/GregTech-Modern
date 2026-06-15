@@ -1,80 +1,71 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.apache.commons.lang3.StringUtils;
 import snownee.jade.api.BlockAccessor;
-import snownee.jade.api.IBlockComponentProvider;
-import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-public class AutoOutputBlockProvider implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+public class AutoOutputBlockProvider extends MachineTraitProvider<AutoOutputTrait, CompoundTag> {
+
+    public AutoOutputBlockProvider() {
+        super(GTCEu.id("auto_output_info"), AutoOutputTrait.TYPE);
+    }
 
     @Override
-    public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
-        BlockEntity be = blockAccessor.getBlockEntity();
-        if (be != null) {
-            CompoundTag data = blockAccessor.getServerData().getCompound(getUid().toString());
-            if (data.contains("autoOutputItem", Tag.TAG_COMPOUND)) {
-                var tag = data.getCompound("autoOutputItem");
-                addAutoOutputInfo(iTooltip, blockAccessor, tag, "gtceu.top.item_auto_output");
-            }
+    protected void addTooltip(CompoundTag data, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
+        if (data.contains("autoOutputItem", Tag.TAG_COMPOUND)) {
+            var tag = data.getCompound("autoOutputItem");
+            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.item_auto_output");
+        }
 
-            if (data.contains("autoOutputFluid", Tag.TAG_COMPOUND)) {
-                var tag = data.getCompound("autoOutputFluid");
-                addAutoOutputInfo(iTooltip, blockAccessor, tag, "gtceu.top.fluid_auto_output");
-            }
+        if (data.contains("autoOutputFluid", Tag.TAG_COMPOUND)) {
+            var tag = data.getCompound("autoOutputFluid");
+            addAutoOutputInfo(tooltip, block, tag, "gtceu.top.fluid_auto_output");
         }
     }
 
     @Override
-    public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
-        CompoundTag data = compoundTag.getCompound(getUid().toString());
-        var level = blockAccessor.getLevel();
-        var pos = blockAccessor.getPosition();
-        if (MetaMachine.getMachine(level, pos) instanceof IAutoOutputItem outputItem) {
-            var direction = outputItem.getOutputFacingItems();
+    protected CompoundTag write(AutoOutputTrait trait) {
+        var data = new CompoundTag();
+        if (trait.supportsAutoOutputItems()) {
+            var direction = trait.getItemOutputDirection();
             if (direction != null) {
-                data.put("autoOutputItem", writeData(new CompoundTag(), direction, blockAccessor,
-                        outputItem.isAllowInputFromOutputSideItems(), outputItem.isAutoOutputItems()));
+                data.put("autoOutputItem",
+                        writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
+                                trait.allowsItemInputFromOutputSide(), trait.isAutoOutputItems()));
             }
         }
-        if (MetaMachine.getMachine(level, pos) instanceof IAutoOutputFluid outputFluid) {
-            var direction = outputFluid.getOutputFacingFluids();
+        if (trait.supportsAutoOutputFluids()) {
+            var direction = trait.getFluidOutputDirection();
             if (direction != null) {
-                data.put("autoOutputFluid", writeData(new CompoundTag(), direction, blockAccessor,
-                        outputFluid.isAllowInputFromOutputSideFluids(), outputFluid.isAutoOutputFluids()));
+                data.put("autoOutputFluid",
+                        writeData(new CompoundTag(), direction, trait.getLevel(), trait.getBlockPos(),
+                                trait.allowsFluidInputFromOutputSide(), trait.isAutoOutputFluids()));
             }
         }
-        compoundTag.put(getUid().toString(), data);
+        return data;
     }
 
-    @Override
-    public ResourceLocation getUid() {
-        return GTCEu.id("auto_output_info");
-    }
-
-    private CompoundTag writeData(CompoundTag compoundTag, Direction direction, BlockAccessor blockAccessor,
+    private CompoundTag writeData(CompoundTag compoundTag, Direction direction, Level lvl, BlockPos pos,
                                   boolean allowInput, boolean auto) {
         compoundTag.putString("direction", direction.getName());
-        var level = blockAccessor.getLevel();
-        var pos = blockAccessor.getPosition().relative(direction);
-        if (level != null) {
-            var key = BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock());
-            compoundTag.putString("block", key.toString());
-        }
+        var key = BuiltInRegistries.BLOCK.getKey(lvl.getBlockState(pos).getBlock());
+        compoundTag.putString("block", key.toString());
         compoundTag.putBoolean("allowInput", allowInput);
         compoundTag.putBoolean("auto", auto);
         return compoundTag;

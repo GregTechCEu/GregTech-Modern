@@ -22,8 +22,7 @@ dependencies {
     modCompileOnly(forge.bundles.rei)
     modCompileOnly(forge.emi)
 
-    // WAILA-likes
-    modCompileOnly(forge.theoneprobe)
+    // Jade (WAILA)
     modCompileOnly(forge.jade)
 
     // Curios
@@ -43,8 +42,7 @@ dependencies {
     modCompileOnly(forge.architectury)
     modCompileOnly(forge.rhino)
 
-    // Shimmer
-    modCompileOnly(forge.shimmer)
+    // Performance
     modCompileOnly(forge.embeddium)
     modCompileOnly(forge.oculus)
     modCompileOnly(forge.modernfix)
@@ -59,6 +57,7 @@ dependencies {
 
     // Maps
     modCompileOnly(forge.ftbchunks)
+    modCompileOnly(forge.xaeroslib)
     modCompileOnly(forge.xaerosminimap)
     modCompileOnly(forge.xaerosworldmap)
     modCompileOnly(forge.journeymap.api)

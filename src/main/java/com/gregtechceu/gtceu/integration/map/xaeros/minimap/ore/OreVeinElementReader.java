@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 
 import xaero.hud.minimap.element.render.MinimapElementReader;
 import xaero.map.WorldMap;
+import xaero.map.common.config.option.WorldMapProfiledConfigOptions;
 
 public class OreVeinElementReader extends MinimapElementReader<OreVeinElement, OreVeinElementContext> {
 
@@ -42,12 +43,16 @@ public class OreVeinElementReader extends MinimapElementReader<OreVeinElement, O
 
     @Override
     public int getInteractionBoxTop(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
-        return WorldMap.settings.waypointBackgrounds ? -41 : -12;
+        boolean flag = WorldMap.INSTANCE.getConfigs().getClientConfigManager()
+                .getEffective(WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS);
+        return flag ? -41 : -12;
     }
 
     @Override
     public int getInteractionBoxBottom(OreVeinElement element, OreVeinElementContext context, float partialTicks) {
-        return WorldMap.settings.waypointBackgrounds ? 0 : 12;
+        boolean flag = WorldMap.INSTANCE.getConfigs().getClientConfigManager()
+                .getEffective(WorldMapProfiledConfigOptions.WAYPOINT_BACKGROUNDS);
+        return flag ? 0 : 12;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
 
-    public LDItemEndpointMachine(IMachineBlockEntity metaTileEntityId) {
-        super(metaTileEntityId, LDItemPipeType.INSTANCE);
+    public LDItemEndpointMachine(BlockEntityCreationInfo info) {
+        super(info, LDItemPipeType.INSTANCE);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class LDItemEndpointMachine extends LongDistanceEndpointMachine {
         if (endpoint == null) {
             return null;
         }
-        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getPos(), endpoint.getOutputFacing())
+        return GTTransferUtils.getAdjacentItemHandler(getLevel(), endpoint.getBlockPos(), endpoint.getOutputFacing())
                 .map(ItemHandlerWrapper::new)
                 .orElse(null);
     }

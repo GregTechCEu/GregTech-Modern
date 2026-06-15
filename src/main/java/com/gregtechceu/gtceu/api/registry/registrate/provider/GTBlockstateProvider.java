@@ -78,14 +78,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
     public MultiVariantGenerator multiVariantGenerator(Block block, Variant baseVariant) {
         var multiVariant = MultiVariantGenerator.multiVariant(block, baseVariant);
-        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiVariant));
-        return multiVariant;
+        return addVanillaGenerator(block, multiVariant);
     }
 
     public MultiPartGenerator multiPartGenerator(Block block) {
         var multiPart = MultiPartGenerator.multiPart(block);
-        registeredBlocks.put(block, new BlockStateGeneratorWrapper(multiPart));
-        return multiPart;
+        return addVanillaGenerator(block, multiPart);
+    }
+
+    public <T extends BlockStateGenerator> T addVanillaGenerator(Block block, T generator) {
+        registeredBlocks.put(block, new BlockStateGeneratorWrapper(generator));
+        return generator;
     }
 
     public static @Nullable PropertyDispatch createFacingDispatch(MachineDefinition definition) {
@@ -99,19 +102,17 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
 
         PropertyDispatch dispatch;
         if (!allowExtendedFacing) {
-            var disp = PropertyDispatch.property(rotationState.property);
-
-            dispatch = disp.generate((front) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, Direction.NORTH);
-                return applyOrientation(Variant.variant(), orientation);
-            });
+            dispatch = PropertyDispatch.property(rotationState.property)
+                    .generate((front) -> {
+                        var orientation = ExtendedBlockModelRotation.get(front, Direction.NORTH);
+                        return applyOrientation(Variant.variant(), orientation);
+                    });
         } else {
-            var disp = PropertyDispatch.properties(rotationState.property, GTBlockStateProperties.UPWARDS_FACING);
-
-            dispatch = disp.generate((front, up) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, up);
-                return applyOrientation(Variant.variant(), orientation);
-            });
+            dispatch = PropertyDispatch.properties(rotationState.property, GTBlockStateProperties.UPWARDS_FACING)
+                    .generate((front, up) -> {
+                        var orientation = ExtendedBlockModelRotation.get(front, up);
+                        return applyOrientation(Variant.variant(), orientation);
+                    });
         }
         return dispatch;
     }
