@@ -31,7 +31,6 @@ public class GTApicultureItemModelProvider extends ItemModelProvider {
                     .parent(forestryCombModel);
         }
 
-        // Crate models
         for (FeatureItem<ItemCrated> featureCrated : CrateItems.getCrates()) {
             Item containedItem = featureCrated.get().getContained().getItem();
             String id = featureCrated.getName();
