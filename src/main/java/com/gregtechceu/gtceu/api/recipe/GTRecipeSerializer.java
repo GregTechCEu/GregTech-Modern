@@ -25,22 +25,32 @@ import java.util.List;
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> {
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
+    private static final String TYPE = "type";
+    private static final String DURATION = "duration";
+    private static final String INPUTS = "inputs";
+    private static final String OUTPUTS = "outputs";
+    private static final String TICK_INPUTS = "tickInputs";
+    private static final String TICK_OUTPUTS = "tickOutputs";
+    private static final String RECIPE_CONDITIONS = "recipeConditions";
+    private static final String DATA = "data";
+    private static final String CATEGORY = "category";
+    private static final String TIER = "tier";
 
     @Override
     public @NotNull GTRecipeDefinition fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
-        ResourceLocation typeLoc = new ResourceLocation(GsonHelper.getAsString(json, "type"));
+        ResourceLocation typeLoc = new ResourceLocation(GsonHelper.getAsString(json, TYPE));
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(typeLoc);
-        int duration = GsonHelper.getAsInt(json, "duration", 0);
+        int duration = GsonHelper.getAsInt(json, DURATION, 0);
 
-        ContentListMap inputs = readContentMap(json, "inputs");
-        ContentListMap outputs = readContentMap(json, "outputs");
-        ContentListMap tickInputs = readContentMap(json, "tickInputs");
-        ContentListMap tickOutputs = readContentMap(json, "tickOutputs");
+        ContentListMap inputs = readContentMap(json, INPUTS);
+        ContentListMap outputs = readContentMap(json, OUTPUTS);
+        ContentListMap tickInputs = readContentMap(json, TICK_INPUTS);
+        ContentListMap tickOutputs = readContentMap(json, TICK_OUTPUTS);
 
         List<RecipeCondition<?>> conditions = readConditions(json);
         CompoundTag data = readData(json);
         GTRecipeCategory category = readCategory(json, recipeType);
-        int tier = GsonHelper.getAsInt(json, "tier", 0);
+        int tier = GsonHelper.getAsInt(json, TIER, 0);
 
         return new GTRecipeDefinition(id, recipeType, category, inputs, outputs, tickInputs, tickOutputs,
                 duration, conditions, data, tier);
@@ -48,19 +58,19 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
 
     public JsonObject toJson(GTRecipeDefinition recipe) {
         JsonObject json = new JsonObject();
-        json.addProperty("type", recipe.recipeType.registryName.toString());
-        json.addProperty("duration", recipe.duration);
-        writeContentMap(json, "inputs", recipe.inputs);
-        writeContentMap(json, "outputs", recipe.outputs);
-        writeContentMap(json, "tickInputs", recipe.tickInputs);
-        writeContentMap(json, "tickOutputs", recipe.tickOutputs);
+        json.addProperty(TYPE, recipe.recipeType.registryName.toString());
+        json.addProperty(DURATION, recipe.duration);
+        writeContentMap(json, INPUTS, recipe.inputs);
+        writeContentMap(json, OUTPUTS, recipe.outputs);
+        writeContentMap(json, TICK_INPUTS, recipe.tickInputs);
+        writeContentMap(json, TICK_OUTPUTS, recipe.tickOutputs);
         writeConditions(json, recipe.conditions);
         writeData(json, recipe.data);
         if (recipe.category != null && recipe.category != recipe.recipeType.getCategory()) {
-            json.addProperty("category", recipe.category.registryKey.toString());
+            json.addProperty(CATEGORY, recipe.category.registryKey.toString());
         }
         if (recipe.tier != 0) {
-            json.addProperty("tier", recipe.tier);
+            json.addProperty(TIER, recipe.tier);
         }
         return json;
     }
@@ -116,10 +126,10 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
     }
 
     private static List<RecipeCondition<?>> readConditions(JsonObject json) {
-        if (!GsonHelper.isArrayNode(json, "conditions")) {
+        if (!GsonHelper.isArrayNode(json, RECIPE_CONDITIONS)) {
             return new ArrayList<>();
         }
-        JsonArray array = GsonHelper.getAsJsonArray(json, "conditions");
+        JsonArray array = GsonHelper.getAsJsonArray(json, RECIPE_CONDITIONS);
         List<RecipeCondition<?>> conditions = new ArrayList<>(array.size());
         for (var element : array) {
             conditions.add(RecipeCondition.deserialize(element.getAsJsonObject()));
@@ -133,28 +143,28 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         for (RecipeCondition<?> condition : conditions) {
             array.add(condition.serialize());
         }
-        json.add("conditions", array);
+        json.add(RECIPE_CONDITIONS, array);
     }
 
     private static CompoundTag readData(JsonObject json) {
-        if (!json.has("data")) {
+        if (!json.has(DATA)) {
             return new CompoundTag();
         }
         var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        return (CompoundTag) ops.convertTo(NbtOps.INSTANCE, json.get("data"));
+        return (CompoundTag) ops.convertTo(NbtOps.INSTANCE, json.get(DATA));
     }
 
     private static void writeData(JsonObject json, CompoundTag data) {
         if (data == null || data.isEmpty()) return;
         var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
-        json.add("data", ops.convertTo(JsonOps.INSTANCE, data));
+        json.add(DATA, ops.convertTo(JsonOps.INSTANCE, data));
     }
 
     private static GTRecipeCategory readCategory(JsonObject json, GTRecipeType recipeType) {
-        if (!json.has("category")) {
+        if (!json.has(CATEGORY)) {
             return recipeType.getCategory();
         }
-        ResourceLocation categoryLoc = new ResourceLocation(GsonHelper.getAsString(json, "category"));
+        ResourceLocation categoryLoc = new ResourceLocation(GsonHelper.getAsString(json, CATEGORY));
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(categoryLoc);
         return category == null ? recipeType.getCategory() : category;
     }

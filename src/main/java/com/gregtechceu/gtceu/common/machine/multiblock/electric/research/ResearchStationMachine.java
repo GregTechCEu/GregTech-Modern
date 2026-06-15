@@ -76,14 +76,18 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
+        var builder = MultiblockDisplayText.builder(textList, isFormed())
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
                         "gtceu.multiblock.research_station.researching")
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
-                .addWorkingStatusLine()
-                .addComputationUsageLine(computationProvider.getMaxCWUt())
-                .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
+                .addWorkingStatusLine();
+
+        if(computationProvider != null) {
+            builder.addComputationUsageLine(computationProvider.getMaxCWUt());
+        }
+
+        builder.addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
     }
 }
