@@ -25,7 +25,7 @@ public abstract class BasePredicate {
     public static final BasePredicate AIR = new BasePredicate() {
 
         @Override
-        public String getDebugName() {
+        public String getTypeName() {
             return "Air";
         }
     };
@@ -33,7 +33,7 @@ public abstract class BasePredicate {
     public static final BasePredicate ANY = new BasePredicate() {
 
         @Override
-        public String getDebugName() {
+        public String getTypeName() {
             return "Any";
         }
     };
@@ -62,12 +62,18 @@ public abstract class BasePredicate {
         return true;
     }
 
-    /// computes the candidates for this predicate, called only once
+    /// computes the candidates for this predicate, lazily initialized
     public List<BlockInfo> computeCandidates() {
         return Collections.emptyList();
     }
 
-    public abstract @Nullable String getDebugName();
+    /// the type of this predicate
+    public abstract @Nullable String getTypeName();
+
+    /// the contents of this predicate
+    protected String getContents() {
+        return "";
+    }
 
     /// the main testing method
     public boolean test(PredicateContext ctx) {
@@ -108,7 +114,7 @@ public abstract class BasePredicate {
 
     /// used for tooltips
     public boolean isSingle() {
-        return getCandidates().size() == 1;
+        return true;
     }
 
     public boolean isController() {
@@ -246,7 +252,7 @@ public abstract class BasePredicate {
 
     @Override
     public String toString() {
-        return "Predicate{" + getDebugName() + "}";
+        return getTypeName() + "{" + getContents() + "}";
     }
 
     public BasePredicate or(BasePredicate other) {
@@ -258,8 +264,8 @@ public abstract class BasePredicate {
     }
 
     private static BasePredicate or(BasePredicate a, BasePredicate b) {
-        String name1 = a.getDebugName();
-        String name2 = b.getDebugName();
+        String name1 = a.getTypeName();
+        String name2 = b.getTypeName();
         if (name1 != null) {
             return or(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
         } else if (name2 != null) {
@@ -269,8 +275,8 @@ public abstract class BasePredicate {
     }
 
     private static BasePredicate and(BasePredicate a, BasePredicate b) {
-        String name1 = a.getDebugName();
-        String name2 = b.getDebugName();
+        String name1 = a.getTypeName();
+        String name2 = b.getTypeName();
         if (name1 != null) {
             return and(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
         } else if (name2 != null) {
@@ -280,18 +286,10 @@ public abstract class BasePredicate {
     }
 
     public static BasePredicate or(String debugName, List<BasePredicate> predicates) {
-        MultiPredicate predicate = new MultiPredicate(debugName);
-        for (BasePredicate basePredicate : predicates) {
-            predicate = predicate.or(basePredicate);
-        }
-        return predicate;
+        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.OR);
     }
 
     public static BasePredicate and(String debugName, List<BasePredicate> predicates) {
-        MultiPredicate predicate = new MultiPredicate(debugName);
-        for (BasePredicate basePredicate : predicates) {
-            predicate = predicate.and(basePredicate);
-        }
-        return predicate;
+        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
     }
 }

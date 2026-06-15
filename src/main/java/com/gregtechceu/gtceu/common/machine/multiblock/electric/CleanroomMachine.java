@@ -502,7 +502,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "InnerPredicate";
             }
         };

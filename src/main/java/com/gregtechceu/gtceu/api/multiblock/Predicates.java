@@ -25,7 +25,10 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -64,12 +67,17 @@ public class Predicates {
 
             @Override
             public List<BlockInfo> computeCandidates() {
-                return predicate.computeCandidates();
+                return predicate.getCandidates();
             }
 
             @Override
-            public String getDebugName() {
-                return "Controller{" + predicate + "}";
+            public String getTypeName() {
+                return "Controller";
+            }
+
+            @Override
+            protected String getContents() {
+                return predicate.toString();
             }
 
             @Override
@@ -100,13 +108,15 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                if (debugName == null) {
-                    return "States{" + states.size() + "}";
-                } else {
-                    return "States#" + debugName + "{" + states.size() + "}";
+            public String getTypeName() {
+                return debugName == null ? "States" : "States#" + debugName;
+            }
 
-                }
+            @Override
+            protected String getContents() {
+                StringJoiner joiner = new StringJoiner(", ");
+                states.forEach(state -> joiner.add(blockToString(state)));
+                return joiner.toString();
             }
         };
     }
@@ -125,10 +135,25 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                return block.toString();
+            public String getTypeName() {
+                return "Block";
+            }
+
+            @Override
+            protected String getContents() {
+                return blockToString(block);
             }
         };
+    }
+
+    private static String blockToString(BlockState blockState) {
+        return blockToString(blockState.getBlock());
+    }
+
+    private static String blockToString(Block block) {
+        return ForgeRegistries.BLOCKS.getDelegate(block)
+                .map(r -> r.key().location().toString())
+                .orElse("unknown");
     }
 
     public static BasePredicate blocks(Block... blocks) {
@@ -154,12 +179,15 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                if (debugName == null) {
-                    return "Blocks{" + blockList.size() + "}";
-                } else {
-                    return "Blocks#" + debugName + "{" + blockList.size() + "}";
-                }
+            public String getTypeName() {
+                return debugName == null ? "Blocks" : "Blocks#" + debugName;
+            }
+
+            @Override
+            protected String getContents() {
+                StringJoiner joiner = new StringJoiner(", ");
+                blockList.forEach(block -> joiner.add(block.toString()));
+                return joiner.toString();
             }
         };
     }
@@ -187,8 +215,13 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                return "BlockTag{" + tag.location() + "}";
+            public String getTypeName() {
+                return "BlockTag";
+            }
+
+            @Override
+            protected String getContents() {
+                return tag.location().toString();
             }
         };
     }
@@ -213,8 +246,17 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                return "Fluids{" + fluidList.size() + "}";
+            public String getTypeName() {
+                return "Fluids";
+            }
+
+            @Override
+            protected String getContents() {
+                StringJoiner joiner = new StringJoiner(", ");
+                fluidList.forEach(fluid -> joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
+                        .map(r -> r.key().location().toString())
+                        .orElse("unknown")));
+                return joiner.toString();
             }
         };
     }
@@ -235,8 +277,13 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                return "Fluids{" + tag.location() + "}";
+            public String getTypeName() {
+                return "FluidTag";
+            }
+
+            @Override
+            protected String getContents() {
+                return tag.location().toString();
             }
         };
     }
@@ -263,7 +310,7 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "Custom";
             }
         };
@@ -295,8 +342,13 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
-                return "Ability{" + ability.getName() + "}";
+            public String getTypeName() {
+                return "AbilityPredicate";
+            }
+
+            @Override
+            protected String getContents() {
+                return ability.getName();
             }
         };
     }
@@ -305,19 +357,16 @@ public class Predicates {
         return new BasePredicate() {
 
             final List<PartAbility> abilityList = List.of(abilities);
-            final String debugName = computeDebugName();
 
             @Override
             public boolean testInternal(PredicateContext ctx) {
-                List<PartAbilityError> errors = new ArrayList<>();
                 for (PartAbility ability : this.abilityList) {
                     if (ability.getAllBlocks().contains(ctx.state().getBlock())) {
                         return true;
                     } else {
-                        errors.add(new PartAbilityError(ctx.pos(), ability));
+                        ctx.error(new PartAbilityError(ctx.pos(), ability));
                     }
                 }
-                errors.forEach(ctx::error);
                 return false;
             }
 
@@ -329,17 +378,18 @@ public class Predicates {
                         .toList();
             }
 
-            private String computeDebugName() {
+            @Override
+            public String getTypeName() {
+                return "AbilitiesPredicate";
+            }
+
+            @Override
+            protected String getContents() {
                 StringJoiner sb = new StringJoiner(", ");
                 for (PartAbility ability : this.abilityList) {
                     sb.add(ability.getName());
                 }
                 return sb.toString();
-            }
-
-            @Override
-            public String getDebugName() {
-                return "Abilities{" + debugName + "}";
             }
         };
     }
@@ -348,7 +398,6 @@ public class Predicates {
         return new BasePredicate() {
 
             final Collection<Block> blockList = ability.getBlocks(tiers);
-            final String debugName = computeDebugName();
 
             @Override
             public boolean testInternal(PredicateContext ctx) {
@@ -362,17 +411,18 @@ public class Predicates {
                         .toList();
             }
 
-            private String computeDebugName() {
+            @Override
+            public String getTypeName() {
+                return "TieredAbilityPredicate";
+            }
+
+            @Override
+            protected String getContents() {
                 StringJoiner sb = new StringJoiner("-");
                 for (int tier : tiers) {
                     sb.add(GTValues.VN[tier]);
                 }
                 return ability.getName() + sb;
-            }
-
-            @Override
-            public String getDebugName() {
-                return "Ability{" + debugName + "}";
             }
         };
     }
@@ -507,7 +557,7 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "HeatingCoils";
             }
         };
@@ -537,7 +587,7 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "CleanroomFilters";
             }
         };
@@ -567,7 +617,7 @@ public class Predicates {
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "PSSBatteries";
             }
         };
@@ -619,27 +669,30 @@ public class Predicates {
                 .filter(RegistryEntry::isPresent)
                 .map(RegistryEntry::get)
                 .toArray(Block[]::new);
-        return blocks(frameBlocks)
-                .or(new BasePredicate() {
-                    @Override
-                    public boolean testInternal(PredicateContext ctx) {
-                        BlockEntity tileEntity = ctx.blockEntity();
-                        if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                            return ctx.error(PLACEHOLDER);
-                        }
-                        return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
-                                ctx.error(PLACEHOLDER);
-                    }
+        return blocks(frameBlocks).or(framedPipes(frameMaterials, frameBlocks));
+    }
 
-                    @Override
-                    public List<BlockInfo> computeCandidates() {
-                        return Arrays.stream(frameBlocks).map(BlockInfo::fromBlock).toList();
-                    }
+    public static BasePredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
+        return new BasePredicate() {
+            @Override
+            public boolean testInternal(PredicateContext ctx) {
+                BlockEntity tileEntity = ctx.blockEntity();
+                if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                    return ctx.error(PLACEHOLDER);
+                }
+                return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
+                        ctx.error(PLACEHOLDER);
+            }
 
-                    @Override
-                    public String getDebugName() {
-                        return "FramedPipes";
-                    }
-                });
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return Arrays.stream(frameBlocks).map(BlockInfo::fromBlock).toList();
+            }
+
+            @Override
+            public String getTypeName() {
+                return "FramedPipes";
+            }
+        };
     }
 }

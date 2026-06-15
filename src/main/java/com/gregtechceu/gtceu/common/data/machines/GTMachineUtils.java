@@ -767,7 +767,7 @@ public class GTMachineUtils {
             }
 
             @Override
-            public String getDebugName() {
+            public String getTypeName() {
                 return "RotorHolder";
             }
         };

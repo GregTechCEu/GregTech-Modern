@@ -14,10 +14,12 @@ import java.util.stream.Stream;
 public class MultiPredicate extends BasePredicate {
 
     private final List<BasePredicate> predicateList = new ArrayList<>();
-    private @Nullable String debugName;
+    private final @Nullable String debugName;
     private @Nullable Logic type;
 
-    public MultiPredicate() {}
+    public MultiPredicate() {
+        this(null);
+    }
 
     public MultiPredicate(@Nullable String debugName) {
         this.debugName = debugName;
@@ -176,7 +178,12 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public @Nullable String getDebugName() {
+    public boolean isSingle() {
+        return false;
+    }
+
+    @Override
+    public @Nullable String getTypeName() {
         StringBuilder builder = new StringBuilder("Multi")
                 .append('(')
                 .append(this.type == null ? "INVAlID" : this.type)
@@ -185,7 +192,7 @@ public class MultiPredicate extends BasePredicate {
             builder.append('#').append(debugName);
         }
         StringJoiner joiner = new StringJoiner(", ");
-        this.predicateList.forEach(p -> joiner.add(p.getDebugName()));
+        this.predicateList.forEach(p -> joiner.add(p.getTypeName()));
         return builder.append('{')
                 .append(joiner)
                 .append('}')
@@ -193,7 +200,8 @@ public class MultiPredicate extends BasePredicate {
     }
 
     protected enum Logic {
-        OR, AND,
+        OR,
+        AND,
         XOR // unused
     }
 }
