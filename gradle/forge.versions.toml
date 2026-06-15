@@ -28,7 +28,7 @@ xaerosLib = "1.1.0"
 xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
 patchouli = "1.20.1-84.1-FORGE"
-forestry  = "2.4.0"
+forestry  = "2.10.2"
 
 ## modrinth maven ##
 jade = "11.6.3"
