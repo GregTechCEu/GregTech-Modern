@@ -121,6 +121,7 @@ dependencies {
 
 
     modLocalRuntime(forge.patchouli)
+    modCompileOnly(forge.forestry)
     modLocalRuntime(forge.forestry)
 
     //todo
