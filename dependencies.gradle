@@ -120,7 +120,7 @@ dependencies {
     modExtraLocalRuntime(forge.flywheel.forge)
 
     // patchouli
-    modCompileOnly(variantOf(forge.patchouli) { classifier("FORGE-api") })
+    modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
     modExtraLocalRuntime(forge.patchouli)
 
     // Forestry
