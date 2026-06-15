@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -112,11 +112,11 @@ public class PatternState {
     }
 
     public PredicateContext toContext(Consumer<PatternError> errorConsumer) {
-        return PredicateContext.of(this.cbi, errorConsumer, this.globalCount, this.layerCount);
+        return PredicateContext.of(this.currentBlockInfo, errorConsumer, this.globalCount, this.layerCount);
     }
 
     public PredicateContext noLayer(Consumer<PatternError> errorConsumer) {
-        return PredicateContext.of(this.cbi, errorConsumer, this.globalCount, null);
+        return PredicateContext.of(this.currentBlockInfo, errorConsumer, this.globalCount, null);
     }
 
     @Getter

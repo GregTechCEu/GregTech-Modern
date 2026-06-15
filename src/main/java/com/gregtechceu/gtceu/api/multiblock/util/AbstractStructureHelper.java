@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.multiblock.util;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
@@ -29,9 +28,9 @@ public abstract class AbstractStructureHelper {
             Direction.EAST, Direction.UP, Direction.DOWN };
 
     @Getter
-    protected final HashBasedTable<PatternPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
+    protected final HashBasedTable<BasePredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
             .create();
-    protected final HashBasedTable<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
+    protected final HashBasedTable<BasePredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
             .create();
     protected @Nullable Block controllerBlock;
 
@@ -43,7 +42,7 @@ public abstract class AbstractStructureHelper {
         return new ExpandablePatternHelper(sliceRepeats);
     }
 
-    public Table<PatternPredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
+    public Table<BasePredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
         return this.minMaxPreferences;
     }
 
@@ -70,18 +69,18 @@ public abstract class AbstractStructureHelper {
     protected abstract void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
 
-    public abstract PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
-                                                         Direction frontFacing, Direction upFacing, boolean isFlipped);
+    public abstract BasePredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
+                                                      Direction frontFacing, Direction upFacing, boolean isFlipped);
 
-    protected int getMinCount(PatternPredicate predicate, BasePredicate basePredicate) {
+    protected int getMinCount(BasePredicate predicate, BasePredicate basePredicate) {
         if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.minCount;
+            return basePredicate.getMinCount();
         return minMaxPreferences.get(predicate, basePredicate).leftInt();
     }
 
-    protected int getMaxCount(PatternPredicate predicate, BasePredicate basePredicate) {
+    protected int getMaxCount(BasePredicate predicate, BasePredicate basePredicate) {
         if (!minMaxPreferences.contains(predicate, basePredicate))
-            return basePredicate.maxCount;
+            return basePredicate.getMaxCount();
         return minMaxPreferences.get(predicate, basePredicate).rightInt();
     }
 

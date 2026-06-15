@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.mui;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -120,7 +119,7 @@ public class MultiblockSchemaInfo {
         this.userDimensions.clear();
     }
 
-    public void putPredicatePreference(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
+    public void putPredicatePreference(BasePredicate predicate, BasePredicate basePredicate, BlockInfo info) {
         this.structureHelper.getBlockPreferences().put(predicate, basePredicate, info);
     }
 }

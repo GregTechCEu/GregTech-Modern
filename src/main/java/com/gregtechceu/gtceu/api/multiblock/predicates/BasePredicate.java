@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -15,11 +13,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-@Accessors(chain=true)
+@Accessors(chain = true)
 public abstract class BasePredicate {
 
     public static final BasePredicate AIR = new BasePredicate() {
@@ -40,21 +42,29 @@ public abstract class BasePredicate {
 
     private @Nullable List<BlockInfo> candidates;
     private @Nullable List<Component> tooltips;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int priority = 0;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int minCount = -1;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int maxCount = -1;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int minSliceCount = -1;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int maxSliceCount = -1;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int previewCount = -1;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean disableRenderFormed = false;
-    @Getter @Setter
+    @Getter
+    @Setter
     private @Nullable String nbtParser; // unsure what this does
 
     /// custom testing logic, usually checking if blockstate/entity is correct

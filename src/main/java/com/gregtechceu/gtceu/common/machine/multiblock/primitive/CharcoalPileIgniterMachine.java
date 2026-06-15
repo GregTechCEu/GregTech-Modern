@@ -7,13 +7,12 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
@@ -151,18 +150,18 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         };
     }
 
-    private BasePredicate wallPredicate() {
+    private static BasePredicate wallPredicate() {
         return Predicates.customFunction(multiblockState -> {
-                    BlockPos p = multiblockState.getBlockPos();
-                    return multiblockState.getBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
-                            null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
-                                    p.getX(), p.getY(), p.getZ()));
-                }, null);
+            BlockPos p = multiblockState.getBlockPos();
+            return multiblockState.retrieveCurrentBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
+                    null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.walls",
+                            p.getX(), p.getY(), p.getZ()));
+        }, null);
     }
 
-    private BasePredicate logPredicate() {
+    private static BasePredicate logPredicate() {
         return Predicates.customFunction(multiblockState -> {
-            boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
+            boolean match = multiblockState.retrieveCurrentBlockState().is(BlockTags.LOGS_THAT_BURN);
             return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
         }, null);
     }

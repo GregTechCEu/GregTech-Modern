@@ -24,7 +24,6 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -742,16 +741,19 @@ public class GTMachineUtils {
     }
 
     private static BasePredicate rotorHolder(int tier) {
-        return new BasePredicate() {{
-            addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"));
-            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
-        }
+        return new BasePredicate() {
+
+            {
+                addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"));
+                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
+            }
+
             @Override
             public boolean testInternal(@NotNull PredicateContext ctx) {
                 if (MetaMachine.getMachine(ctx.level(),
                         ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&
                         ctx.level().getBlockState(ctx.pos()
-                                        .relative(rotorHolder.getFrontFacing()))
+                                .relative(rotorHolder.getFrontFacing()))
                                 .isAir()) {
                     return true;
                 }

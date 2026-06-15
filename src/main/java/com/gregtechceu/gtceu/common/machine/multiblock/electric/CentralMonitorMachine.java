@@ -11,9 +11,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.multiblock.*;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.*;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -62,7 +65,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private static @Nullable BasePredicate MULTI_PREDICATE = null;
+    private static @Nullable MultiPredicate MULTI_PREDICATE = null;
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
         super(info, new CentralMonitorLogic());

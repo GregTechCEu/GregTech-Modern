@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
@@ -341,7 +340,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                             candidates.get(0))))
                                             .size(16)
                                             .tooltip(r -> r.add(
-                                                    basePredicate.getCandidates().get(0).getItemStackForm().getHoverName()))
+                                                    basePredicate.getCandidates().get(0).getItemStackForm()
+                                                            .getHoverName()))
                                             .overlay(new ItemDrawable(
                                                     candidates.get(0).getItemStackForm()));
                                 }

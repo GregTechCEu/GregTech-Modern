@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -89,7 +88,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         // this basically means the x val of the iter is aisle count, y is str count, and z is char count.
         for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
-            PatternPredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
+            BasePredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             setFromDirection(mutablePos, absolutes[0], pos.getX());
@@ -108,9 +107,9 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, BasePredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.subPredicates) {
+        for (BasePredicate basePredicate : predicate.expand()) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
@@ -129,9 +128,9 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
         return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
+    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, BasePredicate predicate,
                                 BlockPos pos) {
-        for (BasePredicate basePredicate : predicate.subPredicates) {
+        for (BasePredicate basePredicate : predicate.expand()) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -151,8 +150,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     @Override
-    public PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
-                                                Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    public BasePredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
+                                             Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
         Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped)
                 .absolutes();

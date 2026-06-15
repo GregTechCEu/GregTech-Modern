@@ -3,13 +3,15 @@ package com.gregtechceu.gtceu.api.multiblock;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -20,7 +22,7 @@ public record PredicateContext(CurrentBlockInfo blockInfo,
                                Object2IntMap<BasePredicate> globalCache,
                                @Nullable Object2IntMap<BasePredicate> layerCache) {
 
-    ///  accepts a pattern error
+    /// accepts a pattern error
     /// @return false
     public boolean error(PatternError error) {
         this.errorConsumer.accept(error);

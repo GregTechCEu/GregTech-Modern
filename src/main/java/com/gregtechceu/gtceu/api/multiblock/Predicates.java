@@ -23,12 +23,9 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,6 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +84,10 @@ public class Predicates {
                 return true;
             }
         };
+    }
+
+    public static BasePredicate states(BlockState... allowedStates) {
+        return states(null, allowedStates);
     }
 
     public static BasePredicate states(@Nullable String debugName, BlockState... allowedStates) {
@@ -263,6 +266,7 @@ public class Predicates {
 
     public static BasePredicate fluidTag(TagKey<Fluid> tag) {
         return new BasePredicate() {
+
             @Override
             public boolean testInternal(PredicateContext ctx) {
                 return ctx.fluidState().is(tag) || ctx.error(PLACEHOLDER);
@@ -299,6 +303,7 @@ public class Predicates {
     public static BasePredicate customPredicate(Predicate<PredicateContext> predicate,
                                                 @Nullable List<BlockInfo> candidates) {
         return new BasePredicate() {
+
             @Override
             public boolean testInternal(PredicateContext ctx) {
                 return predicate.test(ctx);
@@ -331,7 +336,8 @@ public class Predicates {
 
             @Override
             public boolean testInternal(PredicateContext ctx) {
-                return blockList.contains(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability));
+                return blockList.contains(ctx.state().getBlock()) ||
+                        ctx.error(new PartAbilityError(ctx.pos(), ability));
             }
 
             @Override
@@ -401,7 +407,8 @@ public class Predicates {
 
             @Override
             public boolean testInternal(PredicateContext ctx) {
-                return blockList.contains(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability));
+                return blockList.contains(ctx.state().getBlock()) ||
+                        ctx.error(new PartAbilityError(ctx.pos(), ability));
             }
 
             @Override
@@ -432,9 +439,9 @@ public class Predicates {
     }
 
     public static BasePredicate autoAbilities(GTRecipeType[] recipeType,
-                                                 boolean checkEnergyIn, boolean checkEnergyOut,
-                                                 boolean checkItemIn, boolean checkItemOut,
-                                                 boolean checkFluidIn, boolean checkFluidOut) {
+                                              boolean checkEnergyIn, boolean checkEnergyOut,
+                                              boolean checkItemIn, boolean checkItemOut,
+                                              boolean checkFluidIn, boolean checkFluidOut) {
         List<BasePredicate> predicates = new ArrayList<>();
 
         if (checkEnergyIn) {
@@ -497,7 +504,7 @@ public class Predicates {
     }
 
     public static BasePredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
-                                                 boolean checkParallel) {
+                                              boolean checkParallel) {
         List<BasePredicate> predicates = new ArrayList<>();
         if (checkMaintenance) {
             predicates.add(abilities(PartAbility.MAINTENANCE)
@@ -520,10 +527,12 @@ public class Predicates {
     }
 
     public static BasePredicate heatingCoils() {
-        return new BasePredicate() {{
-            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
-            setPriority(0);
-        }
+        return new BasePredicate() {
+
+            {
+                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
+                setPriority(0);
+            }
 
             private List<Block> getCoils() {
                 return GTCEuAPI.HEATING_COILS.values()
@@ -564,9 +573,12 @@ public class Predicates {
     }
 
     public static BasePredicate cleanroomFilters() {
-        return new BasePredicate() {{
-            addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
-        }
+        return new BasePredicate() {
+
+            {
+                addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
+            }
+
             @Override
             public boolean testInternal(PredicateContext ctx) {
                 var blockState = ctx.state();
@@ -594,9 +606,12 @@ public class Predicates {
     }
 
     public static BasePredicate powerSubstationBatteries() {
-        return new BasePredicate() {{
-            addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
-        }
+        return new BasePredicate() {
+
+            {
+                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+            }
+
             @Override
             public boolean testInternal(PredicateContext ctx) {
                 var state = ctx.state();
@@ -674,6 +689,7 @@ public class Predicates {
 
     public static BasePredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
         return new BasePredicate() {
+
             @Override
             public boolean testInternal(PredicateContext ctx) {
                 BlockEntity tileEntity = ctx.blockEntity();

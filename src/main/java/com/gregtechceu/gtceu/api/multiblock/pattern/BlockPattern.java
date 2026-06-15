@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -19,7 +19,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.BiPredicate;
 
 public class BlockPattern implements IBlockPattern {
 
@@ -219,7 +218,6 @@ public class BlockPattern implements IBlockPattern {
                     BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
-
 
                 List<PatternError> res = new ArrayList<>();
                 boolean passed = pred.test(patternState.toContext(res::add));
