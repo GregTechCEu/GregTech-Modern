@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/ingot_casting_mold"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "gtceu:block/casings/gcym/industrial_steam_casing"
-  }
-}

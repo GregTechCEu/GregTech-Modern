@@ -39,6 +39,11 @@ repositories {
         url = "https://jitpack.io"
         content { includeGroup("com.github.thedarkcolour") }
     }
+    maven {
+        name = 'ModKit'
+        url 'https://jitpack.io'
+        content { includeGroup 'com.github.thedarkcolour' }
+    }
 
 
     exclusiveContent { // Create, Ponder, Flywheel

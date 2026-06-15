@@ -29,6 +29,7 @@ xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
 patchouli = "1.20.1-84.1-FORGE"
 forestry  = "2.10.2"
+modkit = "0302f9aa42"
 
 ## modrinth maven ##
 jade = "11.6.3"
@@ -96,6 +97,7 @@ xaerosminimap       = { module = "xaero.minimap:xaerominimap-forge-1.20.1", vers
 
 patchouli = { module = "vazkii.patchouli:Patchouli", version.ref = "patchouli" }
 forestry  = { module = "maven.modrinth:forestry-community-edition", version.ref = "forestry" }
+modkit = { module = "com.github.thedarkcolour:ModKit", version.ref = "modkit" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }

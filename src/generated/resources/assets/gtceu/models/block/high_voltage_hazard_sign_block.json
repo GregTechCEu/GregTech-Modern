@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "gtceu:block/casings/signs/machine_casing_highvoltagehazard"
-  }
-}

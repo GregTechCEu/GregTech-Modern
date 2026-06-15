@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/outer_stairs",
-  "textures": {
-    "bottom": "gtceu:block/treated_wood_planks",
-    "side": "gtceu:block/treated_wood_planks",
-    "top": "gtceu:block/treated_wood_planks"
-  }
-}

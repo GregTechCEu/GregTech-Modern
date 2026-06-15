@@ -1,8 +1,0 @@
-{
-  "parent": "gtceu:block/machine/template/sided/sided",
-  "textures": {
-    "bottom": "gtceu:block/casings/voltage/luv/bottom",
-    "side": "gtceu:block/casings/voltage/luv/side",
-    "top": "gtceu:block/casings/voltage/luv/top"
-  }
-}
