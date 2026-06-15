@@ -85,7 +85,9 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         if (controller.getDefaultPatternState().isFormed()) {
             return InteractionResult.PASS;
         }
-        this.refreshSchema();
+        if (controller.getDefinition() == this.multiblockDefinition) {
+            this.refreshSchema();
+        }
         if (this.structureBlocks == null || this.structureBlocks.isEmpty()) {
             return InteractionResult.PASS;
         }
