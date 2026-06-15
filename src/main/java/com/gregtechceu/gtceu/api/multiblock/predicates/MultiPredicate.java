@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
@@ -21,6 +23,11 @@ public class MultiPredicate extends BasePredicate {
         this.debugName = debugName;
     }
 
+    protected MultiPredicate(List<BasePredicate> predicates, Logic type) {
+        this.type = type;
+        addPredicates(predicates);
+    }
+
     @Override
     public boolean test(PredicateContext ctx) {
         for (BasePredicate predicate : predicateList) {
@@ -31,6 +38,16 @@ public class MultiPredicate extends BasePredicate {
             }
         }
         return false;
+    }
+
+    protected MultiPredicate addPredicates(List<BasePredicate> predicates) {
+        predicates.forEach(this::addPredicates);
+        return this;
+    }
+
+    protected MultiPredicate addPredicates(BasePredicate predicate) {
+        this.predicateList.add(predicate);
+        return this;
     }
 
     @Override
@@ -101,51 +118,68 @@ public class MultiPredicate extends BasePredicate {
         return this.type != null;
     }
 
-    @Override
-    public MultiPredicate or(BasePredicate other) {
-        if (!isValid()) {
-            this.type = Logic.OR;
-        }
-        if (!(other instanceof MultiPredicate multi)) {
-            this.predicateList.add(other);
-            return this;
-        }
-
-        if (!isOr()) return multi.or(this);
-
-        if (multi.isOr()) {
-            this.predicateList.addAll(multi.predicateList);
-        } else if (multi.isAnd()) {
-            this.predicateList.add(multi);
-        }
-
-        return this;
+    protected Logic getType() {
+        return Objects.requireNonNull(type, "null type: " + this);
     }
 
     @Override
-    public MultiPredicate and(BasePredicate other) {
-        if (!isValid()) {
-            this.type = Logic.AND;
+    public boolean hasAir() {
+        for (BasePredicate predicate : predicateList) {
+            if (predicate.hasAir()) return true;
         }
+        return false;
+    }
+
+    @Override
+    @Contract(pure = true)
+    public MultiPredicate or(BasePredicate other) {
+        if (!isValid()) this.type = Logic.OR;
+
+        var predicate = new MultiPredicate(this.predicateList, this.getType());
         if (!(other instanceof MultiPredicate multi)) {
-            this.predicateList.add(other);
-            return this;
+            return predicate.addPredicates(other);
         }
 
+        if (!multi.isValid()) multi.type = Logic.OR;
+        if (!isOr()) return multi.or(this);
+
+        if (multi.isOr()) {
+            predicate.addPredicates(multi.predicateList);
+        } else if (multi.isAnd()) {
+            predicate.addPredicates(multi);
+        }
+
+        return predicate;
+    }
+
+    @Override
+    @Contract(pure = true)
+    public MultiPredicate and(BasePredicate other) {
+        if (!isValid()) this.type = Logic.AND;
+
+        var predicate = new MultiPredicate(this.predicateList, this.getType());
+        if (!(other instanceof MultiPredicate multi)) {
+            return predicate.addPredicates(other);
+        }
+
+        if (!multi.isValid()) multi.type = Logic.AND;
         if (!isAnd()) return multi.and(this);
 
         if (multi.isAnd()) {
-            this.predicateList.addAll(multi.predicateList);
+            predicate.addPredicates(multi.predicateList);
         } else if (multi.isOr()) {
-            this.predicateList.add(multi);
+            predicate.addPredicates(multi);
         }
 
-        return this;
+        return predicate;
     }
 
     @Override
     public String getDebugName() {
-        StringBuilder builder = new StringBuilder("Multi");
+        StringBuilder builder = new StringBuilder("Multi")
+                .append('(')
+                .append(this.type == null ? "INVAlID" : this.type)
+                .append(')');
         if (debugName != null) {
             builder.append('#').append(debugName);
         }
