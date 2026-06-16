@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.client.renderer.cover.CoverTextRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -220,6 +221,9 @@ public class ComputerMonitorCover extends CoverBehavior
                 (syncManager1, panelHandler1) -> PlaceholderHandler.createHelpPanel());
         return PlaceholderHandler.createPlaceholderEditorPanel(
                 "main", createPlaceholderContext(),
-                codeSync, null, intervalSync, null, helpPanel, null);
+                codeSync, null, intervalSync, null, helpPanel, null)
+                .child(GTMuiWidgets.verticalPlayerInventory((index, slot) -> slot)
+                        .verticalCenter()
+                        .left(-80));
     }
 }
