@@ -25,6 +25,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     protected final Map<K, V> keyToValue;
     protected final Map<V, K> valueToKey;
+    protected final Map<K, K> alias;
     @Getter
     protected final ResourceLocation registryName;
     @Getter
@@ -33,13 +34,14 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     public GTRegistry(ResourceLocation registryName) {
         this.keyToValue = new HashMap<>();
         this.valueToKey = new HashMap<>();
+        this.alias = new HashMap<>();
         this.registryName = registryName;
 
         REGISTERED.put(registryName, this);
     }
 
     public boolean containKey(K key) {
-        return keyToValue.containsKey(key);
+        return keyToValue.containsKey(key) || alias.containsKey(key);
     }
 
     public boolean containValue(V value) {
@@ -87,21 +89,46 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return registerOrOverride(key, value);
     }
 
-    public void remap(K oldKey, K newKey) {
+    /**
+     * Creates an alias between two keys. Used for migration.
+     * 
+     * @param alias The migrated-out key used as the alias
+     * @param key   The proper key in the current registry
+     */
+    public void alias(K alias, K key) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
 
-        if (keyToValue.containsKey(oldKey)) {
-            GTCEu.LOGGER.warn("[remap] cannot remap existing key {} in registry {}", oldKey, registryName);
+        if (keyToValue.containsKey(alias)) {
+            GTCEu.LOGGER.warn("[alias] cannot create alias using existing key {} in registry {}", alias, registryName);
             return;
         }
-        if (!keyToValue.containsKey(newKey)) {
-            GTCEu.LOGGER.warn("[remap] couldn't find value for key {} in registry {}", newKey, registryName);
+        if (!keyToValue.containsKey(key)) {
+            GTCEu.LOGGER.warn("[alias] couldn't find existing key {} in registry {}", key, registryName);
             return;
         }
-        V newValue = keyToValue.get(newKey);
-        keyToValue.put(oldKey, newValue);
+        this.alias.put(alias, key);
+    }
+
+    /**
+     * Remaps an existing value to a new key
+     */
+    public <T extends V> T remap(K newKey, T value) {
+        if (frozen) {
+            throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
+        }
+
+        if (!valueToKey.containsKey(value)) {
+            GTCEu.LOGGER.warn("[remap] couldn't find existing value {} in registry {}", value, registryName);
+        } else {
+            remove(getKey(value));
+        }
+        if (keyToValue.containsKey(newKey)) {
+            GTCEu.LOGGER.warn("[remap] key {} already exists in registry {}", newKey, registryName);
+            remove(newKey);
+        }
+        return registerOrOverride(newKey, value);
     }
 
     @Nullable
@@ -145,21 +172,28 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return Collections.unmodifiableMap(keyToValue);
     }
 
+    public @UnmodifiableView Map<K, K> aliases() {
+        return Collections.unmodifiableMap(alias);
+    }
+
     public void clear() {
         if (frozen) {
             throw new IllegalArgumentException("Registry is frozen!");
         }
         keyToValue.clear();
         valueToKey.clear();
+        alias.clear();
     }
 
     @Nullable
     public V get(K key) {
-        return keyToValue.get(key);
+        return (keyToValue.containsKey(key) ? keyToValue.get(key) : keyToValue.get(alias.get(key)));
     }
 
     public V getOrDefault(K key, V defaultValue) {
-        return keyToValue.getOrDefault(key, defaultValue);
+        return (keyToValue.containsKey(key) ?
+                keyToValue.get(key) :
+                keyToValue.getOrDefault(alias.get(key), defaultValue));
     }
 
     public K getKey(V value) {
@@ -168,6 +202,10 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public K getOrDefaultKey(V value, K defaultKey) {
         return valueToKey.getOrDefault(value, defaultKey);
+    }
+
+    public K getAliasedKey(K aliasKey) {
+        return alias.get(aliasKey);
     }
 
     public abstract void writeBuf(V value, FriendlyByteBuf buf);
@@ -180,13 +218,69 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @Nullable
     public abstract V loadFromNBT(Tag tag);
 
+    /**
+     * Removes a key-value pair from the registry.
+     * If the key to be removed was an alias, also removes the original key.
+     * To only remove an alias, use
+     * 
+     * @return if the registry contained the key to be removed
+     */
     public boolean remove(K name) {
+        if (frozen) {
+            throw new IllegalArgumentException("Registry is frozen!");
+        }
         var value = keyToValue.remove(name);
         if (value != null) {
             valueToKey.remove(value);
+            if (alias.containsValue(name)) removeAliasesForKey(name);
             return true;
         }
+        if (alias.containsKey(name)) {
+            return remove(alias.remove(name));
+        }
+
         return false;
+    }
+
+    /**
+     * Removes an alias
+     * 
+     * @return if the registry contained this alias
+     */
+    public boolean removeAlias(K name) {
+        if (frozen) {
+            throw new IllegalArgumentException("Registry is frozen!");
+        }
+        if (!alias.containsKey(name))
+            return false;
+        alias.remove(name);
+
+        return true;
+    }
+
+    /**
+     * Removes all aliases for a registry key
+     * 
+     * @param name the name to find and remove aliases to
+     * @return if any aliases existed for that name
+     */
+    public boolean removeAliasesForKey(K name) {
+        if (frozen) {
+            throw new IllegalArgumentException("Registry is frozen!");
+        }
+        if (!alias.containsValue(name))
+            return false;
+
+        var aliasesOfName = new ArrayList<K>();
+        for (K aliasOfName : alias.keySet()) {
+            if (alias.get(aliasOfName).equals(name))
+                aliasesOfName.add(aliasOfName);
+        }
+        for (K aliasOfName : aliasesOfName) {
+            alias.remove(aliasOfName);
+        }
+
+        return true;
     }
 
     public abstract Codec<V> codec();

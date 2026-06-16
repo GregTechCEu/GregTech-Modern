@@ -50,7 +50,7 @@ public final class GTRecipeConditions {
             HERACLES_QUEST = register("heracles_quest", HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC);
         }
         // fix the rock breaker condition's ID
-        GTRegistries.RECIPE_CONDITIONS.remap("rock_breaker", "adjacent_fluid");
+        GTRegistries.RECIPE_CONDITIONS.alias("rock_breaker", "adjacent_fluid");
 
         // noinspection unchecked
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS,
