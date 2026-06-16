@@ -43,7 +43,7 @@ public class MultiblockInfoJeiCategory extends
     private final IDrawable icon;
 
     public MultiblockInfoJeiCategory(IJeiHelpers helpers) {
-        super(v -> new MultiblockPreviewWidget(v.definition), v -> v.definition.getId());
+        super(v -> new MultiblockPreviewWidget(v.definition, null), v -> v.definition.getId());
         IGuiHelper guiHelper = helpers.getGuiHelper();
         this.background = guiHelper.createBlankDrawable(160, 160);
         this.icon = guiHelper.createDrawableItemStack(GTMultiMachines.ELECTRIC_BLAST_FURNACE.asStack());

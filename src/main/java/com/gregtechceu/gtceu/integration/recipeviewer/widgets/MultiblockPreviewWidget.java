@@ -1,15 +1,13 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.*;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
-import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
-import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -44,15 +42,9 @@ import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
-import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -63,23 +55,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
-
 @Accessors(chain = true)
 public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidget> {
 
     private final MultiblockMachineDefinition multiblockDefinition;
 
     // schema stuff
-    private final SchemaWidget multiSchema;
-    @Getter
-    @ApiStatus.Internal
-    private MutableSchema mapSchema;
     private DynamicSyncHandler partsViewWidget;
-    private final SchemaRenderer renderer;
+    // private final SchemaRenderer renderer;
     private final DynamicHandler partsHandler = new DynamicHandler();
     private final DynamicHandler selectedBlockHandler = new DynamicHandler();
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
+
+    @Getter
+    @Setter
+    private MultiblockSchemaInfo multiblockSchemaInfo;
 
     @Setter
     private boolean isFlipped = false;
@@ -90,52 +80,33 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     @Setter
     private @Nullable BlockPos controllerPos;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
-    @Getter
-    private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
-    @Getter
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
-            .create();
-    @Getter
-    private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
-            .create();
 
     private int yLevel = -1;
     private int maxHeight = 0;
 
-    private @Nullable BlockPatternStructureHelper structureHelper;
-    @Getter
-    private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
-
-    private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
-    @Getter
-    private IntList userDimensions = IntLists.emptyList();
-
-    @Getter
-    private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
-
     @Setter
     private @Nullable Runnable onSchemaRefresh;
 
-    public MultiblockPreviewWidget(MultiblockMachineDefinition definition) {
+    public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo) {
         this.multiblockDefinition = definition;
         this.frontFacing = definition.getRotationState().defaultDirection;
         this.upFacing = switch (definition.getRotationState()) {
             case Y_AXIS -> Direction.NORTH;
             case ALL, NON_Y_AXIS, NONE -> Direction.UP;
         };
-
+        this.multiblockSchemaInfo = schemaInfo == null ? new MultiblockSchemaInfo() : schemaInfo;
         refreshSchema();
-
-        this.renderer = new SchemaRenderer(this.mapSchema)
-                .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f));
+        this.multiblockSchemaInfo.setRenderer(new SchemaRenderer(this.multiblockSchemaInfo.getMapSchema())
+                .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)));
 
         ItemDrawable selectedBlockDrawable = new ItemDrawable();
         ObjectValue<ItemStack> selectedBlock = new ObjectValue<>(ItemStack.class, ItemStack.EMPTY);
         IGuiAction.MouseReleased setBlockOnClick = (ctx, m) -> {
             if (m == InputConstants.MOUSE_BUTTON_LEFT) {
-                BlockHitResult rayTrace = this.renderer.lastRayTrace();
+                BlockHitResult rayTrace = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
                 if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
-                    BlockState state = this.mapSchema.getLevel().getBlockState(rayTrace.getBlockPos());
+                    BlockState state = this.multiblockSchemaInfo.getMapSchema().getLevel()
+                            .getBlockState(rayTrace.getBlockPos());
                     this.lastBlock = Pair.of(rayTrace.getBlockPos(), BlockInfo.fromBlockState(state));
                     selectedBlock.setValue(new ItemStack(state.getBlock()));
                     selectedBlockDrawable.item(selectedBlock.getValue());
@@ -152,7 +123,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 .wrap()
                 .coverChildrenWidth(20)
                 .height(200)
-                .children(blockCounts.reference2IntEntrySet(), e -> {
+                .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
                     ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
                     return new ItemDrawable(stack)
                             .asWidget().size(18).margin(1)
@@ -166,14 +137,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                PatternPredicate predicate = structureHelper.getPredicateFromPos(
+                PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                         blockPattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate, lastBlock);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                PatternPredicate predicate = expandableStructureHelper.getPredicateFromPos(
-                        expandablePattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
+                PatternPredicate predicate = this.multiblockSchemaInfo.getExpandableStructureHelper()
+                        .getPredicateFromPos(
+                                expandablePattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate, lastBlock);
             }
@@ -183,19 +155,21 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
-        this.multiSchema = this.renderer.asWidget()
+        this.multiblockSchemaInfo.setMultiSchema(this.multiblockSchemaInfo.getRenderer().asWidget()
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
-                    BlockHitResult hit = this.renderer.lastRayTrace();
+                    BlockHitResult hit = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
                     if (hit != null && hit.getType() == HitResult.Type.BLOCK) {
-                        BlockState state = mapSchema.getLevel().getBlockState(hit.getBlockPos());
-                        ItemStack pickedItem = state.getCloneItemStack(hit, mapSchema.getLevel(), hit.getBlockPos(),
+                        BlockState state = this.getMultiblockSchemaInfo().getMapSchema().getLevel()
+                                .getBlockState(hit.getBlockPos());
+                        ItemStack pickedItem = state.getCloneItemStack(hit,
+                                this.getMultiblockSchemaInfo().getMapSchema().getLevel(), hit.getBlockPos(),
                                 this.getContext().getMC().player);
                         text.addFromItem(pickedItem);
                     }
                 }).tooltipAutoUpdate(true)
-                .size(200);
-        this.multiSchema.getSchemaRenderer().updateRenderFilter((pos, state) -> {
+                .size(200));
+        this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().updateRenderFilter((pos, state) -> {
             if (yLevel == -1) {
                 return true;
             }
@@ -208,10 +182,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .tooltip(r -> r.addLine(Component.literal("Press to display preview in world!")))
                         .rightRel(1.0f)
                         .onMousePressed((c, b) -> {
-                            if (controllerPos != null && !structureBlocks.isEmpty()) {
-                                BlockPos origin = controllerPos.offset(mapSchema.getControllerPos().multiply(-1));
+                            if (controllerPos != null &&
+                                    !this.getMultiblockSchemaInfo().getStructureBlocks().isEmpty()) {
+                                BlockPos origin = controllerPos.offset(
+                                        this.getMultiblockSchemaInfo().getMapSchema().getControllerPos().multiply(-1));
                                 PatternPreviewRenderer.INSTANCE.showPreview(origin,
-                                        this.mapSchema, this.multiSchema.getSchemaRenderer().renderFilter(),
+                                        this.getMultiblockSchemaInfo().getMapSchema(),
+                                        this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().renderFilter(),
                                         ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                             }
                             return true;
@@ -249,7 +226,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .name("selected_block")
                                         .coverChildren(20)
                                         .clientOnlyHandler(this.selectedBlockHandler))
-                                .child(this.multiSchema)
+                                .child(this.multiblockSchemaInfo.getMultiSchema())
                                 .child(new DynamicWidget<>()
                                         .coverChildrenWidth()
                                         .heightRel(1f)
@@ -396,70 +373,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     /// ==== Schema setup ====
     @ApiStatus.Internal
     public void refreshSchema() {
-        Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
-        IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
-
-        if (pattern instanceof BlockPattern blockPattern) {
-            if (userSliceRepeats.isEmpty()) {
-                for (int i = 0; i < blockPattern.getSlices().length; i++) {
-                    userSliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
-                }
-            }
-            // reinterpret slider values as slice repeats?
-            structureHelper = new BlockPatternStructureHelper(userBasePredicateBlockPreferences,
-                    userBasePredicateMinMaxPreferences, userSliceRepeats);
-            char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(blockPattern);
-            char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
-                    blockPattern.getDirections(),
-                    frontFacing, upFacing, isFlipped);
-
-            structureHelper.populateWithUserBlockPreferences(resultStructure, blockPattern,
-                    adjustedCharPattern,
-                    userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
-
-            structureHelper.populateFromPattern(resultStructure, blockPattern, adjustedCharPattern,
-                    frontFacing, upFacing, isFlipped);
-
-            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                    multiblockDefinition.getBlock());
-        } else if (pattern instanceof ExpandablePattern expandablePattern) {
-            if (userDimensions.isEmpty()) {
-                userDimensions = expandablePattern.getBoundsConstraints().apply().stream()
-                        .mapToInt(Pair::left)
-                        .collect(IntArrayList::new, IntList::add, IntList::addAll);
-            }
-            // reinterpret slider values as bounds?
-            expandableStructureHelper = new ExpandablePatternStructureHelper(userBasePredicateBlockPreferences,
-                    userBasePredicateMinMaxPreferences, userDimensions);
-
-            expandableStructureHelper.populateWithUserBlockPreferences(resultStructure, expandablePattern,
-                    userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
-
-            expandableStructureHelper.populateFromPattern(resultStructure, expandablePattern, frontFacing,
-                    upFacing, isFlipped);
-
-            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                    multiblockDefinition.getBlock());
-        }
-
-        Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
-        blockCounts.clear();
-        for (var entry : resultStructure.entrySet()) {
-            BlockState state = entry.getValue().getBlockState();
-            schemaMap.put(entry.getKey().asLong(), state);
-            blockCounts.merge(state.getBlock(), 1, Integer::sum);
-        }
-        if (this.mapSchema == null) {
-            this.mapSchema = new MutableSchema(schemaMap);
-        } else {
-            this.mapSchema.setBlocks(schemaMap);
-        }
-        structureBlocks.clear();
-        structureBlocks.putAll(resultStructure);
-
-        if (onSchemaRefresh != null) {
-            onSchemaRefresh.run();
-        }
+        this.multiblockSchemaInfo.refreshSchema(multiblockDefinition, frontFacing, upFacing, isFlipped,
+                onSchemaRefresh);
     }
 
     private void refreshViewWidget() {
@@ -469,22 +384,22 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         if (partsHandler != null) {
             partsHandler.notifyUpdate();
         }
-        if (multiSchema != null) {
-            multiSchema.getSchemaRenderer().notifyRecompile();
+        if (this.multiblockSchemaInfo.getRenderer() != null) {
+            this.multiblockSchemaInfo.getRenderer().notifyRecompile();
         }
     }
 
     /// ==== User Preference UI ======
     private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
                                           BlockInfo blockInfo) {
-        userBasePredicateBlockPreferences.put(predicate, basePredicate, blockInfo);
+        this.multiblockSchemaInfo.getUserBasePredicateBlockPreferences().put(predicate, basePredicate, blockInfo);
         refreshSchema();
         refreshViewWidget();
     }
 
     private void setUserDefinedBlockInfo(BlockPos pos, BlockInfo blockInfo) {
         // todo validation testing?
-        userGlobalBlockPreferences.put(pos.asLong(), blockInfo);
+        this.multiblockSchemaInfo.getUserGlobalBlockPreferences().put(pos.asLong(), blockInfo);
         refreshSchema();
         refreshViewWidget();
     }
@@ -504,13 +419,14 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .height(16)
                         .width(value.rightInt() * 12)
                         .stopper(1.0f)
-                        .value(new IntValue.Dynamic(() -> userDimensions.getInt(index), v -> {
-                            int oldValue = userDimensions.getInt(index);
-                            if (oldValue == v) return;
-                            userDimensions.set(index, v);
-                            refreshSchema();
-                            refreshViewWidget();
-                        })));
+                        .value(new IntValue.Dynamic(
+                                () -> this.getMultiblockSchemaInfo().getUserDimensions().getInt(index), v -> {
+                                    int oldValue = this.getMultiblockSchemaInfo().getUserDimensions().getInt(index);
+                                    if (oldValue == v) return;
+                                    this.getMultiblockSchemaInfo().getUserDimensions().set(index, v);
+                                    refreshSchema();
+                                    refreshViewWidget();
+                                })));
             }
         }
     }
@@ -522,8 +438,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 repeatSliceIndex++;
                 continue;
             }
-            if (!userSliceRepeats.containsKey(repeatSliceIndex)) {
-                userSliceRepeats.put(repeatSliceIndex, patternSlice.getMinRepeats());
+            if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(repeatSliceIndex)) {
+                this.multiblockSchemaInfo.getUserSliceRepeats().put(repeatSliceIndex, patternSlice.getMinRepeats());
             }
             if (patternSlice.getMinRepeats() != patternSlice.getMaxRepeats()) {
                 final int index = repeatSliceIndex;
@@ -534,12 +450,12 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .stopper(1.0f)
                         .bounds(patternSlice.getMinRepeats(), patternSlice.getMaxRepeats())
                         .value(new IntValue.Dynamic(() -> {
-                            if (!userSliceRepeats.containsKey(index)) return 0;
-                            return userSliceRepeats.get(index);
+                            if (!this.multiblockSchemaInfo.getUserSliceRepeats().containsKey(index)) return 0;
+                            return this.multiblockSchemaInfo.getUserSliceRepeats().get(index);
                         }, v -> {
-                            int oldValue = userSliceRepeats.getOrDefault(index, 0);
+                            int oldValue = this.multiblockSchemaInfo.getUserSliceRepeats().getOrDefault(index, 0);
                             if (oldValue == v) return;
-                            userSliceRepeats.put(index, v);
+                            this.multiblockSchemaInfo.getUserSliceRepeats().put(index, v);
                             refreshSchema();
                             refreshViewWidget();
                         })));

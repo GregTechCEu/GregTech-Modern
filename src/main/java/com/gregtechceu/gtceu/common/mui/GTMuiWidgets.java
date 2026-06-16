@@ -124,7 +124,7 @@ public class GTMuiWidgets {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
-                .selectedBackground(selectedBackground)
+                .background(true, selectedBackground)
                 .background(background)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(
@@ -686,9 +686,9 @@ public class GTMuiWidgets {
                         button.background(GuiTextures.MC_BUTTON);
 
                     if (this.selectedBackground != null)
-                        button.selectedBackground(this.selectedBackground);
+                        button.background(true, this.selectedBackground);
                     else
-                        button.selectedBackground(GuiTextures.MC_BUTTON_DISABLED);
+                        button.background(true, GuiTextures.MC_BUTTON_DISABLED);
 
                     if (this.overlay != null)
                         button.overlay(this.overlay[enumVal.ordinal()]);

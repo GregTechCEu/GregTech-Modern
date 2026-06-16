@@ -48,7 +48,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         private SlotWidget slotWidget;
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
-            super(definition.getId(), () -> new MultiblockPreviewWidget(definition));
+            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null));
             this.definition = definition;
         }
 
