@@ -1,6 +1,6 @@
 {
-  "parent": "gtceu:block/foam_reinforced",
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "gtceu:block/foam/brown_reinforced"
+    "all": "gtceu:block/foam/brown_reinforced_foam"
   }
 }

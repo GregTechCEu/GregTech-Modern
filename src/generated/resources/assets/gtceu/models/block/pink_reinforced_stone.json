@@ -1,6 +1,0 @@
-{
-  "parent": "gtceu:block/foam_reinforced_petrified",
-  "textures": {
-    "all": "gtceu:block/foam/pink_reinforced_petrified"
-  }
-}

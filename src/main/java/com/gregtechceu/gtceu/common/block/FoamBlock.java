@@ -75,9 +75,7 @@ public class FoamBlock extends Block {
             entity.makeStuckInBlock(state, new Vec3(reinforced, reinforced, reinforced));
         }
 
-        if (!level.isClientSide()) {
-            entity.setSharedFlagOnFire(false);
-            entity.clearFire();
-        }
+        entity.setSharedFlagOnFire(false);
+        entity.clearFire();
     }
 }

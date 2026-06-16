@@ -127,6 +127,7 @@ public class CustomTags {
     public static final TagKey<Item> RUBBER_LOGS = TagUtil.createModItemTag("rubber_logs");
 
     public static final TagKey<Block> CLEANROOM_DOORS = TagUtil.createModBlockTag("cleanroom_doors");
+    public static final TagKey<Block> REINFORCED_FOAM_MAKING_BLOCKS = TagUtil.createBlockTag("reinforced_frames");
 
     public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
 
@@ -197,8 +198,6 @@ public class CustomTags {
             NEEDS_DURANIUM_TOOL,
             NEEDS_NEUTRONIUM_TOOL,
     };
-
-    public static final TagKey<Block> REINFORCED_FRAMES = TagUtil.createBlockTag("reinforced_frames");
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
     public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concretes");

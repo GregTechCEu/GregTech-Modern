@@ -82,44 +82,6 @@ public class GTModels {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, FoamBlock>, RegistrateBlockstateProvider> foamModel(DyeColor color,
-                                                                                                              boolean reinforced,
-                                                                                                              boolean petrified) {
-        return (ctx, prov) -> {
-            final String reinforcedPart = (reinforced ? "_reinforced" : "");
-
-            ModelFile parent = prov.models().getExistingFile(prov.modLoc("block/foam" + reinforcedPart));
-
-            prov.getVariantBuilder(ctx.getEntry())
-                    .forAllStates(state -> ConfiguredModel.builder()
-                            .modelFile(prov.models()
-                                    .getBuilder(ctx.getName())
-                                    .parent(parent)
-                                    .texture("all",
-                                            "block/foam/" + color.getName() + reinforcedPart))
-                            .build());
-        };
-    }
-
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> foamPetrifiedModel(DyeColor color,
-                                                                                                                   boolean reinforced,
-                                                                                                                   boolean petrified) {
-        return (ctx, prov) -> {
-            final String reinforcedPart = (reinforced ? "_reinforced" : "");
-
-            ModelFile parent = prov.models().getExistingFile(prov.modLoc("block/foam" + reinforcedPart + "_petrified"));
-
-            prov.getVariantBuilder(ctx.getEntry())
-                    .forAllStates(state -> ConfiguredModel.builder()
-                            .modelFile(prov.models()
-                                    .getBuilder(ctx.getName())
-                                    .parent(parent)
-                                    .texture("all",
-                                            "block/foam/" + color.getName() + reinforcedPart + "_petrified"))
-                            .build());
-        };
-    }
-
     public static final ResourceLocation CUBE_ALL_EMISSIVE = GTCEu.id("block/cube/emissive/all");
 
     public static NonNullBiConsumer<DataGenContext<Block, LampBlock>, RegistrateBlockstateProvider> lampModel(DyeColor color,

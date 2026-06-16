@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -17,10 +15,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 public class BlockTagLoader {
 
@@ -49,20 +43,11 @@ public class BlockTagLoader {
         var studs = provider.addTag(CustomTags.FAST_WALKABLE_BLOCKS);
         GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
 
-        var reinforcedFrames = provider.addTag(CustomTags.REINFORCED_FRAMES);
-        Set<Material> defaultMats = new HashSet<>();
-
-        defaultMats.add(GTMaterials.Steel);
-        defaultMats.add(GTMaterials.BlackSteel);
-        defaultMats.add(GTMaterials.TungstenSteel);
-        defaultMats.add(GTMaterials.RedSteel);
-        defaultMats.add(GTMaterials.BlueSteel);
-
-        for (var mat : defaultMats) {
-            if (mat.hasFlag(MaterialFlags.GENERATE_FRAME)) {
-                reinforcedFrames.add(Objects.requireNonNull(ChemicalHelper.getBlock(TagPrefix.frameGt, mat)));
-            }
-        }
+        provider.addTag(CustomTags.REINFORCED_FOAM_MAKING_BLOCKS)
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.Steel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.BlackSteel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.TungstenSteel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.BlueSteel));
 
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
 

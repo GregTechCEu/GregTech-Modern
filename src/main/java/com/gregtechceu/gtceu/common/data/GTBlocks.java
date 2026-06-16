@@ -1280,7 +1280,8 @@ public class GTBlocks {
                             .sound(SoundType.SNOW)
                             .pushReaction(PushReaction.DESTROY)
                             .noOcclusion().noCollission().noLootTable())
-                    .blockstate(GTModels.foamModel(color, false, false))
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(), GTCEu.id("block/foam/" + ctx.getName()))))
                     .simpleItem()
                     .register());
         }
@@ -1291,7 +1292,8 @@ public class GTBlocks {
             reinforcedFoamBuilder.put(color, REGISTRATE
                     .block("%s_reinforced_foam".formatted(color.getName()), p -> new FoamBlock(p, color, true))
                     .initialProperties(FOAMS.get(color))
-                    .blockstate(GTModels.foamModel(color, true, false))
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(), GTCEu.id("block/foam/" + ctx.getName()))))
                     .simpleItem()
                     .register());
         }
@@ -1303,7 +1305,8 @@ public class GTBlocks {
                     .block("%s_petrified_foam".formatted(color.getName()), Block::new)
                     .initialProperties(() -> Blocks.STONE)
                     .properties(p -> p.strength(1.0F, 4.0F).sound(SoundType.SNOW))
-                    .blockstate(GTModels.foamPetrifiedModel(color, false, true))
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(), GTCEu.id("block/foam/" + ctx.getName()))))
                     .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
                     .simpleItem()
                     .register());
@@ -1313,10 +1316,11 @@ public class GTBlocks {
         ImmutableMap.Builder<DyeColor, BlockEntry<Block>> petrifiedReinforcedFoamBuilder = new ImmutableMap.Builder<>();
         for (DyeColor color : colors) {
             petrifiedReinforcedFoamBuilder.put(color, REGISTRATE
-                    .block("%s_reinforced_stone".formatted(color.getName()), Block::new)
+                    .block("%s_reinforced_petrified_foam".formatted(color.getName()), Block::new)
                     .initialProperties(() -> Blocks.STONE)
                     .properties(p -> p.strength(4.0F, 16.0F))
-                    .blockstate(GTModels.foamPetrifiedModel(color, true, true))
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                            prov.models().cubeAll(ctx.getName(), GTCEu.id("block/foam/" + ctx.getName()))))
                     .tag(BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_IRON_TOOL)
                     .simpleItem()
                     .register());

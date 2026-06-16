@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -35,14 +36,14 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Predicate;
 
 public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, IComponentCapability, IAddInformation {
 
@@ -52,9 +53,9 @@ public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, ICom
     @Override
     public InteractionResult useOn(UseOnContext context) {
         if (context.getPlayer() == null) return InteractionResult.FAIL;
-        var stack = context.getItemInHand();
+        ItemStack stack = context.getItemInHand();
 
-        var offhand = context.getPlayer().getOffhandItem();
+        ItemStack offhand = context.getPlayer().getOffhandItem();
         DyeColor color = DyeColor.WHITE;
         if (offhand.getItem() instanceof ComponentItem compItem) {
             var behavior = compItem.getComponents().stream()
@@ -68,25 +69,25 @@ public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, ICom
 
         var fluidHandler = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM, null).resolve();
         if (fluidHandler.isEmpty()) return InteractionResult.FAIL;
-        var fluidStack = fluidHandler.get().getFluidInTank(0);
-        if (fluidStack.getAmount() >= ConfigHolder.INSTANCE.tools.foamSprayerBlockAmount) {
-            var state = context.getLevel().getBlockState(context.getClickedPos());
-            var offsetState = context.getLevel()
+        FluidStack fluidStack = fluidHandler.get().getFluidInTank(0);
+        if (fluidStack.getAmount() >= ConfigHolder.INSTANCE.tools.foamSprayerFluidUse) {
+            BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+            BlockState offsetState = context.getLevel()
                     .getBlockState(context.getClickedPos().offset(context.getClickedFace().getNormal()));
             if (state.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
-                int maxFrames = fluidStack.getAmount() / ConfigHolder.INSTANCE.tools.foamSprayerBlockAmount;
+                int maxFrames = fluidStack.getAmount() / ConfigHolder.INSTANCE.tools.foamSprayerFluidUse;
                 int framesFoamed = foamFrameBlocks(context.getLevel(), context.getClickedPos(), maxFrames, color,
                         context.getPlayer().isCrouching());
                 if (!context.getPlayer().isCreative()) {
-                    fluidHandler.get().drain(ConfigHolder.INSTANCE.tools.foamSprayerBlockAmount * framesFoamed,
+                    fluidHandler.get().drain(ConfigHolder.INSTANCE.tools.foamSprayerFluidUse * framesFoamed,
                             IFluidHandler.FluidAction.EXECUTE);
                 }
                 return InteractionResult.SUCCESS;
             } else if (offsetState.canBeReplaced()) {
-                int maxBlocks = fluidStack.getAmount() / ConfigHolder.INSTANCE.tools.foamSprayerBlockAmount;
+                int maxBlocks = fluidStack.getAmount() / ConfigHolder.INSTANCE.tools.foamSprayerFluidUse;
                 int blocksFoamed = foamReplaceableBlocks(context.getLevel(), context.getClickedPos(), maxBlocks, color);
                 if (!context.getPlayer().isCreative()) {
-                    fluidHandler.get().drain(ConfigHolder.INSTANCE.tools.foamSprayerBlockAmount * blocksFoamed,
+                    fluidHandler.get().drain(ConfigHolder.INSTANCE.tools.foamSprayerFluidUse * blocksFoamed,
                             IFluidHandler.FluidAction.EXECUTE);
                 }
                 return InteractionResult.SUCCESS;
@@ -112,12 +113,18 @@ public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, ICom
 
     private static int foamFrameBlocks(Level level, BlockPos pos, int maxBlocksToFoam, DyeColor color,
                                        boolean sneaking) {
-        var frameBlocks = gatherSameFrames(level, pos, 10);
+        MutableObject<Material> frameMaterial = new MutableObject<>(GTMaterials.NULL);
+        List<BlockPos> frameBlocks = gatherReplaceableBlocks(level, pos, 10, (blockState -> {
+            if (blockState.getBlock() instanceof MaterialBlock materialBlock) {
+                return (frameMaterial.getValue().isNull() || frameMaterial.getValue() == materialBlock.material);
+            }
+            return false;
+        }));
         frameBlocks = frameBlocks.subList(0, Math.min(frameBlocks.size(), maxBlocksToFoam));
 
         for (BlockPos blockPos : frameBlocks) {
             BlockState state = level.getBlockState(blockPos);
-            boolean reinforced = state.is(CustomTags.REINFORCED_FRAMES);
+            boolean reinforced = state.is(CustomTags.REINFORCED_FOAM_MAKING_BLOCKS);
             BlockState foam = reinforced ? GTBlocks.REINFORCED_FOAMS.get(color).getDefaultState() :
                     GTBlocks.FOAMS.get(color).getDefaultState();
             level.setBlockAndUpdate(blockPos, foam);
@@ -127,36 +134,38 @@ public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, ICom
     }
 
     private static int foamReplaceableBlocks(Level level, BlockPos pos, int maxBlocksToFoam, DyeColor color) {
-        var replaceableBlocks = gatherReplaceableBlocks(level, pos, 10);
+        List<BlockPos> replaceableBlocks = gatherReplaceableBlocks(level, pos, 10,
+                BlockBehaviour.BlockStateBase::canBeReplaced);
         replaceableBlocks = replaceableBlocks.subList(0, Math.min(replaceableBlocks.size(), maxBlocksToFoam));
 
-        for (var blockPos : replaceableBlocks) {
+        for (BlockPos blockPos : replaceableBlocks) {
             level.setBlockAndUpdate(blockPos, GTBlocks.FOAMS.get(color).getDefaultState());
         }
 
         return replaceableBlocks.size();
     }
 
-    private static List<BlockPos> gatherReplaceableBlocks(Level level, BlockPos center, int radiusSq) {
-        Set<BlockPos> blocks = new ObjectOpenHashSet<>();
+    private static List<BlockPos> gatherReplaceableBlocks(Level level, BlockPos center, int radiusSq,
+                                                          Predicate<BlockState> filter) {
         List<BlockPos> blocksList = new ArrayList<>();
-        blocks.add(center);
-        blocksList.add(center);
+        BlockState centerState = level.getBlockState(center);
+        if (filter.test(centerState)) {
+            blocksList.add(center);
+        }
         BlockPos.MutableBlockPos currentPos = center.mutable();
         List<Direction> moveStack = new ArrayList<>();
         Vec3i centerVec = new Vec3i(center.getX(), center.getY(), center.getZ());
-        outer:
+        OUTER:
         while (true) {
-            for (var facing : GTUtil.DIRECTIONS) {
+            for (Direction facing : GTUtil.DIRECTIONS) {
                 currentPos.move(facing);
-                var state = level.getBlockState(currentPos);
+                BlockState state = level.getBlockState(currentPos);
 
-                if (state.canBeReplaced() && currentPos.distSqr(centerVec) <= radiusSq &&
-                        !blocks.contains(currentPos)) {
-                    blocks.add(currentPos.immutable());
+                if (currentPos.distSqr(centerVec) <= radiusSq && filter.test(state) &&
+                        !blocksList.contains(currentPos)) {
                     blocksList.add(currentPos.immutable());
                     moveStack.add(facing.getOpposite());
-                    continue outer;
+                    continue OUTER;
                 } else {
                     currentPos.move(facing.getOpposite());
                 }
@@ -171,55 +180,11 @@ public class FoamSprayBehavior implements IInteractionItem, IDurabilityBar, ICom
         return blocksList;
     }
 
-    private static List<BlockPos> gatherSameFrames(Level level, BlockPos center, int radiusSq) {
-        Set<BlockPos> frames = new ObjectOpenHashSet<>();
-        List<BlockPos> framesList = new ArrayList<>();
-        frames.add(center);
-        framesList.add(center);
-        BlockPos.MutableBlockPos currentPos = center.mutable();
-        Material frameMaterial = GTMaterials.NULL;
-        List<Direction> moveStack = new ArrayList<>();
-        Vec3i centerVec = new Vec3i(center.getX(), center.getY(), center.getZ());
-        outer:
-        while (true) {
-            for (var facing : GTUtil.DIRECTIONS) {
-                currentPos.move(facing);
-                var state = level.getBlockState(currentPos);
-
-                if (state.getBlock() instanceof MaterialBlock matBlock && matBlock.tagPrefix == TagPrefix.frameGt) {
-                    if (currentPos.distSqr(centerVec) <= radiusSq &&
-                            (frameMaterial.isNull() || frameMaterial == matBlock.material) &&
-                            !frames.contains(currentPos)) {
-                        frames.add(currentPos.immutable());
-                        framesList.add(currentPos.immutable());
-                        moveStack.add(facing.getOpposite());
-                        frameMaterial = matBlock.material;
-                        continue outer;
-                    } else {
-                        currentPos.move(facing.getOpposite());
-                    }
-                } else {
-                    currentPos.move(facing.getOpposite());
-                }
-            }
-            if (!moveStack.isEmpty()) {
-                currentPos.move(moveStack.remove(moveStack.size() - 1));
-            } else {
-                break;
-            }
-        }
-        framesList.sort(Comparator.comparingDouble(i -> i.distSqr(centerVec)));
-        return framesList;
-    }
-
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap,
-                    LazyOptional.of(() -> new FilteredFluidHandlerItemStack(itemStack, 10000,
-                            stack -> stack.getFluid() == GTMaterials.ConstructionFoam.getFluid())));
-        }
-        return LazyOptional.empty();
+        return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap,
+                LazyOptional.of(() -> new FilteredFluidHandlerItemStack(itemStack, 10000,
+                        stack -> stack.getFluid() == GTMaterials.ConstructionFoam.getFluid())));
     }
 
     @Override

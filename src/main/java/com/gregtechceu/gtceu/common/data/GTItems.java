@@ -2041,7 +2041,10 @@ public class GTItems {
             .register();
 
     public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::create)
-            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            // .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .model((ctx, provider) -> {
+                provider.handheld(ctx::getEntry);
+            })
             .onRegister(attach(new FoamSprayBehavior()))
             .properties(p -> p.stacksTo(1))
             .register();

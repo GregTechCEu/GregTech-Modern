@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "gtceu:item/foam_sprayer/base",
-    "layer1": "gtceu:item/foam_sprayer/overlay"
-  }
-}
