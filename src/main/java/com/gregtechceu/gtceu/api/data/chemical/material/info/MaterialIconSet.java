@@ -1,9 +1,13 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import com.google.common.base.Preconditions;
+import net.minecraftforge.fml.ModLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +17,10 @@ import java.util.Map;
 
 public class MaterialIconSet {
 
-    public static final Map<String, MaterialIconSet> ICON_SETS = new HashMap<>();
+    static {
+        GTRegistries.MATERIAL_ICON_SETS.unfreeze();
+    }
+
     public static final MaterialIconSet DULL = new MaterialIconSet("dull", null, true);
     public static final MaterialIconSet METALLIC = new MaterialIconSet("metallic");
     public static final MaterialIconSet MAGNETIC = new MaterialIconSet("magnetic", METALLIC);
@@ -80,16 +87,20 @@ public class MaterialIconSet {
      */
     public MaterialIconSet(@NotNull String name, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
         this.name = name.toLowerCase(Locale.ENGLISH);
-        Preconditions.checkArgument(!ICON_SETS.containsKey(this.name),
-                "MaterialIconSet " + this.name + " already registered!");
+
+        GTRegistries.MATERIAL_ICON_SETS.register(this.name, this);
+
         this.id = idCounter++;
         this.isRootIconset = isRootIconset;
         this.parentIconset = parentIconset;
-        ICON_SETS.put(this.name, this);
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.MATERIAL_ICON_SETS.get()}
+     */
+    @Deprecated(since = "8.0.0")
     public static MaterialIconSet getByName(@NotNull String name) {
-        return ICON_SETS.get(name.toLowerCase(Locale.ENGLISH));
+        return GTRegistries.MATERIAL_ICON_SETS.get(name.toLowerCase(Locale.ENGLISH));
     }
 
     @Override
@@ -98,8 +109,10 @@ public class MaterialIconSet {
     }
 
     public static void init() {
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class));
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_SET.registryKey);
+            GTRegistryInfo.registerFor(GTRegistries.MATERIAL_ICON_SETS.getRegistryName());
         }
+        GTRegistries.MATERIAL_ICON_SETS.freeze();
     }
 }

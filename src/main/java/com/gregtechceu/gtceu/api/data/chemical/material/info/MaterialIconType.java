@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public record MaterialIconType(String name) {
 
     public static final Map<String, MaterialIconType> ICON_TYPES = new HashMap<>();

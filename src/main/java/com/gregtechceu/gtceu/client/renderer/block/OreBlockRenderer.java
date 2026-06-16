@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.function.MemoizedBiFunction;
@@ -54,7 +55,7 @@ public class OreBlockRenderer {
     @ApiStatus.Internal
     public static void reinitModels() {
         // first set up all the stone types for all tag prefixes
-        for (MaterialIconSet iconSet : MaterialIconSet.ICON_SETS.values()) {
+        for (MaterialIconSet iconSet : GTRegistries.MATERIAL_ICON_SETS.values()) {
             for (var entry : TagPrefix.ORES.entrySet()) {
                 copyOreModelWithBaseStone(entry.getKey(), entry.getValue(), MaterialIconType.ore, iconSet);
                 copyOreModelWithBaseStone(entry.getKey(), entry.getValue(), MaterialIconType.oreEmissive, iconSet);
