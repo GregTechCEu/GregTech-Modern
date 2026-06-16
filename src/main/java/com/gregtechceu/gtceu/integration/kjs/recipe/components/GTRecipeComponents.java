@@ -41,6 +41,7 @@ import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import net.minecraftforge.fml.ModLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -378,6 +379,7 @@ public class GTRecipeComponents {
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
+        ModLoader.get().postEvent(event);
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 

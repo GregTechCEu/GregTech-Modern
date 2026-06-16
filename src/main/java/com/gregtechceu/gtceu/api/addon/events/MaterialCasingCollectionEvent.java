@@ -6,8 +6,10 @@ import net.minecraft.world.level.block.Block;
 
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.fml.event.IModBusEvent;
 
-public class MaterialCasingCollectionEvent {
+public class MaterialCasingCollectionEvent extends Event implements IModBusEvent {
 
     private final ImmutableMap.Builder<Material, BlockEntry<Block>> builder;
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -48,14 +50,13 @@ import net.minecraft.world.level.material.MapColor;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraftforge.fml.ModLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -69,23 +70,27 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 @Accessors(chain = true, fluent = true)
 public class TagPrefix {
 
-    public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
-    public static final Map<TagPrefix, OreType> ORES = new Object2ObjectLinkedOpenHashMap<>();
+    static {
+        GTRegistries.TAG_PREFIXES.unfreeze();
+    }
 
-    public static final Codec<TagPrefix> CODEC = Codec.STRING.flatXmap(
-            str -> Optional.ofNullable(get(str)).map(DataResult::success)
-                    .orElseGet(() -> DataResult.error(() -> "invalid TagPrefix: " + str)),
-            prefix -> DataResult.success(prefix.name));
+    public static final Map<TagPrefix, OreType> ORES = new Object2ObjectLinkedOpenHashMap<>();
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerTagPrefixes);
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TAG_PREFIXES, TagPrefix.class));
         if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.TAG_PREFIX.registryKey);
+            GTRegistryInfo.registerFor(GTRegistries.TAG_PREFIXES.getRegistryName());
         }
+        GTRegistries.TAG_PREFIXES.freeze();
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}
+     */
+    @Deprecated(since = "8.0.0")
     public static TagPrefix get(String name) {
-        return PREFIXES.get(name);
+        return GTRegistries.TAG_PREFIXES.get(name);
     }
 
     public boolean isEmpty() {
@@ -1058,7 +1063,7 @@ public class TagPrefix {
         this.idPattern = "%s_" + getLowerCaseName();
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
-        PREFIXES.put(name, this);
+        GTRegistries.TAG_PREFIXES.register(name, this);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1167,12 +1172,20 @@ public class TagPrefix {
         return (long) (GTValues.M * materialAmounts.getFloat(material));
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}
+     */
+    @Deprecated(since = "8.0.0")
     public static TagPrefix getPrefix(String prefixName) {
         return getPrefix(prefixName, null);
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.getOrDefault(prefixName, replacement)}
+     */
+    @Deprecated(since = "8.0.0")
     public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return PREFIXES.getOrDefault(prefixName, replacement);
+        return GTRegistries.TAG_PREFIXES.getOrDefault(prefixName, replacement);
     }
 
     public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
@@ -1356,8 +1369,12 @@ public class TagPrefix {
         return name.hashCode();
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.values()}
+     */
+    @Deprecated(since = "8.0.0")
     public static Collection<TagPrefix> values() {
-        return PREFIXES.values();
+        return GTRegistries.TAG_PREFIXES.values();
     }
 
     @Override

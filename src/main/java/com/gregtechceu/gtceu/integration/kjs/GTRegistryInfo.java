@@ -62,8 +62,7 @@ public class GTRegistryInfo<K, V> {
             GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
     public static final GTRegistryInfo<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"),
             () -> WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
-    public static final GTRegistryInfo<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"),
-            () -> TagPrefix.PREFIXES, KJSTagPrefix.class);
+    public static final GTRegistryInfo<String, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
     public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(
             GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
 
