@@ -25,6 +25,8 @@ public class IntegrationLang {
         provider.add("gtceu.jei.programmed_circuit", "Programmed Circuit Page");
         provider.add("gtceu.jei.bedrock_fluid_diagram", "Bedrock Fluid Diagram");
         provider.add("gtceu.jei.bedrock_ore_diagram", "Bedrock Ore Diagram");
+        provider.add("gtceu.jei.bedrock_vein_diagram.yield", "Yield: %s");
+        provider.add("gtceu.jei.bedrock_vein_diagram.depleted", "Depleted: %s");
         provider.add("gtceu.jei.ore_vein_diagram.chance", "§eChance: %s§r");
         provider.add("gtceu.jei.ore_vein_diagram.spawn_range", "Spawn Range:");
         provider.add("gtceu.jei.ore_vein_diagram.weight", "Weight: %s");

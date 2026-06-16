@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
@@ -195,15 +196,28 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                     continue;
                 }
 
-                var fluids = ingredient.getStacks();
+                FluidStack[] fluids;
+                if (ingredient instanceof IntProviderFluidIngredient provider) {
+                    provider.setFluidStacks(null);
+                    provider.setSampledCount(-1);
+
+                    if (simulate) {
+                        fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                    } else {
+                        fluids = provider.getStacks();
+                    }
+                } else {
+                    fluids = ingredient.getStacks();
+                }
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;
                 }
 
                 FluidStack output = fluids[0];
-                ingredient.shrink(storage.fill(output, action));
-                if (ingredient.getAmount() <= 0) it.remove();
+                int filled = storage.fill(output, action);
+                ingredient.shrink(filled);
+                if (filled <= 0) it.remove();
             }
             return left.isEmpty() ? null : left;
         }
