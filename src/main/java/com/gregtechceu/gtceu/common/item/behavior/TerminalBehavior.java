@@ -124,7 +124,7 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 this.multiblockSchemaInfo)
                 .setControllerPos(this.controllerPos)
                 .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
-
+        previewWidget.refreshSchema();
         /*
          * if (this.multiblockSchemaInfo != null) {
          * previewWidget.setMultiblockSchemaInfo(this.multiblockSchemaInfo);
