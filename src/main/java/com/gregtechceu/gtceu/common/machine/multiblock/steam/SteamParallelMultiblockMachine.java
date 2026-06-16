@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 
@@ -16,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -33,9 +35,11 @@ import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,17 +52,36 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     @Setter
     private int maxParallels = ConfigHolder.INSTANCE.machines.steamMultiParallelAmount;
 
+    private FluidHandlerList steamContainer;
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
     public static final double CONVERSION_RATE = 2.0;
 
-    public SteamParallelMultiblockMachine(IMachineBlockEntity holder, Object... args) {
+    public SteamParallelMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
-        if (args.length > 0 && args[0] instanceof Integer i) {
-            this.maxParallels = i;
-        }
     }
 
+    @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        List<IFluidHandler> steamContainers = new ArrayList<>();
+        for (IMultiPart part : getParts()) {
+            var handlerLists = part.getRecipeHandlers();
+            for (var handlerList : handlerLists) {
+                handlerList.getCapability(FluidRecipeCapability.CAP).stream()
+                        .filter(h -> h.getHandlerIO().support(IO.IN))
+                        .filter(IFluidHandler.class::isInstance)
+                        .map(IFluidHandler.class::cast)
+                        .forEach(steamContainers::add);
+            }
+        }
+        steamContainer = new FluidHandlerList(steamContainers);
+    }
 
+    @Override
+    public void onStructureInvalid() {
+        super.onStructureInvalid();
+        steamContainer = null;
+    }
 
     public double getConversionRate() {
         return CONVERSION_RATE;
@@ -84,17 +107,24 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) return RecipeModifier.DEFAULT_FAILURE;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
+            return Component.translatable("gtceu.recipe_modifier.steam_machine_voltage_too_high");
+        }
 
         // Duration = 1.5x base duration
         // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
         long eut = recipe.getInputEUt().getTotalEU();
-        int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels);
-        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? 0.8888 : (32.0 / (eut * parallelAmount));
+        int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels, false);
+        if(parallelAmount <= 0) {
+            return RecipeModifier.DEFAULT_FAILURE;
+        }
+        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ?(32.0 / (eut * parallelAmount)) :  0.8888;
         recipe.multiplyAllContents(parallelAmount);
         recipe.multiplyDuration(1.5);
         recipe.multiplyEUt(eutMultiplier);
         recipe.parallels *= parallelAmount;
+
+        RecipeHelper.replaceEUwithSteam(recipe, steamMachine.getConversionRate());
         return null;
     }
 
@@ -102,11 +132,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public void addDisplayText(List<Component> textList) {
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
-//            if (steamEnergy != null && steamEnergy.getCapacity() > 0) {
-//                long steamStored = steamEnergy.getStored();
-//                textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
-//                        steamEnergy.getCapacity()));
-//            }
+            if (steamContainer != null && steamContainer.getTanks() > 0) {
+                textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored",
+                        steamContainer.getFluidAmount(GTMaterials.Steam.getFluidTag()),
+                        steamContainer.getCapacity()));
+            }
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));

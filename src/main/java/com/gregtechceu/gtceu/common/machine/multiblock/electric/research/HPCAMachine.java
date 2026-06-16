@@ -169,6 +169,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.updateActive(false);
         super.onStructureInvalid();
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
+        this.coolantHandler = new FluidHandlerList(new ArrayList<>());
         this.hpcaHandler.onStructureInvalidate();
     }
 

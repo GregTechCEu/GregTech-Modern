@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -191,5 +193,29 @@ public class FluidHandlerList implements IFluidHandlerModifiable, INBTSerializab
         }
 
         return true;
+    }
+
+    public long getCapacity() {
+        long capacity = 0;
+        for(int i = 0; i < getTanks(); i++) {
+            capacity += getTankCapacity(i);
+        }
+        return capacity;
+    }
+
+    public long getFluidAmount(Fluid fluid) {
+        long amount = 0;
+        for(int i = 0; i < getTanks(); i++) {
+            if(getFluidInTank(i).getFluid() == fluid) amount += getFluidInTank(i).getAmount();
+        }
+        return amount;
+    }
+
+    public long getFluidAmount(TagKey<Fluid> fluidTag) {
+        long amount = 0;
+        for(int i = 0; i < getTanks(); i++) {
+            if(getFluidInTank(i).getFluid().is(fluidTag)) amount += getFluidInTank(i).getAmount();
+        }
+        return amount;
     }
 }

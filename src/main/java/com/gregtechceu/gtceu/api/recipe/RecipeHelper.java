@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.network.chat.Component;
@@ -314,5 +316,14 @@ public class RecipeHelper {
 
     public static boolean isFluidStackDivisibleForDistillery(FluidIngredient fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() / divisor >= 25;
+    }
+
+    public static void replaceEUwithSteam(GTRecipe recipe, double conversionRate) {
+        long totalEU = recipe.getInputEUt().getTotalEU();
+        int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
+        if(totalSteam > 0) {
+            recipe.tickInputs.remove(EURecipeCapability.CAP);
+            recipe.tickInputs.add(FluidRecipeCapability.CAP, FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam));
+        }
     }
 }

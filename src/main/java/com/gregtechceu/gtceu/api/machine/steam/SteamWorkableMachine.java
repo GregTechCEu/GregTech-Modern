@@ -94,6 +94,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
             }
         }
         recipeHandlerList = RecipeHandlerList.of(list);
+        traitSubscriptions.add(recipeHandlerList.subscribe(recipeLogic::updateTickSubscription));
     }
 
     @Override

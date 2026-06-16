@@ -32,6 +32,7 @@ public class RecipeLogicLang {
         provider.add("gtceu.recipe_modifier.missing_research_data", "Missing Research Data");
         provider.add("gtceu.recipe_modifier.missing_turbine_rotor", "Missing Turbine Rotor");
         provider.add("gtceu.recipe_modifier.insufficient_distillation_tower_height", "Requires %s Outputs, Tower has only %s Layers");
+        provider.add("gtceu.recipe_modifier.steam_machine_voltage_too_high", "Steam Machines Cannot Process Recipes Above LV");
 
     }
 }

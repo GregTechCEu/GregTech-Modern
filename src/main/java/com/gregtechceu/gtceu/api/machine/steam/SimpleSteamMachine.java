@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedImageWidget;
@@ -28,9 +26,12 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidType;
 
 import com.google.common.collect.Tables;
@@ -132,6 +133,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         if (getOutputFacing() != oldFacing) {
             updateModelVentDirection();
         }
+        getRecipeLogic().updateTickSubscription();
     }
 
     @Override
@@ -176,16 +178,21 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                                                @NotNull GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                     @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV || !steamMachine.checkVenting()) {
-            return RecipeModifier.DEFAULT_FAILURE;
+        if(!steamMachine.checkVenting()) {
+            return Component.translatable("gtceu.multiblock.large_miner.vent");
         }
-
         recipe.conditions.add(VentCondition.INSTANCE);
+
+        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
+            return Component.translatable("gtceu.recipe_modifier.steam_machine_voltage_too_high");
+        }
+        RecipeHelper.replaceEUwithSteam(recipe, steamMachine.getConversionRate());
+
         if (!steamMachine.isHighPressure) recipe.multiplyDuration(2);
         return null;
     }
@@ -195,6 +202,14 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         super.afterWorking();
         needsVenting = true;
         checkVenting();
+    }
+
+    @Override
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+        super.onNeighborChanged(block, fromPos, isMoving);
+        if(getPos().relative(getVentingDirection()).equals(fromPos)) {
+            getRecipeLogic().updateTickSubscription();
+        }
     }
 
     //////////////////////////////////////
