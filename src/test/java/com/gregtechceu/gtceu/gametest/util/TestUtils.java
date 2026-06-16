@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -221,6 +222,21 @@ public class TestUtils {
         GTRegistries.RECIPE_CATEGORIES.freeze();
         GTRegistries.RECIPE_TYPES.freeze();
         return type;
+    }
+
+    /**
+     * Fetches the set of Failed Recipes and Reasons from a machine's {@link RecipeLogic}
+     * Returns a newline-separated string of all failed recipes and their failure reasons
+     */
+    public static String getFailures(RecipeLogic recipeLogic) {
+        var reasons = recipeLogic.getFailureReasonMap();
+        StringBuilder failures = new StringBuilder();
+        if (!reasons.isEmpty()) {
+            for (var reason : reasons.entrySet()) {
+                failures.append(reason.getKey().id).append(" - ").append(reason).append("\n");
+            }
+        }
+        return failures.toString();
     }
 
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,

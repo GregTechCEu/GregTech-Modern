@@ -174,11 +174,11 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putLong("min", minValue);
         tag.putLong("max", maxValue);
         tag.putBoolean("percent", usePercent);
-        return super.copyConfig(tag);
     }
 
     @Override

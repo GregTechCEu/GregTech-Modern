@@ -113,6 +113,7 @@
   "behaviour.soft_hammer.disabled": "Working Disabled",
   "behaviour.soft_hammer.disabled_cycle": "Working Disabled after current cycle",
   "behaviour.soft_hammer.enabled": "Working Enabled",
+  "behaviour.soft_hammer.ignored": "Machine cannot be disabled",
   "behaviour.wrench": "Rotates Blocks on Rightclick",
   "block.filter_casing.tooltip": "Creates a §aParticle-Free§7 environment",
   "block.gtceu.acid_hazard_sign_block": "Acid Hazard Sign Block",
