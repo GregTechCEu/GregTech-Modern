@@ -6,16 +6,17 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 
@@ -30,12 +31,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted
+    @SaveField
     @Getter
     protected int globalVoidingLimit = 1;
 
@@ -102,6 +103,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         configureStackSizeInput();
 
         if (!this.isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("voidingMode");
             configureFilter();
         }
     }
@@ -155,15 +157,16 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         return this.filterHandler.getFilter().isBlackList();
     }
 
-    //////////////////////////////////////
-    // ***** LDLib SyncData ******//
-    //////////////////////////////////////
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedItemVoidingCover.class,
-            ItemVoidingCover.MANAGED_FIELD_HOLDER);
+    @Override
+    public void copyConfig(CompoundTag tag) {
+        tag.putInt("voidingMode", getVoidingMode().ordinal());
+        tag.putInt("voidSize", getGlobalVoidingLimit());
+    }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setVoidingMode(VoidingMode.values()[tag.getInt("voidingMode")]);
+        globalVoidingLimit = tag.getInt("voidSize");
+        super.pasteConfig(player, tag);
     }
 }

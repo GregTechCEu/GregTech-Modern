@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
-import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.items.ItemStackHandler;
 
 import lombok.Getter;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Predicate;
 
 public class CustomItemStackHandler extends ItemStackHandler
-                                    implements IContentChangeAware, ITagSerializable<CompoundTag> {
+                                    implements INBTSerializable<CompoundTag> {
 
     @Getter
     @Setter
@@ -53,5 +54,12 @@ public class CustomItemStackHandler extends ItemStackHandler
     public void clear() {
         stacks.clear();
         onContentsChanged.run();
+    }
+
+    public void dropInventoryInWorld(Level world, BlockPos pos) {
+        for (ItemStack stack : stacks) {
+            Block.popResource(world, pos, stack);
+        }
+        clear();
     }
 }

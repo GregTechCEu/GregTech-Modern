@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
@@ -438,9 +438,9 @@ public class GTResearchMachines {
             .register();
 
     @NotNull
-    private static MachineBuilder<MachineDefinition> registerDataHatch(String name, String displayName, int tier,
-                                                                       Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                       String model, PartAbility... abilities) {
+    private static MachineBuilder<MachineDefinition, ?> registerDataHatch(String name, String displayName, int tier,
+                                                                          Function<BlockEntityCreationInfo, MetaMachine> constructor,
+                                                                          String model, PartAbility... abilities) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .tier(tier)
@@ -449,9 +449,9 @@ public class GTResearchMachines {
                 .overlayTieredHullModel(model);
     }
 
-    private static MachineBuilder<MachineDefinition> registerHPCAPart(String name, String displayName,
-                                                                      Function<IMachineBlockEntity, MetaMachine> constructor,
-                                                                      String texture, boolean isAdvanced) {
+    private static MachineBuilder<MachineDefinition, ?> registerHPCAPart(String name, String displayName,
+                                                                         Function<BlockEntityCreationInfo, MetaMachine> constructor,
+                                                                         String texture, boolean isAdvanced) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)

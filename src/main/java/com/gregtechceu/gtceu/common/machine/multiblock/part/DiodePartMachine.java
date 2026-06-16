@@ -1,26 +1,22 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 
@@ -29,9 +25,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class DiodePartMachine extends TieredIOPartMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DiodePartMachine.class,
-            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     // spotless:off
     public enum AmpMode implements StringRepresentable {
@@ -73,32 +66,32 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     public static int MAX_AMPS = 16;
 
-    @Persisted
+    @SaveField
     protected NotifiableEnergyContainer energyContainer;
 
     @Getter
-    @DescSynced
-    @Persisted(key = "amp_mode")
-    @UpdateListener(methodName = "onAmpUpdated")
+    @SyncToClient
+    @SaveField(nbtKey = "amp_mode")
     private int amps;
 
-    public DiodePartMachine(IMachineBlockEntity holder, int tier) {
-        super(holder, tier, IO.BOTH);
+    public DiodePartMachine(BlockEntityCreationInfo info, int tier) {
+        super(info, tier, IO.BOTH);
         long tierVoltage = GTValues.V[getTier()];
 
         this.amps = 1;
-        this.energyContainer = new NotifiableEnergyContainer(this, tierVoltage * MAX_AMPS * 2, tierVoltage, MAX_AMPS,
-                tierVoltage, MAX_AMPS);
+        this.energyContainer = attachTrait(
+                new NotifiableEnergyContainer(tierVoltage * MAX_AMPS * 2, tierVoltage, MAX_AMPS,
+                        tierVoltage, MAX_AMPS));
 
         reinitializeEnergyContainer();
     }
 
     private void cycleAmpMode() {
         amps = amps == getMaxAmperage() ? 1 : amps << 1;
-        if (!getLevel().isClientSide) {
+        if (!isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("amps");
             reinitializeEnergyContainer();
             notifyBlockUpdate();
-            markDirty();
         }
     }
 
@@ -135,33 +128,20 @@ public class DiodePartMachine extends TieredIOPartMachine {
     }
 
     @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
+    protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         cycleAmpMode();
         if (!isRemote()) {
             this.scheduleRenderUpdate();
-            playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.CONSUME;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    @SuppressWarnings("unused")
-    public void onAmpUpdated(int newValue, int oldValue) {
-        this.scheduleRenderUpdate();
-    }
-
-    @Override
-    public void scheduleRenderUpdate() {
-        if (!isRemote()) {
-            setRenderState(getRenderState()
-                    .setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
-            super.scheduleRenderUpdate();
-        }
+    @ClientFieldChangeListener(fieldName = "amps")
+    public void onAmpUpdated() {
+        setRenderState(
+                getRenderState().setValue(GTMachineModelProperties.DIODE_AMP_MODE, AmpMode.getByValue(this.amps)));
+        scheduleRenderUpdate();
     }
 }

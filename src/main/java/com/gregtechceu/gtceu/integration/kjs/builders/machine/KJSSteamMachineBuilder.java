@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -24,14 +24,14 @@ import org.jetbrains.annotations.Nullable;
 public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Setter
-    public volatile boolean hasLowPressure = true, hasHighPressure = true;
+    public transient boolean hasLowPressure = true, hasHighPressure = true;
     @Setter
-    public volatile SteamCreationFunction machine = SimpleSteamMachine::new;
+    public transient SteamCreationFunction machine = SimpleSteamMachine::new;
     @Setter
-    public volatile SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
+    public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private volatile MachineBuilder<?> lowPressureBuilder = null, highPressureBuilder = null;
-    private volatile MachineDefinition hpValue = null;
+    private transient MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
+    private transient MachineDefinition hpValue = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
@@ -98,12 +98,12 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @FunctionalInterface
     public interface SteamCreationFunction {
 
-        MetaMachine create(IMachineBlockEntity holder, boolean isHighPressure);
+        MetaMachine create(BlockEntityCreationInfo info, boolean isHighPressure);
     }
 
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        void apply(boolean isHighPressure, MachineBuilder<?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?, ?> builder);
     }
 }

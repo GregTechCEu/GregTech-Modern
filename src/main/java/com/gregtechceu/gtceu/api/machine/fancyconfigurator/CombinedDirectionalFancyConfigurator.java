@@ -10,8 +10,7 @@ import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputFluid
 import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputItemConfigHandler;
 import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.CoverableConfigHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -59,7 +58,14 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
 
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.gui.directional_setting.title"); // TODO add this
+        return Component.translatable("gtceu.gui.directional_setting.title");
+    }
+
+    @Override
+    public List<Component> getTabTooltips() {
+        List<Component> tooltip = new ArrayList<>();
+        tooltip.add(Component.translatable("gtceu.gui.directional_setting.tab_tooltip"));
+        return tooltip;
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,11 +75,17 @@ public class CombinedDirectionalFancyConfigurator implements IFancyUIProvider {
     static {
         // Left side:
         CONFIG_HANDLERS.add(
-                machine -> machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.hasAutoOutputItem() ?
-                        () -> new AutoOutputItemConfigHandler(autoOutputItem) : null);
+                machine -> {
+                    var trait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+                    return trait != null && trait.supportsAutoOutputItems() ?
+                            () -> new AutoOutputItemConfigHandler(trait) : null;
+                });
         CONFIG_HANDLERS.add(
-                machine -> machine instanceof IAutoOutputFluid autoOutputFluid && autoOutputFluid.hasAutoOutputFluid() ?
-                        () -> new AutoOutputFluidConfigHandler(autoOutputFluid) : null);
+                machine -> {
+                    var trait = machine.getTraitHolder().getTrait(AutoOutputTrait.TYPE);
+                    return trait != null && trait.supportsAutoOutputFluids() ?
+                            () -> new AutoOutputFluidConfigHandler(trait) : null;
+                });
 
         // Right side:
         CONFIG_HANDLERS.add(machine -> () -> new CoverableConfigHandler(machine.getCoverContainer()));

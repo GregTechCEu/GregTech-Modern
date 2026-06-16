@@ -15,6 +15,9 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
@@ -25,15 +28,13 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,40 +56,37 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class,
-            CoverBehavior.MANAGED_FIELD_HOLDER);
-
     // .5b 2b 8b
     public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV));
 
     public final int tier;
     public final int maxFluidTransferRate;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected int transferRate;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
-    @RequireRerender
+    @RerenderOnChanged
     protected IO io = IO.OUT;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int mBLeftToTransferLastSecond;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Integer> transferRateWidget;
@@ -122,7 +120,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     }
 
     protected @Nullable IFluidHandler getAdjacentFluidHandler() {
-        return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide)
+        return GTTransferUtils.getAdjacentFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
                 .resolve()
                 .orElse(null);
     }
@@ -130,10 +128,6 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
 
     @Override
     public boolean canAttach() {
@@ -176,6 +170,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (this.isWorkingEnabled != isWorkingAllowed) {
             this.isWorkingEnabled = isWorkingAllowed;
+            syncDataHolder.markClientSyncFieldDirty("isWorkingEnabled");
             subscriptionHandler.updateSubscription();
         }
     }
@@ -193,7 +188,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
         var newMultiplier = bucketMode.multiplier;
 
         this.bucketMode = bucketMode;
-
+        syncDataHolder.markClientSyncFieldDirty("bucketMode");
         if (transferRateWidget == null) return;
 
         if (oldMultiplier > newMultiplier) {
@@ -209,7 +204,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
 
     protected void setManualIOMode(ManualIOMode manualIOMode) {
         this.manualIOMode = manualIOMode;
-        coverHolder.markDirty();
+        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
     }
 
     protected void update() {
@@ -398,5 +393,25 @@ public class PumpCover extends CoverBehavior implements IIOCover, IUICover, ICon
             }
             return super.drain(resource, action);
         }
+    }
+
+    @Override
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
+        tag.putInt("transferRate", getTransferRate());
+        tag.putInt("io", getIo().ordinal());
+        tag.putInt("manualIO", getManualIOMode().ordinal());
+        tag.put("filter", filterHandler.getFilterItem().serializeNBT());
+        tag.putInt("bucketMode", getBucketMode().ordinal());
+    }
+
+    @Override
+    public void pasteConfig(ServerPlayer player, CompoundTag tag) {
+        setTransferRate(tag.getInt("transferRate"));
+        setIo(IO.values()[tag.getInt("io")]);
+        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
+        filterHandler.setFilterItem(ItemStack.of(tag.getCompound("filter")));
+        setBucketMode(BucketMode.values()[tag.getInt("bucketMode")]);
+        super.pasteConfig(player, tag);
     }
 }

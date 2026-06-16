@@ -24,7 +24,6 @@ import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -35,7 +34,10 @@ public class NBTPredicateTest {
     @BeforeBatch(batch = "NBTPredicateTest")
     public static void prepare(ServerLevel level) {
         CR_RECIPE_TYPE = TestUtils.createRecipeType("nbt_predicate_ingredient_cr_tests", CHEMICAL_RECIPES);
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test")
                         .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("foo", "bar"))
                         .outputItems(new ItemStack(Items.COAL))
@@ -43,7 +45,7 @@ public class NBTPredicateTest {
                         .duration(5)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced")
                         .chance(4000)
                         .inputItemNbtPredicate(new ItemStack(Items.FEATHER), eq("bin", "bar"))
@@ -53,7 +55,7 @@ public class NBTPredicateTest {
                         .duration(4)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_ranged")
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
                                 new ItemStack(Items.FEATHER), eq("bash", "bar")), UniformInt.of(0, 4)))
@@ -62,7 +64,7 @@ public class NBTPredicateTest {
                         .duration(4)
                         .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(
+        CRHandler.addStaging(
                 CR_RECIPE_TYPE.recipeBuilder("nbt_predicate_test_chanced_ranged")
                         .chance(4000)
                         .inputItemRanged(new IntProviderIngredient(new NBTPredicateIngredient(
@@ -72,6 +74,7 @@ public class NBTPredicateTest {
                         .EUt(GTValues.V[GTValues.HV])
                         .duration(4)
                         .buildRawRecipe());
+        CRHandler.completeStaging();
     }
 
     @GameTest(template = "empty", batch = "NBTPredicateTest")
@@ -232,9 +235,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestSucceeds(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -253,9 +255,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestDoesntSucceed(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -274,9 +275,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestChanced(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -302,9 +302,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestRanged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
@@ -330,9 +329,8 @@ public class NBTPredicateTest {
 
     @GameTest(template = "singleblock_chem_reactor", batch = "NBTPredicateTest")
     public static void NBTPredicateMachineCRTestChancedRanged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
+        SimpleTieredMachine machine = (SimpleTieredMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        assert machine != null;
         machine.setRecipeType(CR_RECIPE_TYPE);
         NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);

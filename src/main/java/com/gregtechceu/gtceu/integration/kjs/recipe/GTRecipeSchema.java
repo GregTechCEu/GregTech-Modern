@@ -21,9 +21,11 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
@@ -792,6 +794,15 @@ public interface GTRecipeSchema {
                 if (stack == null || stack.isEmpty()) {
                     throw new RecipeExceptionJS(String.format("Invalid or empty %s item (recipe ID: %s)", type, id));
                 }
+                if (stack.ingredient.getItems().length == 0) {
+                    String tagInfo = "";
+                    var values = ((IngredientAccessor) stack.ingredient).getValues();
+                    if (values.length == 1 && values[0] instanceof Ingredient.TagValue tagValue) {
+                        tagInfo = " (empty or unknown tag: #" + ((TagValueAccessor) tagValue).getTag().location() + ")";
+                    }
+                    throw new RecipeExceptionJS(
+                            String.format("Invalid or empty %s item (recipe ID: %s)%s", type, id, tagInfo));
+                }
             }
         }
 
@@ -838,6 +849,15 @@ public interface GTRecipeSchema {
                         throw new RecipeExceptionJS(
                                 String.format("Invalid or empty %s fluid (recipe ID: %s)", type, id));
                     }
+                }
+                if (fluid.ingredient().getStacks().length == 0) {
+                    String tagInfo = "";
+                    var values = fluid.ingredient().values;
+                    if (values.length == 1 && values[0] instanceof FluidIngredient.TagValue tagValue) {
+                        tagInfo = " (empty or unknown tag: #" + tagValue.tag().location() + ")";
+                    }
+                    throw new RecipeExceptionJS(String.format(
+                            "Invalid or empty %s fluid (recipe ID: %s)%s", type, id, tagInfo));
                 }
             }
         }
@@ -950,7 +970,8 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS dimension(ResourceLocation dimension, boolean reverse) {
-            return addCondition(new DimensionCondition(dimension).setReverse(reverse));
+            return addCondition(
+                    new DimensionCondition(ResourceKey.create(Registries.DIMENSION, dimension)).setReverse(reverse));
         }
 
         public GTRecipeJS dimension(ResourceLocation dimension) {
@@ -971,6 +992,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS biome(ResourceKey<Biome> biome) {
             return biome(biome, false);
+        }
+
+        public GTRecipeJS biomeTag(ResourceLocation biome, boolean reverse) {
+            return addCondition(new BiomeTagCondition(TagKey.create(Registries.BIOME, biome)).setReverse(reverse));
+        }
+
+        public GTRecipeJS biomeTag(ResourceLocation biome) {
+            return biomeTag(biome, false);
         }
 
         public GTRecipeJS rain(float level, boolean reverse) {
@@ -1013,25 +1042,6 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
         }
 
-        public GTRecipeJS adjacentFluid(Fluid... fluids) {
-            return adjacentFluid(false, fluids);
-        }
-
-        public GTRecipeJS adjacentFluid(boolean isReverse, Fluid... fluids) {
-            return addCondition(AdjacentFluidCondition.fromFluids(fluids).setReverse(isReverse));
-        }
-
-        public GTRecipeJS adjacentFluid(ResourceLocation... tagNames) {
-            return adjacentFluid(false, tagNames);
-        }
-
-        public GTRecipeJS adjacentFluid(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Fluid>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.FLUID, id))
-                    .toList();
-            return addCondition(AdjacentFluidCondition.fromTags(tags).setReverse(isReverse));
-        }
-
         public GTRecipeJS adjacentFluidTag(ResourceLocation... tagNames) {
             return adjacentFluidTag(false, tagNames);
         }
@@ -1051,30 +1061,11 @@ public interface GTRecipeSchema {
             return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
         }
 
-        public GTRecipeJS adjacentBlock(Block... blocks) {
-            return adjacentBlock(false, blocks);
-        }
-
-        public GTRecipeJS adjacentBlock(boolean isReverse, Block... blocks) {
-            return addCondition(AdjacentBlockCondition.fromBlocks(blocks).setReverse(isReverse));
-        }
-
         public GTRecipeJS adjacentBlockTag(ResourceLocation... tagNames) {
             return adjacentBlockTag(false, tagNames);
         }
 
         public GTRecipeJS adjacentBlockTag(boolean isReverse, ResourceLocation... tagNames) {
-            List<TagKey<Block>> tags = Arrays.stream(tagNames)
-                    .map(id -> TagKey.create(Registries.BLOCK, id))
-                    .toList();
-            return addCondition(AdjacentBlockCondition.fromTags(tags).setReverse(isReverse));
-        }
-
-        public GTRecipeJS adjacentBlock(ResourceLocation... tagNames) {
-            return adjacentBlock(false, tagNames);
-        }
-
-        public GTRecipeJS adjacentBlock(boolean isReverse, ResourceLocation... tagNames) {
             List<TagKey<Block>> tags = Arrays.stream(tagNames)
                     .map(id -> TagKey.create(Registries.BLOCK, id))
                     .toList();
@@ -1363,7 +1354,7 @@ public interface GTRecipeSchema {
     RecipeKey<ResourceLocation> ID = GTRecipeComponents.RESOURCE_LOCATION.key("id");
     RecipeKey<Long> DURATION = TimeComponent.TICKS.key("duration").optional(100L);
     RecipeKey<CompoundTag> DATA = GTRecipeComponents.TAG.key("data").optional((CompoundTag) null);
-    RecipeKey<RecipeCondition[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
+    RecipeKey<RecipeCondition<?>[]> CONDITIONS = GTRecipeComponents.RECIPE_CONDITION.asArray().key("recipeConditions")
             .optional(new RecipeCondition[0]);
     RecipeKey<ResourceLocation> CATEGORY = GTRecipeComponents.RESOURCE_LOCATION.key("category").defaultOptional();
 

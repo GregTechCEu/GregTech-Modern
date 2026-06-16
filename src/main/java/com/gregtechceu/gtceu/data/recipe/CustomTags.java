@@ -130,6 +130,8 @@ public class CustomTags {
 
     public static final TagKey<Item> CHEM_BATH_WASHABLE = TagUtil.createModItemTag("chemical_bath_washable");
 
+    public static final TagKey<Item> SKIP_ITEM_DETECTOR = TagUtil.createModItemTag("skip_item_detector");
+
     // Mineability tags
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench");
     public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter");

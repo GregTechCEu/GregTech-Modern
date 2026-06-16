@@ -2,22 +2,21 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
@@ -27,8 +26,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -41,7 +38,6 @@ import net.minecraftforge.items.IItemHandler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -50,27 +46,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
     private final boolean isCreative;
-    @Persisted
+    @SaveField
     public final NotifiableItemStackHandler importItems;
 
-    public DataAccessHatchMachine(IMachineBlockEntity holder, int tier, boolean isCreative) {
-        super(holder, tier);
+    public DataAccessHatchMachine(BlockEntityCreationInfo info, int tier, boolean isCreative) {
+        super(info, tier);
         this.isCreative = isCreative;
         this.recipes = isCreative ? Collections.emptySet() : new ObjectOpenHashSet<>();
-        this.importItems = createImportItemHandler();
+        this.importItems = attachTrait(createImportItemHandler());
     }
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        if (isCreative) return new NotifiableItemStackHandler(this, 0, IO.BOTH);
-        return new NotifiableItemStackHandler(this, getInventorySize(), IO.BOTH) {
+        if (isCreative) return new NotifiableItemStackHandler(0, IO.BOTH);
+        return new NotifiableItemStackHandler(getInventorySize(), IO.BOTH) {
 
             @Override
             public void onContentsChanged() {
@@ -78,9 +71,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
                 rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine);
             }
 
-            @NotNull
             @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+            public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
                 boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
                 if (ResearchManager.isStackDataItem(stack, isDataBank)) {
                     return super.insertItem(slot, stack, simulate);
@@ -121,11 +113,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
-    @Override
-    public void onMachineRemoved() {
-        clearInventory(importItems.storage);
-    }
-
     private void rebuildData(boolean isDataBank) {
         if (isCreative || getLevel() == null || getLevel().isClientSide) return;
         recipes.clear();
@@ -144,12 +131,11 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
+    public boolean isRecipeAvailable(GTRecipe recipe, Collection<IDataAccessHatch> seen) {
         seen.add(this);
         return recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance) || recipes.contains(recipe);
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
@@ -181,7 +167,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public void addedToController(IMultiController controller) {
+    public void addedToController(MultiblockControllerMachine controller) {
         rebuildData(controller instanceof DataBankMachine);
         super.addedToController(controller);
     }
@@ -189,11 +175,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
     @Override
     public GTRecipe modifyRecipe(GTRecipe recipe) {
         return IDataAccessHatch.super.modifyRecipe(recipe);
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     @Override

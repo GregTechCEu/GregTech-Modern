@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapIngredientPool;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeManagerHandler;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 
@@ -39,7 +40,7 @@ public abstract class RecipeManagerMixin {
             if (!(recipeType instanceof GTRecipeType gtRecipeType)) {
                 continue;
             }
-            gtRecipeType.getLookup().removeAllRecipes();
+            gtRecipeType.beginStagingRecipes();
             gtRecipeType.getProxyRecipes().forEach((type, list) -> {
                 var recipesByID = recipes.get(type);
                 if (recipesByID == null) {
@@ -49,9 +50,12 @@ public abstract class RecipeManagerMixin {
             });
             var recipesByID = recipes.get(gtRecipeType);
             if (recipesByID == null) {
+                gtRecipeType.getAdditionHandler().completeStaging();
                 continue;
             }
             RecipeManagerHandler.addRecipesToLookup(recipesByID, gtRecipeType);
+            gtRecipeType.getAdditionHandler().completeStaging();
         }
+        MapIngredientPool.clear();
     }
 }

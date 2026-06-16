@@ -41,8 +41,8 @@ public final class CoverDefinition {
         }
     }
 
-    public CoverBehavior createCoverBehavior(ICoverable metaTileEntity, Direction side) {
-        return behaviorCreator.create(this, metaTileEntity, side);
+    public CoverBehavior createCoverBehavior(ICoverable coverable, Direction side) {
+        return behaviorCreator.create(this, coverable, side);
     }
 
     private static class ClientHelper {

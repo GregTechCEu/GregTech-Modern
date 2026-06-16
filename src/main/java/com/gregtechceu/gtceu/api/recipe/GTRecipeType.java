@@ -5,7 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
+import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -30,6 +31,7 @@ import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +41,7 @@ import java.util.function.*;
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
 
+    @Getter
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -79,8 +82,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeCategory category;
     @Getter
     private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
+    private final RecipeDB db = new RecipeDB();
+    @ApiStatus.Internal
     @Getter
-    private final GTRecipeLookup lookup = new GTRecipeLookup(this);
+    private final RecipeAdditionHandler additionHandler = new RecipeAdditionHandler(db);
     @Setter
     @Getter
     private boolean offsetVoltageText = false;
@@ -195,7 +200,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull Iterator<GTRecipe> searchRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipe> canHandle) {
         if (!holder.hasCapabilityProxies()) return Collections.emptyIterator();
-        var iterator = getLookup().getRecipeIterator(holder, canHandle);
+        var iterator = db.iterator(holder, canHandle);
+        if (iterator == null) {
+            return Collections.emptyIterator();
+        }
         boolean any = false;
         while (iterator.hasNext()) {
             GTRecipe recipe = iterator.next();
@@ -319,6 +327,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public Set<GTRecipe> getRecipesInCategory(GTRecipeCategory category) {
         return Collections.unmodifiableSet(categoryMap.getOrDefault(category, Set.of()));
+    }
+
+    public @NotNull RecipeDB db() {
+        return db;
+    }
+
+    @ApiStatus.Internal
+    public void beginStagingRecipes() {
+        categoryMap.clear();
+        additionHandler.beginStaging();
     }
 
     public interface ICustomRecipeLogic {

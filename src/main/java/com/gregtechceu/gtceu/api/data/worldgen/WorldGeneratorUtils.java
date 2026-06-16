@@ -58,9 +58,11 @@ public class WorldGeneratorUtils {
         private final Map<Holder<Biome>, List<WeightedVein>> biomeVeins = new Object2ObjectOpenHashMap<>();
 
         public WorldOreVeinCache(ServerLevel level) {
-            this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
-                    .filter(entry -> entry.dimensionFilter().stream()
+            this.worldVeins = GTRegistries.ORE_VEINS.entries().stream()
+                    .filter(entry -> entry.getValue().dimensionFilter().stream()
                             .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
+                    .sorted(Entry.comparingByKey())
+                    .map(Entry::getValue)
                     .collect(Collectors.toList());
         }
 
