@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -43,8 +44,6 @@ public class PlaceholderHandler {
     private static final char NEWLINE = '\n';
     private static final char ESCAPED_NEWLINE = 'n';
 
-    private static final Map<String, Placeholder> placeholders = new HashMap<>();
-
     @OnlyIn(Dist.CLIENT)
     private static final class RendererHolder {
 
@@ -52,15 +51,11 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        if (placeholders.containsKey(placeholder.getName())) {
-            if (placeholders.get(placeholder.getName()).getPriority() <= placeholder.getPriority()) {
-                placeholders.put(placeholder.getName(), placeholder);
-            }
-        } else placeholders.put(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.register(placeholder.getName(), placeholder);
     }
 
-    public static boolean placeholderExists(MultiLineComponent placeholder) {
-        return placeholders.containsKey(placeholder.toString());
+    public static void addOrOverridePlaceholder(Placeholder placeholder) {
+        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getName(), placeholder);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -87,12 +82,12 @@ public class PlaceholderHandler {
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         PlaceholderContext context,
                                                         Object2IntOpenHashMap<String> indices) throws PlaceholderException {
-        if (!placeholderExists(placeholder.get(0)))
+        if (!GTRegistries.PLACEHOLDERS.containKey(placeholder.get(0).toString()))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
         indices.addTo(name, 1);
         context.index(indices.getInt(name));
-        return placeholders.get(name).apply(context,
+        return Objects.requireNonNull(GTRegistries.PLACEHOLDERS.get(name)).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -188,16 +183,12 @@ public class PlaceholderHandler {
         return out.withStyle(ChatFormatting.DARK_RED);
     }
 
-    public static Set<String> getAllPlaceholderNames() {
-        return placeholders.keySet();
-    }
-
     public static Widget getPlaceholderHandlerUI(String filter) {
         DraggableScrollableWidgetGroup placeholderReference = new DraggableScrollableWidgetGroup(280, 15, 100, 200);
         Consumer<String> onSearch = (newSearch) -> {
             placeholderReference.clearAllWidgets();
             int y = 2;
-            ArrayList<String> placeholders = new ArrayList<>(getAllPlaceholderNames());
+            ArrayList<String> placeholders = new ArrayList<>(GTRegistries.PLACEHOLDERS.keys());
             placeholders.removeIf(s -> s == null || !s.contains(newSearch));
             placeholders.sort(String::compareTo);
             for (String placeholder : placeholders) {
