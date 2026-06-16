@@ -125,17 +125,6 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
                 .setControllerPos(this.controllerPos)
                 .setFrontFacing(this.frontFacing).setUpFacing(this.upFacing).setFlipped(this.isFlipped);
         previewWidget.refreshSchema();
-        /*
-         * if (this.multiblockSchemaInfo != null) {
-         * previewWidget.setMultiblockSchemaInfo(this.multiblockSchemaInfo);
-         * }
-         */
-        /*
-         * previewWidget.setOnSchemaRefresh(() -> {
-         * this.multiblockSchemaInfo = previewWidget.getMultiblockSchemaInfo();
-         * });
-         */
-        // previewWidget.refreshSchema();
 
         return ModularPanel.defaultPanel("terminal")
                 .coverChildren()
