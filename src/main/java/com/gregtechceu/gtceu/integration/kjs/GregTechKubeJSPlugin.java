@@ -419,8 +419,12 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.register(IWorldGenLayer.RuleTestSupplier.class, (cx, o, t) -> {
             if (o instanceof IWorldGenLayer.RuleTestSupplier supplier) return supplier;
+            if (o instanceof CharSequence) {
+                return () -> BlockStatePredicate.wrap(cx, o).asRuleTest();
+            } ;
             return () -> BlockStatePredicate.wrapRuleTest(cx, o);
         });
+
         registry.register(CraftingComponent.class, o -> {
             if (o instanceof CraftingComponent comp) return comp;
             if (o instanceof CharSequence str) return CraftingComponent.ALL_COMPONENTS.get(str.toString());
