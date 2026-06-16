@@ -2,19 +2,18 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class MultiPredicate extends BasePredicate {
 
-    private final List<BasePredicate> predicateList = new ArrayList<>();
+    private static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator.comparingInt(BasePredicate::getPriority);
+    private final List<BasePredicate> predicateList = new ObjectArrayList<>();
     private final @Nullable String debugName;
     private @Nullable Logic type;
 
@@ -26,10 +25,22 @@ public class MultiPredicate extends BasePredicate {
         this.debugName = debugName;
     }
 
-    protected MultiPredicate(@Nullable String debugName, List<BasePredicate> predicates, Logic type) {
+    protected MultiPredicate(@Nullable String debugName, Iterable<BasePredicate> predicates, Logic type) {
         this(debugName);
         this.type = type;
-        addPredicates(predicates);
+        for (BasePredicate predicate : predicates) {
+            if (!(predicate instanceof MultiPredicate multi)) {
+                addPredicates(predicate);
+                continue;
+            }
+
+            if (!multi.isValid() || multi.getType() == this.getType()) {
+                addPredicates(multi.predicateList);
+            } else {
+                addPredicates(multi);
+            }
+        }
+        sorted();
     }
 
     @Override
@@ -44,7 +55,7 @@ public class MultiPredicate extends BasePredicate {
         return false;
     }
 
-    protected MultiPredicate addPredicates(List<BasePredicate> predicates) {
+    protected MultiPredicate addPredicates(Collection<BasePredicate> predicates) {
         predicates.forEach(this::addPredicates);
         return this;
     }
@@ -134,6 +145,11 @@ public class MultiPredicate extends BasePredicate {
         return false;
     }
 
+    public MultiPredicate sorted() {
+        this.predicateList.sort(PREDICATE_COMPARATOR);
+        return this;
+    }
+
     @Override
     @Contract(pure = true)
     public MultiPredicate or(BasePredicate other) {
@@ -153,7 +169,7 @@ public class MultiPredicate extends BasePredicate {
             predicate.addPredicates(multi);
         }
 
-        return predicate;
+        return predicate.sorted();
     }
 
     @Override
@@ -175,7 +191,7 @@ public class MultiPredicate extends BasePredicate {
             predicate.addPredicates(multi);
         }
 
-        return predicate;
+        return predicate.sorted();
     }
 
     @Override
@@ -192,12 +208,14 @@ public class MultiPredicate extends BasePredicate {
         if (debugName != null) {
             builder.append('#').append(debugName);
         }
+        return builder.toString();
+    }
+
+    @Override
+    protected String getContents() {
         StringJoiner joiner = new StringJoiner(", ");
-        this.predicateList.forEach(p -> joiner.add(p.getTypeName()));
-        return builder.append('{')
-                .append(joiner)
-                .append('}')
-                .toString();
+        this.predicateList.forEach(p -> joiner.add(p.toString()));
+        return joiner.toString();
     }
 
     protected enum Logic {
