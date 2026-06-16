@@ -72,7 +72,7 @@ public class OreBlockRenderer {
             MaterialIconType iconType = tagPrefix.getMaterialIconType(material);
 
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = new ResourceLocation(iconSet.id.getNamespace(), ORE_MODEL_NAME_FORMAT
+            ResourceLocation modelId = iconSet.id.withPath(ORE_MODEL_NAME_FORMAT
                     .formatted(iconSet.getName(), tagPrefix.name, iconType.name()));
 
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
@@ -108,8 +108,7 @@ public class OreBlockRenderer {
                 .addProperty("parent", oreType.baseModelLocation().toString());
 
         GTDynamicResourcePack.addBlockModel(
-                new ResourceLocation(iconSet.id.getNamespace(),
-                        ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.name, iconType.name())),
+                iconSet.id.withPath(ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.name, iconType.name())),
                 newJson);
     }
 
