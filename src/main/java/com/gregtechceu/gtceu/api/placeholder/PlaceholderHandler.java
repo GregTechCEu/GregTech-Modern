@@ -22,7 +22,6 @@ import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.value.IBoolValue;
-import brachy.modularui.api.value.IIntValue;
 import brachy.modularui.api.value.IStringValue;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
@@ -243,20 +242,30 @@ public class PlaceholderHandler {
                                                         PlaceholderContext ctx,
                                                         IStringValue<?> code,
                                                         @Nullable DoubleSyncValue scaleDouble,
-                                                        @Nullable IIntValue<?> updateInterval,
+                                                        @Nullable IStringValue<?> updateInterval,
                                                         @Nullable IBoolValue<?> pause,
                                                         @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
                 true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
-        InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
+        InteractionSyncHandler runCodeOnce = updateText == null ? null : new InteractionSyncHandler();
         if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> {
             if (!mouseData.isClient())
                 updateText.run();
         });
-        // because the args are nullable, intellij complains about everything, even though childIf is used
-        // noinspection DataFlowIssue
-        return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel<>(name)
+        return syncManager.syncedPanel(name, true, (psm, handler) -> createPlaceholderEditorPanel(
+                name, ctx, code, scaleDouble, updateInterval, pause, helpPanel, runCodeOnce));
+    }
+
+    public static ModularPanel<?> createPlaceholderEditorPanel(String name,
+                                                               PlaceholderContext ctx,
+                                                               IStringValue<?> code,
+                                                               @Nullable DoubleSyncValue scaleDouble,
+                                                               @Nullable IStringValue<?> updateInterval,
+                                                               @Nullable IBoolValue<?> pause,
+                                                               IPanelHandler helpPanel,
+                                                               @Nullable InteractionSyncHandler runCodeOnce) {
+        return new ModularPanel<>(name)
                 .size(400, 250)
                 .resizeableOnDrag(true)
                 .excludeAreaInRecipeViewer()
@@ -289,9 +298,7 @@ public class PlaceholderHandler {
                                         .childIf(updateInterval != null, () -> new TextFieldWidget()
                                                 .setNumbers(1, 1000)
                                                 .setDefaultNumber(1)
-                                                .value(SyncHandlers.string(
-                                                        () -> String.valueOf(updateInterval.getIntValue()),
-                                                        s -> updateInterval.setIntValue(Integer.parseInt(s))))
+                                                .value(updateInterval)
                                                 .marginLeft(4))
                                         .childIf(pause != null, () -> new ToggleButton()
                                                 .value(pause)
@@ -305,7 +312,7 @@ public class PlaceholderHandler {
                                                 .overlay(true, GuiTextures.PLAY)
                                                 .addTooltip(false, Text.lang("gtceu.gui.central_monitor.pause"))
                                                 .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume")))
-                                        .childIf(updateText != null, () -> new ButtonWidget<>()
+                                        .childIf(runCodeOnce != null, () -> new ButtonWidget<>()
                                                 .overlay(GuiTextures.RIGHTLOAD)
                                                 .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
                                                 .syncHandler(runCodeOnce))
@@ -341,7 +348,7 @@ public class PlaceholderHandler {
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))
-                                        .toList()))));
+                                        .toList())));
     }
 
     public static ModularPanel<?> createHelpPanel() {
