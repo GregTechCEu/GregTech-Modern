@@ -26,7 +26,7 @@ dependencies {
     modCompileOnly(forge.jade)
 
     // Curios
-    //modCompileOnly(variantOf(forge.curios) { classifier("api") })
+    modCompileOnly(variantOf(forge.curios) { classifier("api") })
 
     // AE2
     modCompileOnly(forge.ae2)
@@ -133,7 +133,7 @@ dependencies {
     //todo
     // patchouli
     // modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
-    // modExtraLocalRuntime(forge.patchouli)
+    // modCompileOnly(forge.patchouli)
     // Forestry
-    // modExtraLocalRuntime(forge.forestry)
+    // modCompileOnly(forge.forestry)
 }
