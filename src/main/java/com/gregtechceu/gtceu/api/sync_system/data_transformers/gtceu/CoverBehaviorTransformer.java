@@ -23,13 +23,18 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         if (value != null) {
             return serialize(value, context.isClientSync(), context.lookup());
         }
-        return new CompoundTag();
+        var nullTag = new CompoundTag();
+        nullTag.putBoolean("null", true);
+        return nullTag;
     }
 
     @Override
     public @Nullable CoverBehavior deserializeNBT(Tag tag,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+        if (compoundTag.getBoolean("null")) {
+            return null;
+        }
         if (context.holder() instanceof ICoverable coverable) {
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync(),
                     context.lookup());

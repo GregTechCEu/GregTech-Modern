@@ -105,7 +105,7 @@ public class SyncDataHolder {
                                       boolean writeClientFields, boolean fullSync) {
         Object currentValue = field.handle.get(holder);
 
-        if (!field.isSyncManaged && currentValue == null) {
+        if (currentValue == null) {
             var nullCompound = new CompoundTag();
             nullCompound.putBoolean("null", true);
             return nullCompound;
