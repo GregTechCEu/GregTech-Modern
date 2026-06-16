@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -46,7 +45,7 @@ public class ChancedIngredientORTest {
     private static GTRecipeType LCR_RECIPE_TYPE;
     private static GTRecipeType CENTRIFUGE_RECIPE_TYPE;
 
-    // fluids used in recipes. Up top here for quick replacements.
+    // items used in recipes. Up top here for quick replacements.
     private static final ItemStack IN_SINGLE = new ItemStack(Items.STRIPPED_SPRUCE_WOOD);
     private static final ItemStack OUT_SINGLE = new ItemStack(Items.SPRUCE_SLAB);
     private static final ItemStack IN_OR_1 = new ItemStack(Items.STRIPPED_BIRCH_WOOD);
@@ -63,14 +62,22 @@ public class ChancedIngredientORTest {
     @BeforeBatch(batch = "ChancedIngredientsOR")
     public static void prepare(ServerLevel level) {
         CR_RECIPE_TYPE = TestUtils.createRecipeType("chanced_ingredient_or_cr_tests", GTRecipeTypes.CHEMICAL_RECIPES);
-        ASSM_RECIPE_TYPE = TestUtils.createRecipeType("chanced_ingredient_or_assm_tests",
-                GTRecipeTypes.ASSEMBLER_RECIPES);
+        ASSM_RECIPE_TYPE = TestUtils.createRecipeType("chanced_ingredient_or_assm_tests", GTRecipeTypes.ASSEMBLER_RECIPES);
         LCR_RECIPE_TYPE = TestUtils.createRecipeType("chanced_ingredient_or_lcr_tests",
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
         CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("chanced_ingredient_or_centrifuge_tests",
                 GTRecipeTypes.CENTRIFUGE_RECIPES);
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+        var ASSMHandler = ASSM_RECIPE_TYPE.getAdditionHandler();
+        ASSMHandler.beginStaging();
+        var LCRHandler = LCR_RECIPE_TYPE.getAdditionHandler();
+        LCRHandler.beginStaging();
+        var CENTHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
+        CENTHandler.beginStaging();
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_input_cr"))
                 .chancedInput(IN_SINGLE.copyWithCount(3), 5000, 0)
                 .inputItems(COBBLE)
@@ -79,7 +86,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_output_cr"))
                 .inputItems(IN_OR_3)
                 .chancedOutput(STONE, 5000, 0)
@@ -87,7 +94,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_chanced_output_assm"))
                 .inputItems(OUT_SINGLE)
                 .chance(4000)
@@ -100,7 +107,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_chanced_input_lcr"))
                 .chance(4000)
                 .inputItems(IN_OR_1.copyWithCount(3))
@@ -114,7 +121,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        ASSM_RECIPE_TYPE.getLookup().addRecipe(ASSM_RECIPE_TYPE
+        ASSMHandler.addStaging(ASSM_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_chanced_input_assm"))
                 .chance(4000)
                 .inputItems(IN_OR_1.copyWithCount(3))
@@ -128,7 +135,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        ASSM_RECIPE_TYPE.getLookup().addRecipe(ASSM_RECIPE_TYPE
+        ASSMHandler.addStaging(ASSM_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_quad_or_chanced_input_assm"))
                 .chance(3000)
                 .inputItems(STONE.copyWithCount(3))
@@ -146,7 +153,7 @@ public class ChancedIngredientORTest {
                 .duration(2)
                 .buildRawRecipe());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        CENTHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_chanced_output_cent"))
                 .inputItems(COBBLE)
                 .chance(4000)
@@ -160,7 +167,7 @@ public class ChancedIngredientORTest {
                 .buildRawRecipe());
 
         // will subtick overclock once
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        CENTHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_quad_or_chanced_output_cent"))
                 .inputItems(STONE)
                 .chance(3000)
@@ -179,7 +186,7 @@ public class ChancedIngredientORTest {
 
         // per tick 2 output
         // per tick 4 output
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_tick_input_cr"))
                 .perTick(true)
                 .chancedInput(STONE, 5000, 0)
@@ -190,7 +197,7 @@ public class ChancedIngredientORTest {
                 .duration(64)
                 .buildRawRecipe());
 
-        ASSM_RECIPE_TYPE.getLookup().addRecipe(ASSM_RECIPE_TYPE
+        ASSMHandler.addStaging(ASSM_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_tick_chanced_input_assm"))
                 .perTick(true)
                 .chance(4000)
@@ -206,7 +213,7 @@ public class ChancedIngredientORTest {
                 .duration(16)
                 .buildRawRecipe());
 
-        ASSM_RECIPE_TYPE.getLookup().addRecipe(ASSM_RECIPE_TYPE
+        ASSMHandler.addStaging(ASSM_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_quad_or_tick_chanced_input_assm"))
                 .perTick(true)
                 .chance(3000)
@@ -226,7 +233,7 @@ public class ChancedIngredientORTest {
                 .duration(16)
                 .buildRawRecipe());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_double_or_tick_chanced_input_lcr"))
                 .perTick(true)
                 .chance(4000)
@@ -242,44 +249,44 @@ public class ChancedIngredientORTest {
                 .duration(16)
                 .buildRawRecipe());
 
-            CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_double_or_tick_chanced_output_cent"))
-                .inputItems(IN_TICK_1)
-                .perTick(true)
-                .chance(4000)
-                .outputItems(IN_TICK_1.copyWithCount(1))
-                .chance(6000)
-                .outputItems(IN_TICK_2.copyWithCount(1))
-                .chance(10000)
-                .perTick(false)
-                .chancedItemOutputLogic(ChanceLogic.OR)
-                .EUt(GTValues.V[GTValues.HV])
-                .duration(400)
-                .buildRawRecipe());
+        CENTHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
+            .recipeBuilder(GTCEu.id("test_double_or_tick_chanced_output_cent"))
+            .inputItems(IN_TICK_1)
+            .perTick(true)
+            .chance(4000)
+            .outputItems(IN_TICK_1.copyWithCount(1))
+            .chance(6000)
+            .outputItems(IN_TICK_2.copyWithCount(1))
+            .chance(10000)
+            .perTick(false)
+            .chancedItemOutputLogic(ChanceLogic.OR)
+            .EUt(GTValues.V[GTValues.HV])
+            .duration(400)
+            .buildRawRecipe());
 
-        // will subtick overclock once
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_quad_or_tick_chanced_output_cent"))
-                .inputItems(IN_TICK_2)
-                .perTick(true)
-                .chance(3000)
-                .outputItems(IN_TICK_1.copyWithCount(1))
-                .chance(4000)
-                .outputItems(IN_TICK_2.copyWithCount(1))
-                .chance(5000)
-                .outputItems(IN_TICK_3.copyWithCount(1))
-                .chance(6000)
-                .outputItems(IN_TICK_4.copyWithCount(1))
-                .chance(10000)
-                .perTick(false)
-                .chancedItemOutputLogic(ChanceLogic.OR)
-                .EUt(GTValues.V[GTValues.HV])
-                .duration(8)
+    // will subtick overclock once
+        CENTHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
+            .recipeBuilder(GTCEu.id("test_quad_or_tick_chanced_output_cent"))
+            .inputItems(IN_TICK_2)
+            .perTick(true)
+            .chance(3000)
+            .outputItems(IN_TICK_1.copyWithCount(1))
+            .chance(4000)
+            .outputItems(IN_TICK_2.copyWithCount(1))
+            .chance(5000)
+            .outputItems(IN_TICK_3.copyWithCount(1))
+            .chance(6000)
+            .outputItems(IN_TICK_4.copyWithCount(1))
+            .chance(10000)
+            .perTick(false)
+            .chancedItemOutputLogic(ChanceLogic.OR)
+            .EUt(GTValues.V[GTValues.HV])
+            .duration(8)
                 .buildRawRecipe());
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
+        return (MetaMachine) entity;
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, FluidHatchPartMachine inputHatch1,
