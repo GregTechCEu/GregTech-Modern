@@ -125,11 +125,10 @@ public class MaterialIconSet {
             throw new IllegalArgumentException("MaterialIconSet id cannot have '/' %s".formatted(id));
 
         this.name = id.getPath();
-
-        GTRegistries.MATERIAL_ICON_SETS.register(this.id, this);
-
         this.isRootIconset = isRootIconset;
         this.parentIconset = parentIconset;
+
+        GTRegistries.MATERIAL_ICON_SETS.register(this.id, this);
     }
 
     /**

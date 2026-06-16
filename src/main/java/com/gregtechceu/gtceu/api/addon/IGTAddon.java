@@ -35,7 +35,7 @@ public interface IGTAddon {
     /**
      * Call init on your custom TagPrefix class(es) here
      * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<String, TagPrefix>} register event instead
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix>} register event instead
      */
     @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerTagPrefixes() {}
