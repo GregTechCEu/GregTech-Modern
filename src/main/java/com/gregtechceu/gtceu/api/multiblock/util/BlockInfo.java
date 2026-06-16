@@ -113,6 +113,11 @@ public class BlockInfo {
     }
 
     @Override
+    public String toString() {
+        return "BlockInfo{" + this.getBlockState() + ", hasBE=" + (this.blockEntity != null) + "}";
+    }
+
+    @Override
     public boolean equals(@Nullable Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BlockInfo blockInfo = (BlockInfo) o;
