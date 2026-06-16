@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +57,7 @@ public class MaterialIconSet {
 
     /**
      * Create a new MaterialIconSet whose parent is {@link MaterialIconSet#DULL}
+     * 
      * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation)} instead
      * @param name the name of the iconset
      */
@@ -66,6 +68,7 @@ public class MaterialIconSet {
 
     /**
      * Create a new MaterialIconSet whose parent is one of your choosing
+     * 
      * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet)} instead
      * @param name          the name of the iconset
      * @param parentIconset the parent iconset
@@ -77,6 +80,7 @@ public class MaterialIconSet {
 
     /**
      * Create a new MaterialIconSet which is a root
+     * 
      * @deprecated Use {@link MaterialIconSet#MaterialIconSet(ResourceLocation, MaterialIconSet, boolean)} instead
      * @param name          the name of the iconset
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
@@ -99,7 +103,7 @@ public class MaterialIconSet {
     /**
      * Create a new MaterialIconSet whose parent is one of your choosing
      *
-     * @param id          the id of the iconset
+     * @param id            the id of the iconset
      * @param parentIconset the parent iconset
      */
     public MaterialIconSet(@NotNull ResourceLocation id, @NotNull MaterialIconSet parentIconset) {
@@ -109,14 +113,16 @@ public class MaterialIconSet {
     /**
      * Create a new MaterialIconSet which is a root
      *
-     * @param id          the id of the iconset
+     * @param id            the id of the iconset
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
-    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset, boolean isRootIconset) {
+    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset,
+                           boolean isRootIconset) {
         this.id = id;
 
-        if (id.getPath().contains("/")) throw new IllegalArgumentException("MaterialIconSet id cannot have '/' %s".formatted(id));
+        if (id.getPath().contains("/"))
+            throw new IllegalArgumentException("MaterialIconSet id cannot have '/' %s".formatted(id));
 
         this.name = id.getPath();
 

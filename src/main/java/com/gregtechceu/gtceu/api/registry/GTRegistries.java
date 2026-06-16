@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -89,7 +88,8 @@ public final class GTRegistries {
     public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(
             GTCEu.id("medical_condition"));
 
-    public static final GTRegistry.RL<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.RL<>(GTCEu.id("material_icon_set"));
+    public static final GTRegistry.RL<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.RL<>(
+            GTCEu.id("material_icon_set"));
 
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);

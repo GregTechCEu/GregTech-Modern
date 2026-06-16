@@ -157,7 +157,8 @@ public class GTElements {
         return createAndRegister(GTCEu.id(name), protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 
-    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, long halfLifeSeconds, String decayTo,
+    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, long halfLifeSeconds,
+                                            String decayTo,
                                             String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
         GTRegistries.ELEMENTS.register(id, element);

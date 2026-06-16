@@ -24,6 +24,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,7 +42,6 @@ import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.kubejs.util.UtilsJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
-import net.minecraftforge.fml.ModLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;

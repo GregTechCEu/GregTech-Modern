@@ -108,7 +108,9 @@ public class OreBlockRenderer {
                 .addProperty("parent", oreType.baseModelLocation().toString());
 
         GTDynamicResourcePack.addBlockModel(
-                new ResourceLocation(iconSet.id.getNamespace(), ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.name, iconType.name())), newJson);
+                new ResourceLocation(iconSet.id.getNamespace(),
+                        ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.name, iconType.name())),
+                newJson);
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {
