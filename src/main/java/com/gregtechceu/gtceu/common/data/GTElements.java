@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModLoader;
 
 public class GTElements {
@@ -153,8 +154,13 @@ public class GTElements {
 
     public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo,
                                             String name, String symbol, boolean isIsotope) {
+        return createAndRegister(GTCEu.id(name), protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
+    }
+
+    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, long halfLifeSeconds, String decayTo,
+                                            String name, String symbol, boolean isIsotope) {
         Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        GTRegistries.ELEMENTS.register(name, element);
+        GTRegistries.ELEMENTS.register(id, element);
         return element;
     }
 
@@ -167,7 +173,11 @@ public class GTElements {
         GTRegistries.ELEMENTS.freeze();
     }
 
+    /**
+     * @deprecated Use {@code GTRegistries.ELEMENTS.get(name)} instead
+     */
+    @Deprecated(since = "8.0.0")
     public static Element get(String name) {
-        return GTRegistries.ELEMENTS.get(name);
+        return GTRegistries.ELEMENTS.get(GTCEu.id(name));
     }
 }

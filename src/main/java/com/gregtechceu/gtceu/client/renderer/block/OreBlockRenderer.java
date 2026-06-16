@@ -72,8 +72,8 @@ public class OreBlockRenderer {
             MaterialIconType iconType = tagPrefix.getMaterialIconType(material);
 
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
-            ResourceLocation modelId = GTCEu.id(ORE_MODEL_NAME_FORMAT
-                    .formatted(iconSet.name, tagPrefix.name, iconType.name()));
+            ResourceLocation modelId = new ResourceLocation(iconSet.id.getNamespace(), ORE_MODEL_NAME_FORMAT
+                    .formatted(iconSet.getName(), tagPrefix.name, iconType.name()));
 
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()),
@@ -92,7 +92,7 @@ public class OreBlockRenderer {
             original = TEMPLATE_MODEL_CACHE.apply(iconType, iconSet);
         } catch (RuntimeException e) {
             GTCEu.LOGGER.error("Could not load template block model for ore type {}, icon type '{}', icon set '{}'",
-                    tagPrefix.name, iconType.name(), iconSet.name, e);
+                    tagPrefix.name, iconType.name(), iconSet.id, e);
             return;
         }
         if (original == NULL_ELEMENT_MARKER) {
@@ -108,7 +108,7 @@ public class OreBlockRenderer {
                 .addProperty("parent", oreType.baseModelLocation().toString());
 
         GTDynamicResourcePack.addBlockModel(
-                GTCEu.id(ORE_MODEL_NAME_FORMAT.formatted(iconSet.name, tagPrefix.name, iconType.name())), newJson);
+                new ResourceLocation(iconSet.id.getNamespace(), ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.name, iconType.name())), newJson);
     }
 
     private static JsonObject loadTemplateOreModel(MaterialIconType iconType, MaterialIconSet iconSet) {

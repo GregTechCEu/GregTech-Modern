@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @SuppressWarnings("unused")
 public record MaterialIconType(String name) {
@@ -162,22 +164,22 @@ public record MaterialIconType(String name) {
                 Minecraft.getInstance().getResourceManager() == null)
             return GTModels.BLANK_TEXTURE; // check minecraft for null for CI environments
         if (!iconSet.isRootIconset) {
-            while (!iconSet.isRootIconset) {
-                ResourceLocation location = GTCEu
-                        .id(String.format("textures/block/material_sets/%s/%s%s.png", iconSet.name, this.name, suffix));
+            while (iconSet != null && !iconSet.isRootIconset) {
+                ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
                 if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
                     break;
                 iconSet = iconSet.parentIconset;
             }
         }
 
-        ResourceLocation location = GTCEu
-                .id(String.format("textures/block/material_sets/%s/%s%s.png", iconSet.name, this.name, suffix));
+        Objects.requireNonNull(iconSet);
+
+        ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("textures/block/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
         if (!suffix.isEmpty() && !ResourceHelper.isResourceExist(location) &&
                 !ResourceHelper.isResourceExistRaw(location)) {
             return GTModels.BLANK_TEXTURE;
         }
-        location = GTCEu.id(String.format("block/material_sets/%s/%s%s", iconSet.name, this.name, suffix));
+        location = new ResourceLocation(iconSet.id.getNamespace(), String.format("block/material_sets/%s/%s%s", iconSet.getName(), this.name, suffix));
         if (suffix.isEmpty()) {
             BLOCK_TEXTURE_CACHE.put(this, materialIconSet, location);
         } else {
@@ -199,16 +201,17 @@ public record MaterialIconType(String name) {
         // noinspection ConstantConditions
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
-            while (!iconSet.isRootIconset) {
-                ResourceLocation location = GTCEu
-                        .id(String.format("models/block/material_sets/%s/%s.json", iconSet.name, this.name));
+            while (iconSet != null && !iconSet.isRootIconset) {
+                ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("models/block/material_sets/%s/%s.json", iconSet.getName(), this.name));
                 if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
                     break;
                 iconSet = iconSet.parentIconset;
             }
         }
 
-        ResourceLocation location = GTCEu.id(String.format("block/material_sets/%s/%s", iconSet.name, this.name));
+        Objects.requireNonNull(iconSet);
+
+        ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("block/material_sets/%s/%s", iconSet.getName(), this.name));
         ITEM_MODEL_CACHE.put(this, materialIconSet, location);
 
         return location;
@@ -226,16 +229,17 @@ public record MaterialIconType(String name) {
         // noinspection ConstantConditions
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
-            while (!iconSet.isRootIconset) {
-                ResourceLocation location = GTCEu
-                        .id(String.format("models/item/material_sets/%s/%s.json", iconSet.name, this.name));
+            while (iconSet != null && !iconSet.isRootIconset) {
+                ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("models/item/material_sets/%s/%s.json", iconSet.getName(), this.name));
                 if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
                     break;
                 iconSet = iconSet.parentIconset;
             }
         }
 
-        ResourceLocation location = GTCEu.id(String.format("item/material_sets/%s/%s", iconSet.name, this.name));
+        Objects.requireNonNull(iconSet);
+
+        ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("item/material_sets/%s/%s", iconSet.getName(), this.name));
         ITEM_MODEL_CACHE.put(this, materialIconSet, location);
 
         return location;
@@ -265,22 +269,24 @@ public record MaterialIconType(String name) {
         // noinspection ConstantConditions
         if (!iconSet.isRootIconset && GTCEu.isClientSide() && Minecraft.getInstance() != null &&
                 Minecraft.getInstance().getResourceManager() != null) { // check minecraft for null for CI environments
-            while (!iconSet.isRootIconset) {
-                ResourceLocation location = GTCEu
-                        .id(String.format("textures/item/material_sets/%s/%s%s.png", iconSet.name, this.name, suffix));
+            while (iconSet != null && !iconSet.isRootIconset) {
+                ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(), String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
                 if (ResourceHelper.isResourceExist(location) || ResourceHelper.isResourceExistRaw(location))
                     break;
                 iconSet = iconSet.parentIconset;
             }
         }
 
-        ResourceLocation location = GTCEu
-                .id(String.format("textures/item/material_sets/%s/%s%s.png", iconSet.name, this.name, suffix));
+        Objects.requireNonNull(iconSet);
+
+        ResourceLocation location = new ResourceLocation(iconSet.id.getNamespace(),
+                String.format("textures/item/material_sets/%s/%s%s.png", iconSet.getName(), this.name, suffix));
+
         if (!suffix.isEmpty() && !ResourceHelper.isResourceExist(location) &&
                 !ResourceHelper.isResourceExistRaw(location)) {
             return null;
         }
-        location = GTCEu.id(String.format("item/material_sets/%s/%s%s", iconSet.name, this.name, suffix));
+        location = new ResourceLocation(iconSet.id.getNamespace(), String.format("item/material_sets/%s/%s%s", iconSet.getName(), this.name, suffix));
         if (suffix.isEmpty()) {
             ITEM_TEXTURE_CACHE.put(this, materialIconSet, location);
         } else {

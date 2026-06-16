@@ -51,9 +51,9 @@ public final class GTRegistries {
 
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
 
-    public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
+    public static final GTRegistry.RL<Element> ELEMENTS = new GTRegistry.RL<>(GTCEu.id("element"));
 
-    public static final GTRegistry.String<TagPrefix> TAG_PREFIXES = new GTRegistry.String<>(GTCEu.id("tag_prefix"));
+    public static final GTRegistry.RL<TagPrefix> TAG_PREFIXES = new GTRegistry.RL<>(GTCEu.id("tag_prefix"));
 
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
 
@@ -89,7 +89,7 @@ public final class GTRegistries {
     public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(
             GTCEu.id("medical_condition"));
 
-    public static final GTRegistry.String<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.String<>(GTCEu.id("material_icon_set"));
+    public static final GTRegistry.RL<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.RL<>(GTCEu.id("material_icon_set"));
 
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister
             .create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);

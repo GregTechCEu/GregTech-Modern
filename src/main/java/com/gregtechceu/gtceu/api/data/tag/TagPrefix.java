@@ -90,7 +90,7 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public static TagPrefix get(String name) {
-        return GTRegistries.TAG_PREFIXES.get(name);
+        return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
     }
 
     public boolean isEmpty() {
@@ -984,6 +984,9 @@ public class TagPrefix {
                                   UnaryOperator<BlockBehaviour.Properties> properties) {}
 
     @Getter
+    public final ResourceLocation id;
+
+    @Getter
     public final String name;
     @Getter
     @Setter
@@ -1059,11 +1062,16 @@ public class TagPrefix {
     }
 
     public TagPrefix(String name, boolean invertedName) {
-        this.name = name;
+        this(GTCEu.id(name), invertedName);
+    }
+
+    public TagPrefix(ResourceLocation id, boolean invertedName) {
+        this.id = id;
+        this.name = id.getPath();
         this.idPattern = "%s_" + getLowerCaseName();
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(getLowerCaseName());
-        GTRegistries.TAG_PREFIXES.register(name, this);
+        GTRegistries.TAG_PREFIXES.register(id, this);
     }
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
@@ -1185,7 +1193,7 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return GTRegistries.TAG_PREFIXES.getOrDefault(prefixName, replacement);
+        return GTRegistries.TAG_PREFIXES.getOrDefault(GTCEu.id(prefixName), replacement);
     }
 
     public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
