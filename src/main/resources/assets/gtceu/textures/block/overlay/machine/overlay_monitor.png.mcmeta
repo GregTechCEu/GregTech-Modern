@@ -1,5 +1,5 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/overlay/machine/overlay_monitor_ctm"
+    "gtceu": {
+        "connection_texture": "gtceu:block/overlay/machine/overlay_monitor_ctm"
     }
 }

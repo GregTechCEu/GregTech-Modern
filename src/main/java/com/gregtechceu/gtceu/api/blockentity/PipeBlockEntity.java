@@ -10,10 +10,10 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -185,6 +185,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -254,8 +255,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 if (cover != null && cover.canPipePassThrough()) return;
             }
 
-            connections = withSideConnection(connections, side, connected);
-            syncDataHolder.markClientSyncFieldDirty("connections");
+            setConnections(withSideConnection(connections, side, connected));
             updateNetworkConnection(side, connected);
             // notify neighbor of change so Auto Output updates its ticking status
             getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
@@ -307,13 +307,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void setChanged() {
-        if (getLevel() != null) {
-            getLevel().blockEntityChanged(getBlockPos());
-        }
     }
 
     //////////////////////////////////////
@@ -422,13 +415,35 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
-        return ICopyable.super.copyConfig(tag);
+    public void copyConfig(CompoundTag tag) {
+        tag.putInt("pipe_connections", getConnections());
+        tag.putInt("pipe_blocked_connections", getBlockedConnections());
+
+        var coverTag = new CompoundTag();
+        getCoverContainer().copyConfig(coverTag);
+        tag.put("cover", coverTag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.pasteConfig(player, tag);
+        if (tag.contains("pipe_connections")) {
+            var connections = tag.getInt("pipe_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isConnected(connections, dir)) setConnection(dir, true, false);
+            }
+
+        }
+        if (tag.contains("pipe_blocked_connections")) {
+            var blockedConnections = tag.getInt("pipe_blocked_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isFaceBlocked(blockedConnections, dir)) setBlocked(dir, true);
+            }
+
+        }
+
+        getCoverContainer().pasteConfig(player, tag.getCompound("cover"));
     }
 
     @Override

@@ -8,11 +8,10 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -70,18 +69,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         this.attachedSide = attachedSide;
     }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        coverHolder.scheduleRenderUpdate();
-    }
-
     @Override
-    public void markAsChanged() {
-        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
-            syncEntity.markAsChanged();
-        }
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return coverHolder;
     }
 
     /**
