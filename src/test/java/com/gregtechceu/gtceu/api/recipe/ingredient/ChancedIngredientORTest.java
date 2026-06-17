@@ -79,7 +79,7 @@ public class ChancedIngredientORTest {
 
         CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_input_cr"))
-                .chancedInput(IN_SINGLE.copyWithCount(3), 5000, 0)
+                .chancedInput(IN_SINGLE.copyWithCount(3), 5000)
                 .inputItems(COBBLE)
                 .outputItems(STONE)
                 .EUt(GTValues.V[GTValues.HV])
@@ -89,7 +89,7 @@ public class ChancedIngredientORTest {
         CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_output_cr"))
                 .inputItems(IN_OR_3)
-                .chancedOutput(STONE, 5000, 0)
+                .chancedOutput(STONE, 5000)
                 .EUt(GTValues.V[GTValues.HV])
                 .duration(2)
                 .buildRawRecipe());
@@ -189,7 +189,7 @@ public class ChancedIngredientORTest {
         CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_single_chanced_tick_input_cr"))
                 .perTick(true)
-                .chancedInput(STONE, 5000, 0)
+                .chancedInput(STONE, 5000)
                 .perTick(false)
                 .inputItems(IN_TICK_1)
                 .outputItems(STONE)
