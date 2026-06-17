@@ -1,0 +1,14 @@
+{
+  "remove": [
+    "minecraft:moss_block",
+    "minecraft:mud",
+    "minecraft:muddy_mangrove_roots"
+  ],
+  "values": [
+    "#minecraft:dirt",
+    "minecraft:dirt_path",
+    "#forge:sand",
+    "#minecraft:sand",
+    "#minecraft:terracotta"
+  ]
+}

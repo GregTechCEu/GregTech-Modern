@@ -1,0 +1,23 @@
+{
+  "values": [
+    "gtceu:pump_deck",
+    "#gtceu:mineable/pickaxe_or_wrench",
+    "minecraft:piston",
+    "minecraft:piston_head",
+    "minecraft:sticky_piston",
+    "minecraft:observer",
+    "minecraft:redstone_lamp",
+    "minecraft:redstone_block",
+    "minecraft:iron_door",
+    "minecraft:iron_trapdoor",
+    "minecraft:polished_blackstone_pressure_plate",
+    "minecraft:heavy_weighted_pressure_plate",
+    "minecraft:light_weighted_pressure_plate",
+    "minecraft:hopper",
+    "minecraft:dispenser",
+    "minecraft:dropper",
+    "minecraft:lightning_rod",
+    "minecraft:daylight_detector",
+    "minecraft:bell"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "values": [
+    "gtceu:face_mask",
+    "gtceu:rubber_gloves",
+    "gtceu:hazmat_chestpiece",
+    "gtceu:hazmat_leggings",
+    "gtceu:hazmat_boots",
+    "gtceu:hazmat_headpiece",
+    "gtceu:quarktech_chestplate",
+    "gtceu:quarktech_leggings",
+    "gtceu:quarktech_boots",
+    "gtceu:quarktech_helmet",
+    "gtceu:advanced_nanomuscle_chestplate",
+    "gtceu:advanced_quarktech_chestplate"
+  ]
+}

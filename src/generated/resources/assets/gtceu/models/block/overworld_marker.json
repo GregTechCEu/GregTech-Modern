@@ -1,0 +1,13 @@
+{
+  "parent": "minecraft:block/cube",
+  "gui_light": "front",
+  "textures": {
+    "down": "gtceu:block/dim_markers/overworld/down",
+    "east": "gtceu:block/dim_markers/overworld/east",
+    "north": "gtceu:block/dim_markers/overworld/north",
+    "particle": "#north",
+    "south": "gtceu:block/dim_markers/overworld/south",
+    "up": "gtceu:block/dim_markers/overworld/up",
+    "west": "gtceu:block/dim_markers/overworld/west"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "gtceu:fluid_sprout",
+  "config": {
+    "fluid": "gtceu:oil_medium",
+    "size": {
+      "type": "minecraft:uniform",
+      "value": {
+        "max_inclusive": 13,
+        "min_inclusive": 9
+      }
+    },
+    "sprout_chance": 0.4,
+    "surface_offset": {
+      "type": "minecraft:uniform",
+      "value": {
+        "max_inclusive": 9,
+        "min_inclusive": 6
+      }
+    }
+  }
+}

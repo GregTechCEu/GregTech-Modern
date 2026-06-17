@@ -1,0 +1,9 @@
+{
+  "values": [
+    "gtceu:oil",
+    "gtceu:oil_light",
+    "gtceu:oil_heavy",
+    "gtceu:oil_medium",
+    "gtceu:natural_gas"
+  ]
+}

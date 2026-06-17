@@ -1,0 +1,353 @@
+{
+  "arc": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:arc"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.arc"
+  },
+  "assembler": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:assembler"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.assembler"
+  },
+  "bath": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:bath"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.bath"
+  },
+  "boiler": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:boiler"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.boiler"
+  },
+  "centrifuge": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:centrifuge"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.centrifuge"
+  },
+  "chainsaw": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:chainsaw"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.chainsaw"
+  },
+  "chemical": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:chemical"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.chemical"
+  },
+  "combustion": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:combustion"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.combustion"
+  },
+  "compressor": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:compressor"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.compressor"
+  },
+  "computation": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:computation"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.computation"
+  },
+  "cooling": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:cooling"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.cooling"
+  },
+  "cut": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:cut"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.cut"
+  },
+  "drill": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:drill"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.drill"
+  },
+  "electrolyzer": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:electrolyzer"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.electrolyzer"
+  },
+  "file": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:file"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.file"
+  },
+  "fire": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:fire"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.fire"
+  },
+  "forge_hammer": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:forge_hammer"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.forge_hammer"
+  },
+  "furnace": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:furnace"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.furnace"
+  },
+  "jet_engine": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:jet_engine"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.jet_engine"
+  },
+  "macerator": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:macerator"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.macerator"
+  },
+  "metal_pipe": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:metal_pipe"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.metal_pipe"
+  },
+  "miner": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:miner"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.miner"
+  },
+  "mixer": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:mixer"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.mixer"
+  },
+  "mortar": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:mortar"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.mortar"
+  },
+  "motor": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:motor"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.motor"
+  },
+  "plunger": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:plunger"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.plunger"
+  },
+  "portable_scanner": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:portable_scanner"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.portable_scanner"
+  },
+  "portal_closing": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:portal_closing"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.portal_closing"
+  },
+  "portal_opening": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:portal_opening"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.portal_opening"
+  },
+  "replicator": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:replicator"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.replicator"
+  },
+  "saw": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:saw"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.saw"
+  },
+  "science": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:science"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.science"
+  },
+  "screwdriver": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:screwdriver"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.screwdriver"
+  },
+  "soft_hammer": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:soft_hammer"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.soft_hammer"
+  },
+  "spray_can": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:spray_can"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.spray_can"
+  },
+  "sus": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:sus"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.sus"
+  },
+  "turbine": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:turbine"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.turbine"
+  },
+  "wirecutter": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:wirecutter"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.wirecutter"
+  },
+  "wrench": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:wrench"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.wrench"
+  }
+}

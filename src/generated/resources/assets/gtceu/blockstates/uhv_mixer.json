@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "gtceu:block/machine/uhv_mixer",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "gtceu:block/machine/uhv_mixer"
+    },
+    "facing=south": {
+      "model": "gtceu:block/machine/uhv_mixer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "gtceu:block/machine/uhv_mixer",
+      "y": 270
+    }
+  }
+}

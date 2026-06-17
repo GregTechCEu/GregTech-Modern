@@ -1,0 +1,21 @@
+{
+  "type": "gtceu:stone_blob",
+  "config": {
+    "size": {
+      "type": "minecraft:uniform",
+      "value": {
+        "max_inclusive": 30,
+        "min_inclusive": 20
+      }
+    },
+    "state": {
+      "state": {
+        "Name": "gtceu:red_granite"
+      },
+      "target": {
+        "predicate_type": "minecraft:tag_match",
+        "tag": "minecraft:stone_ore_replaceables"
+      }
+    }
+  }
+}

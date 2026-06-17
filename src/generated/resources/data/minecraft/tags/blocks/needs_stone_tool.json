@@ -1,0 +1,9 @@
+{
+  "values": [
+    "gtceu:long_distance_item_pipeline",
+    "gtceu:long_distance_fluid_pipeline",
+    "gtceu:filter_casing",
+    "gtceu:sterilizing_filter_casing",
+    "gtceu:petrified_foam"
+  ]
+}

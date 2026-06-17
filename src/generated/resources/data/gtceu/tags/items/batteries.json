@@ -1,0 +1,14 @@
+{
+  "values": [
+    "#gtceu:batteries/ulv",
+    "#gtceu:batteries/lv",
+    "#gtceu:batteries/mv",
+    "#gtceu:batteries/hv",
+    "#gtceu:batteries/ev",
+    "#gtceu:batteries/iv",
+    "#gtceu:batteries/luv",
+    "#gtceu:batteries/zpm",
+    "#gtceu:batteries/uv",
+    "#gtceu:batteries/uhv"
+  ]
+}

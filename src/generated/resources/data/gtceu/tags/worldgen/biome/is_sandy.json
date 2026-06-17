@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#forge:is_sandy",
+    "minecraft:desert",
+    "minecraft:beach",
+    "minecraft:badlands",
+    "minecraft:wooded_badlands"
+  ]
+}

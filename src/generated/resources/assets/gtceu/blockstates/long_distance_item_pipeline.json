@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gtceu:block/long_distance_item_pipeline"
+    }
+  }
+}

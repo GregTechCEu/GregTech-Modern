@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right_open",
+  "textures": {
+    "bottom": "gtceu:block/treated_wood_door_bottom",
+    "top": "gtceu:block/treated_wood_door_top"
+  }
+}

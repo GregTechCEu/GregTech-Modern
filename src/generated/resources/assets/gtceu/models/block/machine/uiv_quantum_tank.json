@@ -1,0 +1,22 @@
+{
+  "parent": "minecraft:block/block",
+  "dynamic_renders": [
+    {
+      "type": "gtceu:quantum_tank_fluid"
+    }
+  ],
+  "loader": "gtceu:machine",
+  "machine": "gtceu:uiv_quantum_tank",
+  "variants": {
+    "": {
+      "model": {
+        "parent": "gtceu:block/machine/template/quantum/quantum_tank",
+        "textures": {
+          "bottom": "gtceu:block/casings/voltage/uiv/bottom",
+          "side": "gtceu:block/casings/voltage/uiv/side",
+          "top": "gtceu:block/casings/voltage/uiv/top"
+        }
+      }
+    }
+  }
+}

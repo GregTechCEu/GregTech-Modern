@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/bronze_firebox_casing"
+    },
+    "active=true": {
+      "model": "gtceu:block/bronze_firebox_casing_active"
+    }
+  }
+}

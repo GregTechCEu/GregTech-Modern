@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/cube_2_layer/all",
+  "textures": {
+    "bot_all": "gtceu:block/casings/coils/machine_coil_trinium",
+    "top_all": "gtceu:block/casings/coils/machine_coil_trinium_bloom"
+  }
+}

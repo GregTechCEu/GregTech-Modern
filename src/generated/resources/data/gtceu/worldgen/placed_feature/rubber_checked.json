@@ -1,0 +1,43 @@
+{
+  "feature": "gtceu:rubber_tree",
+  "placement": [
+    {
+      "type": "gtceu:biome_placement",
+      "modifiers": [
+        {
+          "added_weight": 50,
+          "biomes": "#forge:is_swamp"
+        }
+      ]
+    },
+    {
+      "type": "gtceu:rubber_tree_chance"
+    },
+    {
+      "type": "minecraft:in_square"
+    },
+    {
+      "type": "minecraft:surface_water_depth_filter",
+      "max_water_depth": 0
+    },
+    {
+      "type": "minecraft:heightmap",
+      "heightmap": "OCEAN_FLOOR_WG"
+    },
+    {
+      "type": "minecraft:biome"
+    },
+    {
+      "type": "minecraft:block_predicate_filter",
+      "predicate": {
+        "type": "minecraft:would_survive",
+        "state": {
+          "Name": "gtceu:rubber_sapling",
+          "Properties": {
+            "stage": "0"
+          }
+        }
+      }
+    }
+  ]
+}

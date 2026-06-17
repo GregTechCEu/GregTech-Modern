@@ -1,0 +1,32 @@
+{
+  "values": [
+    "gtceu:lv_electric_pump",
+    "gtceu:mv_electric_pump",
+    "gtceu:hv_electric_pump",
+    "gtceu:ev_electric_pump",
+    "gtceu:iv_electric_pump",
+    "gtceu:luv_electric_pump",
+    "gtceu:zpm_electric_pump",
+    "gtceu:uv_electric_pump",
+    {
+      "id": "gtceu:uhv_electric_pump",
+      "required": false
+    },
+    {
+      "id": "gtceu:uev_electric_pump",
+      "required": false
+    },
+    {
+      "id": "gtceu:uiv_electric_pump",
+      "required": false
+    },
+    {
+      "id": "gtceu:uxv_electric_pump",
+      "required": false
+    },
+    {
+      "id": "gtceu:opv_electric_pump",
+      "required": false
+    }
+  ]
+}

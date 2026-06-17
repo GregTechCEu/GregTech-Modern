@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "gtceu:block/casings/hpca/computer_heat_vent_top_bot",
+    "side": "gtceu:block/casings/hpca/computer_heat_vent_side"
+  }
+}

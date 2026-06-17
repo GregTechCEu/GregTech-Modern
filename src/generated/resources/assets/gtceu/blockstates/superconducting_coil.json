@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "active=false": {
+      "model": "gtceu:block/superconducting_coil"
+    },
+    "active=true": {
+      "model": "gtceu:block/superconducting_coil_active"
+    }
+  }
+}

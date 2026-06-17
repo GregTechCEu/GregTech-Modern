@@ -1,0 +1,34 @@
+{
+  "values": [
+    "#gtceu:circuits/ulv",
+    "#gtceu:circuits/lv",
+    "#gtceu:circuits/mv",
+    "#gtceu:circuits/hv",
+    "#gtceu:circuits/ev",
+    "#gtceu:circuits/iv",
+    "#gtceu:circuits/luv",
+    "#gtceu:circuits/zpm",
+    "#gtceu:circuits/uv",
+    "#gtceu:circuits/uhv",
+    {
+      "id": "#gtceu:circuits/uev",
+      "required": false
+    },
+    {
+      "id": "#gtceu:circuits/uiv",
+      "required": false
+    },
+    {
+      "id": "#gtceu:circuits/uxv",
+      "required": false
+    },
+    {
+      "id": "#gtceu:circuits/opv",
+      "required": false
+    },
+    {
+      "id": "#gtceu:circuits/max",
+      "required": false
+    }
+  ]
+}
