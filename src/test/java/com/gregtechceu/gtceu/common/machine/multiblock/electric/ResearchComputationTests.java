@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
@@ -12,6 +13,7 @@ import com.gregtechceu.gtceu.common.machine.storage.CreativeComputationProviderM
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -19,6 +21,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.RESEARCH_STATION_RECIPES;
 
@@ -98,7 +102,9 @@ public class ResearchComputationTests {
         return TestUtils.isItemStackEqual(holder.getDataItem(false), GTItems.TOOL_DATA_ORB.asStack());
     }
 
-    @GameTest(template = "research_computer_and_hpca", batch = "ResearchComputation", setupTicks = 40,
+    @GameTest(template = "research_computer_and_hpca",
+              batch = "ResearchComputation",
+              setupTicks = 40,
               timeoutTicks = 200)
     public static void ResearchStationAndHPCAWholeSystemResearchCompletesTest(GameTestHelper helper) {
         formOpticalPipeNet(helper, RESEARCH_COMPUTER_AND_HPCA_PIPES);
@@ -114,7 +120,9 @@ public class ResearchComputationTests {
                 "Research recipe did not complete with a working HPCA providing computation"));
     }
 
-    @GameTest(template = "research_computer_and_hpca", batch = "ResearchComputation", setupTicks = 40,
+    @GameTest(template = "research_computer_and_hpca",
+              batch = "ResearchComputation",
+              setupTicks = 40,
               timeoutTicks = 200)
     public static void ResearchStationAndHPCAWholeSystemFailsWithoutHpcaComputationTest(GameTestHelper helper) {
         formOpticalPipeNet(helper, RESEARCH_COMPUTER_AND_HPCA_PIPES);
@@ -192,5 +200,33 @@ public class ResearchComputationTests {
                     "Disabled HPCA should supply 0 CWU/t");
         });
         TestUtils.succeedAfterTest(helper);
+    }
+
+    @GameTest(template = "hpca", batch = "ResearchComputation", setupTicks = 40, timeoutTicks = 3000)
+    public static void HPCAOverheatsWithInsufficientCoolingTest(GameTestHelper helper) {
+        // Replace a heat sink in the 3x3 component grid with a basic computation component before forming.
+        // This makes 1x16 + 2x4 = 24 CWU, with 1x4 + 2x2 = 8 cooling required, but only 6 coolers.
+        var component = GTResearchMachines.HPCA_COMPUTATION_COMPONENT;
+        helper.setBlock(new BlockPos(2, 2, 1), component.getBlock().defaultBlockState()
+                .setValue(component.getRotationState().property, Direction.SOUTH));
+
+        HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(5, 1, 1));
+        helper.assertTrue(hpca != null, "HPCA controller not found");
+        TestUtils.formMultiblock(hpca);
+
+        // Only succeed once we have actually seen the full 24 CWU/t (confirming the swap took effect and the HPCA
+        // powered on), and then watched overheating damage drop it below 24 - so the test can't pass vacuously.
+        AtomicBoolean sawFullComputation = new AtomicBoolean(false);
+        helper.onEachTick(() -> {
+            // keep the HPCA under full computational load so it heats up
+            hpca.requestCWUt(Integer.MAX_VALUE, false);
+            int maxCWUt = hpca.getMaxCWUt();
+            if (maxCWUt == 24) {
+                sawFullComputation.set(true);
+            }
+            if (sawFullComputation.get() && maxCWUt < 24) {
+                helper.succeed();
+            }
+        });
     }
 }
