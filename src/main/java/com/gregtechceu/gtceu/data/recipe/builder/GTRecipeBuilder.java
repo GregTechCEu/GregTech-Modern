@@ -182,7 +182,7 @@ public class GTRecipeBuilder {
     }
 
     protected Content makeContent(Object o) {
-        return new Content(o, chance, maxChance, tierChanceBoost);
+        return new Content(o, chance, maxChance);
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {

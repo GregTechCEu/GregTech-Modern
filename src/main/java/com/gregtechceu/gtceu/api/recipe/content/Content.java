@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -26,7 +25,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class Content {
 
@@ -34,13 +32,11 @@ public class Content {
     public final Object content;
     public final int chance;
     public final int maxChance;
-    public final int tierChanceBoost;
 
-    public Content(Object content, int chance, int maxChance, int tierChanceBoost) {
+    public Content(Object content, int chance, int maxChance) {
         this.content = content;
         this.chance = chance;
         this.maxChance = maxChance;
-        this.tierChanceBoost = fixBoost(tierChanceBoost);
     }
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
@@ -49,9 +45,7 @@ public class Content {
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.chance),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
-                        .forGetter(val -> val.maxChance),
-                Codec.INT.optionalFieldOf("tierChanceBoost", 0)
-                        .forGetter(val -> val.tierChanceBoost))
+                        .forGetter(val -> val.maxChance))
                 .apply(instance, Content::new));
     }
 
@@ -59,7 +53,7 @@ public class Content {
      * Directly copies a Content.
      */
     public Content copy(RecipeCapability<?> capability) {
-        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
+        return new Content(capability.copyContent(content), chance, maxChance);
     }
 
     /**
@@ -69,7 +63,7 @@ public class Content {
         if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance);
         }
     }
 
@@ -80,7 +74,7 @@ public class Content {
         if (modifier == ContentModifier.IDENTITY) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance);
         }
     }
 
@@ -88,30 +82,13 @@ public class Content {
         return chance > 0 && chance < maxChance;
     }
 
-    /**
-     * Attempts to fix and round the given chance boost due to potential differences
-     * between the max chance and {@link ChanceLogic#getMaxChancedValue()}.
-     * <br />
-     * The worst case would be {@code 5,001 / 10,000} , meaning the boost would
-     * have to be halved to have the intended effect.
-     *
-     * @param chanceBoost the chance boost to be fixed
-     * @return the fixed chance boost
-     */
-    private int fixBoost(int chanceBoost) {
-        float error = (float) ChanceLogic.getMaxChancedValue() / maxChance;
-        int fixed = Math.round(Math.abs(chanceBoost) / error);
-        return chanceBoost < 0 ? -fixed : fixed;
-    }
-
-    public IGuiTexture createOverlay(boolean perTick, int recipeTier, int chanceTier,
-                                     @Nullable ChanceBoostFunction function) {
+    public IGuiTexture createOverlay(boolean perTick) {
         return new IGuiTexture() {
 
             @Override
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
-                drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
+                drawChance(graphics, x, y, width, height);
                 drawRangeAmount(graphics, x, y, width, height);
                 drawFluidAmount(graphics, x, y, width, height);
                 if (perTick) {
@@ -172,15 +149,13 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
-                           int chanceTier, @Nullable ChanceBoostFunction function) {
+    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height) {
         if (chance == ChanceLogic.getMaxChancedValue()) return;
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        var func = function == null ? ChanceBoostFunction.NONE : function;
-        int chance = func.getBoostedChance(this, recipeTier, chanceTier);
-        float chanceFloat = 1f * chance / this.maxChance;
+
+        float chanceFloat = 1f * this.chance / this.maxChance;
         String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
 
         String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
@@ -214,7 +189,6 @@ public class Content {
                 "content=" + content +
                 ", chance=" + chance +
                 ", maxChance=" + maxChance +
-                ", tierChanceBoost=" + tierChanceBoost +
                 '}';
     }
 }
