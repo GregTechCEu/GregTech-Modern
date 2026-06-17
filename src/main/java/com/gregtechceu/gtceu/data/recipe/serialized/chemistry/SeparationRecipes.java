@@ -49,13 +49,13 @@ public class SeparationRecipes {
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_ore_separation")
                 .inputItems(ore, Oilsands)
-                .chancedOutput(new ItemStack(Blocks.SAND), 7500, 0)
+                .chancedOutput(new ItemStack(Blocks.SAND), 7500)
                 .outputFluids(OilHeavy.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("oilsands_dust_separation")
                 .inputItems(dust, Oilsands)
-                .chancedOutput(new ItemStack(Blocks.SAND), 7500, 0)
+                .chancedOutput(new ItemStack(Blocks.SAND), 7500)
                 .outputFluids(OilHeavy.getFluid(2000))
                 .duration(200).EUt(30).save(provider);
 
@@ -105,14 +105,14 @@ public class SeparationRecipes {
         CENTRIFUGE_RECIPES.recipeBuilder("sticky_resin_separation").duration(400).EUt(5)
                 .inputItems(STICKY_RESIN)
                 .outputItems(dust, RawRubber, 3)
-                .chancedOutput(PLANT_BALL.asStack(), 1500, 0)
+                .chancedOutput(PLANT_BALL.asStack(), 1500)
                 .outputFluids(Glue.getFluid(100))
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("rubber_log_separation").duration(200).EUt(5)
                 .inputItems(GTBlocks.RUBBER_LOG.asStack())
-                .chancedOutput(STICKY_RESIN.asStack(), 6400, 0)
-                .chancedOutput(PLANT_BALL.asStack(), 4000, 0)
+                .chancedOutput(STICKY_RESIN.asStack(), 6400)
+                .chancedOutput(PLANT_BALL.asStack(), 4000)
                 .chancedOutput(dust, Carbon, 3000, 0)
                 .chancedOutput(dust, Wood, 3000, 0)
                 .outputFluids(Methane.getFluid(60))
@@ -121,23 +121,23 @@ public class SeparationRecipes {
         // TODO Other kinds of dirt?
         CENTRIFUGE_RECIPES.recipeBuilder("dirt_separation").duration(250).EUt(VA[LV])
                 .inputItems(Blocks.DIRT.asItem())
-                .chancedOutput(PLANT_BALL.asStack(), 1400, 0)
-                .chancedOutput(new ItemStack(Blocks.SAND), 6000, 0)
+                .chancedOutput(PLANT_BALL.asStack(), 1400)
+                .chancedOutput(new ItemStack(Blocks.SAND), 6000)
                 .chancedOutput(dust, Clay, 550, 0)
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("grass_block_separation").duration(250).EUt(VA[LV])
                 .inputItems(Blocks.GRASS_BLOCK.asItem())
-                .chancedOutput(PLANT_BALL.asStack(), 3500, 0)
-                .chancedOutput(new ItemStack(Blocks.SAND), 5500, 0)
+                .chancedOutput(PLANT_BALL.asStack(), 3500)
+                .chancedOutput(new ItemStack(Blocks.SAND), 5500)
                 .chancedOutput(dust, Clay, 550, 0)
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("mycelium_separation").duration(650).EUt(VA[LV])
                 .inputItems(new ItemStack(Blocks.MYCELIUM))
-                .chancedOutput(new ItemStack(Blocks.RED_MUSHROOM), 2800, 0)
-                .chancedOutput(new ItemStack(Blocks.BROWN_MUSHROOM), 2800, 0)
-                .chancedOutput(new ItemStack(Blocks.SAND), 6200, 0)
+                .chancedOutput(new ItemStack(Blocks.RED_MUSHROOM), 2800)
+                .chancedOutput(new ItemStack(Blocks.BROWN_MUSHROOM), 2800)
+                .chancedOutput(new ItemStack(Blocks.SAND), 6200)
                 .chancedOutput(dust, Clay, 550, 0)
                 .save(provider);
 
@@ -182,7 +182,7 @@ public class SeparationRecipes {
 
         CENTRIFUGE_RECIPES.recipeBuilder("endstone_separation").duration(320).EUt(20)
                 .inputItems(dust, Endstone)
-                .chancedOutput(new ItemStack(Blocks.SAND), 9000, 0)
+                .chancedOutput(new ItemStack(Blocks.SAND), 9000)
                 .chancedOutput(dust, Tungstate, 445, 0)
                 .chancedOutput(dust, Platinum, 80, 0)
                 .outputFluids(Helium.getFluid(120))
@@ -198,7 +198,7 @@ public class SeparationRecipes {
 
         CENTRIFUGE_RECIPES.recipeBuilder("soul_sand_separation").duration(200).EUt(80)
                 .inputItems(Blocks.SOUL_SAND.asItem())
-                .chancedOutput(new ItemStack(Blocks.SAND), 9250, 0)
+                .chancedOutput(new ItemStack(Blocks.SAND), 9250)
                 .chancedOutput(dust, Saltpeter, 2250, 0)
                 .chancedOutput(dust, Coal, 225, 0)
                 .outputFluids(Oil.getFluid(80))
@@ -228,7 +228,7 @@ public class SeparationRecipes {
                 .inputItems(Blocks.RED_SAND.asItem())
                 .chancedOutput(dust, Iron, 5000, 0)
                 .chancedOutput(dust, Diamond, 35, 0)
-                .chancedOutput(new ItemStack(Blocks.SAND), 8500, 0)
+                .chancedOutput(new ItemStack(Blocks.SAND), 8500)
                 .save(provider);
 
         CENTRIFUGE_RECIPES.recipeBuilder("hydrogen_separation").duration(160).EUt(20)
@@ -269,8 +269,8 @@ public class SeparationRecipes {
                 .inputItems(dust, Stone)
                 .chancedOutput(dust, Quartzite, 2500, 0)
                 .chancedOutput(dust, PotassiumFeldspar, 2500, 0)
-                .chancedOutput(dust, Marble, "2/9", 0)
-                .chancedOutput(dust, Biotite, "1/9", 0)
+                .chancedOutput(dust, Marble, "2/9")
+                .chancedOutput(dust, Biotite, "1/9")
                 .chancedOutput(dust, MetalMixture, 925, 0)
                 .chancedOutput(dust, Sodalite, 650, 0)
                 .save(provider);
@@ -279,8 +279,8 @@ public class SeparationRecipes {
                 .inputItems(dust, MetalMixture)
                 .chancedOutput(dust, Hematite, 2500, 0)
                 .chancedOutput(dust, Bauxite, 2500, 0)
-                .chancedOutput(dust, Pyrolusite, "2/9", 0)
-                .chancedOutput(dust, Barite, "1/9", 0)
+                .chancedOutput(dust, Pyrolusite, "2/9")
+                .chancedOutput(dust, Barite, "1/9")
                 .chancedOutput(dust, Chromite, 855, 0)
                 .chancedOutput(dust, Ilmenite, 575, 0)
                 .save(provider);
@@ -544,7 +544,7 @@ public class SeparationRecipes {
 
         EXTRACTOR_RECIPES.recipeBuilder("wood_dust_extraction").duration(16).EUt(4)
                 .inputItems(dust, Wood)
-                .chancedOutput(PLANT_BALL.asStack(), 225, 0)
+                .chancedOutput(PLANT_BALL.asStack(), 225)
                 .outputFluids(Creosote.getFluid(5))
                 .save(provider);
 
