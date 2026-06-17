@@ -424,7 +424,6 @@ public class MultiblockDisplayText {
             if (recipe != null) {
                 int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
                 int chanceTier = recipeTier + recipe.ocLevel;
-                var function = recipe.getType().getChanceFunction();
                 double maxDurationSec = (double) recipe.duration / 20.0;
                 var itemOutputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidOutputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
@@ -446,8 +445,7 @@ public class MultiblockDisplayText {
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (item.chance < item.maxChance) {
-                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                            countD = countD * runs * item.chance / item.maxChance;
                         }
                         countD = countD * provider.getMidRoll();
                     } else {
@@ -458,8 +456,7 @@ public class MultiblockDisplayText {
                         countD *= count;
                         if (item.chance < item.maxChance) {
                             rounded = true;
-                            countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                            countD = countD * runs * item.chance / item.maxChance;
                         }
                         count = Math.max(1, (int) Math.round(countD));
                         displaycount = Component.literal(String.valueOf(count));
@@ -490,8 +487,7 @@ public class MultiblockDisplayText {
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
                         if (fluid.chance < fluid.maxChance) {
-                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                            amountD = amountD * runs * fluid.chance / fluid.maxChance;
                         }
                         amountD = amountD * provider.getMidRoll();
                     } else {
@@ -502,8 +498,7 @@ public class MultiblockDisplayText {
                         amountD *= amount;
                         if (fluid.chance < fluid.maxChance) {
                             rounded = true;
-                            amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                            amountD = amountD * runs * fluid.chance / fluid.maxChance;
                         }
                         amount = Math.max(1, (int) Math.round(amountD));
                         displaycount = Component.literal(String.valueOf(amount));
