@@ -125,15 +125,11 @@ dependencies {
     modCompileOnly(forge.curios)
     modLocalRuntime(forge.curios)
 
-    modCompileOnly(forge.modkit)
-    modLocalRuntime(forge.modkit)
-    modCompileOnly(forge.forestry)
-    modLocalRuntime(forge.forestry)
+    //patchouli
+    modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
+    modCompileOnly(forge.patchouli)
 
-    //todo
-    // patchouli
-    // modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
-    // modCompileOnly(forge.patchouli)
     // Forestry
-    // modCompileOnly(forge.forestry)
+    modCompileOnly(forge.forestry)
+    modCompileOnly(forge.modkit)
 }

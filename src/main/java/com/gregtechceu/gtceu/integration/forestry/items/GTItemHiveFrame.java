@@ -1,5 +1,12 @@
 package com.gregtechceu.gtceu.integration.forestry.items;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+
 import forestry.api.apiculture.IBeeHousing;
 import forestry.api.apiculture.IBeeModifier;
 import forestry.api.apiculture.genetics.IBee;
@@ -8,19 +15,16 @@ import forestry.api.apiculture.hives.IHiveFrame;
 import forestry.api.genetics.IGenome;
 import forestry.api.genetics.IMutation;
 import forestry.core.items.ItemForestry;
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 
-import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.List;
 
-// CREDIT GOES TO: christopherwalkerml | https://github.com/christopherwalkerml/MoBees/blob/main/src/main/java/com/noodlepfp/mobees/item/MoreBeesItemHiveFrame.java
+import javax.annotation.Nullable;
+
+// CREDIT GOES TO: christopherwalkerml |
+// https://github.com/christopherwalkerml/MoBees/blob/main/src/main/java/com/noodlepfp/mobees/item/MoreBeesItemHiveFrame.java
 public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
+
     private final Modifier beeModifier;
 
     public GTItemHiveFrame(GTItemHiveFrameBuilder builder) {
@@ -41,39 +45,45 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level world, List<Component> tooltip, TooltipFlag advanced) {
+    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level world,
+                                List<Component> tooltip, TooltipFlag advanced) {
         super.appendHoverText(stack, world, tooltip, advanced);
         DecimalFormat FORMAT = new DecimalFormat("#.##");
 
         if (beeModifier.speedMult != 1) {
-            tooltip.add(Component.translatable("item.gtceu.bee.modifier.speed_multiplier").withStyle(ChatFormatting.GRAY)
-                    .append(": ")
-                    .append(Component.literal(FORMAT.format(beeModifier.speedMult) + "x")
-                            .withStyle(beeModifier.speedMult > 1 ? ChatFormatting.GREEN : ChatFormatting.RED)));
+            tooltip.add(
+                    Component.translatable("item.gtceu.bee.modifier.speed_multiplier").withStyle(ChatFormatting.GRAY)
+                            .append(": ")
+                            .append(Component.literal(FORMAT.format(beeModifier.speedMult) + "x")
+                                    .withStyle(beeModifier.speedMult > 1 ? ChatFormatting.GREEN : ChatFormatting.RED)));
         }
         if (beeModifier.decayMult != 1) {
-            tooltip.add(Component.translatable("item.gtceu.bee.modifier.decay_multiplier").withStyle(ChatFormatting.GRAY)
-                    .append(": ")
-                    .append(Component.literal(FORMAT.format(beeModifier.decayMult) + "x")
-                            .withStyle(beeModifier.decayMult > 1 ? ChatFormatting.RED : ChatFormatting.GREEN)));
+            tooltip.add(
+                    Component.translatable("item.gtceu.bee.modifier.decay_multiplier").withStyle(ChatFormatting.GRAY)
+                            .append(": ")
+                            .append(Component.literal(FORMAT.format(beeModifier.decayMult) + "x")
+                                    .withStyle(beeModifier.decayMult > 1 ? ChatFormatting.RED : ChatFormatting.GREEN)));
         }
         if (beeModifier.pollinationMult != 1) {
-            tooltip.add(Component.translatable("item.gtceu.bee.modifier.pollination_multiplier").withStyle(ChatFormatting.GRAY)
+            tooltip.add(Component.translatable("item.gtceu.bee.modifier.pollination_multiplier")
+                    .withStyle(ChatFormatting.GRAY)
                     .append(": ")
                     .append(Component.literal(FORMAT.format(beeModifier.pollinationMult) + "x")
                             .withStyle(beeModifier.pollinationMult > 1 ? ChatFormatting.GREEN : ChatFormatting.RED)));
         }
         if (beeModifier.mutationMult != 1) {
-            tooltip.add(Component.translatable("item.gtceu.bee.modifier.mutation_multiplier").withStyle(ChatFormatting.GRAY)
+            tooltip.add(Component.translatable("item.gtceu.bee.modifier.mutation_multiplier")
+                    .withStyle(ChatFormatting.GRAY)
                     .append(": ")
                     .append(Component.literal(FORMAT.format(beeModifier.mutationMult) + "x")
                             .withStyle(beeModifier.mutationMult > 1 ? ChatFormatting.GREEN : ChatFormatting.RED)));
         }
         if (beeModifier.ageMult != 1) {
-            tooltip.add(Component.translatable("item.gtceu.bee.modifier.aging_multiplier").withStyle(ChatFormatting.GRAY)
-                    .append(": ")
-                    .append(Component.literal(FORMAT.format(beeModifier.ageMult) + "x")
-                            .withStyle(beeModifier.ageMult > 1 ? ChatFormatting.RED : ChatFormatting.GREEN)));
+            tooltip.add(
+                    Component.translatable("item.gtceu.bee.modifier.aging_multiplier").withStyle(ChatFormatting.GRAY)
+                            .append(": ")
+                            .append(Component.literal(FORMAT.format(beeModifier.ageMult) + "x")
+                                    .withStyle(beeModifier.ageMult > 1 ? ChatFormatting.RED : ChatFormatting.GREEN)));
         }
         if (beeModifier.isRainproof) {
             tooltip.add(Component.translatable("item.gtceu.bee.modifier.is_rainproof").withStyle(ChatFormatting.GRAY)
@@ -88,7 +98,7 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
                     .append(": ").append(Component.literal("true").withStyle(ChatFormatting.GREEN)));
         }
         if (!stack.isDamaged()) {
-            tooltip.add(Component.translatable("item.forestry.durability", new Object[]{stack.getMaxDamage()}));
+            tooltip.add(Component.translatable("item.forestry.durability", new Object[] { stack.getMaxDamage() }));
         }
     }
 
@@ -106,7 +116,9 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
         private final boolean isRainproof;
         private final boolean isAlwaysSunny;
         private final boolean isHellish;
-        public Modifier(float ageMult, float speedMult, float pollinationMult, float decayMult, float mutationMult, boolean isRainproof, boolean isAlwaysSunny, boolean isHellish) {
+
+        public Modifier(float ageMult, float speedMult, float pollinationMult, float decayMult, float mutationMult,
+                        boolean isRainproof, boolean isAlwaysSunny, boolean isHellish) {
             this.ageMult = ageMult;
             this.speedMult = speedMult;
             this.pollinationMult = pollinationMult;
@@ -118,9 +130,11 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
         }
 
         @Override
-        public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation, float currentChance) {
-            // mult cap is the base mutation chance to the power of 3. ie. 0.06 -> 0.09 -> 0.135 -> 0.203 -> 0.304, capped at 0.5
-            float multCap = Math.min((float)(mutation.getChance() * (Math.pow(1.5, 4))), 0.5f);
+        public float modifyMutationChance(IGenome genome, IGenome mate, IMutation<IBeeSpecies> mutation,
+                                          float currentChance) {
+            // mult cap is the base mutation chance to the power of 3. ie. 0.06 -> 0.09 -> 0.135 -> 0.203 -> 0.304,
+            // capped at 0.5
+            float multCap = Math.min((float) (mutation.getChance() * (Math.pow(1.5, 4))), 0.5f);
             return Math.min(currentChance * mutationMult, multCap);
         }
 
