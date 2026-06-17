@@ -19,6 +19,16 @@ public class GTForestryCreativeTab {
             if (event.getTabKey().location().toString().equals("gtceu:material_item")) {
                 addGtCombsItems(event.getParameters(), event);
             }
+            if (event.getTabKey().location().toString().equals("gtceu:item")) {
+                event.accept(GTApicultureItems.FRAME_ACCELERATED.get());
+                event.accept(GTApicultureItems.FRAME_MUTAGENIC.get());
+                event.accept(GTApicultureItems.FRAME_WORKING.get());
+                event.accept(GTApicultureItems.FRAME_WORKING.get());
+                event.accept(GTApicultureItems.FRAME_DECAYING.get());
+                event.accept(GTApicultureItems.FRAME_SLOWING.get());
+                event.accept(GTApicultureItems.FRAME_STABILIZING.get());
+                event.accept(GTApicultureItems.FRAME_ARBORIST.get());
+            }
         }
     }
 
