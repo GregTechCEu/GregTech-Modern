@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.forestry.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.integration.forestry.items.GTCombType;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import com.gregtechceu.gtceu.integration.forestry.items.GTApicultureItems;
@@ -22,9 +23,7 @@ public class GTApicultureItemModelProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
-        ModelFile forestryCombModel = new ModelFile.UncheckedModelFile(
-                new ResourceLocation("forestry", "item/bee_combs")
-        );
+        ModelFile forestryCombModel = new ModelFile.UncheckedModelFile(new ResourceLocation(GTValues.MODID_FORESTRY, "item/bee_combs"));
 
         for (GTCombType type : GTCombType.VALUES) {
             getBuilder("bee_comb_" + type.getSerializedName())
@@ -36,11 +35,18 @@ public class GTApicultureItemModelProvider extends ItemModelProvider {
             String id = featureCrated.getName();
 
             if (GTApicultureItems.BEE_COMBS.itemEqual(containedItem)) {
-                filledCrateModelLayered(id,
-                        new ResourceLocation("forestry", "item/bee_combs.0"),
-                        new ResourceLocation("forestry", "item/bee_combs.1"));
+                filledCrateModelLayered(id, modLoc("item/bee_combs.0"), modLoc("item/bee_combs.1"));
             }
         }
+
+        basicItem(GTApicultureItems.FRAME_ACCELERATED.get());
+        basicItem(GTApicultureItems.FRAME_MUTAGENIC.get());
+        basicItem(GTApicultureItems.FRAME_WORKING.get());
+        basicItem(GTApicultureItems.FRAME_DECAYING.get());
+        basicItem(GTApicultureItems.FRAME_SLOWING.get());
+        basicItem(GTApicultureItems.FRAME_STABILIZING.get());
+        basicItem(GTApicultureItems.FRAME_ARBORIST.get());
+
     }
 
     private void filledCrateModelLayered(String id, ResourceLocation layer1, ResourceLocation layer2) {
