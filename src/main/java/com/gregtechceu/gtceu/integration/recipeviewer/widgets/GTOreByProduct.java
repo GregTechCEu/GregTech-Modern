@@ -299,15 +299,8 @@ public class GTOreByProduct {
             if (chances.containsKey(slotIndex)) {
                 Content entry = chances.get(slotIndex);
                 float chance = 100 * (float) entry.chance() / entry.maxChance();
-                if (entry.tierChanceBoost() != 0) {
-                    float boost = entry.tierChanceBoost() / 100.0f;
-                    tooltip.addLine(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
-                    tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
-                } else {
-                    tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
-                }
+                tooltip.addLine(
+                        FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
             }
         };
     }
@@ -351,10 +344,10 @@ public class GTOreByProduct {
         itemInputs.add(ItemStackList.of(stack));
     }
 
-    private void addChance(int base, int tier) {
+    private void addChance(int base) {
         // this is solely for the chance overlay and tooltip, neither of which care about the ItemStack
         chances.put(currentSlot - 1,
-                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue(), tier));
+                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue()));
     }
 
     // make the code less :weary:
