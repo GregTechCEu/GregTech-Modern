@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -16,10 +15,6 @@ public class MultiPredicate extends BasePredicate {
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
     private final @Nullable String debugName;
     private @Nullable Logic type;
-
-    public MultiPredicate() {
-        this(null);
-    }
 
     public MultiPredicate(@Nullable String debugName) {
         this.debugName = debugName;
@@ -45,14 +40,7 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public boolean test(PredicateContext ctx) {
-        for (BasePredicate predicate : predicateList) {
-            if (isOr() && predicate.test(ctx)) {
-                return true;
-            } else if (isAnd() && !predicate.test(ctx)) {
-                return false;
-            }
-        }
-        return false;
+        return getType().run(ctx, this.predicateList);
     }
 
     protected MultiPredicate addPredicates(Collection<BasePredicate> predicates) {
@@ -145,13 +133,12 @@ public class MultiPredicate extends BasePredicate {
         return false;
     }
 
-    public MultiPredicate sorted() {
+    protected MultiPredicate sorted() {
         this.predicateList.sort(PREDICATE_COMPARATOR);
         return this;
     }
 
     @Override
-    @Contract(pure = true)
     public MultiPredicate or(BasePredicate other) {
         if (!isValid()) this.type = Logic.OR;
 
@@ -173,7 +160,6 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    @Contract(pure = true)
     public MultiPredicate and(BasePredicate other) {
         if (!isValid()) this.type = Logic.AND;
 
@@ -219,8 +205,31 @@ public class MultiPredicate extends BasePredicate {
     }
 
     protected enum Logic {
-        OR,
-        AND,
-        XOR // unused
+        OR {
+            @Override
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
+                for (BasePredicate basePredicate : predicates) {
+                    if (basePredicate.test(ctx)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        },
+        AND {
+            @Override
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
+                return !OR.run(ctx, predicates);
+            }
+        },
+        // unused
+        XOR {
+            @Override
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
+                return true;
+            }
+        };
+
+        protected abstract boolean run(PredicateContext ctx, List<BasePredicate> predicates);
     }
 }

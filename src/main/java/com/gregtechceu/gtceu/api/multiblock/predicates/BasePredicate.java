@@ -277,39 +277,23 @@ public abstract class BasePredicate {
         if (a instanceof MultiPredicate mp) {
             return mp.or(b);
         } else {
-            return new MultiPredicate().or(a).or(b);
+            return or(null, List.of(a, b));
         }
-//        String name1 = a.getTypeName();
-//        String name2 = b.getTypeName();
-//        if (name1 != null) {
-//            return or(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
-//        } else if (name2 != null) {
-//            return or(name2, List.of(a, b));
-//        }
-//        return or("OR", List.of(a, b));
     }
 
     private static BasePredicate and(BasePredicate a, BasePredicate b) {
         if (a instanceof MultiPredicate mp) {
             return mp.and(b);
         } else {
-            return new MultiPredicate().and(a).and(b);
+            return and(null, List.of(a, b));
         }
-//        String name1 = a.getTypeName();
-//        String name2 = b.getTypeName();
-//        if (name1 != null) {
-//            return and(name2 == null ? name1 : name1 + ", " + name2, List.of(a, b));
-//        } else if (name2 != null) {
-//            return and(name2, List.of(a, b));
-//        }
-//        return and("AND", List.of(a, b));
     }
 
-    public static BasePredicate or(String debugName, Iterable<BasePredicate> predicates) {
+    public static BasePredicate or(@Nullable String debugName, Iterable<BasePredicate> predicates) {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.OR);
     }
 
-    public static BasePredicate and(String debugName, Iterable<BasePredicate> predicates) {
+    public static BasePredicate and(@Nullable String debugName, Iterable<BasePredicate> predicates) {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
     }
 }
