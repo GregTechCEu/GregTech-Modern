@@ -372,6 +372,7 @@ public class MultiblockDisplayText {
             return this;
         }
 
+        static final private Component COLON = Component.literal(": ");
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
@@ -380,7 +381,7 @@ public class MultiblockDisplayText {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
                 var recipe = recipeLogic.getBestFailureRecipe();
                 if (recipe != null) {
-                    textList.add(Component.literal(" - ").append(recipe).append(": ").append(reason));
+                    textList.add(Component.literal(" - ").append(recipe).append(COLON).append(reason));
                 } else {
                     textList.add(Component.literal(" - ").append(reason));
                 }
