@@ -70,12 +70,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("Controller");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 return builder.append(predicate);
             }
 
@@ -111,7 +111,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 builder.append("States");
                 if(debugName != null) {
                     builder.append('#').append(debugName);
@@ -120,7 +120,7 @@ public class Predicates {
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 StringJoiner joiner = new StringJoiner(", ");
                 states.forEach(state -> joiner.add(blockToString(state)));
                 return builder.append(joiner);
@@ -142,12 +142,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("Block");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 return builder.append(blockToString(block));
             }
         };
@@ -186,7 +186,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 builder.append("Blocks");
                 if(debugName != null) {
                     builder.append('#').append(debugName);
@@ -195,7 +195,7 @@ public class Predicates {
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 StringJoiner joiner = new StringJoiner(", ");
                 blockList.forEach(block -> joiner.add(block.toString()));
                 return builder.append(joiner);
@@ -226,12 +226,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("BlockTag");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 return builder.append(tag.location());
             }
         };
@@ -257,12 +257,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("Fluids");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 StringJoiner joiner = new StringJoiner(", ");
                 fluidList.forEach(fluid -> joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
                         .map(r -> r.key().location().toString())
@@ -289,12 +289,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("FluidTag");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 return builder.append(tag.location());
             }
         };
@@ -323,7 +323,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("Custom");
             }
         };
@@ -356,12 +356,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("AbilityPredicate");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 return builder.append(ability.getName());
             }
         };
@@ -393,12 +393,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("AbilitiesPredicate");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 StringJoiner sb = new StringJoiner(", ");
                 this.abilityList.forEach(partAbility -> sb.add(partAbility.getName()));
                 return builder.append(sb);
@@ -425,12 +425,12 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("TieredAbilityPredicate");
             }
 
             @Override
-            protected StringBuilder getContents(StringBuilder builder) {
+            protected StringBuilder appendContents(StringBuilder builder) {
                 StringJoiner sb = new StringJoiner("-");
                 for (int tier : tiers) {
                     sb.add(GTValues.VN[tier]);
@@ -575,7 +575,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("HeatingCoils");
             }
         };
@@ -608,7 +608,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("CleanroomFilters");
             }
         };
@@ -641,7 +641,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("PSSBatteries");
             }
         };
@@ -715,7 +715,7 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("FramedPipes");
             }
         };

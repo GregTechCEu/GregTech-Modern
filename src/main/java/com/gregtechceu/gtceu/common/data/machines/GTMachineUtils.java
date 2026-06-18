@@ -769,7 +769,7 @@ public class GTMachineUtils {
             }
 
             @Override
-            public StringBuilder getTypeName(StringBuilder builder) {
+            public StringBuilder appendType(StringBuilder builder) {
                 return builder.append("RotorHolder");
             }
         };

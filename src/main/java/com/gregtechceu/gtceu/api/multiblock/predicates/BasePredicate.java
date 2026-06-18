@@ -34,7 +34,7 @@ public abstract class BasePredicate {
         }
 
         @Override
-        public StringBuilder getTypeName(StringBuilder builder) {
+        public StringBuilder appendType(StringBuilder builder) {
             return builder.append("Air");
         }
     };
@@ -42,7 +42,7 @@ public abstract class BasePredicate {
     public static final BasePredicate ANY = new BasePredicate() {
 
         @Override
-        public StringBuilder getTypeName(StringBuilder builder) {
+        public StringBuilder appendType(StringBuilder builder) {
             return builder.append("Any");
         }
     };
@@ -270,18 +270,18 @@ public abstract class BasePredicate {
     }
 
     /// the type of this predicate
-    public abstract StringBuilder getTypeName(StringBuilder builder);
+    public abstract StringBuilder appendType(StringBuilder builder);
 
     /// the contents of this predicate
-    protected StringBuilder getContents(StringBuilder builder) {
+    protected StringBuilder appendContents(StringBuilder builder) {
         return builder;
     }
 
     @Override
     public String toString() {
-        StringBuilder builder = getTypeName(new StringBuilder())
+        StringBuilder builder = appendType(new StringBuilder())
                 .append('{');
-        return getContents(builder)
+        return appendContents(builder)
                 .append('}')
                 .toString();
     }

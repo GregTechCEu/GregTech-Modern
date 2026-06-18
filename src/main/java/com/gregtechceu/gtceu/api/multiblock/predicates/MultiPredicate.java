@@ -183,7 +183,7 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public StringBuilder getTypeName(StringBuilder builder) {
+    public StringBuilder appendType(StringBuilder builder) {
         builder.append("Multi")
                 .append('(')
                 .append(this.type == null ? "INVAlID" : this.type)
@@ -195,7 +195,7 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    protected StringBuilder getContents(StringBuilder builder) {
+    protected StringBuilder appendContents(StringBuilder builder) {
         StringJoiner joiner = new StringJoiner(", ");
         this.predicateList.forEach(p -> joiner.add(p.toString()));
         return builder.append(joiner);
