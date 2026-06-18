@@ -75,27 +75,14 @@ public abstract class BasePredicate {
     @Setter
     private @Nullable String nbtParser; // unsure what this does
 
-    /// custom testing logic, usually checking if blockstate/entity is correct
-    public boolean testInternal(PredicateContext ctx) {
-        return true;
-    }
-
-    /// computes the candidates for this predicate, lazily initialized
-    public List<BlockInfo> computeCandidates() {
-        return Collections.emptyList();
-    }
-
-    /// the type of this predicate
-    public abstract StringBuilder getTypeName(StringBuilder builder);
-
-    /// the contents of this predicate
-    protected StringBuilder getContents(StringBuilder builder) {
-        return builder;
-    }
-
     /// the main testing method
     public boolean test(PredicateContext ctx) {
         return testInternal(ctx) && testGlobal(ctx) && testLayer(ctx);
+    }
+
+    /// custom testing logic, usually checking if blockstate/entity is correct
+    public boolean testInternal(PredicateContext ctx) {
+        return true;
     }
 
     /// test against global max count
@@ -115,6 +102,11 @@ public abstract class BasePredicate {
         int count = ctx.layerCache().getInt(this);
         if (maxSliceCount == -1 || count <= maxSliceCount) return true;
         return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+    }
+
+    /// computes the candidates for this predicate, lazily initialized
+    public List<BlockInfo> computeCandidates() {
+        return Collections.emptyList();
     }
 
     public boolean isAir() {
@@ -273,6 +265,14 @@ public abstract class BasePredicate {
         visit(result::add);
         result.sort(PREDICATE_COMPARATOR);
         return Collections.unmodifiableList(result);
+    }
+
+    /// the type of this predicate
+    public abstract StringBuilder getTypeName(StringBuilder builder);
+
+    /// the contents of this predicate
+    protected StringBuilder getContents(StringBuilder builder) {
+        return builder;
     }
 
     @Override
