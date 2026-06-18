@@ -503,8 +503,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             }
 
             @Override
-            public String getTypeName() {
-                return "InnerPredicate";
+            public StringBuilder getTypeName(StringBuilder builder) {
+                return builder.append("InnerPredicate");
             }
         };
     }

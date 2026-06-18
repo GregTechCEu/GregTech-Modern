@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class MultiPredicate extends BasePredicate {
 
@@ -184,22 +183,22 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public @Nullable String getTypeName() {
-        StringBuilder builder = new StringBuilder("Multi")
+    public StringBuilder getTypeName(StringBuilder builder) {
+        builder.append("Multi")
                 .append('(')
                 .append(this.type == null ? "INVAlID" : this.type)
                 .append(')');
         if (debugName != null) {
             builder.append('#').append(debugName);
         }
-        return builder.toString();
+        return builder;
     }
 
     @Override
-    protected String getContents() {
+    protected StringBuilder getContents(StringBuilder builder) {
         StringJoiner joiner = new StringJoiner(", ");
         this.predicateList.forEach(p -> joiner.add(p.toString()));
-        return joiner.toString();
+        return builder.append(joiner);
     }
 
     protected enum Logic {

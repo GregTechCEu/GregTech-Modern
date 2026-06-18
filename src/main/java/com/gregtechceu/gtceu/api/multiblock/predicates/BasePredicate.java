@@ -34,16 +34,16 @@ public abstract class BasePredicate {
         }
 
         @Override
-        public String getTypeName() {
-            return "Air";
+        public StringBuilder getTypeName(StringBuilder builder) {
+            return builder.append("Air");
         }
     };
 
     public static final BasePredicate ANY = new BasePredicate() {
 
         @Override
-        public String getTypeName() {
-            return "Any";
+        public StringBuilder getTypeName(StringBuilder builder) {
+            return builder.append("Any");
         }
     };
 
@@ -86,11 +86,11 @@ public abstract class BasePredicate {
     }
 
     /// the type of this predicate
-    public abstract @Nullable String getTypeName();
+    public abstract StringBuilder getTypeName(StringBuilder builder);
 
     /// the contents of this predicate
-    protected String getContents() {
-        return "";
+    protected StringBuilder getContents(StringBuilder builder) {
+        return builder;
     }
 
     /// the main testing method
@@ -277,7 +277,11 @@ public abstract class BasePredicate {
 
     @Override
     public String toString() {
-        return getTypeName() + "{" + getContents() + "}";
+        StringBuilder builder = getTypeName(new StringBuilder())
+                .append('{');
+        return getContents(builder)
+                .append('}')
+                .toString();
     }
 
     public BasePredicate or(BasePredicate other) {
