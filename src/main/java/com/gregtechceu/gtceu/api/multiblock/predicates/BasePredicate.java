@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,6 +27,11 @@ import java.util.function.Consumer;
 public abstract class BasePredicate {
 
     public static final BasePredicate AIR = new BasePredicate() {
+
+        @Override
+        public boolean testInternal(PredicateContext ctx) {
+            return ctx.state().is(Blocks.AIR);
+        }
 
         @Override
         public String getTypeName() {
