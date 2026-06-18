@@ -12,42 +12,42 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public interface FilterHandlers {
 
-    static FilterHandler<ItemStack, ItemFilter> item(ISyncManaged container) {
+    static FilterHandler<ItemStack, Filter<ItemStack>> item(ISyncManaged container) {
         return new FilterHandler<>(container) {
 
             @Override
-            public ItemFilter loadFilter(ItemStack filterItem) {
-                return ItemFilter.loadFilter(filterItem);
+            public Filter<ItemStack> loadFilter(ItemStack filterItem) {
+                return Filters.loadItemFilter(filterItem);
             }
 
             @Override
-            protected ItemFilter getEmptyFilter() {
-                return ItemFilter.EMPTY;
+            protected Filter<ItemStack> getEmptyFilter() {
+                return Filters.EMPTY_ITEM;
             }
 
             @Override
             public boolean canInsertFilterItem(ItemStack itemStack) {
-                return ItemFilter.FILTERS.containsKey(itemStack.getItem());
+                return Filters.isValidFilter(ItemStack.class, itemStack.getItem());
             }
         };
     }
 
-    static FilterHandler<FluidStack, FluidFilter> fluid(ISyncManaged container) {
+    static FilterHandler<FluidStack, Filter<FluidStack>> fluid(ISyncManaged container) {
         return new FilterHandler<>(container) {
 
             @Override
-            public FluidFilter loadFilter(ItemStack filterItem) {
-                return FluidFilter.loadFilter(filterItem);
+            public Filter<FluidStack> loadFilter(ItemStack filterItem) {
+                return Filters.loadFluidFilter(filterItem);
             }
 
             @Override
-            protected FluidFilter getEmptyFilter() {
-                return FluidFilter.EMPTY;
+            protected Filter<FluidStack> getEmptyFilter() {
+                return Filters.EMPTY_FLUID;
             }
 
             @Override
             public boolean canInsertFilterItem(ItemStack itemStack) {
-                return FluidFilter.FILTERS.containsKey(itemStack.getItem());
+                return Filters.isValidFilter(FluidStack.class, itemStack.getItem());
             }
         };
     }

@@ -36,43 +36,27 @@ import brachy.modularui.widgets.menu.ContextMenuButton;
 import brachy.modularui.widgets.menu.Menu;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.function.Consumer;
 
-public class SmartItemFilter implements ItemFilter {
-
-    protected Consumer<ItemFilter> itemWriter;
-    protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
+public class SmartItemFilter extends Filter<ItemStack> {
 
     @Getter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
     public SmartItemFilter(ItemStack stack) {
-        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        super(stack);
+
         var tag = stack.getOrCreateTag();
         if (tag.isEmpty()) return;
-
         filterMode = SmartFilteringMode.VALUES[tag.getInt("filterMode")];
     }
 
     @Override
-    public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
-    }
-
-    @Override
-    public boolean isBlank() {
-        return filterMode.ordinal() == 0;
-    }
-
-    @Override
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag saveFilter() {
+        if (filterMode.ordinal() == 0) {
             return null;
         }
         var tag = new CompoundTag();
@@ -135,11 +119,11 @@ public class SmartItemFilter implements ItemFilter {
 
     @Override
     public boolean test(ItemStack itemStack) {
-        return testItemCount(itemStack) > 0;
+        return testAmount(itemStack) > 0;
     }
 
     @Override
-    public int testItemCount(ItemStack itemStack) {
+    public int testAmount(ItemStack itemStack) {
         return filterMode.cache.computeIfAbsent(itemStack, this::lookup);
     }
 

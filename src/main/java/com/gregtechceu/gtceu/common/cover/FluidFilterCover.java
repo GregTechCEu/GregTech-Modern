@@ -4,7 +4,8 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -34,7 +35,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class FluidFilterCover extends CoverBehavior implements IMuiCover {
 
-    protected FluidFilter fluidFilter;
+    protected @Nullable Filter<FluidStack> fluidFilter;
     @Setter
     @SaveField
     @Getter
@@ -54,9 +55,9 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
         return super.canAttach() && coverHolder.getFluidHandlerCap(attachedSide, false) != null;
     }
 
-    public FluidFilter getFluidFilter() {
+    public Filter<FluidStack> getFluidFilter() {
         if (fluidFilter == null) {
-            fluidFilter = FluidFilter.loadFilter(attachItem);
+            fluidFilter = Filters.loadFluidFilter(attachItem);
         }
         return fluidFilter;
     }
@@ -143,7 +144,7 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
         setAllowFlow(ManualIOMode.values()[tag.getInt("manualIO")]);
         setFilterMode(FilterMode.values()[tag.getInt("filterMode")]);
-        fluidFilter = FluidFilter.loadFilter(ItemStack.of(tag.getCompound("filter")));
+        fluidFilter = Filters.loadFluidFilter(ItemStack.of(tag.getCompound("filter")));
         super.pasteConfig(player, tag);
     }
 }

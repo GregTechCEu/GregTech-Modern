@@ -364,11 +364,11 @@ public class GTMuiWidgets {
         return cycleButton;
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
-                                                                              FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+    public static <T, S extends Filter<T>> ParentWidget<?> createFilterRow(Flow existingRow,
+                                                                           FilterHandler<T, S> filterHandler,
+                                                                           SidedPosGuiData data,
+                                                                           PanelSyncManager syncManager,
+                                                                           UISettings settings) {
         var filterSlot = filterHandler.getFilterSlot();
 
         ModularSlot modSlot = new ModularSlot(filterSlot, 0)
@@ -393,10 +393,10 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
-    public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
-                                                                              SidedPosGuiData data,
-                                                                              PanelSyncManager syncManager,
-                                                                              UISettings settings) {
+    public static <T, S extends Filter<T>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
+                                                                           SidedPosGuiData data,
+                                                                           PanelSyncManager syncManager,
+                                                                           UISettings settings) {
         Flow row = Flow.row().coverChildrenHeight().childPadding(2);
         return createFilterRow(row, filterHandler, data, syncManager, settings);
     }

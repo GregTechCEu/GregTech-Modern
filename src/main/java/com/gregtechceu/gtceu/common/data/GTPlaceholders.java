@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
@@ -81,7 +82,7 @@ public class GTPlaceholders {
         return cnt;
     }
 
-    public static int countItems(@Nullable ItemFilter filter, @Nullable IItemHandler itemHandler) {
+    public static int countItems(@Nullable Filter<ItemStack> filter, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null)
             return -1;
         int cnt = 0;
@@ -155,7 +156,8 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.pos() == null) throw new NoTargetException();
                 IItemHandler itemHandler = GTCapabilityHelper.getItemHandler(ctx.level(), ctx.pos(), ctx.side());
-                if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, itemHandler));
+                if (args.isEmpty())
+                    return MultiLineComponent.literal(countItems((Filter<ItemStack>) null, itemHandler));
                 if (args.size() == 1) return MultiLineComponent
                         .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
                 if (GTStringUtils.equals(args.get(0), "filter")) {
@@ -165,7 +167,7 @@ public class GTPlaceholders {
                     PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
                     try {
                         return MultiLineComponent.literal(countItems(
-                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
+                                Filters.loadItemFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), itemHandler));
                     } catch (NullPointerException e) {
                         throw new MissingItemException("filter", slot);
                     }

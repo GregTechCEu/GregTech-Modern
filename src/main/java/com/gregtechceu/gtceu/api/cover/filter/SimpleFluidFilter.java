@@ -25,15 +25,15 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleFluidFilter implements FluidFilter {
+public class SimpleFluidFilter extends Filter<FluidStack> {
 
     @Getter
     protected boolean isBlackList;
@@ -42,16 +42,13 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter;
-    protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
-
     @Getter
     protected int maxStackSize = 1;
 
     private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
     public SimpleFluidFilter(ItemStack stack) {
-        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        super(stack);
         var tag = stack.getOrCreateTag();
 
         for (int i = 0; i < 9; i++) {
@@ -75,21 +72,8 @@ public class SimpleFluidFilter implements FluidFilter {
         }
     }
 
-    @Override
-    public void setOnUpdated(Consumer<FluidFilter> onUpdated) {
-        this.onUpdated = filter -> {
-            this.itemWriter.accept(filter);
-            onUpdated.accept(filter);
-        };
-    }
-
-    @Override
-    public boolean isBlank() {
-        return !isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty);
-    }
-
-    public CompoundTag saveFilter() {
-        if (isBlank()) {
+    public @Nullable CompoundTag saveFilter() {
+        if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty)) {
             return null;
         }
         var tag = new CompoundTag();
@@ -152,11 +136,11 @@ public class SimpleFluidFilter implements FluidFilter {
 
     @Override
     public boolean test(FluidStack other) {
-        return testFluidAmount(other) > 0L;
+        return testAmount(other) > 0L;
     }
 
     @Override
-    public int testFluidAmount(FluidStack fluidStack) {
+    public int testAmount(FluidStack fluidStack) {
         int totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
 
         if (isBlackList) {
@@ -185,8 +169,7 @@ public class SimpleFluidFilter implements FluidFilter {
         this.maxStackSize = maxStackSize;
 
         for (CustomFluidTank slot : fluidStorageSlots) {
-            if (slot != null)
-                slot.setCapacity(maxStackSize);
+            slot.setCapacity(maxStackSize);
         }
 
         for (FluidStack match : matches) {

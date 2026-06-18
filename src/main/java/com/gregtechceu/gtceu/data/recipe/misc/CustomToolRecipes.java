@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -222,8 +222,8 @@ public final class CustomToolRecipes {
             {
                 var magnetStack = GTItems.ITEM_MAGNET_LV.asStack();
                 var tag = magnetStack.getOrCreateTag();
-                var filter = (SimpleItemFilter) ItemFilter
-                        .loadFilter(ItemMagnetBehavior.Filter.SIMPLE.getFilter(magnetStack));
+                var filter = (SimpleItemFilter) Filters
+                        .loadItemFilter(ItemMagnetBehavior.FilterMode.SIMPLE.getFilter(magnetStack));
                 filter.setBlackList(true);
                 tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
                 VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
@@ -265,8 +265,8 @@ public final class CustomToolRecipes {
             {
                 var magnetStack = GTItems.ITEM_MAGNET_HV.asStack();
                 var tag = magnetStack.getOrCreateTag();
-                var filter = (SimpleItemFilter) ItemFilter
-                        .loadFilter(ItemMagnetBehavior.Filter.SIMPLE.getFilter(magnetStack));
+                var filter = (SimpleItemFilter) Filters
+                        .loadItemFilter(ItemMagnetBehavior.FilterMode.SIMPLE.getFilter(magnetStack));
                 filter.setBlackList(true);
                 tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
                 VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,

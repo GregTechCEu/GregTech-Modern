@@ -14,7 +14,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -23,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncManaged {
+public abstract class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -33,14 +32,14 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
     @SaveField
     @SyncToClient
     @Getter
-    private @NotNull ItemStack filterItem = ItemStack.EMPTY;
+    private ItemStack filterItem = ItemStack.EMPTY;
 
     private @Nullable F filter;
     private @Nullable CustomItemStackHandler filterSlot;
 
-    private @NotNull Consumer<F> onFilterLoaded = (filter) -> {};
-    private @NotNull Runnable onFilterRemoved = () -> {};
-    private @NotNull Consumer<F> onFilterUpdated = (filter) -> {};
+    private Consumer<F> onFilterLoaded = (filter) -> {};
+    private Runnable onFilterRemoved = () -> {};
+    private Consumer<F> onFilterUpdated = (filter) -> {};
 
     public FilterHandler(ISyncManaged container) {
         this.container = container;
@@ -136,10 +135,11 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
         loadFilterFromItem();
     }
 
+    @SuppressWarnings("unchecked")
     private void loadFilterFromItem() {
         if (!this.filterItem.isEmpty()) {
             this.filter = loadFilter(this.filterItem);
-            filter.setOnUpdated(this.onFilterUpdated);
+            filter.setOnUpdated((Consumer<Filter<T>>) this.onFilterUpdated);
             if (filter instanceof SmartItemFilter smart &&
                     container instanceof CoverBehavior cover &&
                     cover.coverHolder instanceof MachineCoverContainer mcc) {

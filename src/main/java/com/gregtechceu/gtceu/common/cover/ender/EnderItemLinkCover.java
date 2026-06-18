@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.cover.ender;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
@@ -41,7 +41,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     @Getter
     @SaveField
     @SyncToClient
-    protected FilterHandler<ItemStack, ItemFilter> filterHandler;
+    protected FilterHandler<ItemStack, Filter<ItemStack>> filterHandler;
 
     public EnderItemLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);

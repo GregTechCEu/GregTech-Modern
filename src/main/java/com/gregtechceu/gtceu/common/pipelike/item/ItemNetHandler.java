@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
@@ -314,7 +314,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     /// Insert into a destination through a robot arm
     private ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate,
                                          int allowed, boolean ignoreLimit) {
-        int rate = arm.getFilterHandler().getFilter().testItemCount(stack);
+        int rate = arm.getFilterHandler().getFilter().testAmount(stack);
         int count;
         switch (arm.getTransferMode()) {
             case TRANSFER_ANY:
@@ -348,7 +348,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm) {
         if (arm == null) return 0;
         int count = 0;
-        ItemFilter filter = arm.getFilterHandler().getFilter();
+        Filter<ItemStack> filter = arm.getFilterHandler().getFilter();
         boolean ignoreNBT = filter instanceof SimpleItemFilter simple && simple.isIgnoreNbt();
         for (int i = 0; i < handler.getSlots(); i++) {
             ItemStack slot = handler.getStackInSlot(i);

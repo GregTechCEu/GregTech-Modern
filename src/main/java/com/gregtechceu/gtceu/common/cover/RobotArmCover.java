@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
@@ -137,8 +137,8 @@ public class RobotArmCover extends ConveyorCover {
         if (!filterHandler.isFilterPresent())
             return globalTransferLimit;
 
-        ItemFilter filter = filterHandler.getFilter();
-        return filter.supportsAmounts() ? filter.testItemCount(itemStack) : globalTransferLimit;
+        Filter<ItemStack> filter = filterHandler.getFilter();
+        return filter.supportsAmounts() ? filter.testAmount(itemStack) : globalTransferLimit;
     }
 
     public int getBuffer() {

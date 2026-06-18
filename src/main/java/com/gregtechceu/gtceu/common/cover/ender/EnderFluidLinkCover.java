@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.cover.ender;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
@@ -43,7 +43,7 @@ public class EnderFluidLinkCover extends AbstractEnderLinkCover<VirtualTank> {
     @Getter
     @SaveField
     @SyncToClient
-    protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
+    protected final FilterHandler<FluidStack, Filter<FluidStack>> filterHandler;
     protected int mBLeftToTransferLastSecond;
 
     public EnderFluidLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {

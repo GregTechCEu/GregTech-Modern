@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -95,8 +95,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (!filterHandler.isFilterPresent())
             return globalTransferSizeMillibuckets;
 
-        FluidFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testFluidAmount(fluidStack);
+        Filter<FluidStack> filter = filterHandler.getFilter();
+        return filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testAmount(fluidStack);
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {

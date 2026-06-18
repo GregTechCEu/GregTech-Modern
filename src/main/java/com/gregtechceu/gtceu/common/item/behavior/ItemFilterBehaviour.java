@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.Filter;
+import com.gregtechceu.gtceu.api.cover.filter.Filters;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
@@ -19,12 +20,12 @@ import brachy.modularui.value.sync.PanelSyncManager;
 
 import java.util.function.Function;
 
-public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
+public record ItemFilterBehaviour(Function<ItemStack, Filter<ItemStack>> filterCreator)
         implements IInteractionItem, IItemUIHolder {
 
     @Override
     public void onAttached(Item item) {
-        ItemFilter.FILTERS.put(item, filterCreator);
+        Filters.registerFilter(ItemStack.class, item, filterCreator);
     }
 
     @Override
@@ -40,16 +41,6 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return ItemFilter.loadFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings);
+        return Filters.loadItemFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings);
     }
-
-    // @Override
-    // public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-    // var held = holder.getHeld();
-    // return new ModularUI(176, 157, holder, entityPlayer)
-    // .background(GuiTextures.BACKGROUND)
-    // .widget(new LabelWidget(5, 5, held.getDescriptionId()))
-    // .widget(ItemFilter.loadFilter(held).openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15))
-    // .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 75, true));
-    // }
 }

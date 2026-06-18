@@ -1798,7 +1798,8 @@ public class GTItems {
     public static ItemEntry<ComponentItem> TAG_FILTER = REGISTRATE
             .item("item_tag_filter", ComponentItem::create)
             .lang("Item Tag Filter")
-            .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::new),
+            .onRegister(attach(
+                    new ItemFilterBehaviour(stack -> new TagFilter<>(stack, ItemStack::getItem, ItemStack::getTags)),
                     new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
             .register();
@@ -1816,7 +1817,9 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::create)
             .lang("Fluid Tag Filter")
-            .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::new),
+            .onRegister(attach(
+                    new FluidFilterBehaviour(stack -> new TagFilter<>(stack, FluidStack::getFluid,
+                            f -> f.getFluid().defaultFluidState().getTags())),
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
