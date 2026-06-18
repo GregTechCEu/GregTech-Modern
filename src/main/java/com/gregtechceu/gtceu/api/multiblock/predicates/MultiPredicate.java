@@ -135,46 +135,34 @@ public class MultiPredicate extends BasePredicate {
         return this;
     }
 
+    protected MultiPredicate copy() {
+        return new MultiPredicate(this.debugName, this.predicateList, this.getType());
+    }
+
     @Override
     public MultiPredicate or(BasePredicate other) {
         if (!isValid()) this.type = Logic.OR;
 
-        var predicate = new MultiPredicate(this.debugName, this.predicateList, this.getType());
         if (!(other instanceof MultiPredicate multi)) {
-            return predicate.addPredicates(other);
+            return this.copy().addPredicates(other).sorted();
         }
 
-        if (!multi.isValid()) multi.type = Logic.OR;
         if (!isOr()) return multi.or(this);
 
-        if (multi.isOr()) {
-            predicate.addPredicates(multi.predicateList);
-        } else if (multi.isAnd()) {
-            predicate.addPredicates(multi);
-        }
-
-        return predicate.sorted();
+        return combine(this, multi, this.copy());
     }
 
     @Override
     public MultiPredicate and(BasePredicate other) {
         if (!isValid()) this.type = Logic.AND;
 
-        var predicate = new MultiPredicate(this.debugName, this.predicateList, this.getType());
         if (!(other instanceof MultiPredicate multi)) {
-            return predicate.addPredicates(other);
+            return this.copy().addPredicates(other).sorted();
         }
 
-        if (!multi.isValid()) multi.type = Logic.AND;
         if (!isAnd()) return multi.and(this);
 
-        if (multi.isAnd()) {
-            predicate.addPredicates(multi.predicateList);
-        } else if (multi.isOr()) {
-            predicate.addPredicates(multi);
-        }
-
-        return predicate.sorted();
+        return combine(this, multi, this.copy());
     }
 
     @Override
@@ -199,6 +187,19 @@ public class MultiPredicate extends BasePredicate {
         StringJoiner joiner = new StringJoiner(", ");
         this.predicateList.forEach(p -> joiner.add(p.toString()));
         return builder.append(joiner);
+    }
+
+    private static MultiPredicate combine(MultiPredicate a, MultiPredicate b, MultiPredicate dest) {
+        if (!b.isValid()) {
+            b.type = a.getType();
+        }
+        if (a.getType() == b.getType()) {
+            dest.addPredicates(b.predicateList);
+        } else {
+            dest.addPredicates(b);
+        }
+
+        return dest.sorted();
     }
 
     protected enum Logic {
