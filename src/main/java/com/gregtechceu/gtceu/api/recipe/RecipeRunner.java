@@ -254,13 +254,12 @@ public class RecipeRunner {
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
                 RecipeCapability<?> failedCap = entry.getKey();
                 if (simulated && bestLeftover != null) {
-                    RecipeCapability<?> best = null;
                     for (var leftoverEntry : bestLeftover.entrySet()) {
-                        if (leftoverEntry.getValue() != null && !leftoverEntry.getValue().isEmpty()) {
-                            best = entry.getKey();
+                        if (leftoverEntry.getValue() != null && !leftoverEntry.getValue().isEmpty() &&
+                                leftoverEntry.getKey() != null) {
+                            failedCap = leftoverEntry.getKey();
                         }
                     }
-                    if (best != null) failedCap = best;
                 }
                 return ActionResult.fail(null, failedCap, io, bestScore);
             }
