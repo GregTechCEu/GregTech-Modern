@@ -233,7 +233,7 @@ public class RecipeHelper {
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
-                .append(": ").append(result.capability().getName()), result.capability(), io);
+                .append(": ").append(result.capability().getName()), result.capability(), io, result.score());
     }
 
     public static ActionResult matchContents(IRecipeCapabilityHolder holder, GTRecipe recipe) {

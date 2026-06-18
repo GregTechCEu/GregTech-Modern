@@ -375,10 +375,13 @@ public class MultiblockDisplayText {
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
-            var reasons = recipeLogic.getFailureReasons();
-            if (!reasons.isEmpty()) {
+            var reason = recipeLogic.getBestFailureReason();
+            if (reason != null) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
-                for (var reason : reasons) {
+                var recipe = recipeLogic.getBestFailureRecipe();
+                if (recipe != null) {
+                    textList.add(Component.literal(" - ").append(recipe).append(": ").append(reason));
+                } else {
                     textList.add(Component.literal(" - ").append(reason));
                 }
             }

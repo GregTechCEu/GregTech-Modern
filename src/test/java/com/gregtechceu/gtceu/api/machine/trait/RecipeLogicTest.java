@@ -15,6 +15,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
@@ -42,6 +43,28 @@ public class RecipeLogicTest {
         LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_multiblock_recipelogic_16_items"))
                 .inputItems(new ItemStack(Blocks.STONE, 16))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
+                .buildRawRecipe());
+        // Two candidates with disjoint input-item type sets, so both are yielded by the search at once.
+        // Candidate A: only its 2nd item ends up short -> 1 of 2 contents satisfied (score 0.5).
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_close_a"))
+                .inputItems(new ItemStack(Blocks.DIRT, 16), new ItemStack(Blocks.GRAVEL, 16))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
+                .buildRawRecipe());
+        // Candidate B: both items short -> 0 of 2 contents satisfied (score 0.0).
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_close_b"))
+                .inputItems(new ItemStack(Blocks.NETHERRACK, 16), new ItemStack(Blocks.SAND, 16))
+                .outputItems(new ItemStack(Blocks.STONE))
+                .EUt(GTValues.VA[GTValues.HV]).duration(1)
+                .buildRawRecipe());
+        // Single-ingredient recipe used to test that a stalled "last recipe" keeps top priority.
+        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
+                .recipeBuilder(GTCEu.id("test_priority_last"))
+                .inputItems(new ItemStack(Items.EMERALD, 1))
                 .outputItems(new ItemStack(Blocks.STONE))
                 .EUt(GTValues.VA[GTValues.HV]).duration(1)
                 .buildRawRecipe());
@@ -239,5 +262,71 @@ public class RecipeLogicTest {
                     "Crafting items in same bus failed, expected STONE but was " +
                             busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
         });
+    }
+
+    /**
+     * When several recipes fail, only the single most-relevant reason should be surfaced: the candidate closest to
+     * succeeding (highest fraction of contents satisfied), not a wall of every failed recipe.
+     */
+    @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
+    public static void recipeLogicClosestFailureReasonTest(GameTestHelper helper) {
+        RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
+        RecipeLogic recipeLogic = busHolder.controller.getRecipeLogic();
+
+        // Candidate A (test_close_a): dirt satisfied, gravel short -> 1 of 2 contents = score 0.5
+        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.DIRT, 16));
+        busHolder.inputBus1.getInventory().setStackInSlot(1, new ItemStack(Blocks.GRAVEL, 8));
+        // Candidate B (test_close_b): both short -> 0 of 2 contents = score 0.0
+        busHolder.inputBus2.getInventory().setStackInSlot(0, new ItemStack(Blocks.NETHERRACK, 8));
+        busHolder.inputBus2.getInventory().setStackInSlot(1, new ItemStack(Blocks.SAND, 8));
+
+        recipeLogic.findAndHandleRecipe();
+
+        helper.assertFalse(recipeLogic.isActive(), "No recipe should run when all candidates are short");
+        double score = recipeLogic.getBestFailureScore();
+        helper.assertTrue(Math.abs(score - 0.5) < 1e-6,
+                "Closest candidate (A) score should be 0.5, was " + score);
+        helper.assertTrue(recipeLogic.getBestFailureReason() != null &&
+                !recipeLogic.getBestFailureReason().getString().isBlank(),
+                "A single, non-blank failure reason should be surfaced");
+        var failureRecipe = recipeLogic.getBestFailureRecipe();
+        helper.assertTrue(failureRecipe != null &&
+                failureRecipe.getString().equals(GTCEu.id("test_close_a").toString()),
+                "The surfaced reason should be attributed to the closest candidate (test_close_a), was " +
+                        (failureRecipe == null ? "null" : failureRecipe.getString()));
+
+        helper.succeed();
+    }
+
+    /**
+     * If the machine was already running a recipe and it can no longer continue, that recipe's reason must win
+     * unconditionally - even when another candidate is closer to succeeding.
+     */
+    @GameTest(template = "lcr_input_separation", batch = "RecipeLogic")
+    public static void recipeLogicLastRecipePriorityTest(GameTestHelper helper) {
+        RecipeLogicTest.BusHolder busHolder = getBussesAndForm(helper);
+        RecipeLogic recipeLogic = busHolder.controller.getRecipeLogic();
+
+        // Start the priority recipe so it becomes the "last recipe" (its single emerald is consumed on setup).
+        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Items.EMERALD, 1));
+        recipeLogic.findAndHandleRecipe();
+        helper.assertFalse(recipeLogic.getLastRecipe() == null, "Priority recipe should have started");
+
+        // Now stage a closer-scoring (0.5) candidate A. The last recipe can no longer run (no emerald left).
+        busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.DIRT, 16));
+        busHolder.inputBus1.getInventory().setStackInSlot(1, new ItemStack(Blocks.GRAVEL, 8));
+
+        recipeLogic.findAndHandleRecipe();
+
+        double score = recipeLogic.getBestFailureScore();
+        helper.assertTrue(Double.isInfinite(score) && score > 0,
+                "The stalled last recipe's reason should be locked in with top priority, score was " + score);
+        var failureRecipe = recipeLogic.getBestFailureRecipe();
+        helper.assertTrue(failureRecipe != null &&
+                failureRecipe.getString().equals(GTCEu.id("test_priority_last").toString()),
+                "The surfaced reason should name the stalled last recipe (test_priority_last), not the closer " +
+                        "candidate, was " + (failureRecipe == null ? "null" : failureRecipe.getString()));
+
+        helper.succeed();
     }
 }

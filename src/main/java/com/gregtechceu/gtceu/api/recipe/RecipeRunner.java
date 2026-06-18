@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,6 +43,10 @@ public class RecipeRunner {
     private final Predicate<RecipeCapability<?>> outputVoid;
     @Getter
     private int groupColor;
+
+    /** Highest closeness score seen across handler-group attempts, and the leftover map that produced it. */
+    private double bestScore = 0;
+    private @Nullable Map<RecipeCapability<?>, List<Object>> bestLeftover;
 
     public RecipeRunner(GTRecipe recipe, IO io, boolean isTick,
                         IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
@@ -150,9 +155,15 @@ public class RecipeRunner {
                 }
             }
             if (io == IO.OUT) {
-                if (hasAnyNonVoidingContents(res)) continue;
+                if (hasAnyNonVoidingContents(res)) {
+                    recordLeftover(res);
+                    continue;
+                }
             } else if (io == IO.IN) {
-                if (!res.isEmpty()) continue;
+                if (!res.isEmpty()) {
+                    recordLeftover(res);
+                    continue;
+                }
             }
             if (!simulated) {
                 // Actually consume the contents of this handler and also all the bypassed handlers
@@ -202,9 +213,15 @@ public class RecipeRunner {
             }
 
             if (io == IO.OUT) {
-                if (hasAnyNonVoidingContents(copiedRecipeContents)) continue;
+                if (hasAnyNonVoidingContents(copiedRecipeContents)) {
+                    recordLeftover(copiedRecipeContents);
+                    continue;
+                }
             } else if (io == IO.IN) {
-                if (!copiedRecipeContents.isEmpty()) continue;
+                if (!copiedRecipeContents.isEmpty()) {
+                    recordLeftover(copiedRecipeContents);
+                    continue;
+                }
             }
             if (simulated) return ActionResult.SUCCESS;
             // Start actually removing items.
@@ -235,7 +252,17 @@ public class RecipeRunner {
                 entry.getValue().clear();
             }
             if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-                return ActionResult.fail(null, entry.getKey(), io);
+                RecipeCapability<?> failedCap = entry.getKey();
+                if (simulated && bestLeftover != null) {
+                    RecipeCapability<?> best = null;
+                    for (var leftoverEntry : bestLeftover.entrySet()) {
+                        if (leftoverEntry.getValue() != null && !leftoverEntry.getValue().isEmpty()) {
+                            best = entry.getKey();
+                        }
+                    }
+                    if (best != null) failedCap = best;
+                }
+                return ActionResult.fail(null, failedCap, io, bestScore);
             }
         }
 
@@ -251,7 +278,33 @@ public class RecipeRunner {
             return ActionResult.PASS_NO_CONTENTS;
         }
 
-        return ActionResult.FAIL_NO_REASON;
+        return ActionResult.fail(null, null, io, bestScore);
+    }
+
+    /**
+     * Records a failed handler-group attempt's leftover map if it's the closest match seen so far. Higher score wins;
+     * ties keep the earlier attempt. The retained map identifies which capabilities the closest attempt was short on.
+     */
+    private void recordLeftover(Map<RecipeCapability<?>, List<Object>> leftover) {
+        double score = scoreLeftover(leftover);
+        if (bestLeftover == null || score > bestScore) {
+            bestScore = score;
+            bestLeftover = leftover;
+        }
+    }
+
+    private double scoreLeftover(Map<RecipeCapability<?>, List<Object>> leftover) {
+        double sum = 0;
+        int caps = 0;
+        for (var entry : searchRecipeContents.entrySet()) {
+            int total = entry.getValue().size();
+            if (total <= 0) continue;
+            caps++;
+            var leftList = leftover.get(entry.getKey());
+            int leftCount = leftList == null ? 0 : Math.min(leftList.size(), total);
+            sum += (double) (total - leftCount) / total;
+        }
+        return caps == 0 ? 1.0 : sum / caps;
     }
 
     private boolean hasAnyNonVoidingContents(Map<RecipeCapability<?>, List<Object>> contents) {

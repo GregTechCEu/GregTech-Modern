@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 import com.gregtechceu.gtceu.api.sync_system.ClassSyncData;
@@ -91,12 +90,19 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @SyncToClient
     private Component waitingReason = null;
 
+    @Nullable
     @Getter
     @SyncToClient
-    protected final List<Component> failureReasons = new ArrayList<>();
+    protected Component bestFailureReason;
+
+    /** Display name (id) of the recipe {@link #bestFailureReason} belongs to. */
+    @Nullable
+    @Getter
+    @SyncToClient
+    protected Component bestFailureRecipe;
 
     @Getter
-    protected final Map<GTRecipe, Component> failureReasonMap = new HashMap<>();
+    protected double bestFailureScore = Double.NEGATIVE_INFINITY;
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
@@ -105,10 +111,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @SaveField
     @SyncToClient
     protected GTRecipe lastRecipe;
-    @Getter
-    @SaveField
-    @SyncToClient
-    protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
+
     /**
      * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}'
      * which can be found
@@ -118,6 +121,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Getter
     @SaveField
     protected GTRecipe lastOriginRecipe;
+
+    @Getter
+    @SaveField
+    @SyncToClient
+    protected int consecutiveRecipes = 0; // Consecutive recipes that have been run
+
     @SaveField
     @Getter
     @SyncToClient
@@ -176,7 +185,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
         isActive = false;
         lastFailedMatches = null;
         waitingReason = null;
-        failureReasons.clear();
+        clearFailureReason();
         if (status != Status.SUSPEND) {
             setStatus(Status.IDLE);
         }
@@ -250,10 +259,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                     // No recipes available and the machine wants to unsubscribe until notified
                     unsubscribe = true;
                 }
-        if (isIdle()) {
-            failureReasons.clear();
-            failureReasons.addAll(failureReasonMap.values());
-        }
         if (unsubscribe && subscription != null) {
             subscription.unsubscribe();
             subscription = null;
@@ -278,7 +283,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
             } else {
-                putFailureReason(this, match, recipeMatch.reason());
+                recordFailureReason(match, recipeMatch.reason(), recipeMatch.score());
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
                 lastOriginRecipe = match;
@@ -326,6 +331,8 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                         if (getMachine() instanceof MultiblockControllerMachine && !preventPowerFail) {
                             runAttempt = 0;
                             setStatus(Status.SUSPEND);
+                            // Keep showing why it suspended (setStatus cleared waitingReason on leaving WAITING).
+                            recordFailureReason(lastRecipe, handleTick.reason(), Double.POSITIVE_INFINITY);
                         }
                     }
                     runDelay = runAttempt * 60;
@@ -351,20 +358,26 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
 
     public void findAndHandleRecipe() {
         lastFailedMatches = null;
+        clearFailureReason();
 
         // try to execute last recipe if possible
-        if (!recipeDirty && lastRecipe != null && checkRecipe(lastRecipe).isSuccess()) {
-            GTRecipe recipe = lastRecipe;
-            lastRecipe = null;
-            lastOriginRecipe = null;
-            setupRecipe(recipe);
-        } else {
-            // try to find and handle a new recipe
-            failureReasonMap.clear();
-            lastRecipe = null;
-            lastOriginRecipe = null;
-            handleSearchingRecipes(searchRecipe());
+        GTRecipe last = lastRecipe;
+        if (!recipeDirty && last != null) {
+            var lastCheck = checkRecipe(last);
+            if (lastCheck.isSuccess()) {
+                lastRecipe = null;
+                lastOriginRecipe = null;
+                setupRecipe(last);
+                recipeDirty = false;
+                return;
+            }
+            recordFailureReason(last, lastCheck.reason(), Double.POSITIVE_INFINITY);
         }
+
+        // try to find and handle a new recipe
+        lastRecipe = null;
+        lastOriginRecipe = null;
+        handleSearchingRecipes(searchRecipe());
         recipeDirty = false;
     }
 
@@ -415,7 +428,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
             if (lastRecipe != null && !recipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
-            failureReasonMap.clear();
+            clearFailureReason();
             recipeDirty = false;
             lastRecipe = recipe;
             setStatus(Status.WORKING);
@@ -482,6 +495,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
         if (!isWorkingAllowed && getStatus() == Status.IDLE) {
+            clearFailureReason();
             setStatus(Status.SUSPEND);
         } else {
             setSuspendAfterFinish(!isWorkingAllowed);
@@ -623,17 +637,24 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     @Override
     public List<Component> getFancyTooltip() {
         if (isWaiting() && waitingReason != null) {
+            Component name = recipeDisplayName(lastRecipe);
+            if (name != null) {
+                return List.of(name, waitingReason);
+            }
             return List.of(waitingReason);
         }
-        if (isIdle() && !failureReasons.isEmpty()) {
-            return failureReasons;
+        if ((isIdle() || isSuspend()) && bestFailureReason != null) {
+            if (bestFailureRecipe != null) {
+                return List.of(bestFailureRecipe, bestFailureReason);
+            }
+            return List.of(bestFailureReason);
         }
         return Collections.emptyList();
     }
 
     @Override
     public boolean showFancyTooltip() {
-        return waitingReason != null || !failureReasons.isEmpty();
+        return waitingReason != null || bestFailureReason != null;
     }
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
@@ -708,13 +729,32 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
     }
 
     public static void putFailureReason(RecipeLogic logic, GTRecipe recipe, Component reason) {
-        var map = logic.getFailureReasonMap();
-        if (map.containsKey(recipe)) {
-            if (reason != ModifierFunction.DEFAULT_FAILURE) {
-                map.put(recipe, reason);
+        logic.recordFailureReason(recipe, reason, 0.0);
+    }
+
+    /**
+     * Record a failure reason as the one to display, along with the recipe it belongs to. It becomes the displayed
+     * reason only if it's usable and beats the current best score.
+     */
+    protected void recordFailureReason(@Nullable GTRecipe recipe, @Nullable Component reason, double score) {
+        if (reason != null && !reason.getString().isBlank()) {
+            if (score > bestFailureScore) {
+                bestFailureScore = score;
+                bestFailureReason = reason;
+                bestFailureRecipe = recipeDisplayName(recipe);
             }
-        } else {
-            map.put(recipe, reason);
         }
+    }
+
+    /** The display name shown for a recipe in failure tooltips: its id, or {@code null} if the recipe is null. */
+    protected static @Nullable Component recipeDisplayName(@Nullable GTRecipe recipe) {
+        return recipe == null ? null : Component.literal(recipe.id.toString());
+    }
+
+    /** Forget the currently-displayed failure reason. */
+    protected void clearFailureReason() {
+        bestFailureReason = null;
+        bestFailureRecipe = null;
+        bestFailureScore = Double.NEGATIVE_INFINITY;
     }
 }

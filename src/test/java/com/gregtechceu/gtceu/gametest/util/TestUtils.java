@@ -225,18 +225,12 @@ public class TestUtils {
     }
 
     /**
-     * Fetches the set of Failed Recipes and Reasons from a machine's {@link RecipeLogic}
-     * Returns a newline-separated string of all failed recipes and their failure reasons
+     * Fetches the most-relevant failure reason from a machine's {@link RecipeLogic}.
+     * Returns a newline-separated string of the surfaced failure reason(s).
      */
     public static String getFailures(RecipeLogic recipeLogic) {
-        var reasons = recipeLogic.getFailureReasonMap();
-        StringBuilder failures = new StringBuilder();
-        if (!reasons.isEmpty()) {
-            for (var reason : reasons.entrySet()) {
-                failures.append(reason.getKey().id).append(" - ").append(reason).append("\n");
-            }
-        }
-        return failures.toString();
+        var reason = recipeLogic.getBestFailureReason();
+        return reason == null ? "" : reason.getString() + "\n";
     }
 
     public static CoverBehavior placeCover(GameTestHelper helper, MetaMachine machine, ItemStack stack,
