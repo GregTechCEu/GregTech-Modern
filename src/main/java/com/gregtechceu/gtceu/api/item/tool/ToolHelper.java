@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -13,25 +12,22 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.DummyRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
+import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -308,6 +304,13 @@ public class ToolHelper {
         var harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
             for (BlockPos pos : harvestableBlocks) {
+                // Skip targeted block as already handled by the tool (fix AOE items using n+1 durability)
+                if (pos.equals(targeted)) {
+                    Level world = player.level();
+                    BlockState state = world.getBlockState(pos);
+                    world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
+                    continue;
+                }
                 if (!breakBlockRoutine(player, stack, pos, pos.equals(targeted))) {
                     return true;
                 }
@@ -421,25 +424,20 @@ public class ToolHelper {
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
                 RecipeHandlerList dummyInputs = RecipeHandlerList.of(IO.IN,
-                        new InfiniteEnergyContainer(null, GTValues.V[GTValues.LV],
-                                GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
-                        new NotifiableItemStackHandler(null, 1, IO.IN, IO.IN,
-                                (slots) -> new CustomItemStackHandler(silktouchDrop)));
+                        new DummyRecipeUtils.DummyEnergyContainer(GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1),
+                        new DummyRecipeUtils.DummyItemHandler(IO.IN, NonNullList.of(silktouchDrop)));
 
                 RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
-                        new NotifiableItemStackHandler(null, 2, IO.OUT));
-                DummyRecipeCapabilityHolder capHolder = new DummyRecipeCapabilityHolder(dummyInputs, dummyOutputs);
-
-                Map<RecipeCapability<?>, Object2IntMap<?>> cacheChances = new IdentityHashMap<>();
-                for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
-                    cacheChances.put(cap, cap.makeChanceCache());
-                }
+                        new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
+                DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
+                        dummyInputs, dummyOutputs);
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
                         r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
                 GTRecipe hammerRecipe = !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null &&
-                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, cacheChances).isSuccess()) {
+                        RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN, capHolder.getCacheChances())
+                                .isSuccess()) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
                     if (prefix.isEmpty()) {
@@ -468,10 +466,6 @@ public class ToolHelper {
     }
 
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
-        // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
-        if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
-            return false;
-        }
         Level world = player.level();
 
         boolean canBreak = onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
@@ -714,9 +708,9 @@ public class ToolHelper {
     /**
      * Shearing a Block.
      *
-     * @return -1 if not shearable, otherwise return 0 or 1, 0 if tool is now broken.
+     * @return -1 if not shearable or if shearing gave nothing, otherwise return 0 or 1, 0 if tool is now broken.
      */
-    public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
+    public static int shearBlock(ServerPlayer player, ItemStack tool, BlockPos pos) {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
@@ -724,6 +718,9 @@ public class ToolHelper {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
                             tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
+                    if (shearedDrops.isEmpty()) {
+                        return -1;
+                    }
                     boolean relocateMinedBlocks = hasBehaviorsTag(tool) &&
                             getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
@@ -743,8 +740,6 @@ public class ToolHelper {
                         }
                     }
                     ToolHelper.damageItem(tool, player, 1);
-                    player.awardStat(Stats.BLOCK_MINED.get((Block) shearable));
-                    world.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
                     return tool.isEmpty() ? 0 : 1;
                 }
             }

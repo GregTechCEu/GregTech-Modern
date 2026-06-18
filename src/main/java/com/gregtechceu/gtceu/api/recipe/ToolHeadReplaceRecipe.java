@@ -75,7 +75,8 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             if (!tool.isElectric()) return false;
             if (toolHead.isEmpty()) return false;
             GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
-            return output != null && output[tool.getElectricTier()] != null;
+            return output != null && output[tool.getElectricTier()] != null &&
+                    GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), output[tool.getElectricTier()]) != null;
         }
         return false;
     }

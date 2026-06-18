@@ -103,7 +103,7 @@ public class FluidRegulatorCover extends PumpCover {
                 continue;
 
             int insertableAmount = destination.fill(drained.copy(), FluidAction.SIMULATE);
-            if (insertableAmount <= 0)
+            if (insertableAmount != supplyAmount)
                 continue;
 
             drained.setAmount(insertableAmount);
@@ -252,11 +252,11 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
         tag.putInt("transferBucket", transferBucketMode.ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override

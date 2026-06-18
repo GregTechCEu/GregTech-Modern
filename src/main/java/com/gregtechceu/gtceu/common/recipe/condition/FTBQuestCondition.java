@@ -63,7 +63,7 @@ public class FTBQuestCondition extends RecipeCondition<FTBQuestCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        MachineOwner owner = recipeLogic.machine.self().getOwner();
+        MachineOwner owner = recipeLogic.getMachine().getOwner();
         if (!(owner instanceof FTBOwner ftbOwner)) return false;
         if (ftbOwner.getTeam() == null) return false;
         BaseQuestFile questFile = FTBQuestsAPI.api().getQuestFile(false);

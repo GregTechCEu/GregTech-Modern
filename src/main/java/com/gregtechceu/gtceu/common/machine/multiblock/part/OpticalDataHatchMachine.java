@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
@@ -67,12 +67,12 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
             return isRecipeAvailable(dataAccesses, seen, recipe) ||
                     isRecipeAvailable(transmitters, seen, recipe);
         } else {
-            BlockEntity tileEntity = getLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
-            if (tileEntity == null) return false;
+            BlockEntity blockEntity = getLevel().getBlockEntity(getBlockPos().relative(getFrontFacing()));
+            if (blockEntity == null) return false;
 
-            if (tileEntity instanceof OpticalPipeBlockEntity) {
+            if (blockEntity instanceof OpticalPipeBlockEntity) {
                 // noinspection DataFlowIssue
-                IDataAccessHatch cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
+                IDataAccessHatch cap = blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
                         getFrontFacing().getOpposite()).orElse(null);
                 // noinspection ConstantValue
                 return cap != null && cap.isRecipeAvailable(recipe, seen);

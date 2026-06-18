@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
-import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -12,12 +10,13 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -32,13 +31,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -55,7 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
                                      extends ManagedSyncBlockEntity
-                                     implements IPipeNode<PipeType, NodeDataType>, IToolGridHighlight, IToolable,
+                                     implements IPipeNode<PipeType, NodeDataType>, IToolGridHighlight,
                                      ICopyable {
 
     private final long offset = GTValues.RNG.nextInt(20);
@@ -188,6 +185,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -237,6 +235,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         // fix desync between two connections.
         // Can happen if a pipe side is blocked, and a new pipe is placed next to it.
+        if (getLevel() == null) {
+            return;
+        }
         if (!getLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;
@@ -254,8 +255,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 if (cover != null && cover.canPipePassThrough()) return;
             }
 
-            connections = withSideConnection(connections, side, connected);
-            syncDataHolder.markClientSyncFieldDirty("connections");
+            setConnections(withSideConnection(connections, side, connected));
             updateNetworkConnection(side, connected);
             // notify neighbor of change so Auto Output updates its ticking status
             getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
@@ -309,13 +309,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return false;
     }
 
-    @Override
-    public void setChanged() {
-        if (getLevel() != null) {
-            getLevel().blockEntityChanged(getBlockPos());
-        }
-    }
-
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
@@ -350,56 +343,41 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return null;
     }
 
-    @Override
-    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack,
-                                                                     UseOnContext context) {
+    public Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         // the side hit from the machine grid
-        var playerIn = context.getPlayer();
-        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
+        var player = context.getPlayer();
+        var toolType = context.getToolType();
+        var gridSide = context.getGridSide();
 
-        var hand = context.getHand();
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
-                context.getClickedPos(), false);
-        Direction gridSide = ICoverable.determineGridSideHit(hitResult);
-        CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
-        if (gridSide == null) gridSide = hitResult.getDirection();
+        if (player == null) return Pair.of(null, InteractionResult.PASS);
 
-        // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolTypes.isEmpty() && playerIn.isShiftKeyDown()) {
-            if (coverBehavior != null) {
-                return Pair.of(null, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+        // Prioritize covers
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
+        if (cover != null) {
+            var result = cover.onToolClick(context);
+            if (result.getSecond() != InteractionResult.PASS) return result;
+
+            if (toolType.contains(GTToolType.CROWBAR)) {
+                getCoverContainer().removeCover(context.getGridSide(), player);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (coverBehavior != null) {
-                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
-            }
-        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            if (coverBehavior != null) {
-                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
-            }
-        } else if (toolTypes.contains(getPipeTuneTool())) {
-            if (playerIn.isShiftKeyDown() && this.canHaveBlockedFaces()) {
+
+        if (toolType.contains(getPipeTuneTool())) {
+            if (player.isShiftKeyDown() && this.canHaveBlockedFaces()) {
                 boolean isBlocked = this.isBlocked(gridSide);
                 this.setBlocked(gridSide, !isBlocked);
             } else {
                 boolean isOpen = this.isConnected(gridSide);
                 this.setConnection(gridSide, !isOpen, false);
             }
-            return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-        } else if (toolTypes.contains(GTToolType.CROWBAR)) {
-            if (coverBehavior != null) {
-                if (!isRemote()) {
-                    getCoverContainer().removeCover(gridSide, playerIn);
-                    return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-                }
-            } else {
-                if (!frameMaterial.isNull()) {
-                    Block.popResource(getLevel(), this.getBlockPos(),
-                            GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                    frameMaterial = GTMaterials.NULL;
-                    return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(playerIn.level().isClientSide));
-                }
+            return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
+        } else if (toolType.contains(GTToolType.CROWBAR)) {
+            if (!frameMaterial.isNull()) {
+                Block.popResource(context.getLevel(), this.getBlockPos(),
+                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
+                frameMaterial = GTMaterials.NULL;
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 
@@ -437,13 +415,35 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
-        return ICopyable.super.copyConfig(tag);
+    public void copyConfig(CompoundTag tag) {
+        tag.putInt("pipe_connections", getConnections());
+        tag.putInt("pipe_blocked_connections", getBlockedConnections());
+
+        var coverTag = new CompoundTag();
+        getCoverContainer().copyConfig(coverTag);
+        tag.put("cover", coverTag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.pasteConfig(player, tag);
+        if (tag.contains("pipe_connections")) {
+            var connections = tag.getInt("pipe_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isConnected(connections, dir)) setConnection(dir, true, false);
+            }
+
+        }
+        if (tag.contains("pipe_blocked_connections")) {
+            var blockedConnections = tag.getInt("pipe_blocked_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isFaceBlocked(blockedConnections, dir)) setBlocked(dir, true);
+            }
+
+        }
+
+        getCoverContainer().pasteConfig(player, tag.getCompound("cover"));
     }
 
     @Override

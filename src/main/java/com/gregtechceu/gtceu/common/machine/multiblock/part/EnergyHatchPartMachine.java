@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.EnvironmentalExplosionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
@@ -29,8 +29,8 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
     public EnergyHatchPartMachine(BlockEntityCreationInfo info, int tier, IO io, int amperage) {
         super(info, tier, io);
         this.amperage = amperage;
-        this.energyContainer = createEnergyContainer();
-        new EnvironmentalExplosionTrait(this, tier, tier * 10, () -> energyContainer.getEnergyStored() > 0);
+        this.energyContainer = attachTrait(createEnergyContainer());
+        attachTrait(new EnvironmentalExplosionTrait(tier, tier * 10, () -> energyContainer.getEnergyStored() > 0));
     }
 
     //////////////////////////////////////
@@ -40,12 +40,12 @@ public class EnergyHatchPartMachine extends TieredIOPartMachine {
     protected NotifiableEnergyContainer createEnergyContainer() {
         NotifiableEnergyContainer container;
         if (io == IO.OUT) {
-            container = NotifiableEnergyContainer.emitterContainer(this, GTValues.V[tier] * 64L * amperage,
+            container = NotifiableEnergyContainer.emitterContainer(GTValues.V[tier] * 64L * amperage,
                     GTValues.V[tier], amperage);
             container.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             container.setCapabilityValidator(s -> s == null || s == getFrontFacing());
         } else {
-            container = NotifiableEnergyContainer.receiverContainer(this, GTValues.V[tier] * 16L * amperage,
+            container = NotifiableEnergyContainer.receiverContainer(GTValues.V[tier] * 16L * amperage,
                     GTValues.V[tier], amperage);
             container.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             container.setCapabilityValidator(s -> s == null || s == getFrontFacing());

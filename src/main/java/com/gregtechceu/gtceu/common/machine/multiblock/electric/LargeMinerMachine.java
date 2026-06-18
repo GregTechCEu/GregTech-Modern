@@ -16,8 +16,9 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -29,18 +30,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -67,7 +64,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     public LargeMinerMachine(BlockEntityCreationInfo info, int tier, int speed, int maximumChunkDiameter, int fortune,
                              int drillingFluidConsumePerTick) {
-        super(info, (m) -> new LargeMinerLogic(m, fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
+        super(info, new LargeMinerLogic(fortune, speed, maximumChunkDiameter * CHUNK_LENGTH / 2));
         this.tier = tier;
         this.drillingFluidConsumePerTick = drillingFluidConsumePerTick;
     }
@@ -237,8 +234,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction facing,
-                                                BlockHitResult hitResult) {
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (isRemote() || !this.isFormed())
             return InteractionResult.SUCCESS;
 
@@ -251,8 +247,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH);
                 }
                 int workingAreaChunks = getRecipeLogic().getCurrentRadius() * 2 / CHUNK_LENGTH;
-                playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
-                        workingAreaChunks, workingAreaChunks));
+                context.getPlayer()
+                        .sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
+                                workingAreaChunks, workingAreaChunks));
             } else {
                 if (currentRadius - CHUNK_LENGTH / 2 <= 0) {
                     getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
@@ -260,17 +257,16 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                     getRecipeLogic().setCurrentRadius(currentRadius - CHUNK_LENGTH / 2);
                 }
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-                playerIn.sendSystemMessage(
+                context.getPlayer().sendSystemMessage(
                         Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
             getRecipeLogic().resetArea(true);
         } else {
-            playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
+            context.getPlayer().sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
         return InteractionResult.SUCCESS;
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

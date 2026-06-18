@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 
 import net.minecraft.nbt.Tag;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -19,17 +17,18 @@ public interface ValueTransformer<T> {
     /**
      * A record holding information about the context from which this value transformer is currently being invoked.
      * 
-     * @param holder       The sync object which holds the specific field being serialized by this transformer.
+     * @param holder       The object which holds the specific field being serialized by this transformer.
      * @param type         An object describing the type of the field currently being serialized/deserialized.
      * @param currentValue The current value (if any) of the field currently being serialized/deserialized.
      * @param fieldName    The name of the field being serialized, or a string denoting the current sync context if not
      *                     being invoked directly on a field.
      * @param isClientSync Whether NBT is currently being generated as part of a sync update to the client, not as NBT
-     *                     being
-     *                     written to the server save.
+     *                     being written to the server save.
+     *
      */
-    record TransformerContext<U>(@NotNull ISyncManaged holder, @NotNull TypeDeclaration type,
-                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync) {}
+    record TransformerContext<U>(Object holder, TypeDeclaration type,
+                                 @Nullable U currentValue, @Nullable String fieldName, boolean isClientSync,
+                                 boolean isClientFullSyncUpdate) {}
 
     /**
      * Casts a given NBT tag to a specific tag type, throwing an error if the tag cannot be casted.

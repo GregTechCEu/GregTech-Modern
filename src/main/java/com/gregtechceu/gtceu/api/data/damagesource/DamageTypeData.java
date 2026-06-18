@@ -168,7 +168,6 @@ public class DamageTypeData {
          * to MCPE-28723</li>
          * </ul>
          */
-        @SuppressWarnings("JavadocReference")
         public DamageTypeData.Builder deathMessageType(DeathMessageType type) {
             this.deathMessageType = type;
             return this;

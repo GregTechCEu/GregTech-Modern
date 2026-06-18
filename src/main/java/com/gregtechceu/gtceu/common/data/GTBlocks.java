@@ -15,10 +15,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
+import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.item.LampBlockItem;
+import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
 import com.gregtechceu.gtceu.common.pipelike.duct.DuctPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
@@ -1298,6 +1302,8 @@ public class GTBlocks {
                             .addLayer(() -> RenderType::cutout)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
+                            .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
+                                    .customLoader(CustomItemRendererWrapperModel.Builder::begin).end())
                             .build()
                             .register());
         }
@@ -1310,6 +1316,8 @@ public class GTBlocks {
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                     .blockstate(GTModels.lampModel(dyeColor, false))
                     .item(LampBlockItem::new)
+                    .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
+                            .customLoader(CustomItemRendererWrapperModel.Builder::begin).end())
                     .build()
                     .register());
         }
@@ -1418,6 +1426,11 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+
+        // Dev-only test blocks
+        if (GTCEu.isDev()) {
+            GTDevBlocks.init();
+        }
     }
 
     private static void initializeCobbleReplacements() {

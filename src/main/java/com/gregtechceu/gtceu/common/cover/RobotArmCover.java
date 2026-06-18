@@ -217,10 +217,10 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
-        return super.copyConfig(tag);
     }
 
     @Override

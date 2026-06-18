@@ -75,7 +75,8 @@ public final class RecipeDB {
     @VisibleForTesting
     public @Nullable GTRecipe find(@NotNull List<List<AbstractMapIngredient>> list,
                                    @NotNull Predicate<GTRecipe> predicate) {
-        return (new RecipeIterator(this, list, predicate)).next();
+        var iter = new RecipeIterator(this, list, predicate);
+        return iter.hasNext() ? iter.next() : null;
     }
 
     /**
@@ -285,6 +286,9 @@ public final class RecipeDB {
 
         private final Deque<SearchFrame> stack = new ArrayDeque<>();
 
+        private @Nullable GTRecipe nextCached = null;
+        private boolean hasCached = false;
+
         @VisibleForTesting
         public RecipeIterator(@NotNull RecipeDB db,
                               @NotNull List<List<AbstractMapIngredient>> ingredients,
@@ -298,13 +302,7 @@ public final class RecipeDB {
             }
         }
 
-        @Override
-        public boolean hasNext() {
-            return !stack.isEmpty();
-        }
-
-        @Override
-        public GTRecipe next() {
+        private @Nullable GTRecipe getNext() {
             while (!stack.isEmpty()) {
                 // We stay on one frame until all ingredients have been checked
                 SearchFrame frame = stack.peek();
@@ -341,6 +339,23 @@ public final class RecipeDB {
             }
 
             return null; // no more recipes
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (!hasCached) {
+                nextCached = getNext();
+                hasCached = true;
+            }
+            return nextCached != null;
+        }
+
+        @Override
+        public GTRecipe next() {
+            if (!hasCached) nextCached = getNext();
+            hasCached = false;
+            if (nextCached == null) throw new NoSuchElementException();
+            return nextCached;
         }
 
         /**

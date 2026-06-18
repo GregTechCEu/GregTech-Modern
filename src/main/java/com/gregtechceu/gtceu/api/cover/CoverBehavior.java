@@ -8,14 +8,14 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
@@ -23,15 +23,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
@@ -44,8 +43,7 @@ import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents cover instance attached on the specific side of meta tile entity
- * Cover filters out interaction and logic of meta tile entity
+ * Represents a cover instance attached on a specific side of a machine
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -71,18 +69,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         this.attachedSide = attachedSide;
     }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        coverHolder.scheduleRenderUpdate();
-    }
-
     @Override
-    public void markAsChanged() {
-        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
-            syncEntity.markAsChanged();
-        }
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return coverHolder;
     }
 
     /**
@@ -100,7 +89,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     /**
-     * Will be called on server side after the cover attachment to the meta tile entity
+     * Will be called on server side after the cover attachment to the machine
      * Cover can change it's internal state here and return initial data as nbt.
      *
      * @param itemStack the item cover was attached from
@@ -150,17 +139,28 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
-    public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+
+    public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
+        var toolType = context.getToolType();
+        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+            return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
+        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
+            return Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(context));
+        }
+        return Pair.of(null, InteractionResult.PASS);
+    }
+
+    public InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
         if (this instanceof IUICover) {
-            if (playerIn instanceof ServerPlayer serverPlayer) {
+            if (context.getPlayer() instanceof ServerPlayer serverPlayer) {
                 CoverUIFactory.INSTANCE.openUI(this, serverPlayer);
             }
-            return InteractionResult.sidedSuccess(playerIn.level().isClientSide);
+            return InteractionResult.sidedSuccess(coverHolder.isRemote());
         }
         return InteractionResult.PASS;
     }
 
-    public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
         return InteractionResult.PASS;
     }
 
