@@ -123,7 +123,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_ethane")
                 .inputFluids(SteamCrackedEthane.getFluid(1000))
-                .chancedOutput(dust, Carbon, 2500, 0)
+                .chancedOutput(dust, Carbon, 2500)
                 .outputFluids(Ethylene.getFluid(250))
                 .outputFluids(Methane.getFluid(1250))
                 .duration(120).EUt(VA[MV]).save(provider);
@@ -148,7 +148,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_propene")
                 .inputFluids(SteamCrackedPropene.getFluid(1000))
-                .chancedOutput(dust, Carbon, 5000, 0)
+                .chancedOutput(dust, Carbon, 5000)
                 .outputFluids(Ethylene.getFluid(1000))
                 .outputFluids(Methane.getFluid(500))
                 .duration(120).EUt(VA[MV]).save(provider);
@@ -161,7 +161,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_propane")
                 .inputFluids(SteamCrackedPropane.getFluid(1000))
-                .chancedOutput(dust, Carbon, 2500, 0)
+                .chancedOutput(dust, Carbon, 2500)
                 .outputFluids(Ethylene.getFluid(750))
                 .outputFluids(Methane.getFluid(1250))
                 .duration(120).EUt(VA[MV]).save(provider);
@@ -175,7 +175,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_butane")
                 .inputFluids(SteamCrackedButane.getFluid(1000))
-                .chancedOutput(dust, Carbon, 2500, 0)
+                .chancedOutput(dust, Carbon, 2500)
                 .outputFluids(Propane.getFluid(125))
                 .outputFluids(Ethane.getFluid(750))
                 .outputFluids(Ethylene.getFluid(750))
@@ -193,7 +193,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_butene")
                 .inputFluids(SteamCrackedButene.getFluid(1000))
-                .chancedOutput(dust, Carbon, 2500, 0)
+                .chancedOutput(dust, Carbon, 2500)
                 .outputFluids(Propene.getFluid(250))
                 .outputFluids(Ethylene.getFluid(1500))
                 .outputFluids(Methane.getFluid(250))
@@ -207,7 +207,7 @@ public class PetrochemRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("distill_steam_cracked_butadiene")
                 .inputFluids(SteamCrackedButadiene.getFluid(1000))
-                .chancedOutput(dust, Carbon, 5000, 0)
+                .chancedOutput(dust, Carbon, 5000)
                 .outputFluids(Propene.getFluid(125))
                 .outputFluids(Ethylene.getFluid(250))
                 .outputFluids(Methane.getFluid(1125))

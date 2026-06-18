@@ -380,7 +380,7 @@ public class VanillaStandardRecipes {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
-                .chancedOutput(dust, Wood, 8500, 0)
+                .chancedOutput(dust, Wood, 8500)
                 .duration(150).EUt(2)
                 .save(provider);
 
