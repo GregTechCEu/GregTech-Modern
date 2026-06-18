@@ -53,7 +53,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<FluidStack, Filter<FluidStack>> filterHandler;
+    protected final FilterHandler<FluidStack> filterHandler;
 
     public AdvancedFluidDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);

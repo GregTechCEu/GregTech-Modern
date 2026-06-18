@@ -86,7 +86,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, Filter<ItemStack>> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,

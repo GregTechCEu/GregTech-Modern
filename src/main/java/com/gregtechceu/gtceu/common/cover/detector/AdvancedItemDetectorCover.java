@@ -50,7 +50,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
     @SaveField
     @SyncToClient
     @Getter
-    protected final FilterHandler<ItemStack, Filter<ItemStack>> filterHandler;
+    protected final FilterHandler<ItemStack> filterHandler;
 
     public AdvancedItemDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);

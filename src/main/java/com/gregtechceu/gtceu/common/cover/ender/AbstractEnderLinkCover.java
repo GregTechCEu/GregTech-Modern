@@ -148,7 +148,7 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
                                                         int idx);
 
     @Nullable
-    protected FilterHandler<?, ?> getFilterHandler() {
+    protected FilterHandler<?> getFilterHandler() {
         return null;
     }
 

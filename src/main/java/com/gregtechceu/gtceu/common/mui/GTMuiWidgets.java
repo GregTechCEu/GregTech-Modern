@@ -365,7 +365,7 @@ public class GTMuiWidgets {
     }
 
     public static <T, S extends Filter<T>> ParentWidget<?> createFilterRow(Flow existingRow,
-                                                                           FilterHandler<T, S> filterHandler,
+                                                                           FilterHandler<T> filterHandler,
                                                                            SidedPosGuiData data,
                                                                            PanelSyncManager syncManager,
                                                                            UISettings settings) {
@@ -393,7 +393,7 @@ public class GTMuiWidgets {
                         .setEnabledIf((w) -> !filterSlotHandler.getSlot().getItem().isEmpty()));
     }
 
-    public static <T, S extends Filter<T>> ParentWidget<?> createFilterRow(FilterHandler<T, S> filterHandler,
+    public static <T, S extends Filter<T>> ParentWidget<?> createFilterRow(FilterHandler<T> filterHandler,
                                                                            SidedPosGuiData data,
                                                                            PanelSyncManager syncManager,
                                                                            UISettings settings) {

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.*;
-import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
@@ -84,7 +83,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
 
     @SaveField
     @SyncToClient
-    protected final FilterHandler<FluidStack, Filter<FluidStack>> filterHandler;
+    protected final FilterHandler<FluidStack> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     public PumpCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier,

@@ -20,9 +20,13 @@ import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+/**
+ * A filter handler represents a slot that can hold filters for a specific type of stack/object.
+ * @param <T> The stack/object type this filter handler holds filters for.
+ */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
+public class FilterHandler<T> implements ISyncManaged {
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -35,12 +39,12 @@ public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
     @Getter
     private ItemStack filterItem = ItemStack.EMPTY;
 
-    private @Nullable F filter;
+    private @Nullable Filter<T> filter;
     private @Nullable CustomItemStackHandler filterSlot;
 
-    private Consumer<F> onFilterLoaded = (filter) -> {};
+    private Consumer<Filter<T>> onFilterLoaded = (filter) -> {};
     private Runnable onFilterRemoved = () -> {};
-    private Consumer<F> onFilterUpdated = (filter) -> {};
+    private Consumer<Filter<T>> onFilterUpdated = (filter) -> {};
 
     /**
      *
@@ -52,9 +56,8 @@ public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
         this.filterableType = filterableType;
     }
 
-    @SuppressWarnings("unchecked")
-    public F loadFilter(ItemStack filterItem) {
-        return (F) Filters.loadFilter(filterableType, filterItem);
+    public Filter<T> loadFilter(ItemStack filterItem) {
+        return Filters.loadFilter(filterableType, filterItem);
     }
 
     //////////////////////////////////
@@ -69,11 +72,10 @@ public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
         return filter != null || !filterItem.isEmpty();
     }
 
-    @SuppressWarnings("unchecked")
-    public F getFilter() {
+    public Filter<T> getFilter() {
         if (this.filter == null) {
             if (this.filterItem.isEmpty()) {
-                return (F) Filters.getEmptyFilter();
+                return Filters.getEmptyFilter();
             } else {
                 loadFilterFromItem();
             }
@@ -86,17 +88,17 @@ public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
         return getFilter().test(resource);
     }
 
-    public FilterHandler<T, F> onFilterLoaded(Consumer<F> onFilterLoaded) {
+    public FilterHandler<T> onFilterLoaded(Consumer<Filter<T>> onFilterLoaded) {
         this.onFilterLoaded = onFilterLoaded;
         return this;
     }
 
-    public FilterHandler<T, F> onFilterRemoved(Runnable onFilterRemoved) {
+    public FilterHandler<T> onFilterRemoved(Runnable onFilterRemoved) {
         this.onFilterRemoved = onFilterRemoved;
         return this;
     }
 
-    public FilterHandler<T, F> onFilterUpdated(Consumer<F> onFilterUpdated) {
+    public FilterHandler<T> onFilterUpdated(Consumer<Filter<T>> onFilterUpdated) {
         this.onFilterUpdated = onFilterUpdated;
         return this;
     }
@@ -146,11 +148,10 @@ public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
         loadFilterFromItem();
     }
 
-    @SuppressWarnings("unchecked")
     private void loadFilterFromItem() {
         if (!this.filterItem.isEmpty()) {
             this.filter = loadFilter(this.filterItem);
-            filter.setOnUpdated((Consumer<Filter<T>>) this.onFilterUpdated);
+            filter.setOnUpdated(this.onFilterUpdated);
             if (filter instanceof SmartItemFilter smart &&
                     container instanceof CoverBehavior cover &&
                     cover.coverHolder instanceof MachineCoverContainer mcc) {
