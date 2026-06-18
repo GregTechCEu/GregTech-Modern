@@ -266,7 +266,7 @@ public abstract class BasePredicate {
         List<BasePredicate> result = new ArrayList<>();
         visit(result::add);
         result.sort(PREDICATE_COMPARATOR);
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     @Override
