@@ -373,6 +373,7 @@ public class MultiblockDisplayText {
         }
 
         static final private Component COLON = Component.literal(": ");
+
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
