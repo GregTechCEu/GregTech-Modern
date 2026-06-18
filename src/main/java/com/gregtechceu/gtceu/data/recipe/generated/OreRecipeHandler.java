@@ -492,7 +492,7 @@ public final class OreRecipeHandler {
             ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("separate_" + material.getName() + "_pure_dust_to_dust")
                     .inputItems(dustPure, material)
                     .outputItems(dustStack)
-                    .chancedOutput(TagPrefix.dust, separatedMaterial.get(0), 1000, 0)
+                    .chancedOutput(TagPrefix.dust, separatedMaterial.get(0), 1000)
                     .chancedOutput(separatedStack2, prefix == TagPrefix.dust ? 500 : 2000)
                     .duration(200).EUt(24)
                     .save(provider);
