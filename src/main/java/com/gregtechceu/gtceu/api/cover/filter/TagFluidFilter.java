@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,28 +14,18 @@ import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
 
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
 
-    protected TagFluidFilter() {}
+    public TagFluidFilter(ItemStack stack) {
+        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        var tag = stack.getOrCreateTag();
 
-    public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(Objects.requireNonNullElseGet(itemStack.getTag(), CompoundTag::new),
-                filter -> itemStack.setTag(filter.saveFilter()));
-    }
-
-    private static TagFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
-        var handler = new TagFluidFilter();
-        handler.itemWriter = itemWriter;
-        handler.filterString = tag.getString("oreDict");
-        handler.matchExpr = null;
-        handler.cache.clear();
-        handler.matchExpr = TagExprFilter.parseExpression(handler.filterString);
-        return handler;
+        filterString = tag.getString("oreDict");
+        matchExpr = null;
+        cache.clear();
+        matchExpr = TagExprFilter.parseExpression(filterString);
     }
 
     public void setFilterString(String oreDict) {

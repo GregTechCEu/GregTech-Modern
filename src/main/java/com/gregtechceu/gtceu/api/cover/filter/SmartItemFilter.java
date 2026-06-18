@@ -43,23 +43,18 @@ import java.util.function.Consumer;
 
 public class SmartItemFilter implements ItemFilter {
 
-    protected Consumer<ItemFilter> itemWriter = filter -> {};
+    protected Consumer<ItemFilter> itemWriter;
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     private SmartFilteringMode filterMode = SmartFilteringMode.ELECTROLYZER;
 
-    protected SmartItemFilter() {}
+    public SmartItemFilter(ItemStack stack) {
+        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        var tag = stack.getOrCreateTag();
+        if (tag.isEmpty()) return;
 
-    public static SmartItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
-    }
-
-    private static SmartItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
-        var handler = new SmartItemFilter();
-        handler.itemWriter = itemWriter;
-        handler.filterMode = SmartFilteringMode.VALUES[tag.getInt("filterMode")];
-        return handler;
+        filterMode = SmartFilteringMode.VALUES[tag.getInt("filterMode")];
     }
 
     @Override

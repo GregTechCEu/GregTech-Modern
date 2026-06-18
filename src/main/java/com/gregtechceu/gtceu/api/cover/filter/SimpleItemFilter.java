@@ -44,31 +44,27 @@ public class SimpleItemFilter implements ItemFilter {
     @Getter
     protected ItemStack[] matches = new ItemStack[9];
 
-    protected Consumer<ItemFilter> itemWriter = filter -> {};
+    protected Consumer<ItemFilter> itemWriter;
     protected Consumer<ItemFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
     protected int maxStackSize;
 
-    protected SimpleItemFilter() {
+    public SimpleItemFilter(ItemStack stack) {
+        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        var tag = stack.getOrCreateTag();
+
         Arrays.fill(matches, ItemStack.EMPTY);
         maxStackSize = 1;
-    }
 
-    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
-    }
+        if (tag.isEmpty()) return;
 
-    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
-        var handler = new SimpleItemFilter();
-        handler.itemWriter = itemWriter;
-        handler.isBlackList = tag.getBoolean("isBlackList");
-        handler.ignoreNbt = tag.getBoolean("matchNbt");
+        isBlackList = tag.getBoolean("isBlackList");
+        ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
+            matches[i] = ItemStack.of((CompoundTag) list.get(i));
         }
-        return handler;
     }
 
     @Override

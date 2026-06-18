@@ -19,13 +19,15 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
+import java.util.Objects;
+
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
 public class ItemFilterCoverTest {
 
     private static ItemStack makeDiamondFilter() {
         ItemStack stack = GTItems.ITEM_FILTER.asStack();
-        SimpleItemFilter filter = SimpleItemFilter.loadFilter(stack);
+        SimpleItemFilter filter = new SimpleItemFilter(stack);
         filter.getMatches()[0] = Items.DIAMOND.getDefaultInstance();
         stack.setTag(filter.saveFilter());
         return stack;
@@ -42,6 +44,10 @@ public class ItemFilterCoverTest {
         setupCrates(helper);
         BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
         BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+
+        Objects.requireNonNull(crate1);
+        Objects.requireNonNull(crate2);
+
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 8));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover

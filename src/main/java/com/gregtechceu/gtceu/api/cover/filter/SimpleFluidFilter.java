@@ -42,7 +42,7 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected FluidStack[] matches = new FluidStack[9];
 
-    protected Consumer<FluidFilter> itemWriter = filter -> {};
+    protected Consumer<FluidFilter> itemWriter;
     protected Consumer<FluidFilter> onUpdated = filter -> itemWriter.accept(filter);
 
     @Getter
@@ -50,7 +50,10 @@ public class SimpleFluidFilter implements FluidFilter {
 
     private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
-    protected SimpleFluidFilter() {
+    public SimpleFluidFilter(ItemStack stack) {
+        itemWriter = filter -> stack.setTag(filter.saveFilter());
+        var tag = stack.getOrCreateTag();
+
         for (int i = 0; i < 9; i++) {
             int finalI = i;
             fluidStorageSlots[i] = new CustomFluidTank(64000);
@@ -60,23 +63,16 @@ public class SimpleFluidFilter implements FluidFilter {
             });
         }
         Arrays.fill(matches, FluidStack.EMPTY);
-    }
 
-    public static SimpleFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
-    }
+        if (tag.isEmpty()) return;
 
-    private static SimpleFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
-        var handler = new SimpleFluidFilter();
-        handler.itemWriter = itemWriter;
-        handler.isBlackList = tag.getBoolean("isBlackList");
-        handler.ignoreNbt = tag.getBoolean("matchNbt");
+        isBlackList = tag.getBoolean("isBlackList");
+        ignoreNbt = tag.getBoolean("matchNbt");
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
-            handler.fluidStorageSlots[i].setFluid(handler.matches[i]);
+            matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
+            fluidStorageSlots[i].setFluid(matches[i]);
         }
-        return handler;
     }
 
     @Override
