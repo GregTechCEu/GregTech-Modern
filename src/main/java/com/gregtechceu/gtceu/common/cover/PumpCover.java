@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -98,7 +97,7 @@ public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, ICo
         this.mBLeftToTransferLastSecond = transferRate * 20;
 
         subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
-        filterHandler = FilterHandlers.fluid(this)
+        filterHandler = new FilterHandler<>(this, FluidStack.class)
                 .onFilterLoaded(f -> configureFilter())
                 .onFilterUpdated(f -> configureFilter())
                 .onFilterRemoved(this::configureFilter);

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
@@ -80,7 +79,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         this.inventory = attachTrait(createInventory());
         this.circuitSlotEnabled = true;
         this.circuitInventory = attachTrait(createCircuitItemHandler(io)).shouldSearchContent(false);
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
 
         inventory.setFilter(this::matchesFilter);
     }

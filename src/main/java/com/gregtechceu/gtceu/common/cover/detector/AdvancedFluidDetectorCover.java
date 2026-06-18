@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -62,7 +61,7 @@ public class AdvancedFluidDetectorCover extends FluidDetectorCover implements IM
         this.minValue = DEFAULT_MIN;
         this.maxValue = DEFAULT_MAX;
 
-        filterHandler = FilterHandlers.fluid(this);
+        filterHandler = new FilterHandler<>(this, FluidStack.class);
     }
 
     public void setLatched(boolean latched) {

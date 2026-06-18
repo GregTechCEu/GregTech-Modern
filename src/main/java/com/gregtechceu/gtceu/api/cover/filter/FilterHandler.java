@@ -22,12 +22,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
+public class FilterHandler<T, F extends Filter<T>> implements ISyncManaged {
 
     @Getter
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     private final ISyncManaged container;
+    private final Class<T> filterableType;
 
     @SaveField
     @SyncToClient
@@ -41,28 +42,38 @@ public abstract class FilterHandler<T, F extends Filter<T>> implements ISyncMana
     private Runnable onFilterRemoved = () -> {};
     private Consumer<F> onFilterUpdated = (filter) -> {};
 
-    public FilterHandler(ISyncManaged container) {
+    /**
+     *
+     * @param container      The machine/pipe/cover/etc this filter handler is attached to.
+     * @param filterableType The stack/object type which this filter handler should hold filters for.
+     */
+    public FilterHandler(ISyncManaged container, Class<T> filterableType) {
         this.container = container;
+        this.filterableType = filterableType;
     }
 
-    public abstract F loadFilter(ItemStack filterItem);
-
-    protected abstract F getEmptyFilter();
+    @SuppressWarnings("unchecked")
+    public F loadFilter(ItemStack filterItem) {
+        return (F) Filters.loadFilter(filterableType, filterItem);
+    }
 
     //////////////////////////////////
     // ***** PUBLIC API ******//
     //////////////////////////////////
 
-    public abstract boolean canInsertFilterItem(ItemStack itemStack);
+    public boolean canInsertFilterItem(ItemStack itemStack) {
+        return Filters.isValidFilter(filterableType, itemStack.getItem());
+    }
 
     public boolean isFilterPresent() {
         return filter != null || !filterItem.isEmpty();
     }
 
+    @SuppressWarnings("unchecked")
     public F getFilter() {
         if (this.filter == null) {
             if (this.filterItem.isEmpty()) {
-                return getEmptyFilter();
+                return (F) Filters.getEmptyFilter();
             } else {
                 loadFilterFromItem();
             }

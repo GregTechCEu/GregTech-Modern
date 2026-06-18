@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualItemStorage;
@@ -46,7 +45,7 @@ public class EnderItemLinkCover extends AbstractEnderLinkCover<VirtualItemStorag
     public EnderItemLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
         itemsLeftToTransferLastSecond = TRANSFER_RATE * 20;
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
     }
 
     @Override

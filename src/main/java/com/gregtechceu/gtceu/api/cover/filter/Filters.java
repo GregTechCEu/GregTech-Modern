@@ -12,9 +12,9 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Filters {
@@ -46,71 +46,35 @@ public class Filters {
         return FILTERS.get(item).filterable == filterableType;
     }
 
-    public static final Filter<ItemStack> EMPTY_ITEM = new Filter<>(ItemStack.EMPTY) {
+    public static <T> Filter<T> getEmptyFilter() {
+        return new Filter<>(ItemStack.EMPTY) {
 
-        @Override
-        public int testAmount(ItemStack itemStack) {
-            return Integer.MAX_VALUE;
-        }
+            @Override
+            public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+                throw new NotImplementedException("Cannot open UI for empty filter");
+            }
 
-        @Override
-        public boolean test(ItemStack itemStack) {
-            return true;
-        }
+            @Override
+            public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+                throw new NotImplementedException("Cannot open UI for empty filter");
+            }
 
-        @Override
-        public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-            return null;
-        }
+            @Override
+            protected @Nullable CompoundTag saveFilter() {
+                throw new NotImplementedException("Cannot save empty filter");
+            }
 
-        @Override
-        public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-            return null;
-        }
+            @Override
+            public boolean test(T t) {
+                return true;
+            }
 
-        @Override
-        public CompoundTag saveFilter() {
-            throw new NotImplementedException("Not available for empty item filter");
-        }
-
-        @Override
-        public void setOnUpdated(Consumer<Filter<ItemStack>> onUpdated) {
-            throw new NotImplementedException("Not available for empty item filter");
-        }
-    };
-
-    public static final Filter<FluidStack> EMPTY_FLUID = new Filter<>(ItemStack.EMPTY) {
-
-        @Override
-        public boolean test(FluidStack fluidStack) {
-            return true;
-        }
-
-        @Override
-        public int testAmount(FluidStack fluidStack) {
-            return Integer.MAX_VALUE;
-        }
-
-        @Override
-        public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-            return null;
-        }
-
-        @Override
-        public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-            return null;
-        }
-
-        @Override
-        public CompoundTag saveFilter() {
-            throw new NotImplementedException("Not available for empty fluid filter");
-        }
-
-        @Override
-        public void setOnUpdated(Consumer<Filter<FluidStack>> onUpdated) {
-            throw new NotImplementedException("Not available for empty fluid filter");
-        }
-    };
+            @Override
+            public int testAmount(T stack) {
+                return Integer.MAX_VALUE;
+            }
+        };
+    }
 
     /**
      * @param filterable The object/stack type that this filter supports.

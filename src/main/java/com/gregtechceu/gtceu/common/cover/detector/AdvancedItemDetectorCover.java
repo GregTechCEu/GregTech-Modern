@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -59,7 +58,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IMui
         this.minValue = DEFAULT_MIN;
         this.maxValue = DEFAULT_MAX;
 
-        filterHandler = FilterHandlers.item(this);
+        filterHandler = new FilterHandler<>(this, ItemStack.class);
     }
 
     @Override
