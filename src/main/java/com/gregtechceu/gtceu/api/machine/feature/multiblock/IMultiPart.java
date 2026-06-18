@@ -90,6 +90,7 @@ public interface IMultiPart extends IMachineFeature {
     @Nullable
     default BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
         for (MultiblockControllerMachine controller : getControllers()) {
+            if (controller == null) continue;
             var appearance = controller.getPartAppearance(this, side, sourceState, sourcePos);
             if (appearance != null) return appearance;
         }
