@@ -87,7 +87,7 @@ public abstract class BasePredicate {
 
     /// test against global max count
     public boolean testGlobal(PredicateContext ctx) {
-        ctx.globalCache().merge(this, 1, Integer::sum);
+        ctx.globalCache().mergeInt(this, 1, Integer::sum);
         if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
         int count = ctx.globalCache().getInt(this);
         if (maxCount == -1 || count <= maxCount) return true;
@@ -118,6 +118,8 @@ public abstract class BasePredicate {
     }
 
     /// used for tooltips
+    ///
+    /// @return true if this or any sub predicates is air
     public boolean hasAir() {
         return isAir();
     }
@@ -263,7 +265,7 @@ public abstract class BasePredicate {
     public final List<BasePredicate> expand() {
         List<BasePredicate> result = new ArrayList<>();
         visit(result::add);
-        result.sort(PREDICATE_COMPARATOR);
+        if (result.size() > 1) result.sort(PREDICATE_COMPARATOR);
         return Collections.unmodifiableList(result);
     }
 
