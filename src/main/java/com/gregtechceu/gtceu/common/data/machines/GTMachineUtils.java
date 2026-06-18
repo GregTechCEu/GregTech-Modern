@@ -748,7 +748,7 @@ public class GTMachineUtils {
                         fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
                     }
 
-                    return MultiblockPatternBuilder.start()
+                    return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                             .slice("XXX", "CCC", "CCC", "CCC")
                             .slice("XXX", "CPC", "CPC", "CCC")
                             .slice("XXX", "CSC", "CCC", "CCC")

@@ -104,7 +104,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @Nullable
     private EnergyContainerList inputEnergyContainers;
     @Getter
-    @Nullable
     private Collection<CleanroomReceiverTrait> cleanroomReceivers = new ArrayList<>();
 
     private final CleanroomProviderTrait cleanroomProviderTrait;
@@ -175,20 +174,18 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         } else {
             this.cleanroomType = CleanroomType.CLEANROOM;
         }
-        cleanroomProviderTrait.setProvidedTypes(Set.of(this.cleanroomType));
+        this.cleanroomProviderTrait.setProvidedTypes(Set.of(this.cleanroomType));
 
         forEachFormed(substructureName, (info, pos) -> {
             BlockEntity be = info.getBlockEntity();
-            // todo check if be and if it has the cleanroom trait
-            // if (!(be instanceof ICleanroomReceiver receiver)) return;
-
-            /*
-             * if (receiver.getCleanroom() != this) {
-             * receiver.setCleanroomProvider(cleanroomProviderTrait);
-             * cleanroomReceivers.add(receiver);
-             * }
-             */
+            if (be instanceof MetaMachine machine) {
+                if (isMachineBanned(machine)) {
+                    return;
+                }
+                machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(this.cleanroomReceivers::add);
+            }
         });
+        this.cleanroomReceivers.forEach(receiver -> receiver.setCleanroomProvider(this.cleanroomProviderTrait));
 
         // max progress is based roughly on the dimensions of the structure: ((w * d) ^ .8 * h)
         // taller cleanrooms take longer than wider ones
@@ -207,11 +204,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         super.invalidateStructure(name);
         this.inputEnergyContainers = null;
         this.cleanAmount = MIN_CLEAN_AMOUNT;
-        cleanroomProviderTrait.setActive(false);
-        if (cleanroomReceivers != null) {
-            this.cleanroomReceivers.forEach(CleanroomReceiverTrait::removeCleanroom);
-            this.cleanroomReceivers = null;
-        }
+        this.cleanroomProviderTrait.setActive(false);
+        this.cleanroomReceivers.forEach(CleanroomReceiverTrait::removeCleanroom);
+        this.cleanroomReceivers.clear();
     }
 
     public boolean shouldAddPartToController(IMultiPart part) {
