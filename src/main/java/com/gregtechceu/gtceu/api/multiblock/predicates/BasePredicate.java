@@ -20,6 +20,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 @Accessors(chain = true)
 public abstract class BasePredicate {
@@ -40,6 +41,7 @@ public abstract class BasePredicate {
         }
     };
 
+    protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator.comparingInt(BasePredicate::getPriority);
     private @Nullable List<BlockInfo> candidates;
     private @Nullable List<Component> tooltips;
     @Getter
@@ -256,8 +258,15 @@ public abstract class BasePredicate {
                 .map(c -> c.get(0));
     }
 
-    public List<BasePredicate> expand() {
-        return List.of(this);
+    public void visit(Consumer<BasePredicate> visitor) {
+        visitor.accept(this);
+    }
+
+    public final List<BasePredicate> expand() {
+        List<BasePredicate> result = new ArrayList<>();
+        visit(result::add);
+        result.sort(PREDICATE_COMPARATOR);
+        return result;
     }
 
     @Override

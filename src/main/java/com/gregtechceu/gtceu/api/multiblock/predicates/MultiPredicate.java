@@ -7,11 +7,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class MultiPredicate extends BasePredicate {
 
-    private static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator.comparingInt(BasePredicate::getPriority);
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
     private final @Nullable String debugName;
     private @Nullable Logic type;
@@ -61,10 +61,8 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public List<BasePredicate> expand() {
-        return predicateList.stream()
-                .flatMap(p -> p instanceof MultiPredicate mp ? mp.predicateList.stream() : Stream.of(p))
-                .toList();
+    public void visit(Consumer<BasePredicate> visitor) {
+        predicateList.forEach(p -> p.visit(visitor));
     }
 
     @Override
