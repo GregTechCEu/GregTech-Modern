@@ -88,7 +88,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         recipeContentRow = uiLayout.getCustomUIBuilder() == null ? buildDefaultLayout() :
                 uiLayout.getCustomUIBuilder().apply(recipe);
 
-        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5)
+        mainColumn.child(recipeContentRow.coverChildrenWidth().marginTop(5).marginBottom(3)
                 .paddingLeft(2).paddingRight(2));
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
@@ -197,6 +197,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         textComponents.child(new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
                 .size(22, 12)
+                .rightRel(0.0f)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> {
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
