@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
-import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 
 import net.minecraft.core.BlockPos;
@@ -68,9 +67,7 @@ public class MultiblockSchemaInfo {
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
 
     @Getter
-    private @Nullable BlockPatternStructureHelper structureHelper;
-    @Getter
-    private @Nullable ExpandablePatternStructureHelper expandableStructureHelper;
+    private @Nullable AbstractStructureHelper structureHelper;
 
     @ApiStatus.Internal
     public void refreshSchema(MultiblockMachineDefinition multiblockDefinition, Direction frontFacing,
@@ -85,42 +82,30 @@ public class MultiblockSchemaInfo {
                 }
             }
             // reinterpret slider values as slice repeats?
-            this.structureHelper = new BlockPatternStructureHelper(this.userBasePredicateBlockPreferences,
-                    this.userBasePredicateMinMaxPreferences, this.userSliceRepeats);
-            char[][][] flattenedCharPattern = this.structureHelper.flattenBlockPattern(blockPattern);
-            char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
-                    blockPattern.getDirections(),
-                    frontFacing, upFacing, isFlipped);
+            this.structureHelper = AbstractStructureHelper.blockPattern(
+                    this.userBasePredicateBlockPreferences,
+                    this.userBasePredicateMinMaxPreferences,
+                    this.userSliceRepeats);
 
-            this.structureHelper.populateWithUserBlockPreferences(resultStructure, blockPattern, adjustedCharPattern,
-                    this.userGlobalBlockPreferences,
-                    frontFacing, upFacing, isFlipped);
-
-            this.structureHelper.populateFromPattern(resultStructure, blockPattern, adjustedCharPattern,
-                    frontFacing, upFacing, isFlipped);
-
-            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                    multiblockDefinition.getBlock());
         } else if (pattern instanceof ExpandablePattern expandablePattern) {
             if (this.userDimensions.isEmpty()) {
-                this.userDimensions = expandablePattern.getBoundsConstraints().apply().stream()
+                expandablePattern.getBoundsConstraints().apply().stream()
                         .mapToInt(Pair::left)
-                        .collect(IntArrayList::new, IntList::add, IntList::addAll);
+                        .forEach(this.userDimensions::add);
             }
             // reinterpret slider values as bounds?
-            this.expandableStructureHelper = new ExpandablePatternStructureHelper(
+            this.structureHelper = AbstractStructureHelper.expandable(
                     this.userBasePredicateBlockPreferences,
-                    this.userBasePredicateMinMaxPreferences, this.userDimensions);
+                    this.userBasePredicateMinMaxPreferences,
+                    this.userDimensions);
 
-            this.expandableStructureHelper.populateWithUserBlockPreferences(resultStructure, expandablePattern,
-                    this.userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
-
-            this.expandableStructureHelper.populateFromPattern(resultStructure, expandablePattern, frontFacing,
-                    upFacing, isFlipped);
-
-            BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                    multiblockDefinition.getBlock());
+        } else {
+            // throw? log?
+            return;
         }
+
+        this.structureHelper.populate(resultStructure, pattern, this.userGlobalBlockPreferences,
+                frontFacing, upFacing, isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         this.blockCounts.clear();

@@ -137,8 +137,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 return createSelectedBlockMenu(predicate);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                PatternPredicate predicate = this.multiblockSchemaInfo.getExpandableStructureHelper()
-                        .getPredicateFromPos(
+                PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                                 expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);

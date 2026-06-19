@@ -1,49 +1,39 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
 
-public class BlockPatternStructureHelper {
+public class BlockPatternHelper extends AbstractStructureHelper {
 
-    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
-            Direction.EAST, Direction.UP, Direction.DOWN };
-
-    private final @Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences;
-    private final @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences;
     private final Int2IntMap sliceRepeats;
+    private char[][][] flattenedBlockPattern = new char[0][][];
 
-    public BlockPatternStructureHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                       @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                       Int2IntMap sliceRepeats) {
-        this.blockPreferences = blockPreferences;
-        this.minMaxPreferences = minMaxPreferences;
+    public BlockPatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+                              @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                              Int2IntMap sliceRepeats) {
+        super(blockPreferences, minMaxPreferences);
         this.sliceRepeats = sliceRepeats;
     }
 
-    public PatternPredicate getPredicateFromPos(BlockPattern pattern, BlockPos pos,
+    public PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        char[][][] flattenedBlockPattern = flattenBlockPattern(pattern);
-        char[][][] adjustedBlockPattern = rotateAndFlipPattern(flattenedBlockPattern, pattern.getDirections(),
+        BlockPattern blockPattern = (BlockPattern) pattern;
+        char[][][] flattenedBlockPattern = flattenBlockPattern(blockPattern);
+        char[][][] adjustedBlockPattern = rotateAndFlipPattern(flattenedBlockPattern, blockPattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
         Vec3i dimensions = getDimensions(adjustedBlockPattern);
         if (pos.getX() < 0 || pos.getX() >= dimensions.getX() ||
@@ -52,19 +42,27 @@ public class BlockPatternStructureHelper {
             return PatternPredicate.AIR;
         }
         char c = adjustedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-        return pattern.getPredicates().get(c);
+        return blockPattern.getPredicates().get(c);
     }
 
-    public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                                 char[][][] flattenedBlockPattern,
-                                                 @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
-                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
+        BlockPattern blockPattern = (BlockPattern) pattern;
+        this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern), blockPattern.getDirections(),
+                frontFacing, upFacing, isFlipped);
+
+    }
+
+    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+                                                    @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Direction frontFacing, Direction upFacing, boolean isFlipped) {
         if (userBlockPreferences == null || userBlockPreferences.isEmpty()) {
             return;
         }
 
-        Vec3i dimensions = getDimensions(flattenedBlockPattern);
-        Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        BlockPattern blockPattern = (BlockPattern) pattern;
+
+        Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
+        Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
 
         for (var blockPreference : userBlockPreferences.long2ObjectEntrySet()) {
             BlockPos pos = BlockPos.of(blockPreference.getLongKey());
@@ -76,8 +74,8 @@ public class BlockPatternStructureHelper {
                         "BlockPos preference " + pos + "is outside of bounds for pattern of size " +
                                 dimensions.getX() + "," + dimensions.getY() + "," + dimensions.getZ());
             }
-            char c = flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-            PatternPredicate predicate = pattern.getPredicates().get(c);
+            char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
+            PatternPredicate predicate = blockPattern.getPredicates().get(c);
             if (!isValidCandidate(resultStructure, predicate, pos, blockInfo, sliceDir)) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
@@ -86,9 +84,8 @@ public class BlockPatternStructureHelper {
         }
     }
 
-    public void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, BlockPattern pattern,
-                                    char[][][] flattenedBlockPattern, Direction frontFacing, Direction upFacing,
-                                    boolean isFlipped) {
+    protected void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+                                       Direction frontFacing, Direction upFacing, boolean isFlipped) {
         // spotless:off
         // 4. Iterate slice by slice (a slice == one "layer"), then over the other two axes within the slice,
         // get the char at that position,
@@ -99,10 +96,11 @@ public class BlockPatternStructureHelper {
         // 4d. error if none are valid candidates(?)
         // spotless:on
 
-        Vec3i dimensions = getDimensions(flattenedBlockPattern);
-        Direction sliceDir = pattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        Direction stringDir = pattern.getDirections()[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
-        Direction charDir = pattern.getDirections()[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        BlockPattern blockPattern = (BlockPattern) pattern;
+        Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
+        Direction sliceDir = blockPattern.getDirections()[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction stringDir = blockPattern.getDirections()[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
+        Direction charDir = blockPattern.getDirections()[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction.Axis sliceAxis = sliceDir.getAxis();
         Direction.Axis stringAxis = stringDir.getAxis();
         Direction.Axis charAxis = charDir.getAxis();
@@ -118,8 +116,8 @@ public class BlockPatternStructureHelper {
 
                     if (resultStructure.containsKey(pos)) continue;
 
-                    char c = flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-                    PatternPredicate predicate = pattern.getPredicates().get(c);
+                    char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
+                    PatternPredicate predicate = blockPattern.getPredicates().get(c);
 
                     if (predicate == PatternPredicate.AIR || predicate == PatternPredicate.ANY) {
                         continue;
@@ -140,9 +138,7 @@ public class BlockPatternStructureHelper {
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int minCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).leftInt() :
-                    basePredicate.minCount;
+            int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -152,16 +148,16 @@ public class BlockPatternStructureHelper {
                     layerAlreadyPopulated < basePredicate.minSliceCount;
             if (!globalMinUnmet && !layerMinUnmet) continue;
 
-            BlockInfo toInsert = null;
-            if (blockPreferences != null) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
-            }
+            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
+                if (this.controllerBlock == null && predicate.isController()) {
+                    this.controllerBlock = toInsert.getBlockState().getBlock();
+                }
                 return true;
             }
         }
@@ -171,9 +167,7 @@ public class BlockPatternStructureHelper {
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, PatternPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate.subPredicates) {
-            int maxCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).rightInt() :
-                    basePredicate.maxCount;
+            int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -183,16 +177,16 @@ public class BlockPatternStructureHelper {
                 continue;
             }
 
-            BlockInfo toInsert = null;
-            if (blockPreferences != null) {
-                toInsert = blockPreferences.get(predicate, basePredicate);
-            }
+            BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
                 toInsert = basePredicate.getCandidates().get(0);
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
                 resultStructure.put(pos, toInsert);
+                if (this.controllerBlock == null && predicate.isController()) {
+                    this.controllerBlock = toInsert.getBlockState().getBlock();
+                }
                 return true;
             }
         }
@@ -209,9 +203,7 @@ public class BlockPatternStructureHelper {
         for (BasePredicate basePredicate : predicate.subPredicates) {
             if (!basePredicate.candidates.contains(newInfo)) continue;
 
-            int maxCount = minMaxPreferences != null && minMaxPreferences.contains(predicate, basePredicate) ?
-                    minMaxPreferences.get(predicate, basePredicate).rightInt() :
-                    basePredicate.maxCount;
+            int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
@@ -225,7 +217,7 @@ public class BlockPatternStructureHelper {
         return false;
     }
 
-    public @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
+    private @UnmodifiableView char[][][] flattenBlockPattern(BlockPattern pattern) {
         int totalSlices = sliceRepeats.values().intStream().sum();
         int[] dimensions = pattern.getDimensions();
         char[][][] flattenedPattern = new char[totalSlices][dimensions[1]][dimensions[2]];
@@ -252,9 +244,9 @@ public class BlockPatternStructureHelper {
         return new Vec3i(d0, d1, d2);
     }
 
-    public static char[][][] rotateAndFlipPattern(char[][][] localFlattenedPattern,
-                                                  RelativeDirection[] patternDirections,
-                                                  Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    private static char[][][] rotateAndFlipPattern(char[][][] localFlattenedPattern,
+                                                   RelativeDirection[] patternDirections,
+                                                   Direction frontFacing, Direction upFacing, boolean isFlipped) {
         Direction absoluteX = patternDirections[0].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteY = patternDirections[1].getRelativeFacing(frontFacing, upFacing, isFlipped);
         Direction absoluteZ = patternDirections[2].getRelativeFacing(frontFacing, upFacing, isFlipped);
@@ -263,9 +255,9 @@ public class BlockPatternStructureHelper {
         if (dimensions.getX() == 0 || dimensions.getY() == 0 || dimensions.getZ() == 0) return new char[0][0][0];
 
         int[][] steps = {
-                { absoluteX.getStepX(), absoluteX.getStepY(), absoluteX.getStepZ() },
-                { absoluteY.getStepX(), absoluteY.getStepY(), absoluteY.getStepZ() },
-                { absoluteZ.getStepX(), absoluteZ.getStepY(), absoluteZ.getStepZ() },
+                {absoluteX.getStepX(), absoluteX.getStepY(), absoluteX.getStepZ()},
+                {absoluteY.getStepX(), absoluteY.getStepY(), absoluteY.getStepZ()},
+                {absoluteZ.getStepX(), absoluteZ.getStepY(), absoluteZ.getStepZ()},
         };
 
         // World-space bounding box. Each axis contributes monotonically, so the extremes are reached at index 0 or at
@@ -299,80 +291,11 @@ public class BlockPatternStructureHelper {
         return result;
     }
 
-    public static void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
-                                             Direction upFacing, Block controllerBlock) {
-        Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
-        for (var entry : resultStructure.entrySet()) {
-            BlockPos pos = entry.getKey();
-            BlockState currentState = entry.getValue().getBlockState();
-            if (!(currentState.getBlock() instanceof MetaMachineBlock machine)) {
-                continue;
-            }
-            if (!currentState.hasProperty(machine.getRotationState().property)) continue;
-
-            if (machine == controllerBlock) {
-                BlockState newState = currentState.setValue(machine.getRotationState().property, frontFacing);
-                if (newState.hasProperty(GTBlockStateProperties.UPWARDS_FACING)) {
-                    newState = newState.setValue(GTBlockStateProperties.UPWARDS_FACING, upFacing);
-                }
-                toUpdate.put(pos, newState);
-                continue;
-            }
-
-            Direction validFacing = null;
-            for (Direction dir : DIRECTIONS_IN_ORDER) {
-                // make sure the machine can face this way
-                if (!machine.getRotationState().test(dir)) continue;
-                // and that there won't be a block in front of it
-                if (!resultStructure.containsKey(pos.relative(dir))) {
-                    validFacing = dir;
-                    break;
-                }
-            }
-            if (validFacing != null) {
-                toUpdate.put(pos, currentState.setValue(machine.getRotationState().property, validFacing));
-            }
-        }
-        for (var entry : toUpdate.entrySet()) {
-            resultStructure.put(entry.getKey(), BlockInfo.fromBlockState(entry.getValue()));
-        }
-    }
-
-    private static int countPopulatedGlobal(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate) {
-        return (int) resultStructure.values().stream()
-                .filter(blockInfo -> basePredicate.getCandidates().contains(blockInfo))
-                .count();
-    }
-
-    private static int countPopulatedInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
-                                             Direction dir, int offset) {
-        return (int) resultStructure.entrySet().stream()
-                .filter(e -> getCoordFromDir(e.getKey(), dir) == offset)
-                .filter(e -> basePredicate.getCandidates().contains(e.getValue()))
-                .count();
-    }
-
-    private static int getCoordFromDir(BlockPos pos, Direction dir) {
-        return dir.getAxis().choose(pos.getX(), pos.getY(), pos.getZ());
-    }
-
-    public static BlockPos.MutableBlockPos setAxis(BlockPos.MutableBlockPos pos, Direction.Axis axis, int amount) {
+    private static BlockPos.MutableBlockPos setAxis(BlockPos.MutableBlockPos pos, Direction.Axis axis, int amount) {
         return switch (axis) {
             case X -> pos.setX(amount);
             case Y -> pos.setY(amount);
             case Z -> pos.setZ(amount);
-        };
-    }
-
-    public static BlockPos.MutableBlockPos setFromDirection(BlockPos.MutableBlockPos pos,
-                                                            Direction direction, int amount) {
-        return switch (direction) {
-            case DOWN -> pos.setY(-amount);
-            case UP -> pos.setY(amount);
-            case NORTH -> pos.setZ(-amount);
-            case SOUTH -> pos.setZ(amount);
-            case WEST -> pos.setX(-amount);
-            case EAST -> pos.setX(amount);
         };
     }
 }

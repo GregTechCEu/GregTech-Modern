@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -100,7 +100,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
     /// To disable a base predicate, set min to 0
     private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
             .create();
-    private @Nullable BlockPatternStructureHelper structureHelper;
+    private @Nullable AbstractStructureHelper structureHelper;
 
     /// ALL INFO RELEVANT TO STRUCTURE AUTO BUILDING:
     /// INPUTS:
@@ -419,20 +419,10 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        structureHelper = new BlockPatternStructureHelper(userBasePredicateBlockPreferences,
+        structureHelper = AbstractStructureHelper.blockPattern(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
-        char[][][] flattenedCharPattern = structureHelper.flattenBlockPattern(pattern);
-        char[][][] adjustedCharPattern = BlockPatternStructureHelper.rotateAndFlipPattern(flattenedCharPattern,
-                pattern.getDirections(), frontFacing, upFacing, isFlipped);
 
-        structureHelper.populateWithUserBlockPreferences(resultStructure, pattern, adjustedCharPattern,
-                userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
-
-        structureHelper.populateFromPattern(resultStructure, pattern, adjustedCharPattern,
-                frontFacing, upFacing, isFlipped);
-
-        BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                multiblockDefinition.getBlock());
+        structureHelper.populate(resultStructure, pattern, userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         blockCounts.clear();

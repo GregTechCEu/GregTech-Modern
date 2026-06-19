@@ -9,12 +9,14 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockPatternStructureHelper;
-import com.gregtechceu.gtceu.api.multiblock.util.ExpandablePatternStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import it.unimi.dsi.fastutil.ints.IntImmutableList;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -81,13 +83,13 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
     private Direction frontFacing;
     private Direction upFacing;
     private Pair<BlockPos, BlockInfo> lastBlock = null;
-    private final Map<Long, BlockInfo> userGlobalBlockPreferences = new Long2ReferenceOpenHashMap<>();
+    private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
     private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
             .create();
     private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
             .create(); // Min, Max.
     private final List<Integer> userDimensions = new ArrayList<>();
-    private @Nullable ExpandablePatternStructureHelper structureHelper;
+    private @Nullable AbstractStructureHelper structureHelper;
 
     public TestMuiMachine3(BlockEntityCreationInfo info) {
         super(info);
@@ -211,15 +213,10 @@ public class TestMuiMachine3 extends MetaMachine implements IMuiMachine {
         ExpandablePattern pattern = (ExpandablePattern) multiblockDefinition.getStructurePatterns()
                 .get(DEFAULT_STRUCTURE).get();
 
-        structureHelper = new ExpandablePatternStructureHelper(userBasePredicateBlockPreferences,
-                userBasePredicateMinMaxPreferences, userDimensions);
-        structureHelper.populateWithUserBlockPreferences(resultStructure, pattern,
-                userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
-
-        structureHelper.populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
-
-        BlockPatternStructureHelper.fixRotationsAndFacing(resultStructure, frontFacing, upFacing,
-                multiblockDefinition.getBlock());
+        structureHelper = AbstractStructureHelper.expandable(userBasePredicateBlockPreferences,
+                userBasePredicateMinMaxPreferences, new IntImmutableList(userDimensions));
+        structureHelper.populate(resultStructure, pattern, this.userGlobalBlockPreferences,
+                frontFacing, upFacing, isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         blockCounts.clear();
