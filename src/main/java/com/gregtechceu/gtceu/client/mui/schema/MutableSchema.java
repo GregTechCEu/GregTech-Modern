@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import brachy.modularui.drawable.schema.ISchema;
 import brachy.modularui.drawable.schema.SchemaLevel;
 import brachy.modularui.utils.BlockPosUtil;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import lombok.Getter;

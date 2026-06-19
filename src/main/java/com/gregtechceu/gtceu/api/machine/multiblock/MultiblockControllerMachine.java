@@ -31,7 +31,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.schema.RenderFilter;
 import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
@@ -214,12 +213,6 @@ public class MultiblockControllerMachine extends MetaMachine {
             structurePatterns.put(this.getDefinition(), name, pattern.get());
         });
         getSyncDataHolder().markClientSyncFieldDirty("patternStates");
-    }
-
-    public void checkAndFormStructurePatterns() {
-        for (String name : getStructurePatterns().keySet()) {
-            formStructure(name);
-        }
     }
 
     public PatternState getDefaultPatternState() {
@@ -460,7 +453,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 invalidateStructureCaches();
-                checkAndFormStructurePatterns();
+                checkAndFormStructure();
             }
         }
     }
@@ -471,7 +464,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
         if (getLevel() != null && !getLevel().isClientSide) {
             invalidateStructureCaches();
-            checkAndFormStructurePatterns();
+            checkAndFormStructure();
         }
     }
 

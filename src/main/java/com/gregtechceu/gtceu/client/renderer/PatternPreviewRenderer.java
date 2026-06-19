@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
-import lombok.Getter;
+
 import net.minecraft.CrashReport;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -84,15 +83,15 @@ public class PatternPreviewRenderer {
     private int layers = Integer.MAX_VALUE;
 
     public void showPreviewCycleLevel(BlockPos controllerPos, MutableSchema schema, int duration) {
-          if(controllerPos.equals(this.controllerPos)){
+        if (controllerPos.equals(this.controllerPos)) {
             var bounds = schema.getBounds();
             int min = bounds.getFirst().getY();
             int max = bounds.getSecond().getY();
-            if(layers == Integer.MAX_VALUE){
+            if (layers == Integer.MAX_VALUE) {
                 layers = min;
             } else {
                 layers += 1;
-                if(layers > max) {
+                if (layers > max) {
                     layers = Integer.MAX_VALUE;
                 }
             }
@@ -100,7 +99,7 @@ public class PatternPreviewRenderer {
             layers = Integer.MAX_VALUE;
         }
         RenderFilter renderFilter;
-        if(layers == Integer.MAX_VALUE) {
+        if (layers == Integer.MAX_VALUE) {
             renderFilter = RenderFilter.ALL;
         } else {
             renderFilter = (pos, state) -> pos.getY() == layers;
