@@ -1,20 +1,15 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
-import brachy.modularui.widgets.Dialog;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
@@ -53,29 +48,15 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         onUpdated.accept((S) this);
     }
 
-    protected abstract ItemStack getFilterItem();
-
-    @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("tag_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> getFilterItem(), 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).margin(7).horizontalCenter())
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-    }
-
     @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
 
-        var inputRow = Flow.row()
+        return Flow.row()
                 .coverChildren()
                 .child(new TextFieldWidget().width(140).value(filterString))
                 .child(GTGuiTextures.INFO.asWidget().tooltip(infoTooltip));
-        return inputRow;
     }
 
     @Override

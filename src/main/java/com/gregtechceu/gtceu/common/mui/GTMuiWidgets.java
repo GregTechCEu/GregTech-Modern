@@ -69,7 +69,7 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        return createTitleBar(() -> definition.asStack(), panelWidth, background);
+        return createTitleBar(definition::asStack, panelWidth, background);
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
@@ -92,6 +92,7 @@ public class GTMuiWidgets {
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
         return Flow.row()
+                .decoration()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
@@ -379,8 +380,12 @@ public class GTMuiWidgets {
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings));
+                        settings, false));
 
+        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+            panelHandler.closePanel();
+            panelHandler.deleteCachedPanel();
+        });
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))
                 .child(new ButtonWidget<>()

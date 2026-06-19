@@ -86,8 +86,7 @@ public class FluidFilterCover extends CoverBehavior implements IMuiCover {
         syncManager.syncValue("filterMode", filterMode);
         syncManager.syncValue("ioMode", ioMode);
 
-        column.coverChildrenHeight();
-        column.child(getFluidFilter().getFilterUI(data, syncManager, settings).marginBottom(4));
+        column.child(getFluidFilter().getFilterUI(data, syncManager, settings));
 
         GTMuiCoverUtil.addFilterModeRow(column, filterMode);
         GTMuiCoverUtil.addManualIORow(column, ioMode);
