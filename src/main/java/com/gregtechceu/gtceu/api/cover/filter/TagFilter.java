@@ -53,7 +53,7 @@ public abstract class TagFilter<T, S extends Filter<T, S>> implements Filter<T, 
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");
 
-        return Flow.row().marginLeft(5)
+        return Flow.row()
                 .coverChildren()
                 .child(new TextFieldWidget().width(140).value(filterString))
                 .child(GTGuiTextures.INFO.asWidget().tooltip(infoTooltip));

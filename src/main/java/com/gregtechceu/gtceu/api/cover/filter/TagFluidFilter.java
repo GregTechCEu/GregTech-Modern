@@ -62,11 +62,6 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return super.getFilterUI(data, syncManager, settings);
-    }
-
-    @Override
     public int testFluidAmount(FluidStack fluidStack) {
         return test(fluidStack) ? Integer.MAX_VALUE : 0;
     }

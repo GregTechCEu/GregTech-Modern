@@ -382,6 +382,8 @@ public class GTMuiWidgets {
                 (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
                         settings, false));
 
+        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> panelHandler.closePanel());
+
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))
                 .child(new ButtonWidget<>()

@@ -44,11 +44,6 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     @Override
-    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return super.getFilterUI(data, syncManager, settings);
-    }
-
-    @Override
     public ItemStack getFilterItem() {
         return GTItems.TAG_FILTER.asStack();
     }
