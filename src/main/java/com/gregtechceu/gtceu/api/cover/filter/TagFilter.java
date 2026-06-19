@@ -69,17 +69,6 @@ public class TagFilter<T, S> extends Filter<T> {
     }
 
     @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("tag_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).margin(7).horizontalCenter())
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-    }
-
-    @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         StringSyncValue filterString = new StringSyncValue(this::getFilterString, this::setFilterString).allowC2S();
         RichTooltip infoTooltip = new RichTooltip().add("cover.tag_filter.info");

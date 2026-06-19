@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -13,13 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.Dialog;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
@@ -87,6 +82,11 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
         return tag;
     }
 
+    @Override
+    public boolean supportsAmounts() {
+        return !isBlackList();
+    }
+
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
@@ -95,17 +95,6 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
         onUpdated.accept(this);
-    }
-
-    @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("simple_fluid_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).top(10))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {

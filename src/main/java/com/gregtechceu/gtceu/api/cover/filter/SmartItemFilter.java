@@ -70,18 +70,6 @@ public class SmartItemFilter extends Filter<ItemStack> {
     }
 
     @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("smart_item_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176,
-                        GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-    }
-
-    @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
                 this::getFilterMode, this::setFilterMode).allowC2S();

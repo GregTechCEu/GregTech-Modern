@@ -85,6 +85,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
+@SuppressWarnings("unused")
 public class GTItems {
 
     //////////////////////////////////////
@@ -124,6 +125,7 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[18];
     public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
@@ -1823,6 +1825,17 @@ public class GTItems {
                     new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE.item("composite_item_filter", ComponentItem::create)
+            .lang("Composite Item Filter")
+            .onRegister(attach(new ItemFilterBehaviour(stack -> new CompositeFilter<>(stack, ItemStack.class))))
+            .register();
+
+    public static ItemEntry<ComponentItem> COMPOSITE_FLUID_FILTER = REGISTRATE.item("composite_fluid_filter", ComponentItem::create)
+            .lang("Composite Fluid Filter")
+            .onRegister(attach(new FluidFilterBehaviour(stack -> new CompositeFilter<>(stack, FluidStack.class))))
+            .register();
+
     public static ItemEntry<ComponentItem> COVER_WIRELESS_TRANSMITTER = REGISTRATE
             .item("wireless_transmitter_cover", ComponentItem::create)
             .lang("Wireless Transmitter")
@@ -2652,8 +2665,8 @@ public class GTItems {
 
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before,
                                         Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)),
-                Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList(before.toArray(ResourceLocation[]::new)),
+                Arrays.asList(after.toArray(ResourceLocation[]::new)));
     }
 
     public static ResourceLocation getTierName(Tier tier) {

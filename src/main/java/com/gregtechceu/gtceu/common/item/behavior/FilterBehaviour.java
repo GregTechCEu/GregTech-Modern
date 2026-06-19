@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.common.item.behavior;
 
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.factory.UIFactories;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.Filters;
-import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
-
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -12,20 +15,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import brachy.modularui.factory.PlayerInventoryGuiData;
-import brachy.modularui.factory.UIFactories;
-import brachy.modularui.screen.ModularPanel;
-import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.PanelSyncManager;
-
 import java.util.function.Function;
 
-public record ItemFilterBehaviour(Function<ItemStack, Filter<ItemStack>> filterCreator)
-        implements IInteractionItem, IItemUIHolder {
+public record FilterBehaviour<T>(Class<T> filterableObjectType, Function<ItemStack, Filter<T>> filterCreator) implements IItemUIHolder {
 
     @Override
     public void onAttached(Item item) {
-        Filters.registerFilter(ItemStack.class, item, filterCreator);
+        Filters.registerFilter(filterableObjectType, item, filterCreator);
     }
 
     @Override
@@ -41,6 +37,6 @@ public record ItemFilterBehaviour(Function<ItemStack, Filter<ItemStack>> filterC
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return Filters.loadItemFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings, true);
+        return Filters.loadFilter(filterableObjectType, data.getUsedItemStack()).getPanel(data, syncManager, settings, true);
     }
 }

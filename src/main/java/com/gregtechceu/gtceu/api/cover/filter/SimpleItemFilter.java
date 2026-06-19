@@ -64,6 +64,11 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         }
     }
 
+    @Override
+    public boolean supportsAmounts() {
+        return !isBlackList();
+    }
+
     public @Nullable CompoundTag saveFilter() {
         if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty)) {
             return null;
@@ -87,17 +92,6 @@ public class SimpleItemFilter extends Filter<ItemStack> {
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
         onUpdated.accept(this);
-    }
-
-    @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("simple_item_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.ITEM_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).top(10))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
 
     @Override

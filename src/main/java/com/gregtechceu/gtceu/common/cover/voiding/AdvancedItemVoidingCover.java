@@ -99,7 +99,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
             return globalVoidingLimit;
 
         Filter<ItemStack> filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalVoidingLimit : filter.testAmount(itemStack);
+        return filter.supportsAmounts() ? filter.testAmount(itemStack) : globalVoidingLimit;
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {
@@ -153,7 +153,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return filterHandler.getFilter().supportsAmounts();
     }
 
     @Override

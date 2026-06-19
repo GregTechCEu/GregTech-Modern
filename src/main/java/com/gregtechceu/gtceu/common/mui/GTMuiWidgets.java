@@ -69,7 +69,7 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        return createTitleBar(() -> definition.asStack(), panelWidth, background);
+        return createTitleBar(definition::asStack, panelWidth, background);
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
@@ -379,7 +379,7 @@ public class GTMuiWidgets {
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings));
+                        settings, false));
 
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))

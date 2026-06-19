@@ -40,6 +40,6 @@ public record FluidFilterBehaviour(Function<ItemStack, Filter<FluidStack>> filte
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return Filters.loadFluidFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings);
+        return Filters.loadFluidFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings, true);
     }
 }

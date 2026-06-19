@@ -1,5 +1,10 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.widgets.Dialog;
+import brachy.modularui.widgets.SlotGroupWidget;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -29,16 +34,6 @@ public abstract class Filter<T> implements Predicate<T> {
         itemWriter = filter -> stack.setTag(filter.saveFilter());
     }
 
-    /**
-     * @return Filter panel when opened by itself (including the player inventory)
-     */
-    public abstract ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings);
-
-    public abstract Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
-
-    @Nullable
-    protected abstract CompoundTag saveFilter();
-
     public void setOnUpdated(Consumer<Filter<T>> onUpdated) {
         this.onUpdated = filter -> {
             this.itemWriter.accept(filter);
@@ -46,16 +41,32 @@ public abstract class Filter<T> implements Predicate<T> {
         };
     }
 
-    public boolean isBlackList() {
-        return false;
+    /**
+     * @return Filter panel when opened by itself (including the player inventory)
+     */
+    @SuppressWarnings("deprecation")
+    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings, boolean displayPlayerInventory) {
+        return new Dialog<>(BuiltInRegistries.ITEM.getKey(filterItemStack.getItem()).toString())
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(false)
+                .child(GTMuiWidgets.createTitleBar(() -> filterItemStack, 176, GTGuiTextures.BACKGROUND))
+                .child(getFilterUI(data, syncManager, settings).top(10))
+                .childIf(displayPlayerInventory, () -> SlotGroupWidget.playerInventory(false).left(7).bottom(7));
     }
+
+    /**
+     * @return The filter UI.
+     */
+    public abstract Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
+
+    @Nullable
+    protected abstract CompoundTag saveFilter();
 
     /**
      * @return Whether this filter supports querying for exact content amounts.
      */
-    public boolean supportsAmounts() {
-        return !isBlackList();
-    }
+    public abstract boolean supportsAmounts();
 
     /**
      * Tests if the given stack matches this filter.

@@ -96,7 +96,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
             return globalTransferSizeMillibuckets;
 
         Filter<FluidStack> filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testAmount(fluidStack);
+        return filter.supportsAmounts() ? filter.testAmount(fluidStack) : globalTransferSizeMillibuckets;
     }
 
     public void setVoidingMode(VoidingMode voidingMode) {
@@ -168,7 +168,7 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return this.filterHandler.getFilter().supportsAmounts();
     }
 
     @Override

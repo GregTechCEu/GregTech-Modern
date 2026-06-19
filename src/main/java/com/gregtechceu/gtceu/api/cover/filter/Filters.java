@@ -50,11 +50,6 @@ public class Filters {
         return new Filter<>(ItemStack.EMPTY) {
 
             @Override
-            public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-                throw new NotImplementedException("Cannot open UI for empty filter");
-            }
-
-            @Override
             public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
                 throw new NotImplementedException("Cannot open UI for empty filter");
             }
@@ -62,6 +57,11 @@ public class Filters {
             @Override
             protected @Nullable CompoundTag saveFilter() {
                 throw new NotImplementedException("Cannot save empty filter");
+            }
+
+            @Override
+            public boolean supportsAmounts() {
+                return true;
             }
 
             @Override
