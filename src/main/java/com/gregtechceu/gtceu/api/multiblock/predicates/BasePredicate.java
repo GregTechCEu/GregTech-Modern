@@ -272,6 +272,10 @@ public abstract class BasePredicate {
         return Collections.unmodifiableList(result);
     }
 
+    public String getTypeName() {
+        return appendType(new StringBuilder()).toString();
+    }
+
     /// the type of this predicate
     public abstract StringBuilder appendType(StringBuilder builder);
 

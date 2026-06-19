@@ -257,9 +257,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             if (candidates.isEmpty())
                                 return new EmptyWidget();
                             if (candidates.size() > 1) {
-                                return new ContextMenuButton<>(basePredicate.toString())
+                                return new ContextMenuButton<>(basePredicate.getTypeName())
                                         .size(16)
-                                        .tooltip(r -> r.add(basePredicate.toString()))
+                                        .tooltip(r -> r.add(basePredicate.getTypeName()))
                                         .overlay(new ItemDrawable(
                                                 candidates.get(0).getItemStackForm()))
                                         .requiresClick()
@@ -354,7 +354,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                           List<BlockInfo> candidates) {
         return new ContextMenuButton<>(basePredicate.toString())
                 .size(16)
-                .tooltip(r -> r.add(basePredicate.toString()))
+                .tooltip(r -> r.add(basePredicate.getTypeName()))
                 .overlay(new ItemDrawable(
                         candidates.get(0).getItemStackForm()))
                 .requiresClick()
