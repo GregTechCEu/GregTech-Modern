@@ -25,7 +25,7 @@ public class PredicateBlockTag extends BasePredicate {
         Objects.requireNonNull(tag, "PredicateBlockTag tag cannot be null");
         this.tag = tag;
 
-        errorPredicate = state -> state.getBlockState().is(tag) ? null : Predicates.PLACEHOLDER;
+        errorPredicate = state -> state.retrieveCurrentBlockState().is(tag) ? null : Predicates.PLACEHOLDER;
         candidates = BuiltInRegistries.BLOCK.getTag(tag)
                 .stream()
                 .flatMap(HolderSet.Named::stream)

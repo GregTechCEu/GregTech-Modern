@@ -30,7 +30,7 @@ public class CurrentBlockInfo {
         if (this.blockState == null && level != null) {
             this.blockState = level.getBlockState(pos);
         }
-        Objects.requireNonNull(blockState, "why is the blockstate null hmmmm");
+        Objects.requireNonNull(blockState, String.format("Failed to retrieve block state at %s", pos));
         return blockState;
     }
 
@@ -62,7 +62,7 @@ public class CurrentBlockInfo {
 
     private void updateStateAndEntity() {
         if (level == null) {
-            GTCEu.LOGGER.error("CBI Level is null");
+            GTCEu.LOGGER.error("Level is null in CurrentBlockInfo");
             return;
         }
         blockState = level.getBlockState(pos);

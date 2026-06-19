@@ -33,7 +33,7 @@ public class PredicatePartAbility extends BasePredicate {
         errorPredicate = state -> {
             BlockPos pos = state.getPos();
 
-            return this.blocks.contains(state.getBlockState().getBlock()) ? null :
+            return this.blocks.contains(state.retrieveCurrentBlockState().getBlock()) ? null :
                     new PartAbilityError(pos, partAbility);
         };
 

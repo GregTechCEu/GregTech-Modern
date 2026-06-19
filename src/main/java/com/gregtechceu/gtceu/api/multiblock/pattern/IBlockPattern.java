@@ -53,43 +53,6 @@ public interface IBlockPattern {
                            Direction upwardsFacing,
                            boolean isFlipped);
 
-    /**
-     * Gets the default shape, if the multiblock does not specify one. Return null to represent the default shape does
-     * not exist.
-     *
-     * @return The long key is using {@link net.minecraft.core.BlockPos.MutableBlockPos#asLong(int, int, int)}.
-     *         The map is sorted using the natural ordering (thus with x, y, z order).
-     */
-    // TODO move the keyMap to a NBTCompoundTag
-    Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src, CompoundTag tag);
-
-    // void setActivePatternState(PatternState patternState);
-
-    /**
-     * Gets the internal pattern state, you should use the one returned from
-     * {@link IBlockPattern#checkPatternFastAt(Level, BlockPos, Direction, Direction, boolean)} always
-     * except for the shouldUpdate field.
-     */
-    // PatternState getPatternState();
-
-    /**
-     * Clears the cache for checkPatternFastAt(...) in case something in the pattern is changed. Default impl just
-     * getCache and then clears it.
-     */
-    /*
-     * default void clearCache() {
-     * getCache().clear();
-     * }
-     */
-
-    /**
-     * Gets the cache, do not modify. Note that the cache stores everything in the AABB of the substructure, except for
-     * any() TraceabilityPredicates.
-     *
-     * @return The cache for rapid pattern checking.
-     */
-    // Long2ObjectMap<BlockInfo> getCache();
-
     OriginOffset getOffset();
 
     default void moveOffset(RelativeDirection dir, int amount) {
@@ -98,23 +61,5 @@ public interface IBlockPattern {
 
     default void moveOffset(RelativeDirection dir) {
         getOffset().move(dir);
-    }
-
-    default void autoBuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
-                           CompoundTag tag, UseOnContext context) {}
-
-    default void retrievePatternInformation(String name, MultiblockControllerMachine controller, CompoundTag tag) {}
-
-    static ItemStack tryRemoveItem(Player player, ItemStack stack) {
-        if (stack.isEmpty()) return ItemStack.EMPTY;
-        if (player.isCreative()) return stack;
-
-        for (ItemStack playerItem : player.getInventory().items) {
-            if (ItemStack.isSameItemSameTags(stack, playerItem) && stack.getCount() <= playerItem.getCount()) {
-                playerItem.shrink(stack.getCount());
-                return playerItem;
-            }
-        }
-        return ItemStack.EMPTY;
     }
 }

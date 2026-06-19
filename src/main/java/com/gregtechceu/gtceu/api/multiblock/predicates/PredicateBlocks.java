@@ -39,7 +39,7 @@ public class PredicateBlocks extends BasePredicate {
         errorPredicate = state -> {
             BlockPos pos = state.getPos();
 
-            return this.blocks.contains(state.getBlockState().getBlock()) ? null :
+            return this.blocks.contains(state.retrieveCurrentBlockState().getBlock()) ? null :
                     (error == null ? new BlockMatchingError(pos, this.blocks) : error);
         };
 

@@ -26,7 +26,7 @@ public class PredicateFluidTag extends BasePredicate {
 
         this.tag = tag;
 
-        errorPredicate = state -> state.getBlockState().getFluidState().is(tag) ? null :
+        errorPredicate = state -> state.retrieveCurrentBlockState().getFluidState().is(tag) ? null :
                 Predicates.PLACEHOLDER;
         candidates = BuiltInRegistries.FLUID.getTag(tag)
                 .stream()

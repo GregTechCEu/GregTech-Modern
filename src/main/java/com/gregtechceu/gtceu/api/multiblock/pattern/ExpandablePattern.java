@@ -170,7 +170,6 @@ public class ExpandablePattern implements IBlockPattern {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             PatternPredicate pred = predicateProvider.apply(mPos, bounds);
 
-            // int[] arr = pos.getAll();
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],
                     pos.getZ());
@@ -179,10 +178,9 @@ public class ExpandablePattern implements IBlockPattern {
             patternState.currentBlockInfo.setCurrentPos(mPos);
 
             if (!pred.equals(PatternPredicate.ANY)) {
-                var bstate = patternState.currentBlockInfo.retrieveCurrentBlockState();
-                BlockEntity be = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
-                patternState.cache.put(mPos.asLong(), new BlockInfo(bstate, be));
-                // patternState.posCache.add(mPos.immutable());
+                BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
+                BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
+                patternState.cache.put(mPos.asLong(), new BlockInfo(state, blockEntity));
             }
 
             List<PatternError> res = pred.test(patternState.currentBlockInfo, patternState.globalCount, null);
@@ -202,170 +200,5 @@ public class ExpandablePattern implements IBlockPattern {
 
         patternState.setError(null);
         return true;
-    }
-
-    @Override
-    public Long2ObjectSortedMap<@Nullable PatternPredicate> getDefaultShape(MultiblockControllerMachine src,
-                                                                            CompoundTag tag) {
-        Direction front = src.getFrontFacing();
-        Direction up = src.getUpwardsFacing();
-
-        IntList bounds = boundsProvider.apply(src.getLevel(), src.getBlockPos().mutable(), front, up);
-        if (tag.isEmpty()) {
-            bounds = new IntArrayList();
-        }
-        if (bounds == null || bounds.isEmpty()) return Long2ObjectSortedMaps.emptyMap();
-
-        Long2ObjectSortedMap<PatternPredicate> predicates = new Long2ObjectRBTreeMap<>();
-
-        BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
-        BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
-
-        Direction[] absolutes = new Direction[3];
-
-        for (int i = 0; i < 3; i++) {
-            RelativeDirection selected = directions[i];
-
-            absolutes[i] = selected.getRelativeFacing(front, up, false);
-
-            if (i == 0) {
-                negCorner.setX(-bounds.getInt(selected.oppositeOrdinal()));
-                posCorner.setX(bounds.getInt(selected.ordinal()));
-            } else if (i == 1) {
-                negCorner.setY(-bounds.getInt(selected.oppositeOrdinal()));
-                posCorner.setY(bounds.getInt(selected.ordinal()));
-            } else {
-                negCorner.setZ(-bounds.getInt(selected.oppositeOrdinal()));
-                posCorner.setZ(bounds.getInt(selected.ordinal()));
-            }
-        }
-
-        BlockPos.MutableBlockPos translation = src.getBlockPos().mutable();
-
-        for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
-            BlockPos.MutableBlockPos mPos = pos.mutable();
-            BlockPos.MutableBlockPos adjustPos = pos.mutable();
-            PatternPredicate pred = predicateProvider.apply(mPos, bounds);
-
-            // this basically reshuffles the coordinates into absolute form from relative form
-            mPos.set(BlockPos.ZERO)
-                    .move(absolutes[0], adjustPos.getX())
-                    .move(absolutes[1], adjustPos.getY())
-                    .move(absolutes[2], adjustPos.getZ())
-                    .move(translation.getX(), translation.getY(), translation.getZ());
-
-            if (!pred.equals(PatternPredicate.ANY) && !pred.equals(PatternPredicate.AIR)) {
-                predicates.put(mPos.asLong(), pred);
-            }
-        }
-        return predicates;
-    }
-
-    @Override
-    public void autoBuild(Map<String, IBlockPattern> patterns, MultiblockControllerMachine controller,
-                          CompoundTag tag, UseOnContext context) {
-        var predicates = getDefaultShape(controller, new CompoundTag());
-
-        var level = context.getLevel();
-
-        Object2IntMap<PatternPredicate> predicateIndex = new Object2IntOpenHashMap<>();
-        Object2IntMap<BasePredicate> globalCache = new Object2IntOpenHashMap<>();
-        Map<BasePredicate, BlockInfo> cache = new HashMap<>();
-
-        BiPredicate<Long, BlockInfo> placePredicate = (l, info) -> {
-            BlockPos p = BlockPos.of(l);
-
-            if (!level.isEmptyBlock(p)) {
-                // cache the block?
-                return true;
-            }
-
-            ItemStack removed = IBlockPattern.tryRemoveItem(context.getPlayer(), info.getItemStackForm());
-            if (removed.isEmpty()) return false;
-
-            level.setBlockAndUpdate(p, info.getBlockState());
-
-            MetaMachine metaMachine = MetaMachine.getMachine(level, p);
-            if (metaMachine == null) return false;
-
-            // try to force the front face to an air block
-            if (predicates.containsKey(p.relative(metaMachine.getFrontFacing()).asLong())) {
-                Direction valid = null;
-                for (var dir : GTUtil.HORIZONTALS) {
-                    if (!predicates.containsKey(p.relative(dir).asLong())) {
-                        valid = dir;
-                        break;
-                    }
-                }
-                if (valid != null) metaMachine.setFrontFacing(valid);
-                else {
-                    if (!predicates.containsKey(p.relative(Direction.UP).asLong())) {
-                        metaMachine.setFrontFacing(Direction.UP);
-                    } else if (!predicates.containsKey(p.relative(Direction.DOWN).asLong())) {
-                        metaMachine.setFrontFacing(Direction.DOWN);
-                    }
-                }
-            }
-            return true;
-        };
-
-        for (var entry : predicates.long2ObjectEntrySet()) {
-            PatternPredicate predicate = entry.getValue();
-            if (predicate == null) continue;
-            if (predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;
-
-            int pointer = predicateIndex.getInt(predicate);
-            BasePredicate simplePredicate = predicate.subPredicates.get(pointer);
-            int count = globalCache.getInt(simplePredicate);
-
-            try {
-                while ((simplePredicate.previewCount == -1 || count == simplePredicate.previewCount) &&
-                        (simplePredicate.minCount == -1 || count == simplePredicate.minCount)) {
-                    pointer++;
-                    simplePredicate = predicate.subPredicates.get(pointer);
-                    count = globalCache.getInt(simplePredicate);
-                }
-                predicateIndex.put(predicate, pointer);
-            } catch (IndexOutOfBoundsException e) {
-                continue;
-            }
-
-            globalCache.mergeInt(simplePredicate, 1, Integer::sum);
-            if (simplePredicate.candidates.isEmpty()) continue;
-
-            cache.computeIfAbsent(simplePredicate, pred -> pred.candidates.get(0));
-
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePredicate))) {
-                return;
-            }
-            entry.setValue(null);
-        }
-        predicateIndex.clear();
-
-        // FIXME why is this loop duplicated twice? also, why is this copy-pasted from BlockPattern?
-        for (var entry : predicates.long2ObjectEntrySet()) {
-            PatternPredicate predicate = entry.getValue();
-            if (predicate == null || predicateIndex.getInt(predicate) >= predicate.subPredicates.size()) continue;
-
-            BasePredicate simplePredicate = predicate.subPredicates.get(predicateIndex.getInt(predicate));
-            int count = globalCache.getInt(simplePredicate);
-
-            while (count == simplePredicate.previewCount || count == simplePredicate.maxCount) {
-                int newIdx = predicateIndex.mergeInt(predicate, 1, Integer::sum);
-                if (newIdx >= predicate.subPredicates.size()) {
-                    GTCEu.LOGGER.warn("failed to generate default structure pattern");
-                    return;
-                }
-                simplePredicate = predicate.subPredicates.get(newIdx);
-                count = globalCache.getInt(simplePredicate);
-            }
-            globalCache.mergeInt(simplePredicate, 1, Integer::sum);
-            if (simplePredicate.candidates.isEmpty()) continue;
-
-            cache.computeIfAbsent(simplePredicate, pred -> pred.candidates.get(0));
-            if (!placePredicate.test(entry.getLongKey(), cache.get(simplePredicate))) {
-                return;
-            }
-        }
     }
 }

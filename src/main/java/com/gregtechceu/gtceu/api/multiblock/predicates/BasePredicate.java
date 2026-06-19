@@ -120,40 +120,6 @@ public class BasePredicate {
         return testLayer(currBlock, layerCache);
     }
 
-    /*
-     * private boolean checkInnerConditions(MultiblockState blockWorldState) {
-     * if (disableRenderFormed) {
-     * blockWorldState.getMatchContext().getOrCreate("renderMask", LongOpenHashSet::new)
-     * .add(blockWorldState.getPos().asLong());
-     * }
-     * if (io != IO.BOTH) {
-     * if (blockWorldState.io == IO.BOTH) {
-     * blockWorldState.io = io;
-     * } else if (blockWorldState.io != io) {
-     * blockWorldState.io = null;
-     * }
-     * }
-     * if (nbtParser != null && !blockWorldState.world.isClientSide) {
-     * BlockEntity te = blockWorldState.getTileEntity();
-     * if (te != null) {
-     * CompoundTag nbt = te.saveWithFullMetadata();
-     * if (Pattern.compile(nbtParser).matcher(nbt.toString()).find()) {
-     * return true;
-     * }
-     * }
-     * blockWorldState.setError(new PatternStringError("The NBT fails to match"));
-     * return false;
-     * }
-     * if (slotName != null) {
-     * Long2ObjectMap<Set<String>> slots = blockWorldState.getMatchContext().getOrCreate("slots",
-     * Long2ObjectArrayMap::new);
-     * slots.computeIfAbsent(blockWorldState.getPos().asLong(), s -> new HashSet<>()).add(slotName);
-     * return true;
-     * }
-     * return true;
-     * }
-     */
-
     public @Nullable PatternError testGlobal(CurrentBlockInfo currentBlock,
                                              Object2IntMap<BasePredicate> globalCache,
                                              @Nullable Object2IntMap<BasePredicate> layerCache) {
@@ -181,19 +147,6 @@ public class BasePredicate {
         }
 
         return null;
-    }
-
-    public List<ItemStack> getCandidateStacks() {
-        if (GTCEu.isClientSide()) {
-            return this.candidates.stream()
-                    .filter(info -> !info.getBlockState().isAir())
-                    .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
-                    .collect(Collectors.toList());
-        }
-        return this.candidates.stream()
-                .filter(info -> !info.getBlockState().isAir())
-                .map(BlockInfo::getItemStackForm)
-                .collect(Collectors.toList());
     }
 
     public String getPredicateName() {

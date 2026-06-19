@@ -102,7 +102,6 @@ public class PatternState {
                     controller.invalidateStructure(name);
                     if (name.equals(MultiblockControllerMachine.DEFAULT_STRUCTURE)) {
                         MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(this);
-                        // controller.formStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
                         controller.checkAndFormStructure();
                     }
                 }

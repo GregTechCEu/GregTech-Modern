@@ -92,37 +92,6 @@ public class BasicSliceStrategy extends SliceStrategy {
     }
 
     @Override
-    public int[] getDefaultSlices(CompoundTag tag) {
-        IntList list = new IntArrayList();
-        for (int i = 0; i < multiblockSlices.size(); i++) {
-            var multi = multiblockSlices.get(i);
-            int multiRepeats;
-            if (tag.isEmpty()) {
-                multiRepeats = multi.minRepeats;
-            } else {
-                multiRepeats = Mth.clamp(GTStringUtils.parseInt(tag.getString("multi." + 1)), multi.minRepeats,
-                        multi.maxRepeats);
-            }
-            for (int j = 0; j < multiRepeats; j++) {
-                for (int k = multi.startInclusive; k < multi.endExclusive; k++) {
-                    int sliceRepeats;
-                    if (tag.isEmpty()) {
-                        sliceRepeats = slices.get(k).minRepeats;
-                    } else {
-                        sliceRepeats = Mth.clamp(
-                                GTStringUtils.parseInt(tag.getString("multi." + i + "." + (k - multi.startInclusive))),
-                                slices.get(k).minRepeats, slices.get(k).maxRepeats);
-                    }
-                    for (int l = 0; l < sliceRepeats; l++) {
-                        list.add(k);
-                    }
-                }
-            }
-        }
-        return list.toIntArray();
-    }
-
-    @Override
     protected void finish(int[] dimensions, RelativeDirection[] directions, List<PatternSlice> slices) {
         super.finish(dimensions, directions, slices);
 
