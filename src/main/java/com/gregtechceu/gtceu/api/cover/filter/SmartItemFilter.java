@@ -97,7 +97,7 @@ public class SmartItemFilter implements ItemFilter {
 
         syncManager.syncValue("mode", mode);
 
-        return Flow.row().coverChildrenHeight().width(166)
+        return Flow.row().coverChildrenHeight().width(162)
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()
