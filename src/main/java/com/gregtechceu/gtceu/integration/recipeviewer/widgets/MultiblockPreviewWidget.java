@@ -386,7 +386,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     /// ==== User Preference UI ======
     private void setPredicateDefaultBlock(PatternPredicate predicate, BasePredicate basePredicate,
                                           BlockInfo blockInfo) {
-        this.multiblockSchemaInfo.getUserBasePredicateBlockPreferences().put(predicate, basePredicate, blockInfo);
+        this.multiblockSchemaInfo.putPredicatePreference(predicate, basePredicate, blockInfo);
         refreshSchema();
         refreshViewWidget();
     }

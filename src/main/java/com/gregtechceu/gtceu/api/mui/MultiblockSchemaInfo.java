@@ -17,8 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.widgets.SchemaWidget;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -52,17 +50,11 @@ public class MultiblockSchemaInfo {
     private final Reference2IntMap<Block> blockCounts = new Reference2IntOpenHashMap<>();
     @Getter
     private final Long2ObjectMap<BlockInfo> userGlobalBlockPreferences = new Long2ObjectOpenHashMap<>();
+
     @Getter
-    private final Table<PatternPredicate, BasePredicate, BlockInfo> userBasePredicateBlockPreferences = HashBasedTable
-            .create();
+    private final Int2IntMap userSliceRepeats = new Int2IntArrayMap();
     @Getter
-    private final Table<PatternPredicate, BasePredicate, IntIntPair> userBasePredicateMinMaxPreferences = HashBasedTable
-            .create();
-    @Getter
-    private Int2IntMap userSliceRepeats = new Int2IntArrayMap();
-    @Getter
-    @Setter
-    private IntList userDimensions = IntLists.emptyList();
+    private final IntList userDimensions = new IntArrayList();
     @Getter
     private final Map<BlockPos, BlockInfo> structureBlocks = new HashMap<>();
 
@@ -82,10 +74,7 @@ public class MultiblockSchemaInfo {
                 }
             }
             // reinterpret slider values as slice repeats?
-            this.structureHelper = AbstractStructureHelper.blockPattern(
-                    this.userBasePredicateBlockPreferences,
-                    this.userBasePredicateMinMaxPreferences,
-                    this.userSliceRepeats);
+            this.structureHelper = AbstractStructureHelper.blockPattern(this.userSliceRepeats);
 
         } else if (pattern instanceof ExpandablePattern expandablePattern) {
             if (this.userDimensions.isEmpty()) {
@@ -94,10 +83,7 @@ public class MultiblockSchemaInfo {
                         .forEach(this.userDimensions::add);
             }
             // reinterpret slider values as bounds?
-            this.structureHelper = AbstractStructureHelper.expandable(
-                    this.userBasePredicateBlockPreferences,
-                    this.userBasePredicateMinMaxPreferences,
-                    this.userDimensions);
+            this.structureHelper = AbstractStructureHelper.expandable(this.userDimensions);
 
         } else {
             // throw? log?
@@ -125,5 +111,14 @@ public class MultiblockSchemaInfo {
         if (onSchemaRefresh != null) {
             onSchemaRefresh.run();
         }
+    }
+
+    public void clearUserPreferences() {
+        this.userSliceRepeats.clear();
+        this.userDimensions.clear();
+    }
+
+    public void putPredicatePreference(PatternPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
+        this.structureHelper.getBlockPreferences().put(predicate, basePredicate, info);
     }
 }

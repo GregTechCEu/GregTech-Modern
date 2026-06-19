@@ -33,26 +33,20 @@ public abstract class AbstractStructureHelper {
             .create();
     protected @Nullable Block controllerBlock;
 
-    public static AbstractStructureHelper blockPattern(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                                       @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                                       Int2IntMap sliceRepeats) {
-        return new BlockPatternHelper(blockPreferences, minMaxPreferences, sliceRepeats);
+    public static AbstractStructureHelper blockPattern(Int2IntMap sliceRepeats) {
+        return new BlockPatternHelper(sliceRepeats);
     }
 
-    public static AbstractStructureHelper expandable(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                                     @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                                     IntList sliceRepeats) {
-        return new ExpandablePatternHelper(blockPreferences, minMaxPreferences, sliceRepeats);
+    public static AbstractStructureHelper expandable(IntList sliceRepeats) {
+        return new ExpandablePatternHelper(sliceRepeats);
     }
 
-    public AbstractStructureHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                   @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences) {
-        if (blockPreferences != null) {
-            this.blockPreferences.putAll(blockPreferences);
-        }
-        if (minMaxPreferences != null) {
-            this.minMaxPreferences.putAll(minMaxPreferences);
-        }
+    public Table<PatternPredicate, BasePredicate, BlockInfo> getBlockPreferences() {
+        return this.blockPreferences;
+    }
+
+    public Table<PatternPredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
+        return this.minMaxPreferences;
     }
 
     public void populate(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,

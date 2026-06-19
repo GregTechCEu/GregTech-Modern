@@ -9,11 +9,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 
-import com.google.common.collect.Table;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -21,10 +18,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private final IntList userRepeats;
 
-    protected ExpandablePatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                      @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                      IntList userRepeats) {
-        super(blockPreferences, minMaxPreferences);
+    protected ExpandablePatternHelper(IntList userRepeats) {
         this.userRepeats = userRepeats;
     }
 

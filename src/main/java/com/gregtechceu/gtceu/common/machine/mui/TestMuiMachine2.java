@@ -419,8 +419,7 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         BlockPattern pattern = (BlockPattern) multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
         maxSlices = pattern.getDimensions()[1];
 
-        structureHelper = AbstractStructureHelper.blockPattern(userBasePredicateBlockPreferences,
-                userBasePredicateMinMaxPreferences, userSliceRepeats);
+        structureHelper = AbstractStructureHelper.blockPattern(userSliceRepeats);
 
         structureHelper.populate(resultStructure, pattern, userGlobalBlockPreferences, frontFacing, upFacing,
                 isFlipped);

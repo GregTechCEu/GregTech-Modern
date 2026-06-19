@@ -10,11 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 
-import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -24,10 +21,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
 
-    protected BlockPatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                 @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                 Int2IntMap sliceRepeats) {
-        super(blockPreferences, minMaxPreferences);
+    protected BlockPatternHelper(Int2IntMap sliceRepeats) {
         this.sliceRepeats = sliceRepeats;
     }
 

@@ -481,7 +481,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                     for (int i = 0; i < blockPattern.getSlices().length; i++) {
                         slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
                     }
-                    structureHelper = AbstractStructureHelper.blockPattern(null, null, slices);
+                    structureHelper = AbstractStructureHelper.blockPattern(slices);
                 } else if (pattern instanceof ExpandablePattern expandablePattern) {
                     IntList dims = new IntArrayList();
                     if (expandablePattern.getBoundsConstraints() != null) {
@@ -489,7 +489,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                                 .mapToInt(Pair::left)
                                 .forEach(dims::add);
                     }
-                    structureHelper = AbstractStructureHelper.expandable(null, null, dims);
+                    structureHelper = AbstractStructureHelper.expandable(dims);
                 }
 
                 if (structureHelper != null) {
