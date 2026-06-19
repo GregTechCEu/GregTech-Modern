@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
@@ -28,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -63,9 +65,9 @@ public class BasePredicate {
      *                       either the
      *                       {@link TerminalBehavior#use(Item, Level, Player, InteractionHand)
      *                       Terminal Auto-Builder},
-     *                       {@link PatternPreviewRenderer#tick(PoseStack, MultiBufferSource.BufferSource, Camera)
+     *                       {@link PatternPreviewRenderer#draw(PoseStack, MultiBufferSource.BufferSource, Camera, RenderLevelStageEvent.Stage, float)
      *                       In-world Preview} or
-     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition)
+     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition, MultiblockSchemaInfo)
      *                       XEI Preview}
      */
     public BasePredicate(Function<CurrentBlockInfo, PatternError> errorPredicate,

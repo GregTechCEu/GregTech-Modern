@@ -616,15 +616,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 .build();
         syncManager.syncValue("distComponent", distComponent);
 
-        widgets.add(Text.dynamic(() -> {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-                    .withStyle(ChatFormatting.GRAY);
-            return Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
-        })
-                .asWidget()
-                .setEnabledIf((widget) -> !isFormed.getBoolValue()));
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
 
         widgets.add(Text.dynamic(() -> {
             String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage.getLongValue())];

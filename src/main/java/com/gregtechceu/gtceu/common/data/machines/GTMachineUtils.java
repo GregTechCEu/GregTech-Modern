@@ -25,6 +25,8 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -912,7 +914,7 @@ public class GTMachineUtils {
                             .isAir()) {
                 return null;
             }
-            return Predicates.PLACEHOLDER;
+            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
         }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
                 .map(BlockInfo::fromBlock)
                 .toList()))

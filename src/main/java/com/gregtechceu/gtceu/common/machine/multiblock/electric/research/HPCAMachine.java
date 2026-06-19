@@ -257,6 +257,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 .build();
         syncManager.syncValue("text", text);
         List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager));
         widgets.add(new TextWidget<>(Text.dynamic(text::getValue)));

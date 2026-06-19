@@ -141,7 +141,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         mainWidget.size(170, 70).background(GuiTextures.DISPLAY);
-        var pState = patternStates.get(DEFAULT_STRUCTURE);
 
         var listWidget = new ListWidget<>()
                 .width(170 - 6)
@@ -150,7 +149,9 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .posRel(Alignment.CenterLeft);
 
-        listWidget.child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
+        listWidget
+                .child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager))
+                .child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
                 .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addParallelLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addOutputLines(this, syncManager));

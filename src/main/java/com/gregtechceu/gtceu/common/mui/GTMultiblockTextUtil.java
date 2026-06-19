@@ -45,21 +45,21 @@ import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
-    public static DynamicWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
+    public static DynamicWidget<?> addUnformedWarning(MultiblockControllerMachine controller,
                                                       PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(weMachine::isFormed));
+                () -> new BooleanSyncValue(controller::isFormed));
         BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(
-                        () -> weMachine.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
+                        () -> controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
                                 null));
         GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
                 GenericListSyncHandler.class,
                 () -> GenericListSyncHandler.<PatternError>builder()
                         .getter(() -> {
                             var list = new ArrayList<PatternError>();
-                            for (String structureName : weMachine.getStructurePatterns().keySet()) {
-                                var errors = weMachine.getPatternState(structureName)
+                            for (String structureName : controller.getStructurePatterns().keySet()) {
+                                var errors = controller.getPatternState(structureName)
                                         .getErrors();
                                 if (errors != null && !errors.isEmpty()) {
                                     list.addAll(errors);
@@ -110,6 +110,7 @@ public class GTMultiblockTextUtil {
         return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
+                .setEnabledIf(w -> hasSyncError.getBoolValue())
                 .syncHandler(dynamicLinkedSyncHandler);
     }
 

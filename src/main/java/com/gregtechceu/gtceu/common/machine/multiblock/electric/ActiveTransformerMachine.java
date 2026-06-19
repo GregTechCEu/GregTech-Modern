@@ -201,6 +201,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(this.powerOutput::getOutputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         widgets.add(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && !workingEnabled.getBoolValue()));
@@ -250,27 +252,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 .setEnabledIf((widget) -> isFormed.getBoolValue() && workingEnabled.getBoolValue() &&
                         !active.getBoolValue()));
 
-        GTMultiblockTextUtil.addUnformedWarning(this, syncManager);
-
-        // widgets.add(Text.dynamic(() -> {
-        // Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-        // .withStyle(ChatFormatting.GRAY);
-        // return Component.translatable("gtceu.multiblock.invalid_structure")
-        // .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-        // .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
-        // })
-        // .asWidget()
-        // .setEnabledIf((widget) -> !isFormed.getBoolValue()));
-
         return widgets;
-
-        /*
-         * else {
-         * if (patternStates.get(DEFAULT_STRUCTURE).hasError()) {
-         * var comp = patternStates.get(DEFAULT_STRUCTURE).getError().getErrorInfo();
-         * textList.addAll(comp);
-         * }
-         * }
-         */
     }
 }

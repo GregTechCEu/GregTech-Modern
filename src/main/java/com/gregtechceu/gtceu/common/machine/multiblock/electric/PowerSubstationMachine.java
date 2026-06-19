@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
+import brachy.modularui.api.widget.IWidget;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -252,6 +254,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     }
                 }
             }
+            if (maintenance == null) return 0;
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
             double modifier = maintenance.getDurationMultiplier();
             return (long) (passiveDrain * multiplier * modifier);
@@ -277,35 +280,34 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         return true;
     }
 
+    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
+    public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
+
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>()
+                .width(MULTI_UI_TEXT_PANEL_WIDTH - 6)
+                .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
+                .posRel(Alignment.CenterLeft);
+        parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
+
+        listWidget.children(getWidgetsForDisplay(syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
+    }
+
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(new ParentWidget<>()
-                .widthRel(0.95f)
-                .heightRel(.65f)
-                .margin(4, 0)
-                .left(3).top(2)
-                .horizontalCenter()
-                .child(Flow.row()
-                        .child(getMainTextPanel(syncManager, 186, 146))));
+        mainWidget.child(getMainTextPanel(syncManager).margin(4, 2));
     }
 
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
-        var parentWidget = new ParentWidget<>();
-        var listWidget = new ListWidget<>();
-        listWidget
-                .width(width - 6)
-                .height(height - 6)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .posRel(Alignment.CenterLeft)
-                .left(3)
-                .top(3);
-        parentWidget.size(width, height)
-                .background(GuiTextures.DISPLAY);
-        // Machine generic sync handlers
-        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isFormed));
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
         BooleanSyncValue power = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this.recipeLogic::isWorkingEnabled, this.recipeLogic::setWorkingEnabled));
         BooleanSyncValue active = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
@@ -313,9 +315,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         BooleanSyncValue waiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this.recipeLogic::isWaiting));
 
-        // Energy bank specific sync handlers
-        // These will not be called anywhere else, so we can create them directly instead of using
-        // getOrCreateSyncHandler
         BooleanSyncValue energyBankExists = new BooleanSyncValue(() -> energyBank != null);
         syncManager.syncValue("energyBankExists", energyBankExists);
 
@@ -327,7 +326,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 energyBank::getCapacity, $ -> {});
         syncManager.syncValue("capacity", capacity);
 
-        LongSyncValue passiveDrain = new LongSyncValue(this::getPassiveDrain);
+        LongSyncValue passiveDrain = new LongSyncValue(null, null, this::getPassiveDrain, null);
         syncManager.syncValue("passiveDrain", passiveDrain);
 
         LongSyncValue inputPerSec = new LongSyncValue(() -> this.inputPerSec);
@@ -336,105 +335,106 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(() -> this.outputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         // Generic machine lines
-        listWidget.child(Text.lang("gtceu.multiblock.work_paused")
+        widgets.add(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> !power.getBoolValue()));
-        listWidget.child(Text.lang("gtceu.multiblock.running")
+        widgets.add(Text.lang("gtceu.multiblock.running")
                 .asWidget()
                 .setEnabledIf((widget) -> active.getBoolValue()));
-        listWidget.child(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gtceu.multiblock.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> !active.getBoolValue() && power.getBoolValue()));
-        listWidget.child(Text
+        widgets.add(Text
                 .of(Component.translatable("gtceu.multiblock.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> waiting.getBoolValue()));
-
-        // Energy bank specific lines
 
         var STYLE_GOLD = Style.EMPTY.withColor(ChatFormatting.GOLD);
         var STYLE_DARK_RED = Style.EMPTY.withColor(ChatFormatting.DARK_RED);
         var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
         var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue()) return Component.empty();
-            var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.stored",
-                    storedComponent.setStyle(STYLE_GOLD));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue()) return Component.empty();
+                    var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));
+                    return Component.translatable("gtceu.multiblock.power_substation.stored",
+                            storedComponent.setStyle(STYLE_GOLD));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue()) return Component.empty();
-            var capacityComponent = Component.literal(FormattingUtil.formatNumbers(capacity.getValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.capacity",
-                    capacityComponent.setStyle(STYLE_GOLD));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue()) return Component.empty();
+                    var capacityComponent = Component.literal(FormattingUtil.formatNumbers(capacity.getValue()));
+                    return Component.translatable("gtceu.multiblock.power_substation.capacity",
+                            capacityComponent.setStyle(STYLE_GOLD));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue()) return Component.empty();
-            var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(passiveDrain.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.passive_drain",
-                    passiveDrainComponent.setStyle(STYLE_DARK_RED));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue()) return Component.empty();
+                    var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(passiveDrain.getLongValue()));
+                    return Component.translatable("gtceu.multiblock.power_substation.passive_drain",
+                            passiveDrainComponent.setStyle(STYLE_DARK_RED));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue()) return Component.empty();
-            var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
-            return Component
-                    .translatable("gtceu.multiblock.power_substation.average_in",
-                            avgInComponent.setStyle(STYLE_GREEN))
-                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            Component.translatable("gtceu.multiblock.power_substation.average_in_hover"))));
-        })
-                .asWidget()
-                .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue()) return Component.empty();
-            var avgOutComponent = Component
-                    .literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20)));
-            return Component
-                    .translatable("gtceu.multiblock.power_substation.average_out",
-                            avgOutComponent.setStyle(STYLE_RED))
-                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            Component.translatable("gtceu.multiblock.power_substation.average_out_hover"))));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue()) return Component.empty();
+                    var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
+                    return Component
+                            .translatable("gtceu.multiblock.power_substation.average_in",
+                                    avgInComponent.setStyle(STYLE_GREEN))
+                            .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    Component.translatable("gtceu.multiblock.power_substation.average_in_hover"))));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() <= outputPerSec.getLongValue())
-                return Component.empty();
-            BigInteger timeToFillSeconds = capacity.getValue().subtract(energyStored.getValue())
-                    .divide(BigInteger.valueOf(inputPerSec.getLongValue() - outputPerSec.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
-                    getTimeToFillDrainText(timeToFillSeconds).setStyle(STYLE_GREEN));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue()) return Component.empty();
+                    var avgOutComponent = Component
+                            .literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20)));
+                    return Component
+                            .translatable("gtceu.multiblock.power_substation.average_out",
+                                    avgOutComponent.setStyle(STYLE_RED))
+                            .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    Component.translatable("gtceu.multiblock.power_substation.average_out_hover"))));
+                })
+                .asWidget()
+                .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
+
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() <= outputPerSec.getLongValue())
+                        return Component.empty();
+                    BigInteger timeToFillSeconds = capacity.getValue().subtract(energyStored.getValue())
+                            .divide(BigInteger.valueOf(inputPerSec.getLongValue() - outputPerSec.getLongValue()));
+                    return Component.translatable("gtceu.multiblock.power_substation.time_to_fill",
+                            getTimeToFillDrainText(timeToFillSeconds).setStyle(STYLE_GREEN));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue() &&
                         inputPerSec.getLongValue() > outputPerSec.getLongValue()));
 
-        listWidget.child(Text.dynamic(() -> {
-            if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() >= outputPerSec.getLongValue())
-                return Component.empty();
-            BigInteger timeToDrainSeconds = energyStored.getValue()
-                    .divide(BigInteger.valueOf(outputPerSec.getLongValue() - inputPerSec.getLongValue()));
-            return Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
-                    getTimeToFillDrainText(timeToDrainSeconds).setStyle(STYLE_RED));
-        })
+        widgets.add(Text.dynamic(() -> {
+                    if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() >= outputPerSec.getLongValue())
+                        return Component.empty();
+                    BigInteger timeToDrainSeconds = energyStored.getValue()
+                            .divide(BigInteger.valueOf(outputPerSec.getLongValue() - inputPerSec.getLongValue()));
+                    return Component.translatable("gtceu.multiblock.power_substation.time_to_drain",
+                            getTimeToFillDrainText(timeToDrainSeconds).setStyle(STYLE_RED));
+                })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue() &&
                         inputPerSec.getLongValue() < outputPerSec.getLongValue()));
-        parentWidget.child(listWidget);
-        return parentWidget;
+
+        return widgets;
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {
