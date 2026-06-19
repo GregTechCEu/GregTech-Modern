@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
 import net.minecraft.nbt.CompoundTag;
@@ -10,13 +9,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.StringSyncValue;
-import brachy.modularui.widgets.Dialog;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -52,7 +48,7 @@ public class TagFilter<T, S> extends Filter<T> {
         matchExpr = TagExprFilter.parseExpression(filterString);
     }
 
-    public @Nullable CompoundTag saveFilter() {
+    public @Nullable CompoundTag writeFilterNBT() {
         if (filterString.isBlank()) {
             return null;
         }
@@ -65,7 +61,7 @@ public class TagFilter<T, S> extends Filter<T> {
         matchResultCache.clear();
         this.filterString = filterString;
         matchExpr = TagExprFilter.parseExpression(filterString);
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     @Override
@@ -103,10 +99,5 @@ public class TagFilter<T, S> extends Filter<T> {
         var result = testTagExpr(t);
         matchResultCache.put(tagHolder, result);
         return result;
-    }
-
-    @Override
-    public int testAmount(T stack) {
-        return test(stack) ? Integer.MAX_VALUE : 0;
     }
 }

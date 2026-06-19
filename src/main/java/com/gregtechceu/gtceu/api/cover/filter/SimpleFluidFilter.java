@@ -21,6 +21,7 @@ import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 
@@ -51,7 +52,7 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
             fluidStorageSlots[i] = new CustomFluidTank(64000);
             fluidStorageSlots[i].setOnContentsChanged(() -> {
                 matches[finalI] = fluidStorageSlots[finalI].getFluid();
-                onUpdated.accept(this);
+                updateAndSaveFilter();
             });
         }
         Arrays.fill(matches, FluidStack.EMPTY);
@@ -67,7 +68,7 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
         }
     }
 
-    public @Nullable CompoundTag saveFilter() {
+    public @Nullable CompoundTag writeFilterNBT() {
         if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(FluidStack::isEmpty)) {
             return null;
         }
@@ -89,12 +90,12 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
@@ -129,6 +130,7 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public int testAmount(FluidStack fluidStack) {
         int totalFluidAmount = getTotalConfiguredFluidAmount(fluidStack);
 

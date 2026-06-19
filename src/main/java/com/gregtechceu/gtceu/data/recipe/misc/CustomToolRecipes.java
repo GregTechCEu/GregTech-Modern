@@ -225,7 +225,7 @@ public final class CustomToolRecipes {
                 var filter = (SimpleItemFilter) Filters
                         .loadItemFilter(ItemMagnetBehavior.FilterMode.SIMPLE.getFilter(magnetStack));
                 filter.setBlackList(true);
-                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
+                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.writeFilterNBT());
                 VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
                         "lv_magnet_" + batteryItem.getId().getPath(),
                         Ingredient.of(batteryItem), magnetStack,
@@ -268,7 +268,7 @@ public final class CustomToolRecipes {
                 var filter = (SimpleItemFilter) Filters
                         .loadItemFilter(ItemMagnetBehavior.FilterMode.SIMPLE.getFilter(magnetStack));
                 filter.setBlackList(true);
-                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.saveFilter());
+                tag.put(ItemMagnetBehavior.FILTER_TAG, filter.writeFilterNBT());
                 VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true,
                         "hv_magnet_" + batteryItem.getId().getPath(),
                         Ingredient.of(batteryItem), magnetStack,

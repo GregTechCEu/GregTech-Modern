@@ -4,10 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,14 +19,11 @@ import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
@@ -37,6 +31,7 @@ import brachy.modularui.widgets.menu.Menu;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,7 +50,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
     }
 
     @Override
-    public @Nullable CompoundTag saveFilter() {
+    public @Nullable CompoundTag writeFilterNBT() {
         if (filterMode.ordinal() == 0) {
             return null;
         }
@@ -66,7 +61,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
 
     private void setFilterMode(SmartFilteringMode filterMode) {
         this.filterMode = filterMode;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     @Override
@@ -106,11 +101,17 @@ public class SmartItemFilter extends Filter<ItemStack> {
     }
 
     @Override
+    public boolean supportsAmounts() {
+        return true;
+    }
+
+    @Override
     public boolean test(ItemStack itemStack) {
         return testAmount(itemStack) > 0;
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public int testAmount(ItemStack itemStack) {
         return filterMode.cache.computeIfAbsent(itemStack, this::lookup);
     }

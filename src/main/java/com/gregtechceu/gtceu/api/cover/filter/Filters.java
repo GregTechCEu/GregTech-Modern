@@ -6,7 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
@@ -55,7 +54,7 @@ public class Filters {
             }
 
             @Override
-            protected @Nullable CompoundTag saveFilter() {
+            protected @Nullable CompoundTag writeFilterNBT() {
                 throw new NotImplementedException("Cannot save empty filter");
             }
 

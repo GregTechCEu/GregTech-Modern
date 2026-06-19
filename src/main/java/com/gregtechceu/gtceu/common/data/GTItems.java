@@ -1826,12 +1826,14 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
             .register();
 
-    public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE.item("composite_item_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> COMPOSITE_ITEM_FILTER = REGISTRATE
+            .item("composite_item_filter", ComponentItem::create)
             .lang("Composite Item Filter")
             .onRegister(attach(new ItemFilterBehaviour(stack -> new CompositeFilter<>(stack, ItemStack.class))))
             .register();
 
-    public static ItemEntry<ComponentItem> COMPOSITE_FLUID_FILTER = REGISTRATE.item("composite_fluid_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> COMPOSITE_FLUID_FILTER = REGISTRATE
+            .item("composite_fluid_filter", ComponentItem::create)
             .lang("Composite Fluid Filter")
             .onRegister(attach(new FluidFilterBehaviour(stack -> new CompositeFilter<>(stack, FluidStack.class))))
             .register();

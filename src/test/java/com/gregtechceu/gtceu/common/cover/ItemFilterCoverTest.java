@@ -29,7 +29,7 @@ public class ItemFilterCoverTest {
         ItemStack stack = GTItems.ITEM_FILTER.asStack();
         SimpleItemFilter filter = new SimpleItemFilter(stack);
         filter.getMatches()[0] = Items.DIAMOND.getDefaultInstance();
-        stack.setTag(filter.saveFilter());
+        stack.setTag(filter.writeFilterNBT());
         return stack;
     }
 

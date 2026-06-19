@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -13,13 +11,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.BooleanSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.PhantomItemSlotSyncHandler;
-import brachy.modularui.widgets.Dialog;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
@@ -27,6 +22,7 @@ import brachy.modularui.widgets.slot.ModularSlot;
 import brachy.modularui.widgets.slot.PhantomItemSlot;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 
@@ -69,7 +65,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         return !isBlackList();
     }
 
-    public @Nullable CompoundTag saveFilter() {
+    public @Nullable CompoundTag writeFilterNBT() {
         if (!isBlackList && !ignoreNbt && Arrays.stream(matches).allMatch(ItemStack::isEmpty)) {
             return null;
         }
@@ -86,18 +82,17 @@ public class SimpleItemFilter extends Filter<ItemStack> {
 
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     public void setIgnoreNbt(boolean ingoreNbt) {
         this.ignoreNbt = ingoreNbt;
-        onUpdated.accept(this);
+        updateAndSaveFilter();
     }
 
     @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         FilterItemStackHandler handler = new FilterItemStackHandler(matches, this);
-
         Grid filterGrid = new Grid()
                 .coverChildren()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
@@ -165,7 +160,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
         public void setStackInSlot(int slot, ItemStack stack) {
             super.setStackInSlot(slot, stack);
             matches[slot] = stack.copyWithCount(1);
-            filter.onUpdated.accept(filter);
+            filter.updateAndSaveFilter();
         }
     }
 
@@ -175,6 +170,7 @@ public class SimpleItemFilter extends Filter<ItemStack> {
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public int testAmount(ItemStack itemStack) {
         int totalItemCount = getTotalConfiguredItemCount(itemStack);
 

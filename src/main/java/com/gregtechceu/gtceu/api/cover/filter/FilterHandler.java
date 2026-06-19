@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A filter handler represents a slot that can hold filters for a specific type of stack/object.
+ * 
  * @param <T> The stack/object type this filter handler holds filters for.
  */
 @ParametersAreNonnullByDefault
