@@ -56,7 +56,7 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
         }
 
         @Override
-        public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        public ItemStack getFilterItem() {
             return null;
         }
 

@@ -118,14 +118,8 @@ public class SimpleFluidFilter implements FluidFilter {
     }
 
     @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("simple_fluid_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.FLUID_FILTER.asStack(), 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).top(10))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+    public ItemStack getFilterItem() {
+        return GTItems.FLUID_FILTER.asStack();
     }
 
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {

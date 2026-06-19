@@ -45,7 +45,7 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    protected ItemStack getFilterItem() {
+    public ItemStack getFilterItem() {
         return GTItems.TAG_FLUID_FILTER.asStack();
     }
 

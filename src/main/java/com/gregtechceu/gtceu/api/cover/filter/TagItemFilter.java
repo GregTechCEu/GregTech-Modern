@@ -49,7 +49,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     @Override
-    protected ItemStack getFilterItem() {
+    public ItemStack getFilterItem() {
         return GTItems.TAG_FILTER.asStack();
     }
 
