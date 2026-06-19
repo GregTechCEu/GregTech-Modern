@@ -371,17 +371,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            var wallPredicate = Predicates.blocks(getCasingState().getBlock(), getGlassState().getBlock());
-            var energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            PatternPredicate wallPredicate = getValidFloorBlocks();
+            PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            var edgePredicate = wallPredicate.or(energyPredicate);
-            var facePredicate = wallPredicate.or(energyPredicate)
+            PatternPredicate edgePredicate = wallPredicate.or(energyPredicate);
+            PatternPredicate facePredicate = wallPredicate.or(energyPredicate)
                     .or(doorPredicate().setMaxGlobalLimited(8))
                     .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            var filterPredicate = cleanroomFilters();
-            var innerPredicate = innerPredicate();
-            var verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            PatternPredicate filterPredicate = cleanroomFilters();
+            PatternPredicate innerPredicate = innerPredicate();
+            PatternPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
@@ -528,13 +528,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected static PatternPredicate doorPredicate() {
         return Predicates.custom(
-                blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock ? null :
+                blockWorldState -> blockWorldState.retrieveCurrentBlockState().getBlock() instanceof DoorBlock ? null :
                         Predicates.PLACEHOLDER,
                 List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
                         Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
 
-    private PatternPredicate getValidFloorBlocks() {
+    private static PatternPredicate getValidFloorBlocks() {
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
@@ -546,8 +546,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 if (isMachineBanned(machine)) {
                     return Predicates.PLACEHOLDER;
                 }
-                // todo do this in structure form not in the predicate
-                // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }
             return null;
         }, null);

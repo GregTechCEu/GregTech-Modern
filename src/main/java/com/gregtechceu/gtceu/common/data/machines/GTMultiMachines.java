@@ -128,7 +128,7 @@ public class GTMultiMachines {
                     .where('X', blocks(CASING_PRIMITIVE_BRICKS.get()))
                     .where('#', Predicates.air())
                     .where('&', Predicates.air()
-                            .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.getBlockState()) ?
+                            .or(Predicates.custom(bws -> GTUtil.isBlockSnow(bws.retrieveCurrentBlockState()) ?
                                     null : Predicates.PLACEHOLDER,
                                     null)))
                     .where('Y', Predicates.controller(blocks(definition.getBlock())))
