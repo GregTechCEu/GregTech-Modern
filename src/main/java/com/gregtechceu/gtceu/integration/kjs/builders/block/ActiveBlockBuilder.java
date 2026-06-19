@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.kjs.builders.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -23,7 +22,7 @@ public class ActiveBlockBuilder extends BlockBuilder {
     // spotless:off
     public static final UnaryOperator<String> ACTIVE = s -> s + "_active";
     public static final UnaryOperator<String> BLOOM = s -> s + "_bloom";
-    public static final UnaryOperator<String> ACTIVE_BLOCK = (UnaryOperator<String>) ID.BLOCK.andThen(ACTIVE);
+    public static final UnaryOperator<String> ACTIVE_BLOCK = ID.BLOCK.andThen(ACTIVE)::apply;
     public static final ResourceLocation CUBE_2_LAYER_ALL_MODEL = GTCEu.id("block/cube_2_layer/all");
     public static final ResourceLocation CUBE_BOTTOM_TOP_MODEL = ResourceLocation.withDefaultNamespace("block/cube_bottom_top");
     public static final ResourceLocation FIRE_BOX_ACTIVE_MODEL = GTCEu.id("block/fire_box_active");
@@ -40,7 +39,7 @@ public class ActiveBlockBuilder extends BlockBuilder {
     public transient String activeTexture;
 
     public ActiveBlockBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         property(GTBlockStateProperties.ACTIVE);
         renderType(BlockRenderType.CUTOUT_MIPPED);
         activeTexture = ACTIVE.apply(baseTexture);

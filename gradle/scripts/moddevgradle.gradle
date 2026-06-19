@@ -19,7 +19,6 @@ neoForge {
         from(file)
         publish(file)
     }
-    // I'd have it on but it just doesn't work :( (fails on some neoforge classes)
     validateAccessTransformers = true
 
     interfaceInjectionData {
@@ -135,7 +134,7 @@ neoForge {
             create("renderDocClient") {
                 client()
                 sourceSet = sourceSets.client
-                ideName = "Clean Client + RenderDoc (Requires Java 21)"
+                ideName = "Clean Client + RenderDoc"
 
                 programArguments.addAll('--username', 'screret', '--uuid', '1184eb79-5831-4f7d-b8f4-3a46fccf7a1d')
 

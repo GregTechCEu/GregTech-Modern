@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import org.jetbrains.annotations.TestOnly;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.Map;
 
@@ -41,6 +43,8 @@ public interface IMappedRegistryAccess<T> {
     }
 
     /// FOR TESTING ONLY; THIS WILL FUCK UP THINGS IF THINGS ARE IN USE!
+    @TestOnly
+    @VisibleForTesting
     default void gtceu$remove(ResourceKey<T> key) {
         if (this.gtceu$isFrozen()) {
             throw new IllegalStateException("Cannot remove entry from a frozen registry: " + key);

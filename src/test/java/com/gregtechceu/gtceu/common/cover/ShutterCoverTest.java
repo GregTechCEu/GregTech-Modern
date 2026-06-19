@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.storage.BufferMachine;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -17,9 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.EmptyTemplate;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "coverTests")
 public class ShutterCoverTest {
 
     public static void setupCrates(GameTestHelper helper) {
@@ -27,13 +30,14 @@ public class ShutterCoverTest {
         helper.setBlock(new BlockPos(0, 2, 0), GTMachines.BUFFER[GTValues.LV].getBlock());
     }
 
+    @TestHolder()
+    // TODO this should use an actual structure instead of building it here
+    @EmptyTemplate("5")
     @GameTest(template = "empty_5x5", batch = "coverTests")
     public static void shutterCoverBlocksTransferTest(GameTestHelper helper) {
         setupCrates(helper);
-        BufferMachine crate1 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 1, 0)))
-                .getMetaMachine();
-        BufferMachine crate2 = (BufferMachine) ((MetaMachineBlockEntity) helper.getBlockEntity(new BlockPos(0, 2, 0)))
-                .getMetaMachine();
+        BufferMachine crate1 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        BufferMachine crate2 = (BufferMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
         crate1.getInventory().setStackInSlot(0, new ItemStack(Items.FLINT, 16));
         crate1.getInventory().setStackInSlot(1, new ItemStack(Items.DIAMOND, 16));
         // LV Cover

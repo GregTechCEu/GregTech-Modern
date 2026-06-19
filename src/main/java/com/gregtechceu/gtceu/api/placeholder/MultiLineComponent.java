@@ -4,41 +4,63 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.*;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Accessors(chain = true)
 public class MultiLineComponent extends ArrayList<MutableComponent> {
 
-    public static final Codec<MultiLineComponent> CODEC = ComponentSerialization.CODEC.listOf()
-            .xmap(list -> {
-                if (((List<? extends Component>) list) instanceof MultiLineComponent multiLine) {
-                    return multiLine;
-                }
-                MultiLineComponent multiLine = new MultiLineComponent();
-                for (Component c : list) {
-                    multiLine.add(c.copy());
-                }
-                return multiLine;
-            }, MultiLineComponent::toImmutable);
+    // spotless:off
+    public static final Codec<MultiLineComponent> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ComponentSerialization.CODEC.listOf().fieldOf("text").forGetter(MultiLineComponent::toImmutable),
+            GraphicsComponent.CODEC.listOf().orElse(Collections.emptyList()).fieldOf("graphics").forGetter(MultiLineComponent::getGraphics)
+    ).apply(instance, MultiLineComponent::of));
+    // spotless:on
 
     public MultiLineComponent() {}
 
     @Getter
+    @Setter
     private boolean ignoreSpaces = false;
+
+    @Getter
+    private final List<GraphicsComponent> graphics = new ArrayList<>();
 
     public MultiLineComponent(List<MutableComponent> components) {
         super(components);
     }
 
+    protected static MultiLineComponent of(List<Component> lines, List<GraphicsComponent> graphics) {
+        MultiLineComponent component = lines.stream()
+                .map(Component::copy)
+                .collect(Collectors.toCollection(MultiLineComponent::new));
+        component.addGraphics(graphics);
+        return component;
+    }
+
+    public static MultiLineComponent of(List<Component> lines) {
+        List<MutableComponent> mutableLines = lines.stream()
+                .map(Component::copy)
+                .toList();
+        return new MultiLineComponent(mutableLines);
+    }
+
     public static MultiLineComponent of(Component c) {
-        return new MultiLineComponent(List.of(c.copy()));
+        return MultiLineComponent.of(c.copy());
+    }
+
+    public static MultiLineComponent of(MutableComponent c) {
+        MultiLineComponent value = new MultiLineComponent();
+        value.add(c);
+        return value;
     }
 
     public static MultiLineComponent literal(char c) {
@@ -91,7 +113,10 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public int toInt() {
         if (this.isEmpty()) return 0;
         if (this.size() > 1) throw new NumberFormatException(this.toString());
-        return Integer.parseInt(this.get(0).getString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0x")) return Integer.parseInt(s.substring(2), 16);
+        if (s.startsWith("0b")) return Integer.parseInt(s.substring(2), 2);
+        return Integer.parseInt(s);
     }
 
     public void append(@Nullable String s) {
@@ -118,6 +143,12 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
     public MultiLineComponent append(@NotNull Component line) {
         this.getLast().append(line);
         return this;
+    }
+
+    public MultiLineComponent append(MultiLineComponent multiLineComponent) {
+        if (multiLineComponent == null) return this;
+        this.graphics.addAll(multiLineComponent.getGraphics());
+        return this.append(multiLineComponent.toImmutable());
     }
 
     public void appendNewline() {
@@ -148,8 +179,21 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         return Collections.unmodifiableList(this);
     }
 
-    public MultiLineComponent setIgnoreSpaces(boolean ignoreSpaces) {
-        this.ignoreSpaces = ignoreSpaces;
+    public long toLong() {
+        if (this.isEmpty()) return 0;
+        if (this.size() > 1) throw new NumberFormatException(this.toString());
+        String s = this.get(0).getString();
+        if (s.startsWith("0b")) return Long.parseLong(s.substring(2), 2);
+        if (s.startsWith("0x")) return Long.parseLong(s.substring(2), 16);
+        return Long.parseLong(s);
+    }
+
+    public MultiLineComponent addGraphics(GraphicsComponent... graphicsComponents) {
+        return this.addGraphics(List.of(graphicsComponents));
+    }
+
+    public MultiLineComponent addGraphics(Collection<GraphicsComponent> graphicsComponents) {
+        this.graphics.addAll(graphicsComponents);
         return this;
     }
 }

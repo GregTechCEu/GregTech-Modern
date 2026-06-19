@@ -15,9 +15,9 @@ public interface IMonitorComponent {
 
     IGuiTexture getComponentIcon();
 
-    BlockPos getPos();
+    BlockPos getBlockPos();
 
-    default @Nullable net.neoforged.neoforge.items.IItemHandler getDataItems() {
+    default @Nullable IItemHandler getDataItems() {
         return null;
     }
 }

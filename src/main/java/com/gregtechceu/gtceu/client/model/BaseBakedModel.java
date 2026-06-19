@@ -5,9 +5,9 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseBakedModel implements IDynamicBakedModel {
 
@@ -34,12 +34,14 @@ public abstract class BaseBakedModel implements IDynamicBakedModel {
     }
 
     @Override
-    public @NotNull ItemOverrides getOverrides() {
+    @OnlyIn(Dist.CLIENT)
+    public ItemOverrides getOverrides() {
         return ItemOverrides.EMPTY;
     }
 
     @Override
-    public @NotNull TextureAtlasSprite getParticleIcon() {
+    @OnlyIn(Dist.CLIENT)
+    public TextureAtlasSprite getParticleIcon() {
         return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                 .apply(MissingTextureAtlasSprite.getLocation());
     }

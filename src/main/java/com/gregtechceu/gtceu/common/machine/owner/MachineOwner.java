@@ -20,7 +20,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.*;
 import java.util.function.Function;
 
-public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner {
+public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner, ArgonautsOwner {
 
     private static Function<UUID, MachineOwner> machineOwnerGenerator;
     public static final UUID EMPTY = new UUID(0, 0);
@@ -44,8 +44,8 @@ public abstract sealed class MachineOwner permits PlayerOwner, FTBOwner {
         var event = new RegisterOwnerTypeEvent();
         if (GTCEu.Mods.isFTBTeamsLoaded()) {
             event.register(0, FTBOwner::new);
-            // } else if (GTCEu.Mods.isArgonautsLoaded()) {
-            // event.register(0, ArgonautsOwner::new);
+        } else if (GTCEu.Mods.isArgonautsLoaded()) {
+            event.register(0, ArgonautsOwner::new);
         } else {
             event.register(0, PlayerOwner::new);
         }

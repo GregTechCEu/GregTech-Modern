@@ -16,7 +16,6 @@ sourcesJar {
     }
     from delombok
 }
-jar.archiveClassifier = "dev"
 
 base {
     archivesName = "${project.name}-${libs.versions.minecraft.get()}"

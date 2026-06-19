@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -369,6 +369,19 @@ public class MultiblockDisplayText {
             Component line = recipeLogic.getCustomProgressLine();
             if (line != null) {
                 textList.add(line);
+            }
+            return this;
+        }
+
+        public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
+            if (!isStructureFormed || !recipeLogic.isIdle())
+                return this;
+            var reasons = recipeLogic.getFailureReasons();
+            if (!reasons.isEmpty()) {
+                textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                for (var reason : reasons) {
+                    textList.add(Component.literal(" - ").append(reason));
+                }
             }
             return this;
         }

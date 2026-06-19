@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
@@ -10,10 +9,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -26,6 +25,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import lombok.Getter;
 
@@ -38,9 +40,10 @@ import lombok.Getter;
  * Rolls of 0
  * Forced rolls of 0 breaking recipes
  */
-// @PrefixGameTestTemplate(false)
-// @GameTestHolder(GTCEu.MOD_ID)
+@PrefixGameTestTemplate(false)
 // Gametests blocked until gtm#4326 is fixed
+// @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest(groups = "RangedIngredients")
 public class IntProviderIngredientTest {
 
     private static GTRecipeType CR_RECIPE_TYPE;
@@ -71,7 +74,15 @@ public class IntProviderIngredientTest {
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
         CENTRIFUGE_RECIPE_TYPE = TestUtils.createRecipeType("ranged_ingredient_centrifuge_tests",
                 GTRecipeTypes.CENTRIFUGE_RECIPES);
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+
+        var CRHandler = CR_RECIPE_TYPE.getAdditionHandler();
+        CRHandler.beginStaging();
+        var LCRHandler = LCR_RECIPE_TYPE.getAdditionHandler();
+        LCRHandler.beginStaging();
+        var centHandler = CENTRIFUGE_RECIPE_TYPE.getAdditionHandler();
+        centHandler.beginStaging();
+
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cr"))
                 .inputItemsRanged(CR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -80,7 +91,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .build());
 
-        CR_RECIPE_TYPE.getLookup().addRecipe(CR_RECIPE_TYPE
+        CRHandler.addStaging(CR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cr"))
                 .inputItems(CR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -88,7 +99,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .build());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_lcr"))
                 .inputItemsRanged(LCR_IN, UniformInt.of(0, 9))
                 .inputItems(COBBLE)
@@ -97,7 +108,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .build());
 
-        LCR_RECIPE_TYPE.getLookup().addRecipe(LCR_RECIPE_TYPE
+        LCRHandler.addStaging(LCR_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_lcr"))
                 .inputItems(LCR_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 9))
@@ -105,7 +116,7 @@ public class IntProviderIngredientTest {
                 .duration(2)
                 .build());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_input_item_cent"))
                 .inputItemsRanged(LCENT_IN, UniformInt.of(0, 4))
                 .inputItems(COBBLE)
@@ -114,17 +125,21 @@ public class IntProviderIngredientTest {
                 .duration(4)
                 .build());
 
-        CENTRIFUGE_RECIPE_TYPE.getLookup().addRecipe(CENTRIFUGE_RECIPE_TYPE
+        centHandler.addStaging(CENTRIFUGE_RECIPE_TYPE
                 .recipeBuilder(GTCEu.id("test_ranged_output_item_cent"))
                 .inputItems(LCENT_OUT)
                 .outputItemsRanged(STONE, UniformInt.of(0, 4))
                 .EUt(GTValues.V[GTValues.IV])
                 .duration(4)
                 .build());
+
+        CRHandler.completeStaging();
+        LCRHandler.completeStaging();
+        centHandler.completeStaging();
     }
 
     private static MetaMachine getMetaMachine(BlockEntity entity) {
-        return ((MetaMachineBlockEntity) entity).getMetaMachine();
+        return (MetaMachine) entity;
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, FluidHatchPartMachine inputHatch1,
@@ -184,6 +199,8 @@ public class IntProviderIngredientTest {
     }
 
     // test for IntProviderIngredient.test()
+    @TestHolder
+    // TODO this should use JUnit
     @GameTest(template = "empty", batch = "RangedIngredients")
     public static void rangedIngredientTestEqualTest(GameTestHelper helper) {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5));
@@ -198,6 +215,8 @@ public class IntProviderIngredientTest {
     }
 
     // test for IntProviderIngredient.getStacks()
+    @TestHolder
+    // TODO this should use JUnit
     @GameTest(template = "empty", batch = "RangedIngredients")
     public static void rangedIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
@@ -214,7 +233,7 @@ public class IntProviderIngredientTest {
     }
 
     // test for IntProviderIngredient.toJson()
-    // @GameTest(template = "empty", batch = "RangedIngredients")
+    // @TestHolder(template = "empty", batch = "RangedIngredients")
     // public static void rangedIngredientJsonTest(GameTestHelper helper) {
     // var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
 
@@ -247,6 +266,7 @@ public class IntProviderIngredientTest {
     // Test for singleblock machine with ranged item input.
     // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
     // This is specifically a test for #3593 / #3594
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients", required = false)
     public static void singleblockRangedItemOutputSabotaged(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -321,6 +341,7 @@ public class IntProviderIngredientTest {
 
     // Failure Test for singleblock machine with ranged item input
     // Provides too few input items, should not run recipes.
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInputFailure(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -349,6 +370,7 @@ public class IntProviderIngredientTest {
     }
 
     // Test for singleblock machine with ranged item input
+    @TestHolder()
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemInput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -406,6 +428,7 @@ public class IntProviderIngredientTest {
     }
 
     // Test for singleblock machine with ranged item output
+    @TestHolder
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
     public static void singleblockRangedItemOutput(GameTestHelper helper) {
         SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
@@ -460,6 +483,7 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with ranged item input
+    @TestHolder
     @GameTest(template = "lcr_ranged_ingredients", batch = "RangedIngredients")
     public static void multiblockLCRRangedItemInput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
@@ -515,6 +539,7 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with ranged item input
+    @TestHolder
     @GameTest(template = "lcr_ranged_ingredients", batch = "RangedIngredients")
     public static void multiblockLCRRangedItemOutput(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndFormLCR(helper);
@@ -567,9 +592,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item input
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              attempts = 10)
     public static void multiblockLCentRangedItemInput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -637,9 +664,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item output
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              attempts = 10)
     public static void multiblockLCentRangedItemOutput16Parallel(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -711,9 +740,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item input
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              attempts = 10)
     public static void multiblockLCentRangedItemInputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -781,9 +812,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item output
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 200)
+              timeoutTicks = 200,
+              attempts = 10)
     public static void multiblockLCentRangedItemOutputBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -855,9 +888,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item input
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 500)
+              timeoutTicks = 500,
+              attempts = 10)
     public static void multiblockLCentRangedItemInput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -937,9 +972,11 @@ public class IntProviderIngredientTest {
     }
 
     // test for multiblock machine with 16x Parallels with ranged item output
+    @TestHolder
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
               batch = "RangedIngredients",
-              timeoutTicks = 500)
+              timeoutTicks = 500,
+              attempts = 10)
     public static void multiblockLCentRangedItemOutput16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 

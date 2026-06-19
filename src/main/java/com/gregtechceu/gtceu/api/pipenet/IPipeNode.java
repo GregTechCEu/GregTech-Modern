@@ -1,25 +1,28 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.client.model.GTModelProperties;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelDataManager;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
-                          extends ITickSubscription, IPaintable {
+                          extends ITickSubscription, IPaintable, IGregtechBlockEntity {
 
     long getOffsetTimer();
 
@@ -84,32 +87,12 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     int getBlockedConnections();
 
+    default BlockState getState() {
+        return self().getBlockState();
+    }
+
     default BlockEntity self() {
         return (BlockEntity) this;
-    }
-
-    default Level getPipeLevel() {
-        return self().getLevel();
-    }
-
-    default BlockPos getPipePos() {
-        return self().getBlockPos();
-    }
-
-    default void markAsDirty() {
-        self().setChanged();
-    }
-
-    default boolean isInValid() {
-        return self().isRemoved();
-    }
-
-    default boolean isRemote() {
-        var level = getPipeLevel();
-        if (level == null) {
-            return GTCEu.isClientThread();
-        }
-        return level.isClientSide;
     }
 
     @SuppressWarnings("unchecked")
@@ -119,8 +102,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @Nullable
     default PipeNet<NodeDataType> getPipeNet() {
-        if (getPipeLevel() instanceof ServerLevel serverLevel) {
-            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getPipePos());
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            return getPipeBlock().getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
         }
         return null;
     }
@@ -133,7 +116,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     default NodeDataType getNodeData() {
         var net = getPipeNet();
         if (net != null) {
-            return net.getNodeAt(getPipePos()).data;
+            return net.getNodeAt(getBlockPos()).data;
         }
         return null;
     }
@@ -141,11 +124,17 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     void notifyBlockUpdate();
 
     default void scheduleRenderUpdate() {
-        var pos = getPipePos();
-        var level = getPipeLevel();
+        var pos = getBlockPos();
+        var level = getLevel();
         if (level != null) {
             var state = level.getBlockState(pos);
             if (level.isClientSide) {
+                // simplified from requestModelDataUpdate
+                ModelDataManager manager = level.getModelDataManager();
+                if (manager != null) {
+                    manager.requestRefresh(self());
+                }
+
                 level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
             } else {
                 level.blockEvent(pos, state.getBlock(), 1, 0);
@@ -155,20 +144,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     default void serverTick() {}
 
-    default void scheduleNeighborShapeUpdate() {
-        Level level = getPipeLevel();
-        BlockPos pos = getPipePos();
-
-        if (level == null || pos == null)
-            return;
-
-        level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
-    }
-
-    default BlockEntity getNeighbor(Direction direction) {
-        return getPipeLevel().getBlockEntity(getPipePos().relative(direction));
-    }
-
     @Override
     default int getDefaultPaintingColor() {
         return 0xFFFFFF;
@@ -176,4 +151,15 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     @NotNull
     Material getFrameMaterial();
+
+    @ApiStatus.Internal
+    @Override
+    default @NotNull ModelData getModelData() {
+        return ModelData.builder()
+                .with(GTModelProperties.LEVEL, self().getLevel())
+                .with(GTModelProperties.POS, self().getBlockPos())
+                .with(GTModelProperties.PIPE_CONNECTION_MASK, this.getVisualConnections())
+                .with(GTModelProperties.PIPE_BLOCKED_MASK, this.getBlockedConnections())
+                .build();
+    }
 }

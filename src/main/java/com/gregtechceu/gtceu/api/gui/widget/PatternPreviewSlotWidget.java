@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nonnull;
-
 public class PatternPreviewSlotWidget extends SlotWidget {
 
     public PatternPreviewSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition,
@@ -66,7 +64,7 @@ public class PatternPreviewSlotWidget extends SlotWidget {
         }
     }
 
-    public static void drawItemStack(@Nonnull GuiGraphics graphics, ItemStack itemStack, int x, int y, int color,
+    public static void drawItemStack(@NotNull GuiGraphics graphics, ItemStack itemStack, int x, int y, int color,
                                      @Nullable String altTxt) {
         var a = ColorUtils.alpha(color);
         var r = ColorUtils.red(color);

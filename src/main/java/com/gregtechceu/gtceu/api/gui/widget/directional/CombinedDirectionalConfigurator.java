@@ -72,7 +72,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     }
 
     private SceneWidget createSceneWidget() {
-        var pos = this.machine.getPos();
+        var pos = this.machine.getBlockPos();
 
         SceneWidget sceneWidget = new SceneWidget(4, 4, width - 8, height - 8, this.machine.getLevel())
                 .setRenderedCore(List.of(pos), null)
@@ -106,7 +106,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
 
         for (Direction face : GTUtil.DIRECTIONS) {
             for (IDirectionalConfigHandler configHandler : configHandlers) {
-                configHandler.renderOverlay(sceneWidget, new BlockPosFace(machine.getPos(), face));
+                configHandler.renderOverlay(sceneWidget, new BlockPosFace(machine.getBlockPos(), face));
             }
         }
     }
@@ -138,7 +138,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     }
 
     protected void onSideSelected(BlockPos pos, Direction side) {
-        if (!pos.equals(machine.getPos()))
+        if (!pos.equals(machine.getBlockPos()))
             return;
 
         if (this.selectedSide == side)
@@ -161,7 +161,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         if (isMouseOverElement(mouseX, mouseY) && this.selectedSide == lastSide && this.selectedSide != null) {
             var hover = sceneWidget.getHoverPosFace();
 
-            if (hover != null && hover.pos().equals(machine.getPos()) && hover.facing() == this.selectedSide) {
+            if (hover != null && hover.pos().equals(machine.getBlockPos()) && hover.facing() == this.selectedSide) {
                 var cd = new ClickData();
                 writeClientAction(MOUSE_CLICK_CLIENT_ACTION_ID, buf -> {
                     cd.writeToBuf(buf);

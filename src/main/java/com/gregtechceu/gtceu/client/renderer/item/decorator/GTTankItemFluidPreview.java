@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.IItemDecorator;
@@ -19,7 +19,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.Range;
 
 /**
- * An Item Decorator to render including fluid icons for items with {@link ForgeCapabilities#FLUID_HANDLER_ITEM}.
+ * An Item Decorator to render contained fluid icons for items with {@link Capabilities.FluidHandler#ITEM}.
  * <p>
  * The fluid type count can be up to 4, set by {@link #setMaxRenderCount(int)}, 1 by default.
  *
@@ -78,30 +78,28 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
     @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-        if (isRequireShiftKeyDown() && !GTUtil.isShiftDown()) {
+        if (isRequireShiftKeyDown() && !Screen.hasShiftDown()) {
             return false;
         }
 
-        IFluidHandlerItem optional = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+        if (fluidHandler == null) {
+            return false;
+        }
 
         if (isRenderOnTopOfItem()) {
             RenderSystem.disableDepthTest();
         }
 
-        IFluidHandlerItem fluidHandler = optional;
         for (int index = 0, renderedCount = 0; index < fluidHandler.getTanks() &&
                 renderedCount < getMaxRenderCount(); index++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(index);
-            if (!fluidInTank.isEmpty()) {
-                DrawerHelper.drawFluidForGui(
-                        guiGraphics,
-                        fluidInTank,
-                        x + OFFSET[renderedCount][0],
-                        y + OFFSET[renderedCount][1],
-                        8.0F,
-                        8.0F);
-                renderedCount++;
+            if (fluidInTank.isEmpty()) {
+                continue;
             }
+            DrawerHelper.drawFluidForGui(guiGraphics, fluidInTank,
+                    x + OFFSET[renderedCount][0], y + OFFSET[renderedCount][1], 8.0F, 8.0F);
+            renderedCount++;
         }
 
         return true;

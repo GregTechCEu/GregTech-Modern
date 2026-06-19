@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.worldgen.bedrockore.WeightedMaterial;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 
 import net.minecraft.core.HolderSet;
 import net.minecraft.resources.ResourceKey;
@@ -41,7 +40,7 @@ public class BedrockOreBuilder extends BuilderBase<BedrockOreDefinition> {
     private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
     public BedrockOreBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
     }
 
     public static BedrockOreBuilder from(BedrockOreDefinition definition, ResourceLocation id) {
