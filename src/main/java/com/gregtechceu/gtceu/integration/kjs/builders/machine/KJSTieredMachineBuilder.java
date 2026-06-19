@@ -2,15 +2,14 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.gregtechceu.gtceu.data.machine.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,7 +33,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefinition @NotNull []>
                                      implements IMachineBuilderKJS {
 
-    private final MachineBuilder<?>[] builders = new MachineBuilder[TIER_COUNT];
+    private final MachineBuilder<?, ?>[] builders = new MachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -43,8 +42,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
     @Setter
-    @Nullable
-    public transient Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
+    public transient @Nullable Int2IntFunction tankScalingFunction = GTMachineUtils.defaultTankSizeFunction;
     @Setter
     public transient boolean addDefaultTooltips = true;
     @Setter
@@ -52,11 +50,10 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @Setter
     public transient boolean isGenerator = false;
 
-    @Nullable
-    public transient BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
+    public transient @Nullable BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI;
 
     public KJSTieredMachineBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
         this.dummyBuilder = true;
@@ -65,7 +62,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
                                    BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> editableUI,
                                    boolean isGenerator) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.machine = machine;
         this.editableUI = editableUI;
         this.isGenerator = isGenerator;
@@ -116,9 +113,9 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            MachineBuilder<?> builder = GTRegistration.REGISTRATE.machine(
-                    String.format("%s_%s", tierName, this.id.getPath()),
-                    holder -> machine.create(holder, tier, tankFunction));
+            MachineBuilder<?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+                    .machine(String.format("%s_%s", tierName, this.id.getPath()),
+                            holder -> machine.create(holder, tier, tankFunction));
 
             builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(this.id.getPath()), VLVT[tier]))
                     .tier(tier);
@@ -148,18 +145,18 @@ public class KJSTieredMachineBuilder extends BuilderBase<@Nullable MachineDefini
     @FunctionalInterface
     public interface TieredCreationFunction {
 
-        MetaMachine create(IMachineBlockEntity holder, int tier, Int2IntFunction tankScaling);
+        MetaMachine create(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScaling);
     }
 
     @FunctionalInterface
     public interface CreationFunction<T extends MetaMachine> {
 
-        T create(IMachineBlockEntity holder);
+        T create(BlockEntityCreationInfo info);
     }
 
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?> builder);
+        void apply(int tier, MachineBuilder<?, ?> builder);
     }
 }

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.network.chat.Component;
 
@@ -17,14 +17,13 @@ import org.jetbrains.annotations.NotNull;
 @NoArgsConstructor
 public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
-    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition
-            .isReverse(instance)
-            .and(instance.group(
-                    Codec.INT.fieldOf("min").forGetter(val -> val.min),
-                    Codec.INT.fieldOf("max").forGetter(val -> val.max)))
-            .apply(instance, PositionYCondition::new));
+    // spotless:off
+    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(instance.group(
+            Codec.INT.fieldOf("min").forGetter(val -> val.min),
+            Codec.INT.fieldOf("max").forGetter(val -> val.max)
+    )).apply(instance, PositionYCondition::new));
+    // spotless:on
 
-    public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;
     private int max;
 
@@ -59,7 +58,7 @@ public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        int y = recipeLogic.machine.self().getPos().getY();
+        int y = recipeLogic.machine.self().getBlockPos().getY();
         return y >= this.min && y <= this.max;
     }
 

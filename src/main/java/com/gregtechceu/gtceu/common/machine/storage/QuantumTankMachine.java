@@ -1,55 +1,35 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.PhantomFluidWidget;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-import com.gregtechceu.gtceu.api.item.datacomponents.LargeFluidContent;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.core.MixinHelpers;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.Util;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.InteractionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -59,158 +39,68 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import lombok.Getter;
-import lombok.Setter;
-import org.apache.logging.log4j.LogManager;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 
-public class QuantumTankMachine extends TieredMachine implements IAutoOutputFluid, IInteractedMachine, IControllable,
-                                IDropSaveMachine, IFancyUIMachine {
-
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(QuantumTankMachine.class,
-            MetaMachine.MANAGED_FIELD_HOLDER);
+@NotNullByDefault
+public class QuantumTankMachine extends TieredMachine implements IControllable,
+                                IFancyUIMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = Util.make(new Object2LongArrayMap<>(), map -> {
         map.defaultReturnValue(-1L);
     });
 
-    @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    protected Direction outputFacingFluids;
-    @Getter
-    @Persisted
-    @DescSynced
-    @RequireRerender
-    protected boolean autoOutputFluids;
-    @Getter
-    @Setter
-    @Persisted
-    protected boolean allowInputFromOutputSideFluids;
-    @Persisted
+    @SaveField
     private boolean isVoiding;
 
     @Getter
     private final long maxAmount;
     protected final FluidCache cache;
-    @DescSynced
+    @SyncToClient
+    @SaveField
     private final CustomFluidTank lockedFluid;
 
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
-    @DescSynced
+    @SyncToClient
+    @SaveField
     protected long storedAmount = 0;
 
-    @Nullable
-    protected TickableSubscription autoOutputSubs;
+    @SaveField
+    @SyncToClient
+    public final AutoOutputTrait autoOutput;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
-        super(holder, tier);
-        this.outputFacingFluids = getFrontFacing().getOpposite();
+    public QuantumTankMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
+        super(info, tier);
         this.maxAmount = maxAmount;
-        this.cache = createCacheFluidHandler(args);
+        this.cache = createCacheFluidHandler();
         this.lockedFluid = new CustomFluidTank(1000);
+        this.autoOutput = AutoOutputTrait.ofFluids(this, cache);
     }
 
     //////////////////////////////////////
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    @Override
-    public @NotNull ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
-    protected FluidCache createCacheFluidHandler(Object... args) {
+    protected FluidCache createCacheFluidHandler() {
         return new FluidCache(this);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
     }
 
     protected void onFluidChanged() {
         if (!isRemote()) {
-            updateAutoOutputSubscription();
+            syncDataHolder.markClientSyncFieldDirty("storedAmount");
+            syncDataHolder.markClientSyncFieldDirty("stored");
         }
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
-        super.saveCustomPersistedData(tag, forDrop);
-        if (!forDrop) tag.put("lockedFluid", lockedFluid.serializeNBT(GTRegistries.builtinRegistry()));
-        if (!stored.isEmpty()) {
-            tag.put("stored", stored.save(GTRegistries.builtinRegistry()));
-        } else {
-            tag.remove("stored");
-        }
-        tag.putLong("storedAmount", storedAmount);
-    }
-
-    @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
-        super.loadCustomPersistedData(tag);
-
-        var from = tag.contains("cache") ? tag.getCompound("cache") : tag;
-        var registry = Objects.requireNonNullElse(MixinHelpers.getCurrentBERegistries(),
-                GTRegistries.builtinRegistry());
-        this.lockedFluid.readFromNBT(registry, from.getCompound("lockedFluid"));
-
-        if (tag.contains("stored")) {
-            var v = MixinHelpers.getCurrentBERegistries();
-            LogManager.getLogger().warn("{}", v);
-            var stored = FluidStack.parseOptional(registry, tag.getCompound("stored"));
-            this.stored = stored.copyWithAmount(FluidType.BUCKET_VOLUME);
-        } else {
-            this.stored = FluidStack.EMPTY;
-        }
-
-        if (!tag.contains("storedAmount")) this.storedAmount = stored.getAmount();
-        else this.storedAmount = tag.getLong("storedAmount");
-        if (storedAmount == 0 && !stored.isEmpty()) this.storedAmount = stored.getAmount();
-    }
-
-    @Override
-    public void applyImplicitComponents(MetaMachineBlockEntity.@NotNull ExDataComponentInput componentInput) {
-        super.applyImplicitComponents(componentInput);
-        LargeFluidContent storage = componentInput.getOrDefault(GTDataComponents.LARGE_FLUID_CONTENT,
-                LargeFluidContent.EMPTY);
-        stored = storage.stored();
-        storedAmount = storage.amount();
-    }
-
-    @Override
-    public void collectImplicitComponents(DataComponentMap.@NotNull Builder components) {
-        super.collectImplicitComponents(components);
-        components.set(GTDataComponents.LARGE_FLUID_CONTENT, new LargeFluidContent(stored, storedAmount));
-    }
-
-    @Override
-    public void removeItemComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeItemComponentsFromTag(tag);
-        tag.remove("stored");
-        tag.remove("storedAmount");
     }
 
     //////////////////////////////////////
@@ -233,56 +123,14 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         return super.getFluidHandlerCap(side, useCoverCapability);
     }
 
-    //////////////////////////////////////
-    // ******* Auto Output *******//
-    //////////////////////////////////////
-
-    @Override
-    public void setAutoOutputFluids(boolean allow) {
-        this.autoOutputFluids = allow;
-        updateAutoOutputSubscription();
-    }
-
-    @Override
-    public void setOutputFacingFluids(@Nullable Direction outputFacing) {
-        this.outputFacingFluids = outputFacing;
-        updateAutoOutputSubscription();
-    }
-
     @Override
     public boolean isWorkingEnabled() {
-        return isAutoOutputFluids();
+        return autoOutput.isAutoOutputFluids();
     }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        setAutoOutputFluids(isWorkingAllowed);
-    }
-
-    @Override
-    public void onNeighborChanged(net.minecraft.world.level.block.Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
-    }
-
-    protected void updateAutoOutputSubscription() {
-        var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !stored.isEmpty()) && outputFacing != null &&
-                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getPos(), outputFacing)) {
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
-        } else if (autoOutputSubs != null) {
-            autoOutputSubs.unsubscribe();
-            autoOutputSubs = null;
-        }
-    }
-
-    protected void checkAutoOutput() {
-        if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
-                cache.exportToNearby(getOutputFacingFluids());
-            }
-            updateAutoOutputSubscription();
-        }
+        autoOutput.setAllowAutoOutputFluids(isWorkingAllowed);
     }
 
     //////////////////////////////////////
@@ -290,64 +138,13 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //////////////////////////////////////
 
     @Override
-    public boolean isFacingValid(Direction facing) {
-        if (facing == outputFacingFluids) return false;
-        return super.isFacingValid(facing);
-    }
-
-    @Override
-    public ItemInteractionResult onUseWithItem(ItemStack stack, BlockState state, Level world, BlockPos pos,
-                                               Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!world.isClientSide) {
-            if (FluidUtil.interactWithFluidHandler(player, hand, cache)) {
-                return ItemInteractionResult.SUCCESS;
+    public InteractionResult onUseWithItem(ExtendedUseOnContext context) {
+        if (context.getClickedFace() == getFrontFacing() && !isRemote()) {
+            if (FluidUtil.interactWithFluidHandler(context.getPlayer(), context.getHand(), cache)) {
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        } else {
-            return ItemInteractionResult.SUCCESS;
         }
-    }
-
-    @Override
-    protected ItemInteractionResult onWrenchClick(Player playerIn, InteractionHand hand, ItemStack held,
-                                                  Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        if (!playerIn.isShiftKeyDown()) {
-            var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return ItemInteractionResult.FAIL;
-            if (hasFrontFacing() && gridSide == getFrontFacing()) return ItemInteractionResult.FAIL;
-            if (gridSide != getOutputFacingFluids()) {
-                setOutputFacingFluids(gridSide);
-            } else {
-                setOutputFacingFluids(null);
-            }
-            return ItemInteractionResult.sidedSuccess(playerIn.level().isClientSide);
-        }
-
-        return super.onWrenchClick(playerIn, hand, held, gridSide, hitResult);
-    }
-
-    @Override
-    protected ItemInteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, ItemStack held,
-                                                       Direction gridSide,
-                                                       BlockHitResult hitResult) {
-        if (!isRemote()) {
-            if (gridSide == getOutputFacingFluids()) {
-                if (isAllowInputFromOutputSideFluids()) {
-                    setAllowInputFromOutputSideFluids(false);
-                    playerIn.sendSystemMessage(
-                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
-                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
-                } else {
-                    setAllowInputFromOutputSideFluids(true);
-                    playerIn.sendSystemMessage(
-                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
-                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
-                }
-            }
-            return ItemInteractionResult.SUCCESS;
-        }
-        return super.onScrewdriverClick(playerIn, hand, held, gridSide, hitResult);
+        return super.onUseWithItem(context);
     }
 
     public boolean isLocked() {
@@ -361,12 +158,14 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         } else if (!locked) {
             lockedFluid.setFluid(FluidStack.EMPTY);
         }
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
     }
 
     protected void setLocked(FluidStack fluid) {
         if (fluid.isEmpty()) setLocked(false);
         else if (stored.isEmpty()) lockedFluid.setFluid(fluid);
         else if (stored.is(fluid.getFluid())) setLocked(true);
+        syncDataHolder.markClientSyncFieldDirty("lockedFluid");
     }
 
     public FluidStack getLockedFluid() {
@@ -391,7 +190,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
-                        GuiTextures.BUTTON_FLUID_OUTPUT, this::isAutoOutputFluids, this::setAutoOutputFluids)
+                        GuiTextures.BUTTON_FLUID_OUTPUT, this.autoOutput::isAutoOutputFluids,
+                        this.autoOutput::setAllowAutoOutputFluids)
                         .setShouldUseBaseBackground()
                         .setTooltipText("gtceu.gui.fluid_auto_output.tooltip"))
                 .addWidget(new ToggleButtonWidget(22, 41, 18, 18,
@@ -406,39 +206,23 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         return group;
     }
 
-    //////////////////////////////////////
-    // ******* Rendering ********//
-    //////////////////////////////////////
-    @Override
-    public ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                    ItemStack held, Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isShiftKeyDown()) {
-                if (!hasFrontFacing() || side != getFrontFacing()) {
-                    return GuiTextures.TOOL_IO_FACING_ROTATION;
-                }
-            }
-        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
-            if (side == getOutputFacingFluids()) {
-                return GuiTextures.TOOL_ALLOW_INPUT;
-            }
-        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            if (side == getFrontFacing()) return null;
-        }
-        return super.sideTips(player, pos, state, toolTypes, held, side);
-    }
-
     protected class FluidCache extends MachineTrait implements IFluidHandler {
 
-        private final Predicate<FluidStack> filter = f -> !isLocked() ||
-                FluidStack.isSameFluidSameComponents(f, getLockedFluid());
+        public static final MachineTraitType<FluidCache> TYPE = new MachineTraitType<>(FluidCache.class);
+
+        @Override
+        public MachineTraitType<FluidCache> getTraitType() {
+            return TYPE;
+        }
+
+        private final Predicate<FluidStack> filter = f -> !isLocked() || getLockedFluid().isFluidEqual(f);
 
         public FluidCache(MetaMachine holder) {
             super(holder);
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return stored.copyWithAmount(GTMath.saturatedCast(storedAmount));
         }
 
@@ -458,7 +242,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (stored.isEmpty()) return FluidStack.EMPTY;
             long toDrain = Math.min(storedAmount, maxDrain);
             var copy = stored.copyWithAmount((int) toDrain);
@@ -471,7 +255,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (!FluidStack.isSameFluidSameComponents(resource, stored)) return FluidStack.EMPTY;
             return drain(resource.getAmount(), action);
         }
@@ -487,24 +271,19 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return filter.test(stack);
         }
 
-        public void exportToNearby(@NotNull Direction... facings) {
+        public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
-            var pos = getMachine().getPos();
+            var pos = getMachine().getBlockPos();
             for (Direction facing : facings) {
                 var filter = getMachine().getFluidCapFilter(facing, IO.OUT);
                 GTTransferUtils.getAdjacentFluidHandler(level, pos, facing)
                         .ifPresent(adj -> GTTransferUtils.transferFluidsFiltered(this, adj, filter));
             }
-        }
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
         }
     }
 }

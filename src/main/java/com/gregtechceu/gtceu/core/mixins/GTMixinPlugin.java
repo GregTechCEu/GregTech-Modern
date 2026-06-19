@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.loading.LoadingModList;
 
 import org.objectweb.asm.tree.ClassNode;
@@ -25,6 +26,8 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
     private static final String MIXIN_PACKAGE = "com.gregtechceu.gtceu.core.mixins.";
     private static final Map<String, String> MOD_COMPAT_MIXINS = new HashMap<>();
 
+    private static final String DEV_PACKAGE = MIXIN_PACKAGE + "dev.";
+
     static {
         MOD_COMPAT_MIXINS.put("roughlyenoughitems", MIXIN_PACKAGE + "rei");
         addModCompatMixin("emi");
@@ -38,6 +41,9 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (mixinClassName.startsWith(DEV_PACKAGE)) {
+            return !FMLLoader.isProduction();
+        }
         for (var compatMod : MOD_COMPAT_MIXINS.entrySet()) {
             if (mixinClassName.startsWith(compatMod.getValue())) {
                 return isModLoaded(compatMod.getKey());

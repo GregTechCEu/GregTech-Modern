@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 
-import com.gregtechceu.gtceu.api.worldgen.*;
-import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.worldgen.generator.veins.*;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
+import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
-public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
+public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
 
     private final InferredProperties inferredProperties = new InferredProperties();
 
@@ -43,7 +43,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     private int weight;
     private IWorldGenLayer layer = WorldGenLayers.STONE;
     @Setter
-    private Set<ResourceKey<Level>> dimensionFilter;
+    private Set<ResourceKey<Level>> dimensionFilter = Set.of();
     @Setter
     private HeightRangePlacement heightRange;
     @Setter
@@ -58,10 +58,10 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     @Nullable
     private VeinGenerator veinGenerator;
     @Setter
-    private List<IndicatorGenerator> indicatorGenerators;
+    private List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();;
 
     public OreVeinDefinitionBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
     }
 
     @Tolerate
@@ -78,9 +78,20 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
         return this;
     }
 
-    public OreVeinDefinitionBuilder dimensions(Collection<ResourceKey<Level>> dimensions) {
-        this.dimensionFilter = new HashSet<>(dimensions);
+    public OreVeinDefinitionBuilder dimensions(Collection<?> dimensions) {
+        Set<ResourceKey<Level>> keys = new HashSet<>();
+        for (Object dim : dimensions) {
+            keys.add(wrapDimension(dim));
+        }
+        this.dimensionFilter = keys;
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static ResourceKey<Level> wrapDimension(Object dim) {
+        if (dim instanceof ResourceKey<?> key) return (ResourceKey<Level>) key;
+        if (dim instanceof ResourceLocation rl) return ResourceKey.create(Registries.DIMENSION, rl);
+        return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dim.toString()));
     }
 
     public OreVeinDefinitionBuilder heightRangeUniform(int min, int max) {
@@ -213,10 +224,15 @@ public class OreVeinDefinitionBuilder extends BuilderBase<OreVeinDefinition> {
     // It's simpler than doing the exact same thing via a ton of nested calls.
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public OreVeinDefinition createObject() {
-        return new OreVeinDefinition(clusterSize, density, weight, layer,
+    public GTOreDefinition createObject() {
+        var registries = RegistryAccessContainer.current;
+        HolderGetter<Biome> biomeParse = registries == null ? null :
+                registries.access().lookupOrThrow(Registries.BIOME);
+        return new GTOreDefinition(clusterSize, density, weight, layer,
                 Set.copyOf(dimensionFilter), heightRange, discardChanceOnAirExposure,
-                biomes, biomeWeightModifier, veinGenerator, indicatorGenerators,
-                RegistryAccessContainer.current.access().lookupOrThrow(Registries.BIOME));
+                biomes == null ? HolderSet.empty() : biomes,
+                biomeWeightModifier == null ? BiomeWeightModifier.EMPTY : biomeWeightModifier,
+                veinGenerator, indicatorGenerators,
+                biomeParse);
     }
 }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jei.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

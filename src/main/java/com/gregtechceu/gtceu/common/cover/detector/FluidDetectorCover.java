@@ -9,8 +9,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import org.jetbrains.annotations.Nullable;
-
 public class FluidDetectorCover extends DetectorCover {
 
     public FluidDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -48,7 +46,7 @@ public class FluidDetectorCover extends DetectorCover {
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedFluid, fluidCapacity, isInverted()));
     }
 
-    protected @Nullable IFluidHandler getFluidHandler() {
-        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).orElse(null);
+    protected IFluidHandler getFluidHandler() {
+        return FluidUtil.getFluidHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide).orElse(null);
     }
 }

@@ -1,15 +1,17 @@
 package com.gregtechceu.gtceu.integration.emi;
 
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTFluids;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluidHelper;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.fluid.GTFluids;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.machine.GTMultiMachines;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.emi.circuit.GTProgrammedCircuitCategory;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
@@ -31,12 +33,25 @@ import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiStack;
+import org.jetbrains.annotations.ApiStatus;
+
+import java.util.Comparator;
+import java.util.List;
 
 @EmiEntrypoint
 public class GTEMIPlugin implements EmiPlugin {
 
+    @ApiStatus.Internal
+    public static List<MachineDefinition> SORTED_MACHINES = null;
+
     @Override
     public void register(EmiRegistry registry) {
+        if (SORTED_MACHINES == null) {
+            SORTED_MACHINES = GTRegistries.MACHINES.stream()
+                    .sorted(SORT_MACHINES_BY_TIER)
+                    .toList();
+        }
+
         // Categories
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
@@ -94,4 +109,16 @@ public class GTEMIPlugin implements EmiPlugin {
             registry.addEmiStack(EmiStack.of(stack.getFluid(), stack.getComponentsPatch()));
         });
     }
+
+    public static final Comparator<MachineDefinition> SORT_MACHINES_BY_TIER = (a, b) -> {
+        boolean isAMulti = a instanceof MultiblockMachineDefinition;
+        boolean isBMulti = b instanceof MultiblockMachineDefinition;
+        if (isAMulti && !isBMulti) {
+            return 1;
+        } else if (!isAMulti && isBMulti) {
+            return -1;
+        } else {
+            return a.getTier() - b.getTier();
+        }
+    };
 }

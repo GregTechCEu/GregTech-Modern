@@ -1,6 +1,0 @@
----
-title: "@RequireRerender"
----
-
-
-# Using `@RequireRerender`

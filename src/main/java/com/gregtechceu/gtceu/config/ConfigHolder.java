@@ -9,6 +9,7 @@ import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
 import dev.toma.configuration.config.format.ConfigFormats;
+import org.jetbrains.annotations.ApiStatus;
 
 @Config(id = GTCEu.MOD_ID)
 public class ConfigHolder {
@@ -16,10 +17,14 @@ public class ConfigHolder {
     public static ConfigHolder INSTANCE;
     private static final Object LOCK = new Object();
 
+    @ApiStatus.Internal
+    public static dev.toma.configuration.config.ConfigHolder<ConfigHolder> INTERNAL_INSTANCE;
+
     public static void init() {
         synchronized (LOCK) {
-            if (INSTANCE == null) {
-                INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+            if (INSTANCE == null || INTERNAL_INSTANCE == null) {
+                INTERNAL_INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.YAML);
+                INSTANCE = INTERNAL_INSTANCE.getConfigInstance();
             }
         }
     }
@@ -157,12 +162,6 @@ public class ConfigHolder {
     }
 
     public static class CompatibilityConfigs {
-
-        @Configurable
-        @Configurable.Comment({ "Whether to run datafixers on world load.",
-                "Do note that mods like ModernFix will interfere with this.",
-                "Default: true" })
-        public boolean doDatafixers = true;
 
         @Configurable
         @Configurable.Comment("Config options regarding GTEU compatibility with other energy systems")
@@ -588,10 +587,6 @@ public class ConfigHolder {
         public int steamMultiParallelAmount = 8;
 
         @Configurable
-        @Configurable.Comment("Whether the Drums can input fluids from the output side (bottom).")
-        public boolean allowDrumsInputFluidsFromOutputSide = false;
-
-        @Configurable
         @Configurable.Comment("Small Steam Boiler Options")
         public SmallBoilers smallBoilers = new SmallBoilers();
         @Configurable
@@ -745,10 +740,17 @@ public class ConfigHolder {
         @Configurable.Comment({ "How much environmental hazards decay per chunk, per tick.",
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
+        @Configurable
+        @Configurable.Comment({ "List of domains that are allowed in the image module" })
+        public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
+                "raw.githubusercontent.com" };
     }
 
     public static class ClientConfigs {
 
+        @Configurable
+        @Configurable.Comment({ "Whether or not to display all temperatures in Celsius instead of Kelvin" })
+        public boolean temperaturesInCelsius = false;
         @Configurable
         @Configurable.Comment({ "Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true" })
         public boolean machinesEmissiveTextures = true;
@@ -793,7 +795,7 @@ public class ConfigHolder {
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
-        public RendererConfigs renderer = new RendererConfigs();
+        public RendererOptions renderer = new RendererOptions();
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
 
@@ -817,6 +819,33 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class RendererOptions {
+
+            @Configurable
+            @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
+            public boolean renderFluids = true;
+
+            @Configurable
+            @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
+            public boolean renderGrowingPlants = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to color material/ore block highlights in the material color",
+                    "Default: true" })
+            public boolean coloredMaterialBlockOutline = true;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
+                    "Default: true" })
+            public boolean coloredTieredMachineOutline = true;
+
+            @Configurable
+            @Configurable.Comment({
+                    "Whether or not to color wire/cable highlights based on voltage tier or material color",
+                    "Default: true" })
+            public boolean coloredWireOutline = true;
         }
 
         public static class TankItemFluidPreview {
@@ -849,26 +878,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({ "Dump all registered GT models/blockstates/etc?", "Default: false" })
         public boolean dumpAssets = false;
-    }
-
-    public static class RendererConfigs {
-
         @Configurable
-        @Configurable.Comment({ "Render fluids in multiblocks that support them?", "Default: true" })
-        public boolean renderFluids = true;
-
-        @Configurable
-        @Configurable.Comment({ "Render growing plants in multiblocks that support them?", "Default: true" })
-        public boolean renderGrowingPlants = true;
-
-        @Configurable
-        @Configurable.Comment({ "Whether or not to color tiered machine highlights in the tier color",
-                "Default: true" })
-        public boolean coloredTieredMachineOutline = true;
-
-        @Configurable
-        @Configurable.Comment({ "Whether or not to color wire/cable highlights based on voltage tier",
-                "Default: true" })
-        public boolean coloredWireOutline = true;
+        @Configurable.Comment({ "Executes ./gradlew :processResources when F3+T is pressed",
+                "Only works in a development environment", "Default: false" })
+        public boolean autoRebuildResources = false;
     }
 }

@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
-import net.minecraft.resources.ResourceLocation;
+import com.gregtechceu.gtceu.GTCEu;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.*;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
@@ -13,6 +14,15 @@ import java.util.Map;
 
 public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeComponent<V> value)
         implements RecipeComponent<Map<K, V>> {
+
+    // spotless:off
+    public static final RecipeComponentType<?> JAVA_MAP = RecipeComponentType.<JavaMapRecipeComponent<?, ?>>dynamic(GTCEu.id("java_map"), (type, ctx) -> {
+        return RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ctx.recipeComponentCodec().fieldOf("key").forGetter(JavaMapRecipeComponent::key),
+                ctx.recipeComponentCodec().fieldOf("value").forGetter(JavaMapRecipeComponent::value)
+        ).apply(instance, JavaMapRecipeComponent::new));
+    });
+    // spotless:on
 
     @Override
     public Map<K, V> replace(RecipeScriptContext cx, Map<K, V> original, ReplacementMatchInfo match,
@@ -47,7 +57,7 @@ public record JavaMapRecipeComponent<K, V>(RecipeComponent<K> key, RecipeCompone
         return TypeInfo.RAW_MAP.withParams(key.typeInfo(), value.typeInfo());
     }
 
-    public @Override RecipeComponentType<Map<K, V>> type() {
-        return RecipeComponentType.<Map<K, V>>unit(ResourceLocation.parse("java_map{" + key + ":" + value + "}"), this);
+    public @Override RecipeComponentType<?> type() {
+        return JAVA_MAP;
     }
 }

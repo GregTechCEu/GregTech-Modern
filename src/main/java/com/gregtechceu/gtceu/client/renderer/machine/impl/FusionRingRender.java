@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -104,6 +104,6 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
     @Override
     public AABB getRenderBoundingBox(FusionReactorMachine machine) {
-        return new AABB(machine.getPos()).inflate(getViewDistance() / 2.0D);
+        return new AABB(machine.getBlockPos()).inflate(getViewDistance() / 2.0D);
     }
 }

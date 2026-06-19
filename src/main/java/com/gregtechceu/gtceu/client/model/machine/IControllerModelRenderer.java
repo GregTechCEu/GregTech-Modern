@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.model.machine;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -22,7 +22,7 @@ public interface IControllerModelRenderer {
      * Render a specific model for given part.
      */
     @OnlyIn(Dist.CLIENT)
-    void renderPartModel(List<BakedQuad> quads, IMultiController machine, IMultiPart part,
+    void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine machine, IMultiPart part,
                          Direction frontFacing, @Nullable Direction side, RandomSource rand,
                          @NotNull ModelData modelData, @Nullable RenderType renderType);
 }

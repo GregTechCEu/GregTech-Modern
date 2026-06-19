@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
@@ -266,5 +268,11 @@ public class FormattingUtil {
 
     private static boolean isEmptyComponent(Component component) {
         return component.getContents() == PlainTextContents.EMPTY && component.getSiblings().isEmpty();
+    }
+
+    public static String formatTemperature(int temperature) {
+        if (ConfigHolder.INSTANCE.client.temperaturesInCelsius)
+            return formatNumbers(temperature - 273) + " °C";
+        else return formatNumbers(temperature) + " K";
     }
 }

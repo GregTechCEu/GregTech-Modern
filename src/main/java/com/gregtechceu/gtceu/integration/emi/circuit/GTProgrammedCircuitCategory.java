@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.emi.circuit;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTProgrammedCircuitWidget;
 
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;

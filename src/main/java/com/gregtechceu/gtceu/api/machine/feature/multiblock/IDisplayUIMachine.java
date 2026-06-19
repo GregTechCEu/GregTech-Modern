@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -16,10 +17,10 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
 
-public interface IDisplayUIMachine extends IUIMachine, IMultiController {
+public interface IDisplayUIMachine extends IUIMachine {
 
     default void addDisplayText(List<Component> textList) {
-        for (var part : this.getParts()) {
+        for (var part : self().getParts()) {
             part.addMultiText(textList);
         }
     }
@@ -42,5 +43,10 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
                 .background(GuiTextures.BACKGROUND)
                 .widget(screen)
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 134, true));
+    }
+
+    @Override
+    default MultiblockControllerMachine self() {
+        return (MultiblockControllerMachine) this;
     }
 }

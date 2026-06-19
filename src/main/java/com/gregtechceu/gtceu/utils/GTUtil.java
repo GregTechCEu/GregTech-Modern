@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -47,6 +48,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -56,13 +58,14 @@ import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
-    @SuppressWarnings("UnstableApiUsage")
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
         var builder = ImmutableList.<BlockPos>builderWithExpectedSize(18);
         BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
@@ -73,17 +76,6 @@ public class GTUtil {
     });
 
     private static final Object2IntMap<String> RVN = new Object2IntArrayMap<>(GTValues.VN, GTValues.ALL_TIERS);
-
-    private static final MapColor[] MAP_COLORS;
-
-    static {
-        int maxId = MapColor.GLOW_LICHEN.id;
-        MAP_COLORS = new MapColor[maxId];
-        for (int i = 0; i < maxId; i++) {
-            // Skip MapColor.NONE
-            MAP_COLORS[i] = MapColor.byId(i + 1);
-        }
-    }
 
     /**
      * Convenience method to get from VN -> Tier
@@ -292,6 +284,25 @@ public class GTUtil {
         return ItemStack.EMPTY;
     }
 
+    /**
+     * Returns first non-empty ItemStack from {@code stacks}.
+     *
+     * @param stacks list of candidates
+     * @return an ItemStack, or {@link ItemStack#EMPTY} if all the candidates are empty
+     * @throws IllegalArgumentException if {@code stacks} is empty
+     */
+    public static @NotNull ItemStack getFirstNonEmpty(@NotNull ItemStack... stacks) {
+        if (stacks.length == 0) {
+            throw new IllegalArgumentException("Empty ItemStack candidates");
+        }
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     public static <M> M getItem(List<? extends M> list, int index, M replacement) {
         if (index >= 0 && index < list.size())
             return list.get(index);
@@ -355,6 +366,40 @@ public class GTUtil {
         return false;
     }
 
+    public static String formatLongNumber(long number, long threshold) {
+        return (number > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
+    }
+
+    public static String formatLongNumber(long number) {
+        return formatLongNumber(number, 10000);
+    }
+
+    public static String getStringRemainTime(long time, long threshold) {
+        String s = Component.translatable("gtceu.jade.seconds", time % 60).getString();
+        time /= 60;
+        if (time > 0) {
+            s = Component.translatable("gtceu.jade.minutes", time % 60).getString() + " " + s;
+            time /= 60;
+            if (time > 0) {
+                s = Component.translatable("gtceu.jade.hours", time % 60).getString() + " " + s;
+                time /= 60;
+                if (time > 0) {
+                    s = Component.translatable("gtceu.jade.days", time % 24).getString() + " " + s;
+                    time /= 24;
+                    if (time > 0) {
+                        s = Component.translatable("gtceu.jade.years", formatLongNumber(time, threshold)).getString() +
+                                " " + s;
+                    }
+                }
+            }
+        }
+        return s;
+    }
+
+    public static String getStringRemainTime(long time) {
+        return getStringRemainTime(time, 10000);
+    }
+
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
         return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() &&
                 fluidStack.getAmount() / divisor != 0;
@@ -404,7 +449,8 @@ public class GTUtil {
      * Determines map color nearest to specified RGB color
      */
     public static MapColor determineMapColor(int rgbColor) {
-        return closestColor(rgbColor, MAP_COLORS, c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
+        return closestColor(rgbColor, MapColorAccessor.gtceu$getMaterialColors(),
+                c -> c.calculateRGBColor(MapColor.Brightness.NORMAL));
     }
 
     private static <T> T closestColor(int rgbColor, T[] colors, Function<T, Integer> extractRgbColor) {
@@ -578,15 +624,30 @@ public class GTUtil {
         throw new IllegalArgumentException("Invalid slot '" + slotType + "': " + slotIndex);
     }
 
-    public static boolean isSameItemSameTags(ItemStack s1, ItemStack s2) {
-        return ItemStack.isSameItemSameComponents(s1, s2);
-    }
-
-    public static <T> T getLast(List<T> list) {
-        return list.get(list.size() - 1);
-    }
-
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
+    }
+
+    public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
+        level.removeBlock(pos, false);
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                explosionPower, ConfigHolder.INSTANCE.machines.doesExplosionDamagesTerrain ?
+                        Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+    }
+
+    public static void setOnFire(Level level, BlockPos pos, double additionalFireChance) {
+        boolean isFirstFireSpawned = false;
+        for (Direction side : DIRECTIONS) {
+            if (level.isEmptyBlock(pos.relative(side))) {
+                if (!isFirstFireSpawned) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                    if (!level.isEmptyBlock(pos.relative(side))) {
+                        isFirstFireSpawned = true;
+                    }
+                } else if (additionalFireChance >= GTValues.RNG.nextDouble() * 100) {
+                    level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
+                }
+            }
+        }
     }
 }

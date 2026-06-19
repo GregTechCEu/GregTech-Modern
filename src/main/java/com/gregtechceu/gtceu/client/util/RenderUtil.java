@@ -2,11 +2,10 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTMatrixUtils;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -302,7 +301,7 @@ public class RenderUtil {
                 ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.getFirst().content).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
-                    if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
+                    if (!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, stack)) {
                         originalMethod.call(entity, level, output, x, y, seed, z);
                         return true;
                     }
