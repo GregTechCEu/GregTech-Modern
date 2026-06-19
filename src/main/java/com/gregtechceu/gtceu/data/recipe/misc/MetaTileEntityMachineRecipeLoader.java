@@ -520,44 +520,6 @@ public class MetaTileEntityMachineRecipeLoader {
                 .duration(100).EUt(VA[LV])
                 .addMaterialInfo(true).save(provider);
 
-        // Multiblock Miners
-
-        ASSEMBLER_RECIPES.recipeBuilder("ev_large_miner")
-                .inputItems(HULL[EV])
-                .inputItems(frameGt, Titanium, 4)
-                .inputItems(CustomTags.IV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_EV, 4)
-                .inputItems(ELECTRIC_PUMP_EV, 4)
-                .inputItems(CONVEYOR_MODULE_EV, 4)
-                .inputItems(gear, Tungsten, 4)
-                .circuitMeta(2)
-                .outputItems(GTMultiMachines.LARGE_MINER[EV])
-                .duration(400).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("iv_large_miner")
-                .inputItems(HULL[IV])
-                .inputItems(frameGt, TungstenSteel, 4)
-                .inputItems(CustomTags.IV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_IV, 4)
-                .inputItems(ELECTRIC_PUMP_IV, 4)
-                .inputItems(CONVEYOR_MODULE_IV, 4)
-                .inputItems(gear, Iridium, 4)
-                .circuitMeta(2)
-                .outputItems(GTMultiMachines.LARGE_MINER[IV])
-                .duration(400).EUt(VA[IV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("luv_large_miner")
-                .inputItems(HULL[LuV])
-                .inputItems(frameGt, HSSS, 4)
-                .inputItems(CustomTags.LuV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_LuV, 4)
-                .inputItems(ELECTRIC_PUMP_LuV, 4)
-                .inputItems(CONVEYOR_MODULE_LuV, 4)
-                .inputItems(gear, Ruridit, 4)
-                .circuitMeta(2)
-                .outputItems(GTMultiMachines.LARGE_MINER[LuV])
-                .duration(400).EUt(VA[LuV]).save(provider);
-
         // Multiblock Fluid Drills
 
         ASSEMBLER_RECIPES.recipeBuilder("mv_fluid_drilling_rig")

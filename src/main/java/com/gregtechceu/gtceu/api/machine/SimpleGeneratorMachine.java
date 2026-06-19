@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
@@ -92,8 +93,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                                                @NotNull GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                     @NotNull GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }

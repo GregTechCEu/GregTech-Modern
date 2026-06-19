@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -152,14 +153,14 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         }
 
         if (getRecipeLogic().isWaiting() && energyContainer.getInputPerSec() > 19L * energyToConsume) {
-            getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
+            getRecipeLogic().setStatus(WorkLogic.Status.IDLE);
         }
 
         if (this.energyContainer.getEnergyStored() >= energyToConsume) {
             if (!getRecipeLogic().isWaiting()) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
                 if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
+                    getRecipeLogic().setStatus(WorkLogic.Status.WORKING);
                 } else {
                     getRecipeLogic()
                             .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")

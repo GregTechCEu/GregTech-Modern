@@ -108,8 +108,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public CentralMonitorLogic getRecipeLogic() {
-        return (CentralMonitorLogic) super.getRecipeLogic();
+    public CentralMonitorLogic getWorkLogic() {
+        return (CentralMonitorLogic) recipeLogic;
+    }
+
+    public CentralMonitorLogic getMonitorLogic() {
+        return getWorkLogic();
     }
 
     @Override

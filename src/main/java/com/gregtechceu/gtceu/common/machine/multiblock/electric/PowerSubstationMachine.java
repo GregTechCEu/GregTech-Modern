@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -163,7 +164,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             if (getOffsetTimer() % 20 == 0) {
                 // active here is just used for rendering
                 getRecipeLogic()
-                        .setStatus(energyBank.hasEnergy() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.IDLE);
+                        .setStatus(energyBank.hasEnergy() ? WorkLogic.Status.WORKING : WorkLogic.Status.IDLE);
                 inputPerSec = netInLastSec;
                 outputPerSec = netOutLastSec;
                 netInLastSec = 0;
@@ -199,7 +200,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
+                double maxInSec = (float) recipeLogic.getMaxProgress() / 20.0f;
                 double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
                 textList.add(
                         Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),

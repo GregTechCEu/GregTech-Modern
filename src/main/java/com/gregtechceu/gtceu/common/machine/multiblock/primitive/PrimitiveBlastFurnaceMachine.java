@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -94,11 +95,11 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus == RecipeLogic.Status.WORKING) {
+    public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
+        super.notifyWorkStatusChanged(oldStatus, newStatus);
+        if (newStatus == WorkLogic.Status.WORKING) {
             this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
-        } else if (oldStatus == RecipeLogic.Status.WORKING && hurtSubscription != null) {
+        } else if (oldStatus == WorkLogic.Status.WORKING && hurtSubscription != null) {
             unsubscribe(hurtSubscription);
             hurtSubscription = null;
         }

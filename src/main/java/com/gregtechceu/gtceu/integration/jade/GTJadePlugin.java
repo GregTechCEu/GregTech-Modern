@@ -27,6 +27,7 @@ public class GTJadePlugin implements IWailaPlugin {
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(new ElectricContainerBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
+        // registration.registerBlockDataProvider(new WorkLogicProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ParallelProvider(), BlockEntity.class);
@@ -56,6 +57,7 @@ public class GTJadePlugin implements IWailaPlugin {
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(new ElectricContainerBlockProvider(), Block.class);
         registration.registerBlockComponent(new WorkableBlockProvider(), Block.class);
+        // registration.registerBlockComponent(new WorkLogicProvider(), Block.class);
         registration.registerBlockComponent(new ControllableBlockProvider(), Block.class);
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
         registration.registerBlockComponent(new ParallelProvider(), Block.class);

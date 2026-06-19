@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -115,7 +116,7 @@ public class GTResearchMachines {
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.OBJECT_HOLDER)
             .modelProperty(IS_FORMED, false)
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
                     .andThen((ctx, prov, model) -> {
                         model.addReplaceableTextures("bottom", "top", "side");

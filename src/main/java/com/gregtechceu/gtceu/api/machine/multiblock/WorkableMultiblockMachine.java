@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -214,10 +215,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        IWorkableMultiController.super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
-            updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
+    public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
+        IWorkableMultiController.super.notifyWorkStatusChanged(oldStatus, newStatus);
+        if (newStatus == WorkLogic.Status.WORKING || oldStatus == WorkLogic.Status.WORKING) {
+            updateActiveBlocks(newStatus == WorkLogic.Status.WORKING);
         }
         for (IMultiPart part : getParts()) {
             MachineRenderState state = part.self().getRenderState();

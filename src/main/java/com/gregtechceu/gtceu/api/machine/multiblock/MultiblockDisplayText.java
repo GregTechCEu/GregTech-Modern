@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -318,19 +319,19 @@ public class MultiblockDisplayText {
         }
 
         /**
-         * Adds a progress line based on the recipe logic.
+         * Adds a progress line based on the work logic.
          *
-         * @param recipeLogic The recipe logic that provides the progress info
+         * @param workLogic The work logic that provides the progress info
          *
          * @see #addProgressLine(double, double, double)
-         * @see #addCustomProgressLine(RecipeLogic)
+         * @see #addCustomProgressLine(WorkLogic)
          */
-        public Builder addProgressLine(RecipeLogic recipeLogic) {
-            if (recipeLogic.hasCustomProgressLine()) {
-                return this.addCustomProgressLine(recipeLogic);
+        public Builder addProgressLine(WorkLogic workLogic) {
+            if (workLogic.hasCustomProgressLine()) {
+                return this.addCustomProgressLine(workLogic);
             } else {
-                return this.addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
-                        recipeLogic.getProgressPercent());
+                return this.addProgressLine(workLogic.getProgress(), workLogic.getMaxProgress(),
+                        workLogic.getProgressPercent());
             }
         }
 
@@ -361,12 +362,12 @@ public class MultiblockDisplayText {
          * <p>
          * Added if structure if formed and the machine is active.
          *
-         * @param recipeLogic The recipe logic that provides the line
+         * @param workLogic The work logic that provides the line
          */
-        public Builder addCustomProgressLine(RecipeLogic recipeLogic) {
+        public Builder addCustomProgressLine(WorkLogic workLogic) {
             if (!isStructureFormed || !isActive)
                 return this;
-            Component line = recipeLogic.getCustomProgressLine();
+            Component line = workLogic.getCustomProgressLine();
             if (line != null) {
                 textList.add(line);
             }

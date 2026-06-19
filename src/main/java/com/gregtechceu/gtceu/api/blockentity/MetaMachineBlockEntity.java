@@ -55,8 +55,9 @@ import java.util.*;
 
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity, IManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(MetaMachineBlockEntity.class);
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(MetaMachineBlockEntity.class);
+    }
 
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
@@ -84,7 +85,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

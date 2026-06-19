@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -59,7 +60,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public void convertEnergyTick() {
         if (isWorkingEnabled()) {
             getRecipeLogic()
-                    .setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.SUSPEND);
+                    .setStatus(isSubscriptionActive() ? WorkLogic.Status.WORKING : WorkLogic.Status.SUSPEND);
         }
         if (isWorkingEnabled()) {
             long canDrain = powerInput.getEnergyStored();
@@ -142,14 +143,14 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
 
     @Override
     public void onStructureInvalid() {
-        if ((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) &&
+        if ((isWorkingEnabled() && recipeLogic.getStatus() == WorkLogic.Status.WORKING) &&
                 !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
-        getRecipeLogic().setStatus(RecipeLogic.Status.SUSPEND);
+        getRecipeLogic().setStatus(WorkLogic.Status.SUSPEND);
         converterSubscription.unsubscribe();
     }
 

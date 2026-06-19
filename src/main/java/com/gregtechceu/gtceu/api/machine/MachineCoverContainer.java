@@ -33,8 +33,9 @@ import java.util.ArrayList;
 
 public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(MachineCoverContainer.class);
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(MachineCoverContainer.class);
+    }
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Getter
@@ -59,7 +60,7 @@ public class MachineCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

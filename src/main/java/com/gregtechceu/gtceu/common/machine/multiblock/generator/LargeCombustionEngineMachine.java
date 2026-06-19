@@ -45,9 +45,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            LargeCombustionEngineMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-
     private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(1);
     private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 4);
     private static final FluidStack LUBRICANT_STACK = GTMaterials.Lubricant.getFluid(1);
@@ -198,7 +195,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             builder.addCurrentEnergyProductionLine(lastEUt);
         }
 
-        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
+        builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getMaxProgress());
 
         if (isFormed && isOxygenBoosted) {
             final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
@@ -232,10 +229,5 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
                 this::isIntakesObstructed,
                 () -> null));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 }

@@ -25,8 +25,9 @@ import java.util.function.Predicate;
  */
 public abstract class MachineTrait implements IEnhancedManaged {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(MachineTrait.class);
+    static{
+        ManagedFieldHolderMap.createManagedFieldHolder(MachineTrait.class);
+    }
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -43,7 +44,7 @@ public abstract class MachineTrait implements IEnhancedManaged {
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

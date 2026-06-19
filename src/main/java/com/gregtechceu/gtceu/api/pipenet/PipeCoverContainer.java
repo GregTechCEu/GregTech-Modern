@@ -34,8 +34,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(PipeCoverContainer.class);
+    static {
+        ManagedFieldHolderMap.createManagedFieldHolder(PipeCoverContainer.class);
+    }
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     private final IPipeNode<?, ?> pipeTile;
@@ -60,7 +61,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -23,7 +24,6 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -581,7 +581,7 @@ public class GTMultiMachines {
                     .where('#', Predicates.any())
                     .build())
             .allowExtendedFacing(false)
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
             .model(createSidedWorkableCasingMachineModel(GTCEu.id("block/casings/pump_deck"),
                     GTCEu.id("block/multiblock/primitive_pump"))
                     .andThen(builder -> {
@@ -638,7 +638,7 @@ public class GTMultiMachines {
                     .where('F', blocks(FIREBOX_BRONZE.get())
                             .or(Predicates.abilities(PartAbility.STEAM).setExactLimit(1)))
                     .build())
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
                     GTCEu.id("block/multiblock/steam_oven"))
                     .andThen(b -> b.addDynamicRenderer(
@@ -732,7 +732,7 @@ public class GTMultiMachines {
                         shapeInfos.add(baseBuilder.build());
                         return shapeInfos;
                     })
-                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
                     .model(createWorkableCasingMachineModel(FusionReactorMachine.getCasingType(tier).getTexture(),
                             GTCEu.id("block/multiblock/fusion_reactor"))
                             .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createFusionRingRender)))
@@ -772,65 +772,6 @@ public class GTMultiMachines {
                             GTCEu.id("block/multiblock/fluid_drilling_rig"))
                     .register(),
             MV, HV, EV);
-
-    public static final MultiblockMachineDefinition[] LARGE_MINER = registerTieredMultis("large_miner",
-            (holder, tier) -> new LargeMinerMachine(holder, tier, 64 / tier, 2 * tier - 5, tier, 8 - (tier - 5)),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("%s Large Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-                    .appearanceBlock(() -> LargeMinerMachine.getCasingState(tier))
-                    .pattern((definition) -> FactoryBlockPattern.start()
-                            .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
-                            .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.getBlock())))
-                            .where('X', blocks(LargeMinerMachine.getCasingState(tier))
-                                    .or(abilities(PartAbility.EXPORT_ITEMS).setExactLimit(1).setPreviewCount(1))
-                                    .or(abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1).setPreviewCount(1))
-                                    .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                            .setMaxGlobalLimited(2).setPreviewCount(1)))
-                            .where('C', blocks(LargeMinerMachine.getCasingState(tier)))
-                            .where('F', frames(LargeMinerMachine.getMaterial(tier)))
-                            .where('#', any())
-                            .build())
-                    .allowExtendedFacing(true)
-                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
-                    .model(createWorkableCasingMachineModel(
-                            MATERIALS_TO_CASING_TEXTURES.get(LargeMinerMachine.getMaterial(tier)),
-                            GTCEu.id("block/multiblock/large_miner"))
-                            .andThen((ctx, prov, modelBuilder) -> {
-                                // replace the parent model for the formed large miner
-                                modelBuilder.replaceForAllStates((state, models) -> {
-                                    if (!state.getValue(GTMachineModelProperties.IS_FORMED)) {
-                                        return models;
-                                    }
-
-                                    var parentModel = prov.models()
-                                            .getExistingFile(GTCEu.id("block/machine/large_miner_active"));
-                                    for (ConfiguredModel model : models) {
-                                        ((BlockModelBuilder) model.model).parent(parentModel);
-                                    }
-                                    return models;
-                                });
-                            }))
-                    .tooltips(
-                            Component.translatable("gtceu.machine.large_miner.%s.tooltip"
-                                    .formatted(VN[tier].toLowerCase(Locale.ROOT))),
-                            Component.translatable("gtceu.machine.miner.multi.description"))
-                    .tooltipBuilder((stack, tooltip) -> {
-                        int workingAreaChunks = (2 * tier - 5);
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.modes"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.multi.production"));
-                        tooltip.add(Component.translatable("gtceu.machine.miner.fluid_usage", 8 - (tier - 5),
-                                DrillingFluid.getLocalizedName()));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area_chunks",
-                                workingAreaChunks, workingAreaChunks));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_tier_range",
-                                GTValues.VNF[tier], GTValues.VNF[tier + 1]));
-                    })
-                    .register(),
-            EV, IV, LuV);
 
     public static final MultiblockMachineDefinition CLEANROOM = REGISTRATE
             .multiblock("cleanroom", CleanroomMachine::new)
@@ -1074,42 +1015,6 @@ public class GTMultiMachines {
                     GTCEu.id("block/multiblock/charcoal_pile_igniter"))
             .register();
 
-    public static MultiblockMachineDefinition[] BEDROCK_ORE_MINER = registerTieredMultis(
-            "bedrock_ore_miner", BedrockOreMinerMachine::new, (tier, builder) -> builder
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("%s Bedrock Ore Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(DUMMY_RECIPES)
-                    .tooltips(
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.description"),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.depletion",
-                                    FormattingUtil.formatNumbers(
-                                            100.0 / BedrockOreMinerMachine.getDepletionChance(tier))),
-                            Component.translatable("gtceu.universal.tooltip.energy_tier_range",
-                                    GTValues.VNF[tier], GTValues.VNF[tier + 1]),
-                            Component.translatable("gtceu.machine.bedrock_ore_miner.production",
-                                    BedrockOreMinerMachine.getRigMultiplier(tier),
-                                    FormattingUtil.formatNumbers(
-                                            BedrockOreMinerMachine.getRigMultiplier(tier) * 1.5)))
-                    .appearanceBlock(() -> BedrockOreMinerMachine.getCasingState(tier))
-                    .pattern((definition) -> FactoryBlockPattern.start()
-                            .aisle("XXX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .aisle("XXX", "FCF", "FCF", "FCF", "#F#", "#F#", "#F#")
-                            .aisle("XSX", "#F#", "#F#", "#F#", "###", "###", "###")
-                            .where('S', controller(blocks(definition.get())))
-                            .where('X',
-                                    blocks(BedrockOreMinerMachine.getCasingState(tier)).setMinGlobalLimited(3)
-                                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
-                                                    .setMaxGlobalLimited(2))
-                                            .or(abilities(PartAbility.EXPORT_ITEMS).setMaxGlobalLimited(1)))
-                            .where('C', blocks(BedrockOreMinerMachine.getCasingState(tier)))
-                            .where('F', blocks(BedrockOreMinerMachine.getFrameState(tier)))
-                            .where('#', any())
-                            .build())
-                    .workableCasingModel(BedrockOreMinerMachine.getBaseTexture(tier),
-                            GTCEu.id("block/multiblock/bedrock_ore_miner"))
-                    .register(),
-            MV, HV, EV);
-
     // Multiblock Tanks
     public static final MachineDefinition WOODEN_TANK_VALVE = GTMachineUtils.registerTankValve(
             "wooden_tank_valve", "Wooden Tank Valve", false,
@@ -1152,7 +1057,7 @@ public class GTMultiMachines {
                     .where('C', Predicates.controller(Predicates.blocks(definition.get())))
                     .where('B', CentralMonitorMachine.getMultiPredicate())
                     .build())
-            .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
+            .modelProperty(RecipeLogic.STATUS_PROPERTY, WorkLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(
                     GTCEu.id("block/casings/solid/machine_casing_frost_proof"),
                     GTCEu.id("block/multiblock/central_monitor"))

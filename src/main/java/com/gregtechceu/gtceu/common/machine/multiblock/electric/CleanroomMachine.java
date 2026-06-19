@@ -112,8 +112,12 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     @Override
     @NotNull
-    public CleanroomLogic getRecipeLogic() {
-        return (CleanroomLogic) super.getRecipeLogic();
+    public CleanroomLogic getWorkLogic() {
+        return (CleanroomLogic) recipeLogic;
+    }
+
+    public CleanroomLogic getCleanroomLogic() {
+        return getWorkLogic();
     }
 
     //////////////////////////////////////
@@ -148,7 +152,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         var area = (lDist + rDist + 1) * (bDist + fDist + 1);
         var duration = Math.pow(area, 0.8) * (hDist + 1);
-        this.getRecipeLogic().setDuration(Math.max(100, (int) duration));
+        this.getCleanroomLogic().setDuration(Math.max(100, (int) duration));
     }
 
     @Override
@@ -189,11 +193,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             }
 
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
-                getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
+                getCleanroomLogic().setMaintenanceMachine(maintenanceMachine);
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
-        getRecipeLogic().setEnergyContainer(this.inputEnergyContainers);
+        getCleanroomLogic().setEnergyContainer(this.inputEnergyContainers);
         this.tier = Math.min(GTValues.MAX, GTUtil.getFloorTierByVoltage(getMaxVoltage()));
     }
 
@@ -449,6 +453,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     protected boolean isMachineBanned(MetaMachine machine) {
+        // TODO: use tag
         // blacklisted machines: mufflers and all generators, miners/drills, primitives
         if (machine instanceof ICleanroomProvider) return true;
         if (machine instanceof IMufflerMachine) return true;
@@ -458,7 +463,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         // if (machine instanceof LargeMinerMachine) return true;
         if (machine instanceof FluidDrillMachine) return true;
-        if (machine instanceof BedrockOreMinerMachine) return true;
 
         if (machine instanceof CokeOvenMachine) return true;
         if (machine instanceof PrimitiveBlastFurnaceMachine) return true;
@@ -483,9 +487,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
-                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
-                double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
+                var logic = getCleanroomLogic();
+                int currentProgress = (int) (logic.getProgressPercent() * 100);
+                double maxInSec = (float) logic.getMaxProgress() / 20.0f;
+                double currentInSec = (float) logic.getProgress() / 20.0f;
                 textList.add(
                         Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
                                 String.format("%.2f", (float) maxInSec), currentProgress));
@@ -493,7 +498,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
 
-            if (recipeLogic.isWaiting()) {
+            if (getCleanroomLogic().isWaiting()) {
                 textList.add(Component.translatable("gtceu.multiblock.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }

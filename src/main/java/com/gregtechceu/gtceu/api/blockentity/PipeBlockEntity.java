@@ -65,8 +65,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                                      IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighlight, IToolable,
                                      ICopyable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(PipeBlockEntity.class);
+    static{
+        ManagedFieldHolderMap.createManagedFieldHolder(PipeBlockEntity.class);
+    }
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -121,7 +122,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

@@ -145,7 +145,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                 textList.add(Component.translatable("gtceu.multiblock.running"));
                 if (maxParallels > 1) textList.add(Component.translatable("gtceu.multiblock.parallel", maxParallels));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getDuration() / 20.0f;
+                double maxInSec = (float) recipeLogic.getMaxProgress() / 20.0f;
                 double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
                 textList.add(
                         Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),

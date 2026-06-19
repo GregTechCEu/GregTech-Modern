@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -346,7 +347,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             return;
         }
         if (!modelProperties.containsKey(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
-            modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+            modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         }
     }
 
@@ -454,22 +455,22 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE workableTieredHullModel(ResourceLocation workableModel) {
-        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         return model(createWorkableTieredHullMachineModel(workableModel));
     }
 
     public TYPE simpleGeneratorModel(ResourceLocation workableModel) {
-        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         return model(createSimpleGeneratorModel(workableModel));
     }
 
     public TYPE workableSteamHullModel(boolean isHighPressure, ResourceLocation workableModel) {
-        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         return model(createWorkableSteamHullMachineModel(isHighPressure, workableModel));
     }
 
     public TYPE workableCasingModel(ResourceLocation baseCasing, ResourceLocation workableModel) {
-        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         return model(createWorkableCasingMachineModel(baseCasing, workableModel));
     }
 
@@ -480,7 +481,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
 
     public TYPE sidedWorkableCasingModel(ResourceLocation baseCasing,
                                          ResourceLocation workableModel) {
-        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE);
+        modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE);
         return model(createSidedWorkableCasingMachineModel(baseCasing, workableModel));
     }
 

@@ -52,8 +52,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(CoverBehavior.class);
+    static{
+        ManagedFieldHolderMap.createManagedFieldHolder(CoverBehavior.class);
+    }
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -83,7 +84,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighli
     }
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

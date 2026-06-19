@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -26,7 +25,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.MonitorPartMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
-import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.storage.*;
@@ -130,26 +128,6 @@ public class GTMachines {
             "alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
     public static final Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines(
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
-    public static final Pair<MachineDefinition, MachineDefinition> STEAM_MINER = registerSteamMachines(
-            "steam_miner",
-            (holder, isHP) -> isHP ? new SteamMinerMachine(holder, true, 240, 6, 0, 32) :
-                    new SteamMinerMachine(holder, false, 320, 4, 0, 16),
-            (isHP, builder) -> builder
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .recipeType(DUMMY_RECIPES)
-                    .tooltips(Component.translatable("gtceu.universal.tooltip.uses_per_tick_steam", isHP ? 32 : 16)
-                            .append(ChatFormatting.GRAY + ", ")
-                            .append(Component.translatable("gtceu.machine.miner.per_block",
-                                    isHP ? 240 / 20 : 280 / 20)))
-                    .tooltipBuilder((item, tooltip) -> {
-                        int maxArea = IMiner.getWorkingArea(isHP ? 6 : 4);
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.working_area", maxArea, maxArea));
-                    })
-                    .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.UP)
-                    .workableSteamHullModel(isHP, isHP ?
-                            GTCEu.id("block/machines/high_pressure_steam_miner") :
-                            GTCEu.id("block/machines/steam_miner"))
-                    .register());
 
     //////////////////////////////////////
     // *** SimpleTieredMachine ***//
@@ -399,35 +377,6 @@ public class GTMachines {
                                     FormattingUtil.formatNumbers(GTValues.V[tier] * 64)))
                     .register(),
             LV, MV, HV, EV);
-
-    public static final MachineDefinition[] MINER = registerTieredMachines("miner",
-            (holder, tier) -> new MinerMachine(holder, tier, ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2),
-                    tier * 8, tier),
-            (tier, builder) -> builder
-                    .rotationState(RotationState.NON_Y_AXIS)
-                    .langValue("%s Miner %s".formatted(VLVH[tier], VLVT[tier]))
-                    .recipeType(DUMMY_RECIPES)
-                    .editableUI(MinerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("miner"), (tier + 1) * (tier + 1)))
-                    .workableTieredHullModel(GTCEu.id("block/machines/miner"))
-                    .tooltipBuilder((stack, tooltip) -> {
-                        int maxArea = IMiner.getWorkingArea(tier * 8);
-                        long energyPerTick = GTValues.V[tier - 1];
-                        int tickSpeed = ConfigHolder.INSTANCE.machines.minerSpeed / (tier * 2);
-                        tooltip.add(Component.translatable("gtceu.machine.miner.tooltip", maxArea, maxArea));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.uses_per_tick", energyPerTick)
-                                .append(Component.literal(", ").withStyle(ChatFormatting.GRAY))
-                                .append(Component.translatable("gtceu.machine.miner.per_block", tickSpeed / 20)));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in",
-                                FormattingUtil.formatNumbers(GTValues.V[tier]),
-                                GTValues.VNF[tier]));
-                        tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity",
-                                FormattingUtil.formatNumbers(GTValues.V[tier] * 64L)));
-
-                        tooltip.add(
-                                Component.translatable("gtceu.universal.tooltip.working_area_max", maxArea, maxArea));
-                    })
-                    .register(),
-            LV, MV, HV);
 
     public static final MachineDefinition[] WORLD_ACCELERATOR = registerTieredMachines("world_accelerator",
             WorldAcceleratorMachine::new,

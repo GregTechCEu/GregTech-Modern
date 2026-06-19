@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
@@ -148,7 +148,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
+                WorkLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested().parent(tieredHullModel(prov.models(), builder));
                 return addWorkableOverlays(overlays, status, model);
@@ -194,10 +194,10 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
             ModelFile parent = steamHullModel(prov.models(), highPressure);
 
-            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.IDLE);
-            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.WORKING);
-            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.WAITING);
-            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, RecipeLogic.Status.SUSPEND);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, WorkLogic.Status.IDLE);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, WorkLogic.Status.WORKING);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, WorkLogic.Status.WAITING);
+            makeWorkableOverlayPart(prov.models(), builder, parent, overlays, WorkLogic.Status.SUSPEND);
 
             if (!builder.getOwner().defaultRenderState().hasProperty(VENT_DIRECTION)) {
                 return;
@@ -217,7 +217,7 @@ public class GTMachineModels {
 
     private static void makeWorkableOverlayPart(BlockModelProvider models,
                                                 MachineModelBuilder<BlockModelBuilder> builder, ModelFile parentModel,
-                                                WorkableOverlays overlays, RecipeLogic.Status status) {
+                                                WorkableOverlays overlays, WorkLogic.Status status) {
         BlockModelBuilder model = models.nested().parent(parentModel);
         addWorkableOverlays(overlays, status, model);
         builder.part(model).condition(RECIPE_LOGIC_STATUS, status);
@@ -229,7 +229,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
+                WorkLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(CUBE_ALL_SIDED_OVERLAY_MODEL))
@@ -259,7 +259,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStates(state -> {
-                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
+                WorkLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
@@ -303,7 +303,7 @@ public class GTMachineModels {
             WorkableOverlays overlays = WorkableOverlays.get(overlayDir, prov.getExistingFileHelper());
 
             builder.forAllStatesModels(state -> {
-                RecipeLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
+                WorkLogic.Status status = state.getValue(RECIPE_LOGIC_STATUS);
 
                 BlockModelBuilder model = prov.models().nested().parent(prov.models().getExistingFile(GENERATOR_MODEL));
                 tieredHullTextures(model, builder.getOwner().getTier());
@@ -532,11 +532,11 @@ public class GTMachineModels {
 
                 boolean active = state.getValue(IS_ACTIVE);
                 boolean workingEnabled = state.getValue(IS_WORKING_ENABLED);
-                RecipeLogic.Status status = active ?
+                WorkLogic.Status status = active ?
                         workingEnabled ?
-                                RecipeLogic.Status.WORKING :
-                                RecipeLogic.Status.SUSPEND :
-                        RecipeLogic.Status.IDLE;
+                                WorkLogic.Status.WORKING :
+                                WorkLogic.Status.SUSPEND :
+                        WorkLogic.Status.IDLE;
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
@@ -619,11 +619,11 @@ public class GTMachineModels {
             builder.forAllStates(state -> {
                 boolean active = state.getValue(IS_ACTIVE);
                 boolean workingEnabled = state.getValue(IS_WORKING_ENABLED);
-                RecipeLogic.Status status = active ?
+                WorkLogic.Status status = active ?
                                             workingEnabled ?
-                                            RecipeLogic.Status.WORKING :
-                                            RecipeLogic.Status.SUSPEND :
-                                            RecipeLogic.Status.IDLE;
+                                            WorkLogic.Status.WORKING :
+                                            WorkLogic.Status.SUSPEND :
+                                            WorkLogic.Status.IDLE;
 
                 BlockModelBuilder model = prov.models().nested()
                         .parent(prov.models().getExistingFile(SIDED_SIDED_OVERLAY_MODEL));
@@ -664,7 +664,7 @@ public class GTMachineModels {
     }
     // spotless:on
 
-    public static ConfiguredModel[] addWorkableOverlays(WorkableOverlays overlays, RecipeLogic.Status status,
+    public static ConfiguredModel[] addWorkableOverlays(WorkableOverlays overlays, WorkLogic.Status status,
                                                         BlockModelBuilder model) {
         for (var entry : overlays.getTextures().entrySet()) {
             var face = entry.getKey();

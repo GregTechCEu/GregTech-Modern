@@ -188,8 +188,9 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(FilterHandler.class);
+    static{
+        ManagedFieldHolderMap.createManagedFieldHolder(FilterHandler.class);
+    }
 
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
+import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -112,7 +113,6 @@ public class FisherMachine extends TieredEnergyMachine
 
     @Getter
     @Persisted
-    @Setter
     @DescSynced
     private boolean isWorkingEnabled = true;
 
@@ -365,6 +365,15 @@ public class FisherMachine extends TieredEnergyMachine
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
         updateAutoOutputSubscription();
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        this.isWorkingEnabled = workingEnabled;
+        if (getRenderState().hasProperty(GTMachineModelProperties.IS_WORKING_ENABLED)) {
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, workingEnabled));
+        }
+        updateFishingUpdateSubscription();
     }
 
     //////////////////////////////////////

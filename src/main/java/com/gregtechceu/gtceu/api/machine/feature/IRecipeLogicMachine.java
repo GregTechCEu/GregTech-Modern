@@ -1,11 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -19,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A machine can handle recipes.
  */
-public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver,
-                                     IVoidable {
+public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogicMachine, ICleanroomReceiver,
+                                      IVoidable {
 
     /**
      * RecipeType held
@@ -36,19 +34,15 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     void setActiveRecipeType(int type);
 
     /**
-     * Called when recipe logic status changed
-     */
-    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        if(this instanceof MetaMachine metaMachine && metaMachine.getRenderState().hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
-            metaMachine.setRenderState(metaMachine.getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus)) ;
-        }
-    }
-
-    /**
      * Recipe logic
      */
     @NotNull
     RecipeLogic getRecipeLogic();
+
+    @Override
+    default WorkLogic getWorkLogic() {
+        return getRecipeLogic();
+    }
 
 //    default GTRecipe fullModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
 //        TODO: fix trimRecipeOutputs
@@ -76,6 +70,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * if false. you should call {@link RecipeLogic#updateTickSubscription()} manually later to active recipe logic
      * again.
      */
+    @Override
     default boolean keepSubscribing() {
         return true;
     }
@@ -146,44 +141,5 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default long getDisplayRecipeVoltage() {
         return -1;
     }
-
-    //////////////////////////////////////
-    // ******* IWorkable ********//
-    //////////////////////////////////////
-    @Override
-    default boolean isWorkingEnabled() {
-        return getRecipeLogic().isWorkingEnabled();
-    }
-
-    @Override
-    default void setWorkingEnabled(boolean isWorkingAllowed) {
-        getRecipeLogic().setWorkingEnabled(isWorkingAllowed);
-    }
-
-    @Override
-    default void setSuspendAfterFinish(boolean suspendAfterFinish) {
-        getRecipeLogic().setSuspendAfterFinish(suspendAfterFinish);
-    }
-
-    @Override
-    default boolean isSuspendAfterFinish() {
-        return getRecipeLogic().isSuspendAfterFinish();
-    }
-
-    @Override
-    default int getProgress() {
-        return getRecipeLogic().getProgress();
-    }
-
-    @Override
-    default int getMaxProgress() {
-        return getRecipeLogic().getMaxProgress();
-    }
-
-    @Override
-    default boolean isActive() {
-        return getRecipeLogic().isActive();
-    }
-
 
 }

@@ -529,19 +529,6 @@ public class MetaTileEntityLoader {
                 new MaterialEntry(TagPrefix.plate, GTMaterials.WroughtIron), 'S',
                 new MaterialEntry(TagPrefix.plate, GTMaterials.Steel), 'P',
                 new MaterialEntry(TagPrefix.pipeSmallFluid, GTMaterials.TinAlloy));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner_bronze",
-                GTMachines.STEAM_MINER.first().asStack(),
-                "DSD", "SMS", "GSG",
-                'M', GTBlocks.BRONZE_BRICKS_HULL.asStack(),
-                'S', new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze),
-                'D', new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond),
-                'G', new MaterialEntry(TagPrefix.gearSmall, GTMaterials.Bronze));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steam_miner_steel",
-                GTMachines.STEAM_MINER.second().asStack(), "DSD", "SMS", "GSG",
-                'M', GTMachines.STEAM_MINER.first().asStack(),
-                'S', new MaterialEntry(TagPrefix.pipeNormalFluid, GTMaterials.TinAlloy),
-                'D', new MaterialEntry(TagPrefix.gem, GTMaterials.Diamond),
-                'G', new MaterialEntry(TagPrefix.gearSmall, GTMaterials.Steel));
         // MULTI BLOCK CONTROLLERS
         VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_primitive_blast_furnace",
                 GTMultiMachines.PRIMITIVE_BLAST_FURNACE.asStack(), "hRS", "PBR", "dRS", 'R',
@@ -873,8 +860,6 @@ public class MetaTileEntityLoader {
                     'S', SENSOR, 'E', EMITTER, 'H', HULL);
         registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C',
                 CIRCUIT, 'W', CABLE, 'S', Tags.Items.CHESTS_WOODEN, 'G', GRINDER);
-        registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C',
-                CIRCUIT, 'S', SENSOR);
 
         registerMachineRecipe(provider, GTMachines.MUFFLER_HATCH, "HM", "PR", 'H', HULL, 'M', MOTOR, 'P', PIPE_NORMAL,
                 'R', ROTOR);

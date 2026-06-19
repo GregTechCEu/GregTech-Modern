@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.property;
 
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
@@ -20,7 +20,7 @@ public class GTMachineModelProperties {
     public static final BooleanProperty IS_TAPED = BooleanProperty.create("taped");
 
     // Recipe-related properties
-    public static final EnumProperty<RecipeLogic.Status> RECIPE_LOGIC_STATUS = EnumProperty.create("recipe_logic_status", RecipeLogic.Status.class);
+    public static final EnumProperty<WorkLogic.Status> RECIPE_LOGIC_STATUS = EnumProperty.create("recipe_logic_status", WorkLogic.Status.class);
     public static final BooleanProperty IS_WORKING_ENABLED = BooleanProperty.create("working_enabled");
     public static final BooleanProperty IS_ACTIVE = BooleanProperty.create("active");
 

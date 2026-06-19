@@ -100,8 +100,9 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine, ICopyable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-            .createManagedFieldHolder(MetaMachine.class);
+    static{
+        ManagedFieldHolderMap.createManagedFieldHolder(MetaMachine.class);
+    }
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Setter
@@ -143,7 +144,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     //////////////////////////////////////
 
     @Override
-    public ManagedFieldHolder getFieldHolder() {
+    public final ManagedFieldHolder getFieldHolder() {
         return ManagedFieldHolderMap.getManagedFieldHolder(getClass());
     }
 

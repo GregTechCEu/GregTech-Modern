@@ -1,19 +1,17 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 
 import net.minecraft.util.Mth;
 
-public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
+public class CentralMonitorLogic extends RecipeLogic {
 
     private static final int BASE_UPDATE_INTERVAL = 8 * 20;
 
-    public CentralMonitorLogic(IRecipeLogicMachine machine) {
+    public CentralMonitorLogic(CentralMonitorMachine machine) {
         super(machine);
     }
 
@@ -51,14 +49,12 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
             setStatus(Status.IDLE);
         } else if (consumeEnergy()) {
             setStatus(Status.WORKING);
-            isActive = true;
             progress = (progress + 1) % getUpdateInterval();
             if (progress == 0) {
                 getMachine().tick();
             }
         } else {
             setStatus(Status.WAITING);
-            isActive = false;
             progress = Math.max(progress - 2, 1);
         }
     }
@@ -70,6 +66,6 @@ public class CentralMonitorLogic extends RecipeLogic implements IWorkable {
 
     @Override
     public boolean isActive() {
-        return getMachine().isFormed() && this.isActive;
+        return getMachine().isFormed() && isWorking();
     }
 }

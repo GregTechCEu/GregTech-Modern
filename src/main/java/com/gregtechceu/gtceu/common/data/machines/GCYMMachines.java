@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -70,7 +71,7 @@ public class GCYMMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .modelProperty(IS_FORMED, false)
-                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+                    .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
                     .model(createWorkableTieredHullMachineModel(
                             GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
                             .andThen((ctx, prov, model) -> {
@@ -134,7 +135,7 @@ public class GCYMMachines {
                     .where('T', Predicates.blocks(CASING_TITANIUM_PIPE.get()))
                     .build())
             .hasBER(true)
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_chemical_bath"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
@@ -195,7 +196,7 @@ public class GCYMMachines {
                     .where('#', Predicates.any())
                     .build())
             .hasBER(true)
-            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
+            .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, WorkLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(GTCEu.id("block/casings/gcym/reaction_safe_mixing_casing"),
                     GTCEu.id("block/multiblock/gcym/large_mixer"))
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
