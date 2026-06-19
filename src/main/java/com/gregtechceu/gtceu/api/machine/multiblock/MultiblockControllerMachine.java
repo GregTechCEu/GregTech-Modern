@@ -506,7 +506,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                     resultStructure.forEach((pos, state) -> blocks.put(pos.asLong(), state.getBlockState()));
                     MutableSchema schema = new MutableSchema(blocks);
                     BlockPos origin = this.getBlockPos().mutable().move(schema.getControllerPos().multiply(-1));
-                    PatternPreviewRenderer.INSTANCE.showPreview(origin, schema, RenderFilter.ALL,
+                    PatternPreviewRenderer.INSTANCE.showPreviewCycleLevel(origin, schema,
                             ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
                 }
             }

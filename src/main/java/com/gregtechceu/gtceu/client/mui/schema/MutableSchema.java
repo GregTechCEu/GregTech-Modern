@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -32,6 +33,8 @@ public class MutableSchema implements ISchema {
     protected @NotNull Vector3f center = new Vector3f();
     @Getter
     private BlockPos controllerPos = BlockPos.ZERO;
+    @Getter
+    private Pair<BlockPos, BlockPos> bounds;
 
     @Getter
     protected final Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
@@ -82,6 +85,7 @@ public class MutableSchema implements ISchema {
 
         this.origin = min.immutable();
         this.center = BlockPosUtil.getCenterF(min, max);
+        this.bounds = Pair.of(min, max);
         return this;
     }
 

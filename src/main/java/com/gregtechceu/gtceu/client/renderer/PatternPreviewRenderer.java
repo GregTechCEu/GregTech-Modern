@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.GTCEu;
 
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import lombok.Getter;
 import net.minecraft.CrashReport;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
@@ -58,7 +60,7 @@ public class PatternPreviewRenderer {
                 }
             });
 
-    private @Nullable ISchema schema;
+    private @Nullable MutableSchema schema;
     private @Nullable RenderLevel renderLevel;
     private @Nullable BlockPos controllerPos;
     private final AtomicInteger timeout = new AtomicInteger(-1);
@@ -69,13 +71,40 @@ public class PatternPreviewRenderer {
     private final AtomicReference<RenderCompileResults> compiledRenderResult = new AtomicReference<>();
     private boolean dirty = true;
 
-    public void showPreview(BlockPos controllerPos, ISchema schema, RenderFilter renderFilter, int duration) {
+    public void showPreview(BlockPos controllerPos, MutableSchema schema, RenderFilter renderFilter, int duration) {
         this.controllerPos = controllerPos;
         this.schema = schema;
         this.renderLevel = new RenderLevel(schema, renderFilter);
         timeout.set(duration);
 
         notifyRecompile();
+    }
+
+    private int layers = -1;
+
+    public void showPreviewCycleLevel(BlockPos controllerPos, MutableSchema schema, int duration) {
+          if(controllerPos.equals(this.controllerPos)){
+            var bounds = schema.getBounds();
+            int min = bounds.getFirst().getY();
+            int max = bounds.getSecond().getY();
+            if(layers == -1){
+                layers = min;
+            } else {
+                layers += 1;
+                if(layers > max) {
+                    layers = -1;
+                }
+            }
+        } else {
+            layers = -1;
+        }
+        RenderFilter renderFilter;
+        if(layers == -1) {
+            renderFilter = RenderFilter.ALL;
+        } else {
+            renderFilter = (pos, state) -> pos.getY() == layers;
+        }
+        showPreview(controllerPos, schema, renderFilter, duration);
     }
 
     public void clientTick() {
@@ -343,7 +372,8 @@ public class PatternPreviewRenderer {
             ModelBlockRenderer.enableCaching();
             for (var blockEntry : PatternPreviewRenderer.this.schema) {
                 BlockPos pos = blockEntry.getKey();
-                BlockState blockState = blockEntry.getValue();
+                BlockState blockState = fakeLevel.getBlockState(pos);
+                if (blockState.isAir()) continue;
                 FluidState fluidState = blockState.getFluidState();
 
                 if (blockState.hasBlockEntity()) {
