@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
 import lombok.Setter;

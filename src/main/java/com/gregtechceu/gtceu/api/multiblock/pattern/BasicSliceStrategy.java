@@ -2,14 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 
 import com.google.common.base.Preconditions;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 
 import java.util.*;
 

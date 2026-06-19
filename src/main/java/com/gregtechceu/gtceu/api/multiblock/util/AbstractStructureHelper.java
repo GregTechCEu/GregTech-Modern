@@ -1,35 +1,36 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.google.common.collect.HashBasedTable;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
-import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Map;
 
 public abstract class AbstractStructureHelper {
 
-    public static final Direction[] DIRECTIONS_IN_ORDER = {Direction.NORTH, Direction.SOUTH, Direction.WEST,
-            Direction.EAST, Direction.UP, Direction.DOWN};
+    public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
+            Direction.EAST, Direction.UP, Direction.DOWN };
 
-    protected final HashBasedTable<PatternPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable.create();
-    protected final HashBasedTable<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable.create();
+    protected final HashBasedTable<PatternPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
+            .create();
+    protected final HashBasedTable<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
+            .create();
     protected @Nullable Block controllerBlock;
 
     public static AbstractStructureHelper blockPattern(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
@@ -59,19 +60,20 @@ public abstract class AbstractStructureHelper {
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
         if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
-            populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing, isFlipped);
+            populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing,
+                    isFlipped);
         }
         populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
-        if (this.controllerBlock != null) {
-            fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
-        }
+        fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
     }
 
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
 
-    protected abstract void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+    protected abstract void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure,
+                                                             IBlockPattern pattern,
                                                              Long2ObjectMap<BlockInfo> userBlockPreferences,
-                                                             Direction frontFacing, Direction upFacing, boolean isFlipped);
+                                                             Direction frontFacing, Direction upFacing,
+                                                             boolean isFlipped);
 
     protected abstract void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped);
@@ -98,7 +100,7 @@ public abstract class AbstractStructureHelper {
     }
 
     protected static int countPopulatedInLayer(Map<BlockPos, BlockInfo> resultStructure, BasePredicate basePredicate,
-                                             Direction dir, int offset) {
+                                               Direction dir, int offset) {
         return (int) resultStructure.entrySet().stream()
                 .filter(e -> getCoordFromDir(e.getKey(), dir) == offset)
                 .filter(e -> basePredicate.getCandidates().contains(e.getValue()))
@@ -110,7 +112,7 @@ public abstract class AbstractStructureHelper {
     }
 
     protected static void fixRotationsAndFacing(Map<BlockPos, BlockInfo> resultStructure, Direction frontFacing,
-                                                Direction upFacing, Block controllerBlock) {
+                                                Direction upFacing, @Nullable Block controllerBlock) {
         Map<BlockPos, BlockState> toUpdate = new Object2ObjectOpenHashMap<>();
         for (var entry : resultStructure.entrySet()) {
             BlockPos pos = entry.getKey();

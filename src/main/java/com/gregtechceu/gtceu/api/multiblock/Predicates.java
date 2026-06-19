@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
-import com.gregtechceu.gtceu.api.multiblock.error.FilterMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
@@ -255,7 +254,8 @@ public class Predicates {
                     return null;
                 }
             }
-            return new BlockMatchingError(worldState.getBlockPos(), GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream().map(e -> e.getValue().get()).toList());
+            return new BlockMatchingError(worldState.getBlockPos(),
+                    GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream().map(e -> e.getValue().get()).toList());
         }, GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
                 .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                 .map(e -> new BlockInfo(e.getValue().get()))

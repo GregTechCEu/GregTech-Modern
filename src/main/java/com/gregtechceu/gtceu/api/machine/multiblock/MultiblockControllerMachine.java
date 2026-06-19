@@ -9,27 +9,36 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
-import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
-import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
+import com.gregtechceu.gtceu.api.multiblock.pattern.*;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.schema.RenderFilter;
 import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
@@ -86,16 +95,6 @@ public class MultiblockControllerMachine extends MetaMachine {
                 MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(pattern);
             }
         }
-    }
-
-    @NotNull
-    public CurrentBlockInfo getBlockInfo() {
-        if (this.controllerBlockInfo == null) {
-            this.controllerBlockInfo = new CurrentBlockInfo();
-            this.controllerBlockInfo.setLevel(getLevel());
-            this.controllerBlockInfo.setCurrentPos(getBlockPos());
-        }
-        return this.controllerBlockInfo;
     }
 
     public Map<String, IBlockPattern> getStructurePatterns() {
@@ -474,6 +473,46 @@ public class MultiblockControllerMachine extends MetaMachine {
             invalidateStructureCaches();
             checkAndFormStructurePatterns();
         }
+    }
+
+    @Override
+    public InteractionResult onUse(ExtendedUseOnContext context) {
+        if (!isFormed() && context.getPlayer().isShiftKeyDown() &&
+                context.getPlayer().getItemInHand(context.getHand()).isEmpty()) {
+            if (isRemote()) {
+                Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+                AbstractStructureHelper structureHelper = null;
+                IBlockPattern pattern = getStructurePatterns().get(DEFAULT_STRUCTURE);
+                if (pattern instanceof BlockPattern blockPattern) {
+                    Int2IntMap slices = new Int2IntArrayMap();
+                    for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                        slices.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                    }
+                    structureHelper = AbstractStructureHelper.blockPattern(null, null, slices);
+                } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                    IntList dims = new IntArrayList();
+                    if (expandablePattern.getBoundsConstraints() != null) {
+                        expandablePattern.getBoundsConstraints().apply().stream()
+                                .mapToInt(Pair::left)
+                                .forEach(dims::add);
+                    }
+                    structureHelper = AbstractStructureHelper.expandable(null, null, dims);
+                }
+
+                if (structureHelper != null) {
+                    structureHelper.populate(resultStructure, pattern, null, getFrontFacing(), getUpwardsFacing(),
+                            isFlipped());
+                    Long2ReferenceMap<BlockState> blocks = new Long2ReferenceOpenHashMap<>();
+                    resultStructure.forEach((pos, state) -> blocks.put(pos.asLong(), state.getBlockState()));
+                    MutableSchema schema = new MutableSchema(blocks);
+                    BlockPos origin = this.getBlockPos().mutable().move(schema.getControllerPos().multiply(-1));
+                    PatternPreviewRenderer.INSTANCE.showPreview(origin, schema, RenderFilter.ALL,
+                            ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
+                }
+            }
+            return InteractionResult.sidedSuccess(isRemote());
+        }
+        return super.onUse(context);
     }
 
     /**

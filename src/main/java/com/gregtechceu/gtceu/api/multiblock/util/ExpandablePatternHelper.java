@@ -1,16 +1,18 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+
+import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -20,8 +22,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     private final IntList userRepeats;
 
     protected ExpandablePatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                                   @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                                   IntList userRepeats) {
+                                      @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                                      IntList userRepeats) {
         super(blockPreferences, minMaxPreferences);
         this.userRepeats = userRepeats;
     }
@@ -158,7 +160,8 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     public PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
-        Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped).absolutes();
+        Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped)
+                .absolutes();
         // Reverse the absolute->relative transform (transpose of orthogonal rotation matrix)
         int relX = getOffsetFromDirection(absolutes[0], pos);
         int relY = getOffsetFromDirection(absolutes[1], pos);
@@ -180,7 +183,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     }
 
     private static BlockPos.MutableBlockPos setFromDirection(BlockPos.MutableBlockPos pos,
-                                                               Direction direction, int amount) {
+                                                             Direction direction, int amount) {
         return switch (direction) {
             case DOWN -> pos.setY(-amount);
             case UP -> pos.setY(amount);

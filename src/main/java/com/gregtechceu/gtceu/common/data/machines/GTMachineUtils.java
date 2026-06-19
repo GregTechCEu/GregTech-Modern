@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;

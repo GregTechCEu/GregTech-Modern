@@ -138,7 +138,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
                 PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
-                                expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
+                        expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);
             }
@@ -262,7 +262,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                     return new ToggleButton()
                                                             .value(new BoolValue.Dynamic(
                                                                     () -> false,
-                                                                    (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(),
+                                                                    (b) -> setUserDefinedBlockInfo(
+                                                                            this.selectionInfo.pos(),
                                                                             blockInfo)))
                                                             .size(16)
                                                             .tooltip(r -> r.add(stackName))
@@ -272,7 +273,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             } else {
                                 return new ToggleButton()
                                         .value(new BoolValue.Dynamic(() -> false,
-                                                (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(), candidates.get(0))))
+                                                (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(),
+                                                        candidates.get(0))))
                                         .size(16)
                                         .tooltip(r -> r.add(
                                                 basePredicate.candidates.get(0).getItemStackForm().getHoverName()))

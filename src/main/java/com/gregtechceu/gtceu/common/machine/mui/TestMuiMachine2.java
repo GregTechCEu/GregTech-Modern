@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -422,7 +422,8 @@ public class TestMuiMachine2 extends MetaMachine implements IMuiMachine {
         structureHelper = AbstractStructureHelper.blockPattern(userBasePredicateBlockPreferences,
                 userBasePredicateMinMaxPreferences, userSliceRepeats);
 
-        structureHelper.populate(resultStructure, pattern, userGlobalBlockPreferences, frontFacing, upFacing, isFlipped);
+        structureHelper.populate(resultStructure, pattern, userGlobalBlockPreferences, frontFacing, upFacing,
+                isFlipped);
 
         Long2ReferenceMap<BlockState> schemaMap = new Long2ReferenceOpenHashMap<>();
         blockCounts.clear();

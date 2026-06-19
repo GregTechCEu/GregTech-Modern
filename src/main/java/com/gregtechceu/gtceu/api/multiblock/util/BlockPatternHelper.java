@@ -1,19 +1,20 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+
+import com.google.common.collect.Table;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -24,8 +25,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private char[][][] flattenedBlockPattern = new char[0][][];
 
     protected BlockPatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
-                              @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
-                              Int2IntMap sliceRepeats) {
+                                 @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
+                                 Int2IntMap sliceRepeats) {
         super(blockPreferences, minMaxPreferences);
         this.sliceRepeats = sliceRepeats;
     }
@@ -48,15 +49,14 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
-        this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern), blockPattern.getDirections(),
+        this.flattenedBlockPattern = rotateAndFlipPattern(flattenBlockPattern(blockPattern),
+                blockPattern.getDirections(),
                 frontFacing, upFacing, isFlipped);
-
     }
 
     protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
                                                     Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
-
         BlockPattern blockPattern = (BlockPattern) pattern;
 
         Vec3i dimensions = getDimensions(this.flattenedBlockPattern);
@@ -253,9 +253,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         if (dimensions.getX() == 0 || dimensions.getY() == 0 || dimensions.getZ() == 0) return new char[0][0][0];
 
         int[][] steps = {
-                {absoluteX.getStepX(), absoluteX.getStepY(), absoluteX.getStepZ()},
-                {absoluteY.getStepX(), absoluteY.getStepY(), absoluteY.getStepZ()},
-                {absoluteZ.getStepX(), absoluteZ.getStepY(), absoluteZ.getStepZ()},
+                { absoluteX.getStepX(), absoluteX.getStepY(), absoluteX.getStepZ() },
+                { absoluteY.getStepX(), absoluteY.getStepY(), absoluteY.getStepZ() },
+                { absoluteZ.getStepX(), absoluteZ.getStepY(), absoluteZ.getStepZ() },
         };
 
         // World-space bounding box. Each axis contributes monotonically, so the extremes are reached at index 0 or at

@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -31,8 +27,7 @@ public class PredicateStates extends BasePredicate {
 
         if (states.length == 0) {
             this.states = List.of(Blocks.BARRIER.defaultBlockState());
-        }
-        else {
+        } else {
             this.states = List.of(states);
         }
         errorPredicate = state -> {

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -10,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
