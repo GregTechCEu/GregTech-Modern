@@ -33,7 +33,6 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.IntValue;
-import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.DynamicSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
@@ -43,7 +42,6 @@ import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
 import com.mojang.blaze3d.platform.InputConstants;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.*;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
@@ -79,7 +77,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     private Direction upFacing;
     @Setter
     private @Nullable BlockPos controllerPos;
-    private Pair<BlockPos, BlockInfo> lastBlock = null;
+    private SelectionInfo selectionInfo = SelectionInfo.empty();
 
     private int yLevel = -1;
     private int maxHeight = 0;
@@ -99,17 +97,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         this.multiblockSchemaInfo.setRenderer(new SchemaRenderer(this.multiblockSchemaInfo.getMapSchema())
                 .highlightRenderer(new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f)));
 
-        ItemDrawable selectedBlockDrawable = new ItemDrawable();
-        ObjectValue<ItemStack> selectedBlock = new ObjectValue<>(ItemStack.class, ItemStack.EMPTY);
         IGuiAction.MouseReleased setBlockOnClick = (ctx, m) -> {
             if (m == InputConstants.MOUSE_BUTTON_LEFT) {
                 BlockHitResult rayTrace = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
                 if (rayTrace != null && rayTrace.getType() == HitResult.Type.BLOCK) {
                     BlockState state = this.multiblockSchemaInfo.getMapSchema().getLevel()
                             .getBlockState(rayTrace.getBlockPos());
-                    this.lastBlock = Pair.of(rayTrace.getBlockPos(), BlockInfo.fromBlockState(state));
-                    selectedBlock.setValue(new ItemStack(state.getBlock()));
-                    selectedBlockDrawable.item(selectedBlock.getValue());
+                    this.selectionInfo = SelectionInfo.of(rayTrace, state);
                     this.selectedBlockHandler.notifyUpdate();
                     return true;
                 }
@@ -131,23 +125,23 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 }));
 
         this.selectedBlockHandler.widgetProvider(() -> {
-            ItemStack selected = selectedBlock.getValue();
+            ItemStack selected = this.selectionInfo.stack();
             if (selected.isEmpty()) return null;
 
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
                 PatternPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
-                        blockPattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
+                        blockPattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
-                return createSelectedBlockMenu(predicate, lastBlock);
+                return createSelectedBlockMenu(predicate);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
                 PatternPredicate predicate = this.multiblockSchemaInfo.getExpandableStructureHelper()
                         .getPredicateFromPos(
-                                expandablePattern, lastBlock.left(), frontFacing, upFacing, isFlipped);
+                                expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
-                return createSelectedBlockMenu(predicate, lastBlock);
+                return createSelectedBlockMenu(predicate);
             }
             return null;
         });
@@ -234,14 +228,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .clientOnlyHandler(partsHandler))));
     }
 
-    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate,
-                                                         Pair<BlockPos, BlockInfo> lastBlock) {
+    private ContextMenuButton<?> createSelectedBlockMenu(PatternPredicate predicate) {
         // TODO this can throw invalid state exception when
         // opening after clicking on a block twice
-        return new ContextMenuButton<>(lastBlock.left().toString())
+        return new ContextMenuButton<>(this.selectionInfo.pos().toString())
                 .size(20)
-                .overlay(new ItemDrawable(lastBlock.right().getItemStackForm()).asIcon().center())
-                .tooltip(text -> text.addFromItem(lastBlock.right().getItemStackForm()))
+                .overlay(new ItemDrawable(this.selectionInfo.stack()).asIcon().center())
+                .tooltip(text -> text.addFromItem(this.selectionInfo.stack()))
                 .requiresClick()
                 .menuList(l -> l
                         .maxSize(80)
@@ -270,7 +263,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                                     return new ToggleButton()
                                                             .value(new BoolValue.Dynamic(
                                                                     () -> false,
-                                                                    (b) -> setUserDefinedBlockInfo(lastBlock.left(),
+                                                                    (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(),
                                                                             blockInfo)))
                                                             .size(16)
                                                             .tooltip(r -> r.add(stackName))
@@ -280,7 +273,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             } else {
                                 return new ToggleButton()
                                         .value(new BoolValue.Dynamic(() -> false,
-                                                (b) -> setUserDefinedBlockInfo(lastBlock.left(), candidates.get(0))))
+                                                (b) -> setUserDefinedBlockInfo(this.selectionInfo.pos(), candidates.get(0))))
                                         .size(16)
                                         .tooltip(r -> r.add(
                                                 basePredicate.candidates.get(0).getItemStackForm().getHoverName()))
@@ -461,6 +454,29 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         })));
             }
             repeatSliceIndex++;
+        }
+    }
+
+    protected record SelectionInfo(BlockPos pos, BlockInfo info) {
+
+        protected static SelectionInfo empty() {
+            return new SelectionInfo(BlockPos.ZERO, BlockInfo.EMPTY);
+        }
+
+        protected static SelectionInfo of(BlockHitResult result, BlockState state) {
+            return new SelectionInfo(result.getBlockPos(), BlockInfo.fromBlockState(state));
+        }
+
+        public Block block() {
+            return state().getBlock();
+        }
+
+        public BlockState state() {
+            return info().getBlockState();
+        }
+
+        public ItemStack stack() {
+            return info().getItemStackForm();
         }
     }
 }
