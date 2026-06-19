@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Map;
@@ -22,7 +23,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private final Int2IntMap sliceRepeats;
     private char[][][] flattenedBlockPattern = new char[0][][];
 
-    public BlockPatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+    protected BlockPatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
                               @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
                               Int2IntMap sliceRepeats) {
         super(blockPreferences, minMaxPreferences);
@@ -53,11 +54,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     }
 
     protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                                                    @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                     Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        if (userBlockPreferences == null || userBlockPreferences.isEmpty()) {
-            return;
-        }
 
         BlockPattern blockPattern = (BlockPattern) pattern;
 

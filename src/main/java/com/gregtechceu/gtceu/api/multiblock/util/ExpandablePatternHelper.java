@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -20,19 +19,17 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
 
     private final IntList userRepeats;
 
-    public ExpandablePatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
+    protected ExpandablePatternHelper(@Nullable Table<PatternPredicate, BasePredicate, BlockInfo> blockPreferences,
                                    @Nullable Table<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences,
                                    IntList userRepeats) {
         super(blockPreferences, minMaxPreferences);
         this.userRepeats = userRepeats;
     }
 
-
-    // TODO use a record for this ffs
-    public static Pair<BoundingBox, Direction[]> getCorners(IntList bounds,
-                                                            ExpandablePattern pattern,
-                                                            Direction frontFacing, Direction upFacing,
-                                                            boolean isFlipped) {
+    private static CornerData getCorners(IntList bounds,
+                                         ExpandablePattern pattern,
+                                         Direction frontFacing, Direction upFacing,
+                                         boolean isFlipped) {
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
 
@@ -54,26 +51,18 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
                 posCorner.setZ(bounds.getInt(selected.ordinal()));
             }
         }
-        return Pair.of(BoundingBox.fromCorners(posCorner, negCorner), absolutes);
+        return CornerData.of(posCorner, negCorner, absolutes);
     }
 
     @Override
-    protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {
-    }
-
-    @Override
-    public void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                                                 @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
-                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
-        if (userBlockPreferences == null || userBlockPreferences.isEmpty()) {
-            return;
-        }
-
+    protected void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
+                                                    Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                    Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
 
         var cornerData = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped);
-        BoundingBox corners = cornerData.left();
-        Direction[] absolutes = cornerData.right();
+        BoundingBox corners = cornerData.bounds();
+        Direction[] absolutes = cornerData.absolutes();
         // contains is min<=x<max, inflate to make sure all positions are inside
         // kinda gross, but it's the least invasive way I guess, maybe look for something better
         BoundingBox bounds = corners.inflatedBy(1);
@@ -97,12 +86,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
                                     Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
         var corners = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped);
-        Direction[] absolutes = corners.right();
+        Direction[] absolutes = corners.absolutes();
 
         var predicateProvider = expandablePattern.getPredicateProvider();
         // SOUTH, UP, EAST means point is +z, line is +y, plane is +x.
         // this basically means the x val of the iter is aisle count, y is str count, and z is char count.
-        for (BlockPos pos : betweenClosed(corners.left())) {
+        for (BlockPos pos : betweenClosed(corners.bounds())) {
             BlockPos.MutableBlockPos mutablePos = pos.mutable();
             PatternPredicate predicate = predicateProvider.apply(mutablePos, userRepeats);
 
@@ -169,7 +158,7 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     public PatternPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
                                                 Direction frontFacing, Direction upFacing, boolean isFlipped) {
         ExpandablePattern expandablePattern = (ExpandablePattern) pattern;
-        Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped).right();
+        Direction[] absolutes = getCorners(userRepeats, expandablePattern, frontFacing, upFacing, isFlipped).absolutes();
         // Reverse the absolute->relative transform (transpose of orthogonal rotation matrix)
         int relX = getOffsetFromDirection(absolutes[0], pos);
         int relY = getOffsetFromDirection(absolutes[1], pos);
@@ -200,5 +189,12 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
             case WEST -> pos.setX(-amount);
             case EAST -> pos.setX(amount);
         };
+    }
+
+    private record CornerData(BoundingBox bounds, Direction[] absolutes) {
+
+        private static CornerData of(BlockPos posCorner, BlockPos negCorner, Direction[] directions) {
+            return new CornerData(BoundingBox.fromCorners(posCorner, negCorner), directions);
+        }
     }
 }

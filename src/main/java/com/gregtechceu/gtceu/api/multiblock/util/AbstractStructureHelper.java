@@ -19,6 +19,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Map;
 
@@ -57,7 +58,9 @@ public abstract class AbstractStructureHelper {
                          @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
                          Direction frontFacing, Direction upFacing, boolean isFlipped) {
         setup(pattern, frontFacing, upFacing, isFlipped);
-        populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing, isFlipped);
+        if (userBlockPreferences != null && !userBlockPreferences.isEmpty()) {
+            populateWithUserBlockPreferences(resultStructure, pattern, userBlockPreferences, frontFacing, upFacing, isFlipped);
+        }
         populateFromPattern(resultStructure, pattern, frontFacing, upFacing, isFlipped);
         if (this.controllerBlock != null) {
             fixRotationsAndFacing(resultStructure, frontFacing, upFacing, this.controllerBlock);
@@ -67,7 +70,7 @@ public abstract class AbstractStructureHelper {
     protected void setup(IBlockPattern pattern, Direction frontFacing, Direction upFacing, boolean isFlipped) {}
 
     protected abstract void populateWithUserBlockPreferences(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
-                                                             @Nullable Long2ObjectMap<BlockInfo> userBlockPreferences,
+                                                             Long2ObjectMap<BlockInfo> userBlockPreferences,
                                                              Direction frontFacing, Direction upFacing, boolean isFlipped);
 
     protected abstract void populateFromPattern(Map<BlockPos, BlockInfo> resultStructure, IBlockPattern pattern,
