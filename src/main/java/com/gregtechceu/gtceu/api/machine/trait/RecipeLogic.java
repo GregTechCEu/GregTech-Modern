@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
@@ -427,6 +428,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public void setStatus(Status status) {
+        if (isRemote() && !(getLevel() instanceof DummyWorld)) return;
         if (this.status != status) {
             if (this.status == Status.WORKING) {
                 this.totalContinuousRunningTime = 0;
@@ -484,6 +486,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
+        if (isRemote() && !(getLevel() instanceof DummyWorld)) return;
         if (!isWorkingAllowed && getStatus() == Status.IDLE) {
             setStatus(Status.SUSPEND);
         } else {
