@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import brachy.modularui.widgets.slot.SlotGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class CompositeFilter<T> extends Filter<T> {
 
@@ -26,6 +28,11 @@ public class CompositeFilter<T> extends Filter<T> {
         @Override
         public void onContentsChanged(int slot) {
             onFilterItemChanged(slot);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return 1;
         }
     };
 
@@ -42,6 +49,14 @@ public class CompositeFilter<T> extends Filter<T> {
 
         if (tag.isEmpty()) return;
         itemStacks.deserializeNBT(tag.getCompound("filters"));
+
+        for (int i=0; i<9; i++) {
+            var item = itemStacks.getStackInSlot(i);
+            if (item.isEmpty()) continue;
+            filters[i] = Filters.loadFilter(filterableType, item);
+            Objects.requireNonNull(filters[i]).setOnUpdated($ -> updateAndSaveFilter());
+        }
+
     }
 
     @Override
@@ -56,7 +71,11 @@ public class CompositeFilter<T> extends Filter<T> {
     private void onFilterItemChanged(int slot) {
         var newItem = itemStacks.getStackInSlot(slot);
         filters[slot] = null;
-        if (!newItem.isEmpty()) filters[slot] = Filters.loadFilter(filterableType, newItem);
+        if (!newItem.isEmpty()) {
+            filters[slot] = Filters.loadFilter(filterableType, newItem);
+            Objects.requireNonNull(filters[slot]).setOnUpdated($ -> updateAndSaveFilter());
+        };
+
         updateAndSaveFilter();
     }
 
@@ -72,10 +91,13 @@ public class CompositeFilter<T> extends Filter<T> {
 
     @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+
+        SlotGroup slotGroup = new SlotGroup("filters", 9);
+
         Grid filterGrid = new Grid()
                 .coverChildren()
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new ItemSlot()
-                        .slot(SyncHandlers.itemSlot(itemStacks, i).slotGroup("filters")));
+                        .slot(SyncHandlers.itemSlot(itemStacks, i).slotGroup(slotGroup)));
 
         return Flow.row()
                 .coverChildrenHeight()
