@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -33,6 +30,7 @@ public class FilterHandler<T> implements ISyncManaged {
     private final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
 
     private final ISyncManaged container;
+    @Getter
     private final Class<T> filterableType;
 
     @SaveField
@@ -41,24 +39,31 @@ public class FilterHandler<T> implements ISyncManaged {
     private ItemStack filterItem = ItemStack.EMPTY;
 
     private @Nullable Filter<T> filter;
-    private @Nullable CustomItemStackHandler filterSlot;
+    @Getter
+    private CustomItemStackHandler filterSlot;
 
     private Consumer<Filter<T>> onFilterLoaded = (filter) -> {};
     private Runnable onFilterRemoved = () -> {};
     private Consumer<Filter<T>> onFilterUpdated = (filter) -> {};
 
     /**
-     *
      * @param container      The machine/pipe/cover/etc this filter handler is attached to.
      * @param filterableType The stack/object type which this filter handler should hold filters for.
      */
     public FilterHandler(ISyncManaged container, Class<T> filterableType) {
         this.container = container;
         this.filterableType = filterableType;
-    }
 
-    public Filter<T> loadFilter(ItemStack filterItem) {
-        return Filters.loadFilter(filterableType, filterItem);
+        this.filterSlot = new CustomItemStackHandler(this.filterItem) {
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
+
+        this.filterSlot.setOnContentsChanged(this::updateFilter);
+        this.filterSlot.setFilter(this::canInsertFilterItem);
     }
 
     //////////////////////////////////
@@ -70,18 +75,11 @@ public class FilterHandler<T> implements ISyncManaged {
     }
 
     public boolean isFilterPresent() {
-        return filter != null || !filterItem.isEmpty();
+        return filter != null;
     }
 
     public Filter<T> getFilter() {
-        if (this.filter == null) {
-            if (this.filterItem.isEmpty()) {
-                return Filters.getEmptyFilter();
-            } else {
-                loadFilterFromItem();
-            }
-        }
-
+        if (this.filter == null) return Filters.getEmptyFilter();
         return this.filter;
     }
 
@@ -108,25 +106,8 @@ public class FilterHandler<T> implements ISyncManaged {
     // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
-    public CustomItemStackHandler getFilterSlot() {
-        if (this.filterSlot == null) {
-            this.filterSlot = new CustomItemStackHandler(this.filterItem) {
-
-                @Override
-                public int getSlotLimit(int slot) {
-                    return 1;
-                }
-            };
-
-            this.filterSlot.setFilter(this::canInsertFilterItem);
-        }
-
-        return this.filterSlot;
-    }
-
     public void setFilterItem(ItemStack item) {
-        getFilterSlot().setStackInSlot(0, item);
-        updateFilter();
+        filterSlot.setStackInSlot(0, item);
     }
 
     private void updateFilter() {
@@ -146,21 +127,10 @@ public class FilterHandler<T> implements ISyncManaged {
             this.onFilterRemoved.run();
         }
 
-        loadFilterFromItem();
-    }
-
-    private void loadFilterFromItem() {
         if (!this.filterItem.isEmpty()) {
-            this.filter = loadFilter(this.filterItem);
+            this.filter = Filters.loadFilter(filterableType, filterItem);
+            filter.onFilterLoaded(this);
             filter.setOnUpdated(this.onFilterUpdated);
-            if (filter instanceof SmartItemFilter smart &&
-                    container instanceof CoverBehavior cover &&
-                    cover.coverHolder instanceof MachineCoverContainer mcc) {
-                var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
-                if (machine != null) {
-                    smart.setModeFromMachine(machine.getDefinition().getName());
-                }
-            }
             this.onFilterLoaded.accept(this.filter);
         }
     }

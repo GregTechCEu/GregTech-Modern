@@ -59,6 +59,13 @@ public abstract class Filter<T> implements Predicate<T> {
     }
 
     /**
+     * Called when a filter is loaded by a filter handler.
+     * 
+     * @param handler The filter handler
+     */
+    public void onFilterLoaded(FilterHandler<T> handler) {}
+
+    /**
      * @return The filter UI.
      */
     public abstract Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings);
