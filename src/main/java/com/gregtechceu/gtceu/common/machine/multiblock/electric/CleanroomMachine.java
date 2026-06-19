@@ -74,6 +74,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -472,8 +473,9 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static BasePredicate doorPredicate() {
         return Predicates.customPredicate(
                 ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
-                List.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(
-                        Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
+                () -> Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
+                        new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
+                                .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
 
     private static BasePredicate getValidFloorBlocks() {

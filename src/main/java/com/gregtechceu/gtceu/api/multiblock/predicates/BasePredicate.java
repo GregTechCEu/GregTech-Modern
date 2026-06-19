@@ -22,6 +22,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 @Accessors(chain = true)
 public abstract class BasePredicate {
@@ -316,5 +319,46 @@ public abstract class BasePredicate {
 
     public static BasePredicate and(@Nullable String debugName, Iterable<BasePredicate> predicates) {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
+    }
+
+    public static class Custom extends BasePredicate {
+        @Nullable
+        private final String debugName;
+        private final Predicate<PredicateContext> predicate;
+        private final Supplier<Stream<BlockInfo>> candidates;
+        private Consumer<StringBuilder> contents = b -> {};
+
+        public Custom(@Nullable String debugName,
+                      Predicate<PredicateContext> predicate,
+                      Supplier<Stream<BlockInfo>> candidates,
+                      @Nullable Consumer<StringBuilder> contents) {
+            this.debugName = debugName;
+            this.predicate = predicate;
+            this.candidates = candidates;
+            if (contents != null) {
+                this.contents = contents;
+            }
+        }
+
+        @Override
+        public boolean testInternal(PredicateContext ctx) {
+            return this.predicate.test(ctx);
+        }
+
+        @Override
+        public List<BlockInfo> computeCandidates() {
+            return this.candidates.get().toList();
+        }
+
+        @Override
+        public StringBuilder appendType(StringBuilder builder) {
+            return builder.append(debugName != null ? debugName : "Custom");
+        }
+
+        @Override
+        protected StringBuilder appendContents(StringBuilder builder) {
+            contents.accept(builder);
+            return builder;
+        }
     }
 }

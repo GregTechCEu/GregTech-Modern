@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -40,9 +39,11 @@ import org.apache.commons.lang3.Validate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class Predicates {
 
@@ -87,7 +88,7 @@ public class Predicates {
     }
 
     public static BasePredicate states(BlockState... allowedStates) {
-        return states(null, allowedStates);
+        return states("States", allowedStates);
     }
 
     public static BasePredicate states(@Nullable String debugName, BlockState... allowedStates) {
@@ -98,59 +99,50 @@ public class Predicates {
                 states.add(block.changeActive(state, !block.isActive(state)));
             }
         }
-        return new BasePredicate() {
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return states.contains(ctx.state()) || ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return states.stream().map(BlockInfo::fromBlockState).toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                builder.append("States");
-                if(debugName != null) {
-                    builder.append('#').append(debugName);
-                }
-                return builder;
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                StringJoiner joiner = new StringJoiner(", ");
-                states.forEach(state -> joiner.add(blockToString(state)));
-                return builder.append(joiner);
-            }
-        };
+        return customPredicate(debugName,
+                ctx -> states.contains(ctx.state()) || ctx.error(PLACEHOLDER),
+                () -> states.stream().map(BlockInfo::fromBlockState),
+                builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    states.forEach(state -> joiner.add(blockToString(state)));
+                    builder.append(joiner);
+                });
     }
 
     public static BasePredicate blocks(Block block) {
-        return new BasePredicate() {
+        return customPredicate("Block",
+                ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
+                () -> Stream.of(BlockInfo.fromBlock(block)),
+                builder -> builder.append(blockToString(block)));
+    }
 
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block)));
-            }
+    public static BasePredicate blocks(Block... blocks) {
+        return blocks("Blocks", blocks);
+    }
 
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return List.of(BlockInfo.fromBlock(block));
-            }
+    public static BasePredicate blocks(@Nullable String debugName, Block... blocks) {
+        return blocks(debugName, () -> Arrays.stream(blocks));
+    }
 
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("Block");
-            }
+    public static BasePredicate blocks(@Nullable String debugName,
+                                       Supplier<Stream<Block>> blocks) {
+        return blocks(debugName, blocks, blocks);
+    }
 
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                return builder.append(blockToString(block));
-            }
-        };
+    public static BasePredicate blocks(@Nullable String debugName,
+                                       Supplier<Stream<Block>> blocks,
+                                       Supplier<Stream<Block>> candidates) {
+        return customPredicate(debugName, ctx -> {
+                    var blockList = blocks.get().toList();
+                    for (var block : blockList) {
+                        if (ctx.state().is(block)) return true;
+                    }
+                    return ctx.error(new BlockMatchingError(ctx.pos(), blockList));
+                }, () -> candidates.get().map(BlockInfo::fromBlock), builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    blocks.get().forEach(block -> joiner.add(blockToString(block)));
+                    builder.append(joiner);
+                });
     }
 
     private static String blockToString(BlockState blockState) {
@@ -160,47 +152,7 @@ public class Predicates {
     private static String blockToString(Block block) {
         return ForgeRegistries.BLOCKS.getDelegate(block)
                 .map(r -> r.key().location().toString())
-                .orElse("unknown");
-    }
-
-    public static BasePredicate blocks(Block... blocks) {
-        return blocks(null, blocks);
-    }
-
-    public static BasePredicate blocks(@Nullable String debugName, Block... blocks) {
-        return new BasePredicate() {
-
-            private final List<Block> blockList = Arrays.asList(blocks);
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return blockList.contains(ctx.state().getBlock()) ||
-                        ctx.error(new BlockMatchingError(ctx.pos(), this.blockList));
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return blockList.stream()
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                builder.append("Blocks");
-                if(debugName != null) {
-                    builder.append('#').append(debugName);
-                }
-                return builder;
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                StringJoiner joiner = new StringJoiner(", ");
-                blockList.forEach(block -> joiner.add(block.toString()));
-                return builder.append(joiner);
-            }
-        };
+                .orElse("unknown block");
     }
 
     public static BasePredicate machines(MachineDefinition... definitions) {
@@ -209,95 +161,36 @@ public class Predicates {
     }
 
     public static BasePredicate blockTag(TagKey<Block> tag) {
-        return new BasePredicate() {
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return ctx.state().is(tag) || ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                        .getTag(tag)
-                        .stream()
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("BlockTag");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                return builder.append(tag.location());
-            }
-        };
+        return customPredicate("BlockTag",
+                ctx -> ctx.state().is(tag),
+                () -> Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+                        .getTag(tag).stream()
+                        .map(BlockInfo::fromBlock),
+                builder -> builder.append(tag.location()));
     }
 
     public static BasePredicate fluids(Fluid... fluids) {
-        return new BasePredicate() {
-
-            final List<Fluid> fluidList = Arrays.asList(fluids);
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return fluidList.contains(ctx.fluid()) || ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return fluidList.stream()
-                        .map(Fluid::defaultFluidState)
-                        .map(FluidState::createLegacyBlock)
-                        .map(BlockInfo::fromBlockState)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("Fluids");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                StringJoiner joiner = new StringJoiner(", ");
-                fluidList.forEach(fluid -> joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
-                        .map(r -> r.key().location().toString())
-                        .orElse("unknown")));
-                return builder.append(joiner);
-            }
-        };
+        return customPredicate("Fluids",
+                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
+                () -> Arrays.stream(fluids).map(BlockInfo::fromFluid),
+                builder -> {
+                    StringJoiner joiner = new StringJoiner(", ");
+                    for (Fluid fluid : fluids) {
+                        joiner.add(ForgeRegistries.FLUIDS.getDelegate(fluid)
+                                .map(r -> r.key().location().toString())
+                                .orElse("unknown"));
+                    }
+                    builder.append(joiner);
+                });
     }
 
     public static BasePredicate fluidTag(TagKey<Fluid> tag) {
-        return new BasePredicate() {
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return ctx.fluidState().is(tag) || ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+        return customPredicate("FluidTag",
+                ctx -> ctx.fluidState().is(tag),
+                () -> Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
                         .getTag(tag).stream()
-                        .map(BlockInfo::fromFluid)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("FluidTag");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                return builder.append(tag.location());
-            }
-        };
+                        .map(BlockInfo::fromFluid),
+                builder -> builder.append(tag.location()));
     }
 
     public static BasePredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
@@ -305,28 +198,25 @@ public class Predicates {
         return customPredicate(ctx -> {
             PatternError error = predicate.apply(ctx.blockInfo());
             return error == null || ctx.error(error);
-        }, candidates);
+        }, Optional.ofNullable(candidates).orElse(Collections.emptyList())::stream);
     }
 
     public static BasePredicate customPredicate(Predicate<PredicateContext> predicate,
-                                                @Nullable List<BlockInfo> candidates) {
-        return new BasePredicate() {
+                                                Supplier<Stream<BlockInfo>> candidates) {
+        return customPredicate(null, predicate, candidates);
+    }
 
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
+    public static BasePredicate customPredicate(@Nullable String debugName,
+                                                Predicate<PredicateContext> predicate,
+                                                Supplier<Stream<BlockInfo>> candidates) {
+        return customPredicate(debugName, predicate, candidates, null);
+    }
 
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return Optional.ofNullable(candidates).orElse(Collections.emptyList());
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("Custom");
-            }
-        };
+    public static BasePredicate customPredicate(@Nullable String debugName,
+                                                Predicate<PredicateContext> predicate,
+                                                Supplier<Stream<BlockInfo>> candidates,
+                                                @Nullable Consumer<StringBuilder> contents) {
+        return new BasePredicate.Custom(debugName, predicate, candidates, contents);
     }
 
     public static BasePredicate any() {
@@ -338,109 +228,44 @@ public class Predicates {
     }
 
     public static BasePredicate abilities(PartAbility ability) {
-        return new BasePredicate() {
-
-            final Collection<Block> blockList = ability.getAllBlocks();
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return blockList.contains(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability));
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return blockList.stream()
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("AbilityPredicate");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                return builder.append(ability.getName());
-            }
-        };
+        return customPredicate("Ability",
+                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
+                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
+                () -> ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
+                builder -> builder.append(ability.getName()));
     }
 
     public static BasePredicate abilities(PartAbility... abilities) {
-        return new BasePredicate() {
-
-            final List<PartAbility> abilityList = List.of(abilities);
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                for (PartAbility ability : this.abilityList) {
-                    if (ability.getAllBlocks().contains(ctx.state().getBlock())) {
-                        return true;
-                    } else {
+        return customPredicate("Abilities",
+                ctx -> {
+                    for (PartAbility ability : abilities) {
+                        if (ability.isApplicable(ctx.state().getBlock())) {
+                            return true;
+                        }
                         ctx.error(new PartAbilityError(ctx.pos(), ability));
                     }
-                }
-                return false;
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return this.abilityList.stream()
-                        .flatMap(ability -> ability.getAllBlocks().stream())
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("AbilitiesPredicate");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                StringJoiner sb = new StringJoiner(", ");
-                this.abilityList.forEach(partAbility -> sb.add(partAbility.getName()));
-                return builder.append(sb);
-            }
-        };
+                    return false;
+                },
+                () -> Arrays.stream(abilities)
+                .flatMap(a -> a.getAllBlocks().stream())
+                .map(BlockInfo::fromBlock),
+                builder -> {
+                    StringJoiner sb = new StringJoiner(", ");
+                    for (PartAbility ability : abilities) {
+                        sb.add(ability.getName());
+                    }
+                    builder.append(sb);
+                });
     }
 
     public static BasePredicate ability(PartAbility ability, int... tiers) {
-        return new BasePredicate() {
-
-            final Collection<Block> blockList = ability.getBlocks(tiers);
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                return blockList.contains(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability));
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return blockList.stream()
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("TieredAbilityPredicate");
-            }
-
-            @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                StringJoiner sb = new StringJoiner("-");
-                for (int tier : tiers) {
-                    sb.add(GTValues.VN[tier]);
-                }
-                return builder.append(ability.getName())
-                        .append('[')
-                        .append(sb)
-                        .append(']');
-            }
-        };
+        StringJoiner sb = new StringJoiner("-");
+        for (int tier : tiers) {
+            sb.add(GTValues.VN[tier]);
+        }
+        return customPredicate("Ability[" + sb + "]",
+                ctx -> ability.isApplicable(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability)),
+                () -> ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
     public static BasePredicate autoAbilities(GTRecipeType... recipeType) {
@@ -536,140 +361,32 @@ public class Predicates {
     }
 
     public static BasePredicate heatingCoils() {
-        return new BasePredicate() {
-
-            {
-                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"));
-                setPriority(0);
-            }
-
-            private List<Block> getCoils() {
-                return GTCEuAPI.HEATING_COILS.values()
-                        .stream()
-                        .map(Supplier::get)
-                        .map(Block.class::cast)
-                        .toList();
-            }
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                var blockState = ctx.state();
-                List<Block> coils = this.getCoils();
-                for (var blockCoil : coils) {
-                    if (blockState.is(blockCoil)) {
-                        return true;
-                    }
-                }
-                return ctx.error(new BlockMatchingError(ctx.pos(), coils));
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return GTCEuAPI.HEATING_COILS.entrySet().stream()
-                        // sort to make autogenerated jei previews not pick random coils each game load
-                        .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                        .map(Map.Entry::getValue)
-                        .map(Supplier::get)
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("HeatingCoils");
-            }
-        };
+        return blocks("HeatingCoils",
+                () -> GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
+                .setPriority(0);
     }
 
     public static BasePredicate cleanroomFilters() {
-        return new BasePredicate() {
-
-            {
-                addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
-            }
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                var blockState = ctx.state();
-                for (var entry : GTCEuAPI.CLEANROOM_FILTERS.entrySet()) {
-                    if (blockState.is(entry.getValue().get())) {
-                        return true;
-                    }
-                }
-                return ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return GTCEuAPI.CLEANROOM_FILTERS.entrySet().stream()
+        return blocks("CleanroomFilters",
+                () -> GTCEuAPI.CLEANROOM_FILTERS.values()
+                        .stream().map(Supplier::get),
+                () -> GTCEuAPI.CLEANROOM_FILTERS.entrySet()
+                        .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
-                        .map(e -> new BlockInfo(e.getValue().get()))
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("CleanroomFilters");
-            }
-        };
+                        .map(entry -> entry.getValue().get()))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
     }
 
     public static BasePredicate powerSubstationBatteries() {
-        return new BasePredicate() {
-
-            {
-                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
-            }
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                var state = ctx.state();
-                for (var entry : GTCEuAPI.PSS_BATTERIES.entrySet()) {
-                    if (state.is(entry.getValue().get())) {
-                        return true;
-                    }
-                }
-                return ctx.error(PLACEHOLDER);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return GTCEuAPI.PSS_BATTERIES.entrySet().stream()
+        return blocks("PSS-Batteries",
+                () -> GTCEuAPI.PSS_BATTERIES.values()
+                        .stream().map(Supplier::get),
+                () -> GTCEuAPI.PSS_BATTERIES.entrySet()
+                        .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
-                        .map(e -> new BlockInfo(e.getValue().get().defaultBlockState(), null))
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("PSSBatteries");
-            }
-        };
-
-        /*
-         * return new TraceabilityPredicate(blockWorldState -> {
-         * BlockState state = blockWorldState.getBlockState();
-         * for (Map.Entry<IBatteryData, Supplier<BatteryBlock>> entry : GTCEuAPI.PSS_BATTERIES.entrySet()) {
-         * if (state.is(entry.getValue().get())) {
-         * IBatteryData battery = entry.getKey();
-         * // Allow unfilled batteries in the structure, but do not add them to match context.
-         * // This lets you use empty batteries as "filler slots" for convenience if desired.
-         * if (battery.getTier() != -1 && battery.getCapacity() > 0) {
-         * String key = PMC_BATTERY_HEADER + battery.getBatteryName();
-         * PowerSubstationMachine.BatteryMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
-         * if (wrapper == null) wrapper = new PowerSubstationMachine.BatteryMatchWrapper(battery);
-         * blockWorldState.getMatchContext().set(key, wrapper.increment());
-         * }
-         * return true;
-         * }
-         * }
-         * return false;
-         * }, () -> GTCEuAPI.PSS_BATTERIES.entrySet().stream()
-         * .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-         * .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
-         * .toArray(BlockInfo[]::new))
-         * .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
-         */
+                        .map(e -> e.getValue().get()))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
     }
 
     public static @Nullable BasePredicate dataHatchPredicate() {
@@ -680,6 +397,7 @@ public class Predicates {
                     .setExactLimit(1)
                     .setPriority(1);
         }
+        // this really should not be null
         return null;
     }
 
@@ -689,35 +407,21 @@ public class Predicates {
     public static BasePredicate frames(Material... frameMaterials) {
         var frameBlocks = Arrays.stream(frameMaterials)
                 .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
-                .filter(Objects::nonNull)
-                .filter(RegistryEntry::isPresent)
+                .filter(obj -> Objects.nonNull(obj) && obj.isPresent())
                 .map(RegistryEntry::get)
                 .toArray(Block[]::new);
-        return blocks(frameBlocks).or(framedPipes(frameMaterials, frameBlocks));
+        return blocks("Frames", frameBlocks)
+                .or(framedPipes(frameMaterials, frameBlocks));
     }
 
     public static BasePredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
-        return new BasePredicate() {
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                BlockEntity tileEntity = ctx.blockEntity();
-                if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                    return ctx.error(PLACEHOLDER);
-                }
-                return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
-                        ctx.error(PLACEHOLDER);
+        return customPredicate("FramedPipes", ctx -> {
+            BlockEntity tileEntity = ctx.blockEntity();
+            if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
+                return ctx.error(PLACEHOLDER);
             }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return Arrays.stream(frameBlocks).map(BlockInfo::fromBlock).toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("FramedPipes");
-            }
-        };
+            return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
+                    ctx.error(PLACEHOLDER);
+        }, () -> Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
     }
 }
