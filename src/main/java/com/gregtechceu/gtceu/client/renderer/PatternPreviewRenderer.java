@@ -80,26 +80,27 @@ public class PatternPreviewRenderer {
         notifyRecompile();
     }
 
-    private int layers = -1;
+    // Layer to show in the render preview, MAX_INT is show all
+    private int layers = Integer.MAX_VALUE;
 
     public void showPreviewCycleLevel(BlockPos controllerPos, MutableSchema schema, int duration) {
           if(controllerPos.equals(this.controllerPos)){
             var bounds = schema.getBounds();
             int min = bounds.getFirst().getY();
             int max = bounds.getSecond().getY();
-            if(layers == -1){
+            if(layers == Integer.MAX_VALUE){
                 layers = min;
             } else {
                 layers += 1;
                 if(layers > max) {
-                    layers = -1;
+                    layers = Integer.MAX_VALUE;
                 }
             }
         } else {
-            layers = -1;
+            layers = Integer.MAX_VALUE;
         }
         RenderFilter renderFilter;
-        if(layers == -1) {
+        if(layers == Integer.MAX_VALUE) {
             renderFilter = RenderFilter.ALL;
         } else {
             renderFilter = (pos, state) -> pos.getY() == layers;
