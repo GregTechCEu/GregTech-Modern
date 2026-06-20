@@ -226,7 +226,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             }
             sum = sum - canInput;
         }
-        return sum <= 0 ? List.of() : Collections.singletonList(sum);
+        return sum <= 0 ? null : Collections.singletonList(sum);
     }
 
     @Override

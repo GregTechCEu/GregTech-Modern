@@ -22,5 +22,6 @@ classes/
 src/generated/resources/.cache/
 
 *.patch
+*.cap
 *.DS_Store
 

@@ -70,7 +70,6 @@ import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
-import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
@@ -284,7 +283,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Material related
         event.add("GTElements", GTElements.class);
         event.add("GTMaterials", GTMaterials.class);
-        event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("MaterialEntry", MaterialEntry.class);
@@ -416,7 +414,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(MaterialIconSet.class, o -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(MaterialStack.class, o -> {

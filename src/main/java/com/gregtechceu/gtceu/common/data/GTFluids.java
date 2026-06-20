@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -40,14 +39,11 @@ public class GTFluids {
 
         // register fluids for materials
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
-        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
-            GTRegistrate registrate = registry.getRegistrate();
-            for (var material : registry.getAllMaterials()) {
-                var fluidProperty = material.getProperty(PropertyKey.FLUID);
+        for (var material : GTRegistries.MATERIALS.values()) {
+            var fluidProperty = material.getProperty(PropertyKey.FLUID);
 
-                if (fluidProperty != null) {
-                    fluidProperty.registerFluids(material, registrate);
-                }
+            if (fluidProperty != null) {
+                fluidProperty.registerFluids(material, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
             }
         }
     }

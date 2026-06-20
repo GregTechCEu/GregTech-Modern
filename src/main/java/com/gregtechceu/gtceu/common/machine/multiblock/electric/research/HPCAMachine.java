@@ -18,10 +18,10 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
@@ -46,8 +46,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -134,17 +132,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentTraits);
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
+        scheduleForNextServerTick(this::updateTickSubscription);
     }
 
     @Override
@@ -406,6 +400,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
             this.controller = controller;
+        }
+
+        @Override
+        public @Nullable ISyncManaged getParentSyncObject() {
+            return controller;
         }
 
         public void onStructureForm(Collection<HPCAComponentTrait> components) {
@@ -747,16 +746,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void clearClientComponents() {
             components.clear();
-        }
-
-        @Override
-        public void markAsChanged() {
-            controller.markAsChanged();
-        }
-
-        @Override
-        public void scheduleRenderUpdate() {
-            controller.scheduleRenderUpdate();
         }
     }
 }

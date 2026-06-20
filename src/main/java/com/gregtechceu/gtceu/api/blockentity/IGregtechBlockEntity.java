@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,8 +41,6 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
-
-    void markAsChanged();
 
     default boolean isRemote() {
         return getLevel() == null ? GTCEu.isClientThread() : getLevel().isClientSide;
