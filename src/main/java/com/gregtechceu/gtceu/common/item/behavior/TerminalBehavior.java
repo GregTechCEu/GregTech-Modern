@@ -48,6 +48,10 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
             return InteractionResult.PASS;
         }
 
+        if (!player.isCreative()) {
+            return InteractionResult.PASS;
+        }
+
         if (!(MetaMachine.getMachine(level, pos) instanceof MultiblockControllerMachine controller)) {
             return InteractionResult.PASS;
         }

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.block.ICoilType;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.api.drawable.Text;
 import com.mojang.serialization.Codec;

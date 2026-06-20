@@ -6,10 +6,10 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
