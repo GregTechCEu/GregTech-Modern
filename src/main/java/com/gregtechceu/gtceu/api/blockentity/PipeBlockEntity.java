@@ -10,10 +10,10 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
@@ -185,6 +185,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public final void serverTick() {
+        super.serverTick();
         if (!waitingToAdd.isEmpty()) {
             serverTicks.addAll(waitingToAdd);
             waitingToAdd.clear();
@@ -234,6 +235,9 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
         // fix desync between two connections.
         // Can happen if a pipe side is blocked, and a new pipe is placed next to it.
+        if (getLevel() == null) {
+            return;
+        }
         if (!getLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;
@@ -251,8 +255,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 if (cover != null && cover.canPipePassThrough()) return;
             }
 
-            connections = withSideConnection(connections, side, connected);
-            syncDataHolder.markClientSyncFieldDirty("connections");
+            setConnections(withSideConnection(connections, side, connected));
             updateNetworkConnection(side, connected);
             // notify neighbor of change so Auto Output updates its ticking status
             getLevel().neighborChanged(getBlockPos().relative(side), getPipeBlock(), getBlockPos());
@@ -306,13 +309,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return false;
     }
 
-    @Override
-    public void setChanged() {
-        if (getLevel() != null) {
-            getLevel().blockEntityChanged(getBlockPos());
-        }
-    }
-
     //////////////////////////////////////
     // ******* Interaction *******//
     //////////////////////////////////////
@@ -356,14 +352,14 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (player == null) return Pair.of(null, InteractionResult.PASS);
 
         // Prioritize covers
-        var cover = getCoverContainer().getCoverAtSide(context.getClickedFace());
+        CoverBehavior cover = getCoverContainer().getCoverAtSide(context.getGridSide());
         if (cover != null) {
             var result = cover.onToolClick(context);
             if (result.getSecond() != InteractionResult.PASS) return result;
 
-            if (toolType.contains(GTToolType.CROWBAR) && !isRemote()) {
+            if (toolType.contains(GTToolType.CROWBAR)) {
                 getCoverContainer().removeCover(context.getGridSide(), player);
-                return Pair.of(GTToolType.CROWBAR, InteractionResult.SUCCESS);
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
 
@@ -419,13 +415,35 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
-        return ICopyable.super.copyConfig(tag);
+    public void copyConfig(CompoundTag tag) {
+        tag.putInt("pipe_connections", getConnections());
+        tag.putInt("pipe_blocked_connections", getBlockedConnections());
+
+        var coverTag = new CompoundTag();
+        getCoverContainer().copyConfig(coverTag);
+        tag.put("cover", coverTag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.pasteConfig(player, tag);
+        if (tag.contains("pipe_connections")) {
+            var connections = tag.getInt("pipe_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isConnected(connections, dir)) setConnection(dir, true, false);
+            }
+
+        }
+        if (tag.contains("pipe_blocked_connections")) {
+            var blockedConnections = tag.getInt("pipe_blocked_connections");
+
+            for (var dir : GTUtil.DIRECTIONS) {
+                if (isFaceBlocked(blockedConnections, dir)) setBlocked(dir, true);
+            }
+
+        }
+
+        getCoverContainer().pasteConfig(player, tag.getCompound("cover"));
     }
 
     @Override

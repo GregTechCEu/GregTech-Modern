@@ -1,3 +1,4 @@
 {
-  "parent": "gtceu:block/red_lamp"
+  "parent": "gtceu:block/red_lamp_on",
+  "loader": "gtceu:custom_item_renderer_wrapper"
 }

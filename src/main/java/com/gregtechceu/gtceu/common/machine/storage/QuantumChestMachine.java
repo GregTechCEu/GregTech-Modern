@@ -8,17 +8,16 @@ import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.*;
 
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
@@ -42,15 +41,12 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.NotNullByDefault;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-@NotNullByDefault
 public class QuantumChestMachine extends TieredMachine implements IControllable,
                                  IDropSaveMachine, IFancyUIMachine {
 
@@ -87,9 +83,9 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     public QuantumChestMachine(BlockEntityCreationInfo info, int tier, long maxAmount) {
         super(info, tier);
         this.maxAmount = maxAmount;
-        this.cache = createCacheItemHandler();
+        this.cache = attachTrait(createCacheItemHandler());
         this.lockedItem = new CustomItemStackHandler();
-        this.autoOutput = AutoOutputTrait.ofItems(this, cache);
+        this.autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
         lockedItem.setOnContentsChanged(() -> syncDataHolder.markClientSyncFieldDirty("lockedItem"));
     }
 
@@ -98,7 +94,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
 
     protected ItemCache createCacheItemHandler() {
-        return new ItemCache(this);
+        return new ItemCache();
     }
 
     protected void onItemChanged() {
@@ -287,7 +283,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         return group;
     }
 
-    private @NotNull CustomItemStackHandler createImportItems() {
+    private CustomItemStackHandler createImportItems() {
         var importItems = new CustomItemStackHandler();
         importItems.setFilter(cache::canInsert);
         importItems.setOnContentsChanged(() -> {
@@ -325,8 +321,8 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         private final Predicate<ItemStack> filter = i -> !isLocked() ||
                 GTUtil.isSameItemSameTags(i, getLockedItem());
 
-        public ItemCache(MetaMachine holder) {
-            super(holder);
+        public ItemCache() {
+            super();
         }
 
         @Override
@@ -337,12 +333,12 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public @NotNull ItemStack getStackInSlot(int slot) {
+        public ItemStack getStackInSlot(int slot) {
             return stored.copyWithCount(GTMath.saturatedCast(storedAmount));
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             long free = isVoiding ? Long.MAX_VALUE : maxAmount - storedAmount;
             long canStore = 0;
             if ((stored.isEmpty() || ItemHandlerHelper.canItemStacksStack(stored, stack)) && filter.test(stack)) {
@@ -357,7 +353,7 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (stored.isEmpty()) return ItemStack.EMPTY;
             long toExtract = Math.min(storedAmount, amount);
             var copy = stored.copyWithCount((int) toExtract);
@@ -380,11 +376,11 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
         }
 
         @Override
-        public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+        public boolean isItemValid(int slot, ItemStack stack) {
             return filter.test(stack);
         }
 
-        public void exportToNearby(@NotNull Direction... facings) {
+        public void exportToNearby(Direction... facings) {
             if (stored.isEmpty()) return;
             var level = getMachine().getLevel();
             var pos = getMachine().getBlockPos();

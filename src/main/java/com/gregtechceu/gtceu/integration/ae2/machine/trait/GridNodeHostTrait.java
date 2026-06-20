@@ -24,14 +24,14 @@ public class GridNodeHostTrait extends MachineTrait implements IGridConnectedBlo
     private final IManagedGridNode proxy;
 
     public GridNodeHostTrait(MetaMachine machine) {
-        super(machine);
+        super();
         this.proxy = GridHelper.createManagedNode(this, BlockEntityNodeListener.INSTANCE)
                 .setInWorldNode(true)
                 .setVisualRepresentation(machine.getDefinition().getItem());
     }
 
     public void init() {
-        this.proxy.create(machine.getLevel(), machine.getBlockPos());
+        this.proxy.create(getLevel(), getBlockPos());
     }
 
     @Override

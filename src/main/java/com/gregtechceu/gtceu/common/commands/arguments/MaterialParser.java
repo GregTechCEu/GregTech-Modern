@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.commands.arguments;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
@@ -14,7 +14,6 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -29,7 +28,7 @@ public class MaterialParser {
     private static final char SYNTAX_START_NBT = '{';
     private static final char SYNTAX_TAG = '#';
     private static final Function<SuggestionsBuilder, CompletableFuture<Suggestions>> SUGGEST_NOTHING = SuggestionsBuilder::buildFuture;
-    private final IMaterialRegistryManager materials;
+    private final MaterialRegistry materials;
     private final StringReader reader;
     private Material result;
     /**
@@ -37,12 +36,12 @@ public class MaterialParser {
      */
     private Function<SuggestionsBuilder, CompletableFuture<Suggestions>> suggestions = SUGGEST_NOTHING;
 
-    private MaterialParser(IMaterialRegistryManager materials, StringReader reader) {
+    private MaterialParser(MaterialRegistry materials, StringReader reader) {
         this.materials = materials;
         this.reader = reader;
     }
 
-    public static Material parseForMaterial(IMaterialRegistryManager registry,
+    public static Material parseForMaterial(MaterialRegistry registry,
                                             StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
@@ -56,7 +55,7 @@ public class MaterialParser {
         }
     }
 
-    public static CompletableFuture<Suggestions> fillSuggestions(IMaterialRegistryManager lookup,
+    public static CompletableFuture<Suggestions> fillSuggestions(MaterialRegistry lookup,
                                                                  SuggestionsBuilder builder) {
         StringReader stringReader = new StringReader(builder.getInput());
         stringReader.setCursor(builder.getStart());
@@ -71,12 +70,14 @@ public class MaterialParser {
 
     private void readMaterial() throws CommandSyntaxException {
         int i = this.reader.getCursor();
-        ResourceLocation resourceLocation = ResourceLocation.read(this.reader);
-        Material material = this.materials.getRegistry(resourceLocation.getNamespace()).get(resourceLocation.getPath());
-        this.result = Optional.ofNullable(material).orElseThrow(() -> {
+        ResourceLocation id = ResourceLocation.read(this.reader);
+
+        Material material = materials.get(id);
+        if (material == null || material.isNull()) {
             this.reader.setCursor(i);
-            return ERROR_UNKNOWN_ITEM.createWithContext(this.reader, resourceLocation);
-        });
+            throw ERROR_UNKNOWN_ITEM.createWithContext(this.reader, id);
+        }
+        this.result = material;
     }
 
     private void parse() throws CommandSyntaxException {
@@ -86,6 +87,6 @@ public class MaterialParser {
 
     private CompletableFuture<Suggestions> suggestMaterial(SuggestionsBuilder builder) {
         return SharedSuggestionProvider.suggestResource(
-                this.materials.getRegisteredMaterials().stream().map(Material::getResourceLocation), builder);
+                materials.values().stream().map(Material::getResourceLocation), builder);
     }
 }

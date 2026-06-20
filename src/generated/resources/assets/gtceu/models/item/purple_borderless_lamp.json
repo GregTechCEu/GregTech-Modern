@@ -1,3 +1,4 @@
 {
-  "parent": "gtceu:block/purple_borderless_lamp"
+  "parent": "gtceu:block/purple_borderless_lamp_on",
+  "loader": "gtceu:custom_item_renderer_wrapper"
 }

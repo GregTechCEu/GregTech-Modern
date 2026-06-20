@@ -2,17 +2,16 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotResult;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
@@ -57,6 +57,8 @@ public class HazardProperty implements IMaterialProperty {
         public static final HazardTrigger SKIN_CONTACT = new HazardTrigger("skin_contact", ProtectionType.HANDS,
                 TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny);
         public static final HazardTrigger NONE = new HazardTrigger("none", ProtectionType.NONE);
+        // special trigger that's activated when the player eats an item with a condition and this trigger
+        public static final HazardTrigger CONSUMPTION = new HazardTrigger("consumption", ProtectionType.NONE);
 
         public HazardTrigger {
             ALL_TRIGGERS.put(name, this);
@@ -72,8 +74,12 @@ public class HazardProperty implements IMaterialProperty {
             return affectedTagPrefixes.contains(prefix);
         }
 
+        public Component getTranslatableName() {
+            return Component.translatable("tooltip.gtceu.hazard_trigger." + this.name);
+        }
+
         @Override
-        public String getSerializedName() {
+        public @NotNull String getSerializedName() {
             return this.name;
         }
     }
@@ -172,32 +178,27 @@ public class HazardProperty implements IMaterialProperty {
         }
     }
 
-    public static Material getValidHazardMaterial(ItemStack item) {
-        Material material = GTMaterials.NULL;
-        TagPrefix prefix = TagPrefix.NULL_PREFIX;
+    public static MaterialEntry getValidHazardMaterial(ItemStack item) {
+        MaterialEntry entry = MaterialEntry.NULL_ENTRY;
         boolean isFluid = false;
         if (item.getItem() instanceof TagPrefixItem prefixItem) {
-            material = prefixItem.material;
-            prefix = prefixItem.tagPrefix;
+            entry = new MaterialEntry(prefixItem.tagPrefix, prefixItem.material);
         } else if (item.getItem() instanceof BucketItem bucket) {
             if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
-                material = ChemicalHelper.getMaterial(bucket.getFluid());
+                entry = new MaterialEntry(TagPrefix.NULL_PREFIX, ChemicalHelper.getMaterial(bucket.getFluid()));
                 isFluid = true;
             }
         } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            MaterialEntry entry = ChemicalHelper.getMaterialEntry(item.getItem());
-            if (!entry.isEmpty()) {
-                material = entry.material();
-                prefix = entry.tagPrefix();
-            }
+            entry = ChemicalHelper.getMaterialEntry(item.getItem());
         }
-        HazardProperty property = material.getProperty(PropertyKey.HAZARD);
+
+        HazardProperty property = entry.material().getProperty(PropertyKey.HAZARD);
         if (property == null) {
-            return GTMaterials.NULL;
+            return MaterialEntry.NULL_ENTRY;
         }
-        if (!isFluid && !property.hazardTrigger.isAffected(prefix)) {
-            return GTMaterials.NULL;
+        if (!isFluid && !property.hazardTrigger.isAffected(entry.tagPrefix())) {
+            return MaterialEntry.NULL_ENTRY;
         }
-        return material;
+        return entry;
     }
 }

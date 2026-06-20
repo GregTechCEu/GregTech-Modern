@@ -65,7 +65,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private boolean hasAir = false;
 
     public CharcoalPileIgniterMachine(BlockEntityCreationInfo info) {
-        super(info, (m) -> new CharcoalRecipeLogic((CharcoalPileIgniterMachine) m));
+        super(info, new CharcoalRecipeLogic());
     }
 
     @Override
@@ -350,11 +350,13 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     public static class CharcoalRecipeLogic extends RecipeLogic {
 
-        private final CharcoalPileIgniterMachine machine;
+        public CharcoalRecipeLogic() {
+            super();
+        }
 
-        public CharcoalRecipeLogic(CharcoalPileIgniterMachine machine) {
-            super(machine);
-            this.machine = machine;
+        @Override
+        public CharcoalPileIgniterMachine getMachine() {
+            return (CharcoalPileIgniterMachine) super.getMachine();
         }
 
         @Override
@@ -364,7 +366,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 if (++progress >= duration) {
                     progress = 0;
                     duration = 0;
-                    this.machine.convertLogBlocks();
+                    getMachine().convertLogBlocks();
                     setStatus(Status.IDLE);
                 }
             }

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.client.util.DrawUtil;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.ftbchunks.FTBChunksOptions;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
@@ -157,7 +157,7 @@ public class OreVeinIcon implements MapIcon {
         var iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
         var material = getMaterial();
         var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
-        var colors = DrawUtil.floats(color);
+        var colors = RenderUtil.floats(color);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         var iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
@@ -172,7 +172,7 @@ public class OreVeinIcon implements MapIcon {
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, "secondary", true);
         if (oreTexture != null) {
             var materialSecondaryARGB = material.isNull() ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
-            colors = DrawUtil.floats(materialSecondaryARGB);
+            colors = RenderUtil.floats(materialSecondaryARGB);
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(oreTexture);

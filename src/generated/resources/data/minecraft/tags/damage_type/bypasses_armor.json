@@ -9,8 +9,6 @@
     "gtceu:medical_condition/carcinogen",
     "gtceu:medical_condition/asbestosis",
     "gtceu:medical_condition/arsenicosis",
-    "gtceu:medical_condition/silicosis",
-    "gtceu:medical_condition/berylliosis",
     "gtceu:medical_condition/methanol_poisoning",
     "gtceu:medical_condition/carbon_monoxide_poisoning",
     "gtceu:heat",

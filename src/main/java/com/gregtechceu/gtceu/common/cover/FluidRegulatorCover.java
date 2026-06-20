@@ -252,11 +252,11 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("transferMode", transferMode.ordinal());
         tag.putInt("transferLimit", globalTransferLimit);
         tag.putInt("transferBucket", transferBucketMode.ordinal());
-        return super.copyConfig(tag);
     }
 
     @Override

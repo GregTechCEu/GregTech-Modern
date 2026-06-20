@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.material.Fluid;
@@ -49,8 +48,10 @@ public class AlloyBlastRecipeProducer {
         // get the output fluid
         Fluid molten;
         if (ingotHot.doGenerateItem(material)) {
-            molten = GTUtil.getMoltenFluid(material);
-            addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
+            molten = material.getHotFluid();
+            if (molten != null) {
+                addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);
+            }
         } else {
             molten = material.getFluid();
         }
@@ -96,19 +97,26 @@ public class AlloyBlastRecipeProducer {
     protected int addInputs(@NotNull Material material, @NotNull GTRecipeBuilder builder) {
         // calculate the output amount and add inputs
         int outputAmount = 0;
-        int fluidAmount = 0;
+        int fluids = 0;
         for (MaterialStack materialStack : material.getMaterialComponents()) {
-            final Material msMat = materialStack.material();
+            final Material component = materialStack.material();
             final int msAmount = (int) materialStack.amount();
 
-            if (msMat.hasProperty(PropertyKey.DUST)) {
-                builder.inputItems(TagPrefix.dust, msMat, msAmount);
-            } else if (msMat.hasProperty(PropertyKey.FLUID)) {
-                if (fluidAmount >= 2) return -1; // more than 2 fluids won't fit in the machine
-                fluidAmount++;
+            if (component.hasProperty(PropertyKey.DUST)) {
+                builder.inputItems(TagPrefix.dust, component, msAmount);
+            } else if (component.hasProperty(PropertyKey.FLUID)) {
+                if (fluids >= 2) {
+                    // more than 2 fluids won't fit in the machine
+                    return -1;
+                }
+                fluids++;
+
                 // assume all fluids have 1000mB/mol, since other quantities should be as an item input
-                builder.inputFluids(msMat.getFluid(1000 * msAmount));
-            } else return -1; // no fluid or item prop means no valid recipe
+                builder.inputFluids(component.getFluid(1000 * msAmount));
+            } else {
+                // no fluid or item prop means no valid recipe
+                return -1;
+            }
             outputAmount += msAmount;
         }
         return outputAmount;
@@ -122,9 +130,10 @@ public class AlloyBlastRecipeProducer {
      * @param outputAmount    the amount of material to output
      * @param componentAmount the amount of different components in the material
      * @param builder         the builder to continue
+     * @param provider        the recipe "provider"
      */
-    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid molten, int outputAmount,
-                                int componentAmount,
+    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid molten,
+                                int outputAmount, int componentAmount,
                                 @NotNull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
         // add the fluid output with the correct amount
         builder.outputFluids(new FluidStack(molten, GTValues.L * outputAmount));
