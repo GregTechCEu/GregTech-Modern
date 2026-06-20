@@ -82,13 +82,6 @@ public class WorldGeneratorUtils {
         return oreVeinCache.computeIfAbsent(level, WorldOreVeinCache::new).getEntry(biome);
     }
 
-    public static Optional<String> getWorldGenLayerKey(IWorldGenLayer layer) {
-        return WORLD_GEN_LAYERS.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(layer))
-                .map(Entry::getKey)
-                .findFirst();
-    }
-
     public static boolean isSameDimension(ResourceKey<Level> first, ResourceKey<Level> second) {
         return first == second;
     }

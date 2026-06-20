@@ -171,7 +171,7 @@ public class CommonProxy {
             }
         });
 
-        WorldGenLayers.registerAll();
+        WorldGenLayers.init();
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 

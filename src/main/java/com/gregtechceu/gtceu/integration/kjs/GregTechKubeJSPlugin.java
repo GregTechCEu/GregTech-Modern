@@ -434,7 +434,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(IWorldGenLayer.class, o -> {
             if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(HeightRangePlacement.class, o -> {
