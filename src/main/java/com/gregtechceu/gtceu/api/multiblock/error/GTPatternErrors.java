@@ -23,6 +23,6 @@ public class GTPatternErrors {
 
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERRORS, (Class<Codec<? extends PatternError>>)(Class<?>)Codec.class));
 
-        GTRegistries.COVERS.freeze();
+        PATTERN_ERRORS.freeze();
     }
 }
