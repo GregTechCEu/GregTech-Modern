@@ -86,3 +86,43 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
         // ...
     }
     ```
+## Modifying a Bedrock Ore Vein
+
+=== "JavaScript"
+    ```js title="ore_veins.js"
+    // In server events
+    GTCEuServerEvents.bedrockOreVeins(event => {
+        event.modify('gtceu:example_ore', vein => {
+            vein.setWeight(9999)
+        });
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockOreVeins.java"
+    pubic class ExampleBedrockOreVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_ORE_VEINS.get(GTCEu.id('example_ore')).setWeight(9999);
+        }
+    }
+    ```
+
+
+## Removing a Bedrock Ore Vein
+
+=== "JavaScript"
+    ```js title="ore_veins.js"
+    // In server events
+    GTCEuServerEvents.bedrockOreVeins(event => {
+        event.remove('gtceu:example_ore');
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockOreVeins.java"
+    pubic class ExampleBedrockOreVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_ORE_VEINS.remove(GTCEu.id('example_ore'));
+        }
+    }
+    ```

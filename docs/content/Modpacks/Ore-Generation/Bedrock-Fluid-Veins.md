@@ -74,3 +74,44 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
         // ...
     }
     ```
+
+
+## Modifying a Bedrock Fluid Vein
+
+=== "JavaScript"
+    ```js title="fluid_veins.js"
+    // In server events
+    GTCEuServerEvents.fluidVeins(event => {
+        event.modify('gtceu:heavy_oil_deposit', vein => {
+            vein.setWeight(9999);
+        });
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockFluidVeins.java"
+    pubic class ExampleBedrockFluidVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_FLUID_VEINS.get(GTCEu.id('heavy_oil_deposit')).setWeight(9999);
+        }
+    }
+    ```
+
+## Removing a Bedrock Fluid Vein
+
+=== "JavaScript"
+    ```js title="fluid_veins.js"
+    // In server events
+    GTCEuServerEvents.fluidVeins(event => {
+        event.remove('gtceu:heavy_oil_deposit');
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockFluidVeins.java"
+    pubic class ExampleBedrockFluidVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_FLUID_VEINS.remove(GTCEu.id('heavy_oil_deposit'));
+        }
+    }
+    ```
