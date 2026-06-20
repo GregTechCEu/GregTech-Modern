@@ -42,7 +42,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     @SaveField
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
-    private FilteredItemHandlerWrapper itemFilterWrapper;
+    private @Nullable FilteredItemHandlerWrapper itemFilterWrapper;
     @Setter
     @SaveField
     @Getter

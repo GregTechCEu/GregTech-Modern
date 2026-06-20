@@ -16,7 +16,6 @@ import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 public class CompositeFilter<T> extends Filter<T> {
@@ -73,7 +72,7 @@ public class CompositeFilter<T> extends Filter<T> {
         if (!newItem.isEmpty()) {
             filters[slot] = Filters.loadFilter(filterableType, newItem);
             Objects.requireNonNull(filters[slot]).setOnUpdated($ -> updateAndSaveFilter());
-        } ;
+        }
 
         updateAndSaveFilter();
     }
@@ -85,7 +84,11 @@ public class CompositeFilter<T> extends Filter<T> {
 
     @Override
     public boolean test(T t) {
-        return Arrays.stream(filters).anyMatch(f -> f != null && f.test(t));
+        for (int i=0; i<9; i++) {
+            Filter<T> filter = filters[i];
+            if (filter != null && filter.test(t)) return true;
+        }
+        return false;
     }
 
     @Override
