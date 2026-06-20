@@ -19,7 +19,6 @@ You can replace singular entries, or do bulk modification of components.
 You can also change the fallback entry.
 
 ```js title="startup/modification.js"
-const GTCraftingComponents = Java.loadClass('com.gregtechceu.gtceu.data.recipe.GTCraftingComponents')
 const Map = Java.loadClass('java.util.Map')
 
 GTCEuStartupEvents.craftingComponents(event => {
