@@ -140,9 +140,7 @@ public class BloomRenderer {
         mainTarget.bindWrite(false);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
-                GlStateManager.SourceFactor.ZERO, GlStateManager.DestFactor.ONE);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         BLOOM_TARGET.blitToScreen(mainTarget.viewWidth, mainTarget.viewHeight, false);
         BLOOM_TARGET.unbindRead();
@@ -222,6 +220,9 @@ public class BloomRenderer {
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                                            Matrix4f projectionMatrix,
                                            LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
+            // re-setup in case someone touched-a my spaghetti
+            GTRenderTypes.bloom().setupRenderState();
+
             Vec3 camPos = camera.getPosition();
             profilerFiller.push("safe_mode");
 

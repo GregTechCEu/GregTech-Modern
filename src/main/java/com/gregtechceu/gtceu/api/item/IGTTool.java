@@ -80,6 +80,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
+import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.powerUnitItems;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
@@ -661,6 +662,18 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
     default void definition$fillItemCategory(CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
         if (isElectric()) {
+            int tier = getElectricTier();
+            if (!powerUnitItems.containsKey(tier)) {
+                items.add(get(Integer.MAX_VALUE));
+                return;
+            }
+            var components = ((ComponentItem) powerUnitItems.get(tier).asItem()).getComponents();
+            for (var component : components) {
+                if (component instanceof ElectricStats electricStats) {
+                    items.add(get(electricStats.maxCharge));
+                    return;
+                }
+            }
             items.add(get(Integer.MAX_VALUE));
         } else {
             items.add(get());
