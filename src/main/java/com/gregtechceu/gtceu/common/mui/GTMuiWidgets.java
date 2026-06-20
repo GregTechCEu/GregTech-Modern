@@ -718,7 +718,7 @@ public class GTMuiWidgets {
                         button.overlay(this.overlay[enumVal.ordinal()]);
 
                     if (this.buttonTooltipSupplier != null) {
-                        button.addTooltipLine(Text.lang(buttonTooltipSupplier.apply(enumVal).get().getString()));
+                        button.addTooltipLine(Text.comp(buttonTooltipSupplier.apply(enumVal).get()));
                     } else if (enumVal instanceof StringRepresentable serializable) {
                         button.addTooltipLine(Text.lang(serializable.getSerializedName()));
                     }
