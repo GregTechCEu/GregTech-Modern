@@ -15,7 +15,7 @@ public class MyPatternError extends PatternError {
                     Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, MyPatternError::new));
 
-    public static ResourceLocation ID = GTCEu.id("MyPatternError");
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("my_pattern_error"), CODEC);
 
     public MyPatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
         super(pos, candidates);
@@ -35,8 +35,8 @@ public class MyPatternError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }
 ```
@@ -48,12 +48,11 @@ You also need to register your new PatternErrors statically:
 public class ExampleMod {
     public ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(WHAT.class, this::registerPatternErrors);
+        modEventBus.addGenericListener(PatternError.PatternErrorType.class, this::registerPatternErrors);
     }
 
-    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, Codec<? extends PatternError>> event) {
-        GTRegistries.PATTERN_ERRORS.register(MyPatternError.ID, MyPatternError.CODEC);
+    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, PatternError.PatternErrorType> event) {
+        event.register(MyPatternError.TYPE.id(), MyPatternError.TYPE);
     }
-
 }
 ```
