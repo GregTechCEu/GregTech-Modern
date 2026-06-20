@@ -1,7 +1,7 @@
 ---
 title: Patterns
 ---
-Multiblocks are MetaMachines that are composed of two main features, the `IBlockPattern`s they need to form and the `PatternState` they exist in. Multiblocks can hold one or more patterns, each with a corresponding `PatternState`. When creating a multiblock definition, one will usually define a main structure (the part the controller lives in) and any amount of "sub"structures.
+Multiblocks are MetaMachines that, for the sake of structure checking, are composed of two main features, the `IBlockPattern`s they need to form and the `PatternState` they exist in. Multiblocks can hold one or more patterns, each with a corresponding `PatternState`. When creating a multiblock definition, one will usually define a main structure (the part the controller lives in) and any amount of "sub"structures.
 
 There are two main forms of `IBlockPattern` in base GT Modern, `BlockPattern` and `ExpandablePattern`.
 
