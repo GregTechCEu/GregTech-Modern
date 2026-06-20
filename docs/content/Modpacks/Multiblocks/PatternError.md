@@ -15,7 +15,7 @@ public class MyPatternError extends PatternError {
                     Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, MyPatternError::new));
 
-    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("my_pattern_error"), CODEC);
+    public static final PatternErrorType TYPE = new PatternErrorType(ExampleMod.id("my_pattern_error"), CODEC);
 
     public MyPatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
         super(pos, candidates);
