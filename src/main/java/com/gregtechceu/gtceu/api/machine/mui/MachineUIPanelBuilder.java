@@ -6,6 +6,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
@@ -79,7 +82,7 @@ public class MachineUIPanelBuilder {
             if (machine instanceof IHasBatterySlot batterySlot) {
                 attachRight.child(GTMuiWidgets.createBatterySlot(batterySlot, syncManager));
             }
-            if (machine instanceof IVoidable voidable) {
+            if (machine instanceof IVoidable voidable && machine instanceof WorkableMultiblockMachine) {
                 attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
             }
             if (machine instanceof IDistinctPart distinctPart) {
