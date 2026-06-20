@@ -9,6 +9,19 @@ Each PatternError also must implement the ui modifier, which is the way to displ
 
 public class MyPatternError extends PatternError {
     
+    // This codec is needed for serialization. It should send all the needed data to display the error on the client. 
+    public static Codec<PlaceholderError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                    BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
+                    Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
+            .apply(instance, MyPatternError::new));
+
+    public static ResourceLocation ID = GTCEu.id("MyPatternError");
+
+    public MyPatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
+        super(pos, candidates);
+    }
+    
+    // The UI modifier adds the widget to be displayed to the user if this error occurs.
     public PatternErrorUI getPatternErrorUIModifier() {
         return (widget) -> {
                 widget.child(new ContextMenuButton<>("predicate")
@@ -20,6 +33,28 @@ public class MyPatternError extends PatternError {
                                 })));
         };
     }
-    
+
+    @Override
+    public Codec<? extends PatternError> codec() {
+        return CODEC;
+    }
+}
+```
+
+You also need to register your new PatternErrors statically:
+```java
+public class ExampleModPatternErrors {
+    public static void init() {
+        GTRegistries.PATTERN_ERRORS.register(MyPatternError.ID, MyPatternError.CODEC);
+    }
+}
+```
+
+```java
+public class ExampleMod {
+    public static void init() {
+        // ...
+        ExampleModPatternErrors.init();
+    }
 }
 ```
