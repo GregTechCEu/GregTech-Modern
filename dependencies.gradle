@@ -127,7 +127,7 @@ dependencies {
 
     //patchouli
     modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
-    modCompileOnly(forge.patchouli)
+    modExtraLocalRuntime(forge.patchouli)
 
     // Forestry
     modCompileOnly(forge.forestry)
