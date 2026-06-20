@@ -41,7 +41,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     With this done, you can reference said variables in the `BedrockFluidDefinition` builder. Let's use `DIM_OVERWORLD` in this example.  
     
     ```java title="ExampleBedrockFluidVeins.java"
-    pubic class ExampleBedrockFluidVeins {
+    public class ExampleBedrockFluidVeins {
         public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -90,7 +90,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
 
 === "Java"
     ```java title="ExampleBedrockFluidVeins.java"
-    pubic class ExampleBedrockFluidVeins {
+    public class ExampleBedrockFluidVeins {
         public static void init() {
             GTRegistries.BEDROCK_FLUID_VEINS.get(GTCEu.id('heavy_oil_deposit')).setWeight(9999);
         }
@@ -109,7 +109,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
 
 === "Java"
     ```java title="ExampleBedrockFluidVeins.java"
-    pubic class ExampleBedrockFluidVeins {
+    public class ExampleBedrockFluidVeins {
         public static void init() {
             GTRegistries.BEDROCK_FLUID_VEINS.remove(GTCEu.id('heavy_oil_deposit'));
         }

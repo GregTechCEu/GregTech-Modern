@@ -50,7 +50,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
     With this done, you can reference said variables in the `BedrockOreDefinition` builder. Let's use `DIM_OVERWORLD` in this example.  
     
     ```java title="ExampleBedrockOreVeins.java"
-    pubic class ExampleBedrockOreVeins {
+    public class ExampleBedrockOreVeins {
         public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -100,7 +100,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
 
 === "Java"
     ```java title="ExampleBedrockOreVeins.java"
-    pubic class ExampleBedrockOreVeins {
+    public class ExampleBedrockOreVeins {
         public static void init() {
             GTRegistries.BEDROCK_ORE_VEINS.get(GTCEu.id('example_ore')).setWeight(9999);
         }
@@ -120,7 +120,7 @@ By default, the mod doesn't include any bedrock ore veins. You can add them in e
 
 === "Java"
     ```java title="ExampleBedrockOreVeins.java"
-    pubic class ExampleBedrockOreVeins {
+    public class ExampleBedrockOreVeins {
         public static void init() {
             GTRegistries.BEDROCK_ORE_VEINS.remove(GTCEu.id('example_ore'));
         }
