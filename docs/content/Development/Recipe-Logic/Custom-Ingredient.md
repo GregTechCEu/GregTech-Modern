@@ -229,7 +229,7 @@ public class NotifiableBonkHandler extends NotifiableRecipeHandlerTrait<BonkIngr
                 break;
             }
         }
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override
