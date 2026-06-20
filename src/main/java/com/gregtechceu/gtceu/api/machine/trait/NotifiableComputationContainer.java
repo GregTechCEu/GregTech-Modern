@@ -17,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -188,8 +189,8 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
-                                           boolean simulate) {
+    public @NotNull List<Integer> handleRecipeInner(IO io, GTRecipe recipe, List<Integer> left,
+                                                    boolean simulate) {
         IOpticalComputationProvider provider = getOpticalNetProvider();
         if (provider == null) return left;
 
@@ -226,7 +227,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             }
             sum = sum - canInput;
         }
-        return sum <= 0 ? null : Collections.singletonList(sum);
+        return sum <= 0 ? Collections.emptyList() : Collections.singletonList(sum);
     }
 
     @Override

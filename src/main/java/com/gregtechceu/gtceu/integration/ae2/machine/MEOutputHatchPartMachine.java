@@ -22,7 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -151,9 +151,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        @Nullable
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (io != IO.OUT) return left;
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.iterator(); it.hasNext();) {
@@ -186,7 +185,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 ingredient.shrink(filled);
                 if (filled <= 0) it.remove();
             }
-            return left.isEmpty() ? null : left;
+            return left;
         }
     }
 
