@@ -21,8 +21,6 @@ public class PlaceholderError extends PatternError {
             Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, PlaceholderError::new));
 
-    public static ResourceLocation ID = GTCEu.id("placeholder_error");
-
     public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("placeholder_error"), CODEC);
 
     public PlaceholderError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
