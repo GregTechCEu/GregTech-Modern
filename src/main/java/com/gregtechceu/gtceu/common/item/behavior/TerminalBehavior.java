@@ -70,6 +70,11 @@ public class TerminalBehavior implements IInteractionItem, IItemUIHolder {
         for (var entry : this.multiblockSchemaInfo.getStructureBlocks().entrySet()) {
             level.setBlockAndUpdate(entry.getKey().offset(controllerOffset), entry.getValue().getBlockState());
         }
+        if (!level.isClientSide()) {
+            // needed to force the multiblock to do a clean check, kinda sus
+            controller.getDefaultPatternState().getCache().clear();
+            controller.checkAndFormStructure();
+        }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -35,7 +34,7 @@ public class GTGuiTheme {
             .fieldsOf(IThemeApi.FALLBACK)
             .register();
 
-    public static final GTGuiTheme STANDARD = templateBuilder("gregtech_standard")
+    public static final GTGuiTheme STANDARD = templateBuilder("gtceu:standard")
             .panel(GTGuiTextures.IDs.STANDARD_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)
             .fluidSlot(GTGuiTextures.IDs.STANDARD_FLUID_SLOT)
@@ -46,7 +45,7 @@ public class GTGuiTheme {
                     ConfigHolder.INSTANCE.client.ui.getDefaultUIColor())
             .build();
 
-    public static final GTGuiTheme COVER = templateBuilder("gregtech_cover")
+    public static final GTGuiTheme COVER = templateBuilder("gtceu:cover")
             .panel(GTGuiTextures.IDs.COVER_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)
             .fluidSlot(GTGuiTextures.IDs.STANDARD_FLUID_SLOT)
@@ -56,17 +55,17 @@ public class GTGuiTheme {
 
     // TODO Multiblock theme for display texture, logo changes
 
-    public static final GTGuiTheme BRONZE = templateBuilder("gregtech_bronze")
+    public static final GTGuiTheme BRONZE = templateBuilder("gtceu:bronze")
             .panel(GTGuiTextures.IDs.BRONZE_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.BRONZE_SLOT)
             .build();
 
-    public static final GTGuiTheme STEEL = templateBuilder("gregtech_steel")
+    public static final GTGuiTheme STEEL = templateBuilder("gtceu:steel")
             .panel(GTGuiTextures.IDs.STEEL_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STEEL_SLOT)
             .build();
 
-    public static final GTGuiTheme PRIMITIVE = templateBuilder("gregtech_primitive")
+    public static final GTGuiTheme PRIMITIVE = templateBuilder("gtceu:primitive")
             .panel(GTGuiTextures.IDs.PRIMITIVE_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
             .fluidSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
@@ -109,7 +108,6 @@ public class GTGuiTheme {
     }
 
     public static void registerThemes() {
-        MinecraftForge.EVENT_BUS.register(GTGuiTheme.class);
         THEMES.forEach(GTGuiTheme::register);
     }
 
@@ -218,7 +216,7 @@ public class GTGuiTheme {
                     .add("panel", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", panelId))));
+                                    .add("name", panelId))));
             return this;
         }
 
@@ -252,10 +250,10 @@ public class GTGuiTheme {
                     .add("button", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", buttonId))
+                                    .add("name", buttonId))
                             .add("hoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", hoverId))
+                                    .add("name", hoverId))
                             .add("textColor", textColor)
                             .add("textShadow", textShadow)));
             return this;
@@ -279,7 +277,7 @@ public class GTGuiTheme {
                     .add("itemSlot", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", itemSlotId))
+                                    .add("name", itemSlotId))
                             .add("slotHoverColor", hoverColor)));
             return this;
         }
@@ -302,7 +300,7 @@ public class GTGuiTheme {
                     .add("fluidSlot", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", fluidSlotId))
+                                    .add("name", fluidSlotId))
                             .add("slotHoverColor", hoverColor)));
             return this;
         }
@@ -363,16 +361,16 @@ public class GTGuiTheme {
                     .add("toggleButton", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", backgroundId))
+                                    .add("name", backgroundId))
                             .add("hoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", hoverBackgroundId))
+                                    .add("name", hoverBackgroundId))
                             .add("selectedBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", selectedBackgroundId))
+                                    .add("name", selectedBackgroundId))
                             .add("selectedHoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", selectedHoverBackgroundId))
+                                    .add("name", selectedHoverBackgroundId))
                             .add("selectedColor", selectedColor)
                             .add("textColor", textColor)
                             .add("textShadow", textShadow)));

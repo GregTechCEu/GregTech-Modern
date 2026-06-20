@@ -262,9 +262,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
      */
     public static ExpandablePattern.BoundsProvider boundsFunction() {
         return (level, controllerPos, frontFacing, upFacing) -> {
-            if (level == null) {
-                return ExpandablePattern.BoundsProvider.EMPTY.apply(level, controllerPos, frontFacing, upFacing);
-            }
             Direction front = frontFacing;
             Direction back = frontFacing.getOpposite();
             Direction left = frontFacing.getCounterClockWise();
