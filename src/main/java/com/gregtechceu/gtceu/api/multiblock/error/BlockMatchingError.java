@@ -20,12 +20,13 @@ import java.util.Objects;
 
 public class BlockMatchingError extends PatternError {
 
-    public static Codec<BlockMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final Codec<BlockMatchingError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
             Codec.list(BuiltInRegistries.BLOCK.byNameCodec()).fieldOf("blocks")
                     .forGetter(BlockMatchingError::getBlocks))
             .apply(instance, BlockMatchingError::new));
-    public static ResourceLocation ID = GTCEu.id("block_matching_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("block_matching_error"), CODEC);
 
     @Getter
     private final List<Block> blocks;
@@ -49,7 +50,7 @@ public class BlockMatchingError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

@@ -26,7 +26,8 @@ public class PartAbilityError extends PatternError {
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
             Codec.STRING.fieldOf("name").forGetter(PartAbilityError::getPartAbilityName))
             .apply(instance, (a, b) -> new PartAbilityError(a, PartAbility.VALUES.get(b))));
-    public static ResourceLocation ID = GTCEu.id("part_ability_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("part_ability_error"), CODEC);
 
     @Getter
     private final String partAbilityName;
@@ -37,7 +38,7 @@ public class PartAbilityError extends PatternError {
     }
 
     @Override
-    public @NotNull PatternErrorUI getPatternErrorUIModifier() {
+    public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             Collection<Block> blocks = PartAbility.VALUES.get(partAbilityName).getAllBlocks();
             Flow row = Flow.row()
@@ -58,7 +59,7 @@ public class PartAbilityError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

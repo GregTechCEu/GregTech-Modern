@@ -22,7 +22,8 @@ public class CoilMatchingError extends PatternError {
             ICoilType.CODEC.fieldOf("coilType1").forGetter(CoilMatchingError::getCoilType1),
             ICoilType.CODEC.fieldOf("coilType2").forGetter(CoilMatchingError::getCoilType2))
             .apply(instance, CoilMatchingError::new));
-    public static ResourceLocation ID = GTCEu.id("coil_matching_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("coil_matching_error"), CODEC);
 
     @Getter
     ICoilType coilType1, coilType2;
@@ -45,7 +46,7 @@ public class CoilMatchingError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

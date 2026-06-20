@@ -9,19 +9,16 @@ import net.minecraft.core.BlockPos;
 
 import com.mojang.serialization.Codec;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 public abstract class PatternError {
 
-    public abstract Codec<? extends PatternError> codec();
-
     public static final Codec<PatternError> CODEC = GTRegistries.PATTERN_ERRORS.codec()
-            .dispatch(PatternError::codec, Function.identity());
+            .dispatch(PatternError::type, PatternErrorType::codec);
 
     @Getter
     protected @Nullable BlockPos pos;
@@ -37,10 +34,13 @@ public abstract class PatternError {
         this(pos, predicate.getCandidates());
     }
 
-    public PatternError(@Nullable BlockPos pos, @NotNull BasePredicate failingPredicate) {
+    public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
         this(pos, Collections.singletonList(failingPredicate.getCandidates()));
     }
 
-    @NotNull
+    public abstract PatternErrorType type();
+
     public abstract PatternErrorUI getPatternErrorUIModifier();
+
+    public record PatternErrorType(ResourceLocation id, Codec<? extends PatternError> codec) {}
 }
