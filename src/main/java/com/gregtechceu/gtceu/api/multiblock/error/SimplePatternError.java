@@ -21,14 +21,15 @@ public class SimplePatternError extends PatternError {
             BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
             Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf("candidates").forGetter(PatternError::getCandidates))
             .apply(instance, SimplePatternError::new));
-    public static ResourceLocation ID = GTCEu.id("simple_pattern_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("simple_pattern_error"), CODEC);
 
     public SimplePatternError(BlockPos pos, List<List<BlockInfo>> candidates) {
         super(pos, candidates);
     }
 
     @Override
-    public @NotNull PatternErrorUI getPatternErrorUIModifier() {
+    public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
             List<Component> lines = new ArrayList<>();
 
@@ -50,7 +51,7 @@ public class SimplePatternError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

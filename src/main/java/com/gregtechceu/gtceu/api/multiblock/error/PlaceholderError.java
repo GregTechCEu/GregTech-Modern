@@ -17,19 +17,20 @@ import java.util.List;
 public class PlaceholderError extends PatternError {
 
     public static Codec<PlaceholderError> CODEC = Codec.unit(() -> Predicates.PLACEHOLDER);
-    public static ResourceLocation ID = GTCEu.id("placeholder_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("placeholder_error"), CODEC);
 
     public PlaceholderError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
         super(pos, candidates);
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorUI getPatternErrorUIModifier() {
+        return (parent) -> parent.child(Text.str("Placeholder error").asWidget());
     }
 
     @Override
-    public @NotNull PatternErrorUI getPatternErrorUIModifier() {
-        return (parent) -> { parent.child(Text.str("Placeholder error").asWidget()); };
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

@@ -82,7 +82,8 @@ public final class GTRegistries {
             .create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
     public static final GTRegistry<String, Function<FriendlyByteBuf, FluidIngredient>> FLUID_SERIALIZERS = new GTRegistry.String<>(
             GTCEu.id("fluid_serializers"));
-    public static final GTRegistry.RL<Codec<? extends PatternError>> PATTERN_ERRORS = new GTRegistry.RL<>(
+
+    public static final GTRegistry.RL<PatternError.PatternErrorType> PATTERN_ERRORS = new GTRegistry.RL<>(
             GTCEu.id("pattern_errors"));
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {

@@ -18,7 +18,8 @@ public class PatternStringError extends PatternError {
     public static Codec<PatternStringError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             ExtraCodecs.COMPONENT.fieldOf("component").forGetter(PatternStringError::getComponent))
             .apply(instance, PatternStringError::new));
-    public static ResourceLocation ID = GTCEu.id("pattern_string_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("pattern_string_error"), CODEC);
 
     @Getter
     public final Component component;
@@ -36,7 +37,7 @@ public class PatternStringError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

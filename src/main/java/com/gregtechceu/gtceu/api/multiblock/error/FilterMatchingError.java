@@ -22,7 +22,8 @@ public class FilterMatchingError extends PatternError {
             CleanroomType.CODEC.fieldOf("coilType1").forGetter(FilterMatchingError::getFilterType1),
             CleanroomType.CODEC.fieldOf("coilType2").forGetter(FilterMatchingError::getFilterType2))
             .apply(instance, FilterMatchingError::new));
-    public static ResourceLocation ID = GTCEu.id("filter_matching_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("filter_matching_error"), CODEC);
 
     @Getter
     CleanroomType filterType1, filterType2;
@@ -45,7 +46,7 @@ public class FilterMatchingError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }

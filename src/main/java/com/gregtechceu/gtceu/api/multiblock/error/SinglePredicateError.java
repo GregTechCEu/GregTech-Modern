@@ -30,7 +30,8 @@ public class SinglePredicateError extends PatternError {
             Codec.STRING.fieldOf("name").forGetter(e -> e.debugName),
             Codec.list(BlockInfo.CODEC).fieldOf("candidates").forGetter(e -> e.candidates))
             .apply(instance, SinglePredicateError::new));
-    public static ResourceLocation ID = GTCEu.id("single_predicate_error");
+
+    public static final PatternErrorType TYPE = new PatternErrorType(GTCEu.id("single_predicate_error"), CODEC);
 
     public final ErrorType type;
     public final int actualCount;
@@ -118,7 +119,7 @@ public class SinglePredicateError extends PatternError {
     }
 
     @Override
-    public Codec<? extends PatternError> codec() {
-        return CODEC;
+    public PatternErrorType type() {
+        return TYPE;
     }
 }
