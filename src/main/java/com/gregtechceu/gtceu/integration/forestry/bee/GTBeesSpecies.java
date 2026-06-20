@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.integration.forestry.bee;
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.resources.ResourceLocation;
 
+
+//todo probably remove this
+// IMO the ids shouldn't be stored as constants outside the bee species' constructors/registration
 public class GTBeesSpecies {
 
     // Organic

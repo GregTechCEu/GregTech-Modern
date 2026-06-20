@@ -22,6 +22,7 @@ public class GTForestryLangProvider {
         provider.add("item.gtceu.bee.modifier.is_always_sunny", "Simulates Sunlight");
         provider.add("item.gtceu.bee.modifier.is_hellish", "Simulates Nether");
 
+        //todo If you use registrate, you won't need to do this manually.
         provider.add(GTApicultureItems.FRAME_ACCELERATED.get(), "Accelerated Frame");
         provider.add(GTApicultureItems.FRAME_MUTAGENIC.get(), "Mutagenic Frame");
         provider.add(GTApicultureItems.FRAME_WORKING.get(), "Working Frame");
@@ -30,15 +31,20 @@ public class GTForestryLangProvider {
         provider.add(GTApicultureItems.FRAME_STABILIZING.get(), "Stabilizing Frame");
         provider.add(GTApicultureItems.FRAME_ARBORIST.get(), "Arborist Frame");
 
+
+        //todo use FormatingUtils
         for (GTCombType type : GTCombType.VALUES) {
             String material = type.getSerializedName();
             String materialCap = material.substring(0, 1).toUpperCase() + material.substring(1);
             provider.add("item.gtceu.bee_comb_" + material, materialCap + " " + "Comb");
         }
 
+
+        //todo scrap this
         try {
             for (Field field : GTBeesSpecies.class.getDeclaredFields()) {
                 if (field.getType() == ResourceLocation.class) {
+                    //todo where is this used? If possible, you should make it use the materials' translations instead.
                     ResourceLocation location = (ResourceLocation) field.get(null);
                     String speciesName = location.getPath();
                     String speciesNameCap = speciesName.substring(0, 1).toUpperCase() + speciesName.substring(1);

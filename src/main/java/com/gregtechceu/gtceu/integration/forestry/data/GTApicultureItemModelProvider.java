@@ -18,7 +18,7 @@ import forestry.storage.features.CrateItems;
 import forestry.storage.items.ItemCrated;
 
 public class GTApicultureItemModelProvider extends ItemModelProvider {
-
+    //todo If you use registrate, you won't need to do this manually.
     public GTApicultureItemModelProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
         super(packOutput, GTCEu.MOD_ID, existingFileHelper);
     }
@@ -42,6 +42,7 @@ public class GTApicultureItemModelProvider extends ItemModelProvider {
             }
         }
 
+        //todo
         basicItem(GTApicultureItems.FRAME_ACCELERATED.get());
         basicItem(GTApicultureItems.FRAME_MUTAGENIC.get());
         basicItem(GTApicultureItems.FRAME_WORKING.get());

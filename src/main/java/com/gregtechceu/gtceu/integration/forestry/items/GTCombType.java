@@ -4,10 +4,14 @@ import forestry.api.core.IBlockSubtype;
 import forestry.api.core.IItemSubtype;
 import net.minecraft.util.StringRepresentable;
 
-import java.awt.*;
+
 import java.util.Locale;
 
 public enum GTCombType implements StringRepresentable, IItemSubtype, IBlockSubtype {
+
+    //todo make "comb" a material property
+    // todo use mui for colors
+
     // Organic
     COAL(new Color(0x525252), new Color(0x666666)),
     COKE(new Color(0x4B4B4B), new Color(0x7D7D7D)),
@@ -106,7 +110,7 @@ public enum GTCombType implements StringRepresentable, IItemSubtype, IBlockSubty
     }
 
     GTCombType(Color primary, Color secondary, String compatName) {
-        this.name = toString().toLowerCase(Locale.ENGLISH);
+        this.name = toString().toLowerCase(Locale.ROOT);
         this.primaryColor = primary.getRGB();
         this.secondaryColor = secondary.getRGB();
     }
@@ -116,6 +120,7 @@ public enum GTCombType implements StringRepresentable, IItemSubtype, IBlockSubty
         return name;
     }
 
+    //todo do not reference a concept of "metadata" anywhere. If this is used, change how it works.
     public static GTCombType get(int meta) {
         if (meta >= VALUES.length) {
             meta = 0;

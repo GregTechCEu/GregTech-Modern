@@ -32,6 +32,13 @@ import javax.annotation.Nullable;
 import java.util.function.Supplier;
 import java.util.stream.StreamSupport;
 
+
+//todo rename to GTBeeDefinitions
+// Make this use a material property instead of hardcoding all of it, please.
+
+//todo if you end up getting rid of the GTBeeSpecies class with all the IDs, this should be renamed GTBeeSpecies and not
+// GTBeeDefinition because IBeeDefinition no longer exists in Forestry CE
+
 public class GTBeeDefinition {
 
     //secret bees are replaced by .setChance(0.001f)

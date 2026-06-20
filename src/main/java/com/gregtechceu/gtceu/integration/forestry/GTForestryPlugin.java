@@ -11,7 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 
 
 public class GTForestryPlugin implements IForestryPlugin {
-    public static final ResourceLocation ID =  new ResourceLocation(GTCEu.MOD_ID, "core");
+    //todo use registrate
+    protected static final ResourceLocation ID = GTCEu.id("integration");
 
     @Override
     public ResourceLocation id() {
@@ -22,9 +23,6 @@ public class GTForestryPlugin implements IForestryPlugin {
     public void registerApiculture(IApicultureRegistration apiculture) {
         GTBeeDefinition.register(apiculture);
     }
-
-
-
 
     @Override
     public void registerGenetics(IGeneticRegistration genetics) {

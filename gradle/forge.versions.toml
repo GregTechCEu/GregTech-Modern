@@ -95,9 +95,9 @@ xaeroslib           = { module = "xaero.lib:xaerolib-forge-1.20.1", version.ref 
 xaerosworldmap      = { module = "xaero.map:xaeroworldmap-forge-1.20.1", version.ref = "xaerosWorldMap" }
 xaerosminimap       = { module = "xaero.minimap:xaerominimap-forge-1.20.1", version.ref = "xaerosMinimap" }
 
-patchouli = { module = "vazkii.patchouli:Patchouli", version.ref = "patchouli" }
-forestry  = { module = "maven.modrinth:forestry-community-edition", version.ref = "forestry" }
-modkit = { module = "com.github.thedarkcolour:ModKit", version.ref = "modkit" }
+patchouli           = { module = "vazkii.patchouli:Patchouli", version.ref = "patchouli" }
+forestry            = { module = "maven.modrinth:forestry-community-edition", version.ref = "forestry" }
+modkit              = { module = "com.github.thedarkcolour:ModKit", version.ref = "modkit" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }

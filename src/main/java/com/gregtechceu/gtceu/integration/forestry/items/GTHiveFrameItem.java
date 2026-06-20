@@ -19,16 +19,20 @@ import forestry.core.items.ItemForestry;
 import java.text.DecimalFormat;
 import java.util.List;
 
+
+//todo use JB nullability
 import javax.annotation.Nullable;
 
 // CREDIT GOES TO: christopherwalkerml |
 // https://github.com/christopherwalkerml/MoBees/blob/main/src/main/java/com/noodlepfp/mobees/item/MoreBeesItemHiveFrame.java
-public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
+public class GTHiveFrameItem extends ItemForestry implements IHiveFrame {
 
     private final Modifier beeModifier;
 
-    public GTItemHiveFrame(GTItemHiveFrameBuilder builder) {
-        super((new Item.Properties()).durability(builder.maxDmg));
+
+    //todo make the other fields/setters' names more reasonable while at it.
+    public GTHiveFrameItem(GTItemHiveFrameBuilder builder) {
+        super((new Item.Properties()).durability(builder.durability));
         this.beeModifier = new Modifier(builder.ageMult,
                 builder.speedMult,
                 builder.pollinationMult,
@@ -85,6 +89,9 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
                             .append(Component.literal(FORMAT.format(beeModifier.ageMult) + "x")
                                     .withStyle(beeModifier.ageMult > 1 ? ChatFormatting.RED : ChatFormatting.GREEN)));
         }
+
+
+        //todo Don't hardcode a literal "true" string in the tooltip pls
         if (beeModifier.isRainproof) {
             tooltip.add(Component.translatable("item.gtceu.bee.modifier.is_rainproof").withStyle(ChatFormatting.GRAY)
                     .append(": ").append(Component.literal("true").withStyle(ChatFormatting.GREEN)));
@@ -98,7 +105,7 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
                     .append(": ").append(Component.literal("true").withStyle(ChatFormatting.GREEN)));
         }
         if (!stack.isDamaged()) {
-            tooltip.add(Component.translatable("item.forestry.durability", new Object[] { stack.getMaxDamage() }));
+            tooltip.add(Component.translatable("item.forestry.durability", stack.getMaxDamage()));
         }
     }
 
@@ -177,7 +184,7 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
     public static class GTItemHiveFrameBuilder {
 
         // required params
-        private int maxDmg = 64;
+        private int durability = 64;
 
         // optional params
         private float ageMult = 1;
@@ -190,7 +197,7 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
         private boolean isHellish = false;
 
         public GTItemHiveFrameBuilder(int maxDmg) {
-            this.maxDmg = maxDmg;
+            this.durability = maxDmg;
         }
 
         public GTItemHiveFrameBuilder setAgeMult(float ageMult) {
@@ -233,8 +240,8 @@ public class GTItemHiveFrame extends ItemForestry implements IHiveFrame {
             return this;
         }
 
-        public GTItemHiveFrame build() {
-            return new GTItemHiveFrame(this);
+        public GTHiveFrameItem build() {
+            return new GTHiveFrameItem(this);
         }
     }
 }

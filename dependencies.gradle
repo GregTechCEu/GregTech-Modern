@@ -119,12 +119,6 @@ dependencies {
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
 
-
-    modLocalRuntime(forge.patchouli)
-
-    modCompileOnly(forge.curios)
-    modLocalRuntime(forge.curios)
-
     //patchouli
     modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
     modExtraLocalRuntime(forge.patchouli)

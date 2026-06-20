@@ -6,14 +6,14 @@ import forestry.api.genetics.alleles.ForestryAlleles;
 import forestry.api.plugin.IGeneticRegistration;
 
 public class GTTaxa {
-    public static final String GENUS_GT_ORGANIC    = "gt_organic";
-    public static final String GENUS_GT_INDUSTRIAL = "gt_industrial";
-    public static final String GENUS_GT_ALLOY      = "gt_alloy";
-    public static final String GENUS_GT_GEM        = "gt_gem";
-    public static final String GENUS_GT_METAL      = "gt_metal";
-    public static final String GENUS_GT_RAREMETAL  = "gt_raremetal";
-    public static final String GENUS_GT_RADIOACTIVE= "gt_radioactive";
-    public static final String GENUS_GT_NOBLEGAS   = "gt_noblegas";
+    public static final String GENUS_GT_ORGANIC    = "organic";
+    public static final String GENUS_GT_INDUSTRIAL = "industrial";
+    public static final String GENUS_GT_ALLOY      = "alloy";
+    public static final String GENUS_GT_GEM        = "gem";
+    public static final String GENUS_GT_METAL      = "metal";
+    public static final String GENUS_GT_RAREMETAL  = "raremetal";
+    public static final String GENUS_GT_RADIOACTIVE= "radioactive";
+    public static final String GENUS_GT_NOBLEGAS   = "noblegas";
 
     public static void defineTaxa(IGeneticRegistration genetics) {
         genetics.defineTaxon(ForestryTaxa.CLASS_INSECTS, ForestryTaxa.ORDER_HYMNOPTERA, order -> {

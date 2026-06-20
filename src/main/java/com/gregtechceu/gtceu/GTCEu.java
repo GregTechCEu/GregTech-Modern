@@ -225,7 +225,8 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_CREATE);
         }
 
-        public static boolean isForestryLoaded() {return isModLoaded(GTValues.MODID_FORESTRY);
+        public static boolean isForestryLoaded() {
+            return isModLoaded(GTValues.MODID_FORESTRY);
         }
     }
 }
