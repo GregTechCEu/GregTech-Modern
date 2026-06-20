@@ -98,7 +98,7 @@ public class Predicates {
         return new PatternPredicate(new PredicateFluidTag(tag));
     }
 
-    public static PatternPredicate custom(Function<CurrentBlockInfo, PatternError> predicate,
+    public static PatternPredicate custom(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
                                           @Nullable List<BlockInfo> candidates) {
         return new PatternPredicate(predicate, candidates);
     }

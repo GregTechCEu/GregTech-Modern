@@ -90,9 +90,6 @@ public class PartAbility {
                 .toList();
     }
 
-    /**
-     * [from, to]
-     */
     public Collection<Block> getBlockRange(int from, int to) {
         return registry.int2ObjectEntrySet().stream()
                 .filter(entry -> entry.getIntKey() <= to && entry.getIntKey() >= from)
