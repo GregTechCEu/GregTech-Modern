@@ -8,7 +8,7 @@
     "top": "gtceu:block/casings/wood_wall/top"
   },
   "variants": {
-    "is_formed=false,recipe_logic_status=idle": {
+    "recipe_logic_status=idle": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {
@@ -19,7 +19,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=suspend": {
+    "recipe_logic_status=suspend": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {
@@ -30,7 +30,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=waiting": {
+    "recipe_logic_status=waiting": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {
@@ -41,51 +41,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=working": {
-      "model": {
-        "parent": "gtceu:block/machine/template/sided/sided",
-        "textures": {
-          "bottom": "gtceu:block/casings/wood_wall/bottom",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front_active",
-          "side": "gtceu:block/casings/wood_wall/side",
-          "top": "gtceu:block/casings/wood_wall/top"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=idle": {
-      "model": {
-        "parent": "gtceu:block/machine/template/sided/sided",
-        "textures": {
-          "bottom": "gtceu:block/casings/wood_wall/bottom",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front",
-          "side": "gtceu:block/casings/wood_wall/side",
-          "top": "gtceu:block/casings/wood_wall/top"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=suspend": {
-      "model": {
-        "parent": "gtceu:block/machine/template/sided/sided",
-        "textures": {
-          "bottom": "gtceu:block/casings/wood_wall/bottom",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front",
-          "side": "gtceu:block/casings/wood_wall/side",
-          "top": "gtceu:block/casings/wood_wall/top"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=waiting": {
-      "model": {
-        "parent": "gtceu:block/machine/template/sided/sided",
-        "textures": {
-          "bottom": "gtceu:block/casings/wood_wall/bottom",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front_active",
-          "side": "gtceu:block/casings/wood_wall/side",
-          "top": "gtceu:block/casings/wood_wall/top"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=working": {
+    "recipe_logic_status=working": {
       "model": {
         "parent": "gtceu:block/machine/template/sided/sided",
         "textures": {

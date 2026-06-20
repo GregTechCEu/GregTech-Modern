@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
@@ -15,15 +16,12 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -33,16 +31,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMachineLife {
+public class MEOutputHatchPartMachine extends MEHatchPartMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-            MEOutputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
-
-    @Persisted
+    @SaveField
     private KeyStorage internalBuffer; // Do not use KeyCounter, use our simple implementation
 
-    public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.OUT, args);
+    public MEOutputHatchPartMachine(BlockEntityCreationInfo info) {
+        super(info, IO.OUT);
     }
 
     /////////////////////////////////
@@ -50,19 +45,14 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
     /////////////////////////////////
 
     @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.internalBuffer = new KeyStorage();
         return new InaccessibleInfiniteTank(this);
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (isRemote()) return;
-    }
-
-    @Override
-    public void onMachineRemoved() {
+    public void onMachineDestroyed() {
+        super.onMachineDestroyed();
         var grid = getMainNode().getGrid();
         if (grid != null && !internalBuffer.isEmpty()) {
             for (var entry : internalBuffer) {
@@ -70,11 +60,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
                         Actionable.MODULATE, actionSource);
             }
         }
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     /////////////////////////////////
@@ -121,7 +106,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         FluidStorageDelegate storage;
 
         public InaccessibleInfiniteTank(MetaMachine holder) {
-            super(holder, List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
+            super(List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
             allowSameFluids = true;
@@ -133,7 +118,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return Collections.emptyList();
         }
 
@@ -148,12 +133,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return FluidStack.EMPTY;
         }
 
         @Override
-        public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
+        public void setFluidInTank(int tank, FluidStack fluidStack) {}
 
         @Override
         public int getTankCapacity(int tank) {
@@ -161,7 +146,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 
@@ -178,15 +163,28 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IMac
                     continue;
                 }
 
-                var fluids = ingredient.getStacks();
+                FluidStack[] fluids;
+                if (ingredient instanceof IntProviderFluidIngredient provider) {
+                    provider.setFluidStacks(null);
+                    provider.setSampledCount(-1);
+
+                    if (simulate) {
+                        fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                    } else {
+                        fluids = provider.getStacks();
+                    }
+                } else {
+                    fluids = ingredient.getStacks();
+                }
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;
                 }
 
                 FluidStack output = fluids[0];
-                ingredient.shrink(storage.fill(output, action));
-                if (ingredient.getAmount() <= 0) it.remove();
+                int filled = storage.fill(output, action);
+                ingredient.shrink(filled);
+                if (filled <= 0) it.remove();
             }
             return left.isEmpty() ? null : left;
         }

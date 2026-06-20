@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -57,7 +57,7 @@ public class GTRecipeModifiers {
                 if (!(machine.getLevel() instanceof ServerLevel serverLevel)) return ModifierFunction.NULL;
 
                 EnvironmentalHazardSavedData data = EnvironmentalHazardSavedData.getOrCreate(serverLevel);
-                BlockPos machinePos = machine.getPos();
+                BlockPos machinePos = machine.getBlockPos();
                 var zone = data.getZoneByContainedPosAndCondition(machinePos, condition);
                 if (zone == null) return ModifierFunction.IDENTITY;
 
@@ -84,12 +84,12 @@ public class GTRecipeModifiers {
      * Looks for the Parallel Hatch on a Multiblock and attempts to parallelize the recipe up to the set amount
      * </p>
      *
-     * @param machine an {@link IMultiController} machine
+     * @param machine a {@link MultiblockControllerMachine} machine
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Parallel Multiblock
      */
     public static @NotNull ModifierFunction hatchParallel(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof IMultiController controller && controller.isFormed()) {
+        if (machine instanceof MultiblockControllerMachine controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(machine, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
@@ -105,7 +105,8 @@ public class GTRecipeModifiers {
     }
 
     public static @NotNull ModifierFunction batchMode(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
+        if (machine instanceof MultiblockControllerMachine controller && controller.isFormed() &&
+                controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
                 parallel = ParallelLogic.getParallelAmountWithoutEU(machine, recipe, parallel);

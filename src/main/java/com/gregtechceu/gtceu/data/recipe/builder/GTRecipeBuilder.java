@@ -23,7 +23,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -774,7 +774,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
-        return chancedInput(Ingredient.of(stack), chance, tierChanceBoost);
+        return chancedInput(SizedIngredient.create(stack), chance, tierChanceBoost);
     }
 
     public GTRecipeBuilder chancedInput(FluidStack stack, int chance, int tierChanceBoost) {
@@ -782,7 +782,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder chancedOutput(ItemStack stack, int chance, int tierChanceBoost) {
-        return chancedOutput(Ingredient.of(stack), chance, tierChanceBoost);
+        return chancedOutput(SizedIngredient.create(stack), chance, tierChanceBoost);
     }
 
     public GTRecipeBuilder chancedOutput(FluidStack stack, int chance, int tierChanceBoost) {

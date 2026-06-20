@@ -22,7 +22,6 @@ import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -60,28 +59,19 @@ public class AssemblyLineTests {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 3, 0)));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(ASSLINE_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 1)));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
-        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 1)));
-        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(3, 1, 1)));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(4, 1, 1)));
-        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 0)));
-        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(3, 1, 0)));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 1));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 1));
+        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 1));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(4, 1, 1));
+        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 0));
+        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 0));
         return new BusHolder(inputBus1, inputBus2, inputBus3, inputBus4,
                 inputHatch1, inputHatch2, inputHatch3, inputHatch4, outputBus1, controller);
     }
@@ -98,7 +88,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item didn't craft at the right tick with ok recipe" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
     }
 
@@ -114,7 +104,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -131,7 +121,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -148,7 +138,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -185,7 +175,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item didn't craft at the right tick with ok recipe" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
             // All 4 inputs had the second one consumed
             helper.assertTrue(
                     busHolder.inputBus1.getInventory().getStackInSlot(0).isEmpty(),
@@ -206,7 +196,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE, 2)),
                     "Item didn't craft at the right tick with ok recipe" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -223,7 +213,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -240,7 +230,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }
@@ -257,7 +247,7 @@ public class AssemblyLineTests {
                     TestUtils.isItemStackEqual(busHolder.outputBus1.getInventory().getStackInSlot(0),
                             new ItemStack(Blocks.STONE)),
                     "Item crafted with inputs moved" +
-                            busHolder.outputBus1.getInventory().getStackInSlot(0).getDisplayName());
+                            busHolder.outputBus1.getInventory().getStackInSlot(0).getHoverName().getString());
         });
         TestUtils.succeedAfterTest(helper);
     }

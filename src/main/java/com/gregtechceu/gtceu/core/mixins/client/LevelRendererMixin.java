@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
@@ -23,7 +22,6 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
 import net.minecraft.util.FastColor;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
@@ -33,8 +31,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
@@ -56,7 +52,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.*;
 
 @Mixin(value = LevelRenderer.class, priority = 500)
-@OnlyIn(Dist.CLIENT)
 public abstract class LevelRendererMixin {
 
     @Shadow
@@ -73,9 +68,6 @@ public abstract class LevelRendererMixin {
 
     @Shadow
     private @Nullable ClientLevel level;
-
-    @Unique
-    private final RandomSource gtceu$modelRandom = RandomSource.create();
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
@@ -182,16 +174,14 @@ public abstract class LevelRendererMixin {
         if (rendererCfg.coloredMaterialBlockOutline && !materialEntry.isEmpty()) {
             renderColoredOutline = true;
             rgb = materialEntry.material().getMaterialRGB();
-        } else if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe) {
-            if (rendererCfg.coloredTieredMachineOutline) {
-                if (mbe.getMetaMachine() instanceof SteamMachine steam) {
+        } else if (rendererCfg.coloredTieredMachineOutline) {
+                if (level.getBlockEntity(pos) instanceof SteamMachine steam) {
                     renderColoredOutline = true;
                     rgb = steam.isHighPressure() ? GTValues.VC_HP_STEAM : GTValues.VC_LP_STEAM;
-                } else if (mbe.getMetaMachine() instanceof ITieredMachine tiered) {
+                } else if (level.getBlockEntity(pos) instanceof ITieredMachine tiered) {
                     renderColoredOutline = true;
                     rgb = GTValues.VCM[tiered.getTier()];
                 }
-            }
         } else if (rendererCfg.coloredWireOutline && level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipe) {
             renderColoredOutline = true;
             if (!pipe.getFrameMaterial().isNull()) {

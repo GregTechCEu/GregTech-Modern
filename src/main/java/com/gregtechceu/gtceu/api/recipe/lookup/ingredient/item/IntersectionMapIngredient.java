@@ -48,8 +48,8 @@ public class IntersectionMapIngredient extends AbstractMapIngredient {
 
         if (!entry.isEmpty() && TagPrefix.ORES.containsKey(entry.tagPrefix())) {
             List<AbstractMapIngredient> children = new ArrayList<>();
-            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemTags(entry.material())[0]));
-            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemParentTags()[0]));
+            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemTags(entry.material()).get(0)));
+            children.add(new ItemTagMapIngredient(entry.tagPrefix().getItemParentTags().get(0)));
 
             return Collections.singletonList(new IntersectionMapIngredient(children));
         }

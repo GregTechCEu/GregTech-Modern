@@ -9,10 +9,6 @@ import net.minecraft.world.damagesource.DamageType;
 
 public class GTDamageTypes {
 
-    public static final DamageTypeData EXPLOSION = new DamageTypeData.Builder()
-            .simpleId("explosion")
-            .tag(DamageTypeTags.IS_EXPLOSION)
-            .build();
     public static final DamageTypeData HEAT = new DamageTypeData.Builder()
             .simpleId("heat")
             .tag(DamageTypeTags.IS_FIRE, DamageTypeTags.BYPASSES_ARMOR)

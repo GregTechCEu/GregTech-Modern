@@ -7,12 +7,17 @@ repositories {
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
         }
     }
 
-    maven { // JEI
-        name = "Jared's Maven"
-        url = "https://maven.blamejared.com/"
+    exclusiveContent { // Create, Ponder, Flywheel
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
     }
 
     maven { // JEI mirror, AE2
@@ -25,6 +30,7 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
+
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
         filter {
@@ -33,17 +39,20 @@ repositories {
             includeGroup("dev.engine-room.flywheel")
         }
     }
+    exclusiveContent { // Configuration
+        forRepositories(
+                maven { url = "https://repo.repsy.io/mvn/toma/public/" },
+                maven { url = "https://api.repsy.io/mvn/toma/public" },
+        )
+        filter { includeGroup("dev.toma.configuration")}
+    }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
-        filter { includeGroup("dev.latvian.mods")}
+        filter { includeGroup("dev.latvian.mods") }
     }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }
         filter { includeGroup("dev.ftb.mods") }
-    }
-    exclusiveContent { // TOP
-        forRepository { maven { url = "https://maven.k-4u.nl" } }
-        filter { includeGroup('mcjty.theoneprobe') }
     }
     exclusiveContent { // JourneyMap API
         forRepository { maven { url = "https://jm.gserv.me/repository/maven-public/" } }
@@ -83,5 +92,9 @@ repositories {
     exclusiveContent { // CC: Tweaked
         forRepository { maven { url = "https://maven.squiddev.cc" } }
         filter { includeGroup("cc.tweaked") }
+    }
+    exclusiveContent { // Xaero's
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupAndSubgroups("xaero") }
     }
 }

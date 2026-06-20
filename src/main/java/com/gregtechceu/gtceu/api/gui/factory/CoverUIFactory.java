@@ -48,7 +48,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
 
     @Override
     protected void writeHolderToSyncData(FriendlyByteBuf syncData, CoverBehavior holder) {
-        syncData.writeBlockPos(holder.coverHolder.getPos());
+        syncData.writeBlockPos(holder.coverHolder.getBlockPos());
         syncData.writeEnum(holder.attachedSide);
     }
 }

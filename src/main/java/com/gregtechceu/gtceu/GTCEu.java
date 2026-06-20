@@ -96,7 +96,7 @@ public class GTCEu {
 
     /**
      * A friendly reminder that the server instance is populated on the server side only, so null/side check it!
-     * 
+     *
      * @return the current minecraft server instance
      */
     public static MinecraftServer getMinecraftServer() {
@@ -108,12 +108,14 @@ public class GTCEu {
      * @return if the mod whose id is {@code modId} is loaded or not
      */
     public static boolean isModLoaded(String modId) {
-        return ModList.get().isLoaded(modId);
+        ModList modList = ModList.get();
+        if (modList != null) return modList.isLoaded(modId);
+        else return FMLLoader.getLoadingModList().getModFileById(modId) != null;
     }
 
     /**
      * For async stuff use this, otherwise use {@link GTCEu isClientSide}
-     * 
+     *
      * @return if the current thread is the client thread
      */
     public static boolean isClientThread() {
@@ -132,7 +134,7 @@ public class GTCEu {
 
     /**
      * This check isn't the same for client and server!
-     * 
+     *
      * @return if it's safe to access the current instance {@link net.minecraft.world.level.Level Level} on client or if
      *         it's safe to access any level on server.
      */
@@ -175,9 +177,8 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
         }
 
-        public static boolean isSodiumRubidiumEmbeddiumLoaded() {
-            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_RUBIDIUM) ||
-                    isModLoaded(GTValues.MODID_EMBEDDIUM);
+        public static boolean isSodiumEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_EMBEDDIUM);
         }
 
         public static boolean isAE2Loaded() {
@@ -186,10 +187,6 @@ public class GTCEu {
 
         public static boolean isCuriosLoaded() {
             return isModLoaded(GTValues.MODID_CURIOS);
-        }
-
-        public static boolean isShimmerLoaded() {
-            return isModLoaded(GTValues.MODID_SHIMMER);
         }
 
         public static boolean isModernFixLoaded() {

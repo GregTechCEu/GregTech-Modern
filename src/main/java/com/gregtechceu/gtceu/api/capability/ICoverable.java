@@ -2,10 +2,13 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.ICopyable;
+import com.gregtechceu.gtceu.api.blockentity.IGregtechBlockEntity;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -28,28 +31,59 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public interface ICoverable extends ITickSubscription, ICopyable {
+public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
-    Level getLevel();
+    IGregtechBlockEntity getHolder();
 
-    BlockPos getPos();
+    @Override
+    default ISyncManaged getParentSyncObject() {
+        return getHolder();
+    }
 
-    long getOffsetTimer();
+    default Level getLevel() {
+        return getHolder().getLevel();
+    }
 
-    void markDirty();
+    default BlockPos getBlockPos() {
+        return getHolder().getBlockPos();
+    }
 
-    boolean isInValid();
+    default BlockState getBlockState() {
+        return getHolder().getBlockState();
+    }
 
-    void notifyBlockUpdate();
+    default long getOffsetTimer() {
+        return getHolder().getOffsetTimer();
+    }
 
-    void scheduleRenderUpdate();
+    default boolean isRemoved() {
+        return getHolder().isRemoved();
+    }
 
-    void scheduleNeighborShapeUpdate();
+    default void notifyBlockUpdate() {
+        getHolder().notifyBlockUpdate();
+    }
+
+    default void scheduleNeighborShapeUpdate() {
+        getHolder().scheduleNeighborShapeUpdate();
+    }
+
+    @Nullable
+    @Override
+    default TickableSubscription subscribeServerTick(Runnable runnable) {
+        return getHolder().subscribeServerTick(runnable);
+    }
+
+    @Override
+    default void unsubscribe(@Nullable TickableSubscription current) {
+        getHolder().unsubscribe(current);
+    }
 
     boolean canPlaceCoverOnSide(CoverDefinition definition, Direction side);
 
@@ -72,6 +106,7 @@ public interface ICoverable extends ITickSubscription, ICopyable {
      * @param coverBehavior
      * @param side
      */
+    @ApiStatus.Internal
     void setCoverAtSide(@Nullable CoverBehavior coverBehavior, Direction side);
 
     @Nullable
@@ -90,7 +125,6 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         coverBehavior.onLoad();
         setCoverAtSide(coverBehavior, side);
         notifyBlockUpdate();
-        markDirty();
         scheduleNeighborShapeUpdate();
         // TODO achievement
         // AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
@@ -112,11 +146,10 @@ public interface ICoverable extends ITickSubscription, ICopyable {
             if (player != null && player.getInventory().add(dropStack))
                 continue;
 
-            Block.popResource(getLevel(), getPos(), dropStack);
+            Block.popResource(getLevel(), getBlockPos(), dropStack);
 
         }
         notifyBlockUpdate();
-        markDirty();
         scheduleNeighborShapeUpdate();
         return true;
     }
@@ -272,7 +305,9 @@ public interface ICoverable extends ITickSubscription, ICopyable {
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
         tag.put("item", cover.getAttachItem().serializeNBT());
-        tag.put("data", cover.copyConfig(new CompoundTag()));
+        var dataTag = new CompoundTag();
+        cover.copyConfig(dataTag);
+        tag.put("data", dataTag);
         return tag;
     }
 
@@ -290,12 +325,10 @@ public interface ICoverable extends ITickSubscription, ICopyable {
     }
 
     @Override
-    default CompoundTag copyConfig(CompoundTag tag) {
+    default void copyConfig(CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
-
-        return tag;
     }
 
     @Override

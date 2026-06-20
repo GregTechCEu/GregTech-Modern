@@ -44,7 +44,7 @@ public class ItemDetectorCover extends DetectorCover {
     }
 
     protected IItemHandler getItemHandler() {
-        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getPos(), attachedSide).resolve()
+        return GTTransferUtils.getItemHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide).resolve()
                 .orElse(null);
     }
 }
