@@ -42,19 +42,18 @@ public class MyPatternError extends PatternError {
 ```
 
 You also need to register your new PatternErrors statically:
-```java
-public class ExampleModPatternErrors {
-    public static void init() {
-        GTRegistries.PATTERN_ERRORS.register(MyPatternError.ID, MyPatternError.CODEC);
-    }
-}
-```
 
 ```java
+
 public class ExampleMod {
-    public static void init() {
-        // ...
-        ExampleModPatternErrors.init();
+    public ExampleMod() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        modEventBus.addGenericListener(WHAT.class, this::registerPatternErrors);
     }
+
+    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, Codec<? extends PatternError>> event) {
+        GTRegistries.PATTERN_ERRORS.register(MyPatternError.ID, MyPatternError.CODEC);
+    }
+
 }
 ```
