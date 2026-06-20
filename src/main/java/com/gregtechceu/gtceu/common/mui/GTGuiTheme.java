@@ -216,7 +216,7 @@ public class GTGuiTheme {
                     .add("panel", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", panelId))));
+                                    .add("name", panelId))));
             return this;
         }
 
@@ -250,10 +250,10 @@ public class GTGuiTheme {
                     .add("button", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", buttonId))
+                                    .add("name", buttonId))
                             .add("hoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", hoverId))
+                                    .add("name", hoverId))
                             .add("textColor", textColor)
                             .add("textShadow", textShadow)));
             return this;
@@ -277,7 +277,7 @@ public class GTGuiTheme {
                     .add("itemSlot", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", itemSlotId))
+                                    .add("name", itemSlotId))
                             .add("slotHoverColor", hoverColor)));
             return this;
         }
@@ -300,7 +300,7 @@ public class GTGuiTheme {
                     .add("fluidSlot", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", fluidSlotId))
+                                    .add("name", fluidSlotId))
                             .add("slotHoverColor", hoverColor)));
             return this;
         }
@@ -361,16 +361,16 @@ public class GTGuiTheme {
                     .add("toggleButton", new JsonBuilder()
                             .add("background", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", backgroundId))
+                                    .add("name", backgroundId))
                             .add("hoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", hoverBackgroundId))
+                                    .add("name", hoverBackgroundId))
                             .add("selectedBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", selectedBackgroundId))
+                                    .add("name", selectedBackgroundId))
                             .add("selectedHoverBackground", new JsonBuilder()
                                     .add("type", "texture")
-                                    .add("id", selectedHoverBackgroundId))
+                                    .add("name", selectedHoverBackgroundId))
                             .add("selectedColor", selectedColor)
                             .add("textColor", textColor)
                             .add("textShadow", textShadow)));
