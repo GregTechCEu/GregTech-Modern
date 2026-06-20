@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -35,7 +34,7 @@ public class GTGuiTheme {
             .fieldsOf(IThemeApi.FALLBACK)
             .register();
 
-    public static final GTGuiTheme STANDARD = templateBuilder("gregtech_standard")
+    public static final GTGuiTheme STANDARD = templateBuilder("gtceu:standard")
             .panel(GTGuiTextures.IDs.STANDARD_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)
             .fluidSlot(GTGuiTextures.IDs.STANDARD_FLUID_SLOT)
@@ -46,7 +45,7 @@ public class GTGuiTheme {
                     ConfigHolder.INSTANCE.client.ui.getDefaultUIColor())
             .build();
 
-    public static final GTGuiTheme COVER = templateBuilder("gregtech_cover")
+    public static final GTGuiTheme COVER = templateBuilder("gtceu:cover")
             .panel(GTGuiTextures.IDs.COVER_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STANDARD_SLOT)
             .fluidSlot(GTGuiTextures.IDs.STANDARD_FLUID_SLOT)
@@ -56,17 +55,17 @@ public class GTGuiTheme {
 
     // TODO Multiblock theme for display texture, logo changes
 
-    public static final GTGuiTheme BRONZE = templateBuilder("gregtech_bronze")
+    public static final GTGuiTheme BRONZE = templateBuilder("gtceu:bronze")
             .panel(GTGuiTextures.IDs.BRONZE_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.BRONZE_SLOT)
             .build();
 
-    public static final GTGuiTheme STEEL = templateBuilder("gregtech_steel")
+    public static final GTGuiTheme STEEL = templateBuilder("gtceu:steel")
             .panel(GTGuiTextures.IDs.STEEL_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.STEEL_SLOT)
             .build();
 
-    public static final GTGuiTheme PRIMITIVE = templateBuilder("gregtech_primitive")
+    public static final GTGuiTheme PRIMITIVE = templateBuilder("gtceu:primitive")
             .panel(GTGuiTextures.IDs.PRIMITIVE_BACKGROUND)
             .itemSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
             .fluidSlot(GTGuiTextures.IDs.PRIMITIVE_SLOT)
@@ -109,7 +108,6 @@ public class GTGuiTheme {
     }
 
     public static void registerThemes() {
-        MinecraftForge.EVENT_BUS.register(GTGuiTheme.class);
         THEMES.forEach(GTGuiTheme::register);
     }
 
