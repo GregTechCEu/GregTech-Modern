@@ -266,19 +266,21 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void preDraw(BufferBuilder buffer) {
+        public BufferBuilder preDraw() {
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(
                     GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
+
+            return Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
         public void postDraw(BufferBuilder buffer) {
-            BufferUploader.drawWithShader(buffer.buildOrThrow());
+            IRenderSetup.super.postDraw(buffer);
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
         }
@@ -288,16 +290,12 @@ public class GTOverheatParticle extends GTBloomParticle {
 
         @Override
         @OnlyIn(Dist.CLIENT)
-        public void preDraw(BufferBuilder buffer) {
+        public BufferBuilder preDraw() {
             RenderSystem.disableBlend();
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
-        }
 
-        @Override
-        @OnlyIn(Dist.CLIENT)
-        public void postDraw(BufferBuilder buffer) {
-            BufferUploader.drawWithShader(buffer.buildOrThrow());
+            return Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
     };
 }

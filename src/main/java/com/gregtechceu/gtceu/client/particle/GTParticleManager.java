@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.bloom.EffectRenderContext;
 import com.gregtechceu.gtceu.client.bloom.IRenderSetup;
 
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -18,6 +17,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,7 +127,7 @@ public final class GTParticleManager {
         poseStack.translate(-camera.getPosition().x, -camera.getPosition().y, -camera.getPosition().z);
 
         EffectRenderContext instance = EffectRenderContext.getInstance()
-                .update(camera, event.getFrustum(), event.getPartialTick().getGameTimeDeltaTicks());
+                .update(camera, event.getFrustum(), event.getPartialTick().getGameTimeDeltaPartialTick(false));
 
         if (!this.depthDisabledParticles.isEmpty()) {
             RenderSystem.depthMask(false);
@@ -148,19 +148,21 @@ public final class GTParticleManager {
 
             IRenderSetup handler = entry.getKey();
             boolean initialized = false;
-
             BufferBuilder buffer = null;
+
             for (GTParticle particle : particles) {
                 if (!particle.shouldRender(context)) {
                     continue;
                 }
-                buffer = Tesselator.getInstance()
-                        .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
                 try {
                     if (!initialized) {
                         initialized = true;
                         if (handler != null) {
-                            handler.preDraw(buffer);
+                            buffer = handler.preDraw();
+                        }
+                        if (buffer == null) {
+                            buffer = Tesselator.getInstance()
+                                    .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
                         }
                     }
                     particle.renderParticle(poseStack, buffer, context);

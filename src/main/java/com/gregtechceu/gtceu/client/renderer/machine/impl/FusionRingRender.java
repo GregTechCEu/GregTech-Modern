@@ -19,12 +19,11 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.serialization.MapCodec;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.serialization.Codec;
 import lombok.RequiredArgsConstructor;
 import org.lwjgl.opengl.GL11;
 
@@ -131,14 +130,11 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
 
             @Override
             @OnlyIn(Dist.CLIENT)
-            public void preDraw(BufferBuilder buffer) {
+            public BufferBuilder preDraw() {
                 RenderSystem.setShader(GameRenderer::getPositionColorShader);
-            }
 
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public void postDraw(BufferBuilder buffer) {
-                BufferUploader.drawWithShader(buffer.buildOrThrow());
+                return Tesselator.getInstance()
+                        .begin(VertexFormat.Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
             }
         };
 

@@ -1,18 +1,18 @@
 package com.gregtechceu.gtceu.client.bloom;
 
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.*;
+import org.jetbrains.annotations.Nullable;
 
 public interface IRenderSetup {
 
     /**
-     * Run any pre render gl code here.
-     *
-     * @param buffer Buffer builder
+     * Run any pre render GL code here.
      */
     @OnlyIn(Dist.CLIENT)
-    void preDraw(BufferBuilder buffer);
+    @Nullable BufferBuilder preDraw();
 
     /**
      * Run any post render gl code here.
@@ -20,5 +20,7 @@ public interface IRenderSetup {
      * @param buffer Buffer builder
      */
     @OnlyIn(Dist.CLIENT)
-    void postDraw(BufferBuilder buffer);
+    default void postDraw(BufferBuilder buffer) {
+        BufferUploader.drawWithShader(buffer.buildOrThrow());
+    }
 }

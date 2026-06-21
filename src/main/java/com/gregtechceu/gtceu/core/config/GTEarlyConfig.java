@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.config;
 
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.data.loading.DatagenModLoader;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
@@ -47,13 +48,14 @@ public class GTEarlyConfig {
         enableIfModPresent("jei", "jei");
         enableIfModPresent("rei", "roughlyenoughitems");
 
-        final String[] EMBEDDIUM_MOD_IDS = { "embeddium", "sodium" };
-        final String[] OCULUS_MOD_IDS = { "oculus", "iris" };
-        enableIfModPresent("embeddium", EMBEDDIUM_MOD_IDS);
-        enableIfModPresent("oculus", OCULUS_MOD_IDS);
-        enableIfModPresent("client.bloom.normal.embeddium", EMBEDDIUM_MOD_IDS);
-        enableIfModPresent("client.bloom.normal.oculus", OCULUS_MOD_IDS);
-        enableIfModPresent("client.bloom.safemode.embeddium", EMBEDDIUM_MOD_IDS);
+        enableIfModPresent("embeddium", "embeddium");
+        enableIfModPresent("sodium", "sodium");
+        enableIfModPresent("iris", "iris");
+        enableIfModPresent("client.bloom.normal.embeddium", "embeddium");
+        enableIfModPresent("client.bloom.normal.sodium", "sodium");
+        enableIfModPresent("client.bloom.normal.iris", "iris");
+        enableIfModPresent("client.bloom.safemode.embeddium", "embeddium");
+        enableIfModPresent("client.bloom.safemode.sodium", "sodium");
 
         enableIfModPresent("top", "top");
 

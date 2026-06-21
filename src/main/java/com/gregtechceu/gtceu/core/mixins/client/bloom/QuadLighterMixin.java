@@ -26,20 +26,20 @@ public class QuadLighterMixin implements QuadLighterExt {
 
     @WrapOperation(method = "process",
                    at = @At(value = "INVOKE",
-                            target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFF[IIZ)V",
+                            target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;putBulkData(Lcom/mojang/blaze3d/vertex/PoseStack$Pose;Lnet/minecraft/client/renderer/block/model/BakedQuad;[FFFFF[IIZ)V",
                             remap = true))
     private void gtceu$copyBloomQuads(VertexConsumer consumer, PoseStack.Pose pose, BakedQuad quad,
-                                      float[] colorMuls, float red, float green, float blue,
-                                      int[] combinedLights, int combinedOverlay, boolean mulColor,
+                                      float[] brightness, float red, float green, float blue, float alpha,
+                                      int[] lightmap, int overlay, boolean readAlpha,
                                       Operation<Void> original) {
-        original.call(consumer, pose, quad, colorMuls, red, green, blue, combinedLights, combinedOverlay, mulColor);
+        original.call(consumer, pose, quad, brightness, red, green, blue, alpha, lightmap, overlay, readAlpha);
 
         if (this.gtceu$renderType == null) return;
         if (!BloomShaderManager.isBloomActive()) return;
 
-        BloomRenderer.copyBloomQuad(quad, combinedLights, this.gtceu$renderType, bloomVertexConsumer -> {
-            original.call(bloomVertexConsumer, pose, quad, colorMuls, red, green, blue,
-                    combinedLights, combinedOverlay, mulColor);
+        BloomRenderer.copyBloomQuad(quad, lightmap, this.gtceu$renderType, bloomVertexConsumer -> {
+            original.call(bloomVertexConsumer, pose, quad, brightness, red, green, blue, alpha, lightmap, overlay,
+                    readAlpha);
         });
     }
 

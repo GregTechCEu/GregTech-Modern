@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
 import com.gregtechceu.gtceu.core.util.extensions.QuadLighterExt;
+
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -15,8 +16,9 @@ import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@SuppressWarnings("UnstableApiUsage")
 @Mixin(value = LightPipelineAwareModelBlockRenderer.class, remap = false)
-public class ForgeModelBlockRendererMixin {
+public class LightPipelineAwareModelBlockRendererMixin {
 
     @Definition(id = "setup",
                 method = "Lnet/neoforged/neoforge/client/model/lighting/QuadLighter;setup(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)V")

@@ -24,7 +24,9 @@ public class EmbeddiumWorldRendererMixin {
     private RenderSectionManager renderSectionManager;
 
     @Inject(method = "drawChunkLayer", at = @At("RETURN"))
-    private void gtceu$drawBloomChunkLayer(RenderType renderLayer, Matrix4f normal, double x, double y, double z, CallbackInfo ci, @Local(name = "matrices") ChunkRenderMatrices matrices) {
+    private void gtceu$drawBloomChunkLayer(RenderType renderLayer, Matrix4f normal, double x, double y, double z,
+                                           CallbackInfo ci,
+                                           @Local(name = "matrices") ChunkRenderMatrices matrices) {
         if (!BloomShaderManager.isBloomActive()) return;
 
         if (renderLayer == GTRenderTypes.bloom()) {

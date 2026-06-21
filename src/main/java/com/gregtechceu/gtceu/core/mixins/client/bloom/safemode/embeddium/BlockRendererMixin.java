@@ -36,7 +36,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BlockRendererMixin {
 
     @Inject(method = "writeGeometry", at = @At(value = "HEAD"))
-    private void gtceu$copyBloomQuads$initLocals(BlockRenderContext ctx, ChunkModelBuilder builder, Vec3 offset, Material material, BakedQuadView quad, int[] colors, QuadLightData lightData, CallbackInfo ci, @Share("bloomBuffer") LocalRef<VertexConsumer> bloomBufferRef) {
+    private void gtceu$copyBloomQuads$initLocals(BlockRenderContext ctx, ChunkModelBuilder builder,
+                                                 Vec3 offset, Material material, BakedQuadView quad,
+                                                 int[] colors, QuadLightData lightData,
+                                                 CallbackInfo ci,
+                                                 @Share("bloomBuffer") LocalRef<VertexConsumer> bloomBufferRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
         if (BloomShaderManager.isBloomActive() && TextureMetadataHelper.hasBloom((BakedQuad) quad, lightData.lm)) {
             SectionPos sectionPos = SectionPos.of(ctx.pos());

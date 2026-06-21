@@ -40,7 +40,6 @@ import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
 import com.gregtechceu.gtceu.data.pack.event.RegisterDynamicResourcesEvent;
-import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
@@ -64,6 +63,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -77,13 +77,11 @@ public class ClientProxy {
             Layers.registerLayer(OreRenderLayer::new, "ore_veins");
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
-
-            if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
-                GTEmbeddiumCompat.init();
-            }
         }
         initializeDynamicRenders();
         ModelEventHelper.initInternalAssetReloadListeners();
+
+        NeoForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
     }
 
     @SubscribeEvent

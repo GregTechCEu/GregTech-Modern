@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.PlayerSkin;
@@ -49,7 +48,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerHeartTypeEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -170,6 +168,7 @@ public class ClientEventListener {
         TooltipHelper.onClientTick();
         MultiblockInWorldPreviewRenderer.onClientTick();
         EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
+
         GTValues.CLIENT_TIME++;
     }
 

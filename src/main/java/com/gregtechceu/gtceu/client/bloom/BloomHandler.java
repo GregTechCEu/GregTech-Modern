@@ -7,13 +7,13 @@ import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.experimental.UtilityClass;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -207,8 +207,9 @@ public class BloomHandler {
             this.renderSetup = renderSetup;
         }
 
-        void draw(PoseStack poseStack, BufferBuilder buffer, EffectRenderContext context) {
+        void draw(PoseStack poseStack, EffectRenderContext context) {
             boolean initialized = false;
+            BufferBuilder buffer = null;
 
             poseStack.pushPose();
             poseStack.translate(-context.camPos().x(), -context.camPos().y(), -context.camPos().z());
@@ -220,7 +221,10 @@ public class BloomHandler {
                 if (!initialized) {
                     initialized = true;
                     if (this.renderSetup != null) {
-                        this.renderSetup.preDraw(buffer);
+                        buffer = this.renderSetup.preDraw();
+                    }
+                    if (buffer == null) {
+                        buffer = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
                     }
                 }
 

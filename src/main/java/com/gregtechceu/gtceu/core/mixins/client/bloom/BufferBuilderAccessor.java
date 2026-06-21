@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.core.mixins.client.bloom;
 
-import net.minecraft.client.renderer.GameRenderer;
-
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(GameRenderer.class)
-public interface GameRendererAccessor {
+@Mixin(BufferBuilder.class)
+public interface BufferBuilderAccessor {
 
     @Accessor
-    int getTick();
+    boolean isBuilding();
 }

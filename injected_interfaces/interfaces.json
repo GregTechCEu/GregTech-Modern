@@ -5,7 +5,7 @@
     "net/minecraft/client/renderer/block/model/BakedQuad": [
         "com/gregtechceu/gtceu/core/util/extensions/BakedQuadExt"
     ],
-    "net/minecraftforge/client/model/lighting/QuadLighter": [
+    "net/neoforged/neoforge/client/model/lighting/QuadLighter": [
         "com/gregtechceu/gtceu/core/util/extensions/QuadLighterExt"
     ],
     "net/minecraft/world/entity/Entity": [

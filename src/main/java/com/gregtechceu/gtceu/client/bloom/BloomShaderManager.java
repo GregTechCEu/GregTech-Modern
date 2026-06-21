@@ -1,17 +1,24 @@
 package com.gregtechceu.gtceu.client.bloom;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
-import dev.architectury.event.events.common.TickEvent;
+import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -21,21 +28,13 @@ import dev.toma.configuration.config.validate.IValidationResult;
 import dev.toma.configuration.config.value.IConfigValueReadable;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import net.irisshaders.iris.api.v0.IrisApi;
+
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT)
 @UtilityClass
 public class BloomShaderManager {
@@ -66,6 +65,14 @@ public class BloomShaderManager {
         event.registerShader(new ShaderInstance(event.getResourceProvider(),
                 GTCEu.id("rendertype_entity_bloom"), DefaultVertexFormat.NEW_ENTITY),
                 shader -> rendertypeEntityBloomShader = shader);
+    }
+
+    @SubscribeEvent
+    public static void updateShaderAvailability(ClientTickEvent.Pre event) {
+        // only update bloom availability once a second so every frame isn't bogged down with mod loaded checks
+        if (GTValues.CLIENT_TIME % 20 != 0) return;
+
+        bloomAvailable = updateBloomShaderAvailability();
     }
 
     /// @return whether the post effect was loaded successfully
@@ -126,16 +133,6 @@ public class BloomShaderManager {
 
     @Getter
     private static boolean bloomAvailable = updateBloomShaderAvailability();
-
-    @ApiStatus.Internal
-    public static void updateShaderAvailability(ClientTickEvent event) {
-
-        int tick = ((GameRendererAccessor) Minecraft.getInstance().gameRenderer).getTick();
-        // only update bloom availability once a second so every frame isn't bogged down with mod loaded checks
-        if (tick % 20 != 0) return;
-
-        bloomAvailable = updateBloomShaderAvailability();
-    }
 
     private static boolean updateBloomShaderAvailability() {
         return !GTEarlyConfig.OPTIFINE_PRESENT &&

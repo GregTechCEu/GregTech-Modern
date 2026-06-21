@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
+import com.gregtechceu.gtceu.core.mixins.client.bloom.BufferBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.utils.ScopedValue;
@@ -15,9 +16,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.AddSectionGeometryEvent;
 
 import com.mojang.blaze3d.pipeline.RenderCall;
 import com.mojang.blaze3d.pipeline.RenderTarget;
@@ -28,10 +33,10 @@ import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.UtilityClass;
-import net.neoforged.neoforge.client.ClientHooks;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -59,7 +64,8 @@ public class BloomRenderer {
             .withInitial(ScopedValue.Object::new);
 
     @ApiStatus.Internal
-    static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f projectionMatrix,
+    static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f frustumMatrix,
+                            Matrix4f projectionMatrix,
                             float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
         if (!BloomShaderManager.isBloomActive()) return;
 
@@ -74,15 +80,16 @@ public class BloomRenderer {
 
         // safe mode disabled -> use deeper, faster hackery
         if (!BloomRenderer.SafeMode.enabled()) {
-            ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
-                    camPos.x, camPos.y, camPos.z, projectionMatrix);
+            ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
+                    camPos.x, camPos.y, camPos.z, frustumMatrix, projectionMatrix);
 
             // have to re-setup here. so sad. very aw.
             GTRenderTypes.bloom().setupRenderState();
         }
         // safe mode enabled -> don't draw block bloom the 'normal' way; use BloomSafeMode.drawBlockBloom instead
         else {
-            SafeMode.drawBlockBloom(camera, poseStack, frustum, projectionMatrix, levelRenderer, profilerFiller);
+            SafeMode.drawBlockBloom(camera, poseStack, frustum, frustumMatrix, projectionMatrix, levelRenderer,
+                    profilerFiller);
         }
 
         processPostEffect(partialTicks, profilerFiller);
@@ -111,8 +118,7 @@ public class BloomRenderer {
             BLOOM_RENDER_LOCK.readLock().lock();
             try {
                 BloomHandler.BLOOM_RENDERS.forEach((renderSetup, list) -> {
-                    //BufferBuilder buffer = Tesselator.getInstance().getBuilder();
-                    //list.draw(poseStack, buffer, context);
+                    list.draw(poseStack, context);
                 });
             } finally {
                 BLOOM_RENDER_LOCK.readLock().unlock();
@@ -211,14 +217,36 @@ public class BloomRenderer {
         // even with the boxing overhead
         public static Map<SectionPos, VertexBuffer> BLOOM_BUFFERS = new ConcurrentHashMap<>();
         public static Map<SectionPos, BufferBuilder> BLOOM_BUFFER_BUILDERS = new ConcurrentHashMap<>();
+        public static Map<SectionPos, ByteBufferBuilder> BLOOM_BYTE_BUFFERS = new ConcurrentHashMap<>();
         public static Map<SectionPos, MeshData.SortState> BLOOM_BUFFER_SORT_STATES = new ConcurrentHashMap<>();
 
         public static boolean enabled() {
             return GTMixinPlugin.isOptionEnabled(GTEarlyConfig.SAFE_MODE);
         }
 
+        @SubscribeEvent
+        public static void registerSafeModeChunkGeometryRenderer(AddSectionGeometryEvent event) {
+            if (!BloomRenderer.SafeMode.enabled()) return;
+            if (!BloomShaderManager.isBloomActive()) return;
+
+            final BlockPos sectionMinBlock = event.getSectionOrigin().immutable();
+            final SectionPos sectionOrigin = SectionPos.of(sectionMinBlock);
+
+            event.addRenderer(context -> {
+                if (!BloomRenderer.SafeMode.BLOOM_BUFFER_BUILDERS.containsKey(sectionOrigin)) {
+                    return;
+                }
+
+                Vector3f camPos = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().toVector3f();
+                camPos = camPos.sub(sectionMinBlock.getX(), sectionMinBlock.getY(), sectionMinBlock.getZ());
+                VertexSorting vertexSorting = VertexSorting.byDistance(camPos);
+
+                BloomRenderer.SafeMode.bakeBloomChunkBuffers(sectionOrigin, vertexSorting);
+            });
+        }
+
         private static void drawBlockBloom(Camera camera, PoseStack poseStack, Frustum frustum,
-                                           Matrix4f projectionMatrix,
+                                           Matrix4f frustumMatrix, Matrix4f projectionMatrix,
                                            LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
             // re-setup in case someone touched-a my spaghetti
             GTRenderTypes.bloom().setupRenderState();
@@ -226,7 +254,7 @@ public class BloomRenderer {
             Vec3 camPos = camera.getPosition();
             profilerFiller.push("safe_mode");
 
-            ShaderInstance shader = setupBlockShaderUniforms(poseStack, projectionMatrix);
+            ShaderInstance shader = setupBlockShaderUniforms(frustumMatrix, projectionMatrix);
             Uniform chunkOffset = shader.CHUNK_OFFSET;
 
             BLOOM_RENDER_LOCK.readLock().lock();
@@ -265,21 +293,26 @@ public class BloomRenderer {
             profilerFiller.pop();
 
             ClientHooks.dispatchRenderStage(BloomHandler.RenderStage.AFTER_BLOOM, levelRenderer,
-                    poseStack, projectionMatrix, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
+                    poseStack, frustumMatrix, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
         }
 
-        public static void finishBloomBuffer(SectionPos sectionPos, MeshData buffer, BufferBuilder builder) {
-
+        public static void finishBloomBuffer(SectionPos sectionPos, MeshData mesh, BufferBuilder builder,
+                                             VertexSorting vertexSorting) {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
                 BLOOM_BUFFER_BUILDERS.remove(sectionPos, builder);
 
-                ///BLOOM_BUFFER_SORT_STATES.put(sectionPos, buffer.getSortState());
+                ByteBufferBuilder byteBuffer = BLOOM_BYTE_BUFFERS.remove(sectionPos);
+                if (byteBuffer != null) {
+                    MeshData.SortState sortState = mesh.sortQuads(byteBuffer, vertexSorting);
+                    assert sortState != null;
+                    BLOOM_BUFFER_SORT_STATES.put(sectionPos, sortState);
+                }
 
                 RenderCall upload = () -> {
                     VertexBuffer vertexBuffer = BLOOM_BUFFERS.computeIfAbsent(sectionPos,
                             $ -> new VertexBuffer(VertexBuffer.Usage.STATIC));
-                    uploadBloomBuffer(buffer, vertexBuffer);
+                    uploadBloomBuffer(mesh, vertexBuffer);
                 };
                 if (RenderSystem.isOnRenderThread()) {
                     upload.execute();
@@ -291,62 +324,42 @@ public class BloomRenderer {
             }
         }
 
-        public static void uploadBloomBuffer(MeshData builder, VertexBuffer buffer) {
+        public static void uploadBloomBuffer(MeshData mesh, VertexBuffer buffer) {
             if (!buffer.isInvalid()) {
                 buffer.bind();
-                buffer.upload(builder);
+                buffer.upload(mesh);
                 VertexBuffer.unbind();
             }
         }
 
         public static BufferBuilder getOrStartBloomBuffer(SectionPos sectionPos) {
-            return BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos,
-                    $ -> new BufferBuilder(new ByteBufferBuilder(GTRenderTypes.bloom().bufferSize()), GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format()));
+            return BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos, $ -> {
+                ByteBufferBuilder byteBuffer = BLOOM_BYTE_BUFFERS.computeIfAbsent(sectionPos,
+                        unused -> new ByteBufferBuilder(GTRenderTypes.bloom().bufferSize()));
+
+                return new BufferBuilder(byteBuffer, GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
+            });
         }
 
-        public static void bakeBloomChunkBuffers(SectionPos sectionPos, float camX, float camY, float camZ) {
+        public static void bakeBloomChunkBuffers(SectionPos sectionPos, VertexSorting vertexSorting) {
             if (!BloomShaderManager.isBloomActive()) return;
 
             BufferBuilder builder = BLOOM_BUFFER_BUILDERS.get(sectionPos);
-            if (builder == null) {
-                return;
-            }
+            if (builder == null || !((BufferBuilderAccessor) builder).isBuilding()) return;
 
-            var buffer = builder.build();
-            if (buffer == null) return;
+            MeshData mesh = builder.build();
+            if (mesh == null) return;
 
-            /*
-            buffer.sortQuads(builder, VertexSorting.byDistance(
-                    camX - sectionPos.minBlockX(),
-                    camY - sectionPos.minBlockY(),
-                    camZ - sectionPos.minBlockZ()));*/
-
-
-
-            finishBloomBuffer(sectionPos, buffer, builder);
+            finishBloomBuffer(sectionPos, mesh, builder, vertexSorting);
         }
 
         /// @return the shader to use for drawing block bloom.
-        private static ShaderInstance setupBlockShaderUniforms(PoseStack poseStack, Matrix4f projectionMatrix) {
+        private static ShaderInstance setupBlockShaderUniforms(Matrix4f frustumMatrix, Matrix4f projectionMatrix) {
             ShaderInstance shader = RenderSystem.getShader();
             assert shader != null;
 
-            for (int i = 0; i < 12; ++i) {
-                int textureId = RenderSystem.getShaderTexture(i);
-                shader.setSampler("Sampler" + i, textureId);
-            }
-            if (shader.MODEL_VIEW_MATRIX != null) shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
-            if (shader.PROJECTION_MATRIX != null) shader.PROJECTION_MATRIX.set(projectionMatrix);
-            if (shader.COLOR_MODULATOR != null) shader.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
-            if (shader.GLINT_ALPHA != null) shader.GLINT_ALPHA.set(RenderSystem.getShaderGlintAlpha());
-            if (shader.FOG_START != null) shader.FOG_START.set(RenderSystem.getShaderFogStart());
-            if (shader.FOG_END != null) shader.FOG_END.set(RenderSystem.getShaderFogEnd());
-            if (shader.FOG_COLOR != null) shader.FOG_COLOR.set(RenderSystem.getShaderFogColor());
-            if (shader.FOG_SHAPE != null) shader.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
-            if (shader.TEXTURE_MATRIX != null) shader.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
-            if (shader.GAME_TIME != null) shader.GAME_TIME.set(RenderSystem.getShaderGameTime());
-
-            RenderSystem.setupShaderLights(shader);
+            shader.setDefaultUniforms(VertexFormat.Mode.QUADS, frustumMatrix, projectionMatrix,
+                    Minecraft.getInstance().getWindow());
             shader.apply();
 
             return shader;
@@ -357,6 +370,7 @@ public class BloomRenderer {
             try {
                 BLOOM_BUFFERS.clear();
                 BLOOM_BUFFER_BUILDERS.clear();
+                BLOOM_BYTE_BUFFERS.clear();
                 BLOOM_BUFFER_SORT_STATES.clear();
             } finally {
                 BLOOM_RENDER_LOCK.writeLock().unlock();
@@ -368,6 +382,7 @@ public class BloomRenderer {
 
             try {
                 BLOOM_BUFFER_BUILDERS.remove(sectionPos);
+                BLOOM_BYTE_BUFFERS.remove(sectionPos);
                 BLOOM_BUFFER_SORT_STATES.remove(sectionPos);
                 VertexBuffer buffer = BLOOM_BUFFERS.remove(sectionPos);
 

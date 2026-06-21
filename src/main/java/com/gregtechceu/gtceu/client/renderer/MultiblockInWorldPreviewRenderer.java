@@ -296,50 +296,8 @@ public class MultiblockInWorldPreviewRenderer {
                 layer.setupRenderState();
                 poseStack.pushPose();
                 ShaderInstance shaderInstance = RenderSystem.getShader();
-
-                for (int j = 0; j < 12; ++j) {
-                    int k = RenderSystem.getShaderTexture(j);
-                    shaderInstance.setSampler("Sampler" + j, k);
-                }
-
-                // setup shader uniform
-                if (shaderInstance.MODEL_VIEW_MATRIX != null) {
-                    shaderInstance.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
-                }
-
-                if (shaderInstance.PROJECTION_MATRIX != null) {
-                    shaderInstance.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
-                }
-
-                if (shaderInstance.COLOR_MODULATOR != null) {
-                    shaderInstance.COLOR_MODULATOR.set(RenderSystem.getShaderColor());
-                }
-
-                if (shaderInstance.FOG_START != null) {
-                    shaderInstance.FOG_START.set(Float.MAX_VALUE);
-                }
-
-                if (shaderInstance.FOG_END != null) {
-                    shaderInstance.FOG_END.set(RenderSystem.getShaderFogEnd());
-                }
-
-                if (shaderInstance.FOG_COLOR != null) {
-                    shaderInstance.FOG_COLOR.set(RenderSystem.getShaderFogColor());
-                }
-
-                if (shaderInstance.FOG_SHAPE != null) {
-                    shaderInstance.FOG_SHAPE.set(RenderSystem.getShaderFogShape().getIndex());
-                }
-
-                if (shaderInstance.TEXTURE_MATRIX != null) {
-                    shaderInstance.TEXTURE_MATRIX.set(RenderSystem.getTextureMatrix());
-                }
-
-                if (shaderInstance.GAME_TIME != null) {
-                    shaderInstance.GAME_TIME.set(RenderSystem.getShaderGameTime());
-                }
-
-                RenderSystem.setupShaderLights(shaderInstance);
+                shaderInstance.setDefaultUniforms(VertexFormat.Mode.QUADS, poseStack.last().pose(),
+                        RenderSystem.getProjectionMatrix(), Minecraft.getInstance().getWindow());
                 shaderInstance.apply();
 
                 RenderSystem.setShaderColor(1, 1, 1, 1);
