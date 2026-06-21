@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
@@ -13,7 +12,6 @@ import com.gregtechceu.gtceu.common.machine.storage.CreativeComputationProviderM
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
