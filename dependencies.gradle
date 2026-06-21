@@ -34,8 +34,9 @@ dependencies {
     compileOnly(forge.bundles.kjs)
 
     // Performance
-    compileOnly(forge.embeddium)
+    compileOnly(forge.sodium)
     compileOnly(forge.iris)
+    compileOnly(forge.embeddium)
     compileOnly(forge.modernfix)
 
     // Teams
@@ -71,7 +72,7 @@ dependencies {
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     localRuntime(forge.emi)
-    localRuntime(forge.jei.neoforge.impl)
+//    localRuntime(forge.jei.neoforge.impl)
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
