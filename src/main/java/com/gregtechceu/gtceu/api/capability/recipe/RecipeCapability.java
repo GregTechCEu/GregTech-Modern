@@ -1,17 +1,14 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,8 +19,6 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
@@ -162,46 +157,6 @@ public abstract class RecipeCapability<T> {
         return Integer.MAX_VALUE;
     }
 
-    public boolean doAddGuiSlots() {
-        return isRecipeSearchFilter();
-    }
-
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {}
-
-    @NotNull
-    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
-        return new ArrayList<>();
-    }
-
-    @Nullable
-    public Object createXEIContainer(List<?> contents) {
-        return null;
-    }
-
-    @Nullable("null when getWidgetClass() == null")
-    public Widget createWidget() {
-        return null;
-    }
-
-    /**
-     * Return the class of the supported widget that should be used to display this capability.
-     */
-    @Nullable
-    public Class<? extends Widget> getWidgetClass() {
-        return null;
-    }
-
-    public void applyWidgetInfo(@NotNull Widget widget,
-                                int index,
-                                boolean isXEI,
-                                IO io,
-                                @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
-                                @NotNull GTRecipeType recipeType,
-                                @Nullable("null when content == null") GTRecipe recipe,
-                                @Nullable Content content,
-                                @Nullable Object storage, int recipeTier, int chanceTier) {}
-
     /**
      * Create a cache map for chanced outputs
      *
@@ -222,5 +177,27 @@ public abstract class RecipeCapability<T> {
      */
     public boolean shouldBypassDistinct() {
         return true;
+    }
+
+    /**
+     * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
+     * 
+     * @param machine The machine to get traits from
+     * @return A list containing the traits
+     */
+    public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine) {
+        return List.of();
+    }
+
+    /**
+     * Gets all {@link NotifiableRecipeHandlerTrait} traits with a specific IO that can handle this capability.
+     * 
+     * @param machine The machine to get traits from
+     * @param io      The handler IO of the traits
+     * @return A list containing the traits
+     */
+    public List<? extends NotifiableRecipeHandlerTrait<T>> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }

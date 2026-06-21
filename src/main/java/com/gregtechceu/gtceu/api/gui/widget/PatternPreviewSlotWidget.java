@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIGuiContainer;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.Position;
 
@@ -22,7 +23,7 @@ public class PatternPreviewSlotWidget extends SlotWidget {
 
     public PatternPreviewSlotWidget(IItemHandlerModifiable itemHandler, int slotIndex, int xPosition, int yPosition,
                                     boolean canTakeItems, boolean canPutItems) {
-        super(itemHandler, slotIndex, xPosition, yPosition, canTakeItems, canPutItems);
+        super();
     }
 
     /**

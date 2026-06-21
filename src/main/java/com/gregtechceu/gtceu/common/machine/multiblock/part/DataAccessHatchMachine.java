@@ -1,31 +1,27 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -35,6 +31,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -46,11 +47,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IMuiMachine, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipe> recipes;
     @Getter
     private final boolean isCreative;
+    @SyncToClient
     @SaveField
     public final NotifiableItemStackHandler importItems;
 
@@ -82,21 +84,15 @@ public class DataAccessHatchMachine extends TieredPartMachine
         };
     }
 
+    // TODO MUI: Might need EIO widget? Not sure
     @Override
-    public Widget createUIWidget() {
-        int rowSize = (int) Math.sqrt(getInventorySize());
-        int xOffset = 18 * rowSize / 2;
-        WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        var grid = GTMuiMachineUtil.createSlotGroupFromInventory(importItems, "data_inventory", getInventorySize(), 'I',
+                i -> i.background(GTGuiTextures.SLOT, GTGuiTextures.DATA_ORB_OVERLAY), syncManager,
+                GTMuiMachineUtil.createSquareMatrix(importItems.getSlots(), 'I'));
 
-        for (int y = 0; y < rowSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                int index = y * rowSize + x;
-                group.addWidget(new SlotWidget(importItems, index,
-                        rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-                        .setBackgroundTexture(GuiTextures.SLOT));
-            }
-        }
-        return group;
+        mainWidget.child(grid.center());
     }
 
     @Override
@@ -150,7 +146,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
             for (GTRecipe recipe : recipes) {
                 ItemStack stack = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content()).getItems()[0];
                 if (!itemsAdded.contains(stack)) {
                     itemsAdded.add(stack);
                     list.add(Component.translatable("behavior.data_item.data", stack.getDisplayName()));
@@ -178,8 +174,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
     }
 
     @Override
-    public IGuiTexture getComponentIcon() {
-        return new ResourceTexture(GTCEu.id("textures/item/data_module.png")).getSubTexture(0, 0, 1, 1 / 13f);
+    public IDrawable getIcon() {
+        return GTGuiTextures.DATA_HATCH;
     }
 
     @Override

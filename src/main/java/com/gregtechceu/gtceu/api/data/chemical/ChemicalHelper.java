@@ -298,7 +298,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
+    public static TagKey<Item> getTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getItemTags(material);
         if (tags.isEmpty()) {
             return null;

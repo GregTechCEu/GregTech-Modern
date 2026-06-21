@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GenericMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.MapRenderLayer;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.OreVeinRecipeWidget;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -32,13 +32,13 @@ public class OreRenderLayer extends MapRenderLayer {
         return "ore_veins@[" + center.getX() + "," + center.getY() + "," + center.getZ() + "]";
     }
 
-    public static MutableComponent getName(GeneratedVeinMetadata vein) {
+    public static Component getName(GeneratedVeinMetadata vein) {
         // noinspection ConstantValue IDK, it crashed
         if (vein == null || vein.definition() == null ||
                 ClientProxy.CLIENT_ORE_VEINS.inverse().get(vein.definition()) == null) {
             return Component.translatable("gtceu.minimap.ore_vein.depleted");
         }
-        return Component.translatable("gtceu.jei.ore_vein." + GTOreVeinWidget.getOreName(vein.definition()));
+        return Component.translatable("gtceu.jei.ore_vein." + OreVeinRecipeWidget.getOreName(vein.definition()));
     }
 
     public static @NotNull Material getMaterial(@NotNull GeneratedVeinMetadata vein) {
@@ -58,9 +58,9 @@ public class OreRenderLayer extends MapRenderLayer {
         return firstMaterial;
     }
 
-    public static List<Component> getTooltip(String name, GeneratedVeinMetadata vein) {
+    public static List<Component> getTooltip(Component name, GeneratedVeinMetadata vein) {
         final List<Component> tooltip = new ArrayList<>();
-        var title = Component.literal(name);
+        MutableComponent title = name.copy();
         if (vein.depleted()) {
             title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
         }

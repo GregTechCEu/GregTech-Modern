@@ -6,11 +6,13 @@ mixinExtras = "0.5.0-rc.3"
 
 jei = "15.20.0.115"
 rei = "12.1.785"
-emi = "1.1.13+1.20.1"
+emi = "1.1.22+1.20.1"
 ae2 = "15.0.18"
+mui = "3.3.0-SNAPSHOT"
 kubejs = "2001.6.5-build.16"
 rhino = "2001.2.3-build.10"
 architectury = "9.2.14"
+clothmath = "+"
 clothconfig = "11.1.136"
 curios = "5.9.1+1.20.1"
 kotlinforforge = "4.11.0"
@@ -59,6 +61,8 @@ configuration       = { module = "dev.toma.configuration:configuration-1.20.1", 
 mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }
 mixinExtras-forge   = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinExtras" }
 
+mui = { module = "brachy.modularui:modularui-mc1.20.1", version.ref = "mui" }
+
 jei-common-api      = { module = "mezz.jei:jei-1.20.1-common-api", version.ref = "jei" }
 jei-forge-api       = { module = "mezz.jei:jei-1.20.1-forge-api", version.ref = "jei" }
 jei-forge-impl      = { module = "mezz.jei:jei-1.20.1-forge", version.ref = "jei" }
@@ -75,6 +79,7 @@ flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-forge-1.20.1
 kubejs              = { module = "dev.latvian.mods:kubejs-forge", version.ref = "kubejs" }
 rhino               = { module = "dev.latvian.mods:rhino-forge", version.ref = "rhino" }
 architectury        = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
+clothmath           = { module = "me.shedaniel.cloth:basic-math", version.ref = "clothmath" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "clothconfig" }
 curios              = { module = "top.theillusivec4.curios:curios-forge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge", version.ref = "kotlinforforge" }
@@ -117,7 +122,7 @@ ftbchunks-cm        = { module = "curse.maven:ftb-chunks-forge-314906", version.
 
 [bundles]
 jei = ["jei-common-api", "jei-forge-api", "jei-forge-impl"]
-rei = ["rei-plugin", "rei-forge"]
+rei = ["rei-plugin", "rei-forge", "clothmath"]
 rei-runtime = ["rei-forge", "architectury", "clothconfig"]
 kjs = ["kubejs", "rhino", "architectury"]
 

@@ -85,15 +85,15 @@ public class RecipeRunner {
             var contentList = this.recipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             var searchContentList = this.searchRecipeContents.computeIfAbsent(cap, c -> new ArrayList<>());
             for (Content cont : entry.getValue()) {
-                searchContentList.add(cont.content);
+                searchContentList.add(cont.content());
 
                 // When simulating the recipe handling (used for recipe matching),
                 // searchRecipeContents == recipeContents, so all contents, chanced and unchanced, must match
                 if (simulated) continue;
 
-                if (cont.chance >= cont.maxChance) {
-                    contentList.add(cont.content);
-                } else if (cont.chance > 0) {
+                if (cont.chance() >= cont.maxChance()) {
+                    contentList.add(cont.content());
+                } else if (cont.chance() > 0) {
                     chancedContents.add(cont);
                 }
                 // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
@@ -105,7 +105,7 @@ public class RecipeRunner {
                 chancedContents = logic.roll(cap, chancedContents, cache, recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
-                    contentList.add(cont.content);
+                    contentList.add(cont.content());
                 }
             }
 
@@ -119,7 +119,7 @@ public class RecipeRunner {
             return ActionResult.fail(
                     Component.translatable("gtceu.recipe_logic.no_capabilities")
                             .append(Component.literal(": "))
-                            .append(Component.translatable(io.tooltip)),
+                            .append(Component.translatable(io.getTooltip())),
                     null, io);
         }
 
