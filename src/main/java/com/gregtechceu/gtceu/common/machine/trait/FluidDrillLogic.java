@@ -18,6 +18,8 @@ import net.minecraftforge.fluids.FluidStack;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public class FluidDrillLogic extends RecipeLogic {
 
     public static final int MAX_PROGRESS = 20;
@@ -26,13 +28,18 @@ public class FluidDrillLogic extends RecipeLogic {
     @Nullable
     private Fluid veinFluid;
 
-    public FluidDrillLogic(FluidDrillMachine machine) {
-        super(machine);
+    public FluidDrillLogic() {
+        super();
     }
 
     @Override
     public FluidDrillMachine getMachine() {
         return (FluidDrillMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(FluidDrillMachine.class);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class FluidDrillLogic extends RecipeLogic {
             }
             var match = getFluidDrillRecipe();
             if (match != null) {
-                if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+                if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                     setupRecipe(match);
                 }
             }
@@ -106,15 +113,15 @@ public class FluidDrillLogic extends RecipeLogic {
 
     @Override
     public void onRecipeFinish() {
-        machine.afterWorking();
+        getMachine().afterWorking();
         if (lastRecipe != null) {
-            RecipeHelper.handleRecipeIO(this.machine, lastRecipe, IO.OUT, this.chanceCaches);
+            RecipeHelper.handleRecipeIO(getMachine(), lastRecipe, IO.OUT, this.chanceCaches);
         }
         depleteVein();
         // try it again
         var match = getFluidDrillRecipe();
         if (match != null) {
-            if (RecipeHelper.matchContents(this.machine, match).isSuccess()) {
+            if (RecipeHelper.matchContents(getMachine(), match).isSuccess()) {
                 setupRecipe(match);
                 return;
             }

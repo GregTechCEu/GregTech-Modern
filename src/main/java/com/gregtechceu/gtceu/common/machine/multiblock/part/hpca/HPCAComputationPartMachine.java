@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComputationProviderTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
@@ -22,16 +22,16 @@ public class HPCAComputationPartMachine extends HPCAComponentPartMachine {
     private final boolean advanced;
 
     public HPCAComputationPartMachine(BlockEntityCreationInfo info, boolean advanced) {
-        super(info, (m) -> createHPCATrait(m, advanced));
+        super(info, createHPCATrait(advanced));
         this.advanced = advanced;
     }
 
-    public static HPCAComponentTrait createHPCATrait(HPCAComponentPartMachine machine, boolean isAdvanced) {
+    public static HPCAComponentTrait createHPCATrait(boolean isAdvanced) {
         int upkeepEUt = GTValues.VA[isAdvanced ? GTValues.IV : GTValues.EV];
         int maxEUt = GTValues.VA[isAdvanced ? GTValues.ZPM : GTValues.LuV];
         int cooling = isAdvanced ? 4 : 2;
         int cwu = isAdvanced ? 16 : 4;
-        return new HPCAComputationProviderTrait(machine, upkeepEUt, maxEUt, true, false, cwu, cooling);
+        return new HPCAComputationProviderTrait(upkeepEUt, maxEUt, true, false, cwu, cooling);
     }
 
     @Override

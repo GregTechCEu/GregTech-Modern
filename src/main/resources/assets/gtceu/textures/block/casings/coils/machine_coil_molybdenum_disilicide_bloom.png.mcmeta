@@ -1,9 +1,6 @@
 {
-    "ldlib": {
-        "connection": "gtceu:block/casings/coils/machine_coil_molybdenum_disilicide_bloom_ctm",
-        "emissive": true
-    },
-    "shimmer": {
+    "gtceu": {
+        "connection_texture": "gtceu:block/casings/coils/machine_coil_molybdenum_disilicide_bloom_ctm",
         "bloom": true
     }
 }

@@ -71,9 +71,9 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
                 for (var handler : handlers) {
                     // noinspection unchecked
                     eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                    if (eu == null) break;
+                    if (eu.isEmpty()) break;
                 }
-                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+                int[] bin = ParallelLogic.adjustMultiplier(eu.isEmpty(), minMultiplier, multiplier, maxMultiplier);
                 minMultiplier = bin[0];
                 multiplier = bin[1];
                 maxMultiplier = bin[2];

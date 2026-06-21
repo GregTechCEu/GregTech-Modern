@@ -15,8 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,7 +28,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    public @NotNull Direction getFrontFacing() {
+    public Direction getFrontFacing() {
         return Direction.UP;
     }
 

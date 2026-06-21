@@ -48,8 +48,8 @@ public class ThunderCondition extends RecipeCondition<ThunderCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        Level level = recipeLogic.machine.self().getLevel();
-        return level != null && level.getThunderLevel(1) >= this.level;
+        Level level = recipeLogic.getLevel();
+        return level.getThunderLevel(1) >= this.level;
     }
 
     @Override

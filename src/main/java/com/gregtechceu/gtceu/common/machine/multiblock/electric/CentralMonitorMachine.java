@@ -74,12 +74,12 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     private final Set<IMonitorComponent> selectedComponents = new HashSet<>();
     private final List<IMonitorComponent> selectedTargets = new ArrayList<>();
 
-    private MultiblockState patternFindingState;
+    private @Nullable MultiblockState patternFindingState;
 
-    private static TraceabilityPredicate MULTI_PREDICATE = null;
+    private static @Nullable TraceabilityPredicate MULTI_PREDICATE = null;
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
-        super(info, CentralMonitorLogic::new);
+        super(info, new CentralMonitorLogic());
     }
 
     public static TraceabilityPredicate getMultiPredicate() {
@@ -326,10 +326,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         infoWidget.setHoverTooltips(
                 GTStringUtils.toImmutable(LangHandler.getSingleOrMultiLang("gtceu.central_monitor.info_tooltip")));
         builder.addWidget(infoWidget);
-        List<MonitorGroup> configGroup = new ArrayList<>();
+        List<@Nullable MonitorGroup> configGroup = new ArrayList<>();
         configGroup.add(null);
 
-        Consumer<MonitorGroup> openGroupConfig = (group) -> {
+        Consumer<@Nullable MonitorGroup> openGroupConfig = (group) -> {
             configGroup.set(0, group);
             if (group == null) {
                 main.setVisible(true);

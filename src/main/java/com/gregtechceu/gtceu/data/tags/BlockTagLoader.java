@@ -81,6 +81,14 @@ public class BlockTagLoader {
         provider.addTag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
                 .addTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER);
 
+        provider.addTag(CustomTags.MINEABLE_WITH_SHEARS)
+                .addTag(BlockTags.LEAVES)
+                .addTag(BlockTags.WOOL)
+                .add(Blocks.COBWEB, Blocks.DEAD_BUSH, Blocks.FERN, Blocks.GLOW_LICHEN, Blocks.HANGING_ROOTS,
+                        Blocks.LARGE_FERN, Blocks.NETHER_SPROUTS, Blocks.SEAGRASS, Blocks.GRASS, Blocks.SMALL_DRIPLEAF,
+                        Blocks.TALL_GRASS, Blocks.TALL_SEAGRASS, Blocks.TRIPWIRE, Blocks.TWISTING_VINES, Blocks.VINE,
+                        Blocks.WEEPING_VINES);
+
         provider.addTag(CustomTags.CLEANROOM_FLOORS)
                 .addOptionalTag(new ResourceLocation("elevatorid:elevators"))
                 .addOptional(new ResourceLocation("enderio:travel_anchor"))

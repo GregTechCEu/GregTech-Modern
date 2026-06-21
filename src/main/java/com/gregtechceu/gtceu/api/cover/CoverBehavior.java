@@ -8,11 +8,10 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.IDynamicCoverRenderer;
@@ -44,8 +43,7 @@ import java.util.function.Supplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
- * Represents cover instance attached on the specific side of meta tile entity
- * Cover filters out interaction and logic of meta tile entity
+ * Represents a cover instance attached on a specific side of a machine
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -71,18 +69,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
         this.attachedSide = attachedSide;
     }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-    public void scheduleRenderUpdate() {
-        coverHolder.scheduleRenderUpdate();
-    }
-
     @Override
-    public void markAsChanged() {
-        if (coverHolder instanceof ManagedSyncBlockEntity syncEntity) {
-            syncEntity.markAsChanged();
-        }
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return coverHolder;
     }
 
     /**
@@ -100,7 +89,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
     }
 
     /**
-     * Will be called on server side after the cover attachment to the meta tile entity
+     * Will be called on server side after the cover attachment to the machine
      * Cover can change it's internal state here and return initial data as nbt.
      *
      * @param itemStack the item cover was attached from

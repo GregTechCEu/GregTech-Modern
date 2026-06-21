@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputFluid
 import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputItemConfigHandler;
 import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.CoverableConfigHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

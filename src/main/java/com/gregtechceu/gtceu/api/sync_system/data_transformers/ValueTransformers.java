@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.sync_system.data_transformers;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.TypeDeclaration;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.ListTransformer;
@@ -16,6 +14,7 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.collections.SetTr
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.CoverBehaviorTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.GTRecipeTransformer;
 import com.gregtechceu.gtceu.api.sync_system.data_transformers.gtceu.MonitorGroupTransformer;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
@@ -23,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.extensions.IForgeItemStack;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
@@ -92,7 +92,8 @@ public final class ValueTransformers {
 
     /**
      * Registers a {@link ValueTransformer} for the given class or interface.
-     * If registering a type with generic arguments, instead use {@code registerTransformerSupplier} to create a new
+     * If registering a type with generic arguments, instead use {@code registerGenericTransformerSupplier} to create a
+     * new
      * transformer instance for each set of generic type arguments.
      * 
      * @param type        The class to register this {@link ValueTransformer} for
@@ -130,7 +131,7 @@ public final class ValueTransformers {
      * @param type The class to register this {@link ValueTransformer} supplier for
      * @param func Supplier function
      */
-    public static <T> void registerTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
+    public static <T> void registerGenericTransformerSupplier(Class<T> type, Supplier<ValueTransformer<?>> func) {
         if (REGISTERED_SUPPLIERS.containsKey(type))
             throw new IllegalArgumentException("Attempted to register transformer for %s twice".formatted(type));
         REGISTERED_SUPPLIERS.put(type, func);
@@ -170,6 +171,7 @@ public final class ValueTransformers {
 
         registerSimpleClassTransformer(BlockPos.class, NbtUtils::writeBlockPos, NbtUtils::readBlockPos,
                 CompoundTag.class);
+        registerTransformer(BlockState.class, new CodecTransformer<>(BlockState.CODEC));
         registerSimpleClassTransformer(CompoundTag.class, (v) -> v, (v) -> v, CompoundTag.class);
 
         registerSimpleClassTransformer(Component.class, (c) -> StringTag.valueOf(Component.Serializer.toJson(c)),
@@ -181,9 +183,9 @@ public final class ValueTransformers {
         registerTransformer(INBTSerializable.class, new NBTSerializableTransformer());
         registerTransformer(ISyncManaged.class, new SyncDataHolder.SyncManagedTransformer());
 
-        registerTransformerSupplier(List.class, ListTransformer::new);
-        registerTransformerSupplier(Map.class, MapTransformer::new);
-        registerTransformerSupplier(Set.class, SetTransformer::new);
+        registerGenericTransformerSupplier(List.class, ListTransformer::new);
+        registerGenericTransformerSupplier(Map.class, MapTransformer::new);
+        registerGenericTransformerSupplier(Set.class, SetTransformer::new);
 
         //// GT specific classes
 
@@ -192,7 +194,7 @@ public final class ValueTransformers {
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
                 GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
-                Material::getResourceLocation, GTCEuAPI.materialManager::getMaterial));
+                Material::getResourceLocation, GTRegistries.MATERIALS::get));
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());
 
         registerTransformer(CoverBehavior.class, new CoverBehaviorTransformer());

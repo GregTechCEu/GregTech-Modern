@@ -19,16 +19,23 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
     @Override
     public Tag serializeNBT(@Nullable CoverBehavior value,
                             CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
-        if (value != null) {
-            return serialize(value, context.isClientSync());
+        if (value == null) {
+            var nullTag = new CompoundTag();
+            nullTag.putBoolean("null", true);
+            return nullTag;
         }
-        return new CompoundTag();
+
+        return serialize(value, context.isClientSync(), context.isClientFullSyncUpdate());
     }
 
     @Override
     public @Nullable CoverBehavior deserializeNBT(Tag tag,
                                                   CoverBehaviorTransformer.TransformerContext<CoverBehavior> context) {
         var compoundTag = ValueTransformer.assertTagType(CompoundTag.class, tag, context);
+        if (compoundTag.getBoolean("null")) {
+            return null;
+        }
+
         if (context.holder() instanceof ICoverable coverable) {
             return deserialize(compoundTag, coverable, context.currentValue(), context.isClientSync());
         }
@@ -36,12 +43,12 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
         return null;
     }
 
-    private CompoundTag serialize(CoverBehavior cover, boolean isSync) {
+    private CompoundTag serialize(CoverBehavior cover, boolean isSync, boolean fullSync) {
         var compound = new CompoundTag();
 
         compound.putInt("side", cover.attachedSide.ordinal());
         compound.putString("coverType", cover.coverDefinition.getId().toString());
-        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync);
+        CompoundTag serializedCover = cover.getSyncDataHolder().serializeNBT(isSync, fullSync);
         compound.put("data", serializedCover);
 
         return compound;
@@ -63,7 +70,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
             return null;
         }
         ResourceLocation coverType = ResourceLocation.tryParse(tag.getString("coverType"));
-        if (cover == null || cover.coverDefinition.getId() != coverType) {
+        if (cover == null || !cover.coverDefinition.getId().equals(coverType)) {
             var coverReg = GTRegistries.COVERS.get(coverType);
             if (coverReg == null) {
                 GTCEu.LOGGER.error("Error during NBT load: unknown cover type {} ({})", coverType,
@@ -75,8 +82,7 @@ public class CoverBehaviorTransformer implements ValueTransformer<CoverBehavior>
 
         CoverBehavior newCover = holder.getCoverAtSide(side);
         if (newCover == null) return null;
-        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"),
-                isSync);
+        newCover.getSyncDataHolder().deserializeNBT(tag.getCompound("data"), isSync);
 
         if (!isSync && newCover.getAttachItem() == ItemStack.EMPTY) {
             GTCEu.LOGGER.error("Invalid cover save state, this should never happen unless loading corrupted data.");

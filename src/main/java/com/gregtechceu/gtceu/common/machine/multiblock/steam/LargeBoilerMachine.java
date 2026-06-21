@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -25,26 +24,18 @@ import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
@@ -59,7 +50,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     private int steamGenerated;
 
     public LargeBoilerMachine(BlockEntityCreationInfo info, int maxTemperature, int heatSpeed) {
-        super(info, LargeBoilerRecipeLogic::new);
+        super(info, new LargeBoilerRecipeLogic());
         this.maxTemperature = maxTemperature;
         this.heatSpeed = heatSpeed;
         this.throttle = 100;
@@ -77,17 +68,13 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
-        }
+        updateSteamSubscription();
     }
 
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateSteamSubscription));
-        }
+        updateSteamSubscription();
     }
 
     @Override
@@ -108,6 +95,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
         }
     }
 
+    @SuppressWarnings("unchecked")
     protected void updateCurrentTemperature() {
         if (recipeLogic.isWorking()) {
             if (getOffsetTimer() % 10 == 0) {
@@ -132,12 +120,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
-                    if (drainWater == null || drainWater.isEmpty()) {
+                    if (drainWater.isEmpty()) {
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                        maxDrain - drainWater.get(0).getAmount();
+                var drained = drainWater.isEmpty() ? maxDrain : maxDrain - drainWater.get(0).getAmount();
 
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
@@ -149,7 +136,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
                         fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
-                        if (fillSteam == null) break;
+                        if (fillSteam.isEmpty()) break;
                     }
                 }
 
@@ -198,7 +185,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Large Boiler and recipe
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         return ModifierFunction.IDENTITY;
     }
 
@@ -245,9 +232,19 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
         @Getter
         int currentThrottle;
 
-        public LargeBoilerRecipeLogic(IRecipeLogicMachine machine) {
-            super(machine);
+        public LargeBoilerRecipeLogic() {
+            super();
             currentThrottle = 100;
+        }
+
+        @Override
+        public LargeBoilerMachine getMachine() {
+            return (LargeBoilerMachine) super.getMachine();
+        }
+
+        @Override
+        protected List<Class<?>> validMachineClasses() {
+            return List.of(LargeBoilerMachine.class);
         }
 
         public void setCurrentThrottle(int currentThrottle) {
@@ -259,7 +256,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
         public void setupRecipe(GTRecipe recipe) {
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
-                setCurrentThrottle(((LargeBoilerMachine) machine).getThrottle());
+                setCurrentThrottle(getMachine().getThrottle());
                 duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }

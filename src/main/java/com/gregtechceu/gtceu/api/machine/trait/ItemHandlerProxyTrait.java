@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -12,7 +11,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
@@ -34,8 +32,8 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
     @Nullable
     public IItemHandlerModifiable proxy;
 
-    public ItemHandlerProxyTrait(MetaMachine machine, IO capabilityIO) {
-        super(machine);
+    public ItemHandlerProxyTrait(IO capabilityIO) {
+        super();
         this.capabilityIO = capabilityIO;
     }
 
@@ -48,7 +46,6 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
         return proxy == null ? 0 : proxy.getSlots();
     }
 
-    @NotNull
     @Override
     public ItemStack getStackInSlot(int slot) {
         return proxy == null ? ItemStack.EMPTY : proxy.getStackInSlot(slot);
@@ -61,20 +58,18 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
         }
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
         if (proxy != null && canCapInput()) {
             return proxy.insertItem(slot, stack, simulate);
         }
         return stack;
     }
 
-    public ItemStack insertItemInternal(int slot, @NotNull ItemStack stack, boolean simulate) {
+    public ItemStack insertItemInternal(int slot, ItemStack stack, boolean simulate) {
         return proxy == null ? stack : proxy.insertItem(slot, stack, simulate);
     }
 
-    @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (proxy != null && canCapOutput()) {
@@ -93,7 +88,7 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerM
     }
 
     @Override
-    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
+    public boolean isItemValid(int slot, ItemStack stack) {
         return proxy != null && proxy.isItemValid(slot, stack);
     }
 

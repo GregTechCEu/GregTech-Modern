@@ -143,7 +143,7 @@ public interface IMaintenanceMachine extends IMultiPart {
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
                 recipe = recipe.copy();
-                recipe.duration = (int) (recipe.duration * durationMultiplier);
+                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
             }
         }
         return recipe;

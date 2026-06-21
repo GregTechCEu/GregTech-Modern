@@ -9,12 +9,12 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.common.machine.trait.multiblock.MultiblockFluidRendererTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -37,44 +37,39 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine, IFluidRenderMulti {
+public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine implements IUIMachine {
 
-    private TickableSubscription hurtSubscription;
+    private @Nullable TickableSubscription hurtSubscription;
 
     @Getter
     @SyncToClient
     @RerenderOnChanged
-    private @NotNull Set<BlockPos> fluidBlockOffsets = new HashSet<>();
+    private final MultiblockFluidRendererTrait fluidRendererTrait;
 
     public PrimitiveBlastFurnaceMachine(BlockEntityCreationInfo info) {
         super(info);
+        fluidRendererTrait = attachTrait(new MultiblockFluidRendererTrait(this::saveOffsets));
     }
 
     @Override
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
                 IO.NONE);
     }
 
     @Override
     protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
+        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
                 IO.NONE);
-    }
-
-    public void setFluidBlockOffsets(Set<BlockPos> offsets) {
-        fluidBlockOffsets = offsets;
-        syncDataHolder.markClientSyncFieldDirty("fluidBlockOffsets");
     }
 
     @Override
@@ -82,18 +77,6 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         super.onUnload();
         unsubscribe(hurtSubscription);
         hurtSubscription = null;
-    }
-
-    @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
-        IFluidRenderMulti.super.onStructureFormed();
-    }
-
-    @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
-        IFluidRenderMulti.super.onStructureInvalid();
     }
 
     @Override
@@ -107,8 +90,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
         }
     }
 
-    @Override
-    public @NotNull Set<BlockPos> saveOffsets() {
+    public Set<BlockPos> saveOffsets() {
         return Collections.singleton(new BlockPos(getFrontFacing().getOpposite().getNormal()));
     }
 
