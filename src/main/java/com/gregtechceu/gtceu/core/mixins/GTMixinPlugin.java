@@ -2,14 +2,10 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.config.Option;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.LoadingModList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.UnknownNullability;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -40,7 +36,7 @@ public class GTMixinPlugin implements IMixinConfigPlugin {
 
         if (OPTIFINE_PRESENT) {
             LOGGER.fatal(
-                    "OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of Forge features.");
+                    "OptiFine detected. Use of GTCEu with OptiFine is not supported due to its breakage of NeoForge features.");
         }
     }
 
