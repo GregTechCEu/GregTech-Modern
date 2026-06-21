@@ -28,7 +28,7 @@ dependencies {
     // Create
     compileOnly(forge.ponder)
     compileOnly(variantOf(forge.create) { classifier("slim") })
-    compileOnly(forge.flywheel.forge.api)
+    compileOnly(forge.flywheel.api)
 
     // KJS
     compileOnly(forge.bundles.kjs)
@@ -68,11 +68,6 @@ dependencies {
     localRuntime(forge.ae2)
     localRuntime(forge.spark)
     localRuntime(forge.modernfix)
-    localRuntime(forge.create) {
-        // Needed to prevent game-test crashes
-        exclude group: "maven.modrinth", module: "journeymap"
-        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
-    }
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     localRuntime(forge.emi)
@@ -92,6 +87,12 @@ dependencies {
     extraLocalRuntime(forge.curios)
 //    extraLocalRuntime(forge.worldstripper)
     localRuntime(forge.cc.tweaked.forge.impl)
+
+    extraLocalRuntime(forge.create) {
+        // Needed to prevent game-test crashes
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
+    }
 
     extraLocalRuntime(forge.bundles.kjs)
 
