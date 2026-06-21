@@ -330,10 +330,14 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void invalidateAllStructures() {
         for (String name : patternStates.keySet()) {
-            if (name.equals(DEFAULT_STRUCTURE)) continue;
-            invalidateStructure(name);
+            parts.removeIf(part -> {
+                if (name.equals(part.getSubstructureName())) {
+                    part.removedFromController(this);
+                    return true;
+                }
+                return false;
+            });
         }
-        invalidateStructure();
     }
 
     public void invalidateStructure() {
