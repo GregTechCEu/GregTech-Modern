@@ -228,8 +228,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getDisplayRecipeVoltage() {
-        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
-                this.getEnergyContainer().getOutputVoltage());
+        long voltage = -1;
+        var handlers = getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
+        if (handlers.isEmpty()) handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
+        for (IRecipeHandler<?> handler : handlers) {
+            if (handler instanceof IEnergyContainer container) {
+                voltage = Math.max(voltage, Math.max(container.getInputVoltage(), container.getOutputVoltage()));
+            }
+        }
+        return voltage;
     }
 
     /**
