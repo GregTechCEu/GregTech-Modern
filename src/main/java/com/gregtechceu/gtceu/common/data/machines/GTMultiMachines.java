@@ -9,25 +9,19 @@ import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BasicSliceStrategy;
-import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.testmultis.PCBFactoryMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CharcoalPileIgniterMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -890,93 +884,6 @@ public class GTMultiMachines {
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::createCentralMonitorRender)))
             .hasBER(true)
             .ui(CentralMonitorUIFactory.INSTANCE)
-            .register();
-
-    public static final MultiblockMachineDefinition PCB = REGISTRATE
-            .multiblock("pcb", PCBFactoryMachine::new)
-            .rotationState(RotationState.ALL)
-            .recipeType(DUMMY_RECIPES)
-            .appearanceBlock(PLASTCRETE)
-            .pattern(def -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .slice("CCC", "CCC")
-                    .slice("CCC", "CBC")
-                    .slice("CSC", "CCC")
-                    .where('C', /*
-                                 * Predicates.autoAbilities(true, false, false)
-                                 * .or(
-                                 */Predicates.blocks(CASING_GRATE.get()).setMinGlobalLimited(12))
-                    .where('S', Predicates.controller(Predicates.blocks(def.getBlock())))
-                    .where('B', Predicates.frames(GTMaterials.Steel))
-                    .build())
-            .pattern("cooler", (def) -> MultiblockPatternBuilder
-                    .start(RelativeDirection.FRONT, RelativeDirection.UP, RelativeDirection.LEFT)
-                    .slice("BBBBBBB", "BBBBBBB", "#######", "#######")
-                    .slice("BBBBBBB", "B#####B", "#######", "#######")
-                    .slice("BBBBBBB", "B#####B", "###B###", "##BBB##")
-                    .slice("BBBBBBB", "B##B##B", "##BBB##", "##BCB##")
-                    .slice("BBBBBBB", "B#####B", "###B###", "##BBB##")
-                    .slice("BBBBBBB", "B#####B", "#######", "#######")
-                    .slice("BBBBBBB", "BBBBBBB", "#######", "#######")
-                    .where('#', PatternPredicate.AIR)
-                    .where('B', Predicates.blocks(GTBlocks.CASING_COKE_BRICKS.get()))
-                    .where('C', Predicates.blocks(GTBlocks.CASING_ALUMINIUM_FROSTPROOF.get()))
-                    .startOffset(OriginOffset.of(RelativeDirection.FRONT, 10))
-                    .anchorOffset(OriginOffset.of(RelativeDirection.FRONT, 3).move(RelativeDirection.LEFT, 3))
-                    .build())
-            .allowExtendedFacing(false)
-            .allowFlip(false)
-            .workableCasingModel(GTCEu.id("block/casings/cleanroom/plascrete"),
-                    GTCEu.id("block/multiblock/cleanroom"))
-            .register();
-
-    public static final MultiblockMachineDefinition TEST_RENDER = REGISTRATE
-            .multiblock("test_render", WorkableElectricMultiblockMachine::new)
-            .langValue("Test Render")
-            .rotationState(RotationState.ALL)
-            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-            .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern(def -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
-                    .slice("ASB", "CD ")
-                    .slice("EFG", "H  ")
-                    .where('A', blocks(WOODEN_CRATE.getBlock()))
-                    .where('S', Predicates.controller(blocks(def.getBlock())))
-                    .where('B', frames(GTMaterials.TungstenSteel))
-                    .where('C', blocks(CASING_ASSEMBLY_LINE.get()))
-                    .where('D', blocks(CASING_LAMINATED_GLASS.get()))
-                    .where('E', blocks(CASING_TITANIUM_GEARBOX.get()))
-                    .where('F', blocks(GOLD_DRUM.getBlock()))
-                    .where('G',
-                            blocks(GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.ore, GTMaterials.Bentonite).get()))
-                    .where('H', Predicates.cleanroomFilters())
-                    .build())
-            .allowExtendedFacing(true)
-            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
-                    GTCEu.id("block/multiblock/cracking_unit"))
-            .register();
-
-    public static final MultiblockMachineDefinition SLICE_TEST = REGISTRATE
-            .multiblock("slice", WorkableElectricMultiblockMachine::new)
-            .rotationState(RotationState.ALL)
-            .recipeType(DUMMY_RECIPES)
-            .appearanceBlock(PLASTCRETE)
-            .pattern(def -> MultiblockPatternBuilder.start(RIGHT, FRONT, UP)
-                    .slice("C")
-                    .slice("C")
-                    .slice("S")
-                    .where('C', blocks(Blocks.DIRT))
-                    .where('S', controller(blocks(def.getBlock())))
-                    .sliceStrategy(new BasicSliceStrategy().multiSlice(1, 2, 1, 2))
-                    .build())
-            .allowExtendedFacing(false)
-            .allowFlip(false)
-            .workableCasingModel(GTCEu.id("block/casings/cleanroom/plascrete"),
-                    GTCEu.id("block/multiblock/cleanroom"))
-            .additionalDisplay((cont, text) -> {
-                var slices = ((BasicSliceStrategy) ((BlockPattern) cont.getStructurePatterns()
-                        .get(MultiblockControllerMachine.DEFAULT_STRUCTURE)).getSliceStrategy())
-                        .getMultiSliceRepeats(1);
-                text.add(Component.literal("has slice " + slices));
-            })
             .register();
 
     public static void init() {}
