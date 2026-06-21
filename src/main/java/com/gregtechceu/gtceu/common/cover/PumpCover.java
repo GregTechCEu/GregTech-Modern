@@ -55,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class PumpCover extends CoverBehavior implements IIOCover, IMuiCover, IControllable {
 
     // .5b 2b 8b
-    public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier - 1, GTValues.IV));
+    public static final Int2IntFunction PUMP_SCALING = tier -> 64 * (int) Math.pow(4, Math.min(tier, GTValues.LuV) - 1);
 
     public final int tier;
     public final int maxFluidTransferRate;
