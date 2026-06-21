@@ -123,7 +123,8 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
                         long generatorPower = recipeInfo.getLong("generatorPower");
                         if (generatorPower > 0 && generatorPower < EUt) {
-                            tooltip.add(Component.literal("Energy Output too small!").withStyle(ChatFormatting.RED));
+                            tooltip.add(Component.translatable("gtceu.jade.generator.too_small")
+                                    .withStyle(ChatFormatting.RED));
                         }
                     }
                 }
