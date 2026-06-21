@@ -118,7 +118,7 @@ public class SmartItemFilter implements ItemFilter {
                                             return new ToggleButton()
                                                     .overlay(SmartFilteringMode.getTextures()[w])
                                                     .background(GuiTextures.MC_BUTTON)
-                                                    .selectedBackground(GuiTextures.MC_BUTTON)
+                                                    .background(true, GuiTextures.MC_BUTTON)
                                                     .value(bsv)
                                                     .tooltip(r -> r.add(Text.comp(Component
                                                             .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));

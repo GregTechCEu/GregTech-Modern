@@ -158,7 +158,7 @@ public class ResearchComputationTests {
         CreativeComputationProviderMachine creative = (CreativeComputationProviderMachine) helper
                 .getBlockEntity(new BlockPos(8, 3, 1));
         helper.assertTrue(creative != null, "Creative Computation Provider not found");
-        creative.setActive(false);
+        creative.setWorkingEnabled(false);
 
         formResearchStation(helper);
         ObjectHolderMachine holder = getObjectHolder(helper);
