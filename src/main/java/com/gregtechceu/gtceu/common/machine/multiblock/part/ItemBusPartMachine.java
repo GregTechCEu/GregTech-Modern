@@ -6,13 +6,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -26,19 +23,22 @@ import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemBusPartMachine extends TieredIOPartMachine
-                                implements IDistinctPart, IHasCircuitSlot, IPaintable {
+                                implements IDistinctPart, IHasCircuitSlot, IPaintable, IMuiMachine {
 
     @Getter
     @SaveField
@@ -262,7 +262,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         getLevel().setBlockAndUpdate(blockPos, newBlockState);
 
         if (getLevel().getBlockEntity(blockPos) instanceof ItemBusPartMachine newMachine) {
-            // We don't set the circuit or distinct buses, since
+            // We don't set the circuit or distinct busses, since
             // that doesn't make sense on an output bus.
             // Furthermore, existing inventory items
             // and conveyors will drop to the floor on block override.
@@ -277,43 +277,24 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        if (this.io == IO.IN) {
-            IDistinctPart.super.attachConfigurators(configuratorPanel);
-            if (hasCircuitSlot && isCircuitSlotEnabled()) {
-                configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
-            }
-        } else {
-            super.attachConfigurators(configuratorPanel);
-        }
-    }
-
     @Override
-    public Widget createUIWidget() {
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
         int rowSize = (int) Math.sqrt(getInventorySize());
-        int colSize = rowSize;
-        if (getInventorySize() == 8) {
-            rowSize = 4;
-            colSize = 2;
-        }
-        var group = new WidgetGroup(0, 0, 18 * rowSize + 16, 18 * colSize + 16);
-        var container = new WidgetGroup(4, 4, 18 * rowSize + 8, 18 * colSize + 8);
-        int index = 0;
-        if (this.io == IO.OUT) {
-            group.addWidget(filterHandler.createFilterSlotUI(71 + (18 * rowSize) / 2, 35 + 9 * rowSize)
-                    .setHoverTooltips(Component.translatable("cover.item_filter.title")));
-        }
-        for (int y = 0; y < colSize; y++) {
-            for (int x = 0; x < rowSize; x++) {
-                container.addWidget(
-                        new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                                .setBackgroundTexture(GuiTextures.SLOT)
-                                .setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
-            }
-        }
 
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-        return group;
+        SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
+        mainWidget.child(new Grid()
+                .coverChildren()
+                .center()
+                .margin(7, 5)
+                .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
+                        .slot(SyncHandlers.itemSlot(inventory, index)
+                                .slotGroup(group)
+                                .changeListener((newItem, amount, client, init) -> {
+                                    if (amount) {
+                                        inventory.onContentsChanged();
+                                    }
+                                })
+                                .accessibility(inventory.handlerIO.support(IO.IN), true))));
     }
 }

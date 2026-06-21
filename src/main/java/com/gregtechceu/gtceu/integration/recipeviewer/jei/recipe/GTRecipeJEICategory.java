@@ -1,0 +1,75 @@
+package com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe;
+
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.integration.jei.recipe.ModularUIRecipeCategory;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeRegistration;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+public abstract class GTRecipeJEICategory<T extends Recipe<?>>
+                                         extends ModularUIRecipeCategory<T> {
+
+    public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
+            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
+
+    protected GTRecipeJEICategory(Function<T, IWidget> wrapperFunction, Function<T, ResourceLocation> recipeIdGetter) {
+        super(wrapperFunction, recipeIdGetter);
+    }
+
+    public static void registerRecipes(IRecipeRegistration registration) {
+        List<GTRecipeCategory> subCategories = new ArrayList<>();
+        // run main categories first
+        for (GTRecipeCategory category : GTRegistries.RECIPE_CATEGORIES) {
+            if (!category.shouldRegisterDisplays()) continue;
+            var type = category.getRecipeType();
+            if (category == type.getCategory()) {
+                type.buildRepresentativeRecipes();
+            } else {
+                subCategories.add(category);
+                continue;
+            }
+            var wrapped = List.copyOf(type.getRecipesInCategory(category));
+            registration.addRecipes(TYPES.apply(category), wrapped);
+        }
+        // run subcategories
+        for (GTRecipeCategory subCategory : subCategories) {
+            if (!subCategory.shouldRegisterDisplays()) continue;
+            var type = subCategory.getRecipeType();
+            var wrapped = List.copyOf(type.getRecipesInCategory(subCategory));
+            registration.addRecipes(TYPES.apply(subCategory), wrapped);
+        }
+    }
+
+    public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        for (MachineDefinition machine : GTRegistries.MACHINES) {
+            for (GTRecipeType type : machine.getRecipeTypes()) {
+                for (GTRecipeCategory category : type.getCategories()) {
+                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
+                    registration.addRecipeCatalyst(machine.asStack(), machineType(category));
+                }
+            }
+        }
+    }
+
+    public static RecipeType<?> machineType(GTRecipeCategory category) {
+        if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
+        return TYPES.apply(category);
+    }
+}

@@ -7,21 +7,23 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.LongSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
@@ -35,7 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataBankMachine extends WorkableElectricMultiblockMachine
-                             implements IFancyUIMachine, IDisplayUIMachine, IControllable {
+                             implements IControllable {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
@@ -169,25 +171,18 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addEnergyUsageExactLine(getEnergyUsage())
-                .addWorkingStatusLine();
-    }
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        LongSyncValue energyStoredSyncValue = new LongSyncValue(this::getEnergyUsage);
+        syncManager.syncValue("dataBankEnergyStored", energyStoredSyncValue);
 
-    /*
-     * @Override
-     * protected void addWarningText(List<Component> textList) {
-     * MultiblockDisplayText.builder(textList, isFormed(), false)
-     * .addLowPowerLine(hasNotEnoughEnergy)
-     * .addMaintenanceProblemLines(maintenance.getMaintenanceProblems());
-     * }
-     */
+        List<IWidget> widgets = new ArrayList<>();
+
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, energyStoredSyncValue));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.data_bank.providing").withStyle(ChatFormatting.GREEN)));
+
+        return widgets;
+    }
 
     @Override
     public int getProgress() {

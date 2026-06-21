@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
@@ -50,6 +51,8 @@ import com.gregtechceu.gtceu.common.machine.storage.CrateMachine;
 import com.gregtechceu.gtceu.common.machine.storage.DrumMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
+import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -71,6 +74,8 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -124,38 +129,82 @@ public class GTMachineUtils {
             PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS,
     };
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction, hasPollutionDebuff);
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(REGISTRATE, name, recipeType)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
-                                                             boolean hasPollutionDebuff) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, hasPollutionDebuff,
-                ELECTRIC_TIERS);
+                                                             boolean hasPollutionDebuff, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(registrate, name, recipeType)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType, tankScalingFunction);
+                                                             Int2IntFunction tankScalingFunction,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(REGISTRATE, name, recipeType)
+                .panelFactory(panelFactory)
+                .tankScalingFunction(tankScalingFunction)
+                .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
-                                                             Int2IntFunction tankScalingFunction) {
-        return registerSimpleMachines(registrate, name, recipeType, tankScalingFunction, false);
+                                                             Int2IntFunction tankScalingFunction,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(registrate, name, recipeType)
+                .panelFactory(panelFactory)
+                .tankScalingFunction(tankScalingFunction)
+                .register();
     }
 
-    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType) {
-        return registerSimpleMachines(REGISTRATE, name, recipeType);
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
+    public static MachineDefinition[] registerSimpleMachines(String name, GTRecipeType recipeType,
+                                                             PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(REGISTRATE, name, recipeType)
+                .panelFactory(panelFactory)
+                .register();
     }
 
+    /**
+     * @deprecated Use {@link SimpleMachineBuilder}
+     */
+    @Deprecated(since = "8.0.0")
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
-                                                             GTRecipeType recipeType) {
-        return registerSimpleMachines(registrate, name, recipeType, defaultTankSizeFunction);
+                                                             GTRecipeType recipeType, PanelFactory panelFactory) {
+        return new SimpleMachineBuilder(registrate, name, recipeType)
+                .panelFactory(panelFactory)
+                .register();
     }
 
     public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
@@ -163,29 +212,14 @@ public class GTMachineUtils {
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff,
+                                                             PanelFactory panelFactory,
                                                              int... tiers) {
-        return registerTieredMachines(registrate, name,
-                (info, tier) -> new SimpleTieredMachine(info, tier, tankScalingFunction), (tier, builder) -> {
-                    if (hasPollutionDebuff) {
-                        builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
-                                .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
-                                GTRecipeModifiers.OC_NON_PERFECT)
-                                .conditionalTooltip(defaultEnvironmentRequirement(),
-                                        ConfigHolder.INSTANCE.gameplay.environmentalHazards);
-                    } else {
-                        builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
-                    }
-                    return builder
-                            .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                            .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
-                            .rotationState(RotationState.NON_Y_AXIS)
-                            .recipeType(recipeType)
-                            .workableTieredHullModel(GTCEu.id("block/machines/" + name))
-                            .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
-                                    tankScalingFunction.applyAsInt(tier), true))
-                            .register();
-                },
-                tiers);
+        return new SimpleMachineBuilder(registrate, name, recipeType)
+                .tankScalingFunction(tankScalingFunction)
+                .hasPollutionDebuff(hasPollutionDebuff)
+                .panelFactory(panelFactory)
+                .tiers(tiers)
+                .register();
     }
 
     public static MachineDefinition[] registerTieredMachines(String name,
@@ -332,9 +366,9 @@ public class GTMachineUtils {
                         tankScalingFunction),
                 (tier, builder) -> builder
                         .langValue("%s %s Generator %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
-                        .editableUI(SimpleGeneratorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(name), recipeType))
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
                         .addOutputLimit(ItemRecipeCapability.CAP, 0)
                         .addOutputLimit(FluidRecipeCapability.CAP, 0)
@@ -358,6 +392,8 @@ public class GTMachineUtils {
                         .rotationState(RotationState.ALL)
                         .recipeType(recipeType)
                         .recipeModifier(SimpleSteamMachine::recipeModifier)
+                        .themeId((i) -> i > 0 ? GTGuiTheme.STEEL.getId() : GTGuiTheme.BRONZE.getId())
+                        .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                         .modelProperty(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK)
                         .workableSteamHullModel(pressure, GTCEu.id("block/machines/" + name))
                         .register());
@@ -482,15 +518,17 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
-        return registerCrate(REGISTRATE, material, capacity, lang);
+    public static MachineDefinition registerCrate(Material material, int capacity, int rowLength, String lang) {
+        return registerCrate(REGISTRATE, material, capacity, rowLength, lang);
     }
 
     public static MachineDefinition registerCrate(GTRegistrate registrate, Material material, int capacity,
-                                                  String lang) {
+                                                  int rowLength, String lang) {
         final boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        return registrate.machine(material.getName() + "_crate", holder -> new CrateMachine(holder, material, capacity))
+        return registrate
+                .machine(material.getName() + "_crate",
+                        info -> new CrateMachine(info, material, capacity, rowLength))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -943,6 +981,61 @@ public class GTMachineUtils {
                     .add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                             FormattingUtil.formatNumbers(tankCapacity)));
         return tooltipComponents.toArray(Component[]::new);
+    }
+
+    @Accessors(chain = true, fluent = true)
+    public static class SimpleMachineBuilder {
+
+        private final GTRegistrate registrate;
+        @Setter
+        private String name;
+        @Setter
+        private GTRecipeType recipeType;
+        @Setter
+        private Int2IntFunction tankScalingFunction = defaultTankSizeFunction;
+        @Setter
+        private boolean hasPollutionDebuff = false;
+        @Setter
+        private PanelFactory panelFactory = null;
+        @Setter
+        private int[] tiers = ELECTRIC_TIERS;
+
+        // Simple Machines need to have a name, recipe type, and a registrate to register the machine to.
+        public SimpleMachineBuilder(GTRegistrate registrate, String name, GTRecipeType recipeType) {
+            this.registrate = registrate;
+            this.name = name;
+            this.recipeType = recipeType;
+        }
+
+        public MachineDefinition[] register() {
+            if (panelFactory == null) {
+                panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
+            }
+            return registerTieredMachines(registrate, name,
+                    (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
+                        if (hasPollutionDebuff) {
+                            builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
+                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
+                                    GTRecipeModifiers.OC_NON_PERFECT)
+                                    .conditionalTooltip(defaultEnvironmentRequirement(),
+                                            ConfigHolder.INSTANCE.gameplay.environmentalHazards);
+                        } else {
+                            builder.recipeModifier(GTRecipeModifiers.OC_NON_PERFECT);
+                        }
+                        builder
+                                .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(name), VLVT[tier]))
+                                .rotationState(RotationState.NON_Y_AXIS)
+                                .recipeType(recipeType)
+                                .workableTieredHullModel(
+                                        new ResourceLocation(registrate.getModid(), "block/machines/" + name))
+                                .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+                                        tankScalingFunction.applyAsInt(tier), true))
+                                .ui(panelFactory);
+
+                        return builder.register();
+                    },
+                    tiers);
+        }
     }
 
     public static void init() {}

@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -46,9 +44,9 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.drawable.GuiDraw;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
@@ -204,12 +202,12 @@ public class RenderUtil {
         }
 
         var fluidContent = contents.stream()
-                .filter(content -> content.content instanceof FluidIngredient ingredient && !ingredient.isEmpty())
+                .filter(content -> content.content() instanceof FluidIngredient ingredient && !ingredient.isEmpty())
                 .findAny();
         if (fluidContent.isEmpty()) {
             return null;
         }
-        var ingredient = (FluidIngredient) fluidContent.get().content;
+        var ingredient = (FluidIngredient) fluidContent.get().content();
 
         var stacks = ingredient.getStacks();
         if (stacks.length == 0) {
@@ -400,7 +398,7 @@ public class RenderUtil {
             // check item outputs first
             List<Content> outputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content).getItems();
+                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content()).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
                     if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
@@ -412,15 +410,11 @@ public class RenderUtil {
             // if there are no item outputs, try to find a fluid output
             outputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content).getStacks();
+                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content()).getStacks();
                 if (fluids.length != 0) {
                     FluidStack output = fluids[0];
                     if (!output.isEmpty()) {
-                        var clientExt = IClientFluidTypeExtensions.of(output.getFluid());
-                        var texture = RenderUtil.FluidTextureType.STILL.map(clientExt, output);
-                        int color = clientExt.getTintColor(output);
-
-                        DrawerHelper.drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
+                        GuiDraw.drawFluidTexture(graphics, output, x, y, 0, 0, z);
                         return true;
                     }
                 }

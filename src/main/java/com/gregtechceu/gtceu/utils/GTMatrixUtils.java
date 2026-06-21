@@ -2,16 +2,23 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Contract;
 import org.joml.*;
+import org.lwjgl.opengl.GL11;
 
 import java.lang.Math;
+import java.nio.ByteBuffer;
 import java.security.InvalidParameterException;
 import java.util.EnumMap;
 import java.util.Map;
@@ -29,6 +36,9 @@ public class GTMatrixUtils {
     });
     private static final Table<Direction, Direction, Matrix4fc> rotations = Tables
             .synchronizedTable(HashBasedTable.create());
+
+    private static final ByteBuffer PIXEL_DEPTH_BUFFER = GlUtil.allocateMemory(4);
+    private static final int[] VIEWPORT_COORDS = { 0, 0, 0, 0 };
 
     /**
      * @param from the original vector
@@ -132,12 +142,12 @@ public class GTMatrixUtils {
 
     public static Vector3f rotateMatrixToFront(Matrix4f matrix, Direction frontFace) {
         // rotate frontFacing to correct cardinal direction
-        var front = frontFace.step();
+        Vector3f front = frontFace.step();
         rotateMatrix(matrix, Direction.NORTH.step(), getDirectionAxis(frontFace), front);
         return front;
     }
 
-    public static void rotateMatrixToUp(Matrix4f matrix, Vector3f front, Direction upwardsFace) {
+    public static void rotateMatrixToUp(Matrix4f matrix, Vector3fc front, Direction upwardsFace) {
         // rotate upwards face to the correct orientation
         rotateMatrix(matrix, upwardFacingAngle(upwardsFace), front);
     }
@@ -158,5 +168,126 @@ public class GTMatrixUtils {
 
     public static Vector3fc getDirectionAxis(Direction dir) {
         return directionAxes.get(dir);
+    }
+
+    /**
+     * {@link Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc) Matrix4f#lookAt} with an up axis of {@code (0, 1, 0)}
+     *
+     * @see Matrix4f#lookAt(Vector3fc, Vector3fc, Vector3fc)
+     */
+    public static Matrix4f lookAt(Vector3fc eyePos, Vector3fc target) {
+        return new Matrix4f().lookAt(eyePos, target, GTMath.UNIT_Y);
+    }
+
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param poseStack the pose stack to modify
+     * @param eyePos    the position of the camera
+     * @param target    the point to look at
+     */
+    public static void lookAt(PoseStack poseStack, Vector3fc eyePos, Vector3fc target) {
+        lookAt(poseStack.last(), eyePos, target);
+    }
+
+    /**
+     * Make the pose stack's topmost transformation look at a point
+     *
+     * @param pose   the pose stack layer to modify
+     * @param eyePos the position of the camera
+     * @param target the point to look at
+     */
+    public static void lookAt(PoseStack.Pose pose, Vector3fc eyePos, Vector3fc target) {
+        pose.pose().lookAt(eyePos, target, GTMath.UNIT_Y);
+        pose.normal().lookAlong(target, GTMath.UNIT_Y);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param worldPos world space position
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectWorldToScreen(worldPos, window.getWidth(), window.getHeight());
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param worldPos   world space position
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @apiNote the Z component of the return value is the distance from the screen.
+     */
+    public static Vector3f projectWorldToScreen(Vector3fc worldPos, int viewWidth, int viewHeight) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+        Vector3f screenPos = new Vector3f(worldPos).mulPosition(transform);
+        screenPos.x = viewWidth * (screenPos.x + 1.0f) / 2.0f;
+        screenPos.y = viewHeight * (screenPos.y + 1.0f) / 2.0f;
+        screenPos.z = (screenPos.z + 1.0f) / 2.0f;
+
+        return screenPos;
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x X-coordinate in pixels
+     * @param y Y-coordinate in pixels
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y) {
+        Window window = Minecraft.getInstance().getWindow();
+        return projectScreenToWorld(x, y, window.getWidth(), window.getHeight(), true);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrix instead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewWidth  the viewport's width
+     * @param viewHeight the viewport's height
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y, int viewWidth, int viewHeight, boolean checkDepth) {
+        // update the viewport size array
+        VIEWPORT_COORDS[2] = viewWidth;
+        VIEWPORT_COORDS[3] = viewHeight;
+        return projectScreenToWorld(x, y, VIEWPORT_COORDS, checkDepth);
+    }
+
+    /**
+     * This is in essence the same code as in gluProject, but it returns the resulting transformation matrixinstead of
+     * applying it to the deprecated OpenGL transformation stack.
+     *
+     * @param x          X-coordinate in pixels
+     * @param y          Y-coordinate in pixels
+     * @param viewport   the viewport described by {@code [x, y, width, height]}
+     * @param checkDepth whether to read the depth value of the targeted position
+     * @return world pos
+     */
+    public static Vector3f projectScreenToWorld(int x, int y, int[] viewport, boolean checkDepth) {
+        // read projection and model view matrices
+        Matrix4f transform = new Matrix4f(RenderSystem.getProjectionMatrix()).mul(RenderSystem.getModelViewMatrix());
+
+        float depth = 1.0f;
+        if (checkDepth) {
+            // read depth under mouse
+            RenderSystem.readPixels(x, y, 1, 1, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, PIXEL_DEPTH_BUFFER);
+            PIXEL_DEPTH_BUFFER.rewind();
+            depth = PIXEL_DEPTH_BUFFER.getFloat();
+            PIXEL_DEPTH_BUFFER.rewind();
+        }
+
+        return transform.unproject(x, y, depth, viewport, new Vector3f());
     }
 }

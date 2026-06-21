@@ -3,9 +3,13 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
+import com.gregtechceu.gtceu.client.model.quad.MeshBuilder;
 import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.model.quad.transform.QuadTransform;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
-import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.quad.transformers.QuadPositionForcer;
+import com.gregtechceu.gtceu.client.util.quad.transformers.QuadReInterpolator;
+import com.gregtechceu.gtceu.client.util.quad.transformers.QuadTinter;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.common.item.behavior.FacadeItemBehaviour;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -34,7 +38,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IDynamicBakedModel;
-import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -48,26 +51,23 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     private static final double FACADE_PLANE_BACK = 1.0 / 16;
 
-    private static final AABB FACADE_PLANE = StaticFaceBakery.BLOCK.deflate(ICoverableRenderer.THIN_OFFSET);
-
     // spotless:off
-    private static final Map<Direction, IQuadTransformer> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
+    private static final Map<Direction, QuadTransform> FACADE_PLANE_TRANSFORMERS = Util.make(new EnumMap<>(Direction.class), map -> {
         for (Direction dir : GTUtil.DIRECTIONS) {
             // All faces are slightly under a full block's size to never show the beginning of
             // the second row of pixels of the block's texture and to combat Z-fighting.
             AABB facadePlane = switch (dir) {
-                case DOWN -> FACADE_PLANE.setMaxY(FACADE_PLANE_BACK);
-                case UP -> FACADE_PLANE.setMinY(FACADE_PLANE_BACK);
-                case NORTH -> FACADE_PLANE.setMaxZ(FACADE_PLANE_BACK);
-                case SOUTH -> FACADE_PLANE.setMinZ(FACADE_PLANE_BACK);
-                case WEST -> FACADE_PLANE.setMaxX(FACADE_PLANE_BACK);
-                case EAST -> FACADE_PLANE.setMinX(FACADE_PLANE_BACK);
+                case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(FACADE_PLANE_BACK);
+                case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - FACADE_PLANE_BACK);
+                case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(FACADE_PLANE_BACK);
+                case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - FACADE_PLANE_BACK);
+                case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(FACADE_PLANE_BACK);
+                case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - FACADE_PLANE_BACK);
             };
 
-            map.put(dir, GTQuadTransformers.clamp(facadePlane));
+            map.put(dir, new QuadPositionForcer(facadePlane));
         }
     });
-    private static final IQuadTransformer FACADE_ITEM_PLANE_TRANSFORMER = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
     // spotless:on
 
     public static final FacadeCoverRenderer INSTANCE = new FacadeCoverRenderer();
@@ -116,7 +116,7 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+    public void renderCover(List<BakedQuad> quads, @Nullable Direction cullFace, RandomSource rand,
                             CoverBehavior coverBehavior, BlockPos pos, BlockAndTintGetter level,
                             ModelData modelData, @Nullable RenderType renderType) {
         if (!(coverBehavior instanceof FacadeCover facadeCover)) {
@@ -138,42 +138,62 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         Direction attachedSide = coverBehavior.attachedSide;
-        if (side != attachedSide && (side != null || !coverBehavior.coverHolder.shouldRenderBackSide())) {
+        if (cullFace != attachedSide && (cullFace != null || !coverBehavior.coverHolder.shouldRenderBackSide())) {
             return;
         }
 
-        IQuadTransformer clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
+        MeshBuilder meshBuilder = MeshBuilder.getInstance();
+        var emitter = meshBuilder.getEmitter();
+
+        QuadTransform clamper = FACADE_PLANE_TRANSFORMERS.get(attachedSide);
+        QuadReInterpolator interpolator = new QuadReInterpolator();
         BlockColors blockColors = Minecraft.getInstance().getBlockColors();
 
         // always add unculled faces
-        List<BakedQuad> facadeQuads = new LinkedList<>(
-                facadeModel.getQuads(facadeState, null, rand, facadeData, renderType));
-        if (side != null) {
+        Map<Direction, List<BakedQuad>> facadeQuads = new IdentityHashMap<>();
+        facadeQuads.put(null, facadeModel.getQuads(facadeState, null, rand, facadeData, renderType));
+        if (cullFace != null) {
             // if a cullface is given, only draw that + unculled faces
-            facadeQuads.addAll(facadeModel.getQuads(facadeState, side, rand, facadeData, renderType));
+            facadeQuads.put(cullFace, facadeModel.getQuads(facadeState, cullFace, rand, facadeData, renderType));
         } else {
             // add all culled faces if no cullface is given
-            for (Direction cullFace : GTUtil.DIRECTIONS) {
-                facadeQuads.addAll(facadeModel.getQuads(facadeState, cullFace, rand, facadeData, renderType));
+            for (Direction face : GTUtil.DIRECTIONS) {
+                facadeQuads.put(face, facadeModel.getQuads(facadeState, face, rand, facadeData, renderType));
             }
         }
+        // clamp all 'facaded' quads into a box and bake their tint color into the vertices
+        for (var entry : facadeQuads.entrySet()) {
+            Direction face = entry.getKey();
+            List<BakedQuad> cullfaceQuads = entry.getValue();
+            if (cullfaceQuads.isEmpty()) continue;
 
-        for (BakedQuad quad : facadeQuads) {
-            // bake the quad's colors into its vertices
-            if (quad.isTinted()) {
-                // if the quad has a tint index set, bake the tint into the vertex
-                int color = blockColors.getColor(facadeState, level, pos, quad.getTintIndex());
-                quad = GTQuadTransformers.setColor(quad, color, true);
-            } else {
-                // otherwise just copy the quad so we don't mutate the original model with the overlay offset
-                quad = GTQuadTransformers.copy(quad);
+            for (BakedQuad quad : cullfaceQuads) {
+                // skip quads that aren't oriented correctly
+                if (quad.getDirection() != attachedSide && (coverBehavior.shouldRenderPlate() ||
+                        !coverBehavior.coverHolder.shouldRenderBackSide())) {
+                    continue;
+                }
+
+                emitter.fromVanilla(quad, face);
+                interpolator.setInputQuad(emitter);
+
+                // bake the quad's colors into its vertices
+                if (emitter.tintIndex() != -1) {
+                    // if the quad has a tint index set, bake the tint into the vertex
+                    int color = blockColors.getColor(facadeState, level, pos, quad.getTintIndex());
+                    QuadTinter tinter = new QuadTinter(color);
+                    tinter.transform(emitter);
+                }
+
+                // clamp the quad's vertices into the facade plane
+                clamper.transform(emitter);
+                // fix the quad's UVs based on the original & clamped vertices
+                interpolator.transform(emitter);
+
+                emitter.emit();
             }
-
-            // clamp the quad's vertex positions to fit into the facade plane
-            clamper.processInPlace(quad);
-
-            quads.add(quad);
         }
+        meshBuilder.build().asBlockBakedQuads(quads::add);
     }
 
     @Override
@@ -274,13 +294,13 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
         }
 
         @Override
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction cullFace,
                                         RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
-            if (this.quads.containsKey(side)) {
-                return this.quads.get(side);
+            if (this.quads.containsKey(cullFace)) {
+                return this.quads.get(cullFace);
             }
             List<BakedQuad> quads = new LinkedList<>();
-            this.quads.put(side, quads);
+            this.quads.put(cullFace, quads);
 
             if (facadeState.getRenderShape() != RenderShape.MODEL) {
                 return quads;
@@ -293,6 +313,11 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
             ModelData facadeData = modelData.get(GTModelProperties.CHILD_MODEL_DATA);
             if (facadeData == null) facadeData = ModelData.EMPTY;
 
+            MeshBuilder meshBuilder = MeshBuilder.getInstance();
+            var emitter = meshBuilder.getEmitter();
+
+            QuadTransform clamper = FACADE_PLANE_TRANSFORMERS.get(Direction.NORTH);
+            QuadReInterpolator interpolator = new QuadReInterpolator();
             ItemColors itemColors = Minecraft.getInstance().getItemColors();
 
             for (var model : facadeModel.getRenderPasses(this.facadeStack, true)) {
@@ -301,38 +326,52 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 }
 
                 // always add unculled faces
-                List<BakedQuad> facadeQuads = new LinkedList<>(
-                        model.getQuads(this.facadeState, null, rand, facadeData, renderType));
-                if (side != null) {
+                Map<Direction, List<BakedQuad>> facadeQuads = new IdentityHashMap<>();
+                facadeQuads.put(null, model.getQuads(this.facadeState, null, rand, facadeData, renderType));
+                if (cullFace != null) {
                     // if a cullface is given, only draw that + unculled faces
-                    facadeQuads.addAll(model.getQuads(this.facadeState, side, rand, facadeData, renderType));
+                    facadeQuads.put(cullFace, model.getQuads(this.facadeState, cullFace, rand, facadeData, renderType));
                 } else {
                     // add all culled faces if no cullface is given
-                    for (Direction cullFace : GTUtil.DIRECTIONS) {
-                        facadeQuads.addAll(model.getQuads(this.facadeState, cullFace, rand, facadeData, renderType));
+                    for (Direction face : GTUtil.DIRECTIONS) {
+                        facadeQuads.put(face, model.getQuads(this.facadeState, face, rand, facadeData, renderType));
                     }
                 }
 
                 // clamp all 'facaded' quads into a box and bake their tint color into the vertices
-                for (BakedQuad quad : facadeQuads) {
-                    // bake the quad's colors into its vertices
-                    if (quad.isTinted()) {
-                        // if the quad has a tint index set, bake the tint into the vertex color
-                        int color = itemColors.getColor(this.facadeStack, quad.getTintIndex());
-                        // this also copies the quad
-                        quad = GTQuadTransformers.setColor(quad, color, true);
-                    } else {
-                        // otherwise just copy the quad so we don't mutate the original model with the clamping
-                        quad = GTQuadTransformers.copy(quad);
+                for (var entry : facadeQuads.entrySet()) {
+                    Direction face = entry.getKey();
+                    List<BakedQuad> cullfaceQuads = entry.getValue();
+                    if (cullfaceQuads.isEmpty()) continue;
+
+                    for (BakedQuad quad : cullfaceQuads) {
+                        // skip quads that aren't oriented correctly
+                        if (quad.getDirection() != Direction.NORTH) {
+                            continue;
+                        }
+
+                        emitter.fromVanilla(quad, face);
+                        interpolator.setInputQuad(emitter);
+
+                        // bake the quad's colors into its vertices
+                        if (emitter.tintIndex() != -1) {
+                            // if the quad has a tint index set, bake the tint into the vertex
+                            int color = itemColors.getColor(this.facadeStack, emitter.tintIndex());
+                            QuadTinter tinter = new QuadTinter(color);
+                            tinter.transform(emitter);
+                        }
+
+                        // clamp the quad's vertices into the facade plane
+                        clamper.transform(emitter);
+                        // fix the quad's UVs based on the original & clamped vertices
+                        interpolator.transform(emitter);
+
+                        emitter.emit();
                     }
-
-                    // clamp the quad's vertex positions to fit into the facade plane
-                    FACADE_ITEM_PLANE_TRANSFORMER.processInPlace(quad);
-
-                    quads.add(quad);
                 }
             }
 
+            meshBuilder.build().asBlockBakedQuads(quads::add);
             return quads;
         }
 

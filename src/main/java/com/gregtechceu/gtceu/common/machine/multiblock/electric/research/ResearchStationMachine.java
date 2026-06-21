@@ -7,22 +7,25 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ResearchStationMachine extends WorkableElectricMultiblockMachine
-                                    implements IOpticalComputationReceiver, IDisplayUIMachine {
+                                    implements IOpticalComputationReceiver {
 
     @Getter
     private IOpticalComputationProvider computationProvider;
@@ -100,16 +103,16 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-                .setWorkingStatusKeys("gtceu.multiblock.idling", "gtceu.multiblock.work_paused",
-                        "gtceu.multiblock.research_station.researching")
-                .addEnergyUsageLine(energyContainer)
-                .addEnergyTierLine(tier)
-                .addWorkingStatusLine()
-                // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
-                .addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
+                () -> Component.translatable("gtceu.multiblock.research_station.researching")
+                        .withStyle(ChatFormatting.GREEN)));
+        widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
+        return widgets;
     }
 
     public static class ResearchStationRecipeLogic extends RecipeLogic {
@@ -198,7 +201,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             ItemStack outputItem = ItemStack.EMPTY;
             var contents = lastRecipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!contents.isEmpty()) {
-                outputItem = ItemRecipeCapability.CAP.of(contents.get(0).content).getItems()[0];
+                outputItem = ItemRecipeCapability.CAP.of(contents.get(0).content()).getItems()[0];
             }
             if (!outputItem.isEmpty()) {
                 holder.setDataItem(outputItem.copy());

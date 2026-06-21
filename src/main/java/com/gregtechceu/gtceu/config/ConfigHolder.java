@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.client.bloom.BloomType;
 
 import net.minecraft.commands.Commands;
 
+import brachy.modularui.screen.RichTooltip;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -850,13 +851,6 @@ public class ConfigHolder {
         @Configurable.Gui.ColorValue
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
-        @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                "#FFFFFF is no coloring (like GTCE) (default).",
-                "#D2DCFF is the classic blue from GT5." })
-        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
-        @Configurable.Gui.ColorValue
-        public String defaultUIColor = "#FFFFFF";
-        @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
                 "Disable if you have issues with rendering multiblocks.", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
@@ -866,10 +860,6 @@ public class ConfigHolder {
         @Configurable.Range(min = 1, max = 999)
         public int inWorldPreviewDuration = 10;
         @Configurable
-        @Configurable.Comment({ "Duration of UI animations in ms", "Default: 300" })
-        @Configurable.Range(min = 1)
-        public int animationTime = 300;
-        @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public Renderers renderer = new Renderers();
@@ -878,6 +868,8 @@ public class ConfigHolder {
         public BloomOptions bloom = new BloomOptions();
         @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
+        @Configurable
+        public UIConfigs ui = new UIConfigs();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -986,11 +978,58 @@ public class ConfigHolder {
         public static class TankItemFluidPreview {
 
             @Configurable
-            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
+            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums",
+                    "Default: false" })
             public boolean drum = false;
             @Configurable
-            @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
+            @Configurable.Comment({ "Set true to render the including fluid icons to Super and Quantum Tanks",
+                    "Default: false" })
             public boolean quantumTank = false;
+        }
+
+        public static class UIConfigs {
+
+            @Configurable
+            @Configurable.Comment({
+                    "If progress bar should step in texture pixels or screen pixels. (Screen pixels are way smaller and therefore smoother)",
+                    "Default: true" })
+            public boolean smoothProgressBar = true;
+            @Configurable
+            @Configurable.Comment({ "Duration of UI animations in ms.",
+                    "Default: 100" })
+            @Configurable.Range(min = 1, max = 500)
+            public int animationTime = 100;
+            @Configurable
+            @Configurable.Comment({ "Default tooltip position around the widget or its panel.",
+                    "Default: VERTICAL" })
+            public RichTooltip.Pos tooltipPos = RichTooltip.Pos.NEXT_TO_MOUSE;
+
+            @Configurable
+            @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
+                    "#FFFFFF is no coloring (like GTCE) (default).",
+                    "#D2DCFF is the classic blue from GT5." })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+            @Configurable.Gui.ColorValue
+            public String defaultUIColor = "#FFFFFF";
+            @Configurable
+            @Configurable.Comment({
+                    "If true, pressing the ESC key in a text field will restore the last text instead of confirming current one.",
+                    "Default: fakse" })
+            public boolean escRestoresLastText = false;
+            @Configurable
+            @Configurable.Comment({
+                    "If true and not specified otherwise, screens will try to use the 'vanilla_dark' theme.",
+                    "Default: false" })
+            public boolean useDarkThemeByDefault = false;
+
+            @Configurable
+            @Configurable.Comment({ "If true, vanilla tooltips will be replaced with MUI's RichTooltip",
+                    "Default: false" })
+            public boolean replaceVanillaTooltips = false;
+
+            public int getDefaultUIColor() {
+                return Long.decode(ConfigHolder.INSTANCE.client.ui.defaultUIColor).intValue() | 0xFF000000;
+            }
         }
     }
 

@@ -2,9 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
-
-import com.lowdragmc.lowdraglib.utils.Builder;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+import com.gregtechceu.gtceu.utils.data.NBTToJsonConverter;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -22,16 +20,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.*;
 import java.util.function.Consumer;
 
-public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
+public class ShapedEnergyTransferRecipeBuilder {
 
     protected ItemStack output = ItemStack.EMPTY;
     protected Ingredient chargeIngredient = Ingredient.EMPTY;
-    protected ResourceLocation id;
-    protected String group;
+    protected @Nullable ResourceLocation id;
+    protected @Nullable String group;
     protected boolean transferMaxCharge;
     protected boolean overrideCharge;
+
+    protected List<String[]> shape = new ArrayList<>();
+    protected Map<Character, Ingredient> ingredientMap = new LinkedHashMap<>();
 
     public ShapedEnergyTransferRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -39,6 +41,16 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
 
     public ShapedEnergyTransferRecipeBuilder() {
         this(null);
+    }
+
+    public ShapedEnergyTransferRecipeBuilder aisle(String... data) {
+        this.shape.add(data);
+        return this;
+    }
+
+    public ShapedEnergyTransferRecipeBuilder where(char symbol, Ingredient value) {
+        this.ingredientMap.put(symbol, value);
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder pattern(String slice) {
@@ -109,9 +121,10 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
         return this;
     }
 
-    @Override
     public ShapedEnergyTransferRecipeBuilder shallowCopy() {
-        var builder = super.shallowCopy();
+        var builder = new ShapedEnergyTransferRecipeBuilder();
+        builder.shape = new ArrayList<>(this.shape);
+        builder.ingredientMap = new HashMap<>(this.ingredientMap);
         builder.output = output.copy();
         return builder;
     }
@@ -131,9 +144,9 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
             json.add("pattern", pattern);
         }
 
-        if (!symbolMap.isEmpty()) {
+        if (!ingredientMap.isEmpty()) {
             JsonObject key = new JsonObject();
-            symbolMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
+            ingredientMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
             json.add("key", key);
         }
 
