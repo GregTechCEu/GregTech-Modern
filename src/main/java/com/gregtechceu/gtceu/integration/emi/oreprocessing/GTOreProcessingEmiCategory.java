@@ -30,7 +30,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (Material mat : GTRegistries.MATERIALS.values()) {
+        for (Material mat : GTRegistries.MATERIALS) {
             if (mat.hasProperty(ORE) && !mat.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB)) {
                 registry.addRecipe(new GTEmiOreProcessing(mat));
             }
@@ -43,7 +43,7 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 MACERATOR_RECIPES, ORE_WASHER_RECIPES, THERMAL_CENTRIFUGE_RECIPES, CENTRIFUGE_RECIPES,
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
-        for (MachineDefinition machine : GTRegistries.MACHINES.values()
+        for (MachineDefinition machine : GTRegistries.MACHINES
                 .stream()
                 .sorted(sortDefinition)
                 .toList()) {

@@ -55,12 +55,12 @@ public class GTMaterialItems {
     // Reference Tables
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
     public static final Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS = ArrayTable.create(
-            GTRegistries.MATERIALS.values().stream()
+            GTRegistries.MATERIALS.stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
                     .toList(),
             GTToolType.getTypes().values().stream().toList());
     public static final Table<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS = ArrayTable.create(
-            GTRegistries.MATERIALS.values().stream()
+            GTRegistries.MATERIALS.stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.ARMOR))
                     .toList(),
             Arrays.asList(ArmorItem.Type.values()));
@@ -70,7 +70,7 @@ public class GTMaterialItems {
         REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
         for (var tagPrefix : TagPrefix.values()) {
             if (tagPrefix.doGenerateItem()) {
-                for (Material material : GTRegistries.MATERIALS.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateItem(material)) {
                         generateMaterialItem(tagPrefix, material,
                                 GTRegistrate.createIgnoringListenerErrors(material.getModid()));
@@ -100,7 +100,7 @@ public class GTMaterialItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            for (Material material : GTRegistries.MATERIALS.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.TOOL)) {
                     var property = material.getProperty(PropertyKey.TOOL);
                     if (property.hasType(toolType)) {
@@ -130,7 +130,7 @@ public class GTMaterialItems {
     public static void generateArmors() {
         REGISTRATE.creativeModeTab(() -> TOOL);
         for (ArmorItem.Type type : ArmorItem.Type.values()) {
-            for (Material material : GTRegistries.MATERIALS.values()) {
+            for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.ARMOR)) {
                     generateArmor(material, type, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
                 }

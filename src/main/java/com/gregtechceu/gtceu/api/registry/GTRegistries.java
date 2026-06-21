@@ -80,7 +80,7 @@ public final class GTRegistries {
     public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));
     public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(GTCEu.id("dimension_marker"));
     public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(GTCEu.id("medical_condition"));
-    public static final GTRegistry.String<Placeholder> PLACEHOLDERS = new GTRegistry.String<>(GTCEu.id("placeholder"));
+    public static final GTRegistry.RL<Placeholder> PLACEHOLDERS = new GTRegistry.RL<>(GTCEu.id("placeholder"));
 
 
     // spotless:on

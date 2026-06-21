@@ -638,7 +638,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
 
     protected IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> makeChanceCaches() {
         IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> map = new IdentityHashMap<>();
-        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
+        for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
             map.put(cap, cap.makeChanceCache());
         }
         return map;

@@ -1395,11 +1395,11 @@ public class TagPrefix {
     }
 
     /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.values()}
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES}
      */
     @Deprecated(since = "8.0.0")
     public static Collection<TagPrefix> values() {
-        return GTRegistries.TAG_PREFIXES.values();
+        return GTRegistries.TAG_PREFIXES;
     }
 
     @Override

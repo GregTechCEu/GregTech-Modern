@@ -21,16 +21,16 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -51,11 +51,15 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.register(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.register(placeholder.getId(), placeholder);
     }
 
     public static void addOrOverridePlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getId(), placeholder);
+    }
+
+    public static @Nullable Placeholder getPlaceholder(String str) {
+        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(str));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -82,12 +86,12 @@ public class PlaceholderHandler {
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         PlaceholderContext context,
                                                         Object2IntOpenHashMap<String> indices) throws PlaceholderException {
-        if (!GTRegistries.PLACEHOLDERS.containKey(placeholder.get(0).toString()))
+        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.get(0).toString())))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
         indices.addTo(name, 1);
         context.index(indices.getInt(name));
-        return Objects.requireNonNull(GTRegistries.PLACEHOLDERS.get(name)).apply(context,
+        return Objects.requireNonNull(GTRegistries.PLACEHOLDERS.get(GTCEu.id(name))).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -188,7 +192,7 @@ public class PlaceholderHandler {
         Consumer<String> onSearch = (newSearch) -> {
             placeholderReference.clearAllWidgets();
             int y = 2;
-            ArrayList<String> placeholders = new ArrayList<>(GTRegistries.PLACEHOLDERS.keys());
+            List<String> placeholders = new ArrayList<>(GTRegistries.PLACEHOLDERS.keys().stream().map(ResourceLocation::toString).toList());
             placeholders.removeIf(s -> s == null || !s.contains(newSearch));
             placeholders.sort(String::compareTo);
             for (String placeholder : placeholders) {

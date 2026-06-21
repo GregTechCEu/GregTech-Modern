@@ -26,7 +26,7 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     @Override
     public void toNetwork(FriendlyByteBuf buf, FluidIngredient content) {
         String name = content.getClass().getSimpleName();
-        if (!FLUID_SERIALIZERS.containKey(name)) {
+        if (!FLUID_SERIALIZERS.containsKey(name)) {
             throw new IllegalArgumentException(
                     "SerializerFluidIngredient tried to serialize a FluidIngredient's subclass %s, which is not in the FluidSerializers registry!"
                             .formatted(name));

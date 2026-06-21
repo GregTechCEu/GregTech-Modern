@@ -73,7 +73,7 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
         CapabilityMap map = new CapabilityMap();
         if (from instanceof JsonObject json) {
             for (String key : json.keySet()) {
-                if (GTRegistries.RECIPE_CAPABILITIES.containKey(key) &&
+                if (GTRegistries.RECIPE_CAPABILITIES.containsKey(key) &&
                         GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {
                     RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
                     var pair = GTRecipeComponents.VALID_CAPS.get(cap);

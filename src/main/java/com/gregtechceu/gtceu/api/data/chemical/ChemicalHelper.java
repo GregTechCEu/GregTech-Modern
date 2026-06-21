@@ -97,7 +97,7 @@ public class ChemicalHelper {
     public static Material getMaterial(Fluid fluid) {
         if (FLUID_MATERIAL.isEmpty()) {
             Set<TagKey<Fluid>> allFluidTags = BuiltInRegistries.FLUID.getTagNames().collect(Collectors.toSet());
-            for (final Material material : GTRegistries.MATERIALS.values()) {
+            for (final Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     FluidStorageKey.allKeys().stream()
@@ -209,7 +209,7 @@ public class ChemicalHelper {
             // lookups.
             Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
-                for (Material material : GTRegistries.MATERIALS.values()) {
+                for (Material material : GTRegistries.MATERIALS) {
                     prefix.getItemTags(material).stream()
                             .filter(allItemTags::contains)
                             .forEach(tagKey -> {

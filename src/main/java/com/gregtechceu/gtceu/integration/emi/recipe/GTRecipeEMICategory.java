@@ -75,7 +75,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
     };
 
     public static void registerWorkStations(EmiRegistry registry) {
-        for (MachineDefinition machine : GTRegistries.MACHINES.values()
+        for (MachineDefinition machine : GTRegistries.MACHINES
                 .stream()
                 .sorted(sortDefinition)
                 .toList()) {

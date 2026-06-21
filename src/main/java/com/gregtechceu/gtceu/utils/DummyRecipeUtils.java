@@ -148,7 +148,7 @@ public class DummyRecipeUtils {
                 addHandlerList(handler);
             }
 
-            for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES.values()) {
+            for (RecipeCapability<?> cap : GTRegistries.RECIPE_CAPABILITIES) {
                 cacheChances.put(cap, cap.makeChanceCache());
             }
         }
