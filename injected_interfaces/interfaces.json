@@ -5,6 +5,9 @@
     "net/minecraft/client/renderer/block/model/BakedQuad": [
         "com/gregtechceu/gtceu/core/util/extensions/BakedQuadExt"
     ],
+    "com/mojang/blaze3d/vertex/VertexConsumer": [
+        "com/gregtechceu/gtceu/core/util/extensions/VertexConsumerExt"
+    ],
     "net/neoforged/neoforge/client/model/lighting/QuadLighter": [
         "com/gregtechceu/gtceu/core/util/extensions/QuadLighterExt"
     ],

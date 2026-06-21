@@ -8,9 +8,7 @@
     "package": "com.gregtechceu.gtceu.core.mixins",
     "compatibilityLevel": "JAVA_17",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
-    "client": [
-        "neoforge.BakedModelWrapperAccessor"
-    ],
+    "client": [],
     "mixins": [
         "neoforge.ConfiguredModelBuilderAccessor",
         "neoforge.ConfiguredModelListAccessor",

@@ -16,9 +16,6 @@ import java.util.function.Function;
 @Mixin(targets = { "net.minecraft.client.resources.model.ModelBakery$ModelBakerImpl" })
 public abstract class ModelBakerImplMixin {
 
-    // the parameters aren't remapped because Parchment can't remap Forge's patches
-    @SuppressWarnings("NameDoesntMatchTargetClass")
-    // Note: We don't remap this method as it's added by forge
     @ModifyVariable(at = @At("HEAD"),
                     method = "bake(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/client/resources/model/ModelState;Ljava/util/function/Function;)Lnet/minecraft/client/resources/model/BakedModel;",
                     argsOnly = true,

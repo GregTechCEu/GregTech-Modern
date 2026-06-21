@@ -26,10 +26,6 @@ public class WorldLoaderMixin {
                      target = "Lnet/minecraft/server/ReloadableServerResources;loadResources(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/core/LayeredRegistryAccess;Lnet/minecraft/world/flag/FeatureFlagSet;Lnet/minecraft/commands/Commands$CommandSelection;ILjava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
                      shift = At.Shift.BEFORE))
     private static <D, R> void gtceu$postKJSVeinEvents(CallbackInfoReturnable<CompletableFuture<R>> cir,
-                                                       // @Local(ordinal = 0) RegistryAccess.Frozen
-                                                       // registriesWithWorldgen,
-                                                       // @Local(ordinal = 1) RegistryAccess.Frozen
-                                                       // registriesWithDimensions,
                                                        @Local(ordinal = 1) LayeredRegistryAccess<RegistryLayer> layered) {
         RegistryAccess.Frozen registriesWithEverything = layered.compositeAccess();
         if (GTCEu.Mods.isKubeJSLoaded()) {
