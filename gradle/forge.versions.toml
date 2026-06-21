@@ -34,6 +34,7 @@ xaerosMinimap = "25.3.10"
 heracles = "1.1.10"
 embeddium = "1.0.8-beta.367+mc1.21"
 sodium = "0.8.12-beta.1+mc1.21.1"
+fabricApi-rendering = "3.4.1+9125b6dc19"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -100,6 +101,8 @@ modernfix           = { module = "maven.modrinth:modernfix", version.ref = "mode
 
 sodium-api          = { module = "net.caffeinemc:sodium-neoforge-api", version.ref = "sodium" }
 sodium-impl         = { module = "net.caffeinemc:sodium-neoforge-mod", version.ref = "sodium" }
+sodium-full         = { module = "net.caffeinemc:sodium-neoforge", version.ref = "sodium" }
+fabricApi-rendering = { module = "org.sinytra.forgified-fabric-api:fabric-renderer-api-v1", version.ref = "fabricApi-rendering" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.21.1-core-api", version.ref = "ccTweaked" }
