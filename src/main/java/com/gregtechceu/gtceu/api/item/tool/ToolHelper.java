@@ -83,7 +83,6 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -385,7 +384,8 @@ public class ToolHelper {
 
             RecipeHandlerList dummyOutputs = RecipeHandlerList.of(IO.OUT,
                     new DummyRecipeUtils.DummyItemHandler(IO.OUT, 2));
-            var capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(dummyInputs, dummyOutputs);
+            DummyRecipeUtils.DummyRecipeCapabilityHolder capHolder = new DummyRecipeUtils.DummyRecipeCapabilityHolder(
+                    dummyInputs, dummyOutputs);
 
             Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
                     r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
@@ -394,7 +394,7 @@ public class ToolHelper {
             while (hammerRecipes.hasNext()) {
                 GTRecipe recipe = hammerRecipes.next();
                 if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN,
-                                capHolder.getCacheChances()).isSuccess()) {
+                        capHolder.getCacheChances()).isSuccess()) {
                     hammerRecipe = recipe;
                     break;
                 }
