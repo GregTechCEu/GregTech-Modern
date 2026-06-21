@@ -218,6 +218,9 @@ public class GTMaterialItems {
     public static void generateArmors() {
         REGISTRATE.creativeModeTab(TOOL);
         for (ArmorItem.Type type : ArmorItem.Type.values()) {
+            // skip animal armor
+            if (type == ArmorItem.Type.BODY) continue;
+
             for (Material material : GTRegistries.MATERIALS) {
                 if (material.hasProperty(PropertyKey.ARMOR)) {
                     generateArmor(material, type, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
