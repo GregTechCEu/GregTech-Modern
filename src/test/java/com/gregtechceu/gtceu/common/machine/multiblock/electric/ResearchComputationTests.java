@@ -144,6 +144,10 @@ public class ResearchComputationTests {
     @GameTest(template = "research_computer", batch = "ResearchComputation", setupTicks = 40, timeoutTicks = 200)
     public static void ResearchStationConsumesCreativeComputationTest(GameTestHelper helper) {
         formOpticalPipeNet(helper, RESEARCH_COMPUTER_PIPES);
+        CreativeComputationProviderMachine creative = (CreativeComputationProviderMachine) helper
+                .getBlockEntity(new BlockPos(8, 3, 1));
+        helper.assertTrue(creative != null, "Creative Computation Provider not found");
+        creative.setWorkingEnabled(true);
         formResearchStation(helper);
         ObjectHolderMachine holder = getObjectHolder(helper);
         holder.setDataItem(GTItems.TOOL_DATA_STICK.asStack());

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
@@ -83,10 +84,10 @@ public class GTMuiWidgets {
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(text);
+        int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
-        int textHeightPerRow = (int) (Text.renderer.getFontHeight());
+        int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
         int textHeight = textHeightPerRow * textRows + borderRadius;
 
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
