@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.LootTableAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
@@ -386,12 +387,13 @@ public class ToolHelper {
                     dummyInputs, dummyOutputs);
 
             Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(capHolder,
-                    r -> RecipeHelper.matchContents(capHolder, r).isSuccess());            GTRecipe hammerRecipe = null;
+                    r -> RecipeHelper.matchContents(capHolder, r).isSuccess());
+            GTRecipe hammerRecipe = null;
             // find the first valid recipe
             while (hammerRecipes.hasNext()) {
                 GTRecipe recipe = hammerRecipes.next();
                 if (recipe != null && RecipeHelper.handleRecipeIO(capHolder, hammerRecipe, IO.IN,
-                                capHolder.getCacheChances()).isSuccess()) {
+                        capHolder.getCacheChances()).isSuccess()) {
                     hammerRecipe = recipe;
                     break;
                 }
