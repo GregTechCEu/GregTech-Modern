@@ -82,8 +82,6 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
         for (var itemContent : items) {
-            float chance = (float) itemContent.chance() / itemContent.maxChance();
-
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
 
@@ -92,8 +90,6 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         }
 
         for (var fluidContent : fluids) {
-            float chance = (float) fluidContent.chance() / fluidContent.maxChance();
-
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
             var fluid = mapped.getStacks().get(0);
