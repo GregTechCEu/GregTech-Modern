@@ -4,7 +4,7 @@
     {
       "from": [  0,  0,  0 ],
       "to":   [ 16, 16, 16 ],
-      "forge_data": { "block_light": 15, "sky_light": 15 },
+      "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
         "down":  { "texture": "#down",  "cullface": "down"  },
