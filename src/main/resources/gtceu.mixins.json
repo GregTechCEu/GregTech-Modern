@@ -71,7 +71,9 @@
         "TagManagerMixin",
         "WorldLoaderMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
-        "dev.test.GameTestRegistryMixin"
+        "dev.test.GameTestRegistryMixin",
+        "registrate.AbstractRegistrateAccessor",
+        "registrate.RegistrateDataProviderAccessor"
     ],
     "injectors": {
         "defaultRequire": 1,

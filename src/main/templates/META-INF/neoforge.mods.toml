@@ -26,9 +26,6 @@ enumExtensions = "META-INF/enum_extensions.json"
     config = "mixin_configs/${mod_id}-ldlib.mixins.json"
     requiredMods = ["ldlib"]
 [[mixins]]
-    config = "mixin_configs/${mod_id}-registrate.mixins.json"
-    requiredMods = ["registrate"]
-[[mixins]]
     config = "mixin_configs/${mod_id}-sodium.mixins.json"
     requiredMods = ["sodium"]
 [[mixins]]
