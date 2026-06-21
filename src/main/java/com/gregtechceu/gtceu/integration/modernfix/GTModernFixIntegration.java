@@ -42,7 +42,7 @@ public class GTModernFixIntegration implements ModernFixClientIntegration {
         // process all model replacers
         for (var listener : ModelEventHelper.EVENT_LISTENERS) {
             if (!(listener.listener() instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
-            originalModel = modelReplacement.modifyBakedModel(location.id(), originalModel, baseModel, bakery);
+            originalModel = modelReplacement.modifyBakedModel(location, originalModel, baseModel, bakery);
         }
         return originalModel;
     }

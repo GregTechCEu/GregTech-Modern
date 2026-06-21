@@ -46,7 +46,7 @@ public class ModelEventHelper {
     public static final Map<ResourceLocation, TextureAtlasSprite> CTM_SPRITE_CACHE = new ConcurrentHashMap<>();
 
     private static final Multimap<ResourceLocation, Material> SCRAPED_TEXTURES = HashMultimap.create();
-    private static final Object2BooleanMap<ResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<ModelResourceLocation> WRAPPED_MODELS = new Object2BooleanOpenHashMap<>();
 
     @ApiStatus.Internal
     public static void markTextureUsedForModel(ResourceLocation modelLocation, Material material) {
@@ -118,7 +118,7 @@ public class ModelEventHelper {
             // process all model replacers
             for (var listener : EVENT_LISTENERS) {
                 if (!(listener.listener instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
-                model = modelReplacement.modifyBakedModel(entry.getKey().id(), model,
+                model = modelReplacement.modifyBakedModel(entry.getKey(), model,
                         event.getModelBakery().getModel(entry.getKey().id()), event.getModelBakery());
             }
             entry.setValue(model);
@@ -161,7 +161,7 @@ public class ModelEventHelper {
         });
 
         // register CTM model wrapper
-        ModelEventHelper.registerBakeEventListener(false, (rl, baked, rootModel, modelBakery) -> {
+        ModelEventHelper.registerBakeEventListener(false, (mrl, baked, rootModel, modelBakery) -> {
             if (baked.isCustomRenderer()) {
                 // Nothing we can add to builtin models
                 return baked;
@@ -176,11 +176,12 @@ public class ModelEventHelper {
             }
             Deque<ResourceLocation> dependencies = new ArrayDeque<>();
             Set<ResourceLocation> seenModels = new HashSet<>();
+            ResourceLocation rl = mrl.id();
             dependencies.push(rl);
             seenModels.add(rl);
 
-            boolean shouldWrap = WRAPPED_MODELS.getOrDefault(rl, false);
-            if (WRAPPED_MODELS.containsKey(rl)) {
+            boolean shouldWrap = WRAPPED_MODELS.getOrDefault(mrl, false);
+            if (WRAPPED_MODELS.containsKey(mrl)) {
                 // shortcut if the model's already been checked
                 if (shouldWrap) return new CTMBakedModel<>(baked);
                 else return baked;
@@ -215,10 +216,10 @@ public class ModelEventHelper {
                     }
                 } catch (Exception e) {
                     GTCEu.LOGGER.error("Error loading dependency {} for model {}. Skipping...",
-                            dependencyName, rl, e);
+                            dependencyName, mrl, e);
                 }
             }
-            ModelEventHelper.WRAPPED_MODELS.put(rl, shouldWrap);
+            ModelEventHelper.WRAPPED_MODELS.put(mrl, shouldWrap);
             if (shouldWrap) {
                 return new CTMBakedModel<>(baked);
             }

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.util;
 
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.Event;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
@@ -32,7 +32,7 @@ public interface AssetEventListener<T extends Event> {
     @FunctionalInterface
     interface BakedModelReplacement {
 
-        BakedModel modifyBakedModel(ResourceLocation modelLocation, BakedModel model,
+        BakedModel modifyBakedModel(ModelResourceLocation modelLocation, BakedModel model,
                                     @Nullable UnbakedModel rootModel, ModelBakery modelBakery);
     }
 
