@@ -12,7 +12,7 @@ repositories {
         }
     }
 
-    exclusiveContent { // Create, Ponder, Flywheel
+    exclusiveContent { // JEI, embeddium, ModernFix
         forRepository { maven { url = "https://maven.blamejared.com" } }
         filter {
             includeGroup("mezz.jei")
@@ -42,12 +42,9 @@ repositories {
         }
     }
     exclusiveContent { // Configuration
-        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public" } }
-        filter { includeGroup("dev.toma.configuration")}
-    }
-    exclusiveContent { // Configuration
         forRepositories(
-                maven { url = "https://repo.repsy.io/mvn/toma/public/" },
+                maven { url = "https://repo.repsy.io/mvn/toma/public" },
+                maven { url = "https://repo.repsy.io/toma/public" },
                 maven { url = "https://api.repsy.io/mvn/toma/public" },
         )
         filter { includeGroup("dev.toma.configuration")}

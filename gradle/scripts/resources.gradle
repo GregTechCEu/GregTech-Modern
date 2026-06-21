@@ -35,7 +35,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     var neoVersion = libs.versions.neoForge.get()
     neoVersion = neoVersion.substring(0, neoVersion.lastIndexOf('.'))
     var configurationVersion = forge.versions.configuration.get()
-    //configurationVersion = configurationVersion.substring(0, configurationVersion.lastIndexOf('-'))
+    configurationVersion = configurationVersion.substring(0, configurationVersion.lastIndexOf('-'))
     var replaceProperties = [
             version             : version_toml,
             mod_id              : mod_id,
