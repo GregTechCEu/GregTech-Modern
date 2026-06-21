@@ -60,7 +60,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @OnlyIn(Dist.CLIENT)
     private GTOverheatParticle particle;
-    private static final int meltTemp = 3000;
+    public static final int meltTemp = 3000;
 
     private final EnumMap<Direction, EnergyNetHandler> handlers = new EnumMap<>(Direction.class);
     private final PerTickLongCounter maxVoltageCounter = new PerTickLongCounter();
@@ -206,7 +206,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return getNodeData().getVoltage();
     }
 
-    public int getDefaultTemp() {
+    public static int getDefaultTemp() {
         return 293;
     }
 

@@ -24,7 +24,6 @@ public class GTMuiCoverUtil {
                 .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
                 .overlay(16, GTGuiTextures.MANUAL_IO_OVERLAY_IN)
                 .lang(Text.comp(Component.translatable(ManualIOMode.getTitle())))
-                .multiLangTooltip()
                 .multiLangTooltip(manualIODesc)
                 .build());
     }

@@ -91,6 +91,7 @@ import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -102,6 +103,8 @@ import java.util.function.Predicate;
  */
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolGridHighlight,
                          IPaintable, IMachineFeature, ICopyable {
+
+    private static final int MIN_OFFSET_BOUND = 20;
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -128,8 +131,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @SyncToClient
     @RerenderOnChanged
     private MachineRenderState renderState;
+
     @Getter(value = AccessLevel.PROTECTED)
-    private final long offset = GTValues.RNG.nextInt(20);
+    @Setter(value = AccessLevel.PROTECTED)
+    private long offset = GTValues.RNG.nextInt(MIN_OFFSET_BOUND);
 
     @Getter
     @SaveField
@@ -628,6 +633,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     public void onPaintingColorChanged(int color) {}
+
+    public void setOffsetBound(int offsetBound) {
+        var bound = Math.max(offsetBound, MIN_OFFSET_BOUND);
+        offset = GTValues.RNG.nextInt(bound);
+    }
 
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,

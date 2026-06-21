@@ -1,20 +1,3 @@
-/*
- * This file is part of CodeChickenLib.
- * Copyright (c) 2018, covers1624, All rights reserved.
- *
- * CodeChickenLib is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 2.1 of the License, or
- * (at your option) any later version.
- *
- * CodeChickenLib is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with CodeChickenLib. If not, see <http://www.gnu.org/licenses/lgpl>.
- */
 package com.gregtechceu.gtceu.client.util.quad.transformers;
 
 import com.gregtechceu.gtceu.client.model.quad.MutableQuadView;
@@ -27,27 +10,27 @@ import net.minecraft.world.phys.AABB;
 import org.joml.Vector3f;
 
 /**
- * This transformer simply clamps the vertices inside the provided box.<br>
+ * This transformer simply sets the vertices to be on the edges of the provided box.<br>
  * You probably want to Re-Interpolate the UV's, Color, and Lightmap. For that, see {@link QuadReInterpolator}.
  *
  * @see QuadReInterpolator
- * @author covers1624
+ * @author screret
  */
-public class QuadClamper implements QuadTransform {
+public class QuadPositionForcer implements QuadTransform {
 
-    private final AABB clampBounds;
+    private final AABB bounds;
 
     private final Vector3f pos = new Vector3f();
 
-    public QuadClamper(AABB clampBounds) {
-        this.clampBounds = clampBounds;
+    public QuadPositionForcer(AABB bounds) {
+        this.bounds = bounds;
     }
 
     @Override
     public boolean transform(MutableQuadView quad) {
         Direction.Axis axis = quad.nominalFace().getAxis();
 
-        clamp(quad, this.clampBounds);
+        setPosition(quad, this.bounds);
 
         // Check if the quad would be invisible and cull it.
         float x1 = quad.posByIndex(0, xCoord(axis));
@@ -66,12 +49,16 @@ public class QuadClamper implements QuadTransform {
         return !flag1 && !flag2;
     }
 
-    private void clamp(MutableQuadView quad, AABB bb) {
+    private void setPosition(MutableQuadView quad, AABB bb) {
+        float minX = (float) bounds.minX, minY = (float) bounds.minY, minZ = (float) bounds.minZ;
+        float maxX = (float) bounds.maxX, maxY = (float) bounds.maxY, maxZ = (float) bounds.maxZ;
+        float middleX = (minX + maxX) / 2f, middleY = (minY + maxY) / 2f, middleZ = (minZ + maxZ) / 2f;
+
         for (int i = 0; i < 4; i++) {
             quad.copyPos(i, pos);
-            pos.set((float) Mth.clamp(pos.x(), bb.minX, bb.maxX),
-                    (float) Mth.clamp(pos.y(), bb.minY, bb.maxY),
-                    (float) Mth.clamp(pos.z(), bb.minZ, bb.maxZ));
+            pos.set(middleX - pos.x() > Mth.EPSILON ? minX : maxX,
+                    middleY - pos.y() > Mth.EPSILON ? minY : maxY,
+                    middleZ - pos.z() > Mth.EPSILON ? minZ : maxZ);
             quad.pos(i, pos);
         }
     }
