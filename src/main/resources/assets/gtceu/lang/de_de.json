@@ -1920,6 +1920,7 @@
     "config.gtceu.option.tungstensteelBoilerMaxTemperature": "WolframstahlBoilerMaxTemperature",
     "config.gtceu.option.universalHazards": "universelle Gefahren",
     "config.gtceu.option.updateIntervals": "updateIntervals",
+    "config.gtceu.option.useAE2Certus": "Verwende AE2 Certus",
     "config.gtceu.option.useVBO": "Verwende VBO",
     "config.gtceu.option.voltageTierAdvImpeller": "SpannungTierAdvImpeller",
     "config.gtceu.option.voltageTierAdvNanoSuit": "SpannungTierAdvNanoSuit",

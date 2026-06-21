@@ -272,6 +272,12 @@ public class ConfigHolder {
             @Configurable.DecimalRange(min = 0.0, max = Integer.MAX_VALUE)
             @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
             public double meHatchEnergyUsage = 4.0;
+
+            @Configurable
+            @Configurable.Comment({ "Use AE2 Certus Quartz, dust and blocks instead of creating new ones.",
+                    "Default: false" })
+            @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+            public boolean useAE2Certus = false; // Default to false for backwards compatibility
         }
 
         public static class MinimapCompatConfig {
