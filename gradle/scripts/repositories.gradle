@@ -17,6 +17,7 @@ repositories {
         filter {
             includeGroup("mezz.jei")
             includeGroup("org.embeddedt")
+            includeGroup("vazkii.patchouli")
         }
     }
 
@@ -29,7 +30,6 @@ repositories {
         name = "FirstDarkDev Maven"
         url = "https://maven.firstdark.dev/snapshots"
     }
-
 
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository { maven { url = "https://maven.createmod.net" } }
@@ -96,5 +96,10 @@ repositories {
     exclusiveContent { // Xaero's
         forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
         filter { includeGroupAndSubgroups("xaero") }
+    }
+
+    exclusiveContent { // JitPack - ModKit
+        forRepository { maven { url = "https://jitpack.io" } }
+        filter { includeGroup("com.github.thedarkcolour") }
     }
 }

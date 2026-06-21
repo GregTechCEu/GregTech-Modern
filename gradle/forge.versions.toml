@@ -27,6 +27,9 @@ flywheel = "1.0.4"
 xaerosLib = "1.1.0"
 xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
+patchouli = "1.20.1-84.1-FORGE"
+forestry  = "2.10.2"
+modkit = "0302f9aa42"
 
 ## modrinth maven ##
 jade = "11.6.3"
@@ -91,6 +94,10 @@ modernfix           = { module = "maven.modrinth:modernfix", version.ref = "mode
 xaeroslib           = { module = "xaero.lib:xaerolib-forge-1.20.1", version.ref = "xaerosLib" }
 xaerosworldmap      = { module = "xaero.map:xaeroworldmap-forge-1.20.1", version.ref = "xaerosWorldMap" }
 xaerosminimap       = { module = "xaero.minimap:xaerominimap-forge-1.20.1", version.ref = "xaerosMinimap" }
+
+patchouli           = { module = "vazkii.patchouli:Patchouli", version.ref = "patchouli" }
+forestry            = { module = "maven.modrinth:forestry-community-edition", version.ref = "forestry" }
+modkit              = { module = "com.github.thedarkcolour:ModKit", version.ref = "modkit" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.20.1-core-api", version.ref = "ccTweaked" }

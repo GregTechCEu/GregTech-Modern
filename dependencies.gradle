@@ -118,4 +118,12 @@ dependencies {
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
+
+    //patchouli
+    modCompileOnly(variantOf(forge.patchouli) { classifier("api") })
+    modExtraLocalRuntime(forge.patchouli)
+
+    // Forestry
+    modCompileOnly(forge.forestry)
+    modLocalRuntime(forge.modkit)
 }
