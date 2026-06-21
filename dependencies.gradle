@@ -79,7 +79,6 @@ dependencies {
 
     // Client-only runtime mods //
     clientLocalRuntime(forge.sodium.full)
-    clientLocalRuntime(forge.sodium.impl)
     clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 

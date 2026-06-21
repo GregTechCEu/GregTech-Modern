@@ -43,26 +43,6 @@ public class GTEarlyConfig {
         addHiddenRule("dev", !FMLLoader.isProduction());
         addHiddenRule("dev.datagen", DatagenModLoader.isRunningDataGen());
 
-        // hidden rules for mod dependencies
-        enableIfModPresent("emi", "emi");
-        enableIfModPresent("jei", "jei");
-        enableIfModPresent("rei", "roughlyenoughitems");
-
-        enableIfModPresent("embeddium", "embeddium");
-        enableIfModPresent("sodium", "sodium");
-        enableIfModPresent("iris", "iris");
-        enableIfModPresent("client.bloom.normal.embeddium", "embeddium");
-        enableIfModPresent("client.bloom.normal.sodium", "sodium");
-        enableIfModPresent("client.bloom.normal.iris", "iris");
-        enableIfModPresent("client.bloom.safemode.embeddium", "embeddium");
-        enableIfModPresent("client.bloom.safemode.sodium", "sodium");
-
-        enableIfModPresent("top", "top");
-
-        enableIfModPresent("ftbchunks", "ftbchunks");
-        enableIfModPresent("xaerominimap", "xaerominimap");
-        enableIfModPresent("xaeroworldmap", "xaeroworldmap");
-
         // bind non-empty parents
         for (Map.Entry<String, Option> entry : this.options.entrySet()) {
             if (entry.getValue().getParent() != null) continue;
