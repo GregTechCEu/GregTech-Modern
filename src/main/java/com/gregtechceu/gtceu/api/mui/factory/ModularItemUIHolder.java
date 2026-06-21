@@ -67,7 +67,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         return new ModularPanel<>("modularItem")
                 .leftRel(.2f)
                 .width(250)
-                .child(GTMuiWidgets.createTitleBar(IDrawable.EMPTY.asIcon().size(0), "Modules", 250,
+                .child(GTMuiWidgets.createTitleBar(null, "Modules", 250,
                         GTGuiTextures.BACKGROUND))
                 .child(playerInventory())
                 .child(new ToggleButton()
