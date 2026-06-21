@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.module.ItemModuleSlot;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -22,7 +22,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,8 +49,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class EquipmentFoundryBlockEntity extends BlockEntity
-                                         implements ICapabilityProvider, IUIHolder<PosGuiData>, ISyncManaged {
+public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
+                                         implements ICapabilityProvider, IUIHolder<PosGuiData> {
 
     public static final int MAX_MODIFIER_SLOTS = 10;
 
@@ -290,10 +289,4 @@ public class EquipmentFoundryBlockEntity extends BlockEntity
     public ModularScreen createScreen(PosGuiData posGuiData, ModularPanel<?> modularPanel) {
         return new GTGuiScreen(modularPanel, GTGuiTheme.EQUIPMENT_FOUNDRY);
     }
-
-    @Override
-    public void scheduleRenderUpdate() {}
-
-    @Override
-    public void markAsChanged() {}
 }
