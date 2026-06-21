@@ -56,6 +56,11 @@ configurations {
     testImplementation.canBeResolved = false
     testRuntimeOnly.canBeResolved = false
 
+    create "localRuntime", { canBeResolved = false }
+    create "extraLocalRuntime", { canBeResolved = false }
+    create "clientLocalRuntime", { canBeResolved = false }
+    create "clientExtraLocalRuntime", { canBeResolved = false }
+
     runtimeClasspath.extendsFrom localRuntime
     extraRuntimeClasspath.extendsFrom extraLocalRuntime
     clientRuntimeClasspath.extendsFrom clientLocalRuntime
