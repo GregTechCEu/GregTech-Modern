@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Predicates {
 
@@ -308,9 +309,20 @@ public class Predicates {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             // TODO xor predicate matching :)
-            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
-                    .setExactLimit(1)
-                    .setPriority(1);
+            return new PatternPredicate(state -> {
+                Block block = state.retrieveCurrentBlockState().getBlock();
+                if (PartAbility.DATA_ACCESS.isApplicable(block) ||
+                        PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
+                    return null;
+                }
+                List<Block> blocks = new ArrayList<>(
+                        List.of(PartAbility.DATA_ACCESS.getAllBlocks().toArray(new Block[0])));
+                blocks.addAll(PartAbility.OPTICAL_DATA_RECEPTION.getAllBlocks());
+                return new BlockMatchingError(state.getBlockPos(), blocks);
+            }, Stream
+                    .concat(PartAbility.DATA_ACCESS.getAllBlocks().stream(),
+                            PartAbility.OPTICAL_DATA_RECEPTION.getAllBlocks().stream())
+                    .map(BlockInfo::fromBlock).toList()).setExactLimit(1);
         }
         return null;
     }

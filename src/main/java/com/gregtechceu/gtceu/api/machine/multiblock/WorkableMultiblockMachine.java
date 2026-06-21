@@ -114,7 +114,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void formStructure(@NotNull String substructureName) {
         super.formStructure(substructureName);
         // attach parts' traits
-        // var cache = getSubstructure(substructureName).getCache();
         var cache = patternStates.get(substructureName).getCache();
         for (var entry : cache.long2ObjectEntrySet()) {
             if (entry.getValue().getBlockState().getBlock() instanceof ActiveBlock) {
@@ -123,20 +122,14 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             }
         }
 
-        // activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
         capabilitiesProxy.clear();
         capabilitiesFlat.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            // if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                // if (!handlerList.isValid(io)) continue;
                 this.addHandlerList(handlerList);
                 traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
             }

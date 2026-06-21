@@ -94,6 +94,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                 MultiblockWorldSavedData.getOrCreate(serverLevel).removeMapping(pattern);
             }
         }
+        invalidateAllStructures();
     }
 
     public Map<String, IBlockPattern> getStructurePatterns() {
@@ -273,8 +274,7 @@ public class MultiblockControllerMachine extends MetaMachine {
                     return true;
                 });
 
-                // this.parts.sort(GTMemoizer.memoizeFunctionWeakIdent(getDefinition().getPartSorter()));
-                // this.parts.sort(getDefinition().getPartSorter());
+                this.parts.sort(getDefinition().getPartSorter().apply(this));
                 for (var part : parts) {
                     if (part instanceof ParallelHatchPartMachine pHatch) {
                         this.parallelHatch = pHatch;
@@ -326,6 +326,14 @@ public class MultiblockControllerMachine extends MetaMachine {
             this.isFlipped = flipped;
             notifyBlockUpdate();
         }
+    }
+
+    public void invalidateAllStructures() {
+        for (String name : patternStates.keySet()) {
+            if (name.equals(DEFAULT_STRUCTURE)) continue;
+            invalidateStructure(name);
+        }
+        invalidateStructure();
     }
 
     public void invalidateStructure() {
@@ -400,14 +408,8 @@ public class MultiblockControllerMachine extends MetaMachine {
      * {@link #//onBlockStateChanged(BlockPos, BlockState)}
      */
     public void onPartUnload() {
-        /*
-         * parts.removeIf(part -> part.self().isRemoved());
-         * getMultiblockState().setError(MultiblockState.UNLOAD_ERROR);
-         * if (getLevel() instanceof ServerLevel serverLevel) {
-         * MultiblockWorldSavedData.getOrCreate(serverLevel).addAsyncLogic(this);
-         * }
-         * updatePartPositions();
-         */
+        parts.removeIf(part -> part.self().isRemoved());
+        updatePartPositions();
     }
 
     @Override
@@ -419,9 +421,7 @@ public class MultiblockControllerMachine extends MetaMachine {
             for (var patternState : patternStates.values()) {
                 mwsd.removeMapping(patternState);
             }
-            // TODO structure check
             checkAndFormStructure();
-            // mwsd.addAsyncLogic(this);
         }
     }
 
