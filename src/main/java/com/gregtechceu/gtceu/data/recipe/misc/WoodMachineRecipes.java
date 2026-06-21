@@ -312,10 +312,8 @@ public class WoodMachineRecipes {
         }
         if (CUSTOM_ENTRIES == null) {
             if (GTCEu.Mods.isKubeJSLoaded()) {
-                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>();
-                var evt = new RegisterWoodsEventJS();
-                GTCEuStartupEvents.REGISTER_WOODS.post(evt);
-                CUSTOM_ENTRIES = new ArrayList<WoodTypeEntry>(evt.woods);
+                List<WoodTypeEntry> eventResult = KJSCallWrapper.registerWoods();
+                CUSTOM_ENTRIES = new ArrayList<>(eventResult);
             } else {
                 CUSTOM_ENTRIES = List.of();
             }
@@ -1251,5 +1249,14 @@ public class WoodMachineRecipes {
                 .outputFluids(CoalTar.getFluid(4000))
                 .duration(320).EUt(96)
                 .save(provider);
+    }
+
+    private static final class KJSCallWrapper {
+
+        private static List<WoodTypeEntry> registerWoods() {
+            RegisterWoodsEventJS event = new RegisterWoodsEventJS();
+            GTCEuStartupEvents.REGISTER_WOODS.post(event);
+            return event.woods;
+        }
     }
 }

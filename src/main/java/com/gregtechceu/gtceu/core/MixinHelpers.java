@@ -63,6 +63,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import com.tterrag.registrate.util.entry.BlockEntry;
+import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -405,6 +406,7 @@ public class MixinHelpers {
         if (!GTCEu.Mods.isKubeJSLoaded()) {
             return;
         }
+        KJSCallWrapper.updateRegistryAccessContainer(registries);
 
         KJSCallWrapper.postEventWithRegistry(KJSCallWrapper::postOreVeinEvent,
                 registries.registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY));
@@ -448,6 +450,13 @@ public class MixinHelpers {
 
         private static void postBedrockOreEvent(WritableRegistry<BedrockOreDefinition> registry) {
             GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(new GTBedrockOreVeinEventJS(registry));
+        }
+
+        private static void updateRegistryAccessContainer(RegistryAccess.Frozen registriesWithEverything) {
+            if (RegistryAccessContainer.current.access().registries().count() <
+                    registriesWithEverything.registries().count()) {
+                RegistryAccessContainer.current = new RegistryAccessContainer(registriesWithEverything);
+            }
         }
     }
 

@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 
 import net.minecraft.core.LayeredRegistryAccess;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.RegistryLayer;
 import net.minecraft.server.WorldLoader;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,14 +24,6 @@ public class WorldLoaderMixin {
                      shift = At.Shift.BEFORE))
     private static <D, R> void gtceu$postKJSVeinEvents(CallbackInfoReturnable<CompletableFuture<R>> cir,
                                                        @Local(ordinal = 1) LayeredRegistryAccess<RegistryLayer> layered) {
-        RegistryAccess.Frozen registriesWithEverything = layered.compositeAccess();
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            if (RegistryAccessContainer.current.access().registries().count() <
-                    registriesWithEverything.registries().count()) {
-                RegistryAccessContainer.current = new RegistryAccessContainer(registriesWithEverything);
-            }
-        }
-
-        MixinHelpers.postKJSVeinEvents(registriesWithEverything);
+        MixinHelpers.postKJSVeinEvents(layered.compositeAccess());
     }
 }
