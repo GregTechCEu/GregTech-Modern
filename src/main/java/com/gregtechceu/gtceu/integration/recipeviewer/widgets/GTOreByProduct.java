@@ -269,23 +269,23 @@ public class GTOreByProduct {
             ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material);
 
             addToOutputs(material, TagPrefix.gemExquisite, 1);
-            addGemChance(300,  500,  highOutput);
+            addGemChance(300, 500, highOutput);
             addToOutputs(material, TagPrefix.gemFlawless, 1);
             addGemChance(1000, 1500, highOutput);
             addToOutputs(material, TagPrefix.gem, 1);
-            addGemChance(3500, 5000,  highOutput);
+            addGemChance(3500, 5000, highOutput);
             addToOutputs(material, TagPrefix.dustPure, 1);
-            addGemChance(5000,  2500,  highOutput);
+            addGemChance(5000, 2500, highOutput);
 
             if (!flawedStack.isEmpty()) {
                 addToOutputs(flawedStack);
-                addGemChance(2500,  2000,  highOutput);
+                addGemChance(2500, 2000, highOutput);
             } else {
                 addEmptyOutputs(1);
             }
             if (!chippedStack.isEmpty()) {
                 addToOutputs(chippedStack);
-                addGemChance(3500,  3000,  highOutput);
+                addGemChance(3500, 3000, highOutput);
             } else {
                 addEmptyOutputs(1);
             }

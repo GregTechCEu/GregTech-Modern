@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
