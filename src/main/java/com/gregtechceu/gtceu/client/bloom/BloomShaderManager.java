@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.gson.JsonSyntaxException;
+import net.irisshaders.iris.api.v0.IrisApi;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.toma.configuration.config.validate.IConfigValueValidator;

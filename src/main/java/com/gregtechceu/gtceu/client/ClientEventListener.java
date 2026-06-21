@@ -67,7 +67,7 @@ public class ClientEventListener {
     public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
         Camera camera = event.getCamera();
         PoseStack poseStack = event.getPoseStack();
-        float partialTick = event.getPartialTick();
+        float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             // to render the preview after block entities, before the translucent.

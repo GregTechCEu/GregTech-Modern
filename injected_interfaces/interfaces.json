@@ -8,9 +8,6 @@
     "com/mojang/blaze3d/vertex/VertexConsumer": [
         "com/gregtechceu/gtceu/core/util/extensions/VertexConsumerExt"
     ],
-    "net/minecraftforge/client/model/lighting/QuadLighter": [
-        "com/gregtechceu/gtceu/core/util/extensions/QuadLighterExt"
-    ],
     "net/minecraft/world/entity/Entity": [
         "com/gregtechceu/gtceu/core/IFireImmuneEntity",
         "com/gregtechceu/gtceu/core/IBreathingEntity"

@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
 
 public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, TriState bloom) {
 
@@ -43,7 +42,7 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, Tr
 
     public static class Serializer implements MetadataSectionSerializer<GTTextureMetadata> {
 
-        protected static final ResourceLocation EMPTY_CONNECTION = new ResourceLocation("", "");
+        protected static final ResourceLocation EMPTY_CONNECTION = ResourceLocation.fromNamespaceAndPath("", "");
 
         // spotless:off
         public static final Codec<GTTextureMetadata> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -54,10 +53,7 @@ public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, Tr
 
         @Override
         public GTTextureMetadata fromJson(@Nullable JsonObject json) throws JsonParseException {
-            return CODEC.parse(JsonOps.INSTANCE, json).get()
-                    .map(Function.identity(), r -> {
-                        throw new JsonParseException(r.message());
-                    });
+            return CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(JsonParseException::new);
         }
 
         @Override

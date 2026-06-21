@@ -18,8 +18,10 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,7 +153,7 @@ public final class GTParticleManager {
             IRenderSetup handler = entry.getKey();
             boolean initialized = false;
 
-            BufferBuilder buffer = Tesselator.getInstance().begin();
+            BufferBuilder buffer = null;
             for (GTParticle particle : particles) {
                 if (!particle.shouldRender(context)) {
                     continue;
@@ -159,6 +161,9 @@ public final class GTParticleManager {
                 try {
                     if (!initialized) {
                         initialized = true;
+                        // the buffer is only started once we know there is at least one particle to render
+                        buffer = Tesselator.getInstance()
+                                .begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
                         if (handler != null) {
                             handler.preDraw(buffer);
                         }

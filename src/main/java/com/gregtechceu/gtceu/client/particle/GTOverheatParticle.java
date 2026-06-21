@@ -273,14 +273,12 @@ public class GTOverheatParticle extends GTBloomParticle {
                     GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
-
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
         public void postDraw(BufferBuilder buffer) {
-            BufferUploader.drawWithShader(buffer.end());
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
             RenderSystem.disableBlend();
             RenderSystem.defaultBlendFunc();
         }
@@ -294,14 +292,12 @@ public class GTOverheatParticle extends GTBloomParticle {
             RenderSystem.disableBlend();
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.setShaderColor(1, 1, 1, 1);
-
-            buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         }
 
         @Override
         @OnlyIn(Dist.CLIENT)
         public void postDraw(BufferBuilder buffer) {
-            BufferUploader.drawWithShader(buffer.end());
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
         }
     };
 }
