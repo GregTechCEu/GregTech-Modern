@@ -1,5 +1,4 @@
 [versions]
-ldlib = "1.0.40.b"
 registrate = "MC1.20-1.3.11"
 configuration = "3.1.0-forge"
 mixinExtras = "0.5.0-rc.3"
@@ -55,7 +54,6 @@ ftbquests-cm = "6167056"
 ftbchunks-cm = "5956390"
 
 [libraries]
-ldlib               = { module = "com.lowdragmc.ldlib:ldlib-forge-1.20.1", version.ref = "ldlib" }
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
 configuration       = { module = "dev.toma.configuration:configuration-1.20.1", version.ref = "configuration" }
 mixinExtras-common  = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinExtras" }

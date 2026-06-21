@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
@@ -11,8 +10,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.pattern.*;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.*;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -39,7 +42,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -58,15 +60,15 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Getter
     private List<MonitorGroup> monitorGroups = new ArrayList<>();
 
-    private @Nullable MultiblockState patternFindingState;
+    private @Nullable CurrentBlockInfo patternFindingState;
 
-    private static @Nullable TraceabilityPredicate MULTI_PREDICATE = null;
+    private static @Nullable PatternPredicate MULTI_PREDICATE = null;
 
     public CentralMonitorMachine(BlockEntityCreationInfo info) {
         super(info, new CentralMonitorLogic());
     }
 
-    public static TraceabilityPredicate getMultiPredicate() {
+    public static PatternPredicate getMultiPredicate() {
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)
@@ -83,8 +85,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.clearPatternFindingState();
     }
 
@@ -129,15 +131,17 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     protected void clearPatternFindingState() {
-        if (this.patternFindingState != null)
-            this.patternFindingState.clean();
-        this.patternFindingState = null;
+        // if (this.patternFindingState != null)
+        // this.patternFindingState.clean();
+        // this.patternFindingState = null;
     }
 
-    protected MultiblockState getPatternFindingState() {
+    protected CurrentBlockInfo getPatternFindingState() {
         if (this.patternFindingState == null) {
-            this.patternFindingState = new MultiblockState(getLevel(), getBlockPos());
-            this.patternFindingState.clean();
+            this.patternFindingState = new CurrentBlockInfo();
+            patternFindingState.setLevel(getLevel());
+            patternFindingState.setCurrentPos(getBlockPos());
+            // this.patternFindingState.clean();
         }
         return this.patternFindingState;
     }
@@ -145,14 +149,17 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     public boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
 
-        MultiblockState state = getPatternFindingState();
-        if (!state.update(pos, getMultiPredicate())) {
-            return false;
-        }
-        state.io = IO.BOTH;
-
-        return Stream.concat(state.predicate.common.stream(), state.predicate.limited.stream())
-                .anyMatch(predicate -> predicate.test(state));
+        CurrentBlockInfo state = getPatternFindingState();
+        /*
+         * if (!state.update(pos, getMultiPredicate())) {
+         * return false;
+         * }
+         * state.io = IO.BOTH;
+         *
+         * return Stream.concat(state.predicate.common.stream(), state.predicate.limited.stream())
+         * .anyMatch(predicate -> predicate.test(state));
+         */
+        return false;
     }
 
     public void updateStructureDimensions() {
@@ -162,10 +169,10 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();
 
-        Direction left = RelativeDirection.LEFT.getRelative(front, spin, false);
-        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, false);
-        Direction up = RelativeDirection.UP.getRelative(front, spin, false);
-        Direction down = RelativeDirection.DOWN.getRelative(front, spin, false);
+        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, spin, false);
+        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, spin, false);
+        Direction up = RelativeDirection.UP.getRelativeFacing(front, spin, false);
+        Direction down = RelativeDirection.DOWN.getRelativeFacing(front, spin, false);
         BlockPos.MutableBlockPos posLeft = getBlockPos().mutable().move(left);
         BlockPos.MutableBlockPos posRight = getBlockPos().mutable().move(right);
         BlockPos.MutableBlockPos posUp = getBlockPos().mutable().move(up);
@@ -209,7 +216,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public BlockPattern getPattern() {
+    public IBlockPattern getDefaultStructurePattern() {
         updateStructureDimensions();
         if (leftDist + rightDist < 1 || upDist + downDist < 1) {
             leftDist = 3;
@@ -229,13 +236,13 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
             }
         }
 
-        String[] aisle = new String[upDist + downDist + 1];
+        String[] slice = new String[upDist + downDist + 1];
         for (int i = 0; i < upDist + downDist + 1; i++) {
-            aisle[i] = pattern[i].toString();
+            slice[i] = pattern[i].toString();
         }
 
-        return FactoryBlockPattern.start()
-                .aisle(aisle)
+        return MultiblockPatternBuilder.start()
+                .slice(slice)
                 .where('B', getMultiPredicate())
                 .where('C', Predicates.controller(Predicates.blocks(this.getDefinition().get())))
                 .build();
@@ -245,8 +252,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction front = getFrontFacing();
         Direction spin = getUpwardsFacing();
         boolean flipped = isFlipped();
-        Direction right = RelativeDirection.RIGHT.getRelative(front, spin, flipped);
-        Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
+        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, spin, flipped);
+        Direction up = RelativeDirection.UP.getRelativeFacing(front, spin, flipped);
 
         BlockPos tmp = getBlockPos().mutable().move(right, rightDist).move(up, upDist);
 
@@ -264,8 +271,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         Direction spin = getUpwardsFacing();
         boolean flipped = isFlipped();
 
-        Direction left = RelativeDirection.LEFT.getRelative(front, spin, flipped);
-        Direction up = RelativeDirection.UP.getRelative(front, spin, flipped);
+        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, spin, flipped);
+        Direction up = RelativeDirection.UP.getRelativeFacing(front, spin, flipped);
 
         col = leftDist + rightDist - col;
         BlockPos pos = getBlockPos().relative(left, leftDist - col).relative(up, upDist - row);
