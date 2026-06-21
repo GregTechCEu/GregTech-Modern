@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
+import net.neoforged.neoforge.network.PacketDistributor;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
@@ -330,7 +330,7 @@ public class GTCommands {
         public void run() {
             boolean first = true;
             for (ClientCacheManager.ProspectionInfo info : prospectionData) {
-                GTNetwork.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
+                PacketDistributor.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
                         info.isDimCache, info.dim, info.data, first));
                 first = false;
 

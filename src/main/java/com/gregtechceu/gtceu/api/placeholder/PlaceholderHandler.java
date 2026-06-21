@@ -21,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -51,11 +52,11 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.register(placeholder.getName(), placeholder);
+        GTRegistries.register(GTRegistries.PLACEHOLDERS, GTCEu.id(placeholder.getName()), placeholder);
     }
 
     public static void addOrOverridePlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getName(), placeholder);
+        GTRegistries.register(GTRegistries.PLACEHOLDERS, GTCEu.id(placeholder.getName()), placeholder);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -82,12 +83,12 @@ public class PlaceholderHandler {
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         PlaceholderContext context,
                                                         Object2IntOpenHashMap<String> indices) throws PlaceholderException {
-        if (!GTRegistries.PLACEHOLDERS.containKey(placeholder.get(0).toString()))
+        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.get(0).toString())))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         String name = placeholder.get(0).toString();
         indices.addTo(name, 1);
         context.index(indices.getInt(name));
-        return Objects.requireNonNull(GTRegistries.PLACEHOLDERS.get(name)).apply(context,
+        return Objects.requireNonNull(GTRegistries.PLACEHOLDERS.get(GTCEu.id(name))).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -188,7 +189,8 @@ public class PlaceholderHandler {
         Consumer<String> onSearch = (newSearch) -> {
             placeholderReference.clearAllWidgets();
             int y = 2;
-            ArrayList<String> placeholders = new ArrayList<>(GTRegistries.PLACEHOLDERS.keys());
+            ArrayList<String> placeholders = new ArrayList<>(
+                    GTRegistries.PLACEHOLDERS.keySet().stream().map(ResourceLocation::getPath).toList());
             placeholders.removeIf(s -> s == null || !s.contains(newSearch));
             placeholders.sort(String::compareTo);
             for (String placeholder : placeholders) {

@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.client.bloom;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
-import com.gregtechceu.gtceu.core.mixins.client.bloom.GameRendererAccessor;
 
 import dev.architectury.event.events.common.TickEvent;
 import net.minecraft.client.Minecraft;
@@ -128,12 +127,12 @@ public class BloomShaderManager {
     @Getter
     private static boolean bloomAvailable = updateBloomShaderAvailability();
 
+    private static int availabilityTick = 0;
+
     @ApiStatus.Internal
     public static void updateShaderAvailability(ClientTickEvent event) {
-
-        int tick = ((GameRendererAccessor) Minecraft.getInstance().gameRenderer).getTick();
         // only update bloom availability once a second so every frame isn't bogged down with mod loaded checks
-        if (tick % 20 != 0) return;
+        if (availabilityTick++ % 20 != 0) return;
 
         bloomAvailable = updateBloomShaderAvailability();
     }

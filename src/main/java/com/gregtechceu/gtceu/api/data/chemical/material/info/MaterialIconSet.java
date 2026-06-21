@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.info;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
@@ -119,7 +121,7 @@ public class MaterialIconSet {
         this.isRootIconset = isRootIconset;
         this.parentIconset = parentIconset;
 
-        GTRegistries.MATERIAL_ICON_SETS.register(this.id, this);
+        GTRegistries.register(GTRegistries.MATERIAL_ICON_SETS, this.id, this);
     }
 
     /**

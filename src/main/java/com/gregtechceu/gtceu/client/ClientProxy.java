@@ -78,7 +78,9 @@ public class ClientProxy {
             Layers.registerLayer(FluidRenderLayer::new, "bedrock_fluids");
             CommonEventListener.registerCapes(new RegisterGTCapesEvent());
 
-            if (GTCEu.Mods.isSodiumEmbeddiumLoaded()) {
+            // GTEmbeddiumCompat references Embeddium-only internal classes, so it must not be touched when only
+            // Sodium (which no longer shares Embeddium's internals on 1.21) is present.
+            if (GTCEu.Mods.isEmbeddiumLoaded()) {
                 GTEmbeddiumCompat.init();
             }
         }

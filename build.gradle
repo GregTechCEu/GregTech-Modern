@@ -90,6 +90,15 @@ jacoco {
     applyTo runGameTestServer
 }
 
+// JaCoCo instrumentation adds probes that push the already-huge vanilla Blocks.<clinit> over the JVM's 64KB
+// method size limit (MethodTooLargeException), which fails class init and cascades into registry crashes.
+// We only report coverage for the test sourceset anyway, so exclude vanilla/library classes from instrumentation.
+runGameTestServer {
+    jacoco {
+        excludes = ['net.minecraft.*', 'com.mojang.*']
+    }
+}
+
 jacocoTestReport {
     doFirst {
         try {

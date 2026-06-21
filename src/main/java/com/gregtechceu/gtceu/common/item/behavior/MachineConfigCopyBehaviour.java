@@ -110,7 +110,7 @@ public class MachineConfigCopyBehaviour implements IInteractionItem, IAddInforma
             if (!player.isCreative()) GTTransferUtils.extractItemsFromPlayerInv(player, items, false);
 
             if (blockEntity instanceof ICopyable copyable) {
-                copyable.pasteConfig((ServerPlayer) player, tag);
+                copyable.pasteConfig((ServerPlayer) player, configTag);
             }
 
             player.displayClientMessage(Component.translatable("behaviour.memory_card.client_msg.pasted"), true);

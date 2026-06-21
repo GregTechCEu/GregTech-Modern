@@ -203,6 +203,10 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_EMBEDDIUM);
         }
 
+        public static boolean isEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_EMBEDDIUM);
+        }
+
         public static boolean isAE2Loaded() {
             return isModLoaded(GTValues.MODID_APPENG);
         }

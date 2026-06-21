@@ -38,7 +38,6 @@ import net.neoforged.neoforge.client.model.data.ModelData;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -76,8 +75,7 @@ public abstract class LevelRendererMixin {
     @Inject(method = "renderLevel", at = @At("HEAD"))
     private void renderLevel(DeltaTracker partialTick, boolean renderBlockOutline, Camera camera,
                              GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f viewMatrix,
-                             Matrix4f projectionMatrix, CallbackInfo ci,
-                             @Local(ordinal = 0) PoseStack poseStack) {
+                             Matrix4f projectionMatrix, CallbackInfo ci) {
         if (minecraft.player == null || level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
@@ -101,6 +99,9 @@ public abstract class LevelRendererMixin {
 
         Vec3 camPos = camera.getPosition();
 
+        // 1.21 no longer passes a PoseStack to renderLevel; the breaking-texture decals below are positioned
+        // purely via camera-relative translation, so a fresh identity stack matches vanilla's crumbling render.
+        PoseStack poseStack = new PoseStack();
         poseStack.pushPose();
         poseStack.translate(-camPos.x(), -camPos.y(), -camPos.z());
 

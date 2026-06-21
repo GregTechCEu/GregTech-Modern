@@ -74,6 +74,10 @@ dependencies {
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
     }
 
+    // KubeJS is a hard runtime requirement (e.g. MachineBuilder extends KubeJS' BuilderBase), so it must be on
+    // the standard runtime classpath (incl. the game-test server), not only extraLocalRuntime.
+    localRuntime(forge.bundles.kjs)
+
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     localRuntime(forge.emi)
     localRuntime(forge.jei.neoforge.impl)

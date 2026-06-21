@@ -74,8 +74,8 @@ public class BloomRenderer {
 
         // safe mode disabled -> use deeper, faster hackery
         if (!BloomRenderer.SafeMode.enabled()) {
-            ((LevelRendererAccessor) levelRenderer).invokeRenderChunkLayer(GTRenderTypes.bloom(), poseStack,
-                    camPos.x, camPos.y, camPos.z, projectionMatrix);
+            ((LevelRendererAccessor) levelRenderer).invokeRenderSectionLayer(GTRenderTypes.bloom(),
+                    camPos.x, camPos.y, camPos.z, poseStack.last().pose(), projectionMatrix);
 
             // have to re-setup here. so sad. very aw.
             GTRenderTypes.bloom().setupRenderState();

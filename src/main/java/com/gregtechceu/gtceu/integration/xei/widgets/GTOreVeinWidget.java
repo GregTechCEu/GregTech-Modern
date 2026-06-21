@@ -73,8 +73,8 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.weight = fluid.value().getWeight();
         this.dimensionFilter = fluid.value().getDimensionFilter();
         this.range = "NULL";
-        this.veinYield = veinYield(fluid);
-        this.depleted = depletion(fluid);
+        this.veinYield = veinYield(fluid.value());
+        this.depleted = depletion(fluid.value());
         setClientSideWidget();
         setupBaseGui(fluid.value());
         setupText(fluid.value());
@@ -86,8 +86,8 @@ public class GTOreVeinWidget extends WidgetGroup {
         this.weight = bedrockOre.value().weight();
         this.dimensionFilter = bedrockOre.value().dimensionFilter();
         this.range = "NULL";
-        this.veinYield = veinYield(bedrockOre);
-        this.depleted = depletion(bedrockOre);
+        this.veinYield = veinYield(bedrockOre.value());
+        this.depleted = depletion(bedrockOre.value());
         setClientSideWidget();
         setupBaseGui(bedrockOre.value());
         setupText(bedrockOre.value());

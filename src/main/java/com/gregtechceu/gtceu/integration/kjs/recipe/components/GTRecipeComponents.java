@@ -49,8 +49,8 @@ public class GTRecipeComponents {
         VALID_CAPS.put(GTRecipeCapabilities.CWU, CWU);
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
-        AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
-        ModLoader.get().postEvent(event);
+        AddonFinder.getAddonList().forEach(addon -> addon.registerRecipeKeys(event));
+        ModLoader.postEvent(event);
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 }

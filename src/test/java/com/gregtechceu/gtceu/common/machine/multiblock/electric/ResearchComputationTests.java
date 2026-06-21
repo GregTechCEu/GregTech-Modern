@@ -59,7 +59,7 @@ public class ResearchComputationTests {
                 .EUt(GTValues.VA[GTValues.EV])
                 .CWUt(RECIPE_CWUT)
                 .totalCWU(48)
-                .buildRawRecipe());
+                .build());
         handler.completeStaging();
     }
 

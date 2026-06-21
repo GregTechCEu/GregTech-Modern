@@ -55,6 +55,8 @@ public final class GTRegistries {
 
     // static registries' keys
     public static final ResourceKey<Registry<Element>> ELEMENT_REGISTRY = makeRegistryKey(GTCEu.id("element"));
+    public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET_REGISTRY = makeRegistryKey(
+            GTCEu.id("material_icon_set"));
     public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX_REGISTRY = makeRegistryKey(GTCEu.id("tag_prefix"));
     public static final ResourceKey<Registry<Material>> MATERIAL_REGISTRY = makeRegistryKey(GTCEu.id("material"));
     public static final ResourceKey<Registry<MachineDefinition>> MACHINE_REGISTRY = makeRegistryKey(GTCEu.id("machine"));
@@ -72,6 +74,7 @@ public final class GTRegistries {
     public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION_REGISTRY = makeRegistryKey(GTCEu.id("medical_condition"));
     // GT Registries
     public static final Registry<Element> ELEMENTS = makeRegistry(ELEMENT_REGISTRY);
+    public static final Registry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(MATERIAL_ICON_SET_REGISTRY);
     public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
     public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(TAG_PREFIX_REGISTRY);
 
