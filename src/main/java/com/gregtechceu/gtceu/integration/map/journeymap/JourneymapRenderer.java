@@ -60,7 +60,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
     @Override
     public boolean addMarker(String name, String id, ResourceKey<Level> dim, ChunkPos pos,
                              ProspectorMode.FluidInfo fluid) {
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
         }
@@ -79,7 +79,7 @@ public class JourneymapRenderer extends GenericMapRenderer {
 
     @Override
     public boolean addMarker(String name, ResourceKey<Level> dim, GeneratedVeinMetadata vein, String id) {
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         if (!api.playerAccepts(GTCEu.MOD_ID, DisplayType.Image)) {
             return false;
         }
@@ -102,24 +102,24 @@ public class JourneymapRenderer extends GenericMapRenderer {
         if (marker == null) {
             return false;
         }
-        IClientAPI api = JourneyMapPlugin.getJmApi();
+        IClientAPI api = GTJourneyMapPlugin.getJmApi();
         api.remove(marker);
         return true;
     }
 
     @Override
     public boolean doShowLayer(String name) {
-        return JourneyMapPlugin.getOptions().showLayer(name);
+        return GTJourneyMapPlugin.getOptions().showLayer(name);
     }
 
     @Override
     public void setLayerActive(String name, boolean active) {
-        JourneyMapPlugin.getOptions().toggleLayer(name, active);
+        GTJourneyMapPlugin.getOptions().toggleLayer(name, active);
     }
 
     @Override
     public void clear() {
-        var api = JourneyMapPlugin.getJmApi();
+        var api = GTJourneyMapPlugin.getJmApi();
         markers.forEach((id, marker) -> api.remove(marker));
         markers.clear();
     }

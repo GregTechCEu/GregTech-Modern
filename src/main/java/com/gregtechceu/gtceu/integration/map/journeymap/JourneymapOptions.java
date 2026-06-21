@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.map.journeymap;
 import com.gregtechceu.gtceu.GTCEu;
 
 import journeymap.api.v2.client.IClientAPI;
-import journeymap.api.v2.client.option.BooleanOption;
-import journeymap.api.v2.client.option.OptionCategory;
+import journeymap.api.v2.common.option.BooleanOption;
+import journeymap.api.v2.common.option.OptionCategory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class JourneymapOptions {
         if (!active) {
             JourneymapRenderer.getMarkers().forEach((id, marker) -> {
                 if (id.split("@")[0].equals(name)) {
-                    IClientAPI api = JourneyMapPlugin.getJmApi();
+                    IClientAPI api = GTJourneyMapPlugin.getJmApi();
                     api.remove(marker);
                 }
             });
@@ -41,7 +41,7 @@ public class JourneymapOptions {
             JourneymapRenderer.getMarkers().forEach((id, marker) -> {
                 if (id.split("@")[0].equals(name)) {
                     try {
-                        IClientAPI api = JourneyMapPlugin.getJmApi();
+                        IClientAPI api = GTJourneyMapPlugin.getJmApi();
                         api.show(marker);
                     } catch (Exception e) {
                         // It never actually throws anything...

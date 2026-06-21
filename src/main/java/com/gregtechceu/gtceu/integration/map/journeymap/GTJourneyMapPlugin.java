@@ -5,12 +5,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import journeymap.api.v2.client.IClientAPI;
 import journeymap.api.v2.client.IClientPlugin;
 import journeymap.api.v2.client.event.RegistryEvent;
+import journeymap.api.v2.common.JourneyMapPlugin;
 import journeymap.api.v2.common.event.ClientEventRegistry;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-@journeymap.api.v2.client.JourneyMapPlugin(apiVersion = IClientAPI.API_VERSION)
-public class JourneyMapPlugin implements IClientPlugin {
+@JourneyMapPlugin(apiVersion = IClientAPI.API_VERSION)
+public class GTJourneyMapPlugin implements IClientPlugin {
 
     @Getter
     private static boolean active = false;
@@ -26,7 +27,7 @@ public class JourneyMapPlugin implements IClientPlugin {
         active = true;
         jmApi = jmClientApi;
         JourneymapEventListener.init();
-        ClientEventRegistry.OPTIONS_REGISTRY_EVENT.subscribe(GTCEu.MOD_ID, JourneyMapPlugin::onOptionsRegistry);
+        ClientEventRegistry.OPTIONS_REGISTRY_EVENT.subscribe(GTCEu.MOD_ID, GTJourneyMapPlugin::onOptionsRegistry);
     }
 
     @Override
