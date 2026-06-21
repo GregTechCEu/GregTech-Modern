@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.function.Function;
 
 public record GTTextureMetadata(@Nullable ResourceLocation connectionTexture, TriState bloom) {
 

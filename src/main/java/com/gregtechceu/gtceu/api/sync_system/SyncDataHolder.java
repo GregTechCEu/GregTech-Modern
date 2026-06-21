@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.sync_system.data_transformers.ValueTransformers
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 

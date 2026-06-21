@@ -602,8 +602,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return left;
         }
 
-        public List<SizedFluidIngredient> handleFluidInternal(List<SizedFluidIngredient> left,
-                                                                        boolean simulate) {
+        public List<SizedFluidIngredient> handleFluidInternal(List<SizedFluidIngredient> left, boolean simulate) {
             boolean changed = false;
             for (var it = left.listIterator(); it.hasNext();) {
                 var ingredient = it.next();

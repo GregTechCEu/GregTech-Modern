@@ -126,7 +126,7 @@ public class GTModels {
             }
 
             prov.getVariantBuilder(ctx.getEntry())
-            // spotless:off
+                    // spotless:off
                     .partialState()
                         .with(LampBlock.INVERTED, false).with(LampBlock.POWERED, false)
                         .modelForState().modelFile(offModel)

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils.fakeplayer;
 
-import com.mojang.authlib.GameProfile;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.ChatType;
@@ -15,6 +14,7 @@ import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.entity.RelativeMovement;
 
+import com.mojang.authlib.GameProfile;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -28,7 +28,8 @@ public class FakeServerGamePacketListenerImpl extends ServerGamePacketListenerIm
     private static final Connection DUMMY_CONNECTION = new Connection(PacketFlow.CLIENTBOUND);
 
     public FakeServerGamePacketListenerImpl(MinecraftServer server, ServerPlayer player) {
-        super(server, DUMMY_CONNECTION, player, CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), "dummy"), false));
+        super(server, DUMMY_CONNECTION, player,
+                CommonListenerCookie.createInitial(new GameProfile(UUID.randomUUID(), "dummy"), false));
     }
 
     @Override

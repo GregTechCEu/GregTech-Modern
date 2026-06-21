@@ -20,7 +20,6 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -96,8 +95,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<SizedFluid
 
     @Override
     public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
-                                                                  List<SizedFluidIngredient> left,
-                                                                  boolean simulate) {
+                                                        List<SizedFluidIngredient> left,
+                                                        boolean simulate) {
         if (io != handlerIO) return left;
         if (io != IO.IN && io != IO.OUT) return left;
 

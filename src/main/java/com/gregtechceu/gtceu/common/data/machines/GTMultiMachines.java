@@ -185,7 +185,7 @@ public class GTMultiMachines {
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"))
             .additionalDisplay((controller, components) -> {
-            // spotless:off
+                // spotless:off
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
                             Component.translatable(

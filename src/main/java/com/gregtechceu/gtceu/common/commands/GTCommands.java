@@ -7,10 +7,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
-import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
 import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.commands.CommandBuildContext;
@@ -31,6 +29,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
@@ -40,7 +39,6 @@ import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
 

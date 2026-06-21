@@ -136,7 +136,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                     outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
-                        fillSteam = (List<SizedFluidIngredient>)tank.handleRecipe(IO.OUT, null, fillSteam, false);
+                        fillSteam = (List<SizedFluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
                         if (fillSteam.isEmpty()) break;
                     }
                 }

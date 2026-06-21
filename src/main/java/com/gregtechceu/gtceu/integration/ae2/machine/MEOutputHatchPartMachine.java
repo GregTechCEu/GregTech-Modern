@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
@@ -22,7 +21,6 @@ import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;

@@ -160,7 +160,8 @@ public class FluidRecipeCapability extends RecipeCapability<SizedFluidIngredient
         for (var content : outputContents) {
             var ing = this.of(content.content);
             int amount;
-            if (ing.ingredient() instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
+            if (ing.ingredient() instanceof IntProviderFluidIngredient provider)
+                amount = provider.getCountProvider().getMaxValue();
             else amount = ing.amount();
             maxAmount = Math.max(maxAmount, amount);
             ingredients.add(ing);

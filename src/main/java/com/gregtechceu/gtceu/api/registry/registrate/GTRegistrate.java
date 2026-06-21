@@ -120,7 +120,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                     GTCEu.LOGGER.fatal(hashtags);
                 });
             } else {
-                registrate.registerEventListeners(Objects.requireNonNull(modEventBus.orElse(ModLoadingContext.get().getActiveContainer().getEventBus())));
+                registrate.registerEventListeners(Objects.requireNonNull(
+                        modEventBus.orElse(ModLoadingContext.get().getActiveContainer().getEventBus())));
             }
         }
         EXISTING_REGISTRATES.put(modId, registrate);

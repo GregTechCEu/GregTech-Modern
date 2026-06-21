@@ -16,6 +16,7 @@ public abstract class Placeholder {
 
     @Getter
     private final ResourceLocation id;
+
     public abstract MultiLineComponent apply(PlaceholderContext ctx,
                                              List<MultiLineComponent> args) throws PlaceholderException;
 

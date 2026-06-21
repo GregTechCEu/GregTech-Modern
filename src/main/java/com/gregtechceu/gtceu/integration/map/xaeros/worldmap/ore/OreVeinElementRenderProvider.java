@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+
 import xaero.map.WorldMap;
 import xaero.map.common.config.option.WorldMapProfiledConfigOptions;
 import xaero.map.element.MapElementRenderProvider;

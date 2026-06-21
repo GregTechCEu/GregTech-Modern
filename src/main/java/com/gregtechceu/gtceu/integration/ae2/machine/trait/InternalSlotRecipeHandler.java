@@ -15,7 +15,6 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +84,7 @@ public final class InternalSlotRecipeHandler {
 
         @Override
         public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
-                                                                 boolean simulate) {
+                                                       boolean simulate) {
             if (io != IO.IN || slot.isItemEmpty()) return left;
             return slot.handleItemInternal(left, simulate);
         }
@@ -128,9 +127,8 @@ public final class InternalSlotRecipeHandler {
         }
 
         @Override
-        public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe,
-                                                                      List<SizedFluidIngredient> left,
-                                                                      boolean simulate) {
+        public List<SizedFluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedFluidIngredient> left,
+                                                            boolean simulate) {
             if (io != IO.IN || slot.isFluidEmpty()) return left;
             return slot.handleFluidInternal(left, simulate);
         }

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 
 import net.neoforged.bus.api.SubscribeEvent;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

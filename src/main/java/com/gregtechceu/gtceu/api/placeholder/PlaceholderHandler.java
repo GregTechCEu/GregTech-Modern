@@ -53,7 +53,7 @@ public class PlaceholderHandler {
     public static void addPlaceholder(Placeholder placeholder) {
         GTRegistries.register(GTRegistries.PLACEHOLDERS, placeholder.getId(), placeholder);
     }
-    
+
     @OnlyIn(Dist.CLIENT)
     public static void addRenderer(String id, IPlaceholderRenderer renderer) {
         RendererHolder.renderers.put(id, renderer);
@@ -184,7 +184,8 @@ public class PlaceholderHandler {
         Consumer<String> onSearch = (newSearch) -> {
             placeholderReference.clearAllWidgets();
             int y = 2;
-            ArrayList<String> placeholders = new ArrayList<>(GTRegistries.PLACEHOLDERS.keySet().stream().map(Object::toString).toList());
+            ArrayList<String> placeholders = new ArrayList<>(
+                    GTRegistries.PLACEHOLDERS.keySet().stream().map(Object::toString).toList());
             placeholders.removeIf(s -> s == null || !s.contains(newSearch));
             placeholders.sort(String::compareTo);
             for (String placeholder : placeholders) {

@@ -104,7 +104,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
             tag.put("batteryInventory", Objects.requireNonNull(tag.get("chargerInventory")));
         super.loadAdditional(tag, registries);
     }
-    
+
     @Override
     public int tintColor(int index) {
         if (index == 2) {

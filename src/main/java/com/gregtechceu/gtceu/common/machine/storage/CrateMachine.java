@@ -29,8 +29,6 @@ import net.minecraft.world.item.component.ItemContainerContents;
 
 import lombok.Getter;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 public class CrateMachine extends MetaMachine implements IUIMachine {
 
     @Getter
