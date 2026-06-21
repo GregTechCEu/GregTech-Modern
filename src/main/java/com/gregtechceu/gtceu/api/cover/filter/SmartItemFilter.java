@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -22,14 +20,11 @@ import brachy.modularui.drawable.DynamicDrawable;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.EnumSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.ToggleButton;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.menu.ContextMenuButton;
@@ -63,6 +58,11 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
+    public ItemStack getFilterItem() {
+        return GTItems.SMART_ITEM_FILTER.asStack();
+    }
+
+    @Override
     public void setOnUpdated(Consumer<ItemFilter> onUpdated) {
         this.onUpdated = filter -> {
             this.itemWriter.accept(filter);
@@ -91,25 +91,13 @@ public class SmartItemFilter implements ItemFilter {
     }
 
     @Override
-    public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return new Dialog<>("smart_item_filter")
-                .disablePanelsBelow(false)
-                .draggable(true)
-                .closeOnOutOfBoundsClick(true)
-                .child(GTMuiWidgets.createTitleBar(() -> GTItems.SMART_ITEM_FILTER.asStack(), 176,
-                        GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings))
-                .child(SlotGroupWidget.playerInventory(false).left(7).bottom(7));
-    }
-
-    @Override
     public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
         EnumSyncValue<SmartFilteringMode> mode = new EnumSyncValue<>(SmartFilteringMode.class,
                 this::getFilterMode, this::setFilterMode).allowC2S();
 
         syncManager.syncValue("mode", mode);
 
-        return Flow.row()
+        return Flow.row().coverChildrenHeight().width(162)
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()

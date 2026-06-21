@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.gui;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
@@ -32,8 +31,9 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.emi.emi.api.stack.EmiStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Objects;
 
 public class AEConfigWidget extends Widget<AEConfigWidget>
                             implements Interactable, GhostIngredientSlot<ItemStack> {
@@ -45,8 +45,8 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     private final int slotCount;
     private final boolean isFluid;
     private final int columns;
-    private PanelSyncManager syncManager;
-    private AEConfigSyncHandler configSyncHandler;
+    private @Nullable PanelSyncManager syncManager;
+    private @Nullable AEConfigSyncHandler configSyncHandler;
 
     @OnlyIn(Dist.CLIENT)
     private float lastMouseX;
@@ -55,11 +55,11 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     @OnlyIn(Dist.CLIENT)
     private int editingSlotIndex;
     @OnlyIn(Dist.CLIENT)
-    private String pendingAmount;
+    private @Nullable String pendingAmount;
     @OnlyIn(Dist.CLIENT)
-    private SecondaryPanel amountEditorPanel;
+    private @Nullable SecondaryPanel amountEditorPanel;
     @OnlyIn(Dist.CLIENT)
-    private TextFieldWidget amountField;
+    private @Nullable TextFieldWidget amountField;
 
     public AEConfigWidget(IConfigurableSlotList slotList, int slotCount, boolean isFluid) {
         this.slotList = slotList;
@@ -89,7 +89,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
         amountField = new TextFieldWidget() {
 
             @Override
-            public @NotNull Interactable.Result onKeyPressed(int keyCode, int scanCode, int modifiers) {
+            public Interactable.Result onKeyPressed(int keyCode, int scanCode, int modifiers) {
                 if (isFocused() && (keyCode == InputConstants.KEY_RETURN ||
                         keyCode == InputConstants.KEY_NUMPADENTER)) {
                     confirmAmountEdit();
@@ -124,8 +124,9 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
 
     @OnlyIn(Dist.CLIENT)
     private void confirmAmountEdit() {
-        if (editingSlotIndex < 0 || syncManager == null) return;
+        if (editingSlotIndex < 0 || syncManager == null || amountEditorPanel == null) return;
         String text = amountField != null ? amountField.getText() : pendingAmount;
+        if (text == null) return;
         long amount = AEGuiHelper.parseAmount(text);
         if (amount > 0) {
             String resolved = String.valueOf(amount);
@@ -146,7 +147,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     @OnlyIn(Dist.CLIENT)
     private void openAmountEditor(int slotIndex) {
         GenericStack config = configSyncHandler != null ? configSyncHandler.getClientConfig(slotIndex) : null;
-        if (config == null) return;
+        if (config == null || amountEditorPanel == null) return;
         editingSlotIndex = slotIndex;
         pendingAmount = String.valueOf(config.amount());
         if (amountEditorPanel.isPanelOpen()) {
@@ -189,7 +190,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
         for (int i = 0; i < slotCount; i++) {
             int x = slotX(i);
             int y = slotY(i);
-            drawSlotBackground(graphics, x, y, autoPull);
+            drawSlotBackground(context, x, y, autoPull);
 
             GenericStack config = configSyncHandler != null ? configSyncHandler.getClientConfig(i) : null;
             GenericStack stock = configSyncHandler != null ? configSyncHandler.getClientStock(i) : null;
@@ -306,7 +307,7 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     // --- GhostIngredientSlot ---
 
     @Override
-    public void setGhostIngredient(@NotNull ItemStack ingredient) {
+    public void setGhostIngredient(ItemStack ingredient) {
         if (isAutoPull() || syncManager == null) return;
         int slot = findTargetSlot();
         if (slot < 0) return;
@@ -341,11 +342,10 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
             if (fluidStack.getAmount() <= 0) fluidStack.setAmount(1000);
             int slot = findTargetSlot();
             if (slot < 0) return false;
-            FluidStack toSend = fluidStack;
             syncManager.callSyncedAction("ae_config_set_ghost", buf -> {
                 buf.writeVarInt(slot);
                 buf.writeBoolean(true);
-                toSend.writeToPacket(buf);
+                fluidStack.writeToPacket(buf);
             });
             return true;
         } else {
@@ -364,13 +364,13 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
     }
 
     @Override
-    public @Nullable ItemStack castGhostIngredientIfValid(@NotNull Object ingredient) {
+    public @Nullable ItemStack castGhostIngredientIfValid(Object ingredient) {
         if (isAutoPull() || !areAncestorsEnabled()) return null;
         return !isFluid && ingredient instanceof ItemStack itemStack ? itemStack : null;
     }
 
     @Override
-    public @NotNull Class<ItemStack> ingredientClass() {
+    public Class<ItemStack> ingredientClass() {
         return ItemStack.class;
     }
 
@@ -402,20 +402,20 @@ public class AEConfigWidget extends Widget<AEConfigWidget>
             AEGuiHelper.drawFluid(graphics, stack, x, y);
         } else if (stack.what() instanceof AEItemKey key) {
             ItemStack displayStack = new ItemStack(key.getItem());
-            if (key.hasTag()) displayStack.setTag(key.getTag().copy());
+            if (key.hasTag()) displayStack.setTag(Objects.requireNonNull(key.getTag()).copy());
             graphics.renderItem(displayStack, x, y);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void drawSlotBackground(GuiGraphics graphics, int x, int y, boolean autoPull) {
+    private void drawSlotBackground(ModularGuiContext context, int x, int y, boolean autoPull) {
         if (autoPull) {
-            GuiTextures.SLOT_DARK.draw(graphics, 0, 0, x, y, 18, 18);
-            GuiTextures.CONFIG_ARROW.draw(graphics, 0, 0, x, y, 18, 18);
+            GTGuiTextures.SLOT_DARK.draw(context, x, y, 18, 18);
+            GTGuiTextures.CONFIG_ARROW.draw(context, x, y, 18, 18);
         } else {
-            (isFluid ? GuiTextures.FLUID_SLOT : GuiTextures.SLOT).draw(graphics, 0, 0, x, y, 18, 18);
-            GuiTextures.CONFIG_ARROW_DARK.draw(graphics, 0, 0, x, y, 18, 18);
+            (isFluid ? GTGuiTextures.FLUID_SLOT : GTGuiTextures.SLOT).draw(context, x, y, 18, 18);
+            GTGuiTextures.CONFIG_ARROW_DARK.draw(context, x, y, 18, 18);
         }
-        GuiTextures.SLOT_DARK.draw(graphics, 0, 0, x, y + 18, 18, 18);
+        GTGuiTextures.SLOT_DARK.draw(context, x, y + 18, 18, 18);
     }
 }

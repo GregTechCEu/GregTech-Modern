@@ -527,13 +527,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover,
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("transferRate", getTransferRate());
         tag.putInt("io", getIo().ordinal());
         tag.putInt("distributionMode", getDistributionMode().ordinal());
         tag.putInt("manualIO", getManualIOMode().ordinal());
         tag.put("filter", filterHandler.getFilterItem().serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

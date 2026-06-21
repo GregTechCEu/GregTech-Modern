@@ -179,9 +179,9 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public static final MachineDefinition[] ELECTRIC_FURNACE = new SimpleMachineBuilder("electric_furnace",
+    public static final MachineDefinition[] ELECTRIC_FURNACE = new SimpleMachineBuilder(REGISTRATE, "electric_furnace",
             GTRecipeTypes.FURNACE_RECIPES).register();
-    public static final MachineDefinition[] ALLOY_SMELTER = new SimpleMachineBuilder("alloy_smelter",
+    public static final MachineDefinition[] ALLOY_SMELTER = new SimpleMachineBuilder(REGISTRATE, "alloy_smelter",
             GTRecipeTypes.ALLOY_SMELTER_RECIPES).register();
 
     public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines("arc_furnace",
@@ -196,90 +196,101 @@ public class GTMachines {
                             GTRecipeTypes.ARC_FURNACE_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .register(),
             ELECTRIC_TIERS);
-    public static final MachineDefinition[] ASSEMBLER = new SimpleMachineBuilder("assembler",
+    public static final MachineDefinition[] ASSEMBLER = new SimpleMachineBuilder(REGISTRATE, "assembler",
             GTRecipeTypes.ASSEMBLER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .hasPollutionDebuff(true)
             .register();
-    public static final MachineDefinition[] AUTOCLAVE = new SimpleMachineBuilder("autoclave",
+    public static final MachineDefinition[] AUTOCLAVE = new SimpleMachineBuilder(REGISTRATE, "autoclave",
             GTRecipeTypes.AUTOCLAVE_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] BENDER = new SimpleMachineBuilder("bender", GTRecipeTypes.BENDER_RECIPES)
+    public static final MachineDefinition[] BENDER = new SimpleMachineBuilder(REGISTRATE, "bender",
+            GTRecipeTypes.BENDER_RECIPES)
             .register();
-    public static final MachineDefinition[] BREWERY = new SimpleMachineBuilder("brewery", GTRecipeTypes.BREWING_RECIPES)
+    public static final MachineDefinition[] BREWERY = new SimpleMachineBuilder(REGISTRATE, "brewery",
+            GTRecipeTypes.BREWING_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] CANNER = new SimpleMachineBuilder("canner", GTRecipeTypes.CANNER_RECIPES)
+    public static final MachineDefinition[] CANNER = new SimpleMachineBuilder(REGISTRATE, "canner",
+            GTRecipeTypes.CANNER_RECIPES)
             .register();
-    public static final MachineDefinition[] CENTRIFUGE = new SimpleMachineBuilder("centrifuge",
+    public static final MachineDefinition[] CENTRIFUGE = new SimpleMachineBuilder(REGISTRATE, "centrifuge",
             GTRecipeTypes.CENTRIFUGE_RECIPES).tankScalingFunction(largeTankSizeFunction).register();
-    public static final MachineDefinition[] CHEMICAL_BATH = new SimpleMachineBuilder("chemical_bath",
+    public static final MachineDefinition[] CHEMICAL_BATH = new SimpleMachineBuilder(REGISTRATE, "chemical_bath",
             GTRecipeTypes.CHEMICAL_BATH_RECIPES).tankScalingFunction(hvCappedTankSizeFunction).register();
-    public static final MachineDefinition[] CHEMICAL_REACTOR = new SimpleMachineBuilder("chemical_reactor",
+    public static final MachineDefinition[] CHEMICAL_REACTOR = new SimpleMachineBuilder(REGISTRATE, "chemical_reactor",
             GTRecipeTypes.CHEMICAL_RECIPES)
             .tankScalingFunction(tier -> 16 * FluidType.BUCKET_VOLUME)
             .hasPollutionDebuff(true)
             .register();
-    public static final MachineDefinition[] COMPRESSOR = new SimpleMachineBuilder("compressor",
+    public static final MachineDefinition[] COMPRESSOR = new SimpleMachineBuilder(REGISTRATE, "compressor",
             GTRecipeTypes.COMPRESSOR_RECIPES).register();
-    public static final MachineDefinition[] CUTTER = new SimpleMachineBuilder("cutter", GTRecipeTypes.CUTTER_RECIPES)
+    public static final MachineDefinition[] CUTTER = new SimpleMachineBuilder(REGISTRATE, "cutter",
+            GTRecipeTypes.CUTTER_RECIPES)
             .register();
-    public static final MachineDefinition[] DISTILLERY = new SimpleMachineBuilder("distillery",
+    public static final MachineDefinition[] DISTILLERY = new SimpleMachineBuilder(REGISTRATE, "distillery",
             GTRecipeTypes.DISTILLERY_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] ELECTROLYZER = new SimpleMachineBuilder("electrolyzer",
+    public static final MachineDefinition[] ELECTROLYZER = new SimpleMachineBuilder(REGISTRATE, "electrolyzer",
             GTRecipeTypes.ELECTROLYZER_RECIPES)
             .tankScalingFunction(largeTankSizeFunction)
             .register();
-    public static final MachineDefinition[] ELECTROMAGNETIC_SEPARATOR = new SimpleMachineBuilder(
+    public static final MachineDefinition[] ELECTROMAGNETIC_SEPARATOR = new SimpleMachineBuilder(REGISTRATE,
             "electromagnetic_separator", GTRecipeTypes.ELECTROMAGNETIC_SEPARATOR_RECIPES).register();
-    public static final MachineDefinition[] EXTRACTOR = new SimpleMachineBuilder("extractor",
+    public static final MachineDefinition[] EXTRACTOR = new SimpleMachineBuilder(REGISTRATE, "extractor",
             GTRecipeTypes.EXTRACTOR_RECIPES).register();
-    public static final MachineDefinition[] EXTRUDER = new SimpleMachineBuilder("extruder",
+    public static final MachineDefinition[] EXTRUDER = new SimpleMachineBuilder(REGISTRATE, "extruder",
             GTRecipeTypes.EXTRUDER_RECIPES).register();
-    public static final MachineDefinition[] FERMENTER = new SimpleMachineBuilder("fermenter",
+    public static final MachineDefinition[] FERMENTER = new SimpleMachineBuilder(REGISTRATE, "fermenter",
             GTRecipeTypes.FERMENTING_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] FLUID_HEATER = new SimpleMachineBuilder("fluid_heater",
+    public static final MachineDefinition[] FLUID_HEATER = new SimpleMachineBuilder(REGISTRATE, "fluid_heater",
             GTRecipeTypes.FLUID_HEATER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] FLUID_SOLIDIFIER = new SimpleMachineBuilder("fluid_solidifier",
+    public static final MachineDefinition[] FLUID_SOLIDIFIER = new SimpleMachineBuilder(REGISTRATE, "fluid_solidifier",
             GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] FORGE_HAMMER = new SimpleMachineBuilder("forge_hammer",
+    public static final MachineDefinition[] FORGE_HAMMER = new SimpleMachineBuilder(REGISTRATE, "forge_hammer",
             GTRecipeTypes.FORGE_HAMMER_RECIPES).register();
-    public static final MachineDefinition[] FORMING_PRESS = new SimpleMachineBuilder("forming_press",
+    public static final MachineDefinition[] FORMING_PRESS = new SimpleMachineBuilder(REGISTRATE, "forming_press",
             GTRecipeTypes.FORMING_PRESS_RECIPES).register();
-    public static final MachineDefinition[] LATHE = new SimpleMachineBuilder("lathe", GTRecipeTypes.LATHE_RECIPES)
+    public static final MachineDefinition[] LATHE = new SimpleMachineBuilder(REGISTRATE, "lathe",
+            GTRecipeTypes.LATHE_RECIPES)
             .register();
-    public static final MachineDefinition[] SCANNER = new SimpleMachineBuilder("scanner", GTRecipeTypes.SCANNER_RECIPES)
+    public static final MachineDefinition[] SCANNER = new SimpleMachineBuilder(REGISTRATE, "scanner",
+            GTRecipeTypes.SCANNER_RECIPES)
             .register();
-    public static final MachineDefinition[] MIXER = new SimpleMachineBuilder("mixer", GTRecipeTypes.MIXER_RECIPES)
+    public static final MachineDefinition[] MIXER = new SimpleMachineBuilder(REGISTRATE, "mixer",
+            GTRecipeTypes.MIXER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineDefinition[] ORE_WASHER = new SimpleMachineBuilder("ore_washer",
+    public static final MachineDefinition[] ORE_WASHER = new SimpleMachineBuilder(REGISTRATE, "ore_washer",
             GTRecipeTypes.ORE_WASHER_RECIPES).register();
-    public static final MachineDefinition[] PACKER = new SimpleMachineBuilder("packer", GTRecipeTypes.PACKER_RECIPES)
+    public static final MachineDefinition[] PACKER = new SimpleMachineBuilder(REGISTRATE, "packer",
+            GTRecipeTypes.PACKER_RECIPES)
             .register();
-    public static final MachineDefinition[] POLARIZER = new SimpleMachineBuilder("polarizer",
+    public static final MachineDefinition[] POLARIZER = new SimpleMachineBuilder(REGISTRATE, "polarizer",
             GTRecipeTypes.POLARIZER_RECIPES).register();
-    public static final MachineDefinition[] LASER_ENGRAVER = new SimpleMachineBuilder("laser_engraver",
+    public static final MachineDefinition[] LASER_ENGRAVER = new SimpleMachineBuilder(REGISTRATE, "laser_engraver",
             GTRecipeTypes.LASER_ENGRAVER_RECIPES)
             .tankScalingFunction(defaultTankSizeFunction)
             .hasPollutionDebuff(true)
             .register();
-    public static final MachineDefinition[] SIFTER = new SimpleMachineBuilder("sifter", GTRecipeTypes.SIFTER_RECIPES)
+    public static final MachineDefinition[] SIFTER = new SimpleMachineBuilder(REGISTRATE, "sifter",
+            GTRecipeTypes.SIFTER_RECIPES)
             .register();
-    public static final MachineDefinition[] THERMAL_CENTRIFUGE = new SimpleMachineBuilder("thermal_centrifuge",
+    public static final MachineDefinition[] THERMAL_CENTRIFUGE = new SimpleMachineBuilder(REGISTRATE,
+            "thermal_centrifuge",
             GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES).register();
-    public static final MachineDefinition[] WIREMILL = new SimpleMachineBuilder("wiremill",
+    public static final MachineDefinition[] WIREMILL = new SimpleMachineBuilder(REGISTRATE, "wiremill",
             GTRecipeTypes.WIREMILL_RECIPES).register();
-    public static final MachineDefinition[] CIRCUIT_ASSEMBLER = new SimpleMachineBuilder("circuit_assembler",
+    public static final MachineDefinition[] CIRCUIT_ASSEMBLER = new SimpleMachineBuilder(REGISTRATE,
+            "circuit_assembler",
             GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .hasPollutionDebuff(true)
@@ -301,7 +312,7 @@ public class GTMachines {
                             GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.applyAsInt(tier), true))
                     .register(),
             ELECTRIC_TIERS);
-    public static final MachineDefinition[] GAS_COLLECTOR = new SimpleMachineBuilder("gas_collector",
+    public static final MachineDefinition[] GAS_COLLECTOR = new SimpleMachineBuilder(REGISTRATE, "gas_collector",
             GTRecipeTypes.GAS_COLLECTOR_RECIPES)
             .tankScalingFunction(largeTankSizeFunction)
             .hasPollutionDebuff(true)

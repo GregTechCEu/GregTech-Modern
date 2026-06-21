@@ -17,11 +17,8 @@ import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockFluid
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTBedrockOreEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.Ae2PatternTerminalHandler;
-import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTModuleEMIRecipe;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.alchemy.Potion;
@@ -57,7 +54,6 @@ public class GTEMIPlugin implements EmiPlugin {
                 registry.addCategory(GTRecipeEMICategory.CATEGORIES.apply(category));
             }
         }
-        registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
         if (GTCEu.Mods.isAE2Loaded()) {
             registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }

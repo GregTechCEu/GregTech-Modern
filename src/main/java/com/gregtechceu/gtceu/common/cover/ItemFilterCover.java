@@ -96,8 +96,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         syncManager.syncValue("filterMode", filterMode);
         syncManager.syncValue("ioMode", ioMode);
 
-        column.coverChildrenHeight();
-        column.child(getItemFilter().getFilterUI(data, syncManager, settings).marginBottom(2));
+        column.child(getItemFilter().getFilterUI(data, syncManager, settings));
 
         GTMuiCoverUtil.addFilterModeRow(column, filterMode);
         GTMuiCoverUtil.addManualIORow(column, ioMode);
@@ -110,7 +109,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         }
 
         @Override
-        public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (filterMode == FilterMode.FILTER_EXTRACT) {
                 if (allowFlow == ManualIOMode.DISABLED) {
                     return stack;
@@ -144,11 +143,11 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
+        super.copyConfig(tag);
         tag.putInt("manualIO", getAllowFlow().ordinal());
         tag.putInt("filterMode", getFilterMode().ordinal());
         tag.put("filter", attachItem.serializeNBT());
-        return super.copyConfig(tag);
     }
 
     @Override

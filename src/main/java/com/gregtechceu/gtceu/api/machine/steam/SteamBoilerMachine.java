@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -91,10 +90,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-        }
-        updateSteamSubscription();
+
+        scheduleForNextServerTick(this::updateAutoOutputSubscription);
+        scheduleForNextServerTick(this::updateSteamSubscription);
         steamTankSubs = steamTank.addChangedListener(this::updateAutoOutputSubscription);
     }
 
@@ -286,7 +284,10 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
     @Override
     protected InteractionResult onSoftMalletClick(ExtendedUseOnContext context) {
-        return InteractionResult.PASS;
+        if (!isRemote()) {
+            context.getPlayer().sendSystemMessage(Component.translatable("behaviour.soft_hammer.ignored"));
+        }
+        return InteractionResult.sidedSuccess(getLevel().isClientSide);
     }
 
     @Override

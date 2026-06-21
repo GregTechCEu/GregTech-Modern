@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
-import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -35,7 +34,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import brachy.modularui.drawable.UITexture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionfc;
@@ -48,7 +46,6 @@ import java.util.function.Function;
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
 @OnlyIn(Dist.CLIENT)
-@ExtensionMethod(PoseStackExtensions.class)
 public class BlockHighlightRenderer {
 
     public static void renderBlockHighlight(PoseStack poseStack, Camera camera, BlockHitResult target,

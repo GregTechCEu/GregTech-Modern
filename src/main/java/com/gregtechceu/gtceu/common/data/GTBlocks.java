@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
+import com.gregtechceu.gtceu.common.data.blocks.GTDevBlocks;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.LaserPipeBlockItem;
@@ -67,6 +68,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -275,7 +277,7 @@ public class GTBlocks {
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
-
+        ModLoader.get().postEvent(event);
         MATERIALS_TO_CASINGS = builder.build();
     }
 
@@ -1431,6 +1433,11 @@ public class GTBlocks {
 
         // GCYM
         GCYMBlocks.init();
+
+        // Dev-only test blocks
+        if (GTCEu.isDev()) {
+            GTDevBlocks.init();
+        }
     }
 
     private static void initializeCobbleReplacements() {

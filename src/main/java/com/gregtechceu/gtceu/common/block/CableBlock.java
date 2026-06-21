@@ -55,7 +55,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
 
     @Override
     public int tinted(BlockState state, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos, int index) {
-        if (pipeType.isCable && (index == 0 || index == 2)) {
+        if (pipeType.isCable() && (index == 0 || index == 2)) {
             return 0x404040;
         }
         return super.tinted(state, level, pos, index);
@@ -132,7 +132,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
         if (level.isClientSide) return;
 
         Insulation insulation = getPipeTile(level, pos).getPipeType();
-        if (insulation.insulationLevel == -1 && entity instanceof LivingEntity entityLiving) {
+        if (!insulation.isCable() && entity instanceof LivingEntity entityLiving) {
             CableBlockEntity cable = (CableBlockEntity) getPipeTile(level, pos);
             if (cable != null && cable.getFrameMaterial().isNull() &&
                     cable.getNodeData().getLossPerBlock() > 0) {

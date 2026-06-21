@@ -69,7 +69,7 @@ public class GTMuiWidgets {
     }
 
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
-        return createTitleBar(() -> definition.asStack(), panelWidth, background);
+        return createTitleBar(definition::asStack, panelWidth, background);
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {
@@ -92,6 +92,7 @@ public class GTMuiWidgets {
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
         return Flow.row()
+                .decoration()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
@@ -148,21 +149,6 @@ public class GTMuiWidgets {
                 GTGuiTextures.BUTTON_POWER[1],
                 "behaviour.soft_hammer");
     }
-
-    /*
-     * public static ProgressWidget createProgressBar(IRecipeLogicMachine workableMachine, PanelSyncManager syncManager,
-     * UITexture texture, int size) {
-     * DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-     * () -> new DoubleSyncValue(() -> {
-     * if (workableMachine.getMaxProgress() == 0.0f) return 0.0f;
-     * return workableMachine.getProgress() / (double) workableMachine.getMaxProgress();
-     * }));
-     * 
-     * return new ProgressWidget()
-     * .texture(texture, size)
-     * .value(progressPercent);
-     * }
-     */
 
     public static FluidSlot createTankWidget() {
         return new FluidSlot().size(20, 58).alwaysShowFull(false);
@@ -394,8 +380,12 @@ public class GTMuiWidgets {
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings));
+                        settings, false));
 
+        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+            panelHandler.closePanel();
+            panelHandler.deleteCachedPanel();
+        });
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))
                 .child(new ButtonWidget<>()
@@ -616,6 +606,25 @@ public class GTMuiWidgets {
                         .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
     }
 
+    public static SlotGroupWidget verticalPlayerInventory(SlotGroupWidget.SlotConsumer slotConsumer) {
+        SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
+        slotGroupWidget.coverChildren();
+        slotGroupWidget.name("player_inventory");
+        String key = "player";
+
+        for (int i = 0; i < 9; ++i) {
+            slotGroupWidget
+                    .child(slotConsumer.apply(i, new ItemSlot()).syncHandler(key, i).pos(0, i * 18).name("slot_" + i));
+        }
+
+        for (int i = 0; i < 27; ++i) {
+            slotGroupWidget.child(slotConsumer.apply(i + 9, new ItemSlot()).syncHandler(key, i + 9)
+                    .pos(22 + i / 9 * 18, i % 9 * 18).name("slot_" + (i + 9)));
+        }
+
+        return slotGroupWidget;
+    }
+
     public static class EnumRowBuilder<T extends Enum<T>> {
 
         private @Nullable EnumSyncValue<T> syncValue;
@@ -709,7 +718,7 @@ public class GTMuiWidgets {
                         button.overlay(this.overlay[enumVal.ordinal()]);
 
                     if (this.buttonTooltipSupplier != null) {
-                        button.addTooltipLine(Text.lang(buttonTooltipSupplier.apply(enumVal).get().getString()));
+                        button.addTooltipLine(Text.comp(buttonTooltipSupplier.apply(enumVal).get()));
                     } else if (enumVal instanceof StringRepresentable serializable) {
                         button.addTooltipLine(Text.lang(serializable.getSerializedName()));
                     }

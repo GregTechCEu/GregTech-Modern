@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
@@ -74,8 +73,8 @@ public class PatternPreviewWidget extends WidgetGroup {
     private final List<SimplePredicate> predicates;
     private int index;
     public int layer;
-    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] slotWidgets;
-    private com.lowdragmc.lowdraglib.gui.widget.SlotWidget[] candidates;
+    private SlotWidget[] slotWidgets;
+    private SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
         super(0, 0, 160, 160);
@@ -149,7 +148,6 @@ public class PatternPreviewWidget extends WidgetGroup {
 
         scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 132, 154, 22)
                 .setXScrollBarHeight(4)
-                .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
                 .setScrollable(true)
                 .setDraggable(true);
         scrollableWidgetGroup.setScrollWheelDirection(DraggableScrollableWidgetGroup.ScrollWheelDirection.HORIZONTAL);
@@ -242,11 +240,11 @@ public class PatternPreviewWidget extends WidgetGroup {
         MBPattern pattern = patterns[index];
         setupScene(pattern);
         if (slotWidgets != null) {
-            for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget slotWidget : slotWidgets) {
+            for (SlotWidget slotWidget : slotWidgets) {
                 scrollableWidgetGroup.removeWidget(slotWidget);
             }
         }
-        slotWidgets = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[Math.min(pattern.parts.size(), 18)];
+        slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
 
         var itemHandler = new CycleItemEntryHandler(
                 pattern.parts.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
@@ -290,7 +288,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             predicates.addAll(predicate.limited);
             predicates.removeIf(p -> p == null || p.candidates == null); // why it happens?
             if (candidates != null) {
-                for (com.lowdragmc.lowdraglib.gui.widget.SlotWidget candidate : candidates) {
+                for (SlotWidget candidate : candidates) {
                     removeWidget(candidate);
                 }
             }
@@ -303,13 +301,13 @@ public class PatternPreviewWidget extends WidgetGroup {
                     predicateTips.add(simplePredicate.getToolTips(predicate));
                 }
             }
-            candidates = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget[candidateStacks.size()];
+            candidates = new SlotWidget[candidateStacks.size()];
             var itemHandler = new CycleItemEntryHandler(
                     candidateStacks.stream().map(l -> (ItemEntryList) new ItemStackList(l)).toList());
             int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new com.lowdragmc.lowdraglib.gui.widget.SlotWidget()
+                candidates[i] = new SlotWidget()
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));

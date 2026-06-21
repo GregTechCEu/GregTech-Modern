@@ -215,7 +215,7 @@ public class GTMath {
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.max(values[0], values[1]);
-        float max = Float.MIN_VALUE;
+        float max = -Float.MAX_VALUE;
         for (float i : values) {
             if (i > max) {
                 max = i;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.client.bloom.BloomType;
 
 import net.minecraft.commands.Commands;
 
@@ -29,6 +30,11 @@ public class ConfigHolder {
                 INSTANCE = INTERNAL_INSTANCE.getConfigInstance();
             }
         }
+    }
+
+    public static ConfigHolder getInstance() {
+        init();
+        return INSTANCE;
     }
 
     @Configurable
@@ -309,11 +315,11 @@ public class ConfigHolder {
             public String borderColor = "#00000000";
 
             @Configurable
-            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: \"BOTTOM_LEFT\"" })
+            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: BOTTOM_LEFT" })
             public Anchor buttonAnchor = Anchor.BOTTOM_LEFT;
 
             @Configurable
-            @Configurable.Comment({ "Which direction the buttons will go", "Default: \"VERTICAL\"" })
+            @Configurable.Comment({ "Which direction the buttons will go", "Default: VERTICAL" })
             public Direction direction = Direction.VERTICAL;
 
             @Configurable
@@ -858,6 +864,9 @@ public class ConfigHolder {
         @Configurable
         public Renderers renderer = new Renderers();
         @Configurable
+        @Configurable.Comment("Config options for bloom and other post-processing effects")
+        public BloomOptions bloom = new BloomOptions();
+        @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
         @Configurable
         public UIConfigs ui = new UIConfigs();
@@ -882,6 +891,61 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class BloomOptions {
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Algorithm",
+                    "Requires reloading all chunks ",
+                    "UNITY - Unity-like Bloom (rescale)",
+                    "UNREAL - Unreal-like Bloom (gaussian blur)",
+                    "DISABLED - No bloom",
+                    "Default: UNREAL" })
+            // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 4.x
+            public BloomType type = BloomType.UNREAL;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
+            public boolean emissiveTexturesHaveBloom = true;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights (e.g., daytime)",
+                    "This value should be greater than minBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + min + (1 - BACKGROUND_BRIGHTNESS) * ({max} - min)))",
+                    "Default: 0.5" })
+            @Configurable.DecimalRange(min = 0)
+            public float maxBrightness = 0.5f;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts (e.g., night/caves)",
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + {min} + (1 - BACKGROUND_BRIGHTNESS) * (max - {min})))",
+                    "Default: 0.2" })
+            @Configurable.DecimalRange(min = 0)
+            public float minBrightness = 0.2f;
+
+            @Configurable
+            @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
+                    "Default: 0.1" })
+            @Configurable.DecimalRange(min = 0)
+            public float baseBrightness = 0.1f;
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Strength",
+                    "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
+                    "Default: 1.5" })
+            @Configurable.DecimalRange(min = 0)
+            public float strength = 1.5f;
+
+            @Configurable
+            @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
+            @Configurable.DecimalRange(min = 0)
+            public float step = 1.0f;
         }
 
         public static class Renderers {

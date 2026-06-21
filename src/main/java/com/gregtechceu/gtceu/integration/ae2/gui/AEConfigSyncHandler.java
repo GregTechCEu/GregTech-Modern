@@ -9,8 +9,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import appeng.api.stacks.GenericStack;
 import brachy.modularui.value.sync.SyncHandler;
+import org.jetbrains.annotations.Nullable;
 
-public class AEConfigSyncHandler extends SyncHandler {
+public class AEConfigSyncHandler extends SyncHandler<AEConfigSyncHandler> {
 
     private static final int SYNC_SLOTS = 1;
 
@@ -20,9 +21,9 @@ public class AEConfigSyncHandler extends SyncHandler {
     private final GenericStack[] cachedStock;
 
     @OnlyIn(Dist.CLIENT)
-    private GenericStack[] clientConfig;
+    private @Nullable GenericStack @Nullable [] clientConfig;
     @OnlyIn(Dist.CLIENT)
-    private GenericStack[] clientStock;
+    private @Nullable GenericStack @Nullable [] clientStock;
 
     public AEConfigSyncHandler(IConfigurableSlotList slotList, int slotCount) {
         this.slotList = slotList;
@@ -38,12 +39,12 @@ public class AEConfigSyncHandler extends SyncHandler {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public GenericStack getClientConfig(int index) {
+    public @Nullable GenericStack getClientConfig(int index) {
         return clientConfig != null ? clientConfig[index] : null;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public GenericStack getClientStock(int index) {
+    public @Nullable GenericStack getClientStock(int index) {
         return clientStock != null ? clientStock[index] : null;
     }
 
@@ -82,6 +83,7 @@ public class AEConfigSyncHandler extends SyncHandler {
     public void readOnClient(int id, FriendlyByteBuf buf) {
         if (id == SYNC_SLOTS) {
             if (clientConfig == null) initClient();
+            if (clientStock == null) initClient();
             for (int i = 0; i < slotCount; i++) {
                 if (buf.readBoolean()) {
                     clientConfig[i] = readStack(buf);
@@ -94,20 +96,20 @@ public class AEConfigSyncHandler extends SyncHandler {
     @Override
     public void readOnServer(int id, FriendlyByteBuf buf) {}
 
-    private static GenericStack copy(GenericStack stack) {
+    private static @Nullable GenericStack copy(@Nullable GenericStack stack) {
         return stack != null ? new GenericStack(stack.what(), stack.amount()) : null;
     }
 
-    private static void writeStack(FriendlyByteBuf buf, GenericStack stack) {
+    private static void writeStack(FriendlyByteBuf buf, @Nullable GenericStack stack) {
         buf.writeBoolean(stack != null);
         if (stack != null) GenericStack.writeBuffer(stack, buf);
     }
 
-    private static GenericStack readStack(FriendlyByteBuf buf) {
+    private static @Nullable GenericStack readStack(FriendlyByteBuf buf) {
         return buf.readBoolean() ? GenericStack.readBuffer(buf) : null;
     }
 
-    private static boolean areEqual(GenericStack a, GenericStack b) {
+    private static boolean areEqual(@Nullable GenericStack a, @Nullable GenericStack b) {
         if (a == b) return true;
         if (a == null || b == null) return false;
         return a.amount() == b.amount() && a.what().equals(b.what());

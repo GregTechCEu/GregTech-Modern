@@ -25,8 +25,10 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 import net.minecraftforge.registries.RegisterEvent;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -40,11 +42,13 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -57,27 +61,83 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
+    private static final Map<String, GTRegistrate> EXISTING_REGISTRATES = new Object2ObjectOpenHashMap<>();
+
     private final AtomicBoolean registered = new AtomicBoolean(false);
 
     protected GTRegistrate(String modId) {
         super(modId);
     }
 
-    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey,
-                                        ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        return parent.entry(name,
-                callback -> new GTFluidBuilder<>(parent, parent, material, name, langKey, callback, stillTexture,
-                        flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
-                        .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
+    public ResourceLocation makeResourceLocation(String path) {
+        return new ResourceLocation(this.getModid(), path);
     }
 
-    @NotNull
+    /**
+     * Get or create a new {@link GTRegistrate} and register event listeners for registration and data generation.
+     * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
+     *
+     * @param modId The mod ID for which objects will be registered
+     * @return The {@link GTRegistrate} instance
+     */
     public static GTRegistrate create(String modId) {
-        return new GTRegistrate(modId);
+        return create(modId, true);
     }
 
-    public void registerRegistrate() {
-        registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+    /**
+     * Get or create a new {@link GTRegistrate} and conditionally register event listeners.
+     * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
+     * <br>
+     * Note that if you do not allow event listeners to be registered automatically, you <strong>must</strong>
+     * call {@link #registerEventListeners(IEventBus)} yourself with your {@link IEventBus mod event bus}.
+     *
+     * @param modId          The mod ID for which objects will be registered
+     * @param registerEvents Whether to register required event listeners.
+     * @return The {@link GTRegistrate} instance
+     */
+    public static GTRegistrate create(String modId, boolean registerEvents) {
+        return innerCreate(modId, registerEvents, registerEvents);
+    }
+
+    /**
+     * Get or create a new {@link GTRegistrate} and register event listeners for registration and data generation.
+     * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
+     * <br>
+     * Completely skips all mod id validity messages and defaults to GT's bus instead. <b>ADDON DEVS DO NOT USE.</b>
+     *
+     * @param modId The mod ID for which objects will be registered
+     * @return The {@link GTRegistrate} instance
+     */
+    @ApiStatus.Internal
+    public static GTRegistrate createIgnoringListenerErrors(String modId) {
+        return innerCreate(modId, true, false);
+    }
+
+    private static GTRegistrate innerCreate(String modId, boolean registerEvents, boolean requireValidEventBus) {
+        var existing = EXISTING_REGISTRATES.get(modId);
+        if (existing != null) return existing;
+        var registrate = new GTRegistrate(modId);
+
+        if (registerEvents) {
+            Optional<IEventBus> modEventBus = ModList.get().getModContainerById(modId)
+                    .filter(FMLModContainer.class::isInstance)
+                    .map(FMLModContainer.class::cast)
+                    .map(FMLModContainer::getEventBus);
+            if (requireValidEventBus) {
+                modEventBus.ifPresentOrElse(registrate::registerEventListeners, () -> {
+                    String message = "# [GTRegistrate] Failed to register eventListeners for mod " + modId +
+                            ", This should be reported to this mod's dev #";
+                    String hashtags = "#".repeat(message.length());
+                    GTCEu.LOGGER.fatal(hashtags);
+                    GTCEu.LOGGER.fatal(message);
+                    GTCEu.LOGGER.fatal(hashtags);
+                });
+            } else {
+                registrate.registerEventListeners(modEventBus.orElse(FMLJavaModLoadingContext.get().getModEventBus()));
+            }
+        }
+        EXISTING_REGISTRATES.put(modId, registrate);
+        return registrate;
     }
 
     @Override
@@ -116,7 +176,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture,
                                        ResourceLocation flowingTexture) {
-        return fluid(this, material, name, langKey, stillTexture, flowingTexture);
+        return entry(name,
+                callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture,
+                        flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
+                        .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
     }
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION, ?> machine(String name,
