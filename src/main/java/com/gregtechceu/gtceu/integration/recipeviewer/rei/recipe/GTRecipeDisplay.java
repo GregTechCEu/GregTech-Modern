@@ -40,10 +40,7 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         var fluids = recipe.getInputContents(FluidRecipeCapability.CAP);
 
         for (var itemContent : items) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(itemContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    itemContent.maxChance();
+            float chance = (float) itemContent.chance() / itemContent.maxChance();
 
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
@@ -52,10 +49,7 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         }
 
         for (var fluidContent : fluids) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(fluidContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    fluidContent.maxChance();
+            float chance = (float) fluidContent.chance() / fluidContent.maxChance();
 
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
@@ -89,10 +83,7 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
         for (var itemContent : items) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(itemContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    itemContent.maxChance();
+            float chance = (float) itemContent.chance() / itemContent.maxChance();
 
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
@@ -102,10 +93,7 @@ public class GTRecipeDisplay extends ModularUIREIDisplay {
         }
 
         for (var fluidContent : fluids) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(fluidContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    fluidContent.maxChance();
+            float chance = (float) fluidContent.chance() / fluidContent.maxChance();
 
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));

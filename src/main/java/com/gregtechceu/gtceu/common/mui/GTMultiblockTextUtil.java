@@ -373,7 +373,6 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createItemLineForOutput(Content itemOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-        var function = recipe.getType().getChanceFunction();
 
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
@@ -394,8 +393,7 @@ public class GTMultiblockTextUtil {
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (itemOutput.chance() < itemOutput.maxChance()) {
-                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
-                        itemOutput.maxChance();
+                countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             countD = countD * provider.getMidRoll();
         } else {
@@ -406,8 +404,7 @@ public class GTMultiblockTextUtil {
             countD *= count;
             if (itemOutput.chance() < itemOutput.maxChance()) {
                 rounded = true;
-                countD = countD * runs * function.getBoostedChance(itemOutput, recipeTier, chanceTier) /
-                        itemOutput.maxChance();
+                countD = countD * runs * itemOutput.chance() / itemOutput.maxChance();
             }
             count = Math.max(1, (int) Math.round(countD));
             displaycount = Component.literal(String.valueOf(count));
@@ -441,7 +438,6 @@ public class GTMultiblockTextUtil {
 
     public static Optional<Widget<?>> createFluidLineForOutput(Content fluidOutput, GTRecipe recipe) {
         int runs = recipe.getTotalRuns();
-        var function = recipe.getType().getChanceFunction();
 
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
         int chanceTier = recipeTier + recipe.ocLevel;
@@ -462,8 +458,7 @@ public class GTMultiblockTextUtil {
                     provider.getCountProvider().getMinValue(),
                     provider.getCountProvider().getMaxValue());
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
-                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
-                        fluidOutput.maxChance();
+                amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amountD = amountD * provider.getMidRoll();
         } else {
@@ -474,8 +469,7 @@ public class GTMultiblockTextUtil {
             amountD *= amount;
             if (fluidOutput.chance() < fluidOutput.maxChance()) {
                 rounded = true;
-                amountD = amountD * runs * function.getBoostedChance(fluidOutput, recipeTier, chanceTier) /
-                        fluidOutput.maxChance();
+                amountD = amountD * runs * fluidOutput.chance() / fluidOutput.maxChance();
             }
             amount = Math.max(1, (int) Math.round(amountD));
             displaycount = Component.literal(String.valueOf(amount));

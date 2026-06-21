@@ -82,8 +82,7 @@ public record Content(Object content, int chance, int maxChance) {
 
     public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {
         if (content.chance() < ChanceLogic.getMaxChancedValue()) {
-            int boostedChance = function.getBoostedChance(content, recipeTier, chanceTier);
-            if (boostedChance == 0) {
+            if (content.chance() == 0) {
                 tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();

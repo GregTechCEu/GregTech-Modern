@@ -283,7 +283,7 @@ public abstract class ChanceLogic {
      * @return the total chance for the entry
      */
     static int getChance(@NotNull Content entry) {
-        return entry.chance;
+        return entry.chance();
     }
 
     /**
