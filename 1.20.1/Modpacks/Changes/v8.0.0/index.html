@@ -3616,6 +3616,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#irecipehandler-nullability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IRecipeHandler nullability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4633,6 +4644,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#irecipehandler-nullability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IRecipeHandler nullability
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4794,6 +4816,8 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <li>Match: <code>(\{\s*)"shimmer":(\s*\{\s*"bloom":.*)</code><br />
    Replace with: <code>$1"gtceu":$2</code> </li>
 </ol>
+<h2 id="irecipehandler-nullability">IRecipeHandler nullability</h2>
+<p>Previously, <code>handleRecipeInner</code> should return <code>null</code> when there's nothing left to process. This has been changed to requiring an empty list (e.g. the list of remaining ingredients). Returning <code>null</code> is now wrong and will crash (NPE).</p>
 <h2 id="other-changes">Other Changes</h2>
 <ul>
 <li><code>BlastingRecipeBuilder</code>, <code>CampfireRecipeBuilder</code>, <code>SmeltingRecipeBuilder</code> and <code>SmokingRecipeBuilder</code> have been merged into <code>SimpleCookingRecipeBuilder</code><ul>
