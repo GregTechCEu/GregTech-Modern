@@ -56,7 +56,6 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
@@ -66,7 +65,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -77,8 +75,7 @@ import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 @SuppressWarnings("unused")
 @RemapPrefixForJS("kjs$")
 @Accessors(chain = true, fluent = true)
-public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends MachineBuilder<DEFINITION, TYPE>>
-                           extends BuilderBase<DEFINITION> {
+public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends MachineBuilder<DEFINITION, TYPE>> {
 
     protected final GTRegistrate registrate;
     protected final String name;
@@ -111,7 +108,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private @Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = NonNullConsumer.noop();
     @Getter // getter for KJS
-    private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
+    private GTRecipeType[] recipeTypes = new GTRecipeType[0];
     @Getter // getter for KJS
     private int tier;
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
@@ -145,7 +142,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
                           BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                           BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                           Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
-        super(ResourceLocation.fromNamespaceAndPath(registrate.getModid(), name));
         this.registrate = registrate;
         this.name = name;
         this.blockFactory = blockFactory;
@@ -299,7 +295,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         if (type == null) {
             GTCEu.LOGGER.error(
                     "Tried to set null recipe type on machine {}. Did you create the recipe type before this machine?",
-                    this.id);
+                    this.registrate.makeResourceLocation(this.name));
             return getThis();
         }
         this.recipeTypes = ArrayUtils.add(this.recipeTypes, type);
@@ -779,9 +775,4 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         }
     }
     // spotless:on
-
-    @Override
-    public DEFINITION createObject() {
-        return register();
-    }
 }
