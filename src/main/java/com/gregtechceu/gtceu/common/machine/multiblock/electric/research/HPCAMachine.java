@@ -55,6 +55,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
@@ -80,6 +81,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private boolean hasNotEnoughEnergy;
 
     @SaveField
+    @Getter(onMethod_ = @VisibleForTesting)
     private double temperature = IDLE_TEMPERATURE; // start at idle temperature
 
     @Nullable

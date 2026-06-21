@@ -164,9 +164,10 @@ public class TestUtils {
      * Forces a structure check on multiblocks after being placed, to avoid having to wait ticks.
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
-    public static void formMultiblock(MultiblockControllerMachine controller) {
+    public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
         controller.checkAndFormStructure();
-        assert controller.isFormed();
+        helper.assertTrue(controller.isFormed(),
+                "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());
     }
 
     /**
