@@ -135,6 +135,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
         }
         return new ModularPanel<>("equipment_foundry")
                 .size(168, 75)
+                .topRel(.5f, -72, 0)
                 .bindPlayerInventory(-80)
                 .child(GTMuiWidgets.createTitleBar(GTBlocks.EQUIPMENT_FOUNDRY::asStack, 176,
                         GTGuiTextures.BACKGROUND_STEEL))

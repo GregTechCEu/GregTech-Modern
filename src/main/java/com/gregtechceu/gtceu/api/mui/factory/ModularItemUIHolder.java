@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
 import brachy.modularui.value.BoolValue;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -74,7 +75,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                         .overlay(true, GTGuiTextures.BUTTON_LOCK)
                         .overlay(false, GTGuiTextures.BUTTON_LOCK)
                         .left(7).bottom(7))
-                .child(new DynamicSyncedWidget<>()
+                .child(new DynamicWidget<>()
                         .syncHandler(dynamicSyncHandler)
                         .widthRel(1)
                         .height(85)
@@ -88,7 +89,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
         return Flow.col()
                 .horizontalCenter()
                 .widthRel(1)
-                .childIf(stack == null, () -> new TextWidget<>("gtceu.module.gui.select_an_item")
+                .childIf(stack == null, () -> new TextWidget<>(Text.lang("gtceu.module.gui.select_an_item"))
                         .center())
                 .childIf(stack != null, () -> {
                     assert stack != null;
@@ -99,7 +100,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                             .child(new TextWidget<>(Text.dynamic(stack::getHoverName)));
                 })
                 .childIf(modularItem == null && stack != null,
-                        () -> new TextWidget<>(Text.str("gtceu.module.gui.invalid_item")).center())
+                        () -> new TextWidget<>(Text.lang("gtceu.module.gui.invalid_item")).center())
                 .childIf(modularItem != null, () -> new Grid()
                         .minColWidth(100)
                         .widthRel(1)
@@ -120,7 +121,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                             } else {
                                 ItemModule module = appliedModule.getModule();
                                 IPanelHandler panelHandler = psm.syncedPanel("module" + index, false,
-                                        (psm1, handler) -> createPanelForModule(psm1, handler, index));
+                                        (psm1, handler) -> createPanelForModule(psm1, index));
                                 return new ButtonWidget<>()
                                         .onMousePressed((ctx, button) -> {
                                             panelHandler.openPanel();
@@ -128,14 +129,14 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                                         })
                                         .height(10)
                                         .widthRel(0.5f)
-                                        .overlay(Text.dynamic(() -> module.getDisplayName(appliedModule)))
+                                        .overlay(Text.dynamic(() -> module.getDisplayName(appliedModule)).scale(0.5f))
                                         .backgroundOverlay(slots.get(index).getSlotTexture())
                                         .addTooltipElement(Text.dynamic(module::getInfo));
                             }
                         }));
     }
 
-    private ModularPanel<?> createPanelForModule(PanelSyncManager psm, IPanelHandler panelHandler, int index) {
+    private ModularPanel<?> createPanelForModule(PanelSyncManager psm, int index) {
         ItemStack stack = getSelectedItem();
         assert stack != null;
         IModularItem modularItem = GTCapabilityHelper.getModularItem(stack);
