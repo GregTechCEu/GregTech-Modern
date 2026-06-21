@@ -166,8 +166,9 @@ public class Material {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTRegistries.MATERIALS.isFrozen())
+        if (GTRegistries.MATERIALS.isFrozen()) {
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
+        }
         this.flags.addFlags(flags).verify(this);
     }
 
