@@ -9,15 +9,22 @@ import net.caffeinemc.mods.sodium.client.model.quad.ModelQuadView;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
+import net.caffeinemc.mods.sodium.client.render.texture.SpriteFinderCache;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 public class GTSodiumCompat {
 
     public static final TerrainRenderPass BLOOM_RENDER_PASS = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
     public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS, AlphaCutoffParameter.ZERO, true);
 
-    public static boolean quadHasBloom(ModelQuadView quad, int[] ambientPackedLights, boolean emissive) {
-        var metadata = TextureMetadataHelper.getMetadata(quad.getSprite());
+    public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights, boolean emissive) {
+        TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(quad);
+        var metadata = TextureMetadataHelper.getMetadata(sprite);
         if (metadata.isPresent()) {
             TriState bloomValue = metadata.get().bloom();
             if (bloomValue == TriState.TRUE) return true;
@@ -34,9 +41,9 @@ public class GTSodiumCompat {
         return false;
     }
 
-    public static boolean isEmissive(ModelQuadView quad, int[] ambientPackedLights) {
+    public static boolean isEmissive(QuadView quad, int[] ambientPackedLights) {
         for (int i = 0; i < 4; i++) {
-            int quadLight = quad.getLight(i);
+            int quadLight = quad.lightmap(i);
             int qBlock = LightTexture.block(quadLight), qSky = LightTexture.sky(quadLight);
 
             int ambientLight = ambientPackedLights[i];
