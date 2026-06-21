@@ -41,6 +41,7 @@ import com.gregtechceu.gtceu.common.item.DrumMachineItem;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 import com.gregtechceu.gtceu.common.item.QuantumTankMachineItem;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.PipeModelBuilder;
@@ -111,6 +112,7 @@ public class ClientProxy extends CommonProxy {
         ModelEventHelper.initInternalAssetReloadListeners();
 
         MinecraftForge.EVENT_BUS.register(GTParticleManager.INSTANCE);
+        GTGuiTextures.init();
         FMLJavaModLoadingContext.get().getModEventBus().addListener(GTGuiTheme::onReloadThemes);
     }
 
