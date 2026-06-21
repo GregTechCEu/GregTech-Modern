@@ -28,6 +28,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.state.BlockState;
 
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -160,7 +162,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     //////////////////////////////////////
     // ***** Getters ******//
-    /// ///////////////////////////////////
+    //////////////////////////////////////
 
     /**
      * The {@link MultiblockMachineDefinition} of this multiblock.
@@ -412,5 +414,16 @@ public class MultiblockControllerMachine extends MetaMachine {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Can be overridden to just add widgets to the black box in the middle instead of overriding the whole UI.
+     * Don't forget to invoke {@code super.getWidgetsForDisplay} to add the default lines (progress, voltage, etc.).
+     *
+     * @param syncManager the sync manager
+     * @return list of widgets to be displayed inside the black box in the middle of a standard multiblock UI
+     */
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        return new ArrayList<>();
     }
 }

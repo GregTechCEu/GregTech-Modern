@@ -43,7 +43,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
         RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), machine.getUpwardsFacing());
         poseStack.translate(-machine.getRightDist() - 0.5f, -machine.getUpDist() - 0.5f, SCREEN_OFFSET_Z);
 
-        if (machine.getRecipeLogic().isActive()) {
+        if (machine.getRecipeLogic().isWorking()) {
             for (MonitorGroup group : machine.getMonitorGroups()) {
                 ItemStack itemStack = group.getItemStackHandler().getStackInSlot(0);
                 if (!(itemStack.getItem() instanceof ComponentItem item)) {
@@ -54,7 +54,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                         continue;
                     }
                     poseStack.pushPose();
-                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0))
+                    module.getRenderer(group.getItemStackHandler().getStackInSlot(0), machine, group)
                             .render(machine, group, partialTick, poseStack, buffer, packedLight, packedOverlay);
                     poseStack.popPose();
                 }

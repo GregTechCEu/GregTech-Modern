@@ -6,13 +6,13 @@ import lombok.Getter;
 
 public enum ControllerMode {
 
-    MACHINE("cover.machine_controller.mode.machine", null),
-    COVER_UP("cover.machine_controller.mode.cover_up", Direction.UP),
-    COVER_DOWN("cover.machine_controller.mode.cover_down", Direction.DOWN),
-    COVER_NORTH("cover.machine_controller.mode.cover_north", Direction.NORTH),
-    COVER_EAST("cover.machine_controller.mode.cover_east", Direction.EAST),
-    COVER_SOUTH("cover.machine_controller.mode.cover_south", Direction.SOUTH),
-    COVER_WEST("cover.machine_controller.mode.cover_west", Direction.WEST);
+    MACHINE("machine", null),
+    COVER_UP("cover_up", Direction.UP),
+    COVER_DOWN("cover_down", Direction.DOWN),
+    COVER_NORTH("cover_north", Direction.NORTH),
+    COVER_EAST("cover_east", Direction.EAST),
+    COVER_SOUTH("cover_south", Direction.SOUTH),
+    COVER_WEST("cover_west", Direction.WEST);
 
     @Getter
     public final String localeName;
@@ -21,6 +21,10 @@ public enum ControllerMode {
     ControllerMode(String localeName, Direction side) {
         this.localeName = localeName;
         this.side = side;
+    }
+
+    public String getTooltip() {
+        return "cover.machine_controller.mode." + localeName;
     }
 
     public static final String nullLocaleName = "cover.machine_controller.mode.null";

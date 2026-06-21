@@ -32,13 +32,8 @@ public final class EntryTypes<T extends VirtualEntry> {
     }
 
     @Nullable
-    public static EntryTypes<? extends VirtualEntry> fromString(String name) {
-        return TYPES_MAP.getOrDefault(GTCEu.id(name), null);
-    }
-
-    @Nullable
     public static EntryTypes<? extends VirtualEntry> fromLocation(ResourceLocation location) {
-        return TYPES_MAP.getOrDefault(location, null);
+        return TYPES_MAP.get(location);
     }
 
     public static <E extends VirtualEntry> EntryTypes<E> addEntryType(ResourceLocation location, Supplier<E> supplier) {

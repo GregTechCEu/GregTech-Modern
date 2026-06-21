@@ -19,14 +19,12 @@ import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolUIBehavior;
+import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.Util;
 import net.minecraft.client.color.item.ItemColor;
@@ -69,6 +67,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.extensions.IForgeItem;
 import net.minecraftforge.common.util.LazyOptional;
 
+import brachy.modularui.api.IUIHolder;
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.ModularScreen;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -80,10 +84,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
+import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.powerUnitItems;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, IForgeItem {
+public interface IGTTool extends IUIHolder<PlayerInventoryGuiData<?>>, ItemLike, IForgeItem {
 
     GTToolType getToolType();
 
@@ -345,39 +350,29 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
         if (!player.isShiftKeyDown()) {
             ServerPlayer serverPlayer = (ServerPlayer) player;
-            int result = -1;
-            if (isTool(stack, GTToolType.SHEARS)) {
-                result = shearBlockRoutine(serverPlayer, stack, pos);
-            }
-            if (result != 0) {
-                // prevent exploits with instantly breakable blocks
-                BlockState state = player.level().getBlockState(pos);
-                boolean effective = false;
-                for (GTToolType type : getToolClasses(stack)) {
-                    if (type.harvestTags.stream().anyMatch(state::is)) {
-                        effective = true;
-                        break;
-                    }
+            // prevent exploits with instantly breakable blocks
+            BlockState state = player.level().getBlockState(pos);
+            boolean effective = false;
+            for (GTToolType type : getToolClasses(stack)) {
+                if (type.harvestTags.stream().anyMatch(state::is)) {
+                    effective = true;
+                    break;
                 }
+            }
 
-                effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
+            effective |= isToolEffective(state, getToolClasses(stack), getTotalHarvestLevel(stack));
 
-                if (effective) {
-                    if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
-                        if (playSoundOnBlockDestroy()) playSound(player);
-                    } else {
-                        if (result == -1) {
-                            var tag = getBehaviorsTag(stack);
-                            if (tag.getBoolean(TREE_FELLING_KEY) &&
-                                    !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
-                                    state.is(BlockTags.LOGS)) {
-                                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
-                            }
-                            if (playSoundOnBlockDestroy()) playSound(player);
-                        } else {
-                            return true;
-                        }
+            if (effective) {
+                if (areaOfEffectBlockBreakRoutine(stack, serverPlayer, pos)) {
+                    if (playSoundOnBlockDestroy()) playSound(player);
+                } else {
+                    var tag = getBehaviorsTag(stack);
+                    if (tag.getBoolean(TREE_FELLING_KEY) &&
+                            !tag.getBoolean(DISABLE_TREE_FELLING_KEY) &&
+                            state.is(BlockTags.LOGS)) {
+                        TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                     }
+                    if (playSoundOnBlockDestroy()) playSound(player);
                 }
             }
         }
@@ -390,7 +385,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
             getToolStats().getBehaviors()
                     .forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
-            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D) {
+            if ((double) state.getDestroySpeed(worldIn, pos) != 0.0D ||
+                    getToolType().harvestTags.stream().anyMatch(state::is)) {
                 ToolHelper.damageItem(stack, entityLiving, getToolStats().getToolDamagePerBlockBreak(stack));
             }
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
@@ -616,8 +612,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
     default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUseFirst(stack, context) == InteractionResult.SUCCESS) {
-                return InteractionResult.SUCCESS;
+            InteractionResult result = behavior.onItemUseFirst(stack, context);
+            if (result.consumesAction()) {
+                return result;
             }
         }
 
@@ -645,6 +642,18 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
         return InteractionResultHolder.pass(heldItem);
     }
 
+    default InteractionResult definition$interactLivingEntity(ItemStack stack, Player player,
+                                                              LivingEntity interactionTarget,
+                                                              InteractionHand usedHand) {
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (behavior.onInteractLivingEntity(stack, player, interactionTarget, usedHand) ==
+                    InteractionResult.SUCCESS) {
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
     default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
             if (!behavior.shouldOpenUIAfterUse(context)) {
@@ -657,6 +666,18 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
 
     default void definition$fillItemCategory(CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
         if (isElectric()) {
+            int tier = getElectricTier();
+            if (!powerUnitItems.containsKey(tier)) {
+                items.add(get(Integer.MAX_VALUE));
+                return;
+            }
+            var components = ((ComponentItem) powerUnitItems.get(tier).asItem()).getComponents();
+            for (var component : components) {
+                if (component instanceof ElectricStats electricStats) {
+                    items.add(get(electricStats.maxCharge));
+                    return;
+                }
+            }
             items.add(get(Integer.MAX_VALUE));
         } else {
             items.add(get());
@@ -878,14 +899,21 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike, 
     }
 
     @Override
-    default ModularUI createUI(Player player, HeldItemUIFactory.HeldItemHolder holder) {
+    @OnlyIn(Dist.CLIENT)
+    default ModularScreen createScreen(PlayerInventoryGuiData<?> data, ModularPanel<?> mainPanel) {
+        return new GTGuiScreen(mainPanel);
+    }
+
+    @Override
+    default ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
         for (var behavior : getToolStats().getBehaviors()) {
-            if (!(behavior instanceof IToolUIBehavior uiBehavior) || !uiBehavior.openUI(player, holder.getHand())) {
+            if (!(behavior instanceof IToolUIBehavior uiBehavior) ||
+                    !uiBehavior.shouldOpenUI(data.getPlayer(), data.getPlayer().getUsedItemHand())) {
                 continue;
             }
-            return uiBehavior.createUI(player, holder);
+            return uiBehavior.buildUI(data, syncManager, settings);
         }
-        return new ModularUI(holder, player);
+        return null;
     }
 
     default Set<GTToolType> getToolClasses(ItemStack stack) {

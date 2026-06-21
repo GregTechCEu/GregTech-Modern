@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.indicators;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -50,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block")
+            Codec.either(BlockState.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("block")
                     .forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
             FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
@@ -141,12 +141,12 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> createPlacer(level, entry.getValue(), blockState)));
+                        entry -> createPlacer(entry.getValue(), blockState)));
     }
 
-    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY,
+    private OreIndicatorPlacer createPlacer(List<BlockPos> positionsWithoutY,
                                             BlockState blockState) {
-        return (access) -> {
+        return (access, level) -> {
             var positions = positionsWithoutY.stream()
                     .map(pos -> placement.resolver.apply(level, access, pos))
                     .filter(pos -> !level.isOutsideBuildHeight(pos))

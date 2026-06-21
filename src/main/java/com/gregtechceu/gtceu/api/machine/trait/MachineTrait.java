@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomProviderTrait;
@@ -54,6 +54,11 @@ public abstract class MachineTrait implements ISyncManaged {
     public MetaMachine getMachine() {
         if (machine == null) throw new IllegalStateException("Machine trait not attached to machine.");
         return machine;
+    }
+
+    @Override
+    public @Nullable ISyncManaged getParentSyncObject() {
+        return getMachine();
     }
 
     /**
@@ -117,14 +122,10 @@ public abstract class MachineTrait implements ISyncManaged {
         getMachine().setRenderState(state);
     }
 
-    public void scheduleRenderUpdate() {
-        getMachine().scheduleRenderUpdate();
-    }
-
     /**
      * Called when the machine is loaded. The entire world is not loaded when this method is called.
      * To schedule code to run on the first full world tick, do
-     * {@code serverLevel.getServer().tell(new TickTask(0, CALLBACK))}
+     * {@code getMachine().scheduleForNextServerTick(callback)}
      */
     public void onMachineLoad() {}
 

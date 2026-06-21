@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -12,7 +10,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -22,7 +19,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
+public interface IMultiPart extends IMachineFeature {
 
     /**
      * @return If this multi part can be shared between multiple multiblocks.
@@ -33,7 +30,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**
      * If this multi part belongs to a controller at the given position
-     * 
+     *
      * @param controllerPos Controller position
      * @return If this multi part belongs to a controller at the given position
      */
@@ -54,14 +51,14 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**
      * Called when this part is removed from a multiblock.
-     * 
+     *
      * @param controller The controller which this part has been removed from.
      */
     void removedFromController(MultiblockControllerMachine controller);
 
     /**
      * Called when this part is added to a multiblock.
-     * 
+     *
      * @param controller The controller which this part has been added to
      */
     void addedToController(MultiblockControllerMachine controller);
@@ -80,7 +77,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**
      * Called to get block appearance when this multi part is in a formed multiblock.
-     * 
+     *
      * @see MetaMachine#getBlockAppearance(BlockState, BlockAndTintGetter, BlockPos, Direction, BlockState, BlockPos)
      */
     @Nullable
@@ -137,16 +134,4 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
     }
-
-    /**
-     * Add text to the multiblock's screen.
-     * 
-     * @param textList the text list to add to.
-     */
-    default void addMultiText(List<Component> textList) {}
-
-    /**
-     * Attach part's tooltips to the controller.
-     */
-    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {}
 }

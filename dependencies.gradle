@@ -10,6 +10,12 @@ dependencies {
     // Configuration
     jarJar(modApi(forge.configuration.get()))
 
+    // Math Parser
+    compileOnly(libs.evalEx.get())
+
+    // MUI
+    jarJar(modImplementation(forge.mui.get()))
+
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
     compileOnly(annotationProcessor(forge.mixinExtras.common.get()))
@@ -42,8 +48,7 @@ dependencies {
     modCompileOnly(forge.architectury)
     modCompileOnly(forge.rhino)
 
-    // Shimmer
-    modCompileOnly(forge.shimmer)
+    // Performance
     modCompileOnly(forge.embeddium)
     modCompileOnly(forge.oculus)
     modCompileOnly(forge.modernfix)
@@ -119,4 +124,8 @@ dependencies {
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
+
+    modLocalRuntime(forge.curios)
+
+
 }

@@ -6,7 +6,7 @@
     "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks"
   },
   "variants": {
-    "is_formed=false,recipe_logic_status=idle": {
+    "recipe_logic_status=idle": {
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
@@ -15,7 +15,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=suspend": {
+    "recipe_logic_status=suspend": {
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
@@ -24,7 +24,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=waiting": {
+    "recipe_logic_status=waiting": {
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {
@@ -33,43 +33,7 @@
         }
       }
     },
-    "is_formed=false,recipe_logic_status=working": {
-      "model": {
-        "parent": "gtceu:block/machine/template/cube_all/sided",
-        "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front_active"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=idle": {
-      "model": {
-        "parent": "gtceu:block/machine/template/cube_all/sided",
-        "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=suspend": {
-      "model": {
-        "parent": "gtceu:block/machine/template/cube_all/sided",
-        "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=waiting": {
-      "model": {
-        "parent": "gtceu:block/machine/template/cube_all/sided",
-        "textures": {
-          "all": "gtceu:block/casings/solid/machine_casing_bronze_plated_bricks",
-          "overlay_front": "gtceu:block/multiblock/multiblock_tank/overlay_front_active"
-        }
-      }
-    },
-    "is_formed=true,recipe_logic_status=working": {
+    "recipe_logic_status=working": {
       "model": {
         "parent": "gtceu:block/machine/template/cube_all/sided",
         "textures": {

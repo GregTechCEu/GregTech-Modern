@@ -439,27 +439,27 @@ public class MultiblockDisplayText {
                     double countD = 1;
                     // number of items output which is actually displayed. Can be either a number, or a range.
                     Component displaycount;
-                    if (item.content instanceof IntProviderIngredient provider) {
+                    if (item.content() instanceof IntProviderIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
-                        if (item.chance < item.maxChance) {
+                        if (item.chance() < item.maxChance()) {
                             countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                                    item.maxChance();
                         }
                         countD = countD * provider.getMidRoll();
                     } else {
-                        var stacks = ItemRecipeCapability.CAP.of(item.content).getItems();
+                        var stacks = ItemRecipeCapability.CAP.of(item.content()).getItems();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         count = stack.getCount();
                         countD *= count;
-                        if (item.chance < item.maxChance) {
+                        if (item.chance() < item.maxChance()) {
                             rounded = true;
                             countD = countD * runs * function.getBoostedChance(item, recipeTier, chanceTier) /
-                                    item.maxChance;
+                                    item.maxChance();
                         }
                         count = Math.max(1, (int) Math.round(countD));
                         displaycount = Component.literal(String.valueOf(count));
@@ -483,27 +483,27 @@ public class MultiblockDisplayText {
                     double amountD = 1;
                     // amount of fluid output which is actually displayed. Can be either a number, or a range.
                     Component displaycount;
-                    if (fluid.content instanceof IntProviderFluidIngredient provider) {
+                    if (fluid.content() instanceof IntProviderFluidIngredient provider) {
                         rounded = true;
                         stack = provider.getMaxSizeStack();
                         displaycount = Component.translatable("gtceu.gui.content.range",
                                 provider.getCountProvider().getMinValue(),
                                 provider.getCountProvider().getMaxValue());
-                        if (fluid.chance < fluid.maxChance) {
+                        if (fluid.chance() < fluid.maxChance()) {
                             amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                                    fluid.maxChance();
                         }
                         amountD = amountD * provider.getMidRoll();
                     } else {
-                        var stacks = FluidRecipeCapability.CAP.of(fluid.content).getStacks();
+                        var stacks = FluidRecipeCapability.CAP.of(fluid.content()).getStacks();
                         if (stacks.length == 0) continue;
                         stack = stacks[0];
                         amount = stack.getAmount();
                         amountD *= amount;
-                        if (fluid.chance < fluid.maxChance) {
+                        if (fluid.chance() < fluid.maxChance()) {
                             rounded = true;
                             amountD = amountD * runs * function.getBoostedChance(fluid, recipeTier, chanceTier) /
-                                    fluid.maxChance;
+                                    fluid.maxChance();
                         }
                         amount = Math.max(1, (int) Math.round(amountD));
                         displaycount = Component.literal(String.valueOf(amount));
