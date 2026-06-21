@@ -22,21 +22,21 @@ public interface GTGuiTextures {
     /** Keys used for GT assets registered for use in Themes */
     interface IDs {
 
-        String STANDARD_BACKGROUND = "gregtech_standard_bg";
-        String STANDARD_BACKGROUND_INVERSE = "gregtech_standard_inverse_bg";
-        String COVER_BACKGROUND = "gregtech_cover_bg";
-        String BRONZE_BACKGROUND = "gregtech_bronze_bg";
-        String STEEL_BACKGROUND = "gregtech_steel_bg";
-        String PRIMITIVE_BACKGROUND = "gregtech_primitive_bg";
+        String STANDARD_BACKGROUND = "gtceu:standard_bg";
+        String STANDARD_BACKGROUND_INVERSE = "gtceu:standard_inverse_bg";
+        String COVER_BACKGROUND = "gtceu:cover_bg";
+        String BRONZE_BACKGROUND = "gtceu:bronze_bg";
+        String STEEL_BACKGROUND = "gtceu:steel_bg";
+        String PRIMITIVE_BACKGROUND = "gtceu:primitive_bg";
 
-        String STANDARD_SLOT = "gregtech_standard_slot";
-        String BRONZE_SLOT = "gregtech_bronze_slot";
-        String STEEL_SLOT = "gregtech_steel_slot";
-        String PRIMITIVE_SLOT = "gregtech_primitive_slot";
+        String STANDARD_SLOT = "gtceu:standard_slot";
+        String BRONZE_SLOT = "gtceu:bronze_slot";
+        String STEEL_SLOT = "gtceu:steel_slot";
+        String PRIMITIVE_SLOT = "gtceu:primitive_slot";
 
-        String STANDARD_FLUID_SLOT = "gregtech_standard_fluid_slot";
+        String STANDARD_FLUID_SLOT = "gtceu:standard_fluid_slot";
 
-        String STANDARD_BUTTON = "gregtech_standard_button";
+        String STANDARD_BUTTON = "gtceu:standard_button";
     }
 
     ResourceLocation MONOCRAFT_FONT = GTCEu.id("monocraft");

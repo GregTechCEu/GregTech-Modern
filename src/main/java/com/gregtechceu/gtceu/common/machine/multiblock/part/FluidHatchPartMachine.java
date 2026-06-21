@@ -307,7 +307,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
                                 .background(GuiTextures.MC_BUTTON)
-                                .selectedBackground(GuiTextures.MC_BUTTON_PRESSED)
+                                .background(true, GuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()
