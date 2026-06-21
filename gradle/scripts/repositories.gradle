@@ -114,4 +114,12 @@ repositories {
         forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
         filter { includeGroupAndSubgroups("xaero") }
     }
+    exclusiveContent { // sodium
+        forRepository { maven { url = "https://maven.caffeinemc.net/releases" } }
+        filter { includeGroup("net.caffeinemc") }
+    }
+    exclusiveContent { // forgigied fabric api (dependency of sodium)
+        forRepository { maven { url = "https://maven.su5ed.dev/releases" } }
+        filter { includeGroup("org.sinytra.forgified-fabric-api") }
+    }
 }

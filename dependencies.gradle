@@ -34,7 +34,8 @@ dependencies {
     compileOnly(forge.bundles.kjs)
 
     // Performance
-    compileOnly(forge.sodium)
+    compileOnly(forge.sodium.impl) // we have to depend on the entirety of sodium to mixin into it.
+    compileOnly(forge.sodium.api) // also add api so we get sources :)
     compileOnly(forge.iris)
     compileOnly(forge.embeddium)
     compileOnly(forge.modernfix)
@@ -76,7 +77,7 @@ dependencies {
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
-    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.sodium.impl)
     clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 
