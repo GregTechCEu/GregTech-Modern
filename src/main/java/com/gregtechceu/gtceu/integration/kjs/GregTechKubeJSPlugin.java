@@ -93,6 +93,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponent
 
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -380,7 +381,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(Element.class, o -> {
             if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(Material.class, o -> {
@@ -396,18 +397,19 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(TagPrefix.class, o -> {
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return TagPrefix.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.TAG_PREFIXES.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(chars.toString());
+            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
+            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(ChanceLogic.class, o -> {
             if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);

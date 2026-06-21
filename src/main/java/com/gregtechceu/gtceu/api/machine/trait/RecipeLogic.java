@@ -664,7 +664,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                                         compoundTag.putInt("cached_chance", entry.getIntValue());
                                         cacheTag.add(compoundTag);
                                     }
-                                    chanceCache.put(cap.name, cacheTag);
+                                    chanceCache.put(cap.id.toString(), cacheTag);
                                 });
 
                                 return chanceCache;
@@ -677,7 +677,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable, IFancyToolti
                                         context);
                                 if (context.currentValue() != null) {
                                     for (String key : chanceCache.getAllKeys()) {
-                                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
+                                        RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(key));
                                         // Necessary since a RecipeCapability was removed when removing Create support,
                                         // and for future
                                         // removals

@@ -1399,7 +1399,7 @@ public class TagPrefix {
      */
     @Deprecated(since = "8.0.0")
     public static Collection<TagPrefix> values() {
-        return GTRegistries.TAG_PREFIXES;
+        return GTRegistries.TAG_PREFIXES.values();
     }
 
     @Override

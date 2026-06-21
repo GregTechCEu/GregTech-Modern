@@ -1611,7 +1611,7 @@ public class GTRecipeBuilder {
             for (Content content : list) {
                 contentsJson.add(cap.serializer.toJsonContent(content));
             }
-            jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
+            jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString(), contentsJson);
         });
         return jsonObject;
     }
@@ -1619,8 +1619,8 @@ public class GTRecipeBuilder {
     public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
         JsonObject jsonObject = new JsonObject();
         chanceLogics.forEach((cap, logic) -> {
-            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap);
-            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic);
+            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString();
+            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic).toString();
             jsonObject.addProperty(capId, logicId);
         });
         return jsonObject;
@@ -1819,7 +1819,7 @@ public class GTRecipeBuilder {
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
-                    id, io, capability.name, io, max);
+                    id, io, capability.id, io, max);
         }
     }
 
@@ -1831,7 +1831,7 @@ public class GTRecipeBuilder {
                 io = "Tick " + io.toLowerCase(Locale.ROOT);
             }
             int size = (perTick ? tickOutput : output).getOrDefault(cap, List.of()).size();
-            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.name, size + index, id);
+            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.id, size + index, id);
             return true;
         }
         return false;

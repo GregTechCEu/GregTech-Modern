@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -22,6 +23,7 @@ import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,19 +42,27 @@ public abstract class RecipeCapability<T> {
             RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
-    public final String name;
+    public final ResourceLocation id;
     public final int color;
     public final boolean doRenderSlot;
     public final int sortIndex;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
-                               IContentSerializer<T> serializer) {
-        this.name = name;
+    protected RecipeCapability(ResourceLocation id, int color, boolean doRenderSlot, int sortIndex, IContentSerializer<T> serializer) {
+        this.id = id;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
+    }
+
+    /**
+     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
+     */
+    @Deprecated(forRemoval = true, since = "8.0.0")
+    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
+                               IContentSerializer<T> serializer) {
+        this(GTCEu.id(name), color, doRenderSlot, sortIndex, serializer);
     }
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
@@ -97,15 +107,15 @@ public abstract class RecipeCapability<T> {
     }
 
     public String slotName(IO io) {
-        return "%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT));
+        return "%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT));
     }
 
     public String slotName(IO io, int index) {
-        return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
+        return "%s_%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT), index);
     }
 
     public MutableComponent getName() {
-        return Component.translatable("recipe.capability.%s.name".formatted(name));
+        return Component.translatable("recipe.capability.%s.name".formatted(id.getPath()));
     }
 
     public MutableComponent getColoredName() {

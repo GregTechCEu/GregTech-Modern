@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
@@ -52,7 +53,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super("fluid", 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
+        super(GTCEu.id("fluid"), 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
@@ -57,7 +58,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
 
     protected ItemRecipeCapability() {
-        super("item", 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
+        super(GTCEu.id("item"), 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
     }
 
     @Override

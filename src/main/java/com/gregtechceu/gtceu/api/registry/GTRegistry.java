@@ -209,53 +209,6 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     // ************************ Built-in Registry ************************//
 
-    public static class String<V> extends GTRegistry<java.lang.String, V> {
-
-        public String(ResourceLocation registryName) {
-            super(registryName);
-        }
-
-        @Override
-        public void writeBuf(V value, FriendlyByteBuf buf) {
-            buf.writeBoolean(containsValue(value));
-            if (containsValue(value)) {
-                buf.writeUtf(getKey(value));
-            }
-        }
-
-        @Override
-        public V readBuf(FriendlyByteBuf buf) {
-            if (buf.readBoolean()) {
-                return get(buf.readUtf());
-            }
-            return null;
-        }
-
-        @Override
-        public Tag saveToNBT(V value) {
-            if (containsValue(value)) {
-                return StringTag.valueOf(getKey(value));
-            }
-            return new CompoundTag();
-        }
-
-        @Override
-        public V loadFromNBT(Tag tag) {
-            return get(tag.getAsString());
-        }
-
-        @Override
-        public Codec<V> codec() {
-            return Codec.STRING.flatXmap(
-                    key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
-                    val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
-        }
-    }
-
     public static class RL<V> extends GTRegistry<ResourceLocation, V> {
 
         public RL(ResourceLocation registryName) {

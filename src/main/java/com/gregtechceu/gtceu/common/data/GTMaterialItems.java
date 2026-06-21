@@ -55,12 +55,12 @@ public class GTMaterialItems {
     // Reference Tables
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
     public static final Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS = ArrayTable.create(
-            GTRegistries.MATERIALS.stream()
+            GTRegistries.MATERIALS.values().stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.TOOL))
                     .toList(),
             GTToolType.getTypes().values().stream().toList());
     public static final Table<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS = ArrayTable.create(
-            GTRegistries.MATERIALS.stream()
+            GTRegistries.MATERIALS.values().stream()
                     .filter(mat -> mat.hasProperty(PropertyKey.ARMOR))
                     .toList(),
             Arrays.asList(ArmorItem.Type.values()));

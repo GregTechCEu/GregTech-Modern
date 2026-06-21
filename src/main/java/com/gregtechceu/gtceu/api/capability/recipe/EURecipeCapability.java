@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -21,7 +22,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public final static EURecipeCapability CAP = new EURecipeCapability();
 
     protected EURecipeCapability() {
-        super("eu", 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
+        super(GTCEu.id("eu"), 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
     }
 
     @Override

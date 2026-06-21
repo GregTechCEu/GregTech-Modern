@@ -3,22 +3,25 @@ package com.gregtechceu.gtceu.api.recipe.content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.FLUID_SERIALIZERS;
+import java.util.Map;
+import java.util.function.Function;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 
     public static SerializerFluidIngredient INSTANCE = new SerializerFluidIngredient();
 
+    public static final Map<String, Function<FriendlyByteBuf, FluidIngredient>> FLUID_SERIALIZERS = new Object2ObjectArrayMap<>();
+
     static {
-        FLUID_SERIALIZERS.unfreeze();
-        FLUID_SERIALIZERS.register("FluidIngredient", FluidIngredient::fromNetwork);
-        FLUID_SERIALIZERS.register("IntProviderFluidIngredient", IntProviderFluidIngredient::fromNetwork);
+        FLUID_SERIALIZERS.put("FluidIngredient", FluidIngredient::fromNetwork);
+        FLUID_SERIALIZERS.put("IntProviderFluidIngredient", IntProviderFluidIngredient::fromNetwork);
     };
 
     private SerializerFluidIngredient() {}
