@@ -62,11 +62,12 @@ public class CTMMeshBuilder {
                     emitter.computeGeometry();
                     emitter.populateMissingNormals();
 
-                    emitter.emit();
+                    // Convert directly from the live emitter: the Mesh round-trip does not serialize
+                    // lightFace/shade/tintIndex, which would break per-face shading & ambient occlusion.
+                    result.add(emitter.toBakedQuad(ctmSprite));
                 }
             }
         }
-        meshBuilder.build().asBlockBakedQuads(result::add);
         return result;
     }
 
