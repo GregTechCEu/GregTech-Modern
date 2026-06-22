@@ -3,13 +3,10 @@ package com.gregtechceu.gtceu.api.machine.steam;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -19,16 +16,10 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.*;
 
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -38,14 +29,24 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
-                                         implements IUIMachine, IDataInfoProvider {
+                                         implements IMuiMachine, IDataInfoProvider {
 
     @SaveField
     public final NotifiableFluidTank waterTank;
@@ -167,7 +168,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 currentTemperature -= getCoolDownRate();
                 timeBeforeCoolingDown = getCooldownInterval();
             }
-        } else--timeBeforeCoolingDown;
+        } else {
+            --timeBeforeCoolingDown;
+        }
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
@@ -181,7 +184,9 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     GTUtil.doExplosion(getLevel(), getBlockPos(), 2.0f);
-                } else this.hasNoWater = !hasDrainedWater;
+                } else {
+                    this.hasNoWater = !hasDrainedWater;
+                }
                 if (filledSteam == 0 && hasDrainedWater && getLevel() instanceof ServerLevel serverLevel) {
                     final float x = getBlockPos().getX() + 0.5F;
                     final float y = getBlockPos().getY() + 0.5F;
@@ -204,9 +209,12 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                     // bypass capability check for special case behavior
                     steamTank.drainInternal(FluidType.BUCKET_VOLUME * 4, FluidAction.EXECUTE);
                 }
-            } else this.hasNoWater = false;
+            } else {
+                this.hasNoWater = false;
+            }
         }
         updateSteamSubscription();
+        syncDataHolder.markClientSyncFieldDirty("currentTemperature");
     }
 
     protected int getCooldownInterval() {
@@ -297,27 +305,41 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
     //////////////////////////////////////
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(176, 166, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND_STEAM.get(isHighPressure))
-                .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new ProgressWidget(this::getTemperaturePercent, 96, 26, 10, 54)
-                        .setProgressTexture(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure),
-                                GuiTextures.PROGRESS_BAR_BOILER_HEAT)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setDynamicHoverTips(pct -> I18n.get("gtceu.multiblock.large_boiler.temperature",
-                                currentTemperature + 274, getMaxTemperature() + 274)))
-                .widget(new TankWidget(waterTank.getStorages()[0], 83, 26, 10, 54, false, true)
-                        .setShowAmount(false)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-                .widget(new TankWidget(steamTank.getStorages()[0], 70, 26, 10, 54, true, false)
-                        .setShowAmount(false)
-                        .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)))
-                .widget(new ImageWidget(43, 44, 18, 18, GuiTextures.CANISTER_OVERLAY_STEAM.get(isHighPressure)))
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
-                        GuiTextures.SLOT_STEAM.get(isHighPressure), 7, 84, true));
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return MachineUIPanelBuilder.defaultSteamMachinePanelBuilder(this);
+    }
+
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_STEEL :
+                GTGuiTextures.PROGRESS_BAR_BOILER_EMPTY_BRONZE;
+
+        DoubleSyncValue tempPercentage = syncManager.getOrCreateSyncHandler("tempPercentage", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(this::getTemperaturePercent));
+
+        mainWidget.child(Flow.row()
+                .top(12)
+                .left(50)
+                .coverChildren()
+                .childPadding(10)
+                .child(new FluidSlot()
+                        .syncHandler(new FluidSlotSyncHandler(waterTank.getStorages()[0]))
+                        .size(14, 54)
+                        .alwaysShowFull(true))
+                .child(new FluidSlot()
+                        .syncHandler(new FluidSlotSyncHandler(steamTank.getStorages()[0])
+                                .canFillSlot(false).canDrainSlot(true))
+                        .alwaysShowFull(true)
+                        .size(14, 54))
+                .child(new ProgressWidget()
+                        .texture(progressTexture,
+                                GTGuiTextures.PROGRESS_BAR_BOILER_HEAT, ProgressDrawable.Direction.UP)
+                        .size(14, 54)
+                        .value(tempPercentage)
+                        .tooltipAutoUpdate(true)
+                        .tooltipBuilder((r) -> r.addLine(Text
+                                .lang("gtceu.fluid.temperature", getCurrentTemperature())))));
     }
 
     //////////////////////////////////////
@@ -353,7 +375,6 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         getLevel().addParticle(ParticleTypes.FLAME, x, y, z, 0, 0, 0);
     }
 
-    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

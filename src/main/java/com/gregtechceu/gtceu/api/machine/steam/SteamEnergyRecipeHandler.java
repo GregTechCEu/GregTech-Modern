@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraftforge.fluids.FluidStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
+    @Getter
     private final NotifiableFluidTank steamTank;
     private final double conversionRate; // mB steam per EU
 
@@ -29,7 +31,8 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
     }
 
     @Override
-    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left, boolean simulate) {
+    public @NotNull List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                                        boolean simulate) {
         for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {
@@ -45,7 +48,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
                 var list = new ArrayList<FluidIngredient>();
                 list.add(steam);
                 var leftSteam = steamTank.handleRecipeInner(io, recipe, list, simulate);
-                if (leftSteam == null || leftSteam.isEmpty()) {
+                if (leftSteam.isEmpty()) {
                     it.remove();
                 } else {
                     totalEU = (long) (leftSteam.get(0).getAmount() / conversionRate);
@@ -53,7 +56,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
                 }
             }
         }
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override

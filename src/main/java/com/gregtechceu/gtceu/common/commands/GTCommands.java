@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
@@ -76,12 +75,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(literal("ui_editor")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                                .executes(context -> {
-                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
-                                    return 1;
-                                }))
                         .then(literal("dump_data")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_OWNERS))
                                 .then(literal("bedrock_fluid_veins")

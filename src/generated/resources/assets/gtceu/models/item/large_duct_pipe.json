@@ -17,9 +17,8 @@
           "tintindex": 1
         },
         "south": {
-          "cullface": "south",
-          "texture": "#end",
-          "tintindex": 1
+          "texture": "#side",
+          "tintindex": 0
         },
         "up": {
           "texture": "#side",

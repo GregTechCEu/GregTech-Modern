@@ -68,25 +68,25 @@ public class RecipeHelper {
 
     public static <T> List<T> getInputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {
         return builder.input.getOrDefault(capability, Collections.emptyList()).stream()
-                .map(content -> capability.of(content.getContent()))
+                .map(content -> capability.of(content.content()))
                 .collect(Collectors.toList());
     }
 
     public static <T> List<T> getInputContents(GTRecipe recipe, RecipeCapability<T> capability) {
         return recipe.getInputContents(capability).stream()
-                .map(content -> capability.of(content.getContent()))
+                .map(content -> capability.of(content.content()))
                 .collect(Collectors.toList());
     }
 
     public static <T> List<T> getOutputContents(GTRecipeBuilder builder, RecipeCapability<T> capability) {
         return builder.output.getOrDefault(capability, Collections.emptyList()).stream()
-                .map(content -> capability.of(content.getContent()))
+                .map(content -> capability.of(content.content()))
                 .collect(Collectors.toList());
     }
 
     public static <T> List<T> getOutputContents(GTRecipe recipe, RecipeCapability<T> capability) {
         return recipe.getOutputContents(capability).stream()
-                .map(content -> capability.of(content.getContent()))
+                .map(content -> capability.of(content.content()))
                 .collect(Collectors.toList());
     }
 
@@ -105,7 +105,7 @@ public class RecipeHelper {
      */
     public static List<ItemStack> getInputItems(GTRecipe recipe) {
         return recipe.getInputContents(ItemRecipeCapability.CAP).stream()
-                .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> ItemRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getItems()[0])
                 .collect(Collectors.toList());
     }
@@ -118,7 +118,7 @@ public class RecipeHelper {
      */
     public static List<FluidStack> getInputFluids(GTRecipe recipe) {
         return recipe.getInputContents(FluidRecipeCapability.CAP).stream()
-                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> FluidRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getStacks()[0])
                 .collect(Collectors.toList());
     }
@@ -131,7 +131,7 @@ public class RecipeHelper {
      */
     public static List<ItemStack> getOutputItems(GTRecipe recipe) {
         return recipe.getOutputContents(ItemRecipeCapability.CAP).stream()
-                .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> ItemRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getItems()[0])
                 .collect(Collectors.toList());
     }
@@ -144,7 +144,7 @@ public class RecipeHelper {
      */
     public static List<ItemStack> getOutputItems(GTRecipeBuilder builder) {
         return builder.output.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList()).stream()
-                .map(content -> ItemRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> ItemRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getItems()[0])
                 .collect(Collectors.toList());
     }
@@ -157,7 +157,7 @@ public class RecipeHelper {
      */
     public static List<FluidStack> getOutputFluids(GTRecipe recipe) {
         return recipe.getOutputContents(FluidRecipeCapability.CAP).stream()
-                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> FluidRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getStacks()[0])
                 .collect(Collectors.toList());
     }
@@ -170,7 +170,7 @@ public class RecipeHelper {
      */
     public static List<FluidStack> getOutputFluids(GTRecipeBuilder builder) {
         return builder.output.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).stream()
-                .map(content -> FluidRecipeCapability.CAP.of(content.getContent()))
+                .map(content -> FluidRecipeCapability.CAP.of(content.content()))
                 .map(ingredient -> ingredient.getStacks()[0])
                 .collect(Collectors.toList());
     }
@@ -229,7 +229,7 @@ public class RecipeHelper {
 
         if (!simulated && ConfigHolder.INSTANCE.dev.debug) {
             GTCEu.LOGGER.warn("IO {} Error while handling recipe {} outputs for {}",
-                    Component.translatable(io.tooltip).getString(), recipe, holder);
+                    Component.translatable(io.getTooltip()).getString(), recipe, holder);
         }
         String key = "gtceu.recipe_logic.insufficient_" + (io == IO.IN ? "in" : "out");
         return ActionResult.fail(Component.translatable(key)
@@ -332,7 +332,7 @@ public class RecipeHelper {
             // Add non-chanced contents with priority and store chanced contents for later
             for (var content : contents) {
                 if (added == N) break;
-                if (0 < content.chance && content.chance < content.maxChance) {
+                if (0 < content.chance() && content.chance() < content.maxChance()) {
                     chanced.add(content);
                 } else {
                     list.add(content);
