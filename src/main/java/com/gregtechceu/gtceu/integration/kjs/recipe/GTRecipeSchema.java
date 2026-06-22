@@ -1403,7 +1403,7 @@ public interface GTRecipeSchema {
     private static @Nullable String parseItemOutputId(RecipeJS recipe, CapabilityMap map) {
         var outputs = map.get(ItemRecipeCapability.CAP);
         if (outputs != null && outputs.length > 0) {
-            var output = GTRecipeComponents.ITEM_OUT.baseComponent().read(recipe, outputs[0].content);
+            var output = GTRecipeComponents.ITEM_OUT.baseComponent().read(recipe, outputs[0].content());
             var id = output.item.getItemHolder().unwrapKey();
             if (id.isPresent()) {
                 return id.get().location().getPath();
@@ -1416,7 +1416,7 @@ public interface GTRecipeSchema {
     private static @Nullable String parseFluidOutputId(RecipeJS recipe, CapabilityMap map) {
         var outputs = map.get(FluidRecipeCapability.CAP);
         if (outputs != null && outputs.length > 0) {
-            var output = GTRecipeComponents.FLUID_OUT.baseComponent().read(recipe, outputs[0].content);
+            var output = GTRecipeComponents.FLUID_OUT.baseComponent().read(recipe, outputs[0].content());
             var fluids = output.ingredient().getStacks();
             if (fluids.length == 0) return null;
 

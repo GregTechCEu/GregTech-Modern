@@ -62,11 +62,11 @@ public class CTMMeshBuilder {
                     emitter.computeGeometry();
                     emitter.populateMissingNormals();
 
-                    result.add(emitter.toBakedQuad(ctmSprite));
                     emitter.emit();
                 }
             }
         }
+        meshBuilder.build().asBlockBakedQuads(result::add);
         return result;
     }
 

@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.utils.memoization.function.MemoizedTriFunction;
 
 import net.minecraft.world.level.block.Block;
 
+import com.google.common.base.Suppliers;
 import lombok.Getter;
 import org.apache.commons.lang3.function.TriFunction;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
@@ -28,6 +30,40 @@ public class GTMemoizer {
      */
     public static <T> MemoizedSupplier<T> memoize(Supplier<T> delegate) {
         return new MemoizedSupplier<>(delegate);
+    }
+
+    /**
+     * Store a supplier in a delegate function to be computed once, and only again after time to live has expired.
+     * <p>
+     * If you need thread safety, you should use
+     * {@link Suppliers#memoize(com.google.common.base.Supplier) Suppliers#memoize} instead.
+     * </p>
+     *
+     * @param <T>        The type of object supplied
+     * @param delegate   The supplier to memoize
+     * @param timeToLive Time to retain calculation. If negative, retain indefinitely.
+     * @see #memoize(Supplier)
+     * @see Suppliers#memoize(com.google.common.base.Supplier)
+     */
+    public static <T> MemoizedSupplier<T> memoize(Supplier<T> delegate, Duration timeToLive) {
+        return memoize(delegate, timeToLive.toNanos());
+    }
+
+    /**
+     * Store a supplier in a delegate function to be computed once, and only again after time to live has expired.
+     * <p>
+     * If you need thread safety, you should use
+     * {@link Suppliers#memoize(com.google.common.base.Supplier) Suppliers#memoize} instead.
+     * </p>
+     *
+     * @param <T>        The type of object supplied
+     * @param delegate   The supplier to memoize
+     * @param timeToLive Time in nanoseconds to retain calculation. If negative, retain indefinitely.
+     * @see #memoize(Supplier)
+     * @see Suppliers#memoize(com.google.common.base.Supplier)
+     */
+    public static <T> MemoizedSupplier<T> memoize(Supplier<T> delegate, long timeToLive) {
+        return new MemoizedSupplier<>(delegate, timeToLive);
     }
 
     public static <T extends Block> MemoizedBlockSupplier<T> memoizeBlockSupplier(Supplier<T> delegate) {

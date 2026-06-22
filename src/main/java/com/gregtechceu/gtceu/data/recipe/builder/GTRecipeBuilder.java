@@ -1716,7 +1716,7 @@ public class GTRecipeBuilder {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content());
             Item out = null;
             int outputCount = 0;
 
@@ -1767,7 +1767,7 @@ public class GTRecipeBuilder {
     private void removeExistingMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         if (itemOutputs.size() == 1) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content());
             Item out = null;
             int outputCount = 0;
 
@@ -1852,7 +1852,7 @@ public class GTRecipeBuilder {
     public EnergyStack EUt() {
         if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
         if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
-        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content);
+        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content());
     }
 
     public int getSolderMultiplier() {

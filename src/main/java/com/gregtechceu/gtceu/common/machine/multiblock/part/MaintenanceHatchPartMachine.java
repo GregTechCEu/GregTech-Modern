@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -16,18 +16,13 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -35,6 +30,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.FloatSyncValue;
+import brachy.modularui.value.sync.InteractionSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -44,14 +56,14 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
+import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MaintenanceHatchPartMachine extends TieredPartMachine
-                                         implements IMaintenanceMachine {
+                                         implements IMuiMachine, IMaintenanceMachine {
 
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
@@ -73,7 +85,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SaveField
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
-    @Getter
     @SaveField
     private float durationMultiplier = 1f;
     @Nullable
@@ -96,6 +107,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @Override
     public byte startProblems() {
         return ALL_PROBLEMS;
+    }
+
+    public void setDurationMultiplier(float durationMultiplier) {
+        this.durationMultiplier = durationMultiplier;
+        syncDataHolder.markClientSyncFieldDirty("durationMultiplier");
     }
 
     //////////////////////////////////////
@@ -326,57 +342,78 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     //////////////////////////////////////
     // ******** GUI *********//
     //////////////////////////////////////
+
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group;
-        if (isConfigurable) {
-            group = new WidgetGroup(0, 0, 150, 70);
-            group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 150 - 8, 70 - 8).setBackground(GuiTextures.DISPLAY)
-                    .addWidget(new ComponentPanelWidget(4, 5, list -> {
-                        list.add(getTextWidgetText("duration", this::getDurationMultiplier));
-                        list.add(getTextWidgetText("time", this::getTimeMultiplier));
-                        var buttonText = Component.translatable("gtceu.maintenance.configurable_duration.modify");
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-                        buttonText.append(" ");
-                        buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-                        list.add(buttonText);
-                    }).setMaxWidthLimit(150 - 8 - 8 - 4).clickHandler((componentData, clickData) -> {
-                        if (!clickData.isRemote) {
-                            if (componentData.equals("sub")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier - DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            } else if (componentData.equals("add")) {
-                                durationMultiplier = Mth.clamp(durationMultiplier + DURATION_ACTION_AMOUNT,
-                                        MIN_DURATION_MULTIPLIER, MAX_DURATION_MULTIPLIER);
-                            }
-                        }
-                    })));
-
-        } else {
-            group = new WidgetGroup(0, 0, 8 + 18, 8 + 20 + 18);
-        }
-        group.addWidget(new SlotWidget(itemStackHandler, 0, group.getSize().width - 4 - 18, 4)
-                .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.DUCT_TAPE_OVERLAY))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tape_slot.tooltip"));
-        group.addWidget(new ButtonWidget(group.getSize().width - 4 - 18, 4 + 20, 18, 18, GuiTextures.MAINTENANCE_BUTTON,
-                data -> fixMaintenanceProblems(group.getGui().entityPlayer))
-                .setHoverTooltips("gtceu.machine.maintenance_hatch_tool_slot.tooltip"));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
-    private static Component getTextWidgetText(String type, DoubleSupplier multiplier) {
-        Component tooltip;
-        if (multiplier.getAsDouble() == 1.0) {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
-        } else {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description",
-                    FormattingUtil.formatNumber2Places(multiplier.getAsDouble()));
-        }
-        return Component
-                .translatable("gtceu.maintenance.configurable_" + type,
-                        FormattingUtil.formatNumber2Places(multiplier.getAsDouble()))
-                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        InteractionSyncHandler syncHandler = new InteractionSyncHandler();
+        // syncManager.syncValue("button_idk", syncHandler);
+        Flow maintenanceStatusWidget = Flow.column()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .coverChildren()
+                .padding(5)
+                .childPadding(2);
+        Runnable updateWidget = () -> {
+            while (!maintenanceStatusWidget.getChildren().isEmpty()) maintenanceStatusWidget.remove(0);
+            maintenanceStatusWidget.child(new TextWidget<>(Text.dynamic(() -> hasMaintenanceProblems() ?
+                    Component.translatable("gtceu.top.maintenance_broken") :
+                    Component.translatable("gtceu.top.maintenance_fixed"))))
+                    .child(Flow.row()
+                            .coverChildren()
+                            .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
+                                    .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
+                                    .map(GTUtil::getMaintenanceText)
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getA())))
+                                    .map(IWidget.class::cast)
+                                    .toList()));
+        };
+        syncHandler.setOnMousePressed((button) -> {
+            fixMaintenanceProblems(guiData.getPlayer());
+            updateWidget.run();
+        });
+        updateWidget.run();
+        mainWidget.child(Flow.column()
+                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, MachineUIPanel.DEFAULT_CONTENT_HEIGHT)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .childIf(this.isConfigurable, () -> Flow.column()
+                        .coverChildren()
+                        .padding(5)
+                        .paddingLeft(0)
+                        .marginLeft(5)
+                        .child(Flow.row()
+                                .coverChildren()
+                                .childPadding(5)
+                                .leftRel(0)
+                                .child(new TextWidget<>(
+                                        Text.lang("gtceu.maintenance.configurable_duration.modify")))
+                                .child(new TextFieldWidget()
+                                        .setNumbersDouble(() -> MIN_DURATION_MULTIPLIER,
+                                                () -> MAX_DURATION_MULTIPLIER)
+                                        .setDefaultNumber(1)
+                                        .value(new FloatSyncValue(this::getDurationMultiplier,
+                                                this::setDurationMultiplier))
+                                        .addTooltipElement(Text.dynamic(() -> getDurationMultiplier() == 1.0 ?
+                                                Component.translatable(
+                                                        "gtceu.maintenance.configurable_duration.unchanged_description") :
+                                                Component.translatable(
+                                                        "gtceu.maintenance.configurable_duration.changed_description")))))
+                        .child(new TextWidget<>(Text.lang("gtceu.maintenance.configurable_time",
+                                this.getTimeMultiplier()))
+                                .leftRel(0)))
+                .child(Flow.row()
+                        .leftRel(0.5f)
+                        .coverChildren()
+                        .padding(5)
+                        .child(new ItemSlot()
+                                .slot(new ModularSlot(itemStackHandler, 0).changeListener(
+                                        (newItem, onlyAmountChanged, client, init) -> updateWidget.run()))
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.DUCT_TAPE_OVERLAY))
+                        .child(new ButtonWidget<>()
+                                .background(GTGuiTextures.BUTTON_MAINTENANCE)
+                                .disableHoverBackground()
+                                .addTooltipElement(
+                                        Text.lang("gtceu.machine.maintenance_hatch_tool_slot.tooltip"))
+                                .syncHandler(syncHandler)))
+                .child(maintenanceStatusWidget));
     }
 }

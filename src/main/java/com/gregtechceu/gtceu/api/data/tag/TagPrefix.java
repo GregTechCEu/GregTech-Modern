@@ -25,7 +25,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.xei.widgets.GTOreByProduct;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -1395,7 +1395,7 @@ public class TagPrefix {
     }
 
     /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES}
+     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.values()}
      */
     @Deprecated(since = "8.0.0")
     public static Collection<TagPrefix> values() {

@@ -1,19 +1,24 @@
 package com.gregtechceu.gtceu.common.machine.steam;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
+
+import brachy.modularui.drawable.UITexture;
+import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
 
 import java.util.Objects;
 
@@ -66,17 +71,25 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return super.createUI(entityPlayer)
-                .widget(new ProgressWidget(
-                        () -> GTUtil.canSeeSunClearly(Objects.requireNonNull(getLevel()), getBlockPos()) ? 1.0 : 0.0,
-                        114,
-                        44, 20,
-                        20)
-                        .setProgressTexture(
-                                GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0, 1, 0.5),
-                                GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(isHighPressure).getSubTexture(0, 0.5, 1,
-                                        0.5)));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        super.buildMainUI(mainWidget, guiData, syncManager, settings);
+
+        UITexture progressTexture = isHighPressure() ? GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL :
+                GTGuiTextures.PROGRESS_BAR_SOLAR_BRONZE;
+
+        DoubleSyncValue canSeeSun = syncManager.getOrCreateSyncHandler("canSeeSun", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> {
+                    if (GTUtil.canSeeSunClearly(getLevel(), getBlockPos())) return 1.0f;
+                    return 0.0f;
+                }));
+
+        mainWidget.child(new ProgressWidget()
+                .right(20)
+                .top(30)
+                .size(18)
+                .texture(progressTexture, ProgressDrawable.Direction.UP)
+                .value(canSeeSun));
     }
 
     @Override

@@ -2,22 +2,31 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.PhantomItemSlotSyncHandler;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.PhantomItemSlot;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 
 public class CreativeChestMachine extends QuantumChestMachine {
@@ -47,16 +56,14 @@ public class CreativeChestMachine extends QuantumChestMachine {
         return InteractionResult.SUCCESS;
     }
 
-    private void setTicksPerCycle(String value) {
-        if (value.isEmpty()) return;
-        ticksPerCycle = Integer.parseInt(value);
+    private void setTicksPerCycle(int value) {
+        ticksPerCycle = value;
         autoOutput.setTicksPerCycle(ticksPerCycle);
         onItemChanged();
     }
 
-    private void setItemsPerCycle(String value) {
-        if (value.isEmpty()) return;
-        itemsPerCycle = Integer.parseInt(value);
+    private void setItemsPerCycle(int value) {
+        itemsPerCycle = value;
         onItemChanged();
     }
 
@@ -95,32 +102,59 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
-                .setClearSlotOnRightClick(true)
-                .setMaxStackSize(1)
-                .setBackgroundTexture(GuiTextures.SLOT));
-        group.addWidget(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
-        group.addWidget(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), this::setItemsPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 28, "gtceu.creative.chest.ipc"));
-        group.addWidget(new ImageWidget(7, 85, 154, 14, GuiTextures.DISPLAY));
-        group.addWidget(new TextFieldWidget(9, 87, 152, 10, () -> String.valueOf(ticksPerCycle), this::setTicksPerCycle)
-                .setMaxStringLength(11)
-                .setNumbersOnly(1, Integer.MAX_VALUE));
-        group.addWidget(new LabelWidget(7, 65, "gtceu.creative.chest.tpc"));
-        group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-                .setTexture(
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.off")),
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
-                                new TextTexture("gtceu.creative.activity.on")))
-                .setPressed(isWorkingEnabled()));
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return MachineUIPanelBuilder.panelBuilder(this).addDefaultConfigurators(false)
+                .addTraitConfigurators(false).rightConfigurators(f -> f.child(GTMuiWidgets.createPowerButton(this)));
+    }
 
-        return group;
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        PhantomItemSlotSyncHandler storedSlot = new PhantomItemSlotSyncHandler(new ModularSlot(cache, 0).filter(
+                stack -> stored.isEmpty() || ItemStack.isSameItemSameTags(stack, stored)));
+
+        syncManager.syncValue("stored", storedSlot);
+
+        IntSyncValue itemsPerCycle = new IntSyncValue(this::getItemsPerCycle, this::setItemsPerCycle);
+        syncManager.syncValue("itemsPerCycle", itemsPerCycle);
+        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle);
+        syncManager.syncValue("ticksPerCycle", ticksPerCycle);
+
+        mainWidget
+                .child(Flow.col()
+                        .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 86)
+                        .name("main")
+                        .padding(7)
+                        .mainAxisAlignment(Alignment.MainAxis.START)
+                        .child(Flow.row().coverChildrenHeight()
+                                .child(Text.lang("gtceu.creative.chest.item").asWidget()
+                                        .marginRight(4)
+                                        .verticalCenter())
+                                .child(new PhantomItemSlot().syncHandler("stored")))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(Flow.row()
+                                .height(18)
+                                .child(Text.lang("gtceu.creative.chest.ipc").asWidget()
+                                        .marginRight(4)
+                                        .width(80)
+                                        .verticalCenter())
+                                .child(new TextFieldWidget()
+                                        .setTextAlignment(Alignment.CENTER)
+                                        .setNumbers(1, Integer.MAX_VALUE)
+                                        .value(itemsPerCycle)))
+                        .child(new Rectangle().color(0xFF555555).asWidget()
+                                .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
+                        .child(Flow.row()
+                                .height(18)
+                                .child(Text.lang("gtceu.creative.chest.tpc").asWidget()
+                                        .marginRight(4)
+                                        .width(80)
+                                        .verticalCenter())
+                                .child(new TextFieldWidget()
+                                        .setTextAlignment(Alignment.CENTER)
+                                        .setNumbers(1, Integer.MAX_VALUE)
+                                        .value(ticksPerCycle))));
     }
 
     private class InfiniteCache extends ItemCache {

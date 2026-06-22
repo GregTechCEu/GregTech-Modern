@@ -5,41 +5,37 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -48,14 +44,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MinerMachine extends WorkableTieredMachine
-                          implements IControllable, IFancyUIMachine, IDataInfoProvider, IMiner {
+                          implements IControllable, IMuiMachine, IDataInfoProvider, IMiner {
 
     @Getter
     @SaveField
@@ -141,107 +136,15 @@ public class MinerMachine extends WorkableTieredMachine
         }
     }
 
-    //////////////////////////////////////
-    // *********** GUI ***********//
-    //////////////////////////////////////
-
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-                WidgetGroup template = createTemplate(inventorySize).createDefault();
-                SlotWidget batterySlot = createBatterySlot().createDefault();
-                batterySlot.setSelfPosition(new Position(100, 10));
-                WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172),
-                        template.getSize().height + 8);
-                Size size = group.getSize();
-
-                template.setSelfPosition(new Position(
-                        (size.width - 4 - template.getSize().width) / 2 + 4,
-                        (size.height - template.getSize().height) / 2));
-
-                group.addWidget(template);
-                group.addWidget(batterySlot);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof MinerMachine minerMachine) {
-                    createTemplate(inventorySize).setupUI(template, minerMachine);
-                    createEnergyBar().setupUI(template, minerMachine);
-                    createBatterySlot().setupUI(template, minerMachine);
-                }
-            }));
-
-    protected static EditableUI<WidgetGroup, MinerMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("miner", WidgetGroup.class, () -> {
-            int rowSize = (int) Math.sqrt(inventorySize);
-            int width = rowSize * 18 + 120;
-            int height = Math.max(rowSize * 18, 80);
-            WidgetGroup group = new WidgetGroup(0, 0, width, height);
-
-            WidgetGroup slots = new WidgetGroup(120, (height - rowSize * 18) / 2, rowSize * 18, rowSize * 18);
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < rowSize; x++) {
-                    int index = y * rowSize + x;
-                    var slot = new SlotWidget();
-                    slot.initTemplate();
-                    slot.setSelfPosition(new Position(x * 18, y * 18));
-                    slot.setBackground(GuiTextures.SLOT);
-                    slot.setId("slot_" + index);
-                    slots.addWidget(slot);
-                }
-            }
-
-            var componentPanel = new ComponentPanelWidget(4, 5, list -> {});
-            componentPanel.setMaxWidthLimit(110);
-            componentPanel.setId("component_panel");
-
-            var container = new WidgetGroup(0, 0, 117, height);
-            container.addWidget(new DraggableScrollableWidgetGroup(4, 4, container.getSize().width - 8,
-                    container.getSize().height - 8)
-                    .setBackground(GuiTextures.DISPLAY)
-                    .addWidget(componentPanel));
-            container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-            group.addWidget(container);
-            group.addWidget(slots);
-            return group;
-        }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < machine.exportItems.getSlots()) {
-                    slot.setHandlerSlot(machine.exportItems, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
-                }
-            });
-            WidgetUtils.widgetByIdForEach(group, "^component_panel$", ComponentPanelWidget.class,
-                    panel -> panel.textSupplier(machine::addDisplayText));
-        });
-    }
-
-    /**
-     * Create an energy bar widget.
-     */
-    protected static EditableUI<SlotWidget, MinerMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
-    }
-
     private void addDisplayText(List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
         textList.add(recipeLogic.getCustomProgressLine());
-        textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ")
-                .append(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX())));
-        textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()).append(" ")
-                .append(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY())));
-        textList.add(Component.translatable("gtceu.machine.miner.startz", getRecipeLogic().getZ()).append(" ")
-                .append(Component.translatable("gtceu.machine.miner.minez", getRecipeLogic().getMineZ())));
+        textList.add(
+                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()));
+        textList.add(
+                Component.translatable("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()));
+        textList.add(
+                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()));
         textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         if (getRecipeLogic().isDone())
             textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
@@ -307,5 +210,33 @@ public class MinerMachine extends WorkableTieredMachine
                     Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
         }
         return new ArrayList<>();
+    }
+
+    // TODO(Onion): fix the gui stuff for this
+
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        mainWidget
+                .child(Flow.row()
+                        .width(220)
+                        .coverChildrenHeight()
+                        .margin(5)
+                        .childPadding(5)
+                        .child(Flow.column()
+                                .crossAxisAlignment(Alignment.CrossAxis.START)
+                                .padding(5)
+                                .background(GTGuiTextures.DISPLAY)
+                                .widthRel(.6f)
+                                .child(new TextWidget<>(Text.dynamic(() -> {
+                                    List<Component> text = new ArrayList<>();
+                                    addDisplayText(text);
+                                    return text.stream()
+                                            .map(Component::copy)
+                                            .reduce((a, b) -> a.append("\n").append(b))
+                                            .orElse(Component.empty());
+                                })).color(Color.WHITE.main)))
+                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
+                                syncManager)));
     }
 }

@@ -34,7 +34,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -43,9 +42,8 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -69,7 +67,7 @@ import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.armor.PowerlessJetpack;
-import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkableMachine;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
@@ -160,8 +158,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
-                                SimpleTieredMachine.EDITABLE_UI_CREATOR, false)),
+                        new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
@@ -170,8 +167,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 KJSSteamMachineBuilder::new, false);
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
-                                SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)),
+                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)),
                 false);
         GTRegistryInfo.MACHINE.addType("multiblock",
                 (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
@@ -180,7 +176,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
         GTRegistryInfo.MACHINE.addType("primitive",
                 (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new),
+                (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
                 false);
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
@@ -312,8 +308,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         // Multiblock related
         event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         // Recipe related
@@ -336,8 +331,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
-        // GUI related
-        event.add("GuiTextures", GuiTextures.class);
         // Client/Server data related
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);

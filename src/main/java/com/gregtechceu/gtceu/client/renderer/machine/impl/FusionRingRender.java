@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.bloom.*;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -86,17 +85,15 @@ public class FusionRingRender extends DynamicRender<FusionReactorMachine, Fusion
             machine.delta -= Minecraft.getInstance().getDeltaFrameTime();
         }
 
-        Direction front = machine.getFrontFacing();
-        Direction upwards = machine.getUpwardsFacing();
-        boolean flipped = machine.isFlipped();
-        Direction back = RelativeDirection.BACK.getRelative(front, upwards, flipped);
-        Direction.Axis axis = RelativeDirection.UP.getRelative(front, upwards, flipped).getAxis();
-
-        float lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
-        float r = Mth.lerp(lerpFactor, red(machine.lastColor), 255) / 255f;
-        float g = Mth.lerp(lerpFactor, green(machine.lastColor), 255) / 255f;
-        float b = Mth.lerp(lerpFactor, blue(machine.lastColor), 255) / 255f;
-
+        final var lerpFactor = Math.abs((Math.abs(machine.getOffsetTimer() % 50) + partialTicks) - 25) / 25;
+        var front = machine.getFrontFacing();
+        var upwards = machine.getUpwardsFacing();
+        var flipped = machine.isFlipped();
+        var back = RelativeDirection.BACK.getRelativeFacing(front, upwards, flipped);
+        var axis = RelativeDirection.UP.getRelativeFacing(front, upwards, flipped).getAxis();
+        var r = Mth.lerp(lerpFactor, red(machine.lastColor), 255) / 255f;
+        var g = Mth.lerp(lerpFactor, green(machine.lastColor), 255) / 255f;
+        var b = Mth.lerp(lerpFactor, blue(machine.lastColor), 255) / 255f;
         RenderBufferHelper.renderRing(stack, buffer,
                 back.getStepX() * 7 + 0.5F,
                 back.getStepY() * 7 + 0.5F,
