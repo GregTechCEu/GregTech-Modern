@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.utils.math.PostfixPercentOperator;
 import com.gregtechceu.gtceu.utils.math.SIPrefix;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.ezylang.evalex.BaseException;
@@ -215,7 +217,7 @@ public class GTMath {
         if (values == null || values.length == 0) throw new IllegalArgumentException();
         if (values.length == 1) return values[0];
         if (values.length == 2) return Math.max(values[0], values[1]);
-        float max = Float.MIN_VALUE;
+        float max = -Float.MAX_VALUE;
         for (float i : values) {
             if (i > max) {
                 max = i;
@@ -303,5 +305,29 @@ public class GTMath {
         // correct rounding errors
         if (Math.pow(10, d - 1) > x) d--;
         return Math.max(d, 1);
+    }
+
+    public static Vec3 getFirstPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 up = Math.abs(normal.y) < 0.99 ? new Vec3(0, 1, 0) : new Vec3(1, 0, 0);
+
+        return normal.cross(up).normalize();
+    }
+
+    public static Vec3 getSecondPerpendicular(Vec3 a, Vec3 b) {
+        Vec3 normal = a.subtract(b).normalize();
+        if (normal.equals(Vec3.ZERO)) return Vec3.ZERO;
+
+        Vec3 law = getFirstPerpendicular(a, b);
+
+        return normal.cross(law).normalize();
+    }
+
+    public static Vec3 getCenter(BlockPos a, BlockPos b) {
+        Vec3 ac = a.getCenter();
+        Vec3 bc = b.getCenter();
+        return ac.add(bc).scale(0.5F);
     }
 }

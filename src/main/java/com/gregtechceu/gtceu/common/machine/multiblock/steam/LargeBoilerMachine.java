@@ -44,6 +44,7 @@ import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -78,14 +79,14 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         updateSteamSubscription();
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         updateSteamSubscription();
     }
 
@@ -132,12 +133,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
-                    if (drainWater == null || drainWater.isEmpty()) {
+                    if (drainWater.isEmpty()) {
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                        maxDrain - drainWater.get(0).getAmount();
+                var drained = drainWater.isEmpty() ? maxDrain : maxDrain - drainWater.get(0).getAmount();
 
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
@@ -149,7 +149,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
                         fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
-                        if (fillSteam == null) break;
+                        if (fillSteam.isEmpty()) break;
                     }
                 }
 

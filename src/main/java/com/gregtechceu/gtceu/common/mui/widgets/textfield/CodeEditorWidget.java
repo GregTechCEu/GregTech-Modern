@@ -9,10 +9,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 
+import brachy.modularui.api.value.IStringValue;
 import brachy.modularui.api.value.ISyncOrValue;
 import brachy.modularui.screen.viewport.ModularGuiContext;
+import brachy.modularui.theme.TextFieldTheme;
 import brachy.modularui.value.sync.GenericListSyncHandler;
-import brachy.modularui.value.sync.StringSyncValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,15 +52,15 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
     public CodeEditorWidget(@Nullable LanguageDefinition<T> language) {
         this.language = language;
         GenericListSyncHandler<Component> formattedTextSync = new GenericListSyncHandler<>(
-                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT::deserialize,
-                GTByteBufAdapters.COMPONENT::serialize, GTByteBufAdapters.COMPONENT::areEqual, Component::copy);
+                this::getTextAsComponents, this::formattedText, GTByteBufAdapters.COMPONENT,
+                GTByteBufAdapters.COMPONENT, GTByteBufAdapters.COMPONENT, Component::copy);
         setSyncOrValue(formattedTextSync);
     }
 
     @Override
     public boolean isValidSyncOrValue(@NotNull ISyncOrValue syncOrValue) {
         return syncOrValue.isTypeOrEmpty(GenericListSyncHandler.class) ||
-                syncOrValue.isTypeOrEmpty(StringSyncValue.class);
+                syncOrValue.isTypeOrEmpty(IStringValue.class);
     }
 
     public List<Component> getTextAsComponents() {
@@ -97,6 +98,15 @@ public class CodeEditorWidget<T> extends TextEditorWidget<CodeEditorWidget<T>> {
             this.stringValue.setStringValue(getText());
             lastEdited = -1;
         }
+    }
+
+    @Override
+    protected void drawText(ModularGuiContext context, TextFieldTheme widgetTheme) {
+        context.graphicsPose().pushPose();
+        context.graphicsPose().translate(-1, 3, 0);
+        this.renderer.draw(context.getGraphics(), getTextAsComponents());
+        context.graphicsPose().popPose();
+        getScrollArea().getScrollX().setScrollSize(Math.max(0, (int) (this.renderer.getLastWidth() + 0.5f)));
     }
 
     public boolean notEditedForSomeTime() {

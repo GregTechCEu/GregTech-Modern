@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.multiblock.MultiblockFluidRendererTrait;
@@ -28,10 +28,10 @@ public interface GTMachineInstanceFactories {
         machine.attachPersistentTrait("fluidRendererTrait", new MultiblockFluidRendererTrait(() -> {
             var frontFace = machine.getFrontFacing();
             var upwardFace = machine.getUpwardsFacing();
-            Direction up = RelativeDirection.UP.getRelative(frontFace, upwardFace, machine.isFlipped());
+            Direction up = RelativeDirection.UP.getRelativeFacing(frontFace, upwardFace, machine.isFlipped());
             Direction back = frontFace.getOpposite();
-            Direction clockWise = RelativeDirection.RIGHT.getRelative(frontFace, upwardFace, machine.isFlipped());
-            Direction counterClockWise = RelativeDirection.LEFT.getRelative(frontFace, upwardFace,
+            Direction clockWise = RelativeDirection.RIGHT.getRelativeFacing(frontFace, upwardFace, machine.isFlipped());
+            Direction counterClockWise = RelativeDirection.LEFT.getRelativeFacing(frontFace, upwardFace,
                     machine.isFlipped());
 
             BlockPos pos = machine.getBlockPos();
@@ -59,10 +59,10 @@ public interface GTMachineInstanceFactories {
             var frontFace = machine.getFrontFacing();
             var upwardFace = machine.getUpwardsFacing();
             var flipped = machine.isFlipped();
-            Direction up = RelativeDirection.UP.getRelative(frontFace, upwardFace, flipped);
+            Direction up = RelativeDirection.UP.getRelativeFacing(frontFace, upwardFace, flipped);
             Direction back = frontFace.getOpposite();
-            Direction clockWise = RelativeDirection.RIGHT.getRelative(frontFace, upwardFace, flipped);
-            Direction counterClockWise = RelativeDirection.LEFT.getRelative(frontFace, upwardFace, flipped);
+            Direction clockWise = RelativeDirection.RIGHT.getRelativeFacing(frontFace, upwardFace, flipped);
+            Direction counterClockWise = RelativeDirection.LEFT.getRelativeFacing(frontFace, upwardFace, flipped);
 
             BlockPos pos = machine.getBlockPos();
             BlockPos center = pos.relative(up, 3);

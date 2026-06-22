@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -33,13 +34,13 @@ public class MultiblockDisplayText {
      * <br>
      * Automatically adds the "Invalid Structure" line if the structure is not formed.
      */
-    public static Builder builder(List<Component> textList, boolean isStructureFormed) {
-        return builder(textList, isStructureFormed, true);
+    public static Builder builder(List<Component> textList, PatternState state) {
+        return builder(textList, state, true);
     }
 
-    public static Builder builder(List<Component> textList, boolean isStructureFormed,
+    public static Builder builder(List<Component> textList, PatternState state,
                                   boolean showIncompleteStructureWarning) {
-        return new Builder(textList, isStructureFormed, showIncompleteStructureWarning);
+        return new Builder(textList, state, showIncompleteStructureWarning);
     }
 
     public static class Builder {
@@ -54,10 +55,10 @@ public class MultiblockDisplayText {
         private String pausedKey = "gtceu.multiblock.work_paused";
         private String runningKey = "gtceu.multiblock.running";
 
-        private Builder(List<Component> textList, boolean isStructureFormed,
+        private Builder(List<Component> textList, PatternState state,
                         boolean showIncompleteStructureWarning) {
             this.textList = textList;
-            this.isStructureFormed = isStructureFormed;
+            this.isStructureFormed = state.isFormed();
 
             if (!isStructureFormed && showIncompleteStructureWarning) {
                 MutableComponent base = Component.translatable("gtceu.multiblock.invalid_structure")
@@ -66,6 +67,13 @@ public class MultiblockDisplayText {
                         .withStyle(ChatFormatting.GRAY);
                 textList.add(base
                         .withStyle(style -> style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hover))));
+            }
+
+            if (!isStructureFormed) {
+                if (state.hasErrors() && state.getErrors() != null) {
+                    // state.getError().applyErrorInformation().apply();
+                }
+                // textList.add(state.getError().getErrorInfo());
             }
         }
 

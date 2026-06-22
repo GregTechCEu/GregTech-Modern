@@ -34,27 +34,44 @@ public interface IGTAddon {
 
     /**
      * Call init on your custom TagPrefix class(es) here
+     * 
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix>} register event instead
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerTagPrefixes() {}
 
     /**
      * Call init on your custom Element class(es) here
+     * 
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, Element>} register event instead
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerElements() {}
 
     /**
      * Call init on your custom Sound class(es) here
+     * 
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, SoundEntry>} register event instead
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerSounds() {}
 
     /**
      * Call init on your custom Cover class(es) here
+     * 
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, CoverDefinition>} register event
+     *             instead
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerCovers() {}
 
     /**
      * Call init on your custom Recipe Capabilities here
+     * 
+     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, RecipeCapability>} register event
+     *             instead
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerRecipeCapabilities() {}
 
     /**
@@ -94,9 +111,16 @@ public interface IGTAddon {
 
     /**
      * Register Material -> Casing block mappings here
+     * 
+     * @deprecated Subscribe to the {@link MaterialCasingCollectionEvent} directly.
      */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void collectMaterialCasings(MaterialCasingCollectionEvent event) {}
 
+    /**
+     * @deprecated Subscribe to the {@link KJSRecipeKeyEvent} directly.
+     */
+    @Deprecated(forRemoval = true, since = "8.0.0")
     default void registerRecipeKeys(KJSRecipeKeyEvent event) {}
 
     /**

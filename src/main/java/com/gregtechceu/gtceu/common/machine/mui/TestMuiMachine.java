@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
+import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -24,13 +25,13 @@ import net.minecraftforge.registries.ForgeRegistries;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.client.schemarenderer.BlockHighlight;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.progress.CircularProgressDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.drawable.schema.ArraySchema;
+import brachy.modularui.drawable.schema.BlockHighlight;
 import brachy.modularui.factory.GuiData;
 import brachy.modularui.factory.PosGuiData;
-import brachy.modularui.schema.ArraySchema;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
@@ -46,6 +47,7 @@ import brachy.modularui.value.sync.ItemSlotSyncHandler;
 import brachy.modularui.widget.EmptyWidget;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.*;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
@@ -63,17 +65,14 @@ import static brachy.modularui.drawable.GuiTextures.MUI_LOGO;
 
 public class TestMuiMachine extends MetaMachine implements IMuiMachine {
 
-    private static final Object2IntMap<Item> handlerSizeMap = new Object2IntOpenHashMap<>() {
-
-        {
-            put(Items.DIAMOND, 9);
-            put(Items.EMERALD, 9);
-            put(Items.GOLD_INGOT, 7);
-            put(Items.IRON_INGOT, 6);
-            put(Items.CLAY_BALL, 2);
-            defaultReturnValue(3);
-        }
-    };
+    private static final Object2IntMap<Item> handlerSizeMap = Util.make(new Object2IntOpenHashMap<>(), map -> {
+        map.put(Items.DIAMOND, 9);
+        map.put(Items.EMERALD, 9);
+        map.put(Items.GOLD_INGOT, 7);
+        map.put(Items.IRON_INGOT, 6);
+        map.put(Items.CLAY_BALL, 2);
+        map.defaultReturnValue(3);
+    });
 
     private final FluidTank fluidTank = new FluidTank(10000);
     private final FluidTank fluidTankPhantom = new FluidTank(500000);
@@ -146,10 +145,10 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                     String name = item.getName(itemStack).toString();
                     Flow flow = Flow.row();
                     for (int i = 0; i < handler.getSlots(); i++) {
-                        int finalI = i;
+                        final int index = i;
                         flow.child(new ItemSlot()
                                 .syncHandler(syncManager1.getOrCreateSyncHandler(name, i, ItemSlotSyncHandler.class,
-                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, finalI)))));
+                                        () -> new ItemSlotSyncHandler(new ModularSlot(handler, index)))));
                     }
                     return flow;
                 });
@@ -279,7 +278,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                             .alignment(Alignment.TopCenter));
                                                                                     tooltip.addLine(Text.str("And here a circle:"));
                                                                                     tooltip.addDrawableLine(new Circle()
-                                                                                                    .setColor(Color.RED.darker(2), Color.RED.brighter(2))
+                                                                                                    .color(Color.RED.darker(2), Color.RED.brighter(2))
                                                                                                     .asIcon()
                                                                                                     .size(20))
                                                                                             .addDrawableLine(new ItemDrawable(Items.DIAMOND).asIcon())
@@ -530,7 +529,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                                                 packet -> packet.writeItem(newItem));
                                                                                     }
                                                                                 }))))
-                                                                .child(new DynamicSyncedWidget<>()
+                                                                .child(new DynamicWidget<>()
                                                                         .widthRel(1f)
                                                                         .syncHandler(dynamicSyncHandler))
                                                 /*.child(new DynamicSyncedWidget<>()
@@ -568,6 +567,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                             .highlightRenderer(
                                     new BlockHighlight(Color.withAlpha(Color.GREEN.brighter(1), 0.9f), 1 / 32f))
             /* .isometric(true) */)
+                    .enableAllInteraction(true)
                     .pos(20, 20)
                     .size(100, 100));
         }
@@ -594,7 +594,7 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
         panel.child(ButtonWidget.panelCloseButton())
                 .child(new ButtonWidget<>()
                         .size(10).top(14).right(4)
-                        .overlay((new FluidDrawable().setFluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
+                        .overlay((new FluidDrawable().fluid(GTMaterials.Iron.getFluid(200))), Text.str("3"))
                         .size(50, 50)
                         .onMousePressed((context, mouseButton) -> {
                             panelSyncHandler.openPanel();

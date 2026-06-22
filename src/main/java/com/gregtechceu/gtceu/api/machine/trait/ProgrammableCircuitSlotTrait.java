@@ -19,7 +19,6 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -94,8 +93,8 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     }
 
     @Override
-    public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                        boolean simulate) {
+    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                              boolean simulate) {
         if (!enabled) return left;
         return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage);
     }

@@ -7,10 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import brachy.modularui.factory.GuiData;
-import brachy.modularui.screen.UISettings;
-import brachy.modularui.value.sync.PanelSyncManager;
-import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
@@ -44,12 +40,7 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     @Override
-    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
-        return super.getFilterUI(data, syncManager, settings);
-    }
-
-    @Override
-    protected ItemStack getFilterItem() {
+    public ItemStack getFilterItem() {
         return GTItems.TAG_FILTER.asStack();
     }
 

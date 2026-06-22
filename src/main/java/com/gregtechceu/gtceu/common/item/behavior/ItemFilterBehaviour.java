@@ -40,7 +40,7 @@ public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator)
 
     @Override
     public ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager, UISettings settings) {
-        return ItemFilter.loadFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings);
+        return ItemFilter.loadFilter(data.getUsedItemStack()).getPanel(data, syncManager, settings, true);
     }
 
     // @Override

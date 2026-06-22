@@ -42,9 +42,8 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -308,8 +307,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         // Multiblock related
         event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         // Recipe related
@@ -409,7 +407,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
         typeWrappers.registerSimple(MaterialIconSet.class, o -> {
             if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(MaterialStack.class, o -> {

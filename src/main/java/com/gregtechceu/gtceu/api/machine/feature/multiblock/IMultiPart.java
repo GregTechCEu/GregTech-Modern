@@ -22,32 +22,39 @@ import java.util.SortedSet;
 public interface IMultiPart extends IMachineFeature {
 
     /**
-     * @return If this multi part can be shared between multiple multiblocks.
+     * @return If this multiblock part can be shared between multiple multiblocks.
      */
-    default boolean canShared() {
+    default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return true;
     }
 
     /**
-     * If this multi part belongs to a controller at the given position
+     * If this multiblock part belongs to a controller at the given position
      *
      * @param controllerPos Controller position
-     * @return If this multi part belongs to a controller at the given position
+     * @return If this multiblock part belongs to a controller at the given position
      */
     boolean hasController(BlockPos controllerPos);
 
     /**
-     * @return If this multi part belongs to a formed multiblock.
+     * @return If this multiblock part belongs to a formed multiblock.
      */
     boolean isFormed();
 
     /**
-     * Gets all controllers this multi part belongs to
+     * Gets all controllers this multiblock part belongs to
      * 
      * @return An unmodifiable set containing the controllers.
      */
     @UnmodifiableView
     SortedSet<MultiblockControllerMachine> getControllers();
+
+    /**
+     * Gets the name of the main substructure this multiblock part is attached to.
+     * 
+     * @return
+     */
+    String getSubstructureName();
 
     /**
      * Called when this part is removed from a multiblock.
@@ -61,7 +68,7 @@ public interface IMultiPart extends IMachineFeature {
      *
      * @param controller The controller which this part has been added to
      */
-    void addedToController(MultiblockControllerMachine controller);
+    void addedToController(MultiblockControllerMachine controller, String substructureName);
 
     /**
      * Get all available traits for recipe logic.
@@ -83,6 +90,7 @@ public interface IMultiPart extends IMachineFeature {
     @Nullable
     default BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
         for (MultiblockControllerMachine controller : getControllers()) {
+            if (controller == null) continue;
             var appearance = controller.getPartAppearance(this, side, sourceState, sourcePos);
             if (appearance != null) return appearance;
         }

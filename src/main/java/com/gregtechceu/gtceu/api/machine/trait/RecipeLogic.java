@@ -427,6 +427,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     public void setStatus(Status status) {
+        if (isRemote()) return;
         if (this.status != status) {
             if (this.status == Status.WORKING) {
                 this.totalContinuousRunningTime = 0;
@@ -484,6 +485,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
+        if (isRemote()) return;
         if (!isWorkingAllowed && getStatus() == Status.IDLE) {
             setStatus(Status.SUSPEND);
         } else {

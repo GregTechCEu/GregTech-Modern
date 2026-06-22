@@ -56,7 +56,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     private int minStackSize = 1;
 
     @Getter
-    @Setter
     @SaveField
     private int ticksPerCycle = 40;
 
@@ -66,6 +65,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public MEStockingHatchPartMachine(BlockEntityCreationInfo info) {
         super(info);
         this.autoPullTest = $ -> false;
+        setOffsetBound(ticksPerCycle);
     }
 
     /////////////////////////////////
@@ -73,9 +73,9 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     /////////////////////////////////
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        super.addedToController(controller);
-        IMEStockingPart.super.addedToController(controller);
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
+        IMEStockingPart.super.addedToController(controller, name);
     }
 
     @Override
@@ -172,6 +172,11 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 updateTankSubscription();
             }
         }
+    }
+
+    public void setTicksPerCycle(int ticksPerCycle) {
+        this.ticksPerCycle = ticksPerCycle;
+        setOffsetBound(ticksPerCycle);
     }
 
     private void refreshList() {

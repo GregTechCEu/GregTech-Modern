@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -68,7 +69,7 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default boolean canShared() {
+    default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
@@ -135,7 +136,7 @@ public interface IMaintenanceMachine extends IMultiPart {
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
                 recipe = recipe.copy();
-                recipe.duration = (int) (recipe.duration * durationMultiplier);
+                recipe.duration = Math.max(1, Math.round(recipe.duration * durationMultiplier));
             }
         }
         return recipe;

@@ -6,8 +6,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 
 public class GTBlockStateProperties {
 
-    public static final DirectionProperty UPWARDS_FACING = DirectionProperty.create("upwards_facing",
-            Direction.Plane.HORIZONTAL);
+    public static final DirectionProperty UPWARDS_FACING = DirectionProperty.create("upwards_facing");
     public static final DirectionProperty NORTH_ONLY_FACING = DirectionProperty.create("facing", Direction.NORTH);
     public static final DirectionProperty VERTICAL_FACING = DirectionProperty.create("facing",
             Direction.Plane.VERTICAL);
