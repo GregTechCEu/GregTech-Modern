@@ -78,7 +78,7 @@ public class BlockHighlightRenderer {
                             public @Nullable UITexture sideTips(@NotNull Player player, @NotNull BlockPos pos,
                                                                 @NotNull BlockState state,
                                                                 @NotNull Set<GTToolType> toolTypes,
-                                                                ItemStack held, @NotNull Direction side) {
+                                                                @NotNull ItemStack held, @NotNull Direction side) {
                                 return behavior.showSideTip(state, side) ? GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
                                         null;
                             }
