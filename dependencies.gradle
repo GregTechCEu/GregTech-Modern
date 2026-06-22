@@ -1,9 +1,6 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // LDLib
-    jarJar(modApi(forge.ldlib.get()))
-
     // Registrate
     jarJar(modApi(forge.registrate.get()))
 

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -53,8 +53,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
     }
 
     public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {
-        return Comparator.comparing(p -> p.self().getBlockPos(),
-                RelativeDirection.RIGHT.getSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
+        return Comparator.comparingInt(
+                RelativeDirection.RIGHT.getMultiSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }
 
     private boolean checkItemInputs(GTRecipe recipe, boolean isTick) {

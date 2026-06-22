@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
@@ -185,10 +185,10 @@ public class BlockHighlightRenderer {
 
         Direction front = blockHitResult.getDirection();
         Direction back = front.getOpposite();
-        Direction left = RelativeDirection.LEFT.getActualDirection(front);
-        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
-        Direction top = RelativeDirection.UP.getActualDirection(front);
-        Direction bottom = RelativeDirection.DOWN.getActualDirection(front);
+        Direction left = RelativeDirection.LEFT.applyDirection(front);
+        Direction right = RelativeDirection.RIGHT.applyDirection(front);
+        Direction top = RelativeDirection.UP.applyDirection(front);
+        Direction bottom = RelativeDirection.DOWN.applyDirection(front);
 
         Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);

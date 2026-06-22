@@ -61,7 +61,7 @@ public class AssemblyLineTests {
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
         assert controller != null;
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(ASSLINE_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 1));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -24,13 +25,12 @@ import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -111,23 +111,25 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         // attach parts' traits
-        activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
+        var cache = patternStates.get(substructureName).getCache();
+        for (var entry : cache.long2ObjectEntrySet()) {
+            if (entry.getValue().getBlockState().getBlock() instanceof ActiveBlock) {
+                if (activeBlocks == null) activeBlocks = new LongOpenHashSet();
+                activeBlocks.add(entry.getLongKey());
+            }
+        }
+
         capabilitiesProxy.clear();
         capabilitiesFlat.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
                 this.addHandlerList(handlerList);
                 traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
             }
@@ -151,8 +153,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         updateActiveBlocks(false);
         activeBlocks = null;
         capabilitiesProxy.clear();
@@ -230,7 +232,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Override
     public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
         IWorkableMultiController.super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
+        if (shouldUpdateActiveBlocks()) {
             updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
         }
         for (IMultiPart part : getParts()) {
@@ -241,9 +243,16 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
     }
 
+    /**
+     * If the multiblock should update all active blocks in its structure
+     */
+    public boolean shouldUpdateActiveBlocks() {
+        return true;
+    }
+
     @Override
     public boolean isRecipeLogicAvailable() {
-        return isFormed && !getMultiblockState().hasError();
+        return isFormed && !getDefaultPatternState().hasErrors();
     }
 
     @Override
