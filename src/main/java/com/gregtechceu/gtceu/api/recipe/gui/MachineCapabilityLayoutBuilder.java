@@ -45,7 +45,7 @@ public interface MachineCapabilityLayoutBuilder {
         NotifiableItemStackHandler itemHandler = handlers.get(0);
         if (itemHandler == null || layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 0) return;
 
-        var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.name + "_" + io.name(), 3);
+        var slotGroup = new SlotGroup(ItemRecipeCapability.CAP.id + "_" + io.name(), 3);
 
         if (layout.getRecipeType().getMaxSlots(ItemRecipeCapability.CAP, io) == 1) {
             var slot = new ItemSlot()

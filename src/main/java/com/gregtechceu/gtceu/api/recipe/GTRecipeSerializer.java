@@ -54,7 +54,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, ChanceLogic> chanceLogics = new IdentityHashMap<>();
         for (String key : json.keySet()) {
             String value = json.get(key).getAsString();
-            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(value)), GTRegistries.CHANCE_LOGICS.get(GTCEu.id(value)));
+            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(value)),
+                    GTRegistries.CHANCE_LOGICS.get(GTCEu.id(value)));
         }
         return chanceLogics;
     }

@@ -37,7 +37,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         REGISTERED.put(registryName, this);
     }
-    
+
     public boolean containsKey(K key) {
         return keyToValue.containsKey(key);
     }

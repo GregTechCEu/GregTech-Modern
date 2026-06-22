@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
@@ -17,7 +18,8 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
     @Getter
     private final Set<ResourceLocation> levels;
 
-    public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target, Set<ResourceLocation> levels) {
+    public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target,
+                               Set<ResourceLocation> levels) {
         this.id = id;
         this.target = target;
         this.levels = levels;

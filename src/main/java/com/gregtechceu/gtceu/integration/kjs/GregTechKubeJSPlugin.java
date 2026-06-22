@@ -91,7 +91,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponent
 
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -397,7 +396,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
             if (o instanceof RecipeCapability<?> capability) return capability;
             if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
-            if (o instanceof CharSequence chars) return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
+            if (o instanceof CharSequence chars)
+                return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
             return null;
         });
         typeWrappers.registerSimple(ChanceLogic.class, o -> {
