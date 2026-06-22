@@ -95,7 +95,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(getInventorySize(), io);
+        return new NotifiableItemStackHandler(getInventorySize(), io, io == IO.IN ? IO.BOTH : io);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
