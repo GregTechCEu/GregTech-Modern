@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -175,7 +175,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
 
     // @Override
     // public void addDisplayText(List<Component> textList) {
-    // MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, isFormed())
+    // MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, getDefaultPatternState())
     // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
     //
     // long lastEUt = recipeLogic.getLastRecipe() != null ?

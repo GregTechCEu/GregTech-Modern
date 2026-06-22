@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -118,7 +118,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
             float yPos = facing.getStepY() * 0.76F + pos.getY() + 0.25F;
             float zPos = facing.getStepZ() * 0.76F + pos.getZ() + 0.5F;
 
-            var up = RelativeDirection.UP.getRelative(getFrontFacing(), getUpwardsFacing(), isFlipped());
+            var up = RelativeDirection.UP.getRelativeFacing(getFrontFacing(), getUpwardsFacing(), isFlipped());
             var sign = up.getAxisDirection().getStep();
             var shouldX = up.getAxis() == Direction.Axis.X;
             var shouldY = up.getAxis() == Direction.Axis.Y;

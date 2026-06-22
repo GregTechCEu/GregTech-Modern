@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -35,6 +36,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
+    @Getter
+    protected @Nullable String substructureName;
 
     private @Nullable RecipeHandlerList handlerList;
 
@@ -117,6 +120,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         }
         controllerPositions.clear();
         controllers.clear();
+        substructureName = null;
     }
 
     //////////////////////////////////////
@@ -126,10 +130,11 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @MustBeInvokedByOverriders
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
-        controllerPositions.remove(controller.self().getBlockPos());
+        controllerPositions.remove(controller.getBlockPos());
         controllers.remove(controller);
 
         if (controllers.isEmpty()) {
+            this.substructureName = null;
             MachineRenderState renderState = getRenderState();
             if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
@@ -140,9 +145,10 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        controllerPositions.add(controller.self().getBlockPos());
+    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
+        controllerPositions.add(controller.getBlockPos());
         controllers.add(controller);
+        this.substructureName = substructureName;
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");
         MachineRenderState renderState = getRenderState();

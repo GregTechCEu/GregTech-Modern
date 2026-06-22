@@ -3,18 +3,22 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
@@ -25,28 +29,89 @@ import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.FluidDrawable;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.viewport.ModularGuiContext;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.Widget;
-import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class GTMultiblockTextUtil {
 
-    public static TextWidget<?> addUnformedWarning(WorkableElectricMultiblockMachine weMachine,
-                                                   PanelSyncManager syncManager) {
+    public static DynamicWidget<?> addUnformedWarning(MultiblockControllerMachine controller,
+                                                      PanelSyncManager syncManager) {
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(weMachine::isFormed));
+                () -> new BooleanSyncValue(controller::isFormed));
+        BooleanSyncValue hasSyncError = syncManager.getOrCreateSyncHandler("hasSyncError", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(
+                        () -> controller.getPatternState(MultiblockControllerMachine.DEFAULT_STRUCTURE).getErrors() !=
+                                null));
+        GenericListSyncHandler<PatternError> patternErrors = syncManager.getOrCreateSyncHandler("patternErrors",
+                GenericListSyncHandler.class,
+                () -> GenericListSyncHandler.<PatternError>builder()
+                        .getter(() -> {
+                            var list = new ArrayList<PatternError>();
+                            for (String structureName : controller.getStructurePatterns().keySet()) {
+                                var errors = controller.getPatternState(structureName)
+                                        .getErrors();
+                                if (errors != null && !errors.isEmpty()) {
+                                    list.addAll(errors);
+                                }
+                            }
+                            return list;
+                        })
+                        .adapter(GTByteBufAdapters.PATTERN_ERRORS)
+                        .build());
 
-        return Text.lang("gtceu.multiblock.invalid_structure")
-                .withStyle(ChatFormatting.RED)
-                .asWidget()
-                .setEnabledIf(w -> !isFormed.getBoolValue());
+        DynamicLinkedSyncHandler<GenericListSyncHandler<PatternError>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                patternErrors)
+                .widgetProvider((widgetSyncManager, listSyncHandler) -> {
+                    Flow unformed = Flow.col().coverChildrenHeight()
+                            .collapseDisabledChildren()
+                            .crossAxisAlignment(Alignment.CrossAxis.START)
+                            .widthRel(1);
+
+                    unformed.child(Text.lang("gtceu.multiblock.invalid_structure")
+                            .withStyle(ChatFormatting.RED)
+                            .asWidget()
+                            .setEnabledIf(w -> !listSyncHandler.getValue().isEmpty()));
+                    if (listSyncHandler.getValue().isEmpty()) {
+                        return unformed;
+                    }
+                    BlockPos pos = listSyncHandler.getValue().stream().toList().get(0).getPos();
+                    unformed.child(new ButtonWidget<>()
+                            .onMousePressed((c, b) -> {
+                                ((ModularGuiContext) c).getScreen().getMainPanel().closeIfOpen();
+                                AABBHighlightRenderer.INSTANCE.addHighlight(AABBHighlightRenderer.builder()
+                                        .aabb(pos)
+                                        .colorARGB(255, 255, 0, 0)
+                                        .thickness(0.025)
+                                        .durationMillis(10000)
+                                        .phaseMillis(300)
+                                        .build());
+                                return true;
+                            })
+                            .setEnabledIf(w -> pos != null)
+                            .tooltip(r -> r.add("Highlight the missing predicate in world")));
+
+                    for (var error : listSyncHandler.getValue()) {
+                        error.getPatternErrorUIModifier().apply(unformed);
+                    }
+                    return unformed;
+                });
+
+        return new DynamicWidget<>()
+                .widthRel(1)
+                .coverChildrenHeight()
+                .setEnabledIf(w -> hasSyncError.getBoolValue())
+                .syncHandler(dynamicLinkedSyncHandler);
     }
 
     public static TextWidget<?> addEnergyUsageLine(WorkableElectricMultiblockMachine weMachine,
@@ -328,8 +393,8 @@ public class GTMultiblockTextUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static DynamicSyncedWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
-                                                        PanelSyncManager syncManager) {
+    public static DynamicWidget<?> addOutputLines(WorkableMultiblockMachine rlmachine,
+                                                  PanelSyncManager syncManager) {
         GenericSyncValue<GTRecipe> recipeSyncValue = (GenericSyncValue<GTRecipe>) syncManager.getOrCreateSyncHandler(
                 "GTRecipe",
                 GenericSyncValue.class,
@@ -365,7 +430,7 @@ public class GTMultiblockTextUtil {
                     return list;
                 });
 
-        return new DynamicSyncedWidget<>()
+        return new DynamicWidget<>()
                 .widthRel(1)
                 .coverChildrenHeight()
                 .syncHandler(dynamicLinkedSyncHandler);

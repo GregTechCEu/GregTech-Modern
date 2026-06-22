@@ -856,7 +856,7 @@ public class ConfigHolder {
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean useVBO = true;
         @Configurable
-        @Configurable.Comment({ "Duration of the multiblock in-world preview (s)", "Default: 10" })
+        @Configurable.Comment({ "Duration of the multiblock in-world preview (in seconds)", "Default: 10" })
         @Configurable.Range(min = 1, max = 999)
         public int inWorldPreviewDuration = 10;
         @Configurable
