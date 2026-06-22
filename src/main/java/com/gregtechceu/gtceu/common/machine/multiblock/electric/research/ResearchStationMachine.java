@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,12 +54,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        var pState = patternStates.get(substructureName);
+        super.formStructure(substructureName);
         for (IMultiPart part : getParts()) {
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
-                    onStructureInvalid();
+                    pState.setError(new PatternStringError(
+                            Component.translatable("gtceu.predicate_error.object_holder.direction")));
+                    invalidateStructure(substructureName);
                     return;
                 }
                 this.objectHolder = holder;
@@ -68,22 +74,40 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
 
         // should never happen, but would rather do this than have an obscure NPE
-        if (computationProvider == null || objectHolder == null) {
-            onStructureInvalid();
+        if (computationProvider == null) {
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.research.missing_computation")));
+            invalidateStructure(substructureName);
+        }
+
+        if (objectHolder == null) {
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.research.missing_object_holder")));
+            invalidateStructure(substructureName);
         }
     }
 
     @Override
-    public boolean checkPattern() {
-        boolean isFormed = super.checkPattern();
-        if (isFormed && objectHolder != null && objectHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
-            onStructureInvalid();
+    public PatternState checkStructurePattern(String name) {
+        var patternState = super.checkStructurePattern(name);
+        // var cache = getSubstructure(name).getCache();
+        var cache = patternStates.get(name).getCache();
+        ObjectHolderMachine objHolder = null;
+        for (var entry : cache.long2ObjectEntrySet()) {
+            if (entry.getValue().getBlockEntity() instanceof ObjectHolderMachine objectHolder) {
+                objHolder = objectHolder;
+            }
         }
-        return isFormed;
+        if (objHolder != null && objHolder.getFrontFacing() != getFrontFacing().getOpposite()) {
+            patternState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.object_holder.direction")));
+            invalidateStructure(name);
+        }
+        return patternState;
     }
 
     @Override
-    public void onStructureInvalid() {
+    public void invalidateStructure(String name) {
         computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
         for (IMultiPart part : getParts()) {
@@ -94,7 +118,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
             }
         }
         objectHolder = null;
-        super.onStructureInvalid();
+        super.invalidateStructure(name);
     }
 
     @Override
@@ -105,12 +129,14 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     @Override
     public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
         List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.research_station.researching")
                         .withStyle(ChatFormatting.GREEN)));
         widgets.add(GTMultiblockTextUtil.addEnergyTierLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
         widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
         return widgets;
     }

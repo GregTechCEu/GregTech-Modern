@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
@@ -288,7 +287,7 @@ public class CommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
-            MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
+            // MultiblockWorldSavedData.getOrCreate(serverLevel).releaseExecutorService();
             ServerCache.instance.invalidateWorld(serverLevel);
         } else if (event.getLevel().isClientSide()) {
             ClientCacheManager.saveCaches();
@@ -309,12 +308,14 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void serverStopping(ServerStoppingEvent event) {
-        var levels = event.getServer().getAllLevels();
-        for (var level : levels) {
-            if (!level.isClientSide()) {
-                MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
-            }
-        }
+        /*
+         * var levels = event.getServer().getAllLevels();
+         * for (var level : levels) {
+         * if (!level.isClientSide()) {
+         * MultiblockWorldSavedData.getOrCreate(level).releaseExecutorService();
+         * }
+         * }
+         */
     }
 
     @SubscribeEvent

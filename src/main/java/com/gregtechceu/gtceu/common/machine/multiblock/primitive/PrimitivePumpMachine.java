@@ -15,6 +15,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraftforge.fluids.FluidType;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,8 +35,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String name) {
+        super.formStructure(name);
         initializeTank();
         produceWaterSubscription = subscribeServerTick(this::produceWater);
     }
@@ -62,8 +64,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         resetState();
     }
 
@@ -86,7 +88,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
     }
 
     private void produceWater() {
-        if (getOffsetTimer() % 20 == 0 && isFormed() && !getMultiblockState().hasError()) {
+        if (getOffsetTimer() % 20 == 0 && isFormed()) {
             if (biomeModifier == 0) {
                 biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getBlockPos()));
             } else if (biomeModifier > 0) {

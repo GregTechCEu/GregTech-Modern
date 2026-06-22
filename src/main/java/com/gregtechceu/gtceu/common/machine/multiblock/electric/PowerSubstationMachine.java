@@ -16,7 +16,10 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.common.block.BatteryBlock;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -29,6 +32,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
@@ -41,11 +45,9 @@ import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ListWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.google.common.annotations.VisibleForTesting;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigInteger;
@@ -97,21 +99,22 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         List<IEnergyContainer> inputs = new ArrayList<>();
         List<IEnergyContainer> outputs = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE) continue;
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
 
                 var containers = handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
@@ -132,17 +135,32 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         this.outputHatches = new EnergyContainerList(outputs);
 
         List<IBatteryData> batteries = new ArrayList<>();
-        for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
-            if (battery.getKey().startsWith(PMC_BATTERY_HEADER) &&
-                    battery.getValue() instanceof BatteryMatchWrapper wrapper) {
-                for (int i = 0; i < wrapper.amount; i++) {
-                    batteries.add(wrapper.partType);
+        // var cache = getSubstructure(name).getCache();
+        var cache = patternStates.get(substructureName).getCache();
+        for (var entry : cache.long2ObjectEntrySet()) {
+            var state = entry.getValue();
+            if (state.getBlockState().getBlock() instanceof BatteryBlock batteryBlock) {
+                if (batteryBlock.getData().getCapacity() > 0) {
+                    batteries.add(batteryBlock.getData());
                 }
             }
         }
+
+        /*
+         * for (Map.Entry<String, Object> battery : getMultiblockState().getMatchContext().entrySet()) {
+         * if (battery.getKey().startsWith(PMC_BATTERY_HEADER) &&
+         * battery.getValue() instanceof BatteryMatchWrapper wrapper) {
+         * for (int i = 0; i < wrapper.amount; i++) {
+         * batteries.add(wrapper.partType);
+         * }
+         * }
+         * }
+         */
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
-            onStructureInvalid();
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
+            invalidateStructure();
             return;
         }
         energyBank.rebuild(batteries);
@@ -150,7 +168,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void onStructureInvalid() {
+    public void invalidateStructure(String name) {
         // don't null out energyBank since it holds the stored energy, which
         // we need to hold on to across rebuilds to not void all energy if a
         // multiblock part or block other than the controller is broken.
@@ -161,7 +179,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         inputPerSec = 0;
         netOutLastSec = 0;
         outputPerSec = 0;
-        super.onStructureInvalid();
+        super.invalidateStructure(name);
     }
 
     protected void transferEnergyTick() {
@@ -236,6 +254,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                     }
                 }
             }
+            if (maintenance == null) return 0;
             int multiplier = 1 + maintenance.getNumMaintenanceProblems();
             double modifier = maintenance.getDurationMultiplier();
             return (long) (passiveDrain * multiplier * modifier);
@@ -261,35 +280,34 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         return true;
     }
 
+    public static final int MULTI_UI_TEXT_PANEL_WIDTH = 172;
+    public static final int MULTI_UI_TEXT_PANEL_HEIGHT = 136;
+
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>()
+                .width(MULTI_UI_TEXT_PANEL_WIDTH - 6)
+                .height(MULTI_UI_TEXT_PANEL_HEIGHT - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
+                .posRel(Alignment.CenterLeft);
+        parentWidget.size(MULTI_UI_TEXT_PANEL_WIDTH, MULTI_UI_TEXT_PANEL_HEIGHT).background(GuiTextures.DISPLAY);
+
+        listWidget.children(getWidgetsForDisplay(syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
+    }
+
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(new ParentWidget<>()
-                .widthRel(0.95f)
-                .heightRel(.65f)
-                .margin(4, 0)
-                .left(3).top(2)
-                .horizontalCenter()
-                .child(Flow.row()
-                        .child(getMainTextPanel(syncManager, 186, 146))));
+        mainWidget.child(getMainTextPanel(syncManager).margin(4, 2));
     }
 
-    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
-        var parentWidget = new ParentWidget<>();
-        var listWidget = new ListWidget<>();
-        listWidget
-                .width(width - 6)
-                .height(height - 6)
-                .childSeparator(Icon.EMPTY_2PX)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .posRel(Alignment.CenterLeft)
-                .left(3)
-                .top(3);
-        parentWidget.size(width, height)
-                .background(GuiTextures.DISPLAY);
-        // Machine generic sync handlers
-        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
-                () -> new BooleanSyncValue(this::isFormed));
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
         BooleanSyncValue power = syncManager.getOrCreateSyncHandler("workingEnabled", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this.recipeLogic::isWorkingEnabled, this.recipeLogic::setWorkingEnabled));
         BooleanSyncValue active = syncManager.getOrCreateSyncHandler("isActive", BooleanSyncValue.class,
@@ -297,9 +315,6 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         BooleanSyncValue waiting = syncManager.getOrCreateSyncHandler("isWaiting", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this.recipeLogic::isWaiting));
 
-        // Energy bank specific sync handlers
-        // These will not be called anywhere else, so we can create them directly instead of using
-        // getOrCreateSyncHandler
         BooleanSyncValue energyBankExists = new BooleanSyncValue(() -> energyBank != null);
         syncManager.syncValue("energyBankExists", energyBankExists);
 
@@ -311,7 +326,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 energyBank::getCapacity, $ -> {});
         syncManager.syncValue("capacity", capacity);
 
-        LongSyncValue passiveDrain = new LongSyncValue(this::getPassiveDrain);
+        LongSyncValue passiveDrain = new LongSyncValue(null, null, this::getPassiveDrain, null);
         syncManager.syncValue("passiveDrain", passiveDrain);
 
         LongSyncValue inputPerSec = new LongSyncValue(() -> this.inputPerSec);
@@ -320,30 +335,30 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         LongSyncValue outputPerSec = new LongSyncValue(() -> this.outputPerSec);
         syncManager.syncValue("outputPerSec", outputPerSec);
 
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+
         // Generic machine lines
-        listWidget.child(Text.lang("gtceu.multiblock.work_paused")
+        widgets.add(Text.lang("gtceu.multiblock.work_paused")
                 .asWidget()
                 .setEnabledIf((widget) -> !power.getBoolValue()));
-        listWidget.child(Text.lang("gtceu.multiblock.running")
+        widgets.add(Text.lang("gtceu.multiblock.running")
                 .asWidget()
                 .setEnabledIf((widget) -> active.getBoolValue()));
-        listWidget.child(Text.lang("gtceu.multiblock.idling")
+        widgets.add(Text.lang("gtceu.multiblock.idling")
                 .asWidget()
                 .setEnabledIf((widget) -> !active.getBoolValue() && power.getBoolValue()));
-        listWidget.child(Text
+        widgets.add(Text
                 .of(Component.translatable("gtceu.multiblock.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)))
                 .asWidget()
                 .setEnabledIf((widget) -> waiting.getBoolValue()));
-
-        // Energy bank specific lines
 
         var STYLE_GOLD = Style.EMPTY.withColor(ChatFormatting.GOLD);
         var STYLE_DARK_RED = Style.EMPTY.withColor(ChatFormatting.DARK_RED);
         var STYLE_GREEN = Style.EMPTY.withColor(ChatFormatting.GREEN);
         var STYLE_RED = Style.EMPTY.withColor(ChatFormatting.RED);
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var storedComponent = Component.literal(FormattingUtil.formatNumbers(energyStored.getValue()));
             return Component.translatable("gtceu.multiblock.power_substation.stored",
@@ -352,7 +367,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var capacityComponent = Component.literal(FormattingUtil.formatNumbers(capacity.getValue()));
             return Component.translatable("gtceu.multiblock.power_substation.capacity",
@@ -361,7 +376,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var passiveDrainComponent = Component.literal(FormattingUtil.formatNumbers(passiveDrain.getLongValue()));
             return Component.translatable("gtceu.multiblock.power_substation.passive_drain",
@@ -370,7 +385,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var avgInComponent = Component.literal(FormattingUtil.formatNumbers(inputPerSec.getLongValue() / 20));
             return Component
@@ -381,7 +396,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         })
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
-        listWidget.child(Text.dynamic(() -> {
+
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue()) return Component.empty();
             var avgOutComponent = Component
                     .literal(FormattingUtil.formatNumbers(Math.abs(outputPerSec.getLongValue() / 20)));
@@ -394,7 +410,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue()));
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() <= outputPerSec.getLongValue())
                 return Component.empty();
             BigInteger timeToFillSeconds = capacity.getValue().subtract(energyStored.getValue())
@@ -406,7 +422,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue() &&
                         inputPerSec.getLongValue() > outputPerSec.getLongValue()));
 
-        listWidget.child(Text.dynamic(() -> {
+        widgets.add(Text.dynamic(() -> {
             if (!energyBankExists.getBoolValue() || inputPerSec.getLongValue() >= outputPerSec.getLongValue())
                 return Component.empty();
             BigInteger timeToDrainSeconds = energyStored.getValue()
@@ -417,8 +433,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
                 .asWidget()
                 .setEnabledIf((widget) -> energyBankExists.getBoolValue() &&
                         inputPerSec.getLongValue() < outputPerSec.getLongValue()));
-        parentWidget.child(listWidget);
-        return parentWidget;
+
+        return widgets;
     }
 
     public static class PowerStationEnergyBank extends MachineTrait implements INBTSerializable<CompoundTag> {

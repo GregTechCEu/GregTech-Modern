@@ -29,6 +29,7 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -66,15 +67,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.energyContainer = null;
         this.tier = 0;
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         this.energyContainer = getEnergyContainer();
         this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
@@ -227,8 +228,15 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getDisplayRecipeVoltage() {
-        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
-                this.getEnergyContainer().getOutputVoltage());
+        long voltage = -1;
+        var handlers = getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
+        if (handlers.isEmpty()) handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
+        for (IRecipeHandler<?> handler : handlers) {
+            if (handler instanceof IEnergyContainer container) {
+                voltage = Math.max(voltage, Math.max(container.getInputVoltage(), container.getOutputVoltage()));
+            }
+        }
+        return voltage;
     }
 
     /**

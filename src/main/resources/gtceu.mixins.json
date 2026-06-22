@@ -79,7 +79,6 @@
         "RecipeManagerMixin",
         "ReloadableResourceManagerAccessor",
         "RepairItemRecipeMixin",
-        "ServerChunkProviderMixin",
         "ServerGamePacketListenerImplAccessor",
         "ShapedRecipeAccessor",
         "SidedRedstoneConnectivityMixin",

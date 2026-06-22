@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.ModularItemUIFactory;
+import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
@@ -33,8 +34,6 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
-import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
@@ -94,12 +93,11 @@ public class CommonProxy {
         GTCEuAPI.initializeHighTier();
 
         // MUI stuff
-        GTGuiTextures.init();
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
         GuiManager.registerFactory(ModularItemUIFactory.INSTANCE);
 
-        GTGuiTheme.registerThemes();
+        // GTGuiTheme.registerThemes();
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
@@ -152,6 +150,7 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTPatternErrors.init();
         GTMachineUtils.init();
         GTMachines.init();
 
