@@ -318,21 +318,17 @@ public class MultiblockDisplayText {
             return this;
         }
 
-        /**
-         * Adds a progress line based on the work logic.
-         *
-         * @param workLogic The work logic that provides the progress info
-         *
-         * @see #addProgressLine(double, double, double)
-         * @see #addCustomProgressLine(WorkLogic)
-         */
-        public Builder addProgressLine(WorkLogic workLogic) {
-            if (workLogic.hasCustomProgressLine()) {
-                return this.addCustomProgressLine(workLogic);
+        public Builder addProgressLine(RecipeLogic recipeLogic) {
+            if (recipeLogic.hasCustomProgressLine()) {
+                return this.addCustomProgressLine(recipeLogic);
             } else {
-                return this.addProgressLine(workLogic.getProgress(), workLogic.getMaxProgress(),
-                        workLogic.getProgressPercent());
+                return this.addProgressLine(recipeLogic.getDuration(), recipeLogic.getMaxProgress(),
+                        recipeLogic.getProgressPercent());
             }
+        }
+
+        public Builder addProgressLine(double currentDuration, double maxDuration) {
+            return maxDuration == 0 ? this : addProgressLine(currentDuration, maxDuration, currentDuration/maxDuration);
         }
 
         /**
@@ -362,12 +358,12 @@ public class MultiblockDisplayText {
          * <p>
          * Added if structure if formed and the machine is active.
          *
-         * @param workLogic The work logic that provides the line
+         * @param recipeLogic The work logic that provides the line
          */
-        public Builder addCustomProgressLine(WorkLogic workLogic) {
+        public Builder addCustomProgressLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !isActive)
                 return this;
-            Component line = workLogic.getCustomProgressLine();
+            Component line = recipeLogic.getCustomProgressLine();
             if (line != null) {
                 textList.add(line);
             }

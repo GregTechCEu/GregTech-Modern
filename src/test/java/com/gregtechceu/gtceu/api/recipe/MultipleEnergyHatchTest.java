@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
@@ -74,7 +74,7 @@ public class MultipleEnergyHatchTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus, ItemBusPartMachine outputBus,
-                             WorkableElectricMultiblockMachine controller,
+                             RecipeElectricMultiblockMachine controller,
                              EnergyHatchPartMachine energyHatch1, Optional<EnergyHatchPartMachine> energyHatch2) {}
 
     /**
@@ -84,7 +84,7 @@ public class MultipleEnergyHatchTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
+        RecipeElectricMultiblockMachine controller = (RecipeElectricMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);

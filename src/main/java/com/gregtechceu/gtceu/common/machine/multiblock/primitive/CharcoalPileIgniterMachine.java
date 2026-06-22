@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -17,8 +16,10 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -49,7 +50,7 @@ import java.util.*;
 
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
-public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
+public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine{
 
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
@@ -69,6 +70,14 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
     private boolean hasAir = false;
 
+    @Persisted
+    @DescSynced
+    protected int progress;
+
+    @Persisted
+    @DescSynced
+    protected int duration;
+
     public CharcoalPileIgniterMachine(IMachineBlockEntity holder) {
         super(holder);
     }
@@ -87,22 +96,12 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 }
             }
         }
-        this.getRecipeLogic().setDuration(Math.max(1, (int) Math.sqrt(logPos.size() * 240_000)));
+        duration = Math.max(1, (int) Math.sqrt(logPos.size() * 240_000));
     }
 
     @Override
-    protected @NotNull CharcoalRecipeLogic createRecipeLogic(Object @NotNull... args) {
-        return new CharcoalRecipeLogic(this);
-    }
-
-    @Override
-    public @NotNull CharcoalRecipeLogic getRecipeLogic() {
-        return (CharcoalRecipeLogic) super.getRecipeLogic();
-    }
-
-    @Override
-    public boolean isActive() {
-        return recipeLogic.isWorking();
+    protected @NotNull WorkLogic createWorkLogic(Object @NotNull... args) {
+        return new WorkLogic(this, this::serverRunningTick);
     }
 
     @Override
@@ -221,8 +220,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         if (level == null) return;
         Direction front = getFrontFacing();
         Direction back = front.getOpposite();
-        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, getUpwardsFacing(), false);
-        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, getUpwardsFacing(), false);
+        Direction left = RelativeDirection.LEFT.getRelative(front, getUpwardsFacing(), false);
+        Direction right = RelativeDirection.RIGHT.getRelative(front, getUpwardsFacing(), false);
 
         BlockPos down = getPos().relative(Direction.DOWN);
 
@@ -340,7 +339,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             }
 
             if (shouldActivate) {
-                getRecipeLogic().setStatus(WorkLogic.Status.WORKING);
+                getWorkLogic().setStatus(WorkLogic.Status.WORKING);
 
                 level.playSound(null, pos,
                         stack.is(Items.FIRE_CHARGE) ? SoundEvents.FIRECHARGE_USE : SoundEvents.FLINTANDSTEEL_USE,
@@ -351,30 +350,22 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return super.onUse(state, level, pos, player, hand, hit);
     }
 
-    public static class CharcoalRecipeLogic extends RecipeLogic {
-
-        private final CharcoalPileIgniterMachine machine;
-
-        public CharcoalRecipeLogic(CharcoalPileIgniterMachine machine) {
-            super(machine);
-            this.machine = machine;
+    public void serverRunningTick() {
+        if(getWorkLogic().isWorking() && duration > 0 && ++progress >= duration) {
+            progress = 0;
+            duration = 0;
+            convertLogBlocks();
+            setStatus(WorkLogic.Status.IDLE);
         }
+    }
 
-        @Override
-        public void serverTick() {
-            super.serverTick();
-            if (isWorking() && duration > 0) {
-                if (++progress >= duration) {
-                    progress = 0;
-                    duration = 0;
-                    this.machine.convertLogBlocks();
-                    setStatus(Status.IDLE);
-                }
-            }
-        }
+    @Override
+    public int getProgress() {
+        return progress;
+    }
 
-        public void setDuration(int max) {
-            this.duration = max;
-        }
+    @Override
+    public int getMaxProgress() {
+        return duration;
     }
 }

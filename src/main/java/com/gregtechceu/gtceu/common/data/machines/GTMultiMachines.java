@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
@@ -193,7 +193,7 @@ public class GTMultiMachines {
             .register();
 
     public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE
-            .multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_chemical_reactor", RecipeElectricMultiblockMachine::new)
             .conditionalTooltip(defaultEnvironmentRequirement(),
                     ConfigHolder.INSTANCE.gameplay.environmentalHazards)
             .rotationState(RotationState.ALL)
@@ -261,7 +261,7 @@ public class GTMultiMachines {
             .register();
 
     public static final MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE
-            .multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
+            .multiblock("implosion_compressor", RecipeElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
             .recipeModifiers(OC_NON_PERFECT, BATCH_MODE)
@@ -509,7 +509,7 @@ public class GTMultiMachines {
             .register();
 
     public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE
-            .multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
+            .multiblock("vacuum_freezer", RecipeElectricMultiblockMachine::new)
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
             .recipeModifiers(GTRecipeModifiers.OC_NON_PERFECT, BATCH_MODE)

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -54,7 +54,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
+public class FusionReactorMachine extends RecipeElectricMultiblockMachine implements ITieredMachine {
 
     // Standard OC used for Fusion
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,

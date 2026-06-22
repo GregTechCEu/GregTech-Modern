@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -10,12 +9,10 @@ import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -45,15 +42,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -76,7 +69,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private static final double DAMAGE_TEMPERATURE = 1000;
 
     private IMaintenanceMachine maintenance;
-    private IEnergyContainer energyContainer;
     private IFluidHandler coolantHandler;
     @Persisted
     @DescSynced
@@ -89,8 +81,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private final TimedProgressSupplier progressSupplier;
 
-    @Nullable
-    protected TickableSubscription tickSubs;
+    private boolean isActiveBefore;
 
     public HPCAMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -102,7 +93,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> coolantContainers = new ArrayList<>();
         List<IHPCAComponentHatch> componentHatches = new ArrayList<>();
 
@@ -117,11 +107,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                handlerList.getCapability(EURecipeCapability.CAP).stream()
-                        .filter(h -> h.getHandlerIO().support(IO.IN))
-                        .filter(IEnergyContainer.class::isInstance)
-                        .map(IEnergyContainer.class::cast)
-                        .forEach(energyContainers::add);
 
                 handlerList.getCapability(FluidRecipeCapability.CAP).stream()
                         .filter(h -> h.getHandlerIO().support(IO.IN))
@@ -130,48 +115,17 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         .forEach(coolantContainers::add);
             }
         }
-        this.energyContainer = new EnergyContainerList(energyContainers);
         this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentHatches);
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
-    }
-
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (tickSubs != null) {
-            tickSubs.unsubscribe();
-            tickSubs = null;
-        }
-    }
-
-    protected void updateTickSubscription() {
-        if (isFormed) {
-            tickSubs = subscribeServerTick(tickSubs, this::tick);
-        } else if (tickSubs != null) {
-            tickSubs.unsubscribe();
-            tickSubs = null;
-        }
     }
 
     @Override
     public void onStructureInvalid() {
         this.updateActive(false);
         super.onStructureInvalid();
-        this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.coolantHandler = new FluidHandlerList(new ArrayList<>());
-        this.hpcaHandler.onStructureInvalidate();
+        this.hpcaHandler.reset();
     }
 
     @Override
@@ -193,7 +147,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         return !isFormed() || hpcaHandler.hasHPCABridge();
     }
 
-    public void tick() {
+    public void serverRunningTick() {
         if (isWorkingEnabled()) consumeEnergy();
         if (isActive()) {
             // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
@@ -241,15 +195,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             if (!hasNotEnoughEnergy) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
                 if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(WorkLogic.Status.WORKING);
+                    getWorkLogic().setStatus(WorkLogic.Status.WORKING);
                 } else {
                     this.hasNotEnoughEnergy = true;
-                    getRecipeLogic().setStatus(WorkLogic.Status.WAITING);
+                    getWorkLogic().setStatus(WorkLogic.Status.WAITING);
                 }
             }
         } else {
             this.hasNotEnoughEnergy = true;
-            getRecipeLogic().setStatus(WorkLogic.Status.WAITING);
+            getWorkLogic().setStatus(WorkLogic.Status.WAITING);
         }
     }
 
@@ -433,10 +387,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     this.numBridges++;
                 }
             }
-        }
-
-        private void onStructureInvalidate() {
-            reset();
         }
 
         private void reset() {

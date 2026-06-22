@@ -100,7 +100,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     @Override
     public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        return isActive() && !getRecipeLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
+        return isActive() && !getWorkLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
     }
 
     @Override

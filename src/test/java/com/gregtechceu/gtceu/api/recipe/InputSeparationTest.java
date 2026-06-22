@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
@@ -42,7 +42,7 @@ public class InputSeparationTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
+                             FluidHatchPartMachine outputHatch1, RecipeMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -51,7 +51,7 @@ public class InputSeparationTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+        RecipeMultiblockMachine controller = (RecipeMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);

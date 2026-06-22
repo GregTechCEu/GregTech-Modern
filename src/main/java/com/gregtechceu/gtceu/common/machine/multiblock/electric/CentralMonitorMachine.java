@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICentralMonitor;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
@@ -17,15 +19,13 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.pattern.*;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
-import com.gregtechceu.gtceu.common.machine.trait.CentralMonitorLogic;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -102,50 +102,74 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
+    public void onStructureFormed() {
+        super.onStructureFormed();
+        tier = Math.min(GTValues.MAX, tier);
+        int interval = BASE_UPDATE_INTERVAL;
+        for (int i = 1; i < tier; i++) {
+            interval /= 2;
+        }
+        updateInterval = Math.max(interval, 1);
+    }
+
+    @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
         this.clearPatternFindingState();
     }
 
+    private static final int BASE_UPDATE_INTERVAL = 8 * 20;
+
+    @Getter
+    @Persisted
+    private int updateInterval = 0;
+
+    @Getter
+    private int progress = 0;
+
     @Override
-    public CentralMonitorLogic getWorkLogic() {
-        return (CentralMonitorLogic) recipeLogic;
+    protected WorkLogic createWorkLogic(Object... args) {
+        return new WorkLogic(this, this::serverRunningTick);
     }
 
-    public CentralMonitorLogic getMonitorLogic() {
-        return getWorkLogic();
-    }
-
-    @Override
-    protected RecipeLogic createRecipeLogic(Object... args) {
-        return new CentralMonitorLogic(this);
-    }
-
-    public @Nullable EnergyContainerList getFormedEnergyContainer() {
-        return this.energyContainer;
-    }
-
-    public void tick() {
-        Level level = getLevel();
-        if (level == null) {
-            return;
-        }
-
-        for (MonitorGroup group : monitorGroups) {
-            ItemStack stack = group.getItemStackHandler().getStackInSlot(0);
-            if (stack.isEmpty() || !(stack.getItem() instanceof IComponentItem componentItem)) {
-                continue;
-            }
-
-            for (IItemComponent component : componentItem.getComponents()) {
-                if (!(component instanceof IMonitorModuleItem module)) {
-                    continue;
+    protected void serverRunningTick() {
+        long energyToConsume = GTValues.VA[tier];
+        if(energyContainer.getEnergyStored() >= energyToConsume &&
+                energyContainer.removeEnergy(energyToConsume) >= energyToConsume) {
+            setStatus(WorkLogic.Status.WORKING);
+            progress = (progress + 1) % getUpdateInterval();
+            if (progress == 0) {
+                Level level = getLevel();
+                if (level == null) {
+                    return;
                 }
-                module.tick(stack, this, group);
-                GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
-                        new SCPacketMonitorGroupNBTChange(stack, group, this));
+
+                for (MonitorGroup group : monitorGroups) {
+                    ItemStack stack = group.getItemStackHandler().getStackInSlot(0);
+                    if (stack.isEmpty() || !(stack.getItem() instanceof IComponentItem componentItem)) {
+                        continue;
+                    }
+
+                    for (IItemComponent component : componentItem.getComponents()) {
+                        if (!(component instanceof IMonitorModuleItem module)) {
+                            continue;
+                        }
+                        module.tick(stack, this, group);
+                        GTNetwork.sendToAllPlayersTrackingChunk(level.getChunkAt(getPos()),
+                                new SCPacketMonitorGroupNBTChange(stack, group, this));
+                    }
+                }
             }
+        } else {
+            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
+            progress = Math.max(progress - 2, 1);
         }
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return updateInterval;
     }
 
     @Override

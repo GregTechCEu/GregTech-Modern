@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.gametest.stresstest;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
@@ -54,7 +54,7 @@ public class RecipeIteratorStressTest {
     }
 
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+        RecipeMultiblockMachine controller = (RecipeMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
@@ -70,7 +70,7 @@ public class RecipeIteratorStressTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             FluidHatchPartMachine outputHatch1, WorkableMultiblockMachine controller) {}
+                             FluidHatchPartMachine outputHatch1, RecipeMultiblockMachine controller) {}
 
     @GameTest(template = "empty", batch = "StressTests")
     public static void iteratorStressTest(GameTestHelper helper) {
@@ -116,8 +116,8 @@ public class RecipeIteratorStressTest {
         long start = System.nanoTime();
 
         for (int i = 0; i < 1000; i++) {
-            busHolder.controller.recipeLogic.findAndHandleRecipe();
-            busHolder.controller.recipeLogic.markLastRecipeDirty();
+            busHolder.controller.getRecipeLogic().findAndHandleRecipe();
+            busHolder.controller.getRecipeLogic().markLastRecipeDirty();
         }
         long end = System.nanoTime();
         GTCEu.LOGGER.info("On machine took " + (end - start) / 1_000_000.0 + " ms");

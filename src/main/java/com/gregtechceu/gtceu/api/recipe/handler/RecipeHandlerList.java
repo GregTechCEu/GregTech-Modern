@@ -65,7 +65,11 @@ public class RecipeHandlerList {
     }
 
     public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
-        return getAllHandlers().stream().filter(h -> h.getCapability() == cap).toList();
+        var list = new ArrayList<IRecipeHandler<?>>();
+        for(var handler: getAllHandlers()) {
+            if(handler.getCapability() == cap) list.add(handler);
+        }
+        return list;
     }
 
     public static RecipeHandlerList of(Iterable<IRecipeHandler<?>> handlers) {

@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -163,7 +162,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         if (!getLevel().isClientSide) {
             if (getOffsetTimer() % 20 == 0) {
                 // active here is just used for rendering
-                getRecipeLogic()
+                getWorkLogic()
                         .setStatus(energyBank.hasEnergy() ? WorkLogic.Status.WORKING : WorkLogic.Status.IDLE);
                 inputPerSec = netInLastSec;
                 outputPerSec = netOutLastSec;
@@ -199,17 +198,11 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
-                int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-                double maxInSec = (float) recipeLogic.getMaxProgress() / 20.0f;
-                double currentInSec = (float) recipeLogic.getProgress() / 20.0f;
-                textList.add(
-                        Component.translatable("gtceu.multiblock.progress", String.format("%.2f", (float) currentInSec),
-                                String.format("%.2f", (float) maxInSec), currentProgress));
             } else {
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
             }
 
-            if (recipeLogic.isWaiting()) {
+            if (workLogic.isWaiting()) {
                 textList.add(Component.translatable("gtceu.multiblock.waiting")
                         .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }

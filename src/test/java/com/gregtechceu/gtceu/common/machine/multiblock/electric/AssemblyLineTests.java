@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -51,7 +51,7 @@ public class AssemblyLineTests {
                              ItemBusPartMachine inputBus3, ItemBusPartMachine inputBus4,
                              FluidHatchPartMachine inputHatch1, FluidHatchPartMachine inputHatch2,
                              FluidHatchPartMachine inputHatch3, FluidHatchPartMachine inputHatch4,
-                             ItemBusPartMachine outputBus1, WorkableMultiblockMachine controller) {}
+                             ItemBusPartMachine outputBus1, RecipeMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -60,7 +60,7 @@ public class AssemblyLineTests {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+        RecipeMultiblockMachine controller = (RecipeMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(0, 3, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(ASSLINE_RECIPE_TYPE);

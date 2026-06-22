@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IWorkLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -141,8 +141,8 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     default void notifyController() {
         getControllers().stream()
-                .filter(IRecipeLogicMachine.class::isInstance)
-                .map(IRecipeLogicMachine.class::cast)
-                .forEach(m -> m.getRecipeLogic().updateTickSubscription());
+                .filter(IWorkLogicMachine.class::isInstance)
+                .map(IWorkLogicMachine.class::cast)
+                .forEach(m -> m.getWorkLogic().updateTickSubscription());
     }
 }

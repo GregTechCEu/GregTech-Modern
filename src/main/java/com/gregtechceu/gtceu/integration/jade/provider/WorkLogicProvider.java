@@ -62,4 +62,9 @@ public class WorkLogicProvider extends CapabilityBlockProvider<WorkLogic> {
             }
         }
     }
+
+    @Override
+    public int getDefaultPriority() {
+        return super.getDefaultPriority();
+    }
 }

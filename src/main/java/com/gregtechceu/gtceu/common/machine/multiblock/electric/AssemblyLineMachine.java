@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
+public class AssemblyLineMachine extends RecipeElectricMultiblockMachine {
 
     public AssemblyLineMachine(IMachineBlockEntity holder) {
         super(holder);

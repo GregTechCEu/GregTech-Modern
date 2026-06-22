@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IWorkLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -80,8 +80,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     public void clientTick() {
         super.clientTick();
         for (IMultiController controller : getControllers()) {
-            if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
-                    recipeLogicMachine.getRecipeLogic().isWorking()) {
+            if (controller instanceof IWorkLogicMachine workLogicMachine &&
+                    workLogicMachine.getWorkLogic().isWorking()) {
                 emitPollutionParticles();
                 break;
             }
@@ -109,8 +109,8 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     private void tryBreakSnow() {
         if (getOffsetTimer() % 10 == 0) {
             for (IMultiController controller : getControllers()) {
-                if (controller instanceof IRecipeLogicMachine recipeLogicMachine &&
-                        recipeLogicMachine.getRecipeLogic().isWorking()) {
+                if (controller instanceof IWorkLogicMachine workLogicMachine &&
+                        workLogicMachine.getWorkLogic().isWorking()) {
                     BlockPos mufflerPos = getPos().relative(getFrontFacing());
                     GTUtil.tryBreakSnow(getLevel(), mufflerPos, getLevel().getBlockState(mufflerPos), true);
                 }

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -60,7 +60,7 @@ public class RecipeLogicTest {
     }
 
     private record BusHolder(ItemBusPartMachine inputBus1, ItemBusPartMachine inputBus2, ItemBusPartMachine outputBus1,
-                             WorkableMultiblockMachine controller) {}
+                             RecipeMultiblockMachine controller) {}
 
     /**
      * Retrieves the busses for this specific template and force a multiblock structure check
@@ -69,7 +69,7 @@ public class RecipeLogicTest {
      * @return the busses, in the BusHolder record.
      */
     private static RecipeLogicTest.BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
+        RecipeMultiblockMachine controller = (RecipeMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);

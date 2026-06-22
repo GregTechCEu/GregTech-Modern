@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IFluidRenderMulti;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeChemicalBathMachine extends WorkableElectricMultiblockMachine implements IFluidRenderMulti {
+public class LargeChemicalBathMachine extends RecipeElectricMultiblockMachine implements IFluidRenderMulti {
 
     @Getter
     @Setter

@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
+import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -24,7 +24,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -62,13 +61,12 @@ public class RecipeLogic extends WorkLogic {
     @Getter
     protected GTRecipeDefinition lastOriginRecipe;
 
-    @Getter
     @Persisted
-    @DescSynced
+    @Getter
     protected int progress;
 
+    @Getter
     @Persisted
-    @DescSynced
     protected int duration;
 
     @Getter(onMethod_ = @VisibleForTesting)
@@ -85,7 +83,8 @@ public class RecipeLogic extends WorkLogic {
     /**
      * Call it to abort current recipe and reset the first state.
      */
-    public void resetRecipeLogic() {
+    public void reset() {
+        super.reset();
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
@@ -94,22 +93,18 @@ public class RecipeLogic extends WorkLogic {
         progress = 0;
         duration = 0;
         failureReasons.clear();
-        if (!isSuspend()) {
-            setStatus(Status.IDLE);
-        }
-        updateTickSubscription();
+
     }
 
     @Override
     public void updateTickSubscription() {
-        if (isSuspend() || !machine.isRecipeLogicAvailable()) {
+        if (isSuspend() || !machine.isWorkLogicAvailable()) {
             unsubscribeTick();
         } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
         }
     }
 
-    @Override
     public double getProgressPercent() {
         return duration == 0 ? 0.0 : progress / (duration * 1.0);
     }
@@ -121,6 +116,7 @@ public class RecipeLogic extends WorkLogic {
         return GTCEu.getMinecraftServer().getRecipeManager();
     }
 
+    @Override
     public void serverTick() {
         if (!isSuspend()) {
             if (!isIdle() && lastRecipe != null) {
@@ -138,9 +134,8 @@ public class RecipeLogic extends WorkLogic {
             failureReasons.clear();
             failureReasons.addAll(failureReasonMap.values());
         }
-        if ((isSuspend() || (isIdle() && !machine.keepSubscribing())) && subscription != null) {
-            subscription.unsubscribe();
-            subscription = null;
+        if ((isSuspend() || (isIdle() && !machine.keepSubscribing()))) {
+            unsubscribeTick();
         }
     }
 
@@ -302,7 +297,6 @@ public class RecipeLogic extends WorkLogic {
         }
     }
 
-    @Override
     public int getMaxProgress() {
         return duration;
     }
@@ -313,6 +307,7 @@ public class RecipeLogic extends WorkLogic {
             handleRecipeIO(lastRecipe, IO.OUT);
             if (suspendAfterFinish) {
                 setStatus(Status.SUSPEND);
+                suspendAfterFinish = false;
             }
             else {
                 if(!recipeDirty) {
@@ -332,9 +327,9 @@ public class RecipeLogic extends WorkLogic {
                 setStatus(Status.IDLE);
             }
         }
-            progress = 0;
-            duration = 0;
-            lastRecipe = null;
+        progress = 0;
+        duration = 0;
+        lastRecipe = null;
 
     }
 
@@ -398,6 +393,15 @@ public class RecipeLogic extends WorkLogic {
             return failureReasons;
         }
         return Collections.emptyList();
+    }
+
+
+    public boolean hasCustomProgressLine() {
+        return false;
+    }
+
+    public @Nullable Component getCustomProgressLine() {
+        return null;
     }
 
     @Override

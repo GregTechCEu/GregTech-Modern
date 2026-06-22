@@ -72,14 +72,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogic
      */
     @Override
     default boolean keepSubscribing() {
-        return true;
-    }
-
-    /**
-     * Whether the recipe logic should work or waiting for next {@link RecipeLogic#updateTickSubscription()}.
-     */
-    default boolean isRecipeLogicAvailable() {
-        return true;
+        return false;
     }
 
     /**
@@ -142,4 +135,13 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogic
         return -1;
     }
 
+    @Override
+    default int getProgress() {
+        return getRecipeLogic().getProgress();
+    }
+
+    @Override
+    default int getMaxProgress() {
+        return getRecipeLogic().getMaxProgress();
+    }
 }

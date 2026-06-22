@@ -10,9 +10,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
@@ -27,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip {
+public class WorkLogic extends MachineTrait implements IFancyTooltip {
 
     public enum Status implements StringRepresentable {
 
@@ -52,11 +49,7 @@ public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip 
     @Getter
     @Persisted
     @DescSynced
-    protected Status status = Status.IDLE;
-
-    @Persisted
-    @DescSynced
-    protected boolean workingEnabled = true;
+    private Status status = Status.IDLE;
 
     @Getter
     @Setter
@@ -71,9 +64,16 @@ public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip 
 
     protected TickableSubscription subscription;
 
+    protected Runnable serverRunningTick;
+
     public WorkLogic(IWorkLogicMachine machine) {
         super(machine.self());
         this.workMachine = machine;
+    }
+
+    public WorkLogic(IWorkLogicMachine machine, Runnable serverRunningTick) {
+        this(machine);
+        this.serverRunningTick = serverRunningTick;
     }
 
     @Override
@@ -83,14 +83,14 @@ public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip 
     }
 
     public void updateTickSubscription() {
-        if (isSuspend()) {
+        if (isSuspend() || !workMachine.isWorkLogicAvailable()) {
             unsubscribeTick();
-        } else {
+        } else if(serverRunningTick != null) {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
         }
     }
 
-    protected void unsubscribeTick() {
+    public void unsubscribeTick() {
         if (subscription != null) {
             subscription.unsubscribe();
             subscription = null;
@@ -99,25 +99,22 @@ public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip 
 
     public void serverTick() {
         if (!isSuspend()) {
-            onServerTick();
+            serverRunningTick.run();
         }
-        if ((isSuspend() || (isIdle() && !workMachine.keepSubscribing())) && subscription != null) {
+        if ((isSuspend() || (isIdle() && !workMachine.keepSubscribing()))) {
             unsubscribeTick();
         }
     }
-
-    protected void onServerTick() {}
 
     public void setStatus(Status status) {
         if (this.status != status) {
             Status oldStatus = this.status;
             this.status = status;
             workMachine.notifyWorkStatusChanged(oldStatus, status);
-            scheduleRenderUpdate();
-            updateTickSubscription();
             if (this.status != Status.WAITING) {
                 waitingReason = null;
             }
+            updateTickSubscription();
         }
     }
 
@@ -129,71 +126,47 @@ public class WorkLogic extends MachineTrait implements IWorkable, IFancyTooltip 
 
     protected void onWaiting() {}
 
-    public boolean isWorking() {
+    public final boolean isWorking() {
         return status == Status.WORKING;
     }
 
-    public boolean isIdle() {
+    public final boolean isIdle() {
         return status == Status.IDLE;
     }
 
-    public boolean isWaiting() {
+    public final boolean isWaiting() {
         return status == Status.WAITING;
     }
 
-    public boolean isSuspend() {
+    public final boolean isSuspend() {
         return status == Status.SUSPEND;
     }
 
-    @Override
     public boolean isWorkingEnabled() {
-        return workingEnabled;
+        return !isSuspend();
     }
 
-    @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if (this.workingEnabled != isWorkingAllowed) {
-            this.workingEnabled = isWorkingAllowed;
-            if (!isWorkingAllowed) {
-                setStatus(Status.SUSPEND);
-            } else if (isSuspend()) {
-                setStatus(Status.IDLE);
-            }
-            workMachine.notifyWorkingEnabledChanged(!workingEnabled, isWorkingAllowed);
-            updateTickSubscription();
-        }
+        setStatus(isWorkingAllowed ? Status.IDLE : Status.SUSPEND);
+        workMachine.notifyWorkingEnabledChanged(!isWorkingAllowed, isWorkingAllowed);
+        updateTickSubscription();
     }
 
-    @Override
-    public int getProgress() {
-        return 0;
-    }
-
-    @Override
-    public int getMaxProgress() {
-        return 0;
-    }
-
-    public double getProgressPercent() {
-        int maxProgress = getMaxProgress();
-        return maxProgress == 0 ? 0.0 : getProgress() / (maxProgress * 1.0);
-    }
-
-    @Override
     public boolean isActive() {
         return isWorking() || isWaiting();
     }
 
-    public boolean hasCustomProgressLine() {
-        return false;
-    }
-
-    public @Nullable Component getCustomProgressLine() {
-        return null;
+    public void reset() {
+        if (!isSuspend()) {
+            setStatus(Status.IDLE);
+        }
+        updateTickSubscription();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void updateSound() {}
+    public void updateSound() {
+        //TODO : add sound for non-recipe machine
+    }
 
     @Override
     public IGuiTexture getFancyTooltipIcon() {

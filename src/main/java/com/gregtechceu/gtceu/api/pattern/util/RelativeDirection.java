@@ -87,15 +87,6 @@ public enum RelativeDirection implements StringRepresentable {
         return getActualDirection(facing).getNormal();
     }
 
-    /**
-     * @deprecated Renamed to {@link RelativeDirection#getRelative(Direction, Direction, boolean) getRelative}.
-     */
-    @ApiStatus.ScheduledForRemoval(inVersion = "8.0.0")
-    @Deprecated(since = "7.0.0", forRemoval = true)
-    public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
-        return getRelative(frontFacing, upwardsFacing, isFlipped);
-    }
-
     public Direction getRelative(Direction frontDir, Direction upwardsDir, boolean isFlipped) {
         Direction.Axis frontAxis = frontDir.getAxis();
         return switch (this) {

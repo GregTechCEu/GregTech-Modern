@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
@@ -142,7 +142,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
-            .multiblock("large_centrifuge", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_centrifuge", RecipeElectricMultiblockMachine::new)
             .langValue("Large Centrifugal Unit")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -203,7 +203,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE
-            .multiblock("large_electrolyzer", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_electrolyzer", RecipeElectricMultiblockMachine::new)
             .langValue("Large Electrolysis Chamber")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -228,7 +228,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ELECTROMAGNET = REGISTRATE
-            .multiblock("large_electromagnet", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_electromagnet", RecipeElectricMultiblockMachine::new)
             .langValue("Large Electromagnet")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -254,7 +254,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_PACKER = REGISTRATE
-            .multiblock("large_packer", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_packer", RecipeElectricMultiblockMachine::new)
             .langValue("Large Packaging Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -281,7 +281,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE
-            .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_assembler", RecipeElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -313,7 +313,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE
-            .multiblock("large_circuit_assembler", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_circuit_assembler", RecipeElectricMultiblockMachine::new)
             .langValue("Large Circuit Assembling Facility")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -349,7 +349,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ARC_SMELTER = REGISTRATE
-            .multiblock("large_arc_smelter", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_arc_smelter", RecipeElectricMultiblockMachine::new)
             .langValue("Large Arc Smelter")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -378,7 +378,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE
-            .multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_engraving_laser", RecipeElectricMultiblockMachine::new)
             .langValue("Large Engraving Laser")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -410,7 +410,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_SIFTING_FUNNEL = REGISTRATE
-            .multiblock("large_sifting_funnel", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_sifting_funnel", RecipeElectricMultiblockMachine::new)
             .langValue("Large Sifting Funnel")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -506,7 +506,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_AUTOCLAVE = REGISTRATE
-            .multiblock("large_autoclave", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_autoclave", RecipeElectricMultiblockMachine::new)
             .langValue("Large Crystallization Chamber")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -533,7 +533,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_MATERIAL_PRESS = REGISTRATE
-            .multiblock("large_material_press", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_material_press", RecipeElectricMultiblockMachine::new)
             .langValue("Large Material Press")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_4.tooltip",
@@ -560,7 +560,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_BREWER = REGISTRATE
-            .multiblock("large_brewer", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_brewer", RecipeElectricMultiblockMachine::new)
             .langValue("Large Brewing Vat")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_3.tooltip",
@@ -590,7 +590,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE
-            .multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_cutter", RecipeElectricMultiblockMachine::new)
             .langValue("Large Cutting Saw")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -707,7 +707,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_EXTRACTOR = REGISTRATE
-            .multiblock("large_extractor", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_extractor", RecipeElectricMultiblockMachine::new)
             .langValue("Large Extraction Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -732,7 +732,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_EXTRUDER = REGISTRATE
-            .multiblock("large_extruder", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_extruder", RecipeElectricMultiblockMachine::new)
             .langValue("Large Extrusion Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -761,7 +761,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_SOLIDIFIER = REGISTRATE
-            .multiblock("large_solidifier", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_solidifier", RecipeElectricMultiblockMachine::new)
             .langValue("Large Solidification Array")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -789,7 +789,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_WIREMILL = REGISTRATE
-            .multiblock("large_wiremill", WorkableElectricMultiblockMachine::new)
+            .multiblock("large_wiremill", RecipeElectricMultiblockMachine::new)
             .langValue("Large Wire Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -910,7 +910,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition MEGA_VACUUM_FREEZER = REGISTRATE
-            .multiblock("mega_vacuum_freezer", WorkableElectricMultiblockMachine::new)
+            .multiblock("mega_vacuum_freezer", RecipeElectricMultiblockMachine::new)
             .langValue("Bulk Blast Chiller")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",

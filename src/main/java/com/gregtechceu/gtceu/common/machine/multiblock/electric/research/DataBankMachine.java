@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -152,23 +151,23 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (getRecipeLogic().isWaiting() && energyContainer.getInputPerSec() > 19L * energyToConsume) {
-            getRecipeLogic().setStatus(WorkLogic.Status.IDLE);
+        if (getWorkLogic().isWaiting() && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+            getWorkLogic().setStatus(WorkLogic.Status.IDLE);
         }
 
         if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!getRecipeLogic().isWaiting()) {
+            if (!getWorkLogic().isWaiting()) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
                 if (consumed == energyToConsume) {
-                    getRecipeLogic().setStatus(WorkLogic.Status.WORKING);
+                    getWorkLogic().setStatus(WorkLogic.Status.WORKING);
                 } else {
-                    getRecipeLogic()
+                    getWorkLogic()
                             .setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
                                     .append(": ").append(EURecipeCapability.CAP.getName()));
                 }
             }
         } else {
-            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+            getWorkLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
                     .append(EURecipeCapability.CAP.getName()));
         }
         updateTickSubscription();

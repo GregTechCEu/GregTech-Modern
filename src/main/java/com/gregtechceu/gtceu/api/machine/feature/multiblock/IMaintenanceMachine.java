@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
@@ -127,8 +128,8 @@ public interface IMaintenanceMachine extends IMultiPart {
     @Override
     default boolean onWorking(IWorkableMultiController controller) {
         calculateMaintenance(this);
-        if (hasMaintenanceProblems()) {
-            controller.getRecipeLogic().markLastRecipeDirty();
+        if (hasMaintenanceProblems() && controller instanceof IRecipeLogicMachine recipeLogicMachine) {
+            recipeLogicMachine.getRecipeLogic().markLastRecipeDirty();
         }
         return true;
     }

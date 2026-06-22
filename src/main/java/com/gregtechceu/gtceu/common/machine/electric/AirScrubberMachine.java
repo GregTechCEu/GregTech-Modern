@@ -65,7 +65,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     }
 
     @Override
-    public boolean isRecipeLogicAvailable() {
+    public boolean isWorkLogicAvailable() {
         // Don't run recipes if hazards are off
         return ConfigHolder.INSTANCE.gameplay.environmentalHazards;
     }

@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface IWorkLogicMachine extends IMachineFeature, IWorkable {
 
@@ -28,8 +30,20 @@ public interface IWorkLogicMachine extends IMachineFeature, IWorkable {
         }
     }
 
+    default boolean isWorkLogicAvailable() {
+        return true;
+    }
+
     default boolean keepSubscribing() {
         return true;
+    }
+
+    default void setStatus(WorkLogic.Status status) {
+        getWorkLogic().setStatus(status);
+    }
+
+    default void setWaiting(@Nullable Component reason) {
+        getWorkLogic().setWaiting(reason);
     }
 
     @Override
@@ -53,17 +67,17 @@ public interface IWorkLogicMachine extends IMachineFeature, IWorkable {
     }
 
     @Override
-    default int getProgress() {
-        return getWorkLogic().getProgress();
-    }
-
-    @Override
-    default int getMaxProgress() {
-        return getWorkLogic().getMaxProgress();
-    }
-
-    @Override
     default boolean isActive() {
         return getWorkLogic().isActive();
     }
+
+    @Override
+    default int getProgress() {
+        return 0;
+    };
+
+    @Override
+    default int getMaxProgress() {
+        return 0;
+    };
 }
