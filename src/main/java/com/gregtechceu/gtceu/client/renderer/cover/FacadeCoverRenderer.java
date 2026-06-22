@@ -190,9 +190,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                 // fix the quad's UVs based on the original & clamped vertices
                 interpolator.transform(emitter);
 
-                // Convert directly from the live emitter: the Mesh round-trip does not serialize
-                // lightFace/shade/tintIndex, which would break per-face shading & ambient occlusion.
                 quads.add(emitter.toBlockBakedQuad());
+                emitter.emit();
             }
         }
     }
@@ -367,9 +366,8 @@ public class FacadeCoverRenderer extends BaseBakedModel implements ICoverRendere
                         // fix the quad's UVs based on the original & clamped vertices
                         interpolator.transform(emitter);
 
-                        // Convert directly from the live emitter: the Mesh round-trip does not serialize
-                        // lightFace/shade/tintIndex, which would break per-face shading & ambient occlusion.
                         quads.add(emitter.toBlockBakedQuad());
+                        emitter.emit();
                     }
                 }
             }
