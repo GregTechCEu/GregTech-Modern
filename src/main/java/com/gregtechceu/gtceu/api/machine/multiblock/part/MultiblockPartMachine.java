@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -35,6 +36,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
+    @Getter
+    protected @Nullable String substructureName;
 
     private @Nullable RecipeHandlerList handlerList;
 
@@ -125,6 +128,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         synchronized (controllers) {
             controllers.clear();
         }
+        substructureName = null;
     }
 
     //////////////////////////////////////
@@ -142,6 +146,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         }
 
         if (empty) {
+            this.substructureName = null;
             MachineRenderState renderState = getRenderState();
             if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
@@ -152,11 +157,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @MustBeInvokedByOverriders
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
+    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
         controllerPositions.add(controller.getBlockPos());
         synchronized (controllers) {
             controllers.add(controller);
         }
+        this.substructureName = substructureName;
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");
         MachineRenderState renderState = getRenderState();

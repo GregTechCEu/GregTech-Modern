@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -67,7 +68,7 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default boolean canShared() {
+    default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 

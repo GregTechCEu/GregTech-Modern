@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.renderer.block.FluidBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
@@ -115,8 +115,8 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
         for (RelativeDirection face : this.drawFaces) {
             poseStack.pushPose();
 
-            Direction dir = face.getRelative(machine.getFrontFacing(), machine.getUpwardsFacing(),
-                    machine.isFlipped());
+            var dir = face.getRelativeFacing(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
+                    machine.self().isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, trait.getFluidOffsets(), poseStack, consumer, cachedFluid,
