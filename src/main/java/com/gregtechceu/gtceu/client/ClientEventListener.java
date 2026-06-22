@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.block.BlockAttributes;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.client.renderer.AABBHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
-import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -59,11 +61,15 @@ public class ClientEventListener {
         Camera camera = event.getCamera();
         PoseStack poseStack = event.getPoseStack();
         float partialTick = event.getPartialTick();
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+
+        // render the preview in every stage; it filters itself
+        PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, event.getStage(), partialTick);
 
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            // to render the preview after block entities, before the translucent.
-            // so it can be seen through the transparent blocks.
-            MultiblockInWorldPreviewRenderer.renderInWorldPreview(poseStack, camera, partialTick);
+            // render the highlight after block entities but before translucent blocks so it can be seen through
+            // transparent blocks.
+            AABBHighlightRenderer.INSTANCE.tick(poseStack, bufferSource, camera);
         }
     }
 
@@ -147,8 +153,9 @@ public class ClientEventListener {
     public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             TooltipHelper.onClientTick();
-            MultiblockInWorldPreviewRenderer.onClientTick();
             EnvironmentalHazardClientHandler.INSTANCE.onClientTick();
+            PatternPreviewRenderer.INSTANCE.clientTick();
+
             GTValues.CLIENT_TIME++;
         }
     }

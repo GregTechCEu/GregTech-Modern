@@ -27,14 +27,18 @@ public abstract class MultiblockMachineTrait extends MachineTrait {
     /**
      * Called when the multiblock structure is formed
      * 
-     * @see MultiblockControllerMachine#onStructureFormed()
+     * @param substructureName - the name of the substructure
+     *
+     * @see MultiblockControllerMachine#formStructure(String) ()
      */
-    public void onStructureFormed() {}
+    public void onStructureFormed(String substructureName) {}
 
     /**
      * Called when the multiblock structure becomes invalid
      * 
-     * @see MultiblockControllerMachine#onStructureInvalid()
+     * @param substructureName - the name of the substructure
+     *
+     * @see MultiblockControllerMachine#invalidateStructure(String)
      */
-    public void onStructureInvalid() {}
+    public void onStructureInvalid(String substructureName) {}
 }

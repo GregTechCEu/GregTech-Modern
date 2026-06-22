@@ -43,7 +43,7 @@ public class ShapedEnergyTransferRecipeBuilder {
         this(null);
     }
 
-    public ShapedEnergyTransferRecipeBuilder aisle(String... data) {
+    public ShapedEnergyTransferRecipeBuilder slice(String... data) {
         this.shape.add(data);
         return this;
     }
@@ -54,7 +54,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipeBuilder pattern(String slice) {
-        return aisle(slice);
+        return slice(slice);
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, TagKey<Item> itemStack) {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.widgets.SlotGroupWidget;
 import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.slot.ItemSlot;
@@ -85,7 +86,7 @@ public interface MachineCapabilityLayoutBuilder {
 
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
             var slot = new FluidSlot()
-                    .tank(fluidTank.getStorages()[0])
+                    .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0]).controlsAmount(false))
                     .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
             else widget.outputColumn.child(slot);
@@ -95,7 +96,7 @@ public interface MachineCapabilityLayoutBuilder {
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new FluidSlot()
-                        .tank(fluidTank.getStorages()[i])
+                        .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0]).controlsAmount(true))
                         .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
                 .size(18, 18)

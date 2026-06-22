@@ -7,12 +7,13 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -30,9 +31,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -88,31 +88,34 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     // ******* Logic *********//
     //////////////////////////////////////
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         Direction opposite = this.getUpwardsFacing().getOpposite();
         getRecipeLogic().setDir(opposite == Direction.NORTH ? Direction.UP : Direction.DOWN);
         initializeAbilities();
     }
 
     @Override
-    public boolean checkPattern() {
-        return super.checkPattern() &&
-                (this.getUpwardsFacing() == Direction.NORTH || this.getUpwardsFacing() == Direction.SOUTH);
+    public PatternState checkStructurePattern(String name) {
+        var patternState = super.checkStructurePattern(name);
+        if (this.getUpwardsFacing() != Direction.UP && this.getUpwardsFacing() != Direction.DOWN) {
+            patternState.setError(Predicates.PLACEHOLDER);
+        }
+        return patternState;
     }
 
     private void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         List<IFluidHandler> fluidTanks = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE) continue;
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)

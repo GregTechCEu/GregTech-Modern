@@ -342,6 +342,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (MultiblockControllerMachine controller : controllers) {
+            if (controller == null) continue;
             var state = controller.getBlockState();
             BakedModel model = RenderUtil.getModelForState(state);
             List<BakedQuad> newQuads = null;

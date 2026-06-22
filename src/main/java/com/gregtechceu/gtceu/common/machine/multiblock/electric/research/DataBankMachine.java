@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -13,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -24,9 +24,8 @@ import net.minecraft.world.level.block.Block;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.LongSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,20 +56,21 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
-            if (io == IO.NONE || io == IO.OUT) continue;
+            // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
@@ -81,7 +81,9 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         this.energyUsage = calculateEnergyUsage();
 
         if (this.maintenance == null) {
-            onStructureInvalid();
+            pState.setError(new PatternStringError(
+                    Component.translatable("gtceu.predicate_error.databank.missing_maintenance")));
+            invalidateStructure(substructureName);
             return;
         }
         updateTickSubscription();
@@ -110,8 +112,8 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.energyContainer = new EnergyContainerList(new ArrayList<>());
         this.energyUsage = 0;
     }
@@ -177,6 +179,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
 
         List<IWidget> widgets = new ArrayList<>();
 
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addEnergyUsageExactLine(this, syncManager, energyStoredSyncValue));
         widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager,
                 () -> Component.translatable("gtceu.multiblock.data_bank.providing").withStyle(ChatFormatting.GREEN)));

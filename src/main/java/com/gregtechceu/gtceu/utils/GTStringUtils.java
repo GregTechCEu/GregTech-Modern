@@ -22,6 +22,8 @@ import java.util.Objects;
 
 public class GTStringUtils {
 
+    public static final Component COMMA_SEPERATOR_LITERAL = Component.literal(", ");
+
     /**
      * Better implementation of {@link ItemStack#toString()} which respects the stack-aware
      * {@link net.minecraft.world.item.Item#getDescriptionId(ItemStack)} method.
@@ -33,6 +35,18 @@ public class GTStringUtils {
     public static String itemStackToString(@NotNull ItemStack stack) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return stack.getCount() + "x_" + itemId.getNamespace() + "_" + itemId.getPath();
+    }
+
+    public static int parseInt(String s, int defaultValue) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    public static int parseInt(String s) {
+        return parseInt(s, -1);
     }
 
     @NotNull

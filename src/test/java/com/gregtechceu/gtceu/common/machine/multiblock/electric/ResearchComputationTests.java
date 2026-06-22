@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.machines.GTResearchMachines;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
@@ -13,7 +12,6 @@ import com.gregtechceu.gtceu.common.machine.storage.CreativeComputationProviderM
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -86,7 +84,7 @@ public class ResearchComputationTests {
         ResearchStationMachine researchStation = (ResearchStationMachine) helper
                 .getBlockEntity(new BlockPos(4, 4, 1));
         helper.assertTrue(researchStation != null, "Research Station controller not found");
-        TestUtils.formMultiblock(researchStation);
+        TestUtils.formMultiblock(helper, researchStation);
         researchStation.setRecipeType(RESEARCH_RECIPE_TYPE);
         return researchStation;
     }
@@ -110,7 +108,7 @@ public class ResearchComputationTests {
         formOpticalPipeNet(helper, RESEARCH_COMPUTER_AND_HPCA_PIPES);
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(13, 2, 2));
         helper.assertTrue(hpca != null, "HPCA controller not found");
-        TestUtils.formMultiblock(hpca);
+        TestUtils.formMultiblock(helper, hpca);
 
         formResearchStation(helper);
         ObjectHolderMachine holder = getObjectHolder(helper);
@@ -128,7 +126,7 @@ public class ResearchComputationTests {
         formOpticalPipeNet(helper, RESEARCH_COMPUTER_AND_HPCA_PIPES);
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(13, 2, 2));
         helper.assertTrue(hpca != null, "HPCA controller not found");
-        TestUtils.formMultiblock(hpca);
+        TestUtils.formMultiblock(helper, hpca);
         // Turn the HPCA off, so it can no longer provide any computation.
         hpca.setWorkingEnabled(false);
 
@@ -173,7 +171,7 @@ public class ResearchComputationTests {
     public static void HPCAProvidesComputationTest(GameTestHelper helper) {
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(5, 1, 1));
         helper.assertTrue(hpca != null, "HPCA controller not found");
-        TestUtils.formMultiblock(hpca);
+        TestUtils.formMultiblock(helper, hpca);
 
         // The HPCA only reports computation once it has powered on (energy stored), which takes a few ticks.
         helper.succeedWhen(() -> {
@@ -190,7 +188,7 @@ public class ResearchComputationTests {
     public static void HPCAProvidesNoComputationWhenDisabledTest(GameTestHelper helper) {
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(5, 1, 1));
         helper.assertTrue(hpca != null, "HPCA controller not found");
-        TestUtils.formMultiblock(hpca);
+        TestUtils.formMultiblock(helper, hpca);
         hpca.setWorkingEnabled(false);
 
         helper.onEachTick(() -> {
@@ -202,29 +200,23 @@ public class ResearchComputationTests {
         TestUtils.succeedAfterTest(helper);
     }
 
-    @GameTest(template = "hpca", batch = "ResearchComputation", setupTicks = 40, timeoutTicks = 3000)
+    @GameTest(template = "hpca_overload", batch = "ResearchComputation", setupTicks = 40, timeoutTicks = 3000)
     public static void HPCAOverheatsWithInsufficientCoolingTest(GameTestHelper helper) {
-        // Replace a heat sink in the 3x3 component grid with a basic computation component before forming.
-        // This makes 1x16 + 2x4 = 24 CWU, with 1x4 + 2x2 = 8 cooling required, but only 6 coolers.
-        var component = GTResearchMachines.HPCA_COMPUTATION_COMPONENT;
-        helper.setBlock(new BlockPos(2, 2, 1), component.getBlock().defaultBlockState()
-                .setValue(component.getRotationState().property, Direction.SOUTH));
-
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(5, 1, 1));
         helper.assertTrue(hpca != null, "HPCA controller not found");
-        TestUtils.formMultiblock(hpca);
+        TestUtils.formMultiblock(helper, hpca);
 
-        // Only succeed once we have actually seen the full 24 CWU/t (confirming the swap took effect and the HPCA
-        // powered on), and then watched overheating damage drop it below 24 - so the test can't pass vacuously.
+        // Only succeed once we have actually seen the full 36 CWU/t (confirming the swap took effect and the HPCA
+        // powered on), and then watched overheating damage drop it below 36 - so the test can't pass vacuously.
         AtomicBoolean sawFullComputation = new AtomicBoolean(false);
         helper.onEachTick(() -> {
             // keep the HPCA under full computational load so it heats up
             hpca.requestCWUt(Integer.MAX_VALUE, false);
             int maxCWUt = hpca.getMaxCWUt();
-            if (maxCWUt == 24) {
+            if (maxCWUt == 36) {
                 sawFullComputation.set(true);
             }
-            if (sawFullComputation.get() && maxCWUt < 24) {
+            if (sawFullComputation.get() && maxCWUt < 36) {
                 helper.succeed();
             }
         });

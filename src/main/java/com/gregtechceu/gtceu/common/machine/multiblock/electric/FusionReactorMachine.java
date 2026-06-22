@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -37,10 +36,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -108,18 +106,18 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
+        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
+        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE || io == IO.OUT) continue;
+            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
+            // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
+                // if (!handlerList.isValid(io)) continue;
 
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
@@ -134,8 +132,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         this.inputEnergyContainers = null;
         heat = 0;
         energyContainer.resetBasicInfo(0, 0, 0, 0, 0);
