@@ -111,7 +111,7 @@ public class GTAEPlaceholders {
         AE_PLACEHOLDERS.register(modBus);
     }
 
-    public static RegistryObject<Placeholder> AE2_ITEM_COUNT = AE_PLACEHOLDERS.register("ae2itemCount",
+    public static RegistryObject<Placeholder> AE2_ITEM_COUNT = AE_PLACEHOLDERS.register("ae2_item_count",
             () -> new Placeholder("ae2itemCount") {
 
                 @Override
@@ -137,7 +137,7 @@ public class GTAEPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> AE2_FLUID_COUNT = AE_PLACEHOLDERS.register("ae2fluidCount",
+    public static RegistryObject<Placeholder> AE2_FLUID_COUNT = AE_PLACEHOLDERS.register("ae2_fluid_count",
             () -> new Placeholder("ae2fluidCount") {
 
                 @Override
@@ -164,7 +164,7 @@ public class GTAEPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> AE2_MAX_POWER = AE_PLACEHOLDERS.register("ae2maxPower",
+    public static RegistryObject<Placeholder> AE2_MAX_POWER = AE_PLACEHOLDERS.register("ae2_max_power",
             () -> new Placeholder("ae2maxPower") {
 
                 @Override
@@ -176,7 +176,7 @@ public class GTAEPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> AE2_POWER_USAGE = AE_PLACEHOLDERS.register("ae2powerUsage",
+    public static RegistryObject<Placeholder> AE2_POWER_USAGE = AE_PLACEHOLDERS.register("ae2_power_usage",
             () -> new Placeholder("ae2powerUsage") {
 
                 @Override

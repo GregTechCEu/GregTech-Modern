@@ -95,7 +95,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static final RegistryObject<Placeholder> ENERGY_CAPACITY = PLACEHOLDERS.register("energyCapacity",
+    public static final RegistryObject<Placeholder> ENERGY_CAPACITY = PLACEHOLDERS.register("energy_capacity",
             () -> new Placeholder("energyCapacity") {
 
                 @Override
@@ -134,7 +134,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static final RegistryObject<Placeholder> ITEM_COUNT = PLACEHOLDERS.register("itemCount",
+    public static final RegistryObject<Placeholder> ITEM_COUNT = PLACEHOLDERS.register("item_count",
             () -> new Placeholder("itemCount") {
 
                 @Override
@@ -167,7 +167,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> FLUID_COUNT = PLACEHOLDERS.register("fluidCount",
+    public static RegistryObject<Placeholder> FLUID_COUNT = PLACEHOLDERS.register("fluid_count",
             () -> new Placeholder("fluidCount") {
 
                 @Override
@@ -367,7 +367,7 @@ public class GTPlaceholders {
                         }
                     });
 
-    public static RegistryObject<Placeholder> PREVIOUS_TEXT = PLACEHOLDERS.register("previousText",
+    public static RegistryObject<Placeholder> PREVIOUS_TEXT = PLACEHOLDERS.register("previous_text",
             () -> new Placeholder("previousText") {
 
                 @Override
@@ -406,7 +406,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> MAX_PROGRESS = PLACEHOLDERS.register("maxProgress",
+    public static RegistryObject<Placeholder> MAX_PROGRESS = PLACEHOLDERS.register("max_progress",
             () -> new Placeholder("maxProgress") {
 
                 @Override
@@ -630,7 +630,7 @@ public class GTPlaceholders {
         }
     });
 
-    public static RegistryObject<Placeholder> TO_CHARS = PLACEHOLDERS.register("toChars",
+    public static RegistryObject<Placeholder> TO_CHARS = PLACEHOLDERS.register("to_chars",
             () -> new Placeholder("toChars") {
 
                 @Override
@@ -650,7 +650,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> TO_ASCII = PLACEHOLDERS.register("toAscii",
+    public static RegistryObject<Placeholder> TO_ASCII = PLACEHOLDERS.register("to_ascii",
             () -> new Placeholder("toAscii") {
 
                 @Override
@@ -668,7 +668,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> FROM_ASCII = PLACEHOLDERS.register("fromAscii",
+    public static RegistryObject<Placeholder> FROM_ASCII = PLACEHOLDERS.register("from_ascii",
             () -> new Placeholder("fromAscii") {
 
                 @Override
@@ -684,7 +684,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> SUBLIST = PLACEHOLDERS.register("subList",
+    public static RegistryObject<Placeholder> SUBLIST = PLACEHOLDERS.register("sublist",
             () -> new Placeholder("subList") {
 
                 @Override
@@ -907,7 +907,7 @@ public class GTPlaceholders {
         }
     });
 
-    public static RegistryObject<Placeholder> FORMAT_INT = PLACEHOLDERS.register("formatInt",
+    public static RegistryObject<Placeholder> FORMAT_INT = PLACEHOLDERS.register("format_int",
             () -> new Placeholder("formatInt") {
 
                 @Override
@@ -1069,7 +1069,7 @@ public class GTPlaceholders {
         }
     });
 
-    public static RegistryObject<Placeholder> SET_IMAGE = PLACEHOLDERS.register("setImage",
+    public static RegistryObject<Placeholder> SET_IMAGE = PLACEHOLDERS.register("set_image",
             () -> new Placeholder("setImage") {
 
                 @Override
@@ -1165,7 +1165,7 @@ public class GTPlaceholders {
         }
     });
 
-    public static RegistryObject<Placeholder> BLOCK_NBT = PLACEHOLDERS.register("blockNbt",
+    public static RegistryObject<Placeholder> BLOCK_NBT = PLACEHOLDERS.register("block_nbt",
             () -> new Placeholder("blockNbt") {
 
                 @Override
@@ -1191,7 +1191,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> SET_TARGET_SLOT = PLACEHOLDERS.register("setTargetSlot",
+    public static RegistryObject<Placeholder> SET_TARGET_SLOT = PLACEHOLDERS.register("set_target_slot",
             () -> new Placeholder("setTargetSlot") {
 
                 @Override
@@ -1213,7 +1213,7 @@ public class GTPlaceholders {
                 }
             });
 
-    public static RegistryObject<Placeholder> TARGET_SLOT = PLACEHOLDERS.register("targetSlot",
+    public static RegistryObject<Placeholder> TARGET_SLOT = PLACEHOLDERS.register("target_slot",
             () -> new Placeholder("targetSlot") {
 
                 @Override

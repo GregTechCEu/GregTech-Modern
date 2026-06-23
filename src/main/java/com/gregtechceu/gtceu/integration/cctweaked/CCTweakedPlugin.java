@@ -34,7 +34,7 @@ public class CCTweakedPlugin {
     public static void initPlaceholders(IEventBus modBus) {
         var register = DeferredRegister.create(GTRegistries.Keys.PLACEHOLDER, "gtceu");
         register.register(modBus);
-        register.register("bufferText", () -> new Placeholder("bufferText") {
+        register.register("buffer_text", () -> new Placeholder("bufferText") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

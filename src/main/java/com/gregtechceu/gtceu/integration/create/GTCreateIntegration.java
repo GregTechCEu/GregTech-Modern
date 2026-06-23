@@ -42,7 +42,7 @@ public class GTCreateIntegration {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
 
-        CREATE_PLACEHOLDERS.register("displayTarget", () -> new Placeholder("displayTarget") {
+        CREATE_PLACEHOLDERS.register("display_target", () -> new Placeholder("displayTarget") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
