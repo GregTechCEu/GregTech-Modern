@@ -191,6 +191,15 @@ public abstract class RecipeCapability<T> {
     }
 
     /**
+     * Should handlers of this capability be tried even when {@link IRecipeHandler#getTotalContentAmount()} is zero?
+     * E.g. should this capability bypass the empty handler optimization for rate-based capabilities.
+     * for example: CWU, where stored amount is zero but the handler can still provide computation.
+     */
+    public boolean skipEmptyContentCheck() {
+        return false;
+    }
+
+    /**
      * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
      *
      * @param machine The machine to get traits from

@@ -219,6 +219,9 @@ public class RecipeHelper {
                                             Map<RecipeCapability<?>, List<Content>> contents,
                                             Map<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
                                             boolean isTick, boolean simulated) {
+        if (contents.isEmpty()) {
+            return ActionResult.PASS_NO_CONTENTS;
+        }
         RecipeRunner runner = new RecipeRunner(recipe, io, isTick, holder, chanceCaches, simulated);
         var result = runner.handle(contents);
 
