@@ -50,6 +50,13 @@ import org.jetbrains.annotations.ApiStatus;
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
 
+    private GTRegistries() {}
+
+    public static final class Keys {
+        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
+
+    }
+
     // spotless:off
 
     // Material related registries
@@ -84,22 +91,17 @@ public final class GTRegistries {
     public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(GTCEu.id("dimension_marker"));
     public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(GTCEu.id("medical_condition"));
     public static final GTRegistry.RL<Placeholder> PLACEHOLDERS = new GTRegistry.RL<>(GTCEu.id("placeholder"));
-    public static final GTRegistry.RL<PatternError.PatternErrorType> PATTERN_ERRORS = new GTRegistry.RL<>(
-            GTCEu.id("pattern_errors"));
 
-
+    public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
 
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
 
-    public static final Registry<Placeholder> TEST_REGISTRY = simple(ResourceKey.createRegistryKey(GTCEu.id("test")));
-
     // spotless:on
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
-
         if (registryKey == Registries.RECIPE_TYPE) {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
         } else if (registryKey == Registries.RECIPE_SERIALIZER) {
@@ -125,12 +127,16 @@ public final class GTRegistries {
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 
-    private static <T> Registry<T> simple(ResourceKey<Registry<T>> key) {
-        return register(key, new MappedRegistry<>(key, Lifecycle.stable(), false));
+    private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
+        return ResourceKey.createRegistryKey(registryId);
+    }
+
+    private static <T> MappedRegistry<T> makeRegistry(ResourceKey<Registry<T>> key) {
+        return makeRegistry(key, new MappedRegistry<>(key, Lifecycle.stable(), false));
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Registry<T> register(ResourceKey<Registry<T>> key, WritableRegistry<T> registry) {
+    private static  <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
         BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register(
                 (ResourceKey<WritableRegistry<?>>) (Object) key, registry, Lifecycle.stable()
         );

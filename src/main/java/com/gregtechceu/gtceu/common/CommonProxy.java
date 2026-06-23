@@ -27,7 +27,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTPlaceholders;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
@@ -114,6 +113,8 @@ public class CommonProxy {
     }
 
     public static void init() {
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
 
@@ -140,7 +141,6 @@ public class CommonProxy {
         GTCovers.init();
         GTCreativeModeTabs.init();
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         GTMenuTypes.init(modBus);
 
         GTBlocks.init();
@@ -149,8 +149,7 @@ public class CommonProxy {
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
-        GTPatternErrors.init();
-        GTMachineUtils.init();
+        GTPatternErrors.init(modBus);
         GTMachines.init();
 
         GTFoods.init();

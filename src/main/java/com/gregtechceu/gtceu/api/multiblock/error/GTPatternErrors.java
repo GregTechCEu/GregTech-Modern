@@ -1,30 +1,29 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
-import net.minecraftforge.fml.ModLoader;
-
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.PATTERN_ERRORS;
-
+@SuppressWarnings("unused")
 public class GTPatternErrors {
 
-    public static void register(PatternError.PatternErrorType patternErrorType) {
-        PATTERN_ERRORS.register(patternErrorType.id(), patternErrorType);
+    private static final DeferredRegister<PatternError.PatternErrorType> PATTERN_ERRORS = DeferredRegister.create(GTRegistries.Keys.PATTERN_ERROR_TYPE, "gtceu");
+
+    public static RegistryObject<PatternError.PatternErrorType> PLACEHOLDER_ERROR = register(PlaceholderError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> BLOCK_MATCHING_ERROR = register(BlockMatchingError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> PART_ABILITY_ERROR = register(PartAbilityError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> COIL_MATCHING_ERROR = register(CoilMatchingError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> FILTER_MATCHING_ERROR = register(FilterMatchingError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> PATTERN_STRING_ERROR = register(PatternStringError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> SINGLE_PREDICATE_ERROR = register(SinglePredicateError.TYPE);
+    public static RegistryObject<PatternError.PatternErrorType> SIMPLE_PATTERN_ERROR = register(SimplePatternError.TYPE);
+
+    private static RegistryObject<PatternError.PatternErrorType> register(PatternError.PatternErrorType patternErrorType) {
+        return PATTERN_ERRORS.register(patternErrorType.id().getPath(), () -> patternErrorType);
     }
 
-    public static void init() {
-        PATTERN_ERRORS.unfreeze();
-        register(PlaceholderError.TYPE);
-        register(BlockMatchingError.TYPE);
-        register(PartAbilityError.TYPE);
-        register(CoilMatchingError.TYPE);
-        register(FilterMatchingError.TYPE);
-        register(PatternStringError.TYPE);
-        register(SinglePredicateError.TYPE);
-        register(SimplePatternError.TYPE);
-
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(PATTERN_ERRORS, PatternError.PatternErrorType.class));
-
-        PATTERN_ERRORS.freeze();
+    public static void init(IEventBus bus) {
+        PATTERN_ERRORS.register(bus);
     }
 }

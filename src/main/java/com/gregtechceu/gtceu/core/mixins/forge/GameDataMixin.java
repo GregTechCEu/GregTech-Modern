@@ -1,17 +1,11 @@
 package com.gregtechceu.gtceu.core.mixins.forge;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.GameData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
