@@ -61,8 +61,8 @@ public class RecipeLogic extends WorkLogic {
     @Getter
     protected GTRecipeDefinition lastOriginRecipe;
 
-    @Persisted
     @Getter
+    @Persisted
     protected int progress;
 
     @Getter

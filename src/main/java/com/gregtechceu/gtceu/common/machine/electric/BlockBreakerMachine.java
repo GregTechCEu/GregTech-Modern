@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -12,11 +12,12 @@ import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -60,8 +61,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockBreakerMachine extends TieredEnergyMachine
-                                 implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IControllable {
+public class BlockBreakerMachine extends WorkableTieredMachine
+                                 implements IAutoOutputItem, IFancyUIMachine, IMachineLife {
 
     @Getter
     @Persisted
@@ -79,7 +80,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Persisted
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
-    protected TickableSubscription autoOutputSubs, batterySubs, breakerSubs;
+    protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, energySubs;
     private final int inventorySize;
@@ -89,12 +90,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     private final long energyPerTick;
     public final float efficiencyMultiplier;
 
-    @Getter
-    @Persisted
-    @DescSynced
-    private boolean isWorkingEnabled = true;
-
-    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
+    public BlockBreakerMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.cache = createCacheItemHandler();
@@ -137,12 +133,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         if (!isRemote()) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
+                serverLevel.getServer().tell(new TickTask(0, getWorkLogic()::updateTickSubscription));
             }
             exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(() -> {
                 this.updateBatterySubscription();
-                this.updateBreakerSubscription();
+                getWorkLogic().updateTickSubscription();
             });
             chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         }
@@ -170,7 +166,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
-        updateBreakerSubscription();
+        getWorkLogic().updateTickSubscription();
         updateAutoOutputSubscription();
     }
 
@@ -178,64 +174,65 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     // ********* Logic **********//
     //////////////////////////////////////
 
-    public void updateBreakerSubscription() {
-        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() &&
-                isWorkingEnabled) {
-            breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
-        } else if (breakerSubs != null) {
-            blockBreakProgress = 0;
-            breakerSubs.unsubscribe();
-            breakerSubs = null;
-        }
+    @Override
+    public boolean keepSubscribing() {
+        return false;
     }
 
-    public void breakerUpdate() {
-        if (this.blockBreakProgress > 0) {
-            --this.blockBreakProgress;
-            drainEnergy(false);
+    @Override
+    protected void serverRunningTick() {
+        if (getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir()) {
+            setStatus(WorkLogic.Status.IDLE);
+        } else if(energyContainer.getEnergyStored() < energyPerTick ||
+                energyContainer.removeEnergy(energyPerTick) < energyPerTick){
+            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
+        } else {
+            setStatus(WorkLogic.Status.WORKING);
+            if (this.blockBreakProgress > 0) {
+                --this.blockBreakProgress;
+
+                if (blockBreakProgress == 0) {
+                    var pos = getPos().relative(getFrontFacing());
+                    var blockState = getLevel().getBlockState(pos);
+                    float hardness = blockState.getBlock().defaultDestroyTime();
+                    if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
+                        var drops = tryDestroyBlockAndGetDrops(pos);
+                        for (ItemStack drop : drops) {
+                            var remainder = tryFillCache(drop);
+                            if (!remainder.isEmpty()) {
+                                if (getOutputFacingItems() == null) {
+                                    Block.popResource(getLevel(), getPos(), remainder);
+                                } else {
+                                    Block.popResource(getLevel(), getPos().relative(getOutputFacingItems()), remainder);
+                                }
+                            }
+                        }
+                    }
+                    this.currentHardness = 0f;
+                }
+            }
 
             if (blockBreakProgress == 0) {
                 var pos = getPos().relative(getFrontFacing());
                 var blockState = getLevel().getBlockState(pos);
                 float hardness = blockState.getBlock().defaultDestroyTime();
-                if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
-                    var drops = tryDestroyBlockAndGetDrops(pos);
-                    for (ItemStack drop : drops) {
-                        var remainder = tryFillCache(drop);
-                        if (!remainder.isEmpty()) {
-                            if (getOutputFacingItems() == null) {
-                                Block.popResource(getLevel(), getPos(), remainder);
-                            } else {
-                                Block.popResource(getLevel(), getPos().relative(getOutputFacingItems()), remainder);
-                            }
-                        }
-                    }
+                boolean skipBlock = blockState.isAir();
+                if (hardness >= 0f && !skipBlock) {
+                    int ticksPerOneDurability = 5;
+                    int totalTicksPerBlock = (int) Math.ceil(ticksPerOneDurability * hardness);
+                    this.blockBreakProgress = (int) Math.ceil(totalTicksPerBlock * this.efficiencyMultiplier);
+                    this.currentHardness = hardness;
                 }
-                this.currentHardness = 0f;
             }
         }
-
-        if (blockBreakProgress == 0) {
-            var pos = getPos().relative(getFrontFacing());
-            var blockState = getLevel().getBlockState(pos);
-            float hardness = blockState.getBlock().defaultDestroyTime();
-            boolean skipBlock = blockState.isAir();
-            if (hardness >= 0f && !skipBlock) {
-                int ticksPerOneDurability = 5;
-                int totalTicksPerBlock = (int) Math.ceil(ticksPerOneDurability * hardness);
-                this.blockBreakProgress = (int) Math.ceil(totalTicksPerBlock * this.efficiencyMultiplier);
-                this.currentHardness = hardness;
-            }
-        }
-
-        updateBreakerSubscription();
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void clientTick() {
         super.clientTick();
-        if (blockBreakProgress > 0) {
+        if (blockBreakProgress > 0 && blockBreakProgress % 5 == 0) {
             var pos = getPos().relative(getFrontFacing());
             var blockState = getLevel().getBlockState(pos);
             getLevel().addDestroyBlockEffect(pos, blockState);
@@ -256,16 +253,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             return tryFillCache(cache.insertItemInternal(i, stack, false));
         }
         return stack;
-    }
-
-    public boolean drainEnergy(boolean simulate) {
-        long resultEnergy = energyContainer.getEnergyStored() - energyPerTick;
-        if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
-            if (!simulate)
-                energyContainer.removeEnergy(energyPerTick);
-            return true;
-        }
-        return false;
     }
 
     //////////////////////////////////////
@@ -337,9 +324,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine
         return super.isFacingValid(facing);
     }
 
+    @Override
     public void setWorkingEnabled(boolean workingEnabled) {
-        isWorkingEnabled = workingEnabled;
-        updateBreakerSubscription();
+        getWorkLogic().setWorkingEnabled(workingEnabled);
+        if (!workingEnabled) {
+            blockBreakProgress = 0;
+        }
     }
 
     //////////////////////////////////////
@@ -432,7 +422,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
                 }
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+            return isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;

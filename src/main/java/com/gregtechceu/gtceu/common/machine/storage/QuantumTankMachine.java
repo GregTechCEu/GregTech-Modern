@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
@@ -62,10 +63,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class QuantumTankMachine extends TieredMachine implements IAutoOutputFluid, IInteractedMachine, IControllable,
-                                IDropSaveMachine, IFancyUIMachine {
+public class QuantumTankMachine extends MetaMachine implements ITieredMachine, IAutoOutputFluid, IInteractedMachine,
+                                 IControllable, IDropSaveMachine, IFancyUIMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
+
+    @Getter
+    protected final int tier;
 
     @Getter
     @Persisted
@@ -101,7 +105,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected TickableSubscription autoOutputSubs;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
-        super(holder, tier);
+        super(holder);
+        this.tier = tier;
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
         this.cache = createCacheFluidHandler(args);

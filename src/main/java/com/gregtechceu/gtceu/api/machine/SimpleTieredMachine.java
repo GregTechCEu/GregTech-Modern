@@ -65,7 +65,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleTieredMachine extends WorkableTieredMachine
+public class SimpleTieredMachine extends RecipeTieredMachine
                                  implements IAutoOutputBoth, IFancyUIMachine, IHasCircuitSlot {
 
     @Persisted

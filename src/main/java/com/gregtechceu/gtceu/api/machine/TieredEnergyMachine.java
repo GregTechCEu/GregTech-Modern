@@ -17,11 +17,16 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.util.Mth;
 
+import lombok.Getter;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class TieredEnergyMachine extends TieredMachine implements ITieredMachine, IExplosionMachine {
+public class TieredEnergyMachine extends MetaMachine implements ITieredMachine, IExplosionMachine {
+
+    @Getter
+    protected final int tier;
 
     @Persisted
     @DescSynced
@@ -29,7 +34,8 @@ public class TieredEnergyMachine extends TieredMachine implements ITieredMachine
     protected TickableSubscription explosionSub;
 
     public TieredEnergyMachine(IMachineBlockEntity holder, int tier, Object... args) {
-        super(holder, tier);
+        super(holder);
+        this.tier = tier;
         energyContainer = createEnergyContainer(args);
     }
 

@@ -38,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SimpleGeneratorMachine extends WorkableTieredMachine
+public class SimpleGeneratorMachine extends RecipeTieredMachine
                                     implements IFancyUIMachine, IEnvironmentalHazardEmitter {
 
     @Getter

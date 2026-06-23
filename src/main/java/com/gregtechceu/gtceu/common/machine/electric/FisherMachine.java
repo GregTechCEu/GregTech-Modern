@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -13,12 +13,13 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
+import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -38,6 +39,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -71,8 +73,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FisherMachine extends TieredEnergyMachine
-                           implements IAutoOutputItem, IFancyUIMachine, IMachineLife, IWorkable {
+public class FisherMachine extends WorkableTieredMachine
+                           implements IAutoOutputItem, IFancyUIMachine, IMachineLife {
 
     @Getter
     @Persisted
@@ -97,7 +99,7 @@ public class FisherMachine extends TieredEnergyMachine
     @Persisted
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
-    protected TickableSubscription autoOutputSubs, batterySubs, fishingSubs;
+    protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, energySubs, baitSubs;
     private final long energyPerTick;
@@ -110,11 +112,6 @@ public class FisherMachine extends TieredEnergyMachine
     @Getter
     @Persisted
     private int progress = 0;
-
-    @Getter
-    @Persisted
-    @DescSynced
-    private boolean isWorkingEnabled = true;
 
     @Getter
     @Persisted
@@ -167,17 +164,18 @@ public class FisherMachine extends TieredEnergyMachine
         super.onLoad();
         if (isRemote()) return;
 
-        if (getLevel() instanceof ServerLevel serverLevel)
+        if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
+            serverLevel.getServer().tell(new TickTask(0, getWorkLogic()::updateTickSubscription));
+        }
 
         exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
         energySubs = energyContainer.addChangedListener(() -> {
             this.updateBatterySubscription();
-            this.updateFishingUpdateSubscription();
+            getWorkLogic().updateTickSubscription();
         });
-        baitSubs = baitHandler.addChangedListener(this::updateFishingUpdateSubscription);
+        baitSubs = baitHandler.addChangedListener(getWorkLogic()::updateTickSubscription);
         chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
-        this.updateFishingUpdateSubscription();
     }
 
     @Override
@@ -217,38 +215,50 @@ public class FisherMachine extends TieredEnergyMachine
     // ********* Logic **********//
     //////////////////////////////////////
 
-    public void updateFishingUpdateSubscription() {
-        if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING) && isWorkingEnabled) {
-            fishingSubs = subscribeServerTick(fishingSubs, this::fishingUpdate);
-            active = true;
-            return;
-        } else if (fishingSubs != null) {
-            fishingSubs.unsubscribe();
-            fishingSubs = null;
-            active = false;
-        }
-        progress = 0;
+    @Override
+    public boolean keepSubscribing() {
+        return false;
     }
 
-    private void updateHasWater() {
-        for (int x = 0; x < WATER_CHECK_SIZE; x++)
-            for (int z = 0; z < WATER_CHECK_SIZE; z++) {
-                BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
-                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
-                    hasWater = false;
-                    return;
-                }
-            }
-        hasWater = true;
+    @Override
+    public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
+        super.notifyWorkStatusChanged(oldStatus, newStatus);
+        active = newStatus == WorkLogic.Status.WORKING;
+        if (getRenderState().hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, active));
+        }
+    }
+
+    @Override
+    protected void serverRunningTick() {
+        if (!this.baitHandler.getStackInSlot(0).is(Items.STRING)) {
+            progress = 0;
+            setStatus(WorkLogic.Status.IDLE);
+        } else if (energyContainer.getEnergyStored() < energyPerTick ||
+                energyContainer.removeEnergy(energyPerTick) < energyPerTick) {
+            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
+        } else {
+            setStatus(WorkLogic.Status.WORKING);
+            fishingUpdate();
+        }
     }
 
     public void fishingUpdate() {
-        if (this.getOffsetTimer() % maxProgress == 0L)
-            updateHasWater();
+        if (this.getOffsetTimer() % maxProgress == 0L) {
+            for (int x = 0; x < WATER_CHECK_SIZE; x++)
+                for (int z = 0; z < WATER_CHECK_SIZE; z++) {
+                    BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+                    if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
+                        hasWater = false;
+                        return;
+                    }
+                }
+            hasWater = true;
+        }
 
         if (!hasWater) return;
 
-        drainEnergy(false);
         if (progress >= maxProgress) {
             LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
             if (!this.junkEnabled) {
@@ -280,7 +290,7 @@ public class FisherMachine extends TieredEnergyMachine
                 this.baitHandler.storage.extractItem(0, 1, false);
             else if (useBait)
                 this.baitHandler.storage.extractItem(0, 2, false);
-            updateFishingUpdateSubscription();
+            getWorkLogic().updateTickSubscription();
             progress = -1;
         }
         progress++;
@@ -362,18 +372,18 @@ public class FisherMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        super.onNeighborChanged(block, fromPos, isMoving);
-        updateAutoOutputSubscription();
+    public void setWorkingEnabled(boolean workingEnabled) {
+        getWorkLogic().setWorkingEnabled(workingEnabled);
+        if (!workingEnabled) {
+            progress = 0;
+        }
+        getWorkLogic().updateTickSubscription();
     }
 
     @Override
-    public void setWorkingEnabled(boolean workingEnabled) {
-        this.isWorkingEnabled = workingEnabled;
-        if (getRenderState().hasProperty(GTMachineModelProperties.IS_WORKING_ENABLED)) {
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_WORKING_ENABLED, workingEnabled));
-        }
-        updateFishingUpdateSubscription();
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
+        super.onNeighborChanged(block, fromPos, isMoving);
+        updateAutoOutputSubscription();
     }
 
     //////////////////////////////////////
@@ -505,7 +515,7 @@ public class FisherMachine extends TieredEnergyMachine
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-            return this.isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+            return isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
         return super.sideTips(player, pos, state, toolTypes, side);
     }

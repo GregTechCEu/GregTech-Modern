@@ -6,7 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -31,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CreativeEnergyContainerMachine extends TieredMachine implements ILaserContainer, IUIMachine {
+public class CreativeEnergyContainerMachine extends MetaMachine implements ITieredMachine, ILaserContainer, IUIMachine {
 
     @Persisted
     private long voltage = 0;
@@ -50,7 +51,12 @@ public class CreativeEnergyContainerMachine extends TieredMachine implements ILa
     private boolean doExplosion = false;
 
     public CreativeEnergyContainerMachine(IMachineBlockEntity holder) {
-        super(holder, GTValues.MAX);
+        super(holder);
+    }
+
+    @Override
+    public int getTier() {
+        return GTValues.MAX;
     }
 
     //////////////////////////////////////

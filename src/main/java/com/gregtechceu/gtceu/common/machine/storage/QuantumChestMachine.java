@@ -10,11 +10,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.TieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -65,8 +65,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class QuantumChestMachine extends TieredMachine implements IAutoOutputItem, IInteractedMachine, IControllable,
-                                 IDropSaveMachine, IFancyUIMachine {
+public class QuantumChestMachine extends MetaMachine implements ITieredMachine, IAutoOutputItem, IInteractedMachine,
+                                  IControllable, IDropSaveMachine, IFancyUIMachine {
 
     /**
      * Sourced from FunctionalStorage's
@@ -75,6 +75,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
      * ItemControllerDrawerTile</a>
      */
     public static final Object2LongOpenHashMap<UUID> INTERACTION_LOGGER = new Object2LongOpenHashMap<>();
+
+    @Getter
+    protected final int tier;
 
     @Getter
     @Persisted
@@ -109,7 +112,8 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     protected TickableSubscription autoOutputSubs;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, long maxAmount, Object... args) {
-        super(holder, tier);
+        super(holder);
+        this.tier = tier;
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxAmount = maxAmount;
         this.cache = createCacheItemHandler(args);

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.machine.RecipeTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Dummy machine used for searching recipes outside of a machine.
  */
-public class DummyRecipeLogicMachine extends WorkableTieredMachine implements IRecipeLogicMachine {
+public class DummyRecipeLogicMachine extends RecipeTieredMachine implements IRecipeLogicMachine {
 
     RecipeHandlerGroup recipeHandlerGroup;
 
