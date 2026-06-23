@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -12,7 +13,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super("cwu", 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
+        super(GTCEu.id("cwu"), 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
     }
 
     @Override

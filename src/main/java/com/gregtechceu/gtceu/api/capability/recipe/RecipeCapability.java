@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
@@ -35,19 +37,28 @@ public abstract class RecipeCapability<T> {
             RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
-    public final String name;
+    public final ResourceLocation id;
     public final int color;
     public final boolean doRenderSlot;
     public final int sortIndex;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
+    protected RecipeCapability(ResourceLocation id, int color, boolean doRenderSlot, int sortIndex,
                                IContentSerializer<T> serializer) {
-        this.name = name;
+        this.id = id;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
+    }
+
+    /**
+     * @deprecated Use {@link #RecipeCapability(ResourceLocation, int, boolean, int, IContentSerializer)}
+     */
+    @Deprecated(forRemoval = true, since = "8.0.0")
+    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
+                               IContentSerializer<T> serializer) {
+        this(GTCEu.id(name), color, doRenderSlot, sortIndex, serializer);
     }
 
     public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
@@ -92,15 +103,15 @@ public abstract class RecipeCapability<T> {
     }
 
     public String slotName(IO io) {
-        return "%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT));
+        return "%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT));
     }
 
     public String slotName(IO io, int index) {
-        return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
+        return "%s_%s_%s".formatted(id, io.name().toLowerCase(Locale.ROOT), index);
     }
 
     public MutableComponent getName() {
-        return Component.translatable("recipe.capability.%s.name".formatted(name));
+        return Component.translatable("recipe.capability.%s.name".formatted(id.getPath()));
     }
 
     public MutableComponent getColoredName() {
@@ -181,7 +192,7 @@ public abstract class RecipeCapability<T> {
 
     /**
      * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
-     * 
+     *
      * @param machine The machine to get traits from
      * @return A list containing the traits
      */
@@ -191,7 +202,7 @@ public abstract class RecipeCapability<T> {
 
     /**
      * Gets all {@link NotifiableRecipeHandlerTrait} traits with a specific IO that can handle this capability.
-     * 
+     *
      * @param machine The machine to get traits from
      * @param io      The handler IO of the traits
      * @return A list containing the traits
