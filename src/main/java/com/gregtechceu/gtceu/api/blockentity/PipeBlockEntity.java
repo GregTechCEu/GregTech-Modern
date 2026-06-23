@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -76,7 +77,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @RerenderOnChanged
     @SyncToClient
     @SaveField
-    @Getter
     private Material frameMaterial = GTMaterials.NULL;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
@@ -137,6 +137,16 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             connections = connections & (connections - 1);
         }
         return count;
+    }
+
+    @Override
+    public @NotNull Material getFrameMaterial() {
+        // backwards compat
+        // noinspection ConstantValue
+        if (frameMaterial == null) {
+            frameMaterial = GTMaterials.NULL;
+        }
+        return frameMaterial;
     }
 
     @Override
