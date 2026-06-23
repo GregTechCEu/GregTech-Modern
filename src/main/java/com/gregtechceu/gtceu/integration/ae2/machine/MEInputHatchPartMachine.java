@@ -6,15 +6,12 @@ import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidSlot;
+import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAESlot;
+import com.gregtechceu.gtceu.integration.ae2.utils.AEUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -22,11 +19,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.layout.Flow;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -119,17 +125,65 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
-        // ME Network status
-        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
 
-        // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidHandler));
+        registerConfigActions(syncManager);
 
-        return group;
+        var flow = Flow.col().coverChildren();
+
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
+        flow.child(new AEConfigWidget(aeFluidHandler, CONFIG_SIZE, false)
+                .syncManager(syncManager)
+                .size(8 * 18, 2 * (18 * 2 + 2)));
+
+        mainWidget.child(flow.center());
+    }
+
+    protected void registerConfigActions(PanelSyncManager syncManager) {
+        syncManager.registerServerSyncedAction("ae_config_set", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeFluidHandler.getInventory()[index];
+            var player = syncManager.getPlayer();
+            ItemStack held = player.containerMenu.getCarried();
+            FluidUtil.getFluidContained(held).ifPresent(fluid -> {
+                slot.setConfig(AEUtil.fromFluidStack(fluid));
+            });
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_clear", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            aeFluidHandler.getInventory()[index].setConfig(null);
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_amount", packet -> {
+            int index = packet.readVarInt();
+            long amount = packet.readVarLong();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            var slot = aeFluidHandler.getInventory()[index];
+            if (slot.getConfig() != null && amount > 0) {
+                slot.setConfig(ExportOnlyAESlot.copy(slot.getConfig(), amount));
+            }
+        });
+
+        syncManager.registerServerSyncedAction("ae_config_set_ghost", packet -> {
+            int index = packet.readVarInt();
+            if (index < 0 || index >= CONFIG_SIZE) return;
+            boolean isFluidGhost = packet.readBoolean();
+            if (isFluidGhost) {
+                FluidStack fluid = FluidStack.readFromPacket(packet);
+                if (!fluid.isEmpty()) {
+                    aeFluidHandler.getInventory()[index].setConfig(AEUtil.fromFluidStack(fluid));
+                }
+            }
+        });
     }
 
     ////////////////////////////////

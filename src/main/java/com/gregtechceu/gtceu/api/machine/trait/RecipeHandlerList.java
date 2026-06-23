@@ -188,7 +188,7 @@ public class RecipeHandlerList {
                     continue;
                 }
                 var left = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
-                if (left == null) {
+                if (left.isEmpty()) {
                     it.remove();
                     break;
                 } else {

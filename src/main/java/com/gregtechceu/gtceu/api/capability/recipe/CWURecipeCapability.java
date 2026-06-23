@@ -1,16 +1,10 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerInteger;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
-import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
 
@@ -19,7 +13,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super("cwu", 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
+        super(GTCEu.id("cwu"), 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
     }
 
     @Override
@@ -50,5 +44,15 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
                     LocalizationUtils.format("gtceu.recipe.total_computation",
                             FormattingUtil.formatNumbers(recipe.duration))));
         }
+    }
+  
+    public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableComputationContainer.TYPE);
+    }
+
+    @Override
+    public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
     }
 }
