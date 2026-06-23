@@ -20,7 +20,7 @@ public class ShapelessRecipeBuilder {
 
     private final NonNullList<Ingredient> ingredients = NonNullList.create();
     @Setter
-    protected String group = ""; // must be "" not null: 1.21.1's recipe codec wraps the group in Optional.of (NPEs on null)
+    protected String group = "";
     @Setter
     private CraftingBookCategory category = CraftingBookCategory.MISC;
 
