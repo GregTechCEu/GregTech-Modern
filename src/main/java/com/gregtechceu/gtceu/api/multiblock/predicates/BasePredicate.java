@@ -50,7 +50,8 @@ public abstract class BasePredicate {
         }
     };
 
-    protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator.comparingInt(BasePredicate::getPriority);
+    protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
+            .comparingInt(BasePredicate::getPriority);
     private @Nullable List<BlockInfo> candidates;
     private @Nullable List<Component> tooltips;
     @Getter
@@ -326,6 +327,7 @@ public abstract class BasePredicate {
     }
 
     public static class Custom extends BasePredicate {
+
         @Nullable
         private final String debugName;
         private final Predicate<PredicateContext> predicate;

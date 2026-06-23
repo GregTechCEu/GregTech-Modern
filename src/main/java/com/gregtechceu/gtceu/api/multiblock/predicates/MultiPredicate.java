@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -203,7 +203,9 @@ public class MultiPredicate extends BasePredicate {
     }
 
     protected enum Logic {
+
         OR {
+
             @Override
             protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
                 for (BasePredicate basePredicate : predicates) {
@@ -215,6 +217,7 @@ public class MultiPredicate extends BasePredicate {
             }
         },
         AND {
+
             @Override
             protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
                 return !OR.run(ctx, predicates);
@@ -222,6 +225,7 @@ public class MultiPredicate extends BasePredicate {
         },
         // unused
         XOR {
+
             @Override
             protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
                 return true;

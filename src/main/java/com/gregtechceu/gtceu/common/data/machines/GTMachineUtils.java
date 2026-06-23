@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -741,38 +740,20 @@ public class GTMachineUtils {
     }
 
     private static BasePredicate rotorHolder(int tier) {
-        return new BasePredicate() {
-
-            {
-                addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"));
-                addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
+        return Predicates.customPredicate("RotorHolder", ctx -> {
+            if (MetaMachine.getMachine(ctx.level(),
+                    ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&
+                    ctx.level().getBlockState(ctx.pos()
+                            .relative(rotorHolder.getFrontFacing()))
+                            .isAir()) {
+                return true;
             }
-
-            @Override
-            public boolean testInternal(@NotNull PredicateContext ctx) {
-                if (MetaMachine.getMachine(ctx.level(),
-                        ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&
-                        ctx.level().getBlockState(ctx.pos()
-                                .relative(rotorHolder.getFrontFacing()))
-                                .isAir()) {
-                    return true;
-                }
-                return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return PartAbility.ROTOR_HOLDER.getAllBlocks()
-                        .stream()
-                        .map(BlockInfo::fromBlock)
-                        .toList();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("RotorHolder");
-            }
-        };
+            return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
+        }, () -> PartAbility.ROTOR_HOLDER.getAllBlocks()
+                .stream()
+                .map(BlockInfo::fromBlock))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
     }
 
     // Tooltips

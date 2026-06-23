@@ -133,16 +133,16 @@ public class Predicates {
                                        Supplier<Stream<Block>> blocks,
                                        Supplier<Stream<Block>> candidates) {
         return customPredicate(debugName, ctx -> {
-                    var blockList = blocks.get().toList();
-                    for (var block : blockList) {
-                        if (ctx.state().is(block)) return true;
-                    }
-                    return ctx.error(new BlockMatchingError(ctx.pos(), blockList));
-                }, () -> candidates.get().map(BlockInfo::fromBlock), builder -> {
-                    StringJoiner joiner = new StringJoiner(", ");
-                    blocks.get().forEach(block -> joiner.add(blockToString(block)));
-                    builder.append(joiner);
-                });
+            var blockList = blocks.get().toList();
+            for (var block : blockList) {
+                if (ctx.state().is(block)) return true;
+            }
+            return ctx.error(new BlockMatchingError(ctx.pos(), blockList));
+        }, () -> candidates.get().map(BlockInfo::fromBlock), builder -> {
+            StringJoiner joiner = new StringJoiner(", ");
+            blocks.get().forEach(block -> joiner.add(blockToString(block)));
+            builder.append(joiner);
+        });
     }
 
     private static String blockToString(BlockState blockState) {
@@ -247,8 +247,8 @@ public class Predicates {
                     return false;
                 },
                 () -> Arrays.stream(abilities)
-                .flatMap(a -> a.getAllBlocks().stream())
-                .map(BlockInfo::fromBlock),
+                        .flatMap(a -> a.getAllBlocks().stream())
+                        .map(BlockInfo::fromBlock),
                 builder -> {
                     StringJoiner sb = new StringJoiner(", ");
                     for (PartAbility ability : abilities) {
@@ -264,7 +264,8 @@ public class Predicates {
             sb.add(GTValues.VN[tier]);
         }
         return customPredicate("Ability[" + sb + "]",
-                ctx -> ability.isApplicable(ctx.state().getBlock()) || ctx.error(new PartAbilityError(ctx.pos(), ability)),
+                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
+                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
                 () -> ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
