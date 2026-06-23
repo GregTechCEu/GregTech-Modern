@@ -14,7 +14,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Set;
 
-public class MaterialRegistry extends GTRegistry.RL<Material> {
+public class MaterialRegistry extends GTRegistry<Material> {
 
     @Getter
     private final Set<java.lang.String> usedNamespaces = new ObjectOpenHashSet<>();

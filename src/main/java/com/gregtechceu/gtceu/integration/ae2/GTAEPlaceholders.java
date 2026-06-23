@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -13,8 +14,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import appeng.api.networking.GridHelper;
 import appeng.api.networking.IGrid;
@@ -37,7 +41,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
+@SuppressWarnings("unused")
 public class GTAEPlaceholders {
+
+    private static final DeferredRegister<Placeholder> AE_PLACEHOLDERS = DeferredRegister
+            .create(GTRegistries.Keys.PLACEHOLDER, "gtceu");
 
     private GTAEPlaceholders() {}
 
@@ -47,7 +55,7 @@ public class GTAEPlaceholders {
         if (nodeHost != null) {
             IGridNode node = nodeHost.getGridNode(ctx.side());
             if (node != null) return node.getGrid();
-        } ;
+        }
         BlockEntity blockEntity = ctx.level().getBlockEntity(ctx.pos());
         if (blockEntity instanceof IGridConnectedBlockEntity gridMachine) {
             IGrid nullable = gridMachine.getMainNode().getGrid();
@@ -99,135 +107,152 @@ public class GTAEPlaceholders {
         return new Vector3i(tmp.getX(), tmp.getY(), tmp.getZ()).absolute();
     }
 
-    public static void init() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2itemCount") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, grid));
-                if (args.size() == 1)
-                    return MultiLineComponent.literal(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
-                if (GTStringUtils.equals(args.get(0), "filter")) {
-                    int slot = PlaceholderUtils.toInt(args.get(1));
-                    try {
-                        PlaceholderUtils.checkRange("slot index", 1, 8, slot);
-                        if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                        return MultiLineComponent.literal(countItems(
-                                ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), grid));
-                    } catch (NullPointerException e) {
-                        throw new MissingItemException("filter", slot);
-                    }
-                }
-                throw new InvalidArgsException();
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2fluidCount") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, grid));
-                if (args.size() == 1)
-                    return MultiLineComponent.literal(countFluids(GTStringUtils.componentsToString(args.get(0)), grid));
-                throw new WrongNumberOfArgsException(1, args.size());
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2power") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                PlaceholderUtils.checkArgs(args, 0);
-                return MultiLineComponent.literal(grid.getEnergyService().getStoredPower());
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2maxPower") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                PlaceholderUtils.checkArgs(args, 0);
-                return MultiLineComponent.literal(grid.getEnergyService().getMaxStoredPower());
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2powerUsage") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                PlaceholderUtils.checkArgs(args, 0);
-                return MultiLineComponent.literal(grid.getEnergyService().getAvgPowerUsage());
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2spatial") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                PlaceholderUtils.checkArgs(args, 1);
-                if (GTStringUtils.equals(args.get(0), "power")) {
-                    return MultiLineComponent.literal(grid.getSpatialService().requiredPower());
-                } else if (GTStringUtils.equals(args.get(0), "efficiency")) {
-                    return MultiLineComponent.literal(grid.getSpatialService().currentEfficiency());
-                } else if (GTStringUtils.equals(args.get(0), "sizeX")) {
-                    return MultiLineComponent.literal(getSpatialSize(grid).x);
-                } else if (GTStringUtils.equals(args.get(0), "sizeY")) {
-                    return MultiLineComponent.literal(getSpatialSize(grid).y);
-                } else if (GTStringUtils.equals(args.get(0), "sizeZ")) {
-                    return MultiLineComponent.literal(getSpatialSize(grid).z);
-                } else throw new InvalidArgsException();
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("ae2crafting") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                IGrid grid = getGrid(ctx);
-                PlaceholderUtils.checkArgs(args, 1, true);
-                ICraftingService crafting = grid.getCraftingService();
-                if (GTStringUtils.equals(args.get(0), "get")) {
-                    if (GTStringUtils.equals(args.get(1), "amount"))
-                        return MultiLineComponent.literal(crafting.getCpus().size());
-                    int index = PlaceholderUtils.toInt(args.get(1));
-                    int i = 0;
-                    for (ICraftingCPU cpu : crafting.getCpus()) {
-                        if (index - 1 == i) {
-                            CraftingJobStatus job = cpu.getJobStatus();
-                            if (GTStringUtils.equals(args.get(2), "storage"))
-                                return MultiLineComponent.literal(cpu.getAvailableStorage());
-                            else if (GTStringUtils.equals(args.get(2), "threads"))
-                                return MultiLineComponent.literal(cpu.getCoProcessors());
-                            else if (GTStringUtils.equals(args.get(2), "name"))
-                                return MultiLineComponent
-                                        .of(cpu.getName() == null ? Component.literal("Crafting CPU " + i) :
-                                                cpu.getName().copy());
-                            else if (GTStringUtils.equals(args.get(2), "selectionMode"))
-                                return MultiLineComponent.literal(cpu.getSelectionMode().name());
-                            else if (job == null) return MultiLineComponent.literal(0);
-                            else if (GTStringUtils.equals(args.get(2), "amount"))
-                                return MultiLineComponent.literal(job.crafting().amount());
-                            else if (GTStringUtils.equals(args.get(2), "item"))
-                                return MultiLineComponent.of(job.crafting().what().getDisplayName().copy());
-                            else if (GTStringUtils.equals(args.get(2), "progress"))
-                                return MultiLineComponent.literal(job.progress());
-                            else if (GTStringUtils.equals(args.get(2), "time"))
-                                return MultiLineComponent.literal(job.elapsedTimeNanos());
-                            else throw new InvalidArgsException();
-                        }
-                        i++;
-                    }
-                    throw new OutOfRangeException("cpu number", 1, crafting.getCpus().size(), index);
-                } // else if (GTStringUtils.equals(args.get(0), "request")) {} gonna implement that someday :)
-                throw new InvalidArgsException();
-            }
-        });
+    public static void init(IEventBus modBus) {
+        AE_PLACEHOLDERS.register(modBus);
     }
+
+    public static RegistryObject<Placeholder> AE2_ITEM_COUNT = AE_PLACEHOLDERS.register("ae2itemCount",
+            () -> new Placeholder("ae2itemCount") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    if (args.isEmpty()) return MultiLineComponent.literal(countItems((ItemFilter) null, grid));
+                    if (args.size() == 1)
+                        return MultiLineComponent
+                                .literal(countItems(GTStringUtils.componentsToString(args.get(0)), grid));
+                    if (GTStringUtils.equals(args.get(0), "filter")) {
+                        int slot = PlaceholderUtils.toInt(args.get(1));
+                        try {
+                            PlaceholderUtils.checkRange("slot index", 1, 8, slot);
+                            if (ctx.itemStackHandler() == null) throw new NotSupportedException();
+                            return MultiLineComponent.literal(countItems(
+                                    ItemFilter.loadFilter(ctx.itemStackHandler().getStackInSlot(slot - 1)), grid));
+                        } catch (NullPointerException e) {
+                            throw new MissingItemException("filter", slot);
+                        }
+                    }
+                    throw new InvalidArgsException();
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_FLUID_COUNT = AE_PLACEHOLDERS.register("ae2fluidCount",
+            () -> new Placeholder("ae2fluidCount") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    if (args.isEmpty()) return MultiLineComponent.literal(countFluids(null, grid));
+                    if (args.size() == 1)
+                        return MultiLineComponent
+                                .literal(countFluids(GTStringUtils.componentsToString(args.get(0)), grid));
+                    throw new WrongNumberOfArgsException(1, args.size());
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_POWER = AE_PLACEHOLDERS.register("ae2power",
+            () -> new Placeholder("ae2power") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    PlaceholderUtils.checkArgs(args, 0);
+                    return MultiLineComponent.literal(grid.getEnergyService().getStoredPower());
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_MAX_POWER = AE_PLACEHOLDERS.register("ae2maxPower",
+            () -> new Placeholder("ae2maxPower") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    PlaceholderUtils.checkArgs(args, 0);
+                    return MultiLineComponent.literal(grid.getEnergyService().getMaxStoredPower());
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_POWER_USAGE = AE_PLACEHOLDERS.register("ae2powerUsage",
+            () -> new Placeholder("ae2powerUsage") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    PlaceholderUtils.checkArgs(args, 0);
+                    return MultiLineComponent.literal(grid.getEnergyService().getAvgPowerUsage());
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_SPATIAL = AE_PLACEHOLDERS.register("ae2spatial",
+            () -> new Placeholder("ae2spatial") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    PlaceholderUtils.checkArgs(args, 1);
+                    if (GTStringUtils.equals(args.get(0), "power")) {
+                        return MultiLineComponent.literal(grid.getSpatialService().requiredPower());
+                    } else if (GTStringUtils.equals(args.get(0), "efficiency")) {
+                        return MultiLineComponent.literal(grid.getSpatialService().currentEfficiency());
+                    } else if (GTStringUtils.equals(args.get(0), "sizeX")) {
+                        return MultiLineComponent.literal(getSpatialSize(grid).x);
+                    } else if (GTStringUtils.equals(args.get(0), "sizeY")) {
+                        return MultiLineComponent.literal(getSpatialSize(grid).y);
+                    } else if (GTStringUtils.equals(args.get(0), "sizeZ")) {
+                        return MultiLineComponent.literal(getSpatialSize(grid).z);
+                    } else throw new InvalidArgsException();
+                }
+            });
+
+    public static RegistryObject<Placeholder> AE2_CRAFTING = AE_PLACEHOLDERS.register("ae2crafting",
+            () -> new Placeholder("ae2crafting") {
+
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    IGrid grid = getGrid(ctx);
+                    PlaceholderUtils.checkArgs(args, 1, true);
+                    ICraftingService crafting = grid.getCraftingService();
+                    if (GTStringUtils.equals(args.get(0), "get")) {
+                        if (GTStringUtils.equals(args.get(1), "amount"))
+                            return MultiLineComponent.literal(crafting.getCpus().size());
+                        int index = PlaceholderUtils.toInt(args.get(1));
+                        int i = 0;
+                        for (ICraftingCPU cpu : crafting.getCpus()) {
+                            if (index - 1 == i) {
+                                CraftingJobStatus job = cpu.getJobStatus();
+                                if (GTStringUtils.equals(args.get(2), "storage"))
+                                    return MultiLineComponent.literal(cpu.getAvailableStorage());
+                                else if (GTStringUtils.equals(args.get(2), "threads"))
+                                    return MultiLineComponent.literal(cpu.getCoProcessors());
+                                else if (GTStringUtils.equals(args.get(2), "name"))
+                                    return MultiLineComponent
+                                            .of(cpu.getName() == null ? Component.literal("Crafting CPU " + i) :
+                                                    cpu.getName().copy());
+                                else if (GTStringUtils.equals(args.get(2), "selectionMode"))
+                                    return MultiLineComponent.literal(cpu.getSelectionMode().name());
+                                else if (job == null) return MultiLineComponent.literal(0);
+                                else if (GTStringUtils.equals(args.get(2), "amount"))
+                                    return MultiLineComponent.literal(job.crafting().amount());
+                                else if (GTStringUtils.equals(args.get(2), "item"))
+                                    return MultiLineComponent.of(job.crafting().what().getDisplayName().copy());
+                                else if (GTStringUtils.equals(args.get(2), "progress"))
+                                    return MultiLineComponent.literal(job.progress());
+                                else if (GTStringUtils.equals(args.get(2), "time"))
+                                    return MultiLineComponent.literal(job.elapsedTimeNanos());
+                                else throw new InvalidArgsException();
+                            }
+                            i++;
+                        }
+                        throw new OutOfRangeException("cpu number", 1, crafting.getCpus().size(), index);
+                    } // else if (GTStringUtils.equals(args.get(0), "request")) {} gonna implement that someday :)
+                    throw new InvalidArgsException();
+                }
+            });
 }

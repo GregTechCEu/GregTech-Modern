@@ -76,7 +76,7 @@ public class GTRegistryInfo<K, V> {
         current = null;
     }
 
-    public static <K, V> GTRegistryInfo<K, V> add(GTRegistry<K, V> key, Class<?> baseClass) {
+    public static <V> GTRegistryInfo<ResourceLocation, V> add(GTRegistry<V> key, Class<?> baseClass) {
         ResourceLocation id = key.getRegistryName();
         var types = new GTRegistryInfo<>(id, key::registry, UtilsJS.cast(baseClass));
 

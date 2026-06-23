@@ -21,9 +21,8 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-
 import com.gregtechceu.gtceu.core.mixins.BuiltInRegistriesAccessor;
-import com.mojang.serialization.Lifecycle;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
@@ -45,6 +44,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.*;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.ApiStatus;
 
 @Mod.EventBusSubscriber(modid = "gtceu")
@@ -53,8 +53,10 @@ public final class GTRegistries {
     private GTRegistries() {}
 
     public static final class Keys {
-        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
 
+        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(
+                GTCEu.id("pattern_error_type"));
+        public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
     }
 
     // spotless:off
@@ -64,34 +66,34 @@ public final class GTRegistries {
     // spotless:off
 
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
-    public static final GTRegistry.RL<Element> ELEMENTS = new GTRegistry.RL<>(GTCEu.id("element"));
-    public static final GTRegistry.RL<TagPrefix> TAG_PREFIXES = new GTRegistry.RL<>(GTCEu.id("tag_prefix"));
-    public static final GTRegistry.RL<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry.RL<>(GTCEu.id("material_icon_set"));
+    public static final GTRegistry<Element> ELEMENTS = new GTRegistry<>(GTCEu.id("element"));
+    public static final GTRegistry<TagPrefix> TAG_PREFIXES = new GTRegistry<>(GTCEu.id("tag_prefix"));
+    public static final GTRegistry<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry<>(GTCEu.id("material_icon_set"));
 
     // Recipe related registries
 
-    public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
-    public static final GTRegistry.RL<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry.RL<>(GTCEu.id("recipe_category"));
-    public static final GTRegistry.RL<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry.RL<>(GTCEu.id("recipe_capability"));
-    public static final GTRegistry.RL<RecipeConditionType<?>> RECIPE_CONDITIONS = new GTRegistry.RL<>(GTCEu.id("recipe_condition"));
-    public static final GTRegistry.RL<ChanceLogic> CHANCE_LOGICS = new GTRegistry.RL<>(GTCEu.id("chance_logic"));
+    public static final GTRegistry<GTRecipeType> RECIPE_TYPES = new GTRegistry<>(GTCEu.id("recipe_type"));
+    public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry<>(GTCEu.id("recipe_category"));
+    public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry<>(GTCEu.id("recipe_capability"));
+    public static final GTRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = new GTRegistry<>(GTCEu.id("recipe_condition"));
+    public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = new GTRegistry<>(GTCEu.id("chance_logic"));
 
     // Worldgen related registries
 
-    public static final GTRegistry.RL<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_fluid"));
-    public static final GTRegistry.RL<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry.RL<>(GTCEu.id("bedrock_ore"));
-    public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
-    public static final GTRegistry.RL<IWorldGenLayer> WORLD_GEN_LAYERS = new GTRegistry.RL<>(GTCEu.id("world_gen_layer"));
+    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_fluid"));
+    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_ore"));
+    public static final GTRegistry<GTOreDefinition> ORE_VEINS = new GTRegistry<>(GTCEu.id("ore_vein"));
+    public static final GTRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = new GTRegistry<>(GTCEu.id("world_gen_layer"));
 
     // Other registries
 
-    public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
-    public static final GTRegistry.RL<MachineDefinition> MACHINES = new GTRegistry.RL<>(GTCEu.id("machine"));
-    public static final GTRegistry.RL<SoundEntry> SOUNDS = new GTRegistry.RL<>(GTCEu.id("sound"));
-    public static final GTRegistry.RL<DimensionMarker> DIMENSION_MARKERS = new GTRegistry.RL<>(GTCEu.id("dimension_marker"));
-    public static final GTRegistry.RL<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry.RL<>(GTCEu.id("medical_condition"));
-    public static final GTRegistry.RL<Placeholder> PLACEHOLDERS = new GTRegistry.RL<>(GTCEu.id("placeholder"));
+    public static final GTRegistry<CoverDefinition> COVERS = new GTRegistry<>(GTCEu.id("cover"));
+    public static final GTRegistry<MachineDefinition> MACHINES = new GTRegistry<>(GTCEu.id("machine"));
+    public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(GTCEu.id("sound"));
+    public static final GTRegistry<DimensionMarker> DIMENSION_MARKERS = new GTRegistry<>(GTCEu.id("dimension_marker"));
+    public static final GTRegistry<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry<>(GTCEu.id("medical_condition"));
 
+    public static final MappedRegistry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
     public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
 
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
@@ -136,13 +138,11 @@ public final class GTRegistries {
     }
 
     @SuppressWarnings("unchecked")
-    private static  <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
+    private static <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
         BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register(
-                (ResourceKey<WritableRegistry<?>>) (Object) key, registry, Lifecycle.stable()
-        );
+                (ResourceKey<WritableRegistry<?>>) (Object) key, registry, Lifecycle.stable());
         return registry;
     }
-
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     private static RegistryAccess FROZEN = BLANK;

@@ -19,12 +19,12 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
-public abstract class GTRegistry<K, V> implements Iterable<V> {
+public class GTRegistry<V> implements Iterable<V> {
 
-    public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
+    public static final Map<ResourceLocation, GTRegistry<?>> REGISTERED = new HashMap<>();
 
-    protected final Map<K, V> keyToValue;
-    protected final Map<V, K> valueToKey;
+    protected final Map<ResourceLocation, V> keyToValue;
+    protected final Map<V, ResourceLocation> valueToKey;
     @Getter
     protected final ResourceLocation registryName;
     @Getter
@@ -38,15 +38,15 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         REGISTERED.put(registryName, this);
     }
 
-    public boolean containsKey(K key) {
+    public boolean containsKey(ResourceLocation key) {
         return keyToValue.containsKey(key);
     }
 
     /**
-     * @deprecated use {@link #containsKey(Object)} (Object)} (Object)}
+     * @deprecated use {@link #containsKey(ResourceLocation)} (Object)} (Object)}
      */
     @Deprecated(since = "8.0.0")
-    public boolean containKey(K key) {
+    public boolean containKey(ResourceLocation key) {
         return containsKey(key);
     }
 
@@ -94,7 +94,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
                 container.getModId().equals("minecraft")); // check for minecraft modid in case of datagen or a mishap
     }
 
-    public <T extends V> T register(K key, T value) {
+    public <T extends V> T register(ResourceLocation key, T value) {
         if (keyToValue.containsKey(key)) {
             throw new IllegalStateException(
                     "[register] registry %s contains key %s already".formatted(registryName, key));
@@ -103,7 +103,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return registerOrOverride(key, value);
     }
 
-    public void remap(K oldKey, K newKey) {
+    public void remap(ResourceLocation oldKey, ResourceLocation newKey) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
@@ -121,7 +121,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     @Nullable
-    public <T extends V> T replace(K key, T value) {
+    public <T extends V> T replace(ResourceLocation key, T value) {
         if (!containsKey(key)) {
             GTCEu.LOGGER.warn("[replace] couldn't find key {} in registry {}", registryName, key);
         }
@@ -129,7 +129,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return registerOrOverride(key, value);
     }
 
-    public <T extends V> T registerOrOverride(K key, T value) {
+    public <T extends V> T registerOrOverride(ResourceLocation key, T value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
@@ -149,15 +149,15 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return Collections.unmodifiableMap(valueToKey).keySet();
     }
 
-    public @UnmodifiableView Set<K> keys() {
+    public @UnmodifiableView Set<ResourceLocation> keys() {
         return registry().keySet();
     }
 
-    public @UnmodifiableView Set<Map.Entry<K, V>> entries() {
+    public @UnmodifiableView Set<Map.Entry<ResourceLocation, V>> entries() {
         return registry().entrySet();
     }
 
-    public @UnmodifiableView Map<K, V> registry() {
+    public @UnmodifiableView Map<ResourceLocation, V> registry() {
         return Collections.unmodifiableMap(keyToValue);
     }
 
@@ -170,33 +170,48 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     @Nullable
-    public V get(K key) {
+    public V get(ResourceLocation key) {
         return keyToValue.get(key);
     }
 
-    public V getOrDefault(K key, V defaultValue) {
+    public V getOrDefault(ResourceLocation key, V defaultValue) {
         return keyToValue.getOrDefault(key, defaultValue);
     }
 
-    public K getKey(V value) {
+    public ResourceLocation getKey(V value) {
         return valueToKey.get(value);
     }
 
-    public K getOrDefaultKey(V value, K defaultKey) {
+    public ResourceLocation getOrDefaultKey(V value, ResourceLocation defaultKey) {
         return valueToKey.getOrDefault(value, defaultKey);
     }
 
-    public abstract void writeBuf(V value, FriendlyByteBuf buf);
+    public void writeBuf(V value, FriendlyByteBuf buf) {
+        buf.writeBoolean(containsValue(value));
+        if (containsValue(value)) {
+            buf.writeUtf(getKey(value).toString());
+        }
+    }
 
-    @Nullable
-    public abstract V readBuf(FriendlyByteBuf buf);
+    public V readBuf(FriendlyByteBuf buf) {
+        if (buf.readBoolean()) {
+            return get(new ResourceLocation(buf.readUtf()));
+        }
+        return null;
+    }
 
-    public abstract Tag saveToNBT(V value);
+    public Tag saveToNBT(V value) {
+        if (containsValue(value)) {
+            return StringTag.valueOf(getKey(value).toString());
+        }
+        return new CompoundTag();
+    }
 
-    @Nullable
-    public abstract V loadFromNBT(Tag tag);
+    public V loadFromNBT(Tag tag) {
+        return get(new ResourceLocation(tag.getAsString()));
+    }
 
-    public boolean remove(K name) {
+    public boolean remove(ResourceLocation name) {
         var value = keyToValue.remove(name);
         if (value != null) {
             valueToKey.remove(value);
@@ -205,54 +220,13 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return false;
     }
 
-    public abstract Codec<V> codec();
-
-    // ************************ Built-in Registry ************************//
-
-    public static class RL<V> extends GTRegistry<ResourceLocation, V> {
-
-        public RL(ResourceLocation registryName) {
-            super(registryName);
-        }
-
-        @Override
-        public void writeBuf(V value, FriendlyByteBuf buf) {
-            buf.writeBoolean(containsValue(value));
-            if (containsValue(value)) {
-                buf.writeUtf(getKey(value).toString());
-            }
-        }
-
-        @Override
-        public V readBuf(FriendlyByteBuf buf) {
-            if (buf.readBoolean()) {
-                return get(new ResourceLocation(buf.readUtf()));
-            }
-            return null;
-        }
-
-        @Override
-        public Tag saveToNBT(V value) {
-            if (containsValue(value)) {
-                return StringTag.valueOf(getKey(value).toString());
-            }
-            return new CompoundTag();
-        }
-
-        @Override
-        public V loadFromNBT(Tag tag) {
-            return get(new ResourceLocation(tag.getAsString()));
-        }
-
-        @Override
-        public Codec<V> codec() {
-            return ResourceLocation.CODEC.flatXmap(
-                    key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
-                    val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
-                            .orElseGet(() -> DataResult.error(
-                                    () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
-        }
+    public Codec<V> codec() {
+        return ResourceLocation.CODEC.flatXmap(
+                key -> Optional.ofNullable(this.get(key)).map(DataResult::success)
+                        .orElseGet(() -> DataResult.error(
+                                () -> "Unknown registry key in %s: %s".formatted(this.registryName, key))),
+                val -> Optional.ofNullable(this.getKey(val)).map(DataResult::success)
+                        .orElseGet(() -> DataResult.error(
+                                () -> "Unknown registry value in %s: %s".formatted(this.registryName, val))));
     }
 }

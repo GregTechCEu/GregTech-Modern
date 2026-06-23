@@ -4,7 +4,11 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.cctweaked.peripherals.*;
+
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.ForgeComputerCraftAPI;
@@ -27,8 +31,10 @@ public class CCTweakedPlugin {
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_COVERABLE);
     }
 
-    public static void initPlaceholders() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("bufferText") {
+    public static void initPlaceholders(IEventBus modBus) {
+        var register = DeferredRegister.create(GTRegistries.Keys.PLACEHOLDER, "gtceu");
+        register.register(modBus);
+        register.register("bufferText", () -> new Placeholder("bufferText") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,

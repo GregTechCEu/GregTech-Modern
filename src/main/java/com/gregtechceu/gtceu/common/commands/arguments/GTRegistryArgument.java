@@ -28,7 +28,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class GTRegistryArgument<K, V> implements ArgumentType<V> {
+public class GTRegistryArgument<V> implements ArgumentType<V> {
 
     private static final SimpleCommandExceptionType ERROR_INVALID = new SimpleCommandExceptionType(
             Component.translatable("argument.id.invalid"));
@@ -36,39 +36,25 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
     private static final Collection<String> EXAMPLES = Arrays.asList("gtceu:iron_vein", "gtceu:pitchblende_vein_end",
             "gtceu:lava_deposit");
 
-    private final GTRegistry<K, V> registry;
-    private final Class<K> keyClass;
+    private final GTRegistry<V> registry;
 
-    public GTRegistryArgument(GTRegistry<K, V> registry, Class<K> keyClass) {
+    public GTRegistryArgument(GTRegistry<V> registry) {
         this.registry = registry;
-        this.keyClass = keyClass;
     }
 
-    public static <K, V> GTRegistryArgument<K, V> registry(GTRegistry<K, V> registry, Class<K> keyClass) {
-        return new GTRegistryArgument<>(registry, keyClass);
+    public static <V> GTRegistryArgument<V> registry(GTRegistry<V> registry) {
+        return new GTRegistryArgument<>(registry);
     }
 
     @SuppressWarnings("unchecked")
     public V parse(StringReader reader) throws CommandSyntaxException {
         String id = readId(reader);
-        if (ResourceLocation.class.isAssignableFrom(keyClass)) {
-            K loc = (K) new ResourceLocation(id);
-            if (!registry.containsKey(loc)) {
-                throw new SimpleCommandExceptionType(new LiteralMessage("Failed to find object" + id + " in registry"))
-                        .createWithContext(reader);
-            }
-
-            return registry.get(loc);
-        } else if (String.class.isAssignableFrom(keyClass)) {
-            K loc = (K) id;
-            if (!registry.containsKey(loc)) {
-                throw new SimpleCommandExceptionType(Component.literal("Failed to find object " + id + " in registry"))
-                        .createWithContext(reader);
-            }
-            return registry.get(loc);
+        var loc = new ResourceLocation(id);
+        if (!registry.containsKey(loc)) {
+            throw new SimpleCommandExceptionType(new LiteralMessage("Failed to find object" + id + " in registry"))
+                    .createWithContext(reader);
         }
-        throw new SimpleCommandExceptionType(Component.literal("Invalid key class! this should never happen!"))
-                .createWithContext(reader);
+        return registry.get(loc);
     }
 
     public static String readId(StringReader reader) throws CommandSyntaxException {
@@ -123,51 +109,44 @@ public class GTRegistryArgument<K, V> implements ArgumentType<V> {
     }
 
     @MethodsReturnNonnullByDefault
-    public static class Info<K, V>
+    public static class Info<V>
                             implements
-                            ArgumentTypeInfo<GTRegistryArgument<K, V>, GTRegistryArgument.Info<K, V>.Template> {
+                            ArgumentTypeInfo<GTRegistryArgument<V>, GTRegistryArgument.Info<V>.Template> {
 
-        public void serializeToNetwork(GTRegistryArgument.Info<K, V>.Template template, FriendlyByteBuf buffer) {
+        public void serializeToNetwork(GTRegistryArgument.Info<V>.Template template, FriendlyByteBuf buffer) {
             buffer.writeResourceLocation(template.registryKey.getRegistryName());
-            buffer.writeBoolean(ResourceLocation.class.isAssignableFrom(template.keyClass));
         }
 
         @SuppressWarnings("unchecked")
-        public GTRegistryArgument.Info<K, V>.Template deserializeFromNetwork(FriendlyByteBuf buffer) {
+        public GTRegistryArgument.Info<V>.Template deserializeFromNetwork(FriendlyByteBuf buffer) {
             ResourceLocation resourceLocation = buffer.readResourceLocation();
-            Class<K> keyClass = (Class<K>) String.class;
-            if (buffer.readBoolean()) {
-                keyClass = (Class<K>) ResourceLocation.class;
-            }
             // noinspection unchecked
-            return new GTRegistryArgument.Info<K, V>.Template(
-                    (GTRegistry<K, V>) GTRegistry.REGISTERED.get(resourceLocation), keyClass);
+            return new GTRegistryArgument.Info<V>.Template(
+                    (GTRegistry<V>) GTRegistry.REGISTERED.get(resourceLocation));
         }
 
-        public void serializeToJson(GTRegistryArgument.Info<K, V>.Template template, JsonObject json) {
+        public void serializeToJson(GTRegistryArgument.Info<V>.Template template, JsonObject json) {
             json.addProperty("registry", template.registryKey.getRegistryName().toString());
         }
 
-        public GTRegistryArgument.Info<K, V>.Template unpack(GTRegistryArgument<K, V> argument) {
-            return new GTRegistryArgument.Info<K, V>.Template(argument.registry, argument.keyClass);
+        public GTRegistryArgument.Info<V>.Template unpack(GTRegistryArgument<V> argument) {
+            return new GTRegistryArgument.Info<V>.Template(argument.registry);
         }
 
-        public final class Template implements ArgumentTypeInfo.Template<GTRegistryArgument<K, V>> {
+        public final class Template implements ArgumentTypeInfo.Template<GTRegistryArgument<V>> {
 
-            final GTRegistry<K, V> registryKey;
-            final Class<K> keyClass;
+            final GTRegistry<V> registryKey;
 
-            Template(GTRegistry<K, V> registryKey, Class<K> keyClass) {
+            Template(GTRegistry<V> registryKey) {
                 this.registryKey = registryKey;
-                this.keyClass = keyClass;
             }
 
-            public GTRegistryArgument<K, V> instantiate(@NotNull CommandBuildContext context) {
-                return new GTRegistryArgument<>(this.registryKey, keyClass);
+            public GTRegistryArgument<V> instantiate(@NotNull CommandBuildContext context) {
+                return new GTRegistryArgument<>(this.registryKey);
             }
 
             @Override
-            public ArgumentTypeInfo<GTRegistryArgument<K, V>, ?> type() {
+            public ArgumentTypeInfo<GTRegistryArgument<V>, ?> type() {
                 return GTRegistryArgument.Info.this;
             }
         }

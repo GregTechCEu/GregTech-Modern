@@ -51,31 +51,17 @@ public class GTCEuAPI {
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
     }
 
-    public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
+    public static class RegisterEvent<V> extends GenericEvent<V> implements IModBusEvent {
 
-        private final GTRegistry<K, V> registry;
+        private final GTRegistry<V> registry;
 
-        public RegisterEvent(GTRegistry<K, V> registry, Class<V> clazz) {
+        public RegisterEvent(GTRegistry<V> registry, Class<V> clazz) {
             super(clazz);
             this.registry = registry;
         }
 
-        public void register(K key, V value) {
+        public void register(ResourceLocation key, V value) {
             if (registry != null) registry.register(key, value);
-        }
-
-        public static class RL<V> extends RegisterEvent<ResourceLocation, V> {
-
-            public RL(GTRegistry<ResourceLocation, V> registry, Class<V> clazz) {
-                super(registry, clazz);
-            }
-        }
-
-        public static class String<V> extends RegisterEvent<java.lang.String, V> {
-
-            public String(GTRegistry<java.lang.String, V> registry, Class<V> clazz) {
-                super(registry, clazz);
-            }
         }
     }
 }
