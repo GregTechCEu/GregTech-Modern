@@ -1,22 +1,22 @@
 {
-  "variants": {
-    "bloom=false,inverted=false,powered=true": {
-      "model": "gtceu:block/cyan_lamp_on"
-    },
-    "bloom=false,inverted=true,powered=false": {
-      "model": "gtceu:block/cyan_lamp_on"
-    },
-    "bloom=true,inverted=false,powered=true": {
-      "model": "gtceu:block/cyan_lamp_bloom"
-    },
-    "bloom=true,inverted=true,powered=false": {
-      "model": "gtceu:block/cyan_lamp_bloom"
-    },
-    "inverted=false,powered=false": {
-      "model": "gtceu:block/cyan_lamp_off"
-    },
-    "inverted=true,powered=true": {
-      "model": "gtceu:block/cyan_lamp_off"
+    "variants": {
+        "bloom=false,inverted=false,powered=true": {
+            "model": "gtceu:block/cyan_lamp_on"
+        },
+        "bloom=false,inverted=true,powered=false": {
+            "model": "gtceu:block/cyan_lamp_on"
+        },
+        "bloom=true,inverted=false,powered=true": {
+            "model": "gtceu:block/cyan_lamp_bloom"
+        },
+        "bloom=true,inverted=true,powered=false": {
+            "model": "gtceu:block/cyan_lamp_bloom"
+        },
+        "inverted=false,powered=false": {
+            "model": "gtceu:block/cyan_lamp_off"
+        },
+        "inverted=true,powered=true": {
+            "model": "gtceu:block/cyan_lamp_off"
+        }
     }
-  }
 }
