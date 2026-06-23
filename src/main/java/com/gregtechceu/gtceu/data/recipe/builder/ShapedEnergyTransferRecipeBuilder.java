@@ -34,7 +34,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     @Setter
     protected ResourceLocation id;
     @Setter
-    protected String group;
+    protected String group = "";
     @Setter
     private CraftingBookCategory category = CraftingBookCategory.MISC;
     @Setter
