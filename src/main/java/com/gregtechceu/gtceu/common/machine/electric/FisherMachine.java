@@ -5,34 +5,25 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.Position;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.FishingHook;
@@ -46,18 +37,30 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.progress.ProgressDrawable;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.ProgressWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FisherMachine extends TieredEnergyMachine
-                           implements IFancyUIMachine, IWorkable {
+                           implements IMuiMachine, IWorkable {
 
     @SaveField
     protected final NotifiableItemStackHandler cache;
@@ -282,111 +285,43 @@ public class FisherMachine extends TieredEnergyMachine
     // ********** GUI ***********//
     //////////////////////////////////////
 
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-                var template = createTemplate(inventorySize).createDefault();
-                var energyBar = createEnergyBar().createDefault();
-                var batterySlot = createBatterySlot().createDefault();
-                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-                batterySlot.setSelfPosition(
-                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-                energyGroup.addWidget(energyBar);
-                energyGroup.addWidget(batterySlot);
-                var group = new WidgetGroup(0, 0,
-                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-                var size = group.getSize();
-                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-
-                template.setSelfPosition(new Position(
-                        (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                                energyGroup.getSize().width + 2,
-                        (size.height - template.getSize().height) / 2));
-
-                group.addWidget(energyGroup);
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof FisherMachine fisherMachine) {
-                    createTemplate(inventorySize).setupUI(template, fisherMachine);
-                    createEnergyBar().setupUI(template, fisherMachine);
-                    createBatterySlot().setupUI(template, fisherMachine);
-                    createJunkButton().setupUI(template, fisherMachine);
-                }
-            }));
-
-    protected static EditableUI<SlotWidget, FisherMachine> createBatterySlot() {
-        return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
-            var slotWidget = new SlotWidget();
-            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.CHARGER_OVERLAY);
-            return slotWidget;
-        }, (slotWidget, machine) -> {
-            slotWidget.setHandlerSlot(machine.chargerInventory, 0);
-            slotWidget.setCanPutItems(true);
-            slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
+    @Override
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        return MachineUIPanelBuilder.panelBuilder(this)
+                .rightConfigurators(configuratorFlow -> configuratorFlow
+                        .child(new ToggleButton()
+                                .value(new BoolValue.Dynamic(this::isJunkEnabled, this::setJunkEnabled))
+                                .overlay(new ItemDrawable(Items.NAME_TAG))
+                                .tooltipAutoUpdate(true)
+                                .tooltipBuilder((r) -> {
+                                    var lines = LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
+                                            GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
+                                    for (var line : lines) {
+                                        r.addLine(line);
+                                    }
+                                })));
     }
 
-    protected static EditableUI<ToggleButtonWidget, FisherMachine> createJunkButton() {
-        return new EditableUI<>("junk_button", ToggleButtonWidget.class, () -> {
-            var toggleButtonWidget = new ToggleButtonWidget(10, 20, 18, 18,
-                    new ItemStackTexture(Items.NAME_TAG).scale(0.9F), () -> false, b -> {});
-            toggleButtonWidget.setShouldUseBaseBackground();
-            return toggleButtonWidget;
-        }, (toggleButtonWidget, machine) -> {
-            toggleButtonWidget.setSupplier(machine::isJunkEnabled);
-            toggleButtonWidget.setOnPressCallback((data, bool) -> machine.setJunkEnabled(bool));
-            toggleButtonWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
-                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
-        });
-    }
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int) Math.sqrt(cache.getSize()), true, 'i');
 
-    protected static EditableUI<WidgetGroup, FisherMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
-            int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 20, rowSize * 18 + 8);
+        DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
+                () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
 
-            for (int y = 0; y < rowSize; y++) {
-                for (int x = 0; x < rowSize; x++) {
-                    int index = y * rowSize + x;
-                    SlotWidget slotWidget = new SlotWidget();
-                    slotWidget.initTemplate();
-                    slotWidget.setSelfPosition(new Position(24 + x * 18, 4 + y * 18));
-                    slotWidget.setBackground(GuiTextures.SLOT);
-                    slotWidget.setId("slot_" + index);
-                    main.addWidget(slotWidget);
-                }
-            }
-
-            SlotWidget baitSlotWidget = new SlotWidget();
-            baitSlotWidget.initTemplate();
-            baitSlotWidget
-                    .setSelfPosition(new Position(4, (main.getSize().height - baitSlotWidget.getSize().height) / 2));
-            baitSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.STRING_SLOT_OVERLAY);
-            baitSlotWidget.setId("bait_slot");
-            main.addWidget(baitSlotWidget);
-            var junkButton = createJunkButton().createDefault();
-            junkButton.setSelfPosition(new Position(4, (main.getSize().height - junkButton.getSize().height) - 4));
-            junkButton.setId("junk_button");
-            main.addWidget(junkButton);
-            main.setBackground(GuiTextures.BACKGROUND_INVERSE);
-            return main;
-        }, (group, machine) -> {
-            WidgetUtils.widgetByIdForEach(group, "^slot_[0-9]+$", SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < machine.cache.getSlots()) {
-                    slot.setHandlerSlot(machine.cache, index);
-                    slot.setCanTakeItems(true);
-                    slot.setCanPutItems(false);
-                }
-            });
-            WidgetUtils.widgetByIdForEach(group, "^bait_slot$", SlotWidget.class, slot -> {
-                slot.setHandlerSlot(machine.baitHandler.storage, 0);
-                slot.setCanTakeItems(true);
-                slot.setCanPutItems(true);
-            });
-        });
+        mainWidget.child(Flow.row()
+                .coverChildren()
+                .center()
+                .margin(0, 15)
+                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
+                .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
+                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
+                .child(new ProgressWidget()
+                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
+                        .value(progressPercent))
+                .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                        "output_item_inv", cache.getSize(), 'i',
+                        syncManager, outputItemGrid).marginLeft(2)));
     }
 }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -62,7 +63,7 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
             for (Content content : value) {
                 array.add((isOutput ? pair.getSecond() : pair.getFirst()).write(recipe, content));
             }
-            json.add(key.name, array);
+            json.add(key.id.toString(), array);
         });
         return json;
     }
@@ -73,9 +74,10 @@ public record CapabilityMapComponent(boolean isOutput) implements RecipeComponen
         CapabilityMap map = new CapabilityMap();
         if (from instanceof JsonObject json) {
             for (String key : json.keySet()) {
-                if (GTRegistries.RECIPE_CAPABILITIES.containKey(key) &&
-                        GTRegistries.RECIPE_CAPABILITIES.get(key) != null) {
-                    RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(key);
+                var id = GTCEu.id(key);
+                if (GTRegistries.RECIPE_CAPABILITIES.containsKey(id) &&
+                        GTRegistries.RECIPE_CAPABILITIES.get(id) != null) {
+                    RecipeCapability<?> cap = GTRegistries.RECIPE_CAPABILITIES.get(id);
                     var pair = GTRecipeComponents.VALID_CAPS.get(cap);
                     Set<Content> result = new ObjectLinkedOpenHashSet<>();
                     JsonArray value = GsonHelper.getAsJsonArray(json, key, new JsonArray());
