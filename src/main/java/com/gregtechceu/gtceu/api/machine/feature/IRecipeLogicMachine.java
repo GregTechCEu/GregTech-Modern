@@ -133,6 +133,14 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         return -1;
     }
 
+    /**
+     * Max output EU/t of a generator
+     * is negative when it is not a generator
+     */
+    default long getDisplayGeneratorPower() {
+        return -1;
+    }
+
     //////////////////////////////////////
     // ******* IWorkable ********//
     //////////////////////////////////////
