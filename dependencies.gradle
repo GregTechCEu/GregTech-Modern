@@ -60,6 +60,9 @@ dependencies {
     compileOnly(forge.journeymap.api)
     compileOnly(forge.journeymap.forge)
 
+    compileOnly(forge.curios)
+    localRuntime(forge.curios)
+
     // GameStages
     // compileOnly(forge.gamestages)
 

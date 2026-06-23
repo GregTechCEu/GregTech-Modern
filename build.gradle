@@ -71,6 +71,17 @@ configurations {
     }
 }
 
+// Force JEI to the catalog version everywhere. Some runtime mods (e.g. Create) bundle an
+// older JEI transitively, which gets loaded at runtime and fails the optional-dependency
+// version range requested by gtceu/kubejs. Forcing keeps a single, new-enough JEI.
+configurations.all {
+    resolutionStrategy {
+        force forge.jei.common.api.get()
+        force forge.jei.neoforge.api.get()
+        force forge.jei.neoforge.impl.get()
+    }
+}
+
 apply from: "$rootDir/gradle/scripts/jars.gradle"
 apply from: "$rootDir/gradle/scripts/moddevgradle.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
