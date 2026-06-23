@@ -198,7 +198,7 @@ public abstract class RecipeCapability<T> {
     public boolean skipEmptyContentCheck() {
         return false;
     }
-  
+
     /**
      * Gets all {@link NotifiableRecipeHandlerTrait} traits that can handle this capability.
      *

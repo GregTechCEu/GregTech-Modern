@@ -31,21 +31,6 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
         return true;
     }
 
-    @Override
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Content> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {
-        if (perTick) {
-            int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
-                    LocalizationUtils.format("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu))));
-        }
-        if (recipe.data.getBoolean("duration_is_total_cwu")) {
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
-                    LocalizationUtils.format("gtceu.recipe.total_computation",
-                            FormattingUtil.formatNumbers(recipe.duration))));
-        }
-    }
-  
     public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
         return machine.getTraits(NotifiableComputationContainer.TYPE);
     }
