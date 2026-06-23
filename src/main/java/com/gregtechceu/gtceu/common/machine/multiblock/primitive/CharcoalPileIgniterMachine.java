@@ -4,14 +4,15 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
@@ -29,15 +30,17 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implements IWorkable {
 
@@ -47,8 +50,8 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     private static final int MAX_RADIUS = 5;
     private final Collection<BlockPos> logPos = new ObjectOpenHashSet<>();
 
-    private final IntList bounds = new IntArrayList(
-            new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
+    private List<Integer> bounds = new ArrayList<>(
+            List.of(0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS));
     private int maxTime = 0;
     private boolean hasAir = false;
 
@@ -70,6 +73,27 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         this.getRecipeLogic().setDuration(Math.max(1, (int) Math.sqrt(logPos.size() * 240_000)));
     }
 
+    public static ExpandablePattern.BoundsProvider boundsFunction() {
+        return (level, controllerPos, front, up) -> {
+
+            BlockPos down = controllerPos.mutable().move(Direction.DOWN);
+            Direction back = front.getOpposite();
+            Direction left = front.getCounterClockWise();
+            Direction right = left.getOpposite();
+
+            int l = findWallPos(level, left, down.mutable());
+            int r = findWallPos(level, right, down.mutable());
+            int b = findWallPos(level, back, down.mutable());
+            int f = findWallPos(level, front, down.mutable());
+            int d = findFloorPos(level, up.getOpposite(), controllerPos.mutable());
+
+            if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
+                return new IntArrayList(new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
+            }
+            return new IntArrayList(new int[] { 0, d, l, r, f, b });
+        };
+    }
+
     @Override
     public CharcoalRecipeLogic getRecipeLogic() {
         return (CharcoalRecipeLogic) super.getRecipeLogic();
@@ -88,54 +112,45 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {}
 
-    @Override
-    public PatternState checkStructurePattern(String name) {
-        getDefaultStructurePattern();
-        return super.checkStructurePattern(name);
+    public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
+        return (definition) -> {
+
+            var floor = Predicates.blocks(Blocks.BRICKS);
+            var logs = PatternPredicate.AIR.or(logPredicate());
+            var walls = wallPredicate();
+
+            return ExpandableMultiblockPatternBuilder
+                    .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
+                    .boundsProvider(boundsFunction())
+                    .constraintProvider(() -> List.of(IntIntPair.of(0, 0), IntIntPair.of(MIN_DEPTH, MAX_DEPTH),
+                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS),
+                            IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
+                    .predicateProvider((bp, b) -> {
+                        if (bp.equals(BlockPos.ZERO))
+                            return Predicates.controller(definition);
+
+                        int intersects = 0;
+                        boolean topAisle = bp.getX() == b.get(0);
+                        boolean bottomAisle = bp.getX() == -b.get(1);
+
+                        if (topAisle || bottomAisle) intersects++;
+
+                        if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
+                        if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
+
+                        if (intersects >= 2) return PatternPredicate.ANY;
+
+                        if (intersects == 1) {
+                            if (bottomAisle) return floor;
+                            return walls;
+                        }
+                        return logs;
+                    })
+                    .build();
+        };
     }
 
-    @Override
-    public IBlockPattern getDefaultStructurePattern() {
-        var floor = Predicates.blocks(Blocks.BRICKS);
-        var logs = PatternPredicate.AIR.or(logPredicate());
-        var walls = wallPredicate();
-
-        updateDimensions();
-
-        return ExpandableMultiblockPatternBuilder
-                .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
-                .boundsProvider((l, b, f, u) -> bounds)
-                .predicateProvider((bp, b) -> {
-                    if (bp.equals(BlockPos.ZERO))
-                        return Predicates.controller(Predicates.blocks(getDefinition().getBlock()));
-
-                    int intersects = 0;
-
-                    // aisle dir is up, so its bounds[0] and bounds[1]
-                    // DOWN is negative
-                    boolean topAisle = bp.getX() == b.get(0);
-                    boolean bottomAisle = bp.getX() == -b.get(1);
-
-                    if (topAisle || bottomAisle) intersects++;
-
-                    // negative signs for the LEFT and BACK ordinals
-                    // string dir is right, so its bounds[2] and bounds[3]
-                    if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
-                    // char dir is front, so its bounds[4] and bounds[5]
-                    if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
-
-                    if (intersects >= 2) return PatternPredicate.ANY;
-
-                    if (intersects == 1) {
-                        if (bottomAisle) return floor;
-                        return walls;
-                    }
-                    return logs;
-                })
-                .build();
-    }
-
-    private PatternPredicate wallPredicate() {
+    private static PatternPredicate wallPredicate() {
         return new PatternPredicate("Wall Blocks",
                 multiblockState -> {
                     BlockPos p = multiblockState.getBlockPos();
@@ -145,55 +160,27 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                 }, null);
     }
 
-    private PatternPredicate logPredicate() {
+    private static PatternPredicate logPredicate() {
         return new PatternPredicate(multiblockState -> {
             boolean match = multiblockState.getBlockState().is(BlockTags.LOGS_THAT_BURN);
             return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));
         }, null);
     }
 
-    public void updateDimensions() {
-        Level level = getLevel();
-        if (level == null) return;
-        Direction front = getFrontFacing();
-        Direction back = front.getOpposite();
-        Direction left = RelativeDirection.LEFT.getRelativeFacing(front, getUpwardsFacing(), false);
-        Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, getUpwardsFacing(), false);
-
-        BlockPos down = getBlockPos().relative(Direction.DOWN);
-        int l = findWallPos(left, down.mutable());
-        int r = findWallPos(right, down.mutable());
-        int b = findWallPos(back, down.mutable());
-        int f = findWallPos(front, down.mutable());
-        int d = findFloorPos(getBlockPos().mutable());
-
-        if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            invalidateStructure();
-            return;
-        }
-        bounds.clear();
-        bounds.add(0);
-        bounds.add(d);
-        bounds.add(l);
-        bounds.add(r);
-        bounds.add(f);
-        bounds.add(b);
-    }
-
-    private int findWallPos(Direction direction, BlockPos.MutableBlockPos bp) {
+    private static int findWallPos(Level level, Direction direction, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_RADIUS; i++) {
-            var block = getLevel().getBlockState(bp.move(direction));
-            if (block.is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)) {
+            BlockState state = level.getBlockState(pos.move(direction));
+            if (state.is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS)) {
                 return i;
             }
         }
         return -1;
     }
 
-    private int findFloorPos(BlockPos.MutableBlockPos bp) {
+    private static int findFloorPos(Level level, Direction dir, BlockPos.MutableBlockPos pos) {
         for (int i = 1; i <= MAX_DEPTH; i++) {
-            var block = getLevel().getBlockState(bp.move(Direction.DOWN));
-            if (block.is(Blocks.BRICKS)) {
+            BlockState state = level.getBlockState(pos.move(dir));
+            if (state.is(Blocks.BRICKS)) {
                 return i;
             }
         }
