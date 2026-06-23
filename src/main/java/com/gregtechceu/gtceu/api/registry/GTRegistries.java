@@ -22,9 +22,13 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
+import com.gregtechceu.gtceu.core.mixins.BuiltInRegistriesAccessor;
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -37,12 +41,13 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.common.loot.IGlobalLootModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.*;
 
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
+@Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
 
     // spotless:off
@@ -88,6 +93,8 @@ public final class GTRegistries {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
 
+    public static final Registry<Placeholder> TEST_REGISTRY = simple(ResourceKey.createRegistryKey(GTCEu.id("test")));
+
     // spotless:on
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
@@ -117,6 +124,19 @@ public final class GTRegistries {
         PLACEMENT_MODIFIER.register(eventBus);
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
+
+    private static <T> Registry<T> simple(ResourceKey<Registry<T>> key) {
+        return register(key, new MappedRegistry<>(key, Lifecycle.stable(), false));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Registry<T> register(ResourceKey<Registry<T>> key, WritableRegistry<T> registry) {
+        BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register(
+                (ResourceKey<WritableRegistry<?>>) (Object) key, registry, Lifecycle.stable()
+        );
+        return registry;
+    }
+
 
     private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
     private static RegistryAccess FROZEN = BLANK;
@@ -148,4 +168,6 @@ public final class GTRegistries {
             }
         }
     }
+
+    public static void init() {}
 }
