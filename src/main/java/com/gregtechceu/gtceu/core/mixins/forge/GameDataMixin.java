@@ -40,17 +40,4 @@ public class GameDataMixin {
                 })
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
-    @Inject(
-            method = "postRegisterEvents",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Ljava/util/Set;addAll(Ljava/util/Collection;)Z",
-                    ordinal = 1,
-                    shift = At.Shift.AFTER
-            )
-    )
-    private static void printRegistryOrder(CallbackInfo ci, @Local(name = "ordered") Set<ResourceLocation> ordered) {
-        ordered.forEach(p -> GTCEu.LOGGER.info("Registry: {}", p));
-    }
 }
