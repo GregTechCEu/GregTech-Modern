@@ -23,6 +23,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -35,8 +36,12 @@ import java.util.UUID;
 public class GTDataComponents {
 
     private static final StreamCodec<ByteBuf, Unit> UNIT_STREAM_CODEC = StreamCodec.unit(Unit.INSTANCE);
-    public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister
+    private static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister
             .createDataComponents(Registries.DATA_COMPONENT_TYPE, GTCEu.MOD_ID);
+
+    public static void init(IEventBus bus) {
+        DATA_COMPONENTS.register(bus);
+    }
 
     // Tool-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTTool>> GT_TOOL = DATA_COMPONENTS

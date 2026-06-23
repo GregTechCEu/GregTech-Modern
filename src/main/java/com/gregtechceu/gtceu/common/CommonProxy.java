@@ -142,25 +142,50 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        GTGuiTheme.registerThemes();
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
-        REGISTRATE.registerEventListeners(modBus);
-        GTCreativeModeTabs.init();
-        GTAttachmentTypes.ATTACHMENT_TYPES.register(modBus);
+
+        registerDeferredRegistries(modBus);
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GTGuiTheme.registerThemes();
+
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
         FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
 
         AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
+    }
+
+    // Attaches the deferred registries that hold GT content to the mod bus.
+    public static void registerDeferredRegistries(IEventBus modBus) {
+
+        // Neoforge and MC registries
+
+        GTDataComponents.init(modBus);
+        GTArmorMaterials.init(modBus);
+        GTAttachmentTypes.init(modBus);
+        GTIngredientTypes.init(modBus);
+        GTRecipeSerializers.init(modBus);
+
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
+        GTFeatures.init(modBus);
+        GTValueProviderTypes.init(modBus);
+
+        // GT registries
+
+        // Registrate is a wrapped for deferred registries, so it should be initialised here.
+        REGISTRATE.registerEventListeners(modBus);
+
+        GTCreativeModeTabs.init();
     }
 
     // Only register everything once.
@@ -205,8 +230,6 @@ public class CommonProxy {
         GTFoods.init();
         GTToolTiers.init();
         GTToolBehaviors.init();
-        GTDataComponents.DATA_COMPONENTS.register(modBus);
-        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
 
         GTMachineUtils.init();
@@ -214,18 +237,9 @@ public class CommonProxy {
         GTMachines.init();
 
         GTEntityTypes.init();
-        GTIngredientTypes.ITEM_INGREDIENT_TYPES.register(modBus);
-        GTIngredientTypes.FLUID_INGREDIENT_TYPES.register(modBus);
-        GTRecipeSerializers.RECIPE_SERIALIZERS.register(modBus);
-
-        GTCommandArguments.COMMAND_ARGUMENT_TYPES.register(modBus);
-        GTMobEffects.MOB_EFFECTS.register(modBus);
-        GTParticleTypes.PARTICLE_TYPES.register(modBus);
-        WorldGenLayers.init();
 
         GregTechDatagen.initPost();
-        GTValueProviderTypes.init(modBus);
-        GTFeatures.register(modBus);
+        WorldGenLayers.registerAll();
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
         WaypointManager.init();

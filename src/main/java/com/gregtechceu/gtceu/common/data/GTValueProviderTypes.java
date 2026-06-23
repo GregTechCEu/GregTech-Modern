@@ -15,10 +15,10 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class GTValueProviderTypes {
 
-    public static final DeferredRegister<IntProviderType<?>> INT_PROVIDER_TYPE_REGISTER = DeferredRegister.create(
+    private static final DeferredRegister<IntProviderType<?>> INT_PROVIDER_TYPE_REGISTER = DeferredRegister.create(
             Registries.INT_PROVIDER_TYPE,
             GTCEu.MOD_ID);
-    public static final DeferredRegister<FloatProviderType<?>> FLOAT_PROVIDER_TYPE_REGISTER = DeferredRegister.create(
+    private static final DeferredRegister<FloatProviderType<?>> FLOAT_PROVIDER_TYPE_REGISTER = DeferredRegister.create(
             Registries.FLOAT_PROVIDER_TYPE,
             GTCEu.MOD_ID);
 

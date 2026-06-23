@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class GTFeatures {
 
-    public static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE,
+    private static final DeferredRegister<Feature<?>> FEATURES = DeferredRegister.create(Registries.FEATURE,
             GTCEu.MOD_ID);
 
     public static final DeferredHolder<Feature<?>, StoneBlobFeature> STONE_BLOB = FEATURES.register(
@@ -33,7 +33,7 @@ public class GTFeatures {
         inst = RubberTreeChancePlacement.RUBBER_TREE_CHANCE_PLACEMENT;
     }
 
-    public static void register(IEventBus modEventBus) {
+    public static void init(IEventBus modEventBus) {
         init();
         FEATURES.register(modEventBus);
     }

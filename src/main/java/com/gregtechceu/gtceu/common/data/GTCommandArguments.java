@@ -16,8 +16,12 @@ import com.mojang.brigadier.arguments.ArgumentType;
 @SuppressWarnings("unused")
 public class GTCommandArguments {
 
-    public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
+    private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister
             .create(Registries.COMMAND_ARGUMENT_TYPE, GTCEu.MOD_ID);
+
+    public static void init(IEventBus modBus) {
+        COMMAND_ARGUMENT_TYPES.register(modBus);
+    }
 
     private static final DeferredHolder<ArgumentTypeInfo<?, ?>, SingletonArgumentInfo<MedicalConditionArgument>> MEDICAL_CONDITION_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
             .register("medical_condition",
@@ -29,7 +33,4 @@ public class GTCommandArguments {
         return (Class<T>) type;
     }
 
-    public static void init(IEventBus modBus) {
-        COMMAND_ARGUMENT_TYPES.register(modBus);
-    }
 }

@@ -17,8 +17,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class GTParticleTypes {
 
-    public static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister
+    private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister
             .create(Registries.PARTICLE_TYPE, GTCEu.MOD_ID);
+
+    public static void init(IEventBus modBus) {
+        PARTICLE_TYPES.register(modBus);
+    }
 
     public static final DeferredHolder<ParticleType<?>, ParticleType<HazardParticleOptions>> HAZARD_PARTICLE = PARTICLE_TYPES
             .register("hazard", () -> new ParticleType<>(false) {
@@ -36,7 +40,4 @@ public class GTParticleTypes {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUFFLER_PARTICLE = PARTICLE_TYPES
             .register("muffler", () -> new SimpleParticleType(false));
 
-    public static void init(IEventBus modBus) {
-        PARTICLE_TYPES.register(modBus);
-    }
 }

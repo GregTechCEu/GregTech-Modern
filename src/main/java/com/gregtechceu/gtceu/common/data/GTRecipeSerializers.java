@@ -6,13 +6,18 @@ import com.gregtechceu.gtceu.api.recipe.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class GTRecipeSerializers {
 
-    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister
             .create(Registries.RECIPE_SERIALIZER, GTCEu.MOD_ID);
+
+    public static void init(IEventBus bus) {
+        RECIPE_SERIALIZERS.register(bus);
+    }
 
     public static final DeferredHolder<RecipeSerializer<?>, StrictShapedRecipe.Serializer> CRAFTING_SHAPED_STRICT = RECIPE_SERIALIZERS
             .register("crafting_shaped_strict", StrictShapedRecipe.Serializer::new);
