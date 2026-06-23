@@ -10,7 +10,7 @@ kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
-create = "6.0.8-168"
+create = "6.0.10-281"
 ponder = "1.0.64"
 flywheel = "1.0.5"
 curios = "9.4.2+1.21.1"
@@ -33,7 +33,10 @@ xaerosMinimap = "25.3.10"
 heracles = "1.1.10"
 embeddium = "1.0.8-beta.367+mc1.21"
 sodium = "0.8.12-beta.1+mc1.21.1"
+fabricApi-base = "0.4.42+d1308ded19"
 fabricApi-rendering = "3.4.1+9125b6dc19"
+fabricApi-renderingData = "0.3.48+73761d2e19"
+fabricApi-blockView = "1.0.10+9afaaf8c19"
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -97,7 +100,10 @@ modernfix           = { module = "maven.modrinth:modernfix", version.ref = "mode
 sodium-api          = { module = "net.caffeinemc:sodium-neoforge-api", version.ref = "sodium" }
 sodium-impl         = { module = "net.caffeinemc:sodium-neoforge-mod", version.ref = "sodium" }
 sodium-full         = { module = "net.caffeinemc:sodium-neoforge", version.ref = "sodium" }
-fabricApi-rendering = { module = "org.sinytra.forgified-fabric-api:fabric-renderer-api-v1", version.ref = "fabricApi-rendering" }
+fabricApi-base          = { module = "org.sinytra.forgified-fabric-api:fabric-api-base", version.ref = "fabricApi-base" }
+fabricApi-rendering     = { module = "org.sinytra.forgified-fabric-api:fabric-renderer-api-v1", version.ref = "fabricApi-rendering" }
+fabricApi-renderingData = { module = "org.sinytra.forgified-fabric-api:fabric-rendering-data-attachment-v1", version.ref = "fabricApi-renderingData" }
+fabricApi-blockView     = { module = "org.sinytra.forgified-fabric-api:fabric-block-view-api-v2", version.ref = "fabricApi-blockView" }
 
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.21.1-core-api", version.ref = "ccTweaked" }

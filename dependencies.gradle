@@ -84,7 +84,14 @@ dependencies {
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
-    clientLocalRuntime(forge.sodium.full)
+    clientLocalRuntime(forge.sodium.impl)
+    sodiumShellSource(forge.sodium.full)
+    clientLocalRuntime(files(tasks.named('stripSodiumShellLib')))
+
+    clientLocalRuntime(forge.fabricApi.base)
+    clientLocalRuntime(forge.fabricApi.rendering)
+    clientLocalRuntime(forge.fabricApi.renderingData)
+    clientLocalRuntime(forge.fabricApi.blockView)
     clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 

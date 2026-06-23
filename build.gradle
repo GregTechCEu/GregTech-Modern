@@ -69,11 +69,35 @@ configurations {
     renderNurseCfg {
         canBeConsumed = false
     }
+
+    sodiumShellSource {
+        canBeConsumed = false
+        canBeResolved = true
+        transitive = false
+    }
 }
 
-// Force JEI to the catalog version everywhere. Some runtime mods (e.g. Create) bundle an
-// older JEI transitively, which gets loaded at runtime and fails the optional-dependency
-// version range requested by gtceu/kubejs. Forcing keeps a single, new-enough JEI.
+// Sodium Dev Runtime Nightmare (now with fewer war crimes).
+tasks.register('stripSodiumShellLib', Jar) {
+    archiveBaseName = 'sodium-neoforge-shell-lib'
+    destinationDirectory.set(layout.buildDirectory.dir('sodium-shell-lib'))
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from({ configurations.sodiumShellSource.collect { zipTree(it) } })
+    exclude 'META-INF/MANIFEST.MF'
+    exclude 'META-INF/neoforge.mods.toml'
+    exclude 'META-INF/jarjar/**'
+    exclude 'META-INF/services/net.neoforged.neoforgespi.locating.IModFileCandidateLocator'
+    manifest {
+        attributes(
+                'FMLModType': 'LIBRARY',
+                'Automatic-Module-Name': 'sodium_service'
+        )
+    }
+    doFirst {
+        manifest.attributes.keySet().retainAll(['Manifest-Version', 'FMLModType', 'Automatic-Module-Name'])
+    }
+}
+
 configurations.all {
     resolutionStrategy {
         force forge.jei.common.api.get()
