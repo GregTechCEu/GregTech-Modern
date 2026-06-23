@@ -182,6 +182,8 @@ public class CommonProxy {
 
         // GT registries
 
+        GTPatternErrors.init(modBus);
+
         // Registrate is a wrapped for deferred registries, so it should be initialised here.
         REGISTRATE.registerEventListeners(modBus);
 
@@ -225,7 +227,6 @@ public class CommonProxy {
         ChanceLogic.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
-        GTPatternErrors.init();
 
         GTFoods.init();
         GTToolTiers.init();
@@ -259,7 +260,7 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onRegisterLate(RegisterEvent event) {
         // Material event *should* happen before any of the others here
-        if (event.getRegistryKey() == GTRegistries.MATERIAL_REGISTRY) {
+        if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
             GTRegistries.MATERIALS.close();
@@ -321,11 +322,11 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
-        event.dataPackRegistry(GTRegistries.ORE_VEIN_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
                 GTOreDefinition.DIRECT_CODEC, GTOreDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_FLUID_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.DIRECT_CODEC);
-        event.dataPackRegistry(GTRegistries.BEDROCK_ORE_REGISTRY,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.DIRECT_CODEC);
     }
 

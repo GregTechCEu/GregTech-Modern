@@ -60,8 +60,8 @@ public class GTOreDefinition {
             Codec.list(IndicatorGenerator.DIRECT_CODEC).fieldOf("indicators").forGetter(ft -> ft.indicatorGenerators)
     ).apply(instance, GTOreDefinition::new));
 
-    public static final Codec<Holder<GTOreDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.ORE_VEIN_REGISTRY);
-    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<GTOreDefinition>> STREAM_CODEC = ByteBufCodecs.holderRegistry(GTRegistries.ORE_VEIN_REGISTRY);
+    public static final Codec<Holder<GTOreDefinition>> CODEC = RegistryFixedCodec.create(GTRegistries.Keys.ORE_VEIN);
+    public static final StreamCodec<RegistryFriendlyByteBuf, Holder<GTOreDefinition>> STREAM_CODEC = ByteBufCodecs.holderRegistry(GTRegistries.Keys.ORE_VEIN);
     // spotless:on
 
     private final InferredProperties inferredProperties = new InferredProperties();
@@ -185,7 +185,7 @@ public class GTOreDefinition {
     @HideFromJS
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         if (biomeLookup == null) {
-            GTRegistries.builtinRegistry().registry(GTRegistries.ORE_VEIN_REGISTRY)
+            GTRegistries.builtinRegistry().registry(GTRegistries.Keys.ORE_VEIN)
                     .map(reg -> reg.getKey(this))
                     .ifPresentOrElse(id -> {
                         GTCEu.LOGGER.error("Tried to modify ore vein `{}`'s biomes after registry has been frozen!",

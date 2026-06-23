@@ -25,7 +25,7 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
     private PostRegistryListener() {}
 
     protected void apply() {
-        var registry = GTRegistries.builtinRegistry().registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
+        var registry = GTRegistries.builtinRegistry().registryOrThrow(GTRegistries.Keys.ORE_VEIN);
 
         buildVeinGenerators(registry);
         GTOreVeins.updateLargestVeinSize(registry);

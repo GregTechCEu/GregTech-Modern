@@ -32,14 +32,14 @@ public class GTBedrockOreInfoCategory extends
     public GTBedrockOreInfoCategory(IJeiHelpers helpers) {
         super(v -> new OreVeinRecipeWidget(v.bedrockOre),
                 v -> Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                        .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY).getKey(v.bedrockOre));
+                        .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE).getKey(v.bedrockOre));
         this.icon = helpers.getGuiHelper()
                 .createDrawableItemStack(Items.RAW_IRON.getDefaultInstance());
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
         registry.addRecipes(RECIPE_TYPE, Objects.requireNonNull(Minecraft.getInstance().level).registryAccess()
-                .registryOrThrow(GTRegistries.BEDROCK_ORE_REGISTRY)
+                .registryOrThrow(GTRegistries.Keys.BEDROCK_ORE)
                 .stream()
                 .map(GTBedrockOreInfoWrapper::new)
                 .toList());

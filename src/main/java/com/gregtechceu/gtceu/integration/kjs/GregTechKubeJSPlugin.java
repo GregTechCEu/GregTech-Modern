@@ -123,20 +123,20 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
-        registry.addDefault(GTRegistries.ELEMENT_REGISTRY, ElementBuilder.class, ElementBuilder::new);
-        registry.addDefault(GTRegistries.DIMENSION_MARKER_REGISTRY, DimensionMarkerBuilder.class,
+        registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilder.class, ElementBuilder::new);
+        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
                 DimensionMarkerBuilder::new);
-        registry.addDefault(GTRegistries.MATERIAL_REGISTRY, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
-        registry.of(GTRegistries.TAG_PREFIX_REGISTRY, reg -> {
+        registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
+        registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.RECIPE_TYPE_REGISTRY, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
-        registry.addDefault(GTRegistries.RECIPE_CATEGORY_REGISTRY, GTRecipeCategoryBuilder.class,
+        registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
                 GTRecipeCategoryBuilder::new);
 
-        registry.of(GTRegistries.MACHINE_REGISTRY, reg -> {
+        registry.of(GTRegistries.Keys.MACHINE, reg -> {
             reg.addDefault(KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
                             new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
@@ -161,18 +161,18 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
 
-        registry.addDefault(GTRegistries.ORE_VEIN_REGISTRY, OreVeinDefinitionBuilder.class,
+        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class,
                 OreVeinDefinitionBuilder::new);
-        registry.addDefault(GTRegistries.BEDROCK_FLUID_REGISTRY, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
-        registry.addDefault(GTRegistries.BEDROCK_ORE_REGISTRY, BedrockOreBuilder.class, BedrockOreBuilder::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
+        registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreBuilder.class, BedrockOreBuilder::new);
     }
 
     @Override
     public void registerServerRegistries(ServerRegistryRegistry registry) {
-        registry.register(GTRegistries.ORE_VEIN_REGISTRY, GTOreDefinition.DIRECT_CODEC, GTOreDefinition.class);
-        registry.register(GTRegistries.BEDROCK_FLUID_REGISTRY,
+        registry.register(GTRegistries.Keys.ORE_VEIN, GTOreDefinition.DIRECT_CODEC, GTOreDefinition.class);
+        registry.register(GTRegistries.Keys.BEDROCK_FLUID,
                 BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.class);
-        registry.register(GTRegistries.BEDROCK_ORE_REGISTRY,
+        registry.register(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.class);
     }
 
@@ -183,7 +183,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     }
 
     public static void generateMachineBlockModels() {
-        RegistryObjectStorage.of(GTRegistries.MACHINE_REGISTRY).forEach(builder -> {
+        RegistryObjectStorage.of(GTRegistries.Keys.MACHINE).forEach(builder -> {
             if (builder instanceof IMachineBuilderKJS machineBuilder) {
                 try {
                     machineBuilder.generateMachineModels();

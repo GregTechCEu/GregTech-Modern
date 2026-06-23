@@ -84,6 +84,6 @@ public class GTBedrockFluidVeinEventJS implements KubeEvent {
     }
 
     public static ResourceKey<BedrockFluidDefinition> createKey(ResourceLocation id) {
-        return ResourceKey.create(GTRegistries.BEDROCK_FLUID_REGISTRY, id);
+        return ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id);
     }
 }
