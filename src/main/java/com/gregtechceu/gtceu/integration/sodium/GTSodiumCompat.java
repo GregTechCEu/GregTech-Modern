@@ -1,17 +1,27 @@
 package com.gregtechceu.gtceu.integration.sodium;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.client.sodium.FluidRendererImplAccessor;
 import com.gregtechceu.gtceu.utils.TriState;
 
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.ChunkBuildContext;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.FluidRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
+import net.caffeinemc.mods.sodium.client.render.chunk.translucent_sorting.TranslucentGeometryCollector;
 import net.caffeinemc.mods.sodium.client.render.texture.SpriteFinderCache;
+import net.caffeinemc.mods.sodium.client.world.LevelSlice;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
 
 public class GTSodiumCompat {
 
@@ -50,5 +60,35 @@ public class GTSodiumCompat {
             }
         }
         return false;
+    }
+
+    /**
+     * Render a fluid state using Sodium's fluid renderer. {@return {@code true} if rendering was successful}
+     */
+    public static boolean renderFluidBlock(BlockState blockState, FluidState fluidState,
+                                           BlockAndTintGetter level, BlockPos blockPos, BlockPos offset) {
+        try {
+            if (!(level instanceof LevelSlice levelSlice)) {
+                return false;
+            }
+            ChunkBuildContext buildContext = GlobalChunkBuildContext.get();
+            if (buildContext == null) {
+                return false;
+            }
+
+            FluidRenderer fluidRenderer = buildContext.cache.getFluidRenderer();
+            if (!(fluidRenderer instanceof FluidRendererImplAccessor accessor)) {
+                GTCEu.LOGGER.error("Sodium's fluid renderer doesn't have our accessor. Maybe it was replaced with a different type?" +
+                        "\n            Using slower vanilla fluid renderer implementation.");
+                return false;
+            }
+            TranslucentGeometryCollector collector = accessor.getCurrentDefaultContext().get().gtceu$getCollector();
+
+            fluidRenderer.render(levelSlice, blockState, fluidState, blockPos, offset, collector, buildContext.buffers);
+            return true;
+        } catch (Exception ignored) {
+            GTCEu.LOGGER.error("Something went wrong with rendering a fluid block using Sodium's fluid renderer.");
+            return false;
+        }
     }
 }
