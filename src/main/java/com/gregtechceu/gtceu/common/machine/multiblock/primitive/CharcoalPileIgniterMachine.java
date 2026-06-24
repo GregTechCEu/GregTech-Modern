@@ -100,11 +100,6 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine{
     }
 
     @Override
-    protected @NotNull WorkLogic createWorkLogic(Object @NotNull... args) {
-        return new WorkLogic(this, this::serverRunningTick);
-    }
-
-    @Override
     public boolean isWorkingEnabled() {
         return true;
     }

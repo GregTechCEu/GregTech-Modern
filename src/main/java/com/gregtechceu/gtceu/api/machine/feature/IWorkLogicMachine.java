@@ -38,6 +38,8 @@ public interface IWorkLogicMachine extends IMachineFeature, IWorkable {
         return true;
     }
 
+    default void serverRunningTick() {}
+
     default void setStatus(WorkLogic.Status status) {
         getWorkLogic().setStatus(status);
     }

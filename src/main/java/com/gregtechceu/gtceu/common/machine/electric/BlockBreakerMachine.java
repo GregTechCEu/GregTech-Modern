@@ -180,7 +180,7 @@ public class BlockBreakerMachine extends WorkableTieredMachine
     }
 
     @Override
-    protected void serverRunningTick() {
+    public void serverRunningTick() {
         if (getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir()) {
             setStatus(WorkLogic.Status.IDLE);
         } else if(energyContainer.getEnergyStored() < energyPerTick ||

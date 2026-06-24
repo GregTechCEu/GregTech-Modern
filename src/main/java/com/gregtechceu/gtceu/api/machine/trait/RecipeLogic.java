@@ -96,15 +96,6 @@ public class RecipeLogic extends WorkLogic {
 
     }
 
-    @Override
-    public void updateTickSubscription() {
-        if (isSuspend() || !machine.isWorkLogicAvailable()) {
-            unsubscribeTick();
-        } else {
-            subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
-        }
-    }
-
     public double getProgressPercent() {
         return duration == 0 ? 0.0 : progress / (duration * 1.0);
     }

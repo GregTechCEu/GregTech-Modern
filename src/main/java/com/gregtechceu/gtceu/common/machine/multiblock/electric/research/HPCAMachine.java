@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -13,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
@@ -70,18 +72,15 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private IMaintenanceMachine maintenance;
     private IFluidHandler coolantHandler;
-    @Persisted
-    @DescSynced
-    private final HPCAGridHandler hpcaHandler;
 
-    private boolean hasNotEnoughEnergy;
+    private final HPCAGridHandler hpcaHandler;
 
     @Persisted
     private double temperature = IDLE_TEMPERATURE; // start at idle temperature
 
     private final TimedProgressSupplier progressSupplier;
 
-    private boolean isActiveBefore;
+    private boolean isActiveBefore = false;
 
     public HPCAMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -131,13 +130,13 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     @Override
     public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        return isActive() && isWorkingEnabled() && !hasNotEnoughEnergy ? hpcaHandler.allocateCWUt(cwut, simulate) : 0;
+        return getWorkLogic().isWorking() ? hpcaHandler.allocateCWUt(cwut, simulate) : 0;
     }
 
     @Override
     public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        return isActive() && isWorkingEnabled() ? hpcaHandler.getMaxCWUt() : 0;
+        return getWorkLogic().isWorking() ? hpcaHandler.getMaxCWUt() : 0;
     }
 
     @Override
@@ -147,64 +146,55 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         return !isFormed() || hpcaHandler.hasHPCABridge();
     }
 
+    @Override
     public void serverRunningTick() {
-        if (isWorkingEnabled()) consumeEnergy();
-        if (isActive()) {
-            // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
-            double midpoint = (DAMAGE_TEMPERATURE - IDLE_TEMPERATURE) / 2;
-            double temperatureChange = hpcaHandler.calculateTemperatureChange(coolantHandler, temperature >= midpoint) /
-                    2.0;
-            if (temperature + temperatureChange <= IDLE_TEMPERATURE) {
-                temperature = IDLE_TEMPERATURE;
-            } else {
-                temperature += temperatureChange;
-            }
-            if (temperature >= DAMAGE_TEMPERATURE) {
-                hpcaHandler.attemptDamageHPCA();
-            }
-            hpcaHandler.tick();
-        } else {
-            hpcaHandler.clearComputationCache();
-            // passively cool (slowly) if not active
-            temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
-        }
-        this.updateActive(this.getEnergyContainer().getEnergyStored() > 0);
-    }
-
-    private void updateActive(boolean active) {
-        for (var part : getParts()) {
-            if (part instanceof IHPCAComponentHatch hpcaPart) {
-                hpcaPart.setActive(active);
-            }
-        }
-    }
-
-    private void consumeEnergy() {
         long energyToConsume = hpcaHandler.getCurrentEUt();
         boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
         if (hasMaintenance) {
             // 10% more energy per maintenance problem
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
-
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
-            this.hasNotEnoughEnergy = false;
+        if(energyContainer.getEnergyStored() >= energyToConsume &&
+                energyContainer.removeEnergy(energyToConsume) >= energyToConsume) {
+            getWorkLogic().setStatus(RecipeLogic.Status.WORKING);
+            updateActive(true);
+        }
+        else {
+            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
+            updateActive(false);
         }
 
-        if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!hasNotEnoughEnergy) {
-                long consumed = this.energyContainer.removeEnergy(energyToConsume);
-                if (consumed == energyToConsume) {
-                    getWorkLogic().setStatus(WorkLogic.Status.WORKING);
-                } else {
-                    this.hasNotEnoughEnergy = true;
-                    getWorkLogic().setStatus(WorkLogic.Status.WAITING);
+        // forcibly use active coolers at full rate if temperature is half-way to damaging temperature
+        double midpoint = (DAMAGE_TEMPERATURE - IDLE_TEMPERATURE) / 2;
+        double temperatureChange = hpcaHandler.calculateTemperatureChange(coolantHandler, temperature >= midpoint) /
+                2.0;
+        if (temperature + temperatureChange <= IDLE_TEMPERATURE) {
+            temperature = IDLE_TEMPERATURE;
+        } else {
+            temperature += temperatureChange;
+        }
+        if (temperature >= DAMAGE_TEMPERATURE) {
+            hpcaHandler.attemptDamageHPCA();
+        }
+        hpcaHandler.tick();
+    }
+
+    private void updateActive(boolean active) {
+        if(active != isActiveBefore) {
+            isActiveBefore = active;
+            for (var part : getParts()) {
+                if (part instanceof IHPCAComponentHatch hpcaPart) {
+                    hpcaPart.setActive(active);
                 }
             }
-        } else {
-            this.hasNotEnoughEnergy = true;
-            getWorkLogic().setStatus(WorkLogic.Status.WAITING);
         }
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean isWorkingAllowed) {
+        super.setWorkingEnabled(isWorkingAllowed);
+        updateActive(isWorkingAllowed);
     }
 
     @Override
@@ -227,25 +217,26 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             } else {
                 hpcaHandler.clearClientComponents();
             }
-        }
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
-                Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
-                builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    final int index = i * 3 + j;
+                    Supplier<IGuiTexture> textureSupplier = () -> hpcaHandler.getComponentTexture(index);
+                    builder.addWidget(new ImageWidget(startX + (15 * j), startY + (15 * i), 13, 13, textureSupplier));
+                }
             }
         }
+
         return builder;
     }
 
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, hpcaHandler.getAllocatedCWUt() > 0) // transform into two-state system for
+                .setWorkingStatus(getWorkLogic().isWorkingEnabled(), getWorkLogic().isActive()) // transform into two-state system for
                                                                             // display
                 .setWorkingStatusKeys(
                         "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
+                        "gtceu.multiblock.work_paused",
                         "gtceu.multiblock.data_bank.providing")
                 .addCustom(tl -> {
                     if (isFormed()) {
@@ -335,19 +326,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      */
 
     // Handles the logic of this structure's specific HPCA component grid
-    public static class HPCAGridHandler implements IManaged {
-
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = ManagedFieldHolderMap
-                .createManagedFieldHolder(HPCAGridHandler.class);
-
-        @Getter
-        private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
-
-        @Override
-        public ManagedFieldHolder getFieldHolder() {
-            return MANAGED_FIELD_HOLDER;
-        }
-
+    public static class HPCAGridHandler{
         @Nullable // for testing
         private final HPCAMachine controller;
 
@@ -364,9 +343,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         // cached gui info
         // holding these values past the computation clear because GUI is too "late" to read the state in time
-        @DescSynced
         private long cachedEUt;
-        @DescSynced
+
         private int cachedCWUt;
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
@@ -641,27 +619,24 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.hpca.info_bridging_disabled")
                         .withStyle(ChatFormatting.RED));
             }
+
+            if (numBridges > 1) {
+                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_multiple_bridges")
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            if (computationProviders.isEmpty()) {
+                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_no_computation")
+                        .withStyle(ChatFormatting.GRAY));
+            }
+            if (getMaxCoolingDemand() > getMaxCoolingAmount()) {
+                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_low_cooling")
+                        .withStyle(ChatFormatting.GRAY));
+            }
         }
 
         public void addWarnings(List<Component> textList) {
             List<Component> warnings = new ArrayList<>();
-            if (numBridges > 1) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_multiple_bridges")
-                        .withStyle(ChatFormatting.GRAY));
-            }
-            if (computationProviders.isEmpty()) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_no_computation")
-                        .withStyle(ChatFormatting.GRAY));
-            }
-            if (getMaxCoolingDemand() > getMaxCoolingAmount()) {
-                warnings.add(Component.translatable("gtceu.multiblock.hpca.warning_low_cooling")
-                        .withStyle(ChatFormatting.GRAY));
-            }
-            if (!warnings.isEmpty()) {
-                textList.add(Component.translatable("gtceu.multiblock.hpca.warning_structure_header")
-                        .withStyle(ChatFormatting.YELLOW));
-                textList.addAll(warnings);
-            }
+
         }
 
         public void addErrors(List<Component> textList) {
@@ -681,7 +656,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         public void tryGatherClientComponents(Level world, BlockPos pos, Direction frontFacing,
                                               Direction upwardsFacing, boolean flip) {
             Direction relativeUp = RelativeDirection.UP.getRelative(frontFacing, upwardsFacing, flip);
-
+            clearClientComponents();
             if (components.isEmpty()) {
                 BlockPos testPos = pos
                         .relative(frontFacing.getOpposite(), 3)
@@ -707,11 +682,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
         public void clearClientComponents() {
             components.clear();
-        }
-
-        @Override
-        public void onChanged() {
-            controller.onChanged();
         }
     }
 }

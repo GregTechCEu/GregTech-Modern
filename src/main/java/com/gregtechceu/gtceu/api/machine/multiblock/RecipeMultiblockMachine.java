@@ -67,6 +67,9 @@ public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine 
         return createRecipeLogic(args);
     }
 
+    @Override
+    public final void serverRunningTick() {}
+
     protected RecipeLogic createRecipeLogic(Object... args) {
         return new RecipeLogic(this);
     }

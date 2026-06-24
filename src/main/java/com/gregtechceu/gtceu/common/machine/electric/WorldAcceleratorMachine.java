@@ -96,7 +96,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine {
     }
 
     @Override
-    protected void serverRunningTick() {
+    public void serverRunningTick() {
         long toDrain = (isRandomTickMode ? randomTickAmperage : blockEntityAmperage) * GTValues.V[tier];
 
         if (energyContainer.getEnergyStored() >= toDrain &&

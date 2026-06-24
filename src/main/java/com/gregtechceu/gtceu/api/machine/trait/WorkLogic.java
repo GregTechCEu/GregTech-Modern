@@ -59,21 +59,13 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
     @Getter
     @Nullable
     @Persisted
-    @DescSynced
     protected Component waitingReason = null;
 
     protected TickableSubscription subscription;
 
-    protected Runnable serverRunningTick;
-
     public WorkLogic(IWorkLogicMachine machine) {
         super(machine.self());
         this.workMachine = machine;
-    }
-
-    public WorkLogic(IWorkLogicMachine machine, Runnable serverRunningTick) {
-        this(machine);
-        this.serverRunningTick = serverRunningTick;
     }
 
     @Override
@@ -85,7 +77,7 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
     public void updateTickSubscription() {
         if (isSuspend() || !workMachine.isWorkLogicAvailable()) {
             unsubscribeTick();
-        } else if(serverRunningTick != null) {
+        } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
         }
     }
@@ -99,7 +91,7 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
 
     public void serverTick() {
         if (!isSuspend()) {
-            serverRunningTick.run();
+            workMachine.serverRunningTick();
         }
         if ((isSuspend() || (isIdle() && !workMachine.keepSubscribing()))) {
             unsubscribeTick();

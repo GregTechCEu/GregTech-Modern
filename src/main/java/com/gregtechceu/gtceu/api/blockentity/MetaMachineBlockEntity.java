@@ -324,12 +324,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        // TagFixer.fixFluidTags(tag);
-        super.load(tag);
-    }
-
     public static class AE2CallWrapper {
 
         public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,

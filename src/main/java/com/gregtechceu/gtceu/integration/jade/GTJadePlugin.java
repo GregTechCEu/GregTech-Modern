@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -26,8 +25,7 @@ public class GTJadePlugin implements IWailaPlugin {
     @Override
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(new ElectricContainerBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
-        // registration.registerBlockDataProvider(new WorkLogicProvider(), BlockEntity.class);
+        registration.registerBlockDataProvider(new WorkLogicMachineProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ParallelProvider(), BlockEntity.class);
@@ -56,8 +54,7 @@ public class GTJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         registration.registerBlockComponent(new ElectricContainerBlockProvider(), Block.class);
-        registration.registerBlockComponent(new WorkableBlockProvider(), Block.class);
-        // registration.registerBlockComponent(new WorkLogicProvider(), Block.class);
+        registration.registerBlockComponent(new WorkLogicMachineProvider(), Block.class);
         registration.registerBlockComponent(new ControllableBlockProvider(), Block.class);
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
         registration.registerBlockComponent(new ParallelProvider(), Block.class);

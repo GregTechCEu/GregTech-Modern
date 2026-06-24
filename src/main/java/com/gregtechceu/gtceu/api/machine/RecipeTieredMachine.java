@@ -132,12 +132,15 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
 
     @Override
     protected RecipeLogic createWorkLogic(Object... args) {
-        return createRecipeLogic(args);
+        return createRecipeLogic();
     }
 
-    protected RecipeLogic createRecipeLogic(Object... args) {
+    protected RecipeLogic createRecipeLogic() {
         return new RecipeLogic(this);
     }
+
+    @Override
+    public final void serverRunningTick() {}
 
     @Override
     public @NotNull List<RecipeHandlerList> getRecipeHandlerLists() {

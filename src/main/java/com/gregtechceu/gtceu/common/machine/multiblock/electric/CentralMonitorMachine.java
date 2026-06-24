@@ -128,11 +128,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     private int progress = 0;
 
     @Override
-    protected WorkLogic createWorkLogic(Object... args) {
-        return new WorkLogic(this, this::serverRunningTick);
-    }
-
-    protected void serverRunningTick() {
+    public void serverRunningTick() {
         long energyToConsume = GTValues.VA[tier];
         if(energyContainer.getEnergyStored() >= energyToConsume &&
                 energyContainer.removeEnergy(energyToConsume) >= energyToConsume) {

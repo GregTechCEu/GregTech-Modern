@@ -115,12 +115,6 @@ public class ItemCollectorMachine extends WorkableTieredMachine
 
     private final int maxRange;
 
-    @DescSynced
-    @Persisted
-    @Getter
-    @RequireRerender
-    private boolean active = false;
-
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
@@ -206,11 +200,6 @@ public class ItemCollectorMachine extends WorkableTieredMachine
     // ********* Logic **********//
     //////////////////////////////////////
 
-    public void setActive(boolean active) {
-        this.active = active;
-        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, active));
-    }
-
     @Override
     public boolean keepSubscribing() {
         return false;
@@ -219,11 +208,11 @@ public class ItemCollectorMachine extends WorkableTieredMachine
     @Override
     public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
         super.notifyWorkStatusChanged(oldStatus, newStatus);
-        setActive(newStatus == WorkLogic.Status.WORKING);
+        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
     }
 
     @Override
-    protected void serverRunningTick() {
+    public void serverRunningTick() {
         if (energyContainer.getEnergyStored() < energyPerTick ||
                 energyContainer.removeEnergy(energyPerTick) < energyPerTick) {
             setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")

@@ -113,9 +113,6 @@ public class FisherMachine extends WorkableTieredMachine
     @Persisted
     private int progress = 0;
 
-    @Getter
-    @Persisted
-    private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
     private boolean hasWater = false;
@@ -223,14 +220,13 @@ public class FisherMachine extends WorkableTieredMachine
     @Override
     public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
         super.notifyWorkStatusChanged(oldStatus, newStatus);
-        active = newStatus == WorkLogic.Status.WORKING;
         if (getRenderState().hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, active));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
         }
     }
 
     @Override
-    protected void serverRunningTick() {
+    public void serverRunningTick() {
         if (!this.baitHandler.getStackInSlot(0).is(Items.STRING)) {
             progress = 0;
             setStatus(WorkLogic.Status.IDLE);

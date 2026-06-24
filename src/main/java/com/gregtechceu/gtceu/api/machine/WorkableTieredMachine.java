@@ -26,9 +26,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     protected WorkLogic createWorkLogic(Object... args) {
-        return new WorkLogic(this, this::serverRunningTick);
+        return new WorkLogic(this);
     }
 
-    protected void serverRunningTick() {}
+    @Override
+    public void serverRunningTick() {}
 
 }

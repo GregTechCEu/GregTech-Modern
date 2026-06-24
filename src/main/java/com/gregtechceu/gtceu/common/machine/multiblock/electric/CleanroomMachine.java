@@ -107,14 +107,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     //////////////////////////////////////
-    // ****** Initialization ******//
-    //////////////////////////////////////
-
-    protected WorkLogic createWorkLogic(Object... args) {
-        return new WorkLogic(this, this::serverRunningTick);
-    }
-
-    //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
 
@@ -502,7 +494,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
     }
 
-    protected void serverRunningTick() {
+    @Override
+    public void serverRunningTick() {
         if (maxProgress > 0) {
             EnvironmentalHazardSavedData environmentalHazards = EnvironmentalHazardSavedData
                     .getOrCreate((ServerLevel) getLevel());
