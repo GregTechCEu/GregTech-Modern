@@ -35,7 +35,7 @@ public interface IRangedIngredient {
         return ((getCountProvider().getMaxValue() + getCountProvider().getMinValue()) / 2.0);
     }
 
-    default int getMaxRoll(){
+    default int getMaxRoll() {
         return ((getCountProvider().getMaxValue()));
     }
 

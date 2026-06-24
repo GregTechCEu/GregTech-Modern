@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraftforge.fluids.FluidStack;

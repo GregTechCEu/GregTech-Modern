@@ -401,7 +401,8 @@ public class GTRecipeComponents {
 
         @Override
         public long kjs$getAmount() {
-            return (ingredient instanceof IRangedIngredient ? ((IRangedIngredient) ingredient).getMaxRoll() : ingredient.getAmount());
+            return (ingredient instanceof IRangedIngredient ? ((IRangedIngredient) ingredient).getMaxRoll() :
+                    ingredient.getAmount());
         }
 
         @Override
