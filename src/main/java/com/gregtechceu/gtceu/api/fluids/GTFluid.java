@@ -34,6 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Map;
 
+// TODO implement burning/acid/etc. damage when standing in a fluid block
 public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFluid {
     private static final double MAX_FLUID_HEIGHT = 8.0D / 9.0D;
 

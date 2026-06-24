@@ -439,6 +439,7 @@ public class FluidBuilder {
     private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material,
                                                           FluidStorageKey storageKey) {
         final String langKey = this.translation != null ? this.translation : storageKey.getTranslationKeyFor(material);
+        final boolean canSwim = this.density >= MIN_SWIMMABLE_DENSITY && this.viscosity <= MAX_SWIMMABLE_VISCOSITY;
         return properties.descriptionId(langKey)
                 .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
@@ -446,7 +447,10 @@ public class FluidBuilder {
                 .temperature(this.temperature)
                 .density(this.density)
                 .lightLevel(this.luminosity)
-                .viscosity(this.viscosity);
+                .viscosity(this.viscosity)
+                .motionScale(0.014D * ((double) DEFAULT_LIQUID_VISCOSITY / this.viscosity))
+                .canSwim(canSwim)
+                .supportsBoating(canSwim);
     }
 
     @SuppressWarnings("DataFlowIssue")
