@@ -66,8 +66,7 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
         if (!ConfigHolder.INSTANCE.gameplay.lowDensityFluidsFlowUp) {
             return false;
         }
-        // returns true if the fluid is lighter than air
-        return this.getFluidType().getDensity() <= 0;
+        return this.getFluidType().isLighterThanAir();
     }
 
     @Override

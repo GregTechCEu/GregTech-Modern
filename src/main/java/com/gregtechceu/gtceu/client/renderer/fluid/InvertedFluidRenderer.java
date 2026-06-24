@@ -44,8 +44,8 @@ public class InvertedFluidRenderer {
                 !ConfigHolder.INSTANCE.client.lowDensityFluidsRenderUpsideDown) {
             return false;
         }
-        // heavier than air -> use normal rendering
-        if (fluidType.getDensity(fluidState, level, pos) > 0) {
+        // fluid isn't lighter than air -> use normal rendering
+        if (!fluidType.isLighterThanAir()) {
             return false;
         }
 
