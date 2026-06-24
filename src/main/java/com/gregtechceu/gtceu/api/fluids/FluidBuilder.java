@@ -281,26 +281,20 @@ public class FluidBuilder {
             }
         }
 
-        determineTemperature(material);
-        determineColor(material);
-        determineDensity();
-        determineLuminosity(material);
-        determineViscosity(material);
-
         final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
                 (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
-                .properties(this::setupProperties)
+                .properties(p -> this.setupFluidTypeProperties(p, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
+            // noinspection Convert2MethodRef
             builder.block()
-                    .color(() -> () -> (state, level, pos, index) -> {
-                        return IClientFluidTypeExtensions.of(state.getFluidState())
-                                .getTintColor(state.getFluidState(), level, pos);
-                    })
+                    .properties(p -> p.liquid())
+                    .color(() -> () -> (state, level, pos, i) -> IClientFluidTypeExtensions.of(state.getFluidState())
+                            .getTintColor(state.getFluidState(), level, pos))
                     .register();
         } else {
             // noinspection DataFlowIssue
@@ -429,7 +423,13 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType.Properties setupProperties(FluidType.Properties properties) {
+    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material) {
+        determineTemperature(material);
+        determineColor(material);
+        determineDensity();
+        determineLuminosity(material);
+        determineViscosity(material);
+
         return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
@@ -440,7 +440,7 @@ public class FluidBuilder {
     }
 
     private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
-                                    Material material, FluidStorageKey key, String langKey) {;
+                                    Material material, FluidStorageKey key, String langKey) {
         FluidType type = new FluidType(properties) {
 
             @Override
