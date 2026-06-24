@@ -406,6 +406,7 @@ public class GTMultiblockTextUtil {
                                 .getter(() -> rlmachine.getRecipeLogic().getLastRecipe())
                                 .setter((newRecipe) -> {})
                                 .adapter(GTByteBufAdapters.GTRECIPE)
+                                .nullable()
                                 .copy(GTRecipe::copy)
                                 .build());
 
