@@ -21,7 +21,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
@@ -129,6 +128,16 @@ public class FluidBuilder {
      */
     public FluidBuilder disableColor() {
         this.isColorEnabled = false;
+        return this;
+    }
+
+    /**
+     * Forcibly enables coloring the fluid. Use when you want to use a custom fluid texture and also tint it.
+     *
+     * @return this
+     */
+    public FluidBuilder forceEnableColor() {
+        this.isColorEnabled = true;
         return this;
     }
 
@@ -301,8 +310,13 @@ public class FluidBuilder {
             // noinspection Convert2MethodRef
             builder.block()
                     .properties(p -> p.liquid())
-                    .color(() -> () -> (state, level, pos, i) -> IClientFluidTypeExtensions.of(state.getFluidState())
-                            .getTintColor(state.getFluidState(), level, pos))
+                    .color(() -> () -> (state, level, pos, index) -> {
+                        if (this.isColorEnabled) {
+                            return index == 0 ? this.color : material.getMaterialARGB(index);
+                        } else {
+                            return INFER_COLOR;
+                        }
+                    })
                     .register();
         } else {
             builder.noBlock();
