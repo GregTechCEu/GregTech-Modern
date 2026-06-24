@@ -7,13 +7,17 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.widgets.SteamDialWidget;
 
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
@@ -99,6 +103,21 @@ public class MachineUIPanelBuilder {
                     attachConfiguratorsTrait.attachRightConfigurators(attachRight, panel, syncManager);
                 }
             }
+        }
+
+        if (machine instanceof SimpleSteamMachine steamMachine) {
+            DoubleSyncValue steamProgress = new DoubleSyncValue(null, null,
+                    () -> steamMachine.steamTank.getFluidInTank(0).getAmount() /
+                            (float) steamMachine.steamTank.getTankCapacity(0),
+                    null);
+            attachMain.child(new SteamDialWidget(steamProgress)
+                    .setMinAngle((float) Math.PI * 3.0f / 4.0f)
+                    .setMaxAngle((float) Math.PI * 1.0f / 4.0f)
+                    .setColor(Color.WHITE.main)
+                    .asWidget()
+
+                    // .background(GuiTextures.MC_BUTTON)
+                    .size(50, 20));
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
