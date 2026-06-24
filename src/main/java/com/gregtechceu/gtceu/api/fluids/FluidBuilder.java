@@ -292,6 +292,7 @@ public class FluidBuilder {
                 (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
+                .properties(this::setupProperties)
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
             builder.block()
@@ -427,15 +428,18 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
-                                    Material material, FluidStorageKey key, String langKey) {
-        properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+    private FluidType.Properties setupProperties(FluidType.Properties properties) {
+        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
                 .density(this.density)
                 .lightLevel(this.luminosity)
                 .viscosity(this.viscosity);
+    }
+
+    private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
+                                    Material material, FluidStorageKey key, String langKey) {;
         FluidType type = new FluidType(properties) {
 
             @Override
