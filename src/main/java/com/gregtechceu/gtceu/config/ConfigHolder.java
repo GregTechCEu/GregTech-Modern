@@ -818,6 +818,11 @@ public class ConfigHolder {
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
         @Configurable
+        @Configurable.Comment({ "Whether or not gases and plasmas should vaporize when placed from a bucket (like water does in the Nether).",
+                "Default: true" })
+        @Configurable.Synchronized
+        public boolean gasesVaporizeOnPlacement = true;
+        @Configurable
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };

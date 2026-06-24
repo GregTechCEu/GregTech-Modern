@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -46,6 +47,7 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
 
+@SuppressWarnings("unused")
 @Accessors(fluent = true, chain = true)
 public class FluidBuilder {
 
@@ -89,7 +91,6 @@ public class FluidBuilder {
     @Getter
     private boolean hasCustomFlowing = false;
 
-    @Getter
     private boolean hasFluidBlock = false;
     private boolean hasBucket = true;
 
@@ -459,17 +460,19 @@ public class FluidBuilder {
 
             @Override
             public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
+                if (!ConfigHolder.INSTANCE.gameplay.gasesVaporizeOnPlacement) {
+                    return false;
+                }
+
                 FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
                 // always vaporize plasmas and gases
-                FluidStorage.FluidEntry plasmaEntry = fluidStorage.getEntry(FluidStorageKeys.PLASMA);
-                if (plasmaEntry != null) {
-                    FluidBuilder plasmaBuilder = plasmaEntry.getBuilder();
-                    return plasmaBuilder != null && plasmaBuilder.hasFluidBlock();
+                Fluid plasma = fluidStorage.get(FluidStorageKeys.PLASMA);
+                if (plasma != null) {
+                    return !plasma.defaultFluidState().createLegacyBlock().isEmpty();
                 }
-                FluidStorage.FluidEntry gasEntry = fluidStorage.getEntry(FluidStorageKeys.GAS);
-                if (gasEntry != null) {
-                    var gasBuilder = gasEntry.getBuilder();
-                    return gasBuilder != null && gasBuilder.hasFluidBlock();
+                Fluid gas = fluidStorage.get(FluidStorageKeys.GAS);
+                if (gas != null) {
+                    return !gas.defaultFluidState().createLegacyBlock().isEmpty();
                 }
 
                 return false;
