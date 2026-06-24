@@ -57,8 +57,7 @@ public class BloomRenderer {
     @Accessors(fluent = true)
     @Getter
     @ApiStatus.Internal
-    private static final ThreadLocal<ScopedValue.Object<Supplier<VertexConsumer>>> bloomChunkContext = ThreadLocal
-            .withInitial(ScopedValue.Object::new);
+    private static final ScopedValue.Object<Supplier<VertexConsumer>> bloomChunkContext = new ScopedValue.Object<>();
 
     static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum,
                             Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTicks,
@@ -178,7 +177,7 @@ public class BloomRenderer {
         }
 
         if (TextureMetadataHelper.hasBloom(quad, packedLights)) {
-            Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().get().getValue();
+            Supplier<VertexConsumer> currentVertexConsumer = bloomChunkContext().getValue();
             if (currentVertexConsumer == null) return;
 
             drawConsumer.accept(currentVertexConsumer.get());
