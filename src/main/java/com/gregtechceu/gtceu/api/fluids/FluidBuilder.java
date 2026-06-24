@@ -296,7 +296,7 @@ public class FluidBuilder {
                 (p, $1, $2) -> makeFluidType(registrate, p, material, key),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
-                .properties(p -> this.setupFluidTypeProperties(p, material, key))
+                .properties(p -> this.setupFluidTypeProperties(p, material))
                 .fluidProperties(p -> this.setupFluidProperties(p, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
@@ -436,12 +436,9 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material,
-                                                          FluidStorageKey storageKey) {
-        final String langKey = this.translation != null ? this.translation : storageKey.getTranslationKeyFor(material);
+    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material) {
         final boolean canSwim = this.density >= MIN_SWIMMABLE_DENSITY && this.viscosity <= MAX_SWIMMABLE_VISCOSITY;
-        return properties.descriptionId(langKey)
-                .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
@@ -465,6 +462,11 @@ public class FluidBuilder {
 
     private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
                                     Material material, FluidStorageKey key) {
+        // sadly, we have to apply this here instead of in setupFluidTypeProperties because Registrate overwrites
+        // whatever we assign there.
+        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
+        properties.descriptionId(langKey);
+
         FluidType type = new GTFluidType(properties, material);
         OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
             final int color = isColorEnabled ? this.color : INFER_COLOR;
