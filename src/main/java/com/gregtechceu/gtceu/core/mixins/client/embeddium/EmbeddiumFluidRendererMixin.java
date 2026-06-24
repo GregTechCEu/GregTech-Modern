@@ -13,20 +13,47 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.embeddedt.embeddium.impl.model.quad.properties.ModelQuadFacing;
 import org.embeddedt.embeddium.impl.render.chunk.compile.pipeline.FluidRenderer;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = FluidRenderer.class, remap = false)
 public class EmbeddiumFluidRendererMixin {
 
-    @ModifyArg(method = "setVertex", at = @At(value = "INVOKE",
-            target = "Lorg/embeddedt/embeddium/impl/model/quad/ModelQuadViewMutable;setY(IF)V"),
-            index = 1)
-    private static float gtceu$invertFluidFlowDirection(float originalY) {
-        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+    @Unique
+    private boolean gtceu$drawingUpsideDownFluid = false;
+
+    @Inject(method = "render", at = @At("HEAD"))
+    private void gtceu$cacheInvertedState(CallbackInfo ci) {
+        gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
+    }
+
+    @Inject(method = "render", at = @At("RETURN"))
+    private void gtceu$resetInvertedState(CallbackInfo ci) {
+        gtceu$drawingUpsideDownFluid = false;
+    }
+
+    @ModifyArg(method = "render", at = @At(value = "INVOKE",
+            target = "Lorg/embeddedt/embeddium/impl/render/chunk/compile/pipeline/FluidRenderer;setVertex(Lorg/embeddedt/embeddium/impl/model/quad/ModelQuadViewMutable;IFFFFF)V"),
+            index = 4)
+    private float gtceu$invertFluidFlowDirection(float originalY) {
+        if (gtceu$drawingUpsideDownFluid) {
             return 1.0f - originalY;
         } else {
             return originalY;
+        }
+    }
+
+    @ModifyVariable(method = "writeQuad", at = @At(value = "HEAD"), index = 6, argsOnly = true)
+    private boolean gtceu$invertFluidVertexOrder(boolean flip) {
+        // reverse vertex order if we're drawing an upside-down fluid
+        if (gtceu$drawingUpsideDownFluid) {
+            return !flip;
+        } else {
+            return flip;
         }
     }
 
@@ -38,8 +65,8 @@ public class EmbeddiumFluidRendererMixin {
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "up"),
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "down"),
     }, expect = 10)
-    private static Direction gtceu$invertFluidCulling(Direction original) {
-        if (original.getAxis() == Direction.Axis.Y && InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+    private Direction gtceu$invertFluidCulling(Direction original) {
+        if (original.getAxis() == Direction.Axis.Y && gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
         } else {
             return original;
@@ -54,9 +81,9 @@ public class EmbeddiumFluidRendererMixin {
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "pos_y"),
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "neg_y")
     }, expect = 3)
-    private static ModelQuadFacing gtceu$invertFluidQuadFacing(ModelQuadFacing original) {
+    private ModelQuadFacing gtceu$invertFluidQuadFacing(ModelQuadFacing original) {
         if ((original == ModelQuadFacing.POS_Y || original == ModelQuadFacing.NEG_Y) &&
-                InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+                gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
         } else {
             return original;
@@ -66,8 +93,8 @@ public class EmbeddiumFluidRendererMixin {
     @WrapOperation(method = "*", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
             require = 0)
-    private static BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
-        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+    private BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
+        if (gtceu$drawingUpsideDownFluid) {
             return pos.below();
         } else {
             return original.call(pos);
@@ -77,8 +104,8 @@ public class EmbeddiumFluidRendererMixin {
     @WrapOperation(method = "*", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/core/BlockPos;below()Lnet/minecraft/core/BlockPos;"),
             require = 0)
-    private static BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
-        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+    private BlockPos gtceu$invertFluidLightCheckBelow(BlockPos pos, Operation<BlockPos> original) {
+        if (gtceu$drawingUpsideDownFluid) {
             return pos.above();
         } else {
             return original.call(pos);
