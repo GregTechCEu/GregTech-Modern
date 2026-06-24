@@ -9,6 +9,10 @@
     "compatibilityLevel": "JAVA_21",
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [
+        "client.sodium.ChunkBuilderMixin",
+        "client.sodium.FluidRendererImplAccessor",
+        "client.sodium.FluidRendererImplAccessor$DefaultRenderContextAccessor",
+        "client.sodium.SodiumDefaultFluidRendererMixin",
         "client.bloom.normal.sodium.BlockRendererMixin",
         "client.bloom.normal.sodium.DefaultMaterialsMixin",
         "client.bloom.normal.sodium.DefaultTerrainRenderPassesMixin",
