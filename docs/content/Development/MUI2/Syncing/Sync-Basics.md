@@ -23,7 +23,7 @@ This would not work, intSyncValue hasn't had time to send data over yet and thus
 If you try to access values on the client that aren't synced or don't have a `SyncValue` or `SyncHandler`, they will have a default value, but they will not reflect the values or changes happening on the server.
 
 !!! Note
-    By default, SyncValues or -Handlers don't allow client-to-server syncing. For that you will need to chain `.allowC2S()`.
+    By default, `SyncValue`s or `SyncHandler`s don't allow client-to-server syncing. For that you will need to chain `.allowC2S()`. This gets called on the `SyncHandler` itself, so if you're using a builder, after the `.build()`
 
 ## Method 1: Dynamic Widgets
 The first method is using dynamic widgets, which update every frame regardless of what happens.
