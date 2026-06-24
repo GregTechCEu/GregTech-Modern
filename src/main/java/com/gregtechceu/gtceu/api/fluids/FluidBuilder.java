@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -281,6 +282,12 @@ public class FluidBuilder {
             }
         }
 
+        determineTemperature(material);
+        determineColor(material);
+        determineDensity();
+        determineLuminosity(material);
+        determineViscosity(material);
+
         final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
@@ -288,6 +295,7 @@ public class FluidBuilder {
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
                 .properties(p -> this.setupFluidTypeProperties(p, material))
+                .fluidProperties(p -> this.setupFluidProperties(p, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
             // noinspection Convert2MethodRef
@@ -297,8 +305,7 @@ public class FluidBuilder {
                             .getTintColor(state.getFluidState(), level, pos))
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBlock().fluidProperties(p -> p.block(null));
+            builder.noBlock();
         }
         if (this.hasBucket) {
             builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
@@ -308,8 +315,7 @@ public class FluidBuilder {
                     .color(() -> () -> GTBucketItem::color)
                     .register();
         } else {
-            // noinspection DataFlowIssue
-            builder.noBucket().fluidProperties(p -> p.bucket(null));
+            builder.noBucket();
         }
 
         builder.onRegister(fluid -> {
@@ -424,12 +430,6 @@ public class FluidBuilder {
     }
 
     private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material) {
-        determineTemperature(material);
-        determineColor(material);
-        determineDensity();
-        determineLuminosity(material);
-        determineViscosity(material);
-
         return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
@@ -437,6 +437,16 @@ public class FluidBuilder {
                 .density(this.density)
                 .lightLevel(this.luminosity)
                 .viscosity(this.viscosity);
+    }
+
+    @SuppressWarnings("DataFlowIssue")
+    private BaseFlowingFluid.Properties setupFluidProperties(BaseFlowingFluid.Properties properties, Material material) {
+        if (!this.hasFluidBlock) properties.block(null);
+        if (!this.hasBucket) properties.bucket(null);
+
+        // limit flow rate a maximum to 1 tick per step
+        // (0 or negative values don't cause issues AFAIK, but they aren't good either.)
+        return properties.tickRate(Math.max(this.viscosity / 200, 1));
     }
 
     private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
