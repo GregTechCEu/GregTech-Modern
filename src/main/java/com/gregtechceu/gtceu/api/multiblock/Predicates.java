@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -67,6 +68,7 @@ public class Predicates {
         return new PatternPredicate(new PredicateStates(candidates.toArray(BlockState[]::new)));
     }
 
+    @HideFromJS
     public static PatternPredicate blocks(String debugName, Block... blocks) {
         return new PatternPredicate(new PredicateBlocks(debugName, blocks));
     }
