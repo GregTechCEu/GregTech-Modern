@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -14,6 +15,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
@@ -28,6 +30,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     private GTRecipeType smallRecipeMap;
     private Supplier<ItemStack> iconSupplier;
+    private UnaryOperator<GTRecipeTypeUILayout.Builder> layout;
 
     public GTRecipeTypeBuilder(ResourceLocation i) {
         super(i);
@@ -43,6 +46,11 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     public GTRecipeTypeBuilder category(String category) {
         this.category = category;
+        return this;
+    }
+
+    public GTRecipeTypeBuilder ui(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
+        this.layout = builder;
         return this;
     }
 
@@ -103,6 +111,9 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
+        if (this.layout != null) {
+            type.setUiLayout(this.layout.apply(new GTRecipeTypeUILayout.Builder(type)).build());
+        }
         type.setSound(sound);
         type.setHasResearchSlot(hasResearchSlot);
         type.setMaxTooltips(maxTooltips);
