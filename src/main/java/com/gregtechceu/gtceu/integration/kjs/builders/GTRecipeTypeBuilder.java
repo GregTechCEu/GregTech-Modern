@@ -14,8 +14,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
 
 @SuppressWarnings("unused")
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
@@ -30,7 +30,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
     private GTRecipeType smallRecipeMap;
     private Supplier<ItemStack> iconSupplier;
-    private UnaryOperator<GTRecipeTypeUILayout.Builder> layout;
+    private Consumer<GTRecipeTypeUILayout.Builder> layout;
 
     public GTRecipeTypeBuilder(ResourceLocation i) {
         super(i);
@@ -49,7 +49,7 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         return this;
     }
 
-    public GTRecipeTypeBuilder ui(UnaryOperator<GTRecipeTypeUILayout.Builder> builder) {
+    public GTRecipeTypeBuilder ui(Consumer<GTRecipeTypeUILayout.Builder> builder) {
         this.layout = builder;
         return this;
     }
@@ -112,7 +112,9 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
         if (this.layout != null) {
-            type.setUiLayout(this.layout.apply(new GTRecipeTypeUILayout.Builder(type)).build());
+            var builder = new GTRecipeTypeUILayout.Builder(type);
+            this.layout.accept(builder);
+            type.setUiLayout(builder.build());
         }
         type.setSound(sound);
         type.setHasResearchSlot(hasResearchSlot);
