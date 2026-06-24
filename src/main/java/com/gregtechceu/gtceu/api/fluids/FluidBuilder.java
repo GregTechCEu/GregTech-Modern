@@ -476,7 +476,7 @@ public class FluidBuilder {
             if (still == null || flowing == null) {
                 this.determineTextures(material, key);
             }
-            event.registerFluidType(new GTClientFluidTypeExtensions(still, flowing, color), type);
+            event.registerFluidType(new GTClientFluidTypeExtensions(type, still, flowing, color), type);
         });
         return type;
     }

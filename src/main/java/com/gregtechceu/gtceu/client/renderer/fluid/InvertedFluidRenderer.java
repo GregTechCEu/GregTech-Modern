@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.fluid;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 import com.gregtechceu.gtceu.integration.sodium.GTSodiumCompat;
 import com.gregtechceu.gtceu.utils.ScopedValue;
@@ -12,6 +13,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
+import net.neoforged.neoforge.fluids.FluidType;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.experimental.UtilityClass;
@@ -29,11 +31,21 @@ public class InvertedFluidRenderer {
             .withInitial(BlockPos.MutableBlockPos::new);
     private static final AtomicBoolean CAN_RENDER_USING_SODIUM_EMBEDDIUM = new AtomicBoolean(GTCEu.Mods.isSodiumEmbeddiumLoaded());
 
-    public static boolean renderFluid(FluidState fluidState, BlockAndTintGetter level, BlockPos pos,
-                                      VertexConsumer vertexConsumer, BlockState blockState) {
+    public static boolean maybeRenderFluidInverted(FluidType fluidType, FluidState fluidState, BlockState blockState,
+                                                   BlockAndTintGetter level, BlockPos pos,
+                                                   VertexConsumer vertexConsumer) {
         // this ends up calling itself intentionally; we set a state where we flip the fluid blocks' vertices
         if (INVERTED_FLUID_RENDERING.isActive()) {
             // exit early on the loop back so the fluid renderer thinks it can continue along as normal
+            return false;
+        }
+        // config isn't enabled -> use normal rendering
+        if (!ConfigHolder.INSTANCE.gameplay.lowDensityFluidsFlowUp ||
+                !ConfigHolder.INSTANCE.client.lowDensityFluidsRenderUpsideDown) {
+            return false;
+        }
+        // heavier than air -> use normal rendering
+        if (fluidType.getDensity(fluidState, level, pos) > 0) {
             return false;
         }
 

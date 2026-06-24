@@ -860,6 +860,14 @@ public class ConfigHolder {
         @Configurable.Range(min = 1, max = 999)
         public int inWorldPreviewDuration = 10;
         @Configurable
+        @Configurable.Comment({ "If enabled, low density fluid blocks (such as gases and plasmas) render upside down.",
+                "May cause weird visuals or crashes with other mods, so try disabling this if you're having issues.",
+                "This config doesn't do anything if gameplay.lowDensityFluidsFlowUp is disabled.",
+                "Note that things may look especially weird if that config is enabled but this one isn't.",
+                "Default: true" })
+        @Configurable.Synchronized
+        public boolean lowDensityFluidsRenderUpsideDown = true;
+        @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public RendererOptions renderer = new RendererOptions();
