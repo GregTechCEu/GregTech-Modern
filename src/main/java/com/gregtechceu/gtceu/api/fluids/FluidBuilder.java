@@ -91,7 +91,7 @@ public class FluidBuilder {
     @Getter
     private boolean hasCustomFlowing = false;
 
-    private boolean hasFluidBlock = false;
+    private boolean hasFluidBlock = true;
     private boolean hasBucket = true;
 
     public FluidBuilder() {}
