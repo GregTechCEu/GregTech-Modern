@@ -5,26 +5,20 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.base.Preconditions;
@@ -297,13 +291,12 @@ public class FluidBuilder {
         determineLuminosity(material);
         determineViscosity(material);
 
-        final String langKey = this.translation != null ? this.translation : key.getTranslationKeyFor(material);
         // noinspection DataFlowIssue
         var builder = registrate.fluid(this.name, this.still, this.flowing,
-                (p, $1, $2) -> makeFluidType(registrate, p, material, key, langKey),
+                (p, $1, $2) -> makeFluidType(registrate, p, material, key),
                 (p) -> new GTFluid.Flowing(this.state, this.burnTime, p))
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
-                .properties(p -> this.setupFluidTypeProperties(p, material))
+                .properties(p -> this.setupFluidTypeProperties(p, material, key))
                 .fluidProperties(p -> this.setupFluidProperties(p, material))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop());
         if (this.hasFluidBlock) {
@@ -322,7 +315,7 @@ public class FluidBuilder {
             builder.noBlock();
         }
         if (this.hasBucket) {
-            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material, langKey))
+            builder.bucket((fluid, properties) -> new GTBucketItem(fluid, properties, material))
                     .properties(p -> p.craftRemainder(Items.BUCKET).stacksTo(1))
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
@@ -443,8 +436,11 @@ public class FluidBuilder {
         };
     }
 
-    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material) {
-        return properties.sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
+    private FluidType.Properties setupFluidTypeProperties(FluidType.Properties properties, Material material,
+                                                          FluidStorageKey storageKey) {
+        final String langKey = this.translation != null ? this.translation : storageKey.getTranslationKeyFor(material);
+        return properties.descriptionId(langKey)
+                .sound(SoundActions.BUCKET_FILL, SoundEvents.BUCKET_FILL)
                 .sound(SoundActions.BUCKET_EMPTY, SoundEvents.BUCKET_EMPTY)
                 .sound(SoundActions.FLUID_VAPORIZE, SoundEvents.FIRE_EXTINGUISH)
                 .temperature(this.temperature)
@@ -464,44 +460,8 @@ public class FluidBuilder {
     }
 
     private FluidType makeFluidType(AbstractRegistrate<?> owner, FluidType.Properties properties,
-                                    Material material, FluidStorageKey key, String langKey) {
-        FluidType type = new FluidType(properties) {
-
-            @Override
-            public String getDescriptionId() {
-                return material.getUnlocalizedName();
-            }
-
-            @Override
-            public Component getDescription() {
-                return Component.translatable(langKey, material.getLocalizedName());
-            }
-
-            @Override
-            public Component getDescription(FluidStack stack) {
-                return this.getDescription();
-            }
-
-            @Override
-            public boolean isVaporizedOnPlacement(Level level, BlockPos pos, FluidStack stack) {
-                if (!ConfigHolder.INSTANCE.gameplay.gasesVaporizeOnPlacement) {
-                    return false;
-                }
-
-                FluidStorage fluidStorage = material.getProperty(PropertyKey.FLUID);
-                // always vaporize plasmas and gases
-                Fluid plasma = fluidStorage.get(FluidStorageKeys.PLASMA);
-                if (plasma != null) {
-                    return !plasma.defaultFluidState().createLegacyBlock().isEmpty();
-                }
-                Fluid gas = fluidStorage.get(FluidStorageKeys.GAS);
-                if (gas != null) {
-                    return !gas.defaultFluidState().createLegacyBlock().isEmpty();
-                }
-
-                return false;
-            }
-        };
+                                    Material material, FluidStorageKey key) {
+        FluidType type = new GTFluidType(properties, material);
         OneTimeEventReceiver.addModListener(owner, RegisterClientExtensionsEvent.class, event -> {
             final int color = isColorEnabled ? this.color : INFER_COLOR;
             if (still == null || flowing == null) {
