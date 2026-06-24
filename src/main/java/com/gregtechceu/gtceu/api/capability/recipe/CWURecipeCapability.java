@@ -27,6 +27,10 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
+    public boolean skipEmptyContentCheck() {
+        return true;
+    }
+
     public List<NotifiableComputationContainer> getCapabilityHandlers(MetaMachine machine) {
         return machine.getTraits(NotifiableComputationContainer.TYPE);
     }

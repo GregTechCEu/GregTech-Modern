@@ -153,6 +153,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void checkAndFormStructure() {
         if (!(getLevel() instanceof ServerLevel serverLevel)) return;
+        if (self().isRemoved()) return;
         for (var entry : patternStates.entrySet()) {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
