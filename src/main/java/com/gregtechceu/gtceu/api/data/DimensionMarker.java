@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -54,11 +58,11 @@ public class DimensionMarker {
         return iconSupplier.get();
     }
 
-    public void register(ResourceLocation dimKey) {
+    public void register(ResourceKey<Level> dimKey) {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }
-        GTRegistries.DIMENSION_MARKERS.register(dimKey, this);
+        GTRegistries.DIMENSION_MARKERS.register(dimKey.location(), this);
     }
 
     private ItemStack getStack(Item item) {
@@ -93,7 +97,7 @@ public class DimensionMarker {
                     Validator.errorIfNull(iconSupplier, "icon"),
                     Validator.errorIfOutOfRange(tier, "tier", 0, MAX_TIER - 1));
             DimensionMarker marker = new DimensionMarker(tier, iconSupplier, overrideName);
-            marker.register(id);
+            marker.register(ResourceKey.create(Registries.DIMENSION, id));
             return marker;
         }
 
