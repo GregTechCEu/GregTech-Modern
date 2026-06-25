@@ -58,4 +58,9 @@ public class RainingCondition extends RecipeCondition<RainingCondition> {
     public RainingCondition createTemplate() {
         return new RainingCondition();
     }
+
+    @Override
+    public boolean perTick() {
+        return true;
+    }
 }

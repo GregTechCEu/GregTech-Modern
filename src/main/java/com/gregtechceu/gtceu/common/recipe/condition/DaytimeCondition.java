@@ -50,4 +50,9 @@ public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
     public DaytimeCondition createTemplate() {
         return new DaytimeCondition();
     }
+
+    @Override
+    public boolean perTick() {
+        return true;
+    }
 }

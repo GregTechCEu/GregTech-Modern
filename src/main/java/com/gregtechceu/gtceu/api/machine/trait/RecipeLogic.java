@@ -164,7 +164,7 @@ public class RecipeLogic extends WorkLogic {
 
     public void handleRecipeWorking() {
         assert lastRecipe != null;
-        var conditionResult = RecipeHelper.checkConditions(lastRecipe, this);
+        var conditionResult = RecipeHelper.checkConditions(lastRecipe, this, true);
         if (conditionResult.isSuccess()) {
             var handleTick = handleTickRecipe(lastRecipe);
             if (handleTick.isSuccess()) {

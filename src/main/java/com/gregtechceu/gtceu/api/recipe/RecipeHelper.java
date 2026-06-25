@@ -194,9 +194,15 @@ public class RecipeHelper {
      * @return the list of failed conditions, or success if all conditions are satisfied
      */
     public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
+        return checkConditions(recipe, recipeLogic, false);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic, boolean onlyCheckPerTick) {
         if (recipe.conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<RecipeConditionType<?>, List<RecipeCondition>> or = new Reference2ObjectArrayMap<>();
         for (RecipeCondition condition : recipe.conditions) {
+            if (onlyCheckPerTick && !condition.perTick()) continue;
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
             } else if (!condition.check(recipe, recipeLogic)) {
@@ -211,6 +217,7 @@ public class RecipeHelper {
             MutableComponent component = Component.translatable("gtceu.recipe_logic.condition_fails")
                     .append(": ");
             for (RecipeCondition condition : conditions) {
+
                 passed = condition.check(recipe, recipeLogic);
                 if (passed) break;
                 else component.append(condition.getTooltips());

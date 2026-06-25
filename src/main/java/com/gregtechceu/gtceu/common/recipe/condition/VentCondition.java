@@ -45,4 +45,9 @@ public class VentCondition extends RecipeCondition<VentCondition> {
     public VentCondition createTemplate() {
         return new VentCondition();
     }
+
+    @Override
+    public boolean perTick() {
+        return true;
+    }
 }

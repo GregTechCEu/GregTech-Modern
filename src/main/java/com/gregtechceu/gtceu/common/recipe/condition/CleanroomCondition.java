@@ -69,4 +69,9 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
     public CleanroomCondition createTemplate() {
         return new CleanroomCondition();
     }
+
+    @Override
+    public boolean perTick() {
+        return true;
+    }
 }

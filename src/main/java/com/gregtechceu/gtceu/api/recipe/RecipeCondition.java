@@ -79,6 +79,10 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
         return test != isReverse;
     }
 
+    public boolean perTick() {
+        return false;
+    }
+
     protected abstract boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic);
 
     public abstract T createTemplate();

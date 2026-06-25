@@ -56,4 +56,9 @@ public class ThunderCondition extends RecipeCondition<ThunderCondition> {
     public ThunderCondition createTemplate() {
         return new ThunderCondition();
     }
+
+    @Override
+    public boolean perTick() {
+        return true;
+    }
 }
