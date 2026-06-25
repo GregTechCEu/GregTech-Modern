@@ -4,11 +4,14 @@ import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.level.gen.ruletest.AnyMatchRuleTest;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.experimental.Accessors;
+import net.minecraft.world.level.Level;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,7 +22,7 @@ import java.util.Set;
 public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
 
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
-    public transient List<ResourceLocation> dimensions = new ObjectArrayList<>();
+    public transient List<ResourceKey<Level>> dimensions = new ObjectArrayList<>();
 
     public WorldGenLayerBuilder(ResourceLocation id) {
         super(id);
@@ -40,7 +43,7 @@ public class WorldGenLayerBuilder extends BuilderBase<SimpleWorldGenLayer> {
     }
 
     public WorldGenLayerBuilder dimensions(ResourceLocation... dimension) {
-        this.dimensions.addAll(Arrays.asList(dimension));
+        this.dimensions.addAll(Arrays.stream(dimension).map(m -> ResourceKey.create(Registries.DIMENSION, m)).toList());
         return this;
     }
 }
