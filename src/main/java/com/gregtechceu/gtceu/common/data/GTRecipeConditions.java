@@ -14,7 +14,7 @@ public final class GTRecipeConditions {
     
     private GTRecipeConditions() {}
 
-    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITION = DeferredRegister.create(GTRegistries.Keys.RECIPE_CONDITION, "gtceu");
+    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITION = DeferredRegister.create(GTRegistries.Keys.RECIPE_CONDITION, GTCEu.MOD_ID);
     
     // spotless:off
     public static final RegistryObject<RecipeConditionType<BiomeCondition>> BIOME = RECIPE_CONDITION.register("biome", () ->  new RecipeConditionType<>(BiomeCondition::new, BiomeCondition.CODEC));

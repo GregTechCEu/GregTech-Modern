@@ -130,7 +130,7 @@ public class CommonProxy {
         GTPatternErrors.init(modBus);
 
         GTCreativeModeTabs.init();
-        GTRecipeCapabilities.init();
+        GTRecipeCapabilities.init(modBus);
         GTRecipeConditions.init(modBus);
         GTToolTiers.init();
         GTElements.init();
@@ -172,7 +172,7 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         GTDimensionMarkers.init(modBus);
-        ChanceLogic.init();
+        ChanceLogic.init(modBus);
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 

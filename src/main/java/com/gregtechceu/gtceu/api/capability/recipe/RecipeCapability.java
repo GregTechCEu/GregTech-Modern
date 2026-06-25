@@ -31,7 +31,7 @@ import java.util.*;
  */
 public abstract class RecipeCapability<T> {
 
-    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
+    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.byNameCodec();
     public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new DispatchedMapCodec<>(
             RecipeCapability.DIRECT_CODEC,
             RecipeCapability::contentCodec);

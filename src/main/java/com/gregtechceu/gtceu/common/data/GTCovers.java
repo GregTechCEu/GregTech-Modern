@@ -33,7 +33,7 @@ public class GTCovers {
     public static final int[] ALL_TIERS_WITH_ULV = GTValues.tiersBetween(GTValues.ULV,
             GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
-    private static final DeferredRegister<CoverDefinition> COVER = DeferredRegister.create(GTRegistries.Keys.COVER, "gtceu");
+    private static final DeferredRegister<CoverDefinition> COVER = DeferredRegister.create(GTRegistries.Keys.COVER, GTCEu.MOD_ID);
 
     public final static RegistryObject<CoverDefinition> FACADE = register("facade", FacadeCover::new,
             () -> () -> FacadeCoverRenderer.INSTANCE);

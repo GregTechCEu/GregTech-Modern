@@ -48,6 +48,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.ApiStatus;
 
+import java.security.Key;
+
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
 
@@ -103,9 +105,9 @@ public final class GTRegistries {
 
     public static final GTRegistry<GTRecipeType> RECIPE_TYPES = new GTRegistry<>(GTCEu.id("recipe_type"));
     public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry<>(GTCEu.id("recipe_category"));
-    public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry<>(GTCEu.id("recipe_capability"));
+    public static final MappedRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
     public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
-    public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = new GTRegistry<>(GTCEu.id("chance_logic"));
+    public static final MappedRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
 
     // Worldgen related registries
 
