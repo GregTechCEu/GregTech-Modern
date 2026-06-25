@@ -25,7 +25,7 @@ public class VentCondition extends RecipeCondition<VentCondition> {
 
     @Override
     public RecipeConditionType<VentCondition> getType() {
-        return GTRecipeConditions.VENT;
+        return GTRecipeConditions.VENT.get();
     }
 
     @Override

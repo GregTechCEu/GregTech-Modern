@@ -40,7 +40,7 @@ public class HeraclesQuestCondition extends RecipeCondition<HeraclesQuestConditi
 
     @Override
     public RecipeConditionType<HeraclesQuestCondition> getType() {
-        return GTRecipeConditions.HERACLES_QUEST;
+        return GTRecipeConditions.HERACLES_QUEST.get();
     }
 
     @Override

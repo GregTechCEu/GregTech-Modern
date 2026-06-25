@@ -40,7 +40,7 @@ public class GameStageCondition extends RecipeCondition<GameStageCondition> {
 
     @Override
     public RecipeConditionType<GameStageCondition> getType() {
-        return GTRecipeConditions.GAMESTAGE;
+        return GTRecipeConditions.GAMESTAGE.get();
     }
 
     @Override

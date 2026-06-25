@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -18,8 +20,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IInteractionItem {
+
+    public CoverPlaceBehavior(Supplier<CoverDefinition> coverDefinition) {
+        this(coverDefinition.get());
+    }
+
+    public CoverPlaceBehavior(Holder<CoverDefinition> coverDefinitionHolder) {
+        this(coverDefinitionHolder.value());
+    }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {

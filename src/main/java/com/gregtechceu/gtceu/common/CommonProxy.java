@@ -131,7 +131,7 @@ public class CommonProxy {
 
         GTCreativeModeTabs.init();
         GTRecipeCapabilities.init();
-        GTRecipeConditions.init();
+        GTRecipeConditions.init(modBus);
         GTToolTiers.init();
         GTElements.init();
         MaterialIconSet.init();
@@ -155,7 +155,7 @@ public class CommonProxy {
             CCTweakedPlugin.initPlaceholders(modBus);
         }
 
-        GTCovers.init();
+        GTCovers.init(modBus);
         GTCreativeModeTabs.init();
 
         GTMenuTypes.init(modBus);

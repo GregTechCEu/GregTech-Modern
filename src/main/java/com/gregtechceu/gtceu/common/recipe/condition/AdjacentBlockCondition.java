@@ -91,7 +91,7 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
 
     @Override
     public RecipeConditionType<AdjacentBlockCondition> getType() {
-        return GTRecipeConditions.ADJACENT_BLOCK;
+        return GTRecipeConditions.ADJACENT_BLOCK.get();
     }
 
     @Override

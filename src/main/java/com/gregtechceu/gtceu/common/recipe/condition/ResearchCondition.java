@@ -40,7 +40,7 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
 
     @Override
     public RecipeConditionType<ResearchCondition> getType() {
-        return GTRecipeConditions.RESEARCH;
+        return GTRecipeConditions.RESEARCH.get();
     }
 
     @Override

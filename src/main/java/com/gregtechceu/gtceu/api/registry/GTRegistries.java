@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
@@ -54,6 +55,33 @@ public final class GTRegistries {
 
     public static final class Keys {
 
+        // Material related registries
+
+        public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));
+        public static final ResourceKey<Registry<Element>> ELEMENT = makeRegistryKey(GTCEu.id("element"));
+        public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = makeRegistryKey(GTCEu.id("tag_prefix"));
+        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = makeRegistryKey(GTCEu.id("material_icon_set"));
+
+        // Recipe related registries
+
+        public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
+        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
+        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
+        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
+        public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = makeRegistryKey(GTCEu.id("chance_logic"));
+
+        // Worldgen related registries
+
+        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID_DEFINITION = makeRegistryKey(GTCEu.id("bedrock_fluid"));
+        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE_DEFINITION = makeRegistryKey(GTCEu.id("bedrock_ore"));
+        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
+        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
+
+        // Other registries
+
+        public static final ResourceKey<Registry<CoverDefinition>> COVER = makeRegistryKey(GTCEu.id("cover"));
+        public static final ResourceKey<Registry<MachineDefinition>> MACHINE = makeRegistryKey(GTCEu.id("machine"));
+
         public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
         public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
         public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(
@@ -66,8 +94,6 @@ public final class GTRegistries {
 
     // Material related registries
 
-    // spotless:off
-
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
     public static final GTRegistry<Element> ELEMENTS = new GTRegistry<>(GTCEu.id("element"));
     public static final GTRegistry<TagPrefix> TAG_PREFIXES = new GTRegistry<>(GTCEu.id("tag_prefix"));
@@ -78,7 +104,7 @@ public final class GTRegistries {
     public static final GTRegistry<GTRecipeType> RECIPE_TYPES = new GTRegistry<>(GTCEu.id("recipe_type"));
     public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry<>(GTCEu.id("recipe_category"));
     public static final GTRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = new GTRegistry<>(GTCEu.id("recipe_capability"));
-    public static final GTRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = new GTRegistry<>(GTCEu.id("recipe_condition"));
+    public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
     public static final GTRegistry<ChanceLogic> CHANCE_LOGICS = new GTRegistry<>(GTCEu.id("chance_logic"));
 
     // Worldgen related registries
@@ -90,7 +116,7 @@ public final class GTRegistries {
 
     // Other registries
 
-    public static final GTRegistry<CoverDefinition> COVERS = new GTRegistry<>(GTCEu.id("cover"));
+    public static final MappedRegistry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
     public static final GTRegistry<MachineDefinition> MACHINES = new GTRegistry<>(GTCEu.id("machine"));
     public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(GTCEu.id("sound"));
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);

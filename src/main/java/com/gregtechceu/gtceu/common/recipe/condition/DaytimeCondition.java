@@ -28,7 +28,7 @@ public class DaytimeCondition extends RecipeCondition<DaytimeCondition> {
 
     @Override
     public RecipeConditionType<DaytimeCondition> getType() {
-        return GTRecipeConditions.DAYTIME;
+        return GTRecipeConditions.DAYTIME.get();
     }
 
     @Override

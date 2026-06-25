@@ -95,7 +95,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
 
     @Override
     public RecipeConditionType<AdjacentFluidCondition> getType() {
-        return GTRecipeConditions.ADJACENT_FLUID;
+        return GTRecipeConditions.ADJACENT_FLUID.get();
     }
 
     @Override

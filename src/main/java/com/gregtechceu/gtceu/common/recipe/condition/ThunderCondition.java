@@ -38,7 +38,7 @@ public class ThunderCondition extends RecipeCondition<ThunderCondition> {
 
     @Override
     public RecipeConditionType<ThunderCondition> getType() {
-        return GTRecipeConditions.THUNDER;
+        return GTRecipeConditions.THUNDER.get();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
 
     @Override
     public RecipeConditionType<EnvironmentalHazardCondition> getType() {
-        return GTRecipeConditions.ENVIRONMENTAL_HAZARD;
+        return GTRecipeConditions.ENVIRONMENTAL_HAZARD.get();
     }
 
     @Override

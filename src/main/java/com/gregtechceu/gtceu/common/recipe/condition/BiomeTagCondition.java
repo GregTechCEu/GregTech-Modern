@@ -43,7 +43,7 @@ public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
 
     @Override
     public RecipeConditionType<BiomeTagCondition> getType() {
-        return GTRecipeConditions.BIOME_TAG;
+        return GTRecipeConditions.BIOME_TAG.get();
     }
 
     @Override

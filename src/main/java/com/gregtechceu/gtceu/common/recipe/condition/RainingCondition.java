@@ -36,7 +36,7 @@ public class RainingCondition extends RecipeCondition<RainingCondition> {
 
     @Override
     public RecipeConditionType<RainingCondition> getType() {
-        return GTRecipeConditions.RAINING;
+        return GTRecipeConditions.RAINING.get();
     }
 
     @Override
