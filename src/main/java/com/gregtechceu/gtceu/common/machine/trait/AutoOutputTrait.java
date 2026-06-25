@@ -58,7 +58,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected @Nullable Direction itemOutputDirection = Direction.UP, fluidOutputDirection = Direction.UP;
+    protected @Nullable Direction itemOutputDirection = null, fluidOutputDirection = null;
     @Getter
     @SaveField
     @SyncToClient
@@ -126,9 +126,10 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public void onMachineLoad() {
         super.onMachineLoad();
 
-        this.itemOutputDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
+        Direction defaultDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
                 Direction.UP;
-        this.fluidOutputDirection = itemOutputDirection;
+        if (this.itemOutputDirection == null) this.itemOutputDirection = defaultDirection;
+        if (this.fluidOutputDirection == null) this.fluidOutputDirection = defaultDirection;
 
         getMachine().scheduleForNextServerTick(this::updateFluidOutputSubscription);
         getMachine().scheduleForNextServerTick(this::updateItemOutputSubscription);

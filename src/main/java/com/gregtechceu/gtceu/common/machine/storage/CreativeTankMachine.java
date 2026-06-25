@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -17,17 +18,22 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
@@ -148,7 +154,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .child(Text.lang("gtceu.creative.tank.fluid").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
-                                .child(createPhantomLockedFluidSlot(syncManager)))
+                                .child(createPhantomStoredFluidSlot(syncManager)))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()
@@ -173,6 +179,56 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                         .setTextAlignment(Alignment.CENTER)
                                         .setNumbers(1, Integer.MAX_VALUE)
                                         .value(ticksPerCycle))));
+    }
+
+    private IWidget createPhantomStoredFluidSlot(PanelSyncManager syncManager) {
+        syncManager.syncValue("fluid_slot",
+                new FluidSlotSyncHandler(new StoredFluidTank()).controlsAmount(false).phantom(true));
+        return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
+    }
+
+    private class StoredFluidTank implements IFluidTank {
+
+        @Override
+        public FluidStack getFluid() {
+            return stored;
+        }
+
+        @Override
+        public int getFluidAmount() {
+            return stored.getAmount();
+        }
+
+        @Override
+        public int getCapacity() {
+            return FluidType.BUCKET_VOLUME;
+        }
+
+        @Override
+        public boolean isFluidValid(FluidStack stack) {
+            return true;
+        }
+
+        @Override
+        public int fill(FluidStack resource, IFluidHandler.FluidAction action) {
+            if (resource.isEmpty()) return 0;
+            if (action.execute()) updateStored(resource);
+            return resource.getAmount();
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, IFluidHandler.FluidAction action) {
+            if (stored.isEmpty() || maxDrain <= 0) return FluidStack.EMPTY;
+            FluidStack drained = stored.copyWithAmount(Math.min(maxDrain, stored.getAmount()));
+            if (action.execute()) updateStored(FluidStack.EMPTY);
+            return drained;
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, IFluidHandler.FluidAction action) {
+            if (stored.isEmpty() || !FluidStack.isSameFluidSameComponents(resource, stored)) return FluidStack.EMPTY;
+            return drain(resource.getAmount(), action);
+        }
     }
 
     @Override
