@@ -128,7 +128,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
             GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
-    private final List<Component> tooltips = new ArrayList<>();
+    private final List<Supplier<Component>> tooltips = new ArrayList<>();
     @Nullable
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
@@ -498,7 +498,13 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF tooltips(List<? extends @Nullable Component> components) {
-        tooltips.addAll(components.stream().filter(Objects::nonNull).toList());
+        tooltips.addAll(components.stream().filter(Objects::nonNull).map(c -> (Supplier<Component>)(() -> c)).toList());
+        return getThis();
+    }
+
+    @SafeVarargs
+    public final SELF tooltips(Supplier<Component>... componentSuppliers) {
+        tooltips.addAll(List.of(componentSuppliers));
         return getThis();
     }
 
@@ -507,8 +513,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     }
 
     public SELF conditionalTooltip(Component component, boolean condition) {
-        if (condition)
-            tooltips.add(component);
+        if (condition) tooltips.add(() -> component);
+        return getThis();
+    }
+
+    public SELF conditionalTooltip(Supplier<Component> component, boolean condition) {
+        if (condition) tooltips.add(component);
         return getThis();
     }
 
@@ -658,6 +668,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @HideFromJS
     public DEFINITION register() {
         this.registrate.object(name);
+
         var definition = createDefinition();
 
         definition.setRotationState(rotationState);
@@ -704,7 +715,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips);
+            components.addAll(tooltips.stream().map(Supplier::get).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setRecipeModifier(recipeModifier);

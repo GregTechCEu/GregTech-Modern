@@ -2,12 +2,17 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
@@ -164,24 +169,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                             Consumer<CreativeModeTab.Builder> config) {
-        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
-            var builder = CreativeModeTab.builder()
-                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
-                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
-            config.accept(builder);
-            return builder.build();
-        });
-    }
-
-    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture,
-                                       ResourceLocation flowingTexture) {
-        return entry(name,
-                callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture,
-                        flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
-                        .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
-    }
+    // Machines
 
     public <DEFINITION extends MachineDefinition,
             MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
@@ -199,10 +187,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
+    // Multiblock machines
+
     public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
+                                                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
@@ -213,12 +203,29 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockEntityFactory);
     }
 
-    public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(GTCEu.id(name));
+    // Elements
+
+    public Element element(String name, long neutrons, long halfLifeSeconds, @Nullable String decayTo, long protons,
+                           String symbol, boolean isIsotope) {
+        var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
+        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
+        return element;
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
-        return new SoundEntryBuilder(name);
+    // Medical conditions
+
+    public MedicalCondition medicalCondition(String name, int color,
+                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType, float progressionRate,
+                                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
+        var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms);
+        this.generic(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> medicalCondition).register();
+        return medicalCondition;
+    }
+
+    // Sounds
+
+    public SoundEntryBuilder sound(String name) {
+        return new SoundEntryBuilder(new ResourceLocation(getModid(), name));
     }
 
     // Blocks
@@ -246,8 +253,19 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
+    // Fluids
+    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture,
+                                       ResourceLocation flowingTexture) {
+        return entry(name,
+                callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture,
+                        flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
+                        .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
+    }
+
+    // Creative mode tabs
+
     private @Nullable RegistryEntry<CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?>, @Nullable RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab> creativeModeTab() {
         return this.currentTab;
@@ -285,5 +303,16 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
+    }
+
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
+                                                                                             Consumer<CreativeModeTab.Builder> config) {
+        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
+            var builder = CreativeModeTab.builder()
+                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
+                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
+            config.accept(builder);
+            return builder.build();
+        });
     }
 }

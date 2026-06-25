@@ -19,6 +19,7 @@ import com.mojang.serialization.Codec;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -58,6 +59,7 @@ public class MedicalCondition {
     @NotNull
     public Consumer<GTRecipeBuilder> recipeModifier = builder -> {};
 
+    @ApiStatus.Internal
     public MedicalCondition(ResourceLocation id, int color,
                             int maxProgression, IdleProgressionType progressionType, float progressionRate,
                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {

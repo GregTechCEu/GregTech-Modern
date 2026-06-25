@@ -73,7 +73,7 @@ public class GTRecipeModifiers {
             });
 
     public static final RecipeModifier DEFAULT_ENVIRONMENT_REQUIREMENT = ENVIRONMENT_REQUIREMENT
-            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING.get(), 1000);
+            .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 1000);
 
     public static final RecipeModifier PARALLEL_HATCH = GTRecipeModifiers::hatchParallel;
     public static final RecipeModifier BATCH_MODE = GTRecipeModifiers::batchMode;

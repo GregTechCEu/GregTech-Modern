@@ -22,10 +22,10 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IInteractionItem {
+public record CoverPlaceBehavior(Supplier<CoverDefinition> coverDefinition) implements IInteractionItem {
 
-    public CoverPlaceBehavior(Supplier<CoverDefinition> coverDefinition) {
-        this(coverDefinition.get());
+    public CoverPlaceBehavior(CoverDefinition coverDefinition) {
+        this(() -> coverDefinition);
     }
 
     public CoverPlaceBehavior(Holder<CoverDefinition> coverDefinitionHolder) {
@@ -42,9 +42,9 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
         if (coverable != null) {
             var coverSide = ICoverable.rayTraceCoverableSide(coverable, player);
             if (coverSide != null && coverable.getCoverAtSide(coverSide) == null &&
-                    coverable.canPlaceCoverOnSide(coverDefinition, coverSide)) {
+                    coverable.canPlaceCoverOnSide(coverDefinition.get(), coverSide)) {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    boolean result = coverable.placeCoverOnSide(coverSide, itemStack, coverDefinition, serverPlayer);
+                    boolean result = coverable.placeCoverOnSide(coverSide, itemStack, coverDefinition.get(), serverPlayer);
                     if (result && !player.isCreative()) {
                         itemStack.shrink(1);
                     }
@@ -62,7 +62,7 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
         if (item instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
                 if (component instanceof CoverPlaceBehavior placeBehavior) {
-                    if (canPlaceCover == null || canPlaceCover.test(placeBehavior.coverDefinition)) {
+                    if (canPlaceCover == null || canPlaceCover.test(placeBehavior.coverDefinition.get())) {
                         return true;
                     }
                 }

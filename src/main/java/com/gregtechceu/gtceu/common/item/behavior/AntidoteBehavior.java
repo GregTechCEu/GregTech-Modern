@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -30,20 +31,11 @@ import java.util.function.Supplier;
  * @param removePercent how many 'counts' should be removed from the chosen condition(s),
  *                      as a percentage of the current 'counts' in the range [0, 100]. -1 for all.
  */
-public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
+public record AntidoteBehavior(int removePercent, Set<MedicalCondition> types)
         implements IInteractionItem, IAddInformation {
 
     public AntidoteBehavior(int removePercent, MedicalCondition... types) {
-        this(new HashSet<>(), removePercent);
-        this.types.addAll(Arrays.asList(types));
-    }
-
-    public AntidoteBehavior(int removePercent, Holder<MedicalCondition>... types) {
-        this(removePercent, Arrays.stream(types).map(Holder::get).toArray(MedicalCondition[]::new));
-    }
-
-    public AntidoteBehavior(int removePercent, Supplier<MedicalCondition>... types) {
-        this(removePercent, Arrays.stream(types).map(Supplier::get).toArray(MedicalCondition[]::new));
+        this(removePercent, Set.of(types));
     }
 
     @Override
@@ -58,7 +50,7 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
             if (condition == null) {
                 continue;
             }
-            if (!this.types.contains(condition)) {
+            if (!types.contains(condition)) {
                 continue;
             }
             if (removePercent == -1) {

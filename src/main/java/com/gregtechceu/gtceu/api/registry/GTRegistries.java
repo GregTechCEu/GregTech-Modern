@@ -97,7 +97,7 @@ public final class GTRegistries {
     // Material related registries
 
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
-    public static final GTRegistry<Element> ELEMENTS = new GTRegistry<>(GTCEu.id("element"));
+    public static final MappedRegistry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
     public static final GTRegistry<TagPrefix> TAG_PREFIXES = new GTRegistry<>(GTCEu.id("tag_prefix"));
     public static final GTRegistry<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry<>(GTCEu.id("material_icon_set"));
 

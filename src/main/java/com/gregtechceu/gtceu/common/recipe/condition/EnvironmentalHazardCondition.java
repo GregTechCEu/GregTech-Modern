@@ -31,7 +31,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
     // spotless:on
 
     @Getter
-    private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING.get();
+    private MedicalCondition condition = GTMedicalConditions.CARBON_MONOXIDE_POISONING;
 
     public EnvironmentalHazardCondition(boolean isReverse, MedicalCondition condition) {
         super(isReverse);

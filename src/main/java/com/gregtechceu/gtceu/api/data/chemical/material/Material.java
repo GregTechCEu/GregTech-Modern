@@ -1493,7 +1493,7 @@ public class Material implements Comparable<Material> {
          * @param trigger   The trigger type for this hazard.
          * @param condition The condition applied by this hazard.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, Supplier<MedicalCondition> condition) {
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
             properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, false));
             return this;
         }
@@ -1509,7 +1509,7 @@ public class Material implements Comparable<Material> {
          * @param condition             The condition applied by this hazard.
          * @param progressionMultiplier Multiplier for how quickly the condition will progress.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, Supplier<MedicalCondition> condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               float progressionMultiplier) {
             properties.setProperty(HAZARD, new HazardProperty(trigger, condition, progressionMultiplier, false));
             return this;
@@ -1525,7 +1525,7 @@ public class Material implements Comparable<Material> {
          * @param applyToDerivatives    Whether the Hazard should be applied to materials with this Material in its
          *                              components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, Supplier<MedicalCondition> condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               float progressionMultiplier, boolean applyToDerivatives) {
             properties.setProperty(HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
@@ -1544,7 +1544,7 @@ public class Material implements Comparable<Material> {
          * @param applyToDerivatives Whether the Hazard should be applied to materials with this Material in its
          *                           components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, Supplier<MedicalCondition> condition,
+        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
                               boolean applyToDerivatives) {
             properties.setProperty(HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
             return this;

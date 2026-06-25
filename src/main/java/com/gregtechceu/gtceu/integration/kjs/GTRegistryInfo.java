@@ -46,7 +46,7 @@ public class GTRegistryInfo<K, V> {
 
     // spotless:off
 
-    public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
+    //public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
     public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * This is some kind of Periodic Table, which can be used to determine "Properties" of the Materials.
@@ -57,6 +58,7 @@ public class Element {
         return protons + neutrons;
     }
 
+    @ApiStatus.Internal
     public Element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol,
                    boolean isIsotope) {
         this.protons = protons;

@@ -31,12 +31,12 @@ import java.util.function.Supplier;
 
 public class HazardProperty implements IMaterialProperty {
 
-    public final Supplier<MedicalCondition> condition;
+    public final MedicalCondition condition;
     public final HazardTrigger hazardTrigger;
     public final boolean applyToDerivatives;
     public final float progressionMultiplier;
 
-    public HazardProperty(HazardTrigger hazardTrigger, Supplier<MedicalCondition> condition, float progressionMultiplier,
+    public HazardProperty(HazardTrigger hazardTrigger, MedicalCondition condition, float progressionMultiplier,
                           boolean applyToDerivatives) {
         this.hazardTrigger = hazardTrigger;
         this.condition = condition;

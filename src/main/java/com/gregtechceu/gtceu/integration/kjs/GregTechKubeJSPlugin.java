@@ -146,7 +146,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void init() {
         super.init();
-        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
+        //GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
 
         GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
                 true);

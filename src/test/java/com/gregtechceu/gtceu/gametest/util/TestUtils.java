@@ -253,7 +253,7 @@ public class TestUtils {
             for (IItemComponent component : componentItem.getComponents()) {
                 if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
                     helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
-                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                    coverDefinition = coverPlaceBehavior.coverDefinition().get();
                 }
             }
         }
