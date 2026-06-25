@@ -30,7 +30,7 @@ public class GameDataMixin {
                     boolean bGt = b.getNamespace().equals("gtceu");
                     if (aGt && !bGt) return -1;
                     if (!aGt && bGt) return 1;
-                    return 0; // stable sort: leave everything else exactly where it was
+                    return 0;
                 })
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
