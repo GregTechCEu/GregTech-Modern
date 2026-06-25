@@ -13,9 +13,6 @@ import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.rei.recipe.GTRecipeREICategory;
 
-import dev.emi.emi.api.recipe.EmiRecipe;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -59,6 +56,9 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.emi.api.EmiApi;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -769,7 +769,8 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory).toList();
+            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+                    .toList();
             Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
             for (var cat : categories) {
                 recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
