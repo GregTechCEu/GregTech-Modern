@@ -4,15 +4,15 @@ title: Sync Handlers
 
 
 ## What are they
-A `SyncHandler` is a mechanism that handles the syncing between client and server for MUI2. For its high level usages, see [Sync Basics](Sync-Basics.md). `SyncHandler`s generically can sync anything between client and server, and `SyncValue`s specifically sync data(e.g. a value) between client and server.
+A `SyncHandler` is a mechanism that handles the syncing between client and server for MUI2. For its high level usages, see [Sync Basics](Sync-Basics.md). `SyncHandler`s generally can sync anything between client and server, and `SyncValue`s specifically sync data (e.g. a value) between client and server.
 
 ## How they work
 You can create a `SyncHandler` with the following syntax:
 `new IntSyncValue(() -> this.number, (newValue) -> this.number = newValue)`
 This means that to check if the value changed, it will call the first argument (the IntSupplier, `() -> this.number`), and cache the value that gets returned.   
-Then, whenever that value changes, it will send the changes value to the other side.   
+Then, whenever that value changes, it will send the changed value to the other side.   
 Whenever a `SyncHandler` receives a value from the other side, it will call the setter with the value, in this case setting `this.number` to the new value on the client, and cache it for further use/checking.  
-Do note that this means that a setter isn't necessary. You can only use a getter, and then call `syncHandler.getValue()` to get the last received / cached value.
+Do note that this means that a setter isn't necessary. You can use only a getter, and then call `syncHandler.getValue()` to get the last received / cached value.
 
 !!! Note
     By default, `SyncValue`s or `SyncHandler`s don't allow client-to-server syncing. For that you will need to chain `.allowC2S()`. This gets called on the `SyncHandler` itself, so if you're using a builder, after the `.build()`
