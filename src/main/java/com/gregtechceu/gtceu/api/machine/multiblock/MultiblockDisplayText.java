@@ -322,7 +322,7 @@ public class MultiblockDisplayText {
             if (recipeLogic.hasCustomProgressLine()) {
                 return this.addCustomProgressLine(recipeLogic);
             } else {
-                return this.addProgressLine(recipeLogic.getDuration(), recipeLogic.getMaxProgress(),
+                return this.addProgressLine(recipeLogic.getProgress(), recipeLogic.getMaxProgress(),
                         recipeLogic.getProgressPercent());
             }
         }

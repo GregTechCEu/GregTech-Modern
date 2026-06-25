@@ -31,7 +31,6 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -258,10 +257,10 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
-            if (machine instanceof IDataAccessHatch computationProvider) {
+            if (machine instanceof IDataAccessMachine computationProvider) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
             }
-            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessMachine.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }

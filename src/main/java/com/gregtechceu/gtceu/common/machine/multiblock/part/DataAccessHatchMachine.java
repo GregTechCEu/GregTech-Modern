@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IDataAccessHatch;
+import com.gregtechceu.gtceu.api.capability.IDataAccessMachine;
 import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
-import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
@@ -49,7 +48,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class DataAccessHatchMachine extends TieredPartMachine
-                                    implements IMachineLife, IDataAccessHatch, IDataInfoProvider, IMonitorComponent {
+                                    implements IMachineLife, IDataAccessMachine, IDataInfoProvider, IMonitorComponent {
 
     private final Set<GTRecipeDefinition> recipes;
     @Getter
@@ -66,24 +65,13 @@ public class DataAccessHatchMachine extends TieredPartMachine
 
     protected NotifiableItemStackHandler createImportItemHandler() {
         if (isCreative) return new NotifiableItemStackHandler(this, 0, IO.NONE);
-        return new NotifiableItemStackHandler(this, getInventorySize(), IO.NONE, IO.BOTH) {
-
-            @Override
-            public void onContentsChanged() {
-                super.onContentsChanged();
-                rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine);
-            }
-
-            @NotNull
-            @Override
-            public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-                boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
-                if (ResearchManager.isStackDataItem(stack, isDataBank)) {
-                    return super.insertItem(slot, stack, simulate);
-                }
-                return stack;
-            }
-        };
+        var inventory = new NotifiableItemStackHandler(this, getInventorySize(), IO.NONE, IO.BOTH)
+                .setFilter(stack -> {
+                    boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
+                    return ResearchManager.isStackDataItem(stack, isDataBank);
+                });
+        inventory.addChangedListener(() -> rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine));
+        return inventory;
     }
 
     @Override
@@ -137,13 +125,14 @@ public class DataAccessHatchMachine extends TieredPartMachine
                 }
             }
         }
+        getControllers().forEach(controller -> {
+            if(controller instanceof IDataAccessMachine dataAccessMachine) dataAccessMachine.notifyListeners();
+        });
     }
 
     @Override
-    public boolean isRecipeAvailable(@NotNull GTRecipe recipe, @NotNull Collection<IDataAccessHatch> seen) {
-        seen.add(this);
-        return recipe.conditions.stream().noneMatch(ResearchCondition.class::isInstance) ||
-                recipes.stream().anyMatch(definition -> definition.getId().equals(recipe.getId()));
+    public boolean isRecipeAvailable(@NotNull GTRecipe recipe) {
+        return isCreative || recipes.stream().anyMatch(definition -> definition.getId().equals(recipe.getId()));
     }
 
     @NotNull
@@ -180,11 +169,6 @@ public class DataAccessHatchMachine extends TieredPartMachine
     public void addedToController(IMultiController controller) {
         rebuildData(controller instanceof DataBankMachine);
         super.addedToController(controller);
-    }
-
-    @Override
-    public Component modifyRecipe(GTRecipe recipe) {
-        return IDataAccessHatch.super.modifyRecipe(recipe);
     }
 
     @Override

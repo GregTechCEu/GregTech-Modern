@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
+import com.gregtechceu.gtceu.api.capability.IDataAccessMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -48,7 +50,18 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        return true;
+        if(recipeLogic.getMachine() instanceof IDataAccessMachine dataAccessMachine &&
+                dataAccessMachine.isRecipeAvailable(recipe)) {
+            return true;
+        }
+        if(recipeLogic.getMachine() instanceof IMultiController controller) {
+            for (var part : controller.getParts()) {
+                if (part instanceof IDataAccessMachine dataAccessHatch && dataAccessHatch.isRecipeAvailable(recipe)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

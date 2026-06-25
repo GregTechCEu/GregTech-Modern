@@ -34,7 +34,7 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<IOpticalComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<IDataAccessHatch> CAPABILITY_DATA_ACCESS = CapabilityManager
+    public static final Capability<IDataAccessMachine> CAPABILITY_DATA_ACCESS = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IHazardParticleContainer> CAPABILITY_HAZARD_CONTAINER = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -60,7 +60,7 @@ public class GTCapability {
         event.register(ITurbineMachine.class);
         event.register(ILaserContainer.class);
         event.register(IOpticalComputationProvider.class);
-        event.register(IDataAccessHatch.class);
+        event.register(IDataAccessMachine.class);
         event.register(IMedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);
         event.register(IMonitorComponent.class);
