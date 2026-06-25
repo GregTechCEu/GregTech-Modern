@@ -184,10 +184,12 @@ public class TestUtils {
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
     public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
-        if (controller.isFormed()) return;
         controller.checkAndFormStructure();
         helper.assertTrue(controller.isFormed(),
                 "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());
+        helper.assertFalse(controller.getParts().isEmpty(),
+                "Multiblock reported formed but registered no parts: " + controller + " at " +
+                        controller.getBlockPos());
     }
 
     /**
