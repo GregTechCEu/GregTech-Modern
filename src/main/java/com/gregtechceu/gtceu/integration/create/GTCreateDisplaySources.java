@@ -25,7 +25,7 @@ public class GTCreateDisplaySources {
                 .displaySource(GTRegistration.REGISTRATE, name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
-                source -> GTRegistries.MACHINES.entries().forEach(
+                source -> GTRegistries.MACHINES.entrySet().forEach(
                         (entry) -> DisplaySource.BY_BLOCK_ENTITY.add(
                                 entry.getValue().getBlockEntityType(),
                                 source)));

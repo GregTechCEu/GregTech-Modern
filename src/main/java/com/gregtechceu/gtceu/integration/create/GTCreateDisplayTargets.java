@@ -24,7 +24,7 @@ public class GTCreateDisplayTargets {
                 .displayTarget(GTRegistration.REGISTRATE, name, supplier);
         builder.onRegisterAfter(
                 Registries.BLOCK_ENTITY_TYPE,
-                target -> GTRegistries.MACHINES.entries().forEach(
+                target -> GTRegistries.MACHINES.entrySet().forEach(
                         (entry) -> DisplayTarget.BY_BLOCK_ENTITY.register(
                                 entry.getValue().getBlockEntityType(),
                                 target)));

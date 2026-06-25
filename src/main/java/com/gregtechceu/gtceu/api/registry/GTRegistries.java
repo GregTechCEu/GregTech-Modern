@@ -119,7 +119,7 @@ public final class GTRegistries {
     // Other registries
 
     public static final MappedRegistry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
-    public static final GTRegistry<MachineDefinition> MACHINES = new GTRegistry<>(GTCEu.id("machine"));
+    public static final MappedRegistry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
     public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(GTCEu.id("sound"));
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);
     public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);

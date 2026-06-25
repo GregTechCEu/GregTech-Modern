@@ -49,7 +49,6 @@ public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
                 CHEMICAL_BATH_RECIPES, ELECTROMAGNETIC_SEPARATOR_RECIPES, SIFTER_RECIPES
         };
         for (MachineDefinition machine : GTRegistries.MACHINES
-                .values()
                 .stream()
                 .sorted(sortDefinition)
                 .toList()) {

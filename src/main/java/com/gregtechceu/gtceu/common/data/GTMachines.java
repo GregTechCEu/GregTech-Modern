@@ -71,7 +71,6 @@ public class GTMachines {
 
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
-        GTRegistries.MACHINES.unfreeze();
     }
 
     //////////////////////////////////////
@@ -1206,19 +1205,6 @@ public class GTMachines {
 
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
-        }
-
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
-        }
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
-
-        GTRegistries.MACHINES.freeze();
-
-        for (MachineDefinition machine : GTRegistries.MACHINES) {
-            for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
-                MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
-            }
         }
     }
 

@@ -50,7 +50,7 @@ public class GTRegistryInfo<K, V> {
     public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);
-    public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
+    //public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
     public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
     public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
