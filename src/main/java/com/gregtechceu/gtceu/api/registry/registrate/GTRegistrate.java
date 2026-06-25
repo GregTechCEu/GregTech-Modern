@@ -2,11 +2,18 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
@@ -22,10 +29,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -55,6 +64,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -62,6 +72,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -203,6 +215,30 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockEntityFactory);
     }
 
+    // Tag prefixes
+
+    public TagPrefix tagPrefix(String name) {
+        return tagPrefix(name, false);
+    }
+
+    public TagPrefix tagPrefix(String name, boolean invertedName) {
+        var tagPrefix = new TagPrefix(makeResourceLocation(name), invertedName);
+        this.generic(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> tagPrefix).register();
+        return tagPrefix;
+    }
+
+    public TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return tagPrefix(name)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty);
+    }
+
     // Elements
 
     public Element element(String name, long neutrons, long halfLifeSeconds, @Nullable String decayTo, long protons,
@@ -227,6 +263,31 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public SoundEntryBuilder sound(String name) {
         return new SoundEntryBuilder(new ResourceLocation(getModid(), name));
     }
+
+    // World gen layers
+
+    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
+                                                   Set<ResourceKey<Level>> levels) {
+        var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
+        this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
+        return worldGenLayer;
+    }
+
+    // Material icon sets
+    public MaterialIconSet materialIconSet(String id) {
+        return materialIconSet(id, MaterialIconSet.DULL);
+    }
+
+    public MaterialIconSet materialIconSet(String id, MaterialIconSet parent) {
+        return materialIconSet(id, parent, false);
+    }
+
+    public MaterialIconSet materialIconSet(String id, @Nullable MaterialIconSet parent, boolean isRoot) {
+        var iconSet = new MaterialIconSet(makeResourceLocation(id), parent, isRoot);
+        this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
+        return iconSet;
+    }
+
 
     // Blocks
     @Override

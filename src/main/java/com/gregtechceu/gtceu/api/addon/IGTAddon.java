@@ -33,22 +33,6 @@ public interface IGTAddon {
     String addonModId();
 
     /**
-     * Call init on your custom TagPrefix class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, TagPrefix>} register event instead
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    default void registerTagPrefixes() {}
-
-    /**
-     * Call init on your custom Sound class(es) here
-     * 
-     * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, SoundEntry>} register event instead
-     */
-    @Deprecated(forRemoval = true, since = "8.0.0")
-    default void registerSounds() {}
-
-    /**
      * Call init on your custom IWorldGenLayer class(es) here
      *
      * @deprecated Subscribe to the {@code GTCEuAPI.RegisterEvent<ResourceLocation, IWorldGenLayer>} register event

@@ -59,7 +59,6 @@ public class GTSoundEntries {
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
     public static void init() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
         registerSounds();

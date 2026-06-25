@@ -46,6 +46,7 @@ import net.minecraftforge.registries.*;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
+import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.security.Key;
@@ -84,6 +85,8 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<CoverDefinition>> COVER = makeRegistryKey(GTCEu.id("cover"));
         public static final ResourceKey<Registry<MachineDefinition>> MACHINE = makeRegistryKey(GTCEu.id("machine"));
 
+        public static final ResourceKey<Registry<SoundEntry>> SOUND = makeRegistryKey(GTCEu.id("sound"));
+
         public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
         public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
         public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(
@@ -98,8 +101,8 @@ public final class GTRegistries {
 
     public static final MaterialRegistry MATERIALS = new MaterialRegistry();
     public static final MappedRegistry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
-    public static final GTRegistry<TagPrefix> TAG_PREFIXES = new GTRegistry<>(GTCEu.id("tag_prefix"));
-    public static final GTRegistry<MaterialIconSet> MATERIAL_ICON_SETS = new GTRegistry<>(GTCEu.id("material_icon_set"));
+    public static final MappedRegistry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
+    public static final MappedRegistry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);
 
     // Recipe related registries
 
@@ -114,7 +117,7 @@ public final class GTRegistries {
     public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_fluid"));
     public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_ore"));
     public static final GTRegistry<GTOreDefinition> ORE_VEINS = new GTRegistry<>(GTCEu.id("ore_vein"));
-    public static final GTRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = new GTRegistry<>(GTCEu.id("world_gen_layer"));
+    public static final MappedRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
     // Other registries
 
