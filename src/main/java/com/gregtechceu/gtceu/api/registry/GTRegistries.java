@@ -55,6 +55,7 @@ public final class GTRegistries {
     public static final class Keys {
 
         public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
+        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
         public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(
                 GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
@@ -93,7 +94,7 @@ public final class GTRegistries {
     public static final GTRegistry<MachineDefinition> MACHINES = new GTRegistry<>(GTCEu.id("machine"));
     public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(GTCEu.id("sound"));
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);
-    public static final GTRegistry<MedicalCondition> MEDICAL_CONDITIONS = new GTRegistry<>(GTCEu.id("medical_condition"));
+    public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);
 
     public static final MappedRegistry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
     public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);

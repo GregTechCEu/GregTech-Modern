@@ -40,7 +40,7 @@ public class MedicalConditionTest {
     public static void testMedicalConditionTicking(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add a 'reasonable' count of nausea (450 counts)
-        helper.addMedicalConditionCounts(player, GTMedicalConditions.NAUSEA, 640);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.NAUSEA.get(), 640);
 
         helper.startSequence()
                 // tick the medical condition tracker for 2 seconds
@@ -51,15 +51,15 @@ public class MedicalConditionTest {
                 .thenExecute(() -> helper.assertTrue(player.hasEffect(MobEffects.CONFUSION),
                         "Player " + player + " should have nausea effect"))
                 // remove extra nausea
-                .thenExecute(() -> helper.addMedicalConditionCounts(player, GTMedicalConditions.NAUSEA, -550))
+                .thenExecute(() -> helper.addMedicalConditionCounts(player, GTMedicalConditions.NAUSEA.get(), -550))
                 // nausea condition lowers by 5 'counts' per second
                 // so the player should have it for another (80 / 5) = 16 seconds
                 // -1 because the player is ticked once during init
                 .thenExecuteFor(16 * 20, () -> {
-                    helper.assertHasCondition(player, GTMedicalConditions.NAUSEA);
+                    helper.assertHasCondition(player, GTMedicalConditions.NAUSEA.get());
                     helper.tickEntity(player);
                 })
-                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.NAUSEA))
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.NAUSEA.get()))
                 .thenSucceed();
     }
 
@@ -73,15 +73,15 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, () -> helper.tickEntity(player))
                 // check if player has 100 'counts' of cancer
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN.get(), 100))
                 // remove Nt ingot from player
                 .thenExecute(() -> player.getInventory().clearContent())
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, () -> helper.tickEntity(player))
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN.get(), 100))
                 // add more cancer to reach max slowness symptom
-                .thenExecute(() -> helper.setMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 18000))
+                .thenExecute(() -> helper.setMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN.get(), 18000))
                 // // tick the medical condition tracker for 2 ticks, just to be safe
                 // .thenExecuteFor(2, () -> helper.tickEntity(player))
                 // check that the slowness attribute modifier is properly applied.
@@ -106,7 +106,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, () -> helper.tickEntity(player))
                 // check if player did NOT get asbestosis
-                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.ASBESTOSIS))
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.ASBESTOSIS.get()))
                 // remove face mask
                 .thenExecute(() -> player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY))
                 // tick the medical condition tracker for 10 seconds
@@ -114,7 +114,7 @@ public class MedicalConditionTest {
                 // check if player DID get asbestosis this time
                 .thenExecute(() -> {
                     if (!player.isAlive()) return; // we don't care if the player died here, that means the asbestos got them
-                    helper.assertHasCondition(player, GTMedicalConditions.ASBESTOSIS);
+                    helper.assertHasCondition(player, GTMedicalConditions.ASBESTOSIS.get());
                 })
                 .thenSucceed();
     }
@@ -131,7 +131,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, () -> helper.tickEntity(player))
                 // check if player did NOT get chemical burns
-                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.CHEMICAL_BURNS))
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.CHEMICAL_BURNS.get()))
                 // remove rubber gloves
                 .thenExecute(() -> player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY))
                 // tick the medical condition tracker for 10 seconds
@@ -139,7 +139,7 @@ public class MedicalConditionTest {
                 // check if player DID get chemical burns this time
                 .thenExecute(() -> {
                     if (!player.isAlive()) return; // we don't care if the player died here, that means the chemical burns got them
-                    helper.assertHasCondition(player, GTMedicalConditions.CHEMICAL_BURNS);
+                    helper.assertHasCondition(player, GTMedicalConditions.CHEMICAL_BURNS.get());
                 })
                 .thenSucceed();
     }
@@ -159,7 +159,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 10 seconds
                 .thenExecuteFor(10 * 20, () -> helper.tickEntity(player))
                 // check if player did NOT get poisoned
-                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.POISON))
+                .thenExecute(() -> helper.assertFreeOfCondition(player, GTMedicalConditions.POISON.get()))
                 // remove hazmat suit
                 .thenExecute(() -> {
                     player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
@@ -172,7 +172,7 @@ public class MedicalConditionTest {
                 // check if player DID get poisoned this time
                 .thenExecute(() -> {
                     if (!player.isAlive()) return; // we don't care if the player died here, that means the poisoning got them
-                    helper.assertHasCondition(player, GTMedicalConditions.POISON);
+                    helper.assertHasCondition(player, GTMedicalConditions.POISON.get());
                 })
                 .thenSucceed();
     }
@@ -183,7 +183,7 @@ public class MedicalConditionTest {
     public static void testGeneralAntidoteWorksOnWeakPoison(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add a low-ish count of weak poisoning
-        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON.get(), 100);
         // give Player 16x Paracetamol
         ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -194,7 +194,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, () -> helper.tickEntity(player))
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON.get(), 100))
                 // make player eat Paracetamol for 16 * 16 = 256 ticks
                 .thenExecuteFor(16 * 16 + 1, () -> {
                     helper.tickEntity(player);
@@ -210,7 +210,7 @@ public class MedicalConditionTest {
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // each Paracetamol removes ceil(10%) of the remaining weak poisoning, so 16 pills
                     // reduce 100 counts down to 15 (100 -> 90 -> 81 -> ... -> 17 -> 15)
-                    helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 15);
+                    helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON.get(), 15);
                 })
                 .thenSucceed();
     }
@@ -219,7 +219,7 @@ public class MedicalConditionTest {
     public static void testGeneralAntidoteDoesntWorkOnCancer(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add a low-ish count of weak poisoning
-        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN.get(), 100);
         // give Player 16x Paracetamol
         ItemStack pillStack = GTItems.PARACETAMOL_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -230,7 +230,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, () -> helper.tickEntity(player))
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN.get(), 100))
                 // make player eat Paracetamol for 16 * 16 = 256 ticks
                 .thenExecuteFor(16 * 16 + 1, () -> {
                     helper.tickEntity(player);
@@ -245,7 +245,7 @@ public class MedicalConditionTest {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that count is STILL 100, as Paracetamol shouldn't be able to remove cancer.
-                    helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100);
+                    helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN.get(), 100);
                 })
                 .thenSucceed();
     }
@@ -254,7 +254,7 @@ public class MedicalConditionTest {
     public static void testRadAwayWorksOnCancer(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add a low count of cancer
-        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.CARCINOGEN.get(), 100);
         // give Player 16x RadAway
         ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -265,7 +265,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, () -> helper.tickEntity(player))
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.CARCINOGEN.get(), 100))
                 // make player eat RadAway for 16 * 16 = 256 ticks
                 .thenExecuteFor(16 * 16 + 1, () -> {
                     helper.tickEntity(player);
@@ -280,7 +280,7 @@ public class MedicalConditionTest {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that the cancer is gone
-                    helper.assertFreeOfCondition(player, GTMedicalConditions.CARCINOGEN);
+                    helper.assertFreeOfCondition(player, GTMedicalConditions.CARCINOGEN.get());
                 })
                 .thenSucceed();
     }
@@ -289,7 +289,7 @@ public class MedicalConditionTest {
     public static void testRadAwayDoesntWorkOnWeakPoison(GameTestHelper helper) {
         ServerPlayer player = helper.makeMockSurvivalServerPlayer();
         // add a low-ish count of weak poisoning
-        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON, 100);
+        helper.addMedicalConditionCounts(player, GTMedicalConditions.WEAK_POISON.get(), 100);
         // give Player 16x RadAway
         ItemStack pillStack = GTItems.RAD_AWAY_PILL.asStack(16);
         player.setItemInHand(InteractionHand.MAIN_HAND, pillStack);
@@ -300,7 +300,7 @@ public class MedicalConditionTest {
                 // tick the medical condition tracker for 2 seconds
                 .thenExecuteFor(2 * 20, () -> helper.tickEntity(player))
                 // check that count hasn't changed
-                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100))
+                .thenExecute(() -> helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON.get(), 100))
                 // make player eat RadAway for 16 * 16 = 256 ticks
                 .thenExecuteFor(16 * 16 + 1, () -> {
                     helper.tickEntity(player);
@@ -315,7 +315,7 @@ public class MedicalConditionTest {
                     // check if they were all consumed
                     helper.assertHeldItemCountIs(player, Items.AIR, 0, InteractionHand.MAIN_HAND);
                     // check that count is STILL 100, as RadAway shouldn't be able to remove weak poisoning.
-                    helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON, 100);
+                    helper.assertConditionCountEquals(player, GTMedicalConditions.WEAK_POISON.get(), 100);
                 })
                 .thenSucceed();
     }

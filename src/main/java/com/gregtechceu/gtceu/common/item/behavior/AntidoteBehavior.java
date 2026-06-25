@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * Defines an antidote for a hazard (e.g. poisoning)
@@ -34,6 +36,14 @@ public record AntidoteBehavior(Set<MedicalCondition> types, int removePercent)
     public AntidoteBehavior(int removePercent, MedicalCondition... types) {
         this(new HashSet<>(), removePercent);
         this.types.addAll(Arrays.asList(types));
+    }
+
+    public AntidoteBehavior(int removePercent, Holder<MedicalCondition>... types) {
+        this(removePercent, Arrays.stream(types).map(Holder::get).toArray(MedicalCondition[]::new));
+    }
+
+    public AntidoteBehavior(int removePercent, Supplier<MedicalCondition>... types) {
+        this(removePercent, Arrays.stream(types).map(Supplier::get).toArray(MedicalCondition[]::new));
     }
 
     @Override

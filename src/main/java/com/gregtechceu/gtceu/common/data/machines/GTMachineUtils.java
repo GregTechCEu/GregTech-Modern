@@ -771,6 +771,10 @@ public class GTMachineUtils {
         return Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName());
     }
 
+    public static Component environmentRequirement(Supplier<MedicalCondition> condition) {
+        return environmentRequirement(condition.get());
+    }
+
     public static Component defaultEnvironmentRequirement() {
         return environmentRequirement(GTMedicalConditions.CARBON_MONOXIDE_POISONING);
     }
@@ -847,7 +851,7 @@ public class GTMachineUtils {
                     (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
                         if (hasPollutionDebuff) {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
-                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
+                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING.get(), 100 * tier),
                                     GTRecipeModifiers.OC_NON_PERFECT)
                                     .conditionalTooltip(defaultEnvironmentRequirement(),
                                             ConfigHolder.INSTANCE.gameplay.environmentalHazards);

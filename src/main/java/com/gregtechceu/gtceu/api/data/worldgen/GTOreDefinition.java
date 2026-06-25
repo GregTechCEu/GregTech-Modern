@@ -182,9 +182,7 @@ public class GTOreDefinition {
     public GTOreDefinition layer(IWorldGenLayer layer) {
         this.layer = layer;
         if (this.dimensionFilter == null || this.dimensionFilter.isEmpty()) {
-            dimensions(layer.getLevels().stream()
-                    .map(location -> ResourceKey.create(Registries.DIMENSION, location))
-                    .collect(Collectors.toSet()));
+            dimensions(new HashSet<>(layer.getLevels()));
         }
         return this;
     }

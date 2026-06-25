@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -60,6 +61,6 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
 
     @Override
     public boolean isApplicableForLevel(ResourceLocation level) {
-        return levels.contains(level);
+        return levels.contains(ResourceKey.create(Registries.DIMENSION, level));
     }
 }
