@@ -129,7 +129,7 @@ public class MachineUIPanelBuilder {
                     .child(new SteamDialWidget(steamProgress)
                             .setMinAngle((float) Math.PI)
                             .setMaxAngle((float) 0.0f)
-                            .setColor(Color.BLUE.main)
+                            .setColor(Color.BLACK.brighterSafe(4))
                             .asWidget().decoration()
 
                             .size(dialHeight, dialWidth)
