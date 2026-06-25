@@ -3964,6 +3964,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empty content check for recipe capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5266,6 +5277,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#empty-content-check-for-recipe-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Empty content check for recipe capabilities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#other-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5430,6 +5452,8 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 </ol>
 <h2 id="irecipehandler-nullability">IRecipeHandler nullability</h2>
 <p>Previously, <code>handleRecipeInner</code> should return <code>null</code> when there's nothing left to process. This has been changed to requiring an empty list (e.g. the list of remaining ingredients). Returning <code>null</code> is now wrong and will crash (NPE).</p>
+<h2 id="empty-content-check-for-recipe-capabilities">Empty content check for recipe capabilities</h2>
+<p>As a recipe-matching optimization, input handlers whose <code>getTotalContentAmount()</code> returns <code>0</code> are now skipped during recipe handling. If your <code>RecipeCapability</code> has handlers that legitimately report a total content amount of <code>0</code> but can still satisfy a recipe (e.g. rate-based capabilities like computation/CWU, where nothing is "stored" but the handler can still provide), you must now override <code>RecipeCapability#skipEmptyContentCheck()</code> to return <code>true</code>, otherwise these capabilities will break (their handlers will never be run).</p>
 <h2 id="other-changes">Other Changes</h2>
 <ul>
 <li><code>BlastingRecipeBuilder</code>, <code>CampfireRecipeBuilder</code>, <code>SmeltingRecipeBuilder</code> and <code>SmokingRecipeBuilder</code> have been merged into <code>SimpleCookingRecipeBuilder</code><ul>
