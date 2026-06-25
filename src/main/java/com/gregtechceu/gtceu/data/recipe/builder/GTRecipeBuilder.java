@@ -1611,7 +1611,7 @@ public class GTRecipeBuilder {
             for (Content content : list) {
                 contentsJson.add(cap.serializer.toJsonContent(content));
             }
-            jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
+            jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString(), contentsJson);
         });
         return jsonObject;
     }
@@ -1619,8 +1619,8 @@ public class GTRecipeBuilder {
     public JsonObject chanceLogicsToJson(Map<RecipeCapability<?>, ChanceLogic> chanceLogics) {
         JsonObject jsonObject = new JsonObject();
         chanceLogics.forEach((cap, logic) -> {
-            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap);
-            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic);
+            String capId = GTRegistries.RECIPE_CAPABILITIES.getKey(cap).toString();
+            String logicId = GTRegistries.CHANCE_LOGICS.getKey(logic).toString();
             jsonObject.addProperty(capId, logicId);
         });
         return jsonObject;
@@ -1716,7 +1716,7 @@ public class GTRecipeBuilder {
         var itemOutputs = output.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         var itemInputs = input.getOrDefault(ItemRecipeCapability.CAP, new ArrayList<>());
         if (itemOutputs.size() == 1 && (!itemInputs.isEmpty() || !tempFluidStacks.isEmpty())) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content());
             Item out = null;
             int outputCount = 0;
 
@@ -1767,7 +1767,7 @@ public class GTRecipeBuilder {
     private void removeExistingMaterialInfo() {
         var itemOutputs = output.get(ItemRecipeCapability.CAP);
         if (itemOutputs.size() == 1) {
-            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content);
+            var currOutput = ItemRecipeCapability.CAP.of(itemOutputs.get(0).content());
             Item out = null;
             int outputCount = 0;
 
@@ -1819,7 +1819,7 @@ public class GTRecipeBuilder {
         if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
             String io = isInput ? "inputs" : "outputs";
             GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
-                    id, io, capability.name, io, max);
+                    id, io, capability.id, io, max);
         }
     }
 
@@ -1831,7 +1831,7 @@ public class GTRecipeBuilder {
                 io = "Tick " + io.toLowerCase(Locale.ROOT);
             }
             int size = (perTick ? tickOutput : output).getOrDefault(cap, List.of()).size();
-            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.name, size + index, id);
+            GTCEu.LOGGER.error("{} {} {} of recipe {} is empty", io, cap.id, size + index, id);
             return true;
         }
         return false;
@@ -1852,7 +1852,7 @@ public class GTRecipeBuilder {
     public EnergyStack EUt() {
         if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
         if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
-        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content);
+        return EURecipeCapability.CAP.of(tickInput.get(EURecipeCapability.CAP).get(0).content());
     }
 
     public int getSolderMultiplier() {

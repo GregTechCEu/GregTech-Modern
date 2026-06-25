@@ -1,12 +1,13 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    // force gradle to download FastUtil & LWJGL from the central maven so we can get source artifacts
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
     exclusiveContent { // Force
         forRepository { mavenCentral() }
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
             includeGroup("com.google.guava")
             includeGroup("io.netty")
         }
@@ -18,6 +19,16 @@ repositories {
             includeGroup("mezz.jei")
             includeGroup("org.embeddedt")
         }
+    }
+
+    maven {
+        name 'GTCEu Maven'
+        url 'https://maven.gtceu.com'
+    }
+
+    maven { // JEI
+        name = "Jared's Maven"
+        url = "https://maven.blamejared.com/"
     }
 
     maven { // JEI mirror, AE2

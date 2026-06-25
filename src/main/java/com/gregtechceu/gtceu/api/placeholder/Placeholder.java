@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.common.capability.PlaceholderSavedData;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 
 import lombok.Getter;
@@ -13,13 +15,21 @@ import java.util.List;
 public abstract class Placeholder {
 
     @Getter
-    private final String name;
+    private final ResourceLocation id;
 
     public abstract MultiLineComponent apply(PlaceholderContext ctx,
                                              List<MultiLineComponent> args) throws PlaceholderException;
 
-    public Placeholder(String name) {
-        this.name = name;
+    public Placeholder(String str) {
+        this(GTCEu.id(str));
+    }
+
+    public Placeholder(ResourceLocation id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return id.getPath();
     }
 
     protected CompoundTag getData(PlaceholderContext ctx) {
@@ -28,5 +38,13 @@ public abstract class Placeholder {
         if (!placeholderData.contains(ctx.uuid().toString()))
             placeholderData.put(ctx.uuid().toString(), new CompoundTag());
         return placeholderData.getCompound(ctx.uuid().toString());
+    }
+
+    public boolean isView() {
+        return isPure();
+    }
+
+    public boolean isPure() {
+        return false;
     }
 }

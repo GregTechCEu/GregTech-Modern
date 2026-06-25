@@ -109,9 +109,10 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         var upwardFacing = machine.getUpwardsFacing();
 
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        rotateMatrix(poseStack.last().pose(),
-                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
-                getDirectionAxis(frontFacing));
+        float roll = frontFacing.getAxis().isHorizontal() ?
+                frontAxisRollAngle(frontFacing, upwardFacing, Direction.UP) :
+                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0);
+        rotateMatrix(poseStack.last().pose(), roll, getDirectionAxis(frontFacing));
         poseStack.translate(-0.5f, -0.5f, -0.5f);
     }
 
@@ -123,7 +124,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
                 frontFacing.getStepZ() * -1 / 16f);
 
         RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, frontFacing);
-        RenderUtil.rotateToFace(poseStack, frontFacing, Direction.NORTH);
+        Direction spin = frontFacing.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.NORTH;
+        RenderUtil.rotateToFace(poseStack, frontFacing, spin);
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
 

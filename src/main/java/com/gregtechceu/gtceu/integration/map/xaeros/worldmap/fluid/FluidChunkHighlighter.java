@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros.worldmap.fluid;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.FluidRenderLayer;
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
@@ -112,19 +112,20 @@ public class FluidChunkHighlighter extends ChunkHighlighter {
         if (!isEnabled()) {
             return null;
         }
-        var fluid = XaerosRenderer.fluidElements.get(dimension, new ChunkPos(x, z));
+        ProspectorMode.FluidInfo fluid = XaerosRenderer.fluidElements.get(dimension, new ChunkPos(x, z));
         if (fluid == null) {
             return null;
         }
-        return FluidRenderLayer.getTooltip(fluid).stream().reduce(Component.empty(), (c1, c2) -> {
-            if (c1.getString().isEmpty()) {
-                return c2;
-            }
-            if (c2.getString().isEmpty()) {
-                return c1;
-            }
-            return ((MutableComponent) c1).append("\n").append(c2);
-        });
+        return FluidRenderLayer.getTooltip(FluidRenderLayer.getName(fluid), fluid).stream()
+                .reduce(Component.empty(), (c1, c2) -> {
+                    if (c1.getString().isEmpty()) {
+                        return c2;
+                    }
+                    if (c2.getString().isEmpty()) {
+                        return c1;
+                    }
+                    return ((MutableComponent) c1).append("\n").append(c2);
+                });
     }
 
     @Override

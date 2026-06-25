@@ -36,11 +36,11 @@ public interface IContentSerializer<T> {
 
     @SuppressWarnings("unchecked")
     default void toNetworkContent(FriendlyByteBuf buf, Content content) {
-        T inner = (T) content.getContent();
+        T inner = (T) content.content();
         toNetwork(buf, inner);
-        buf.writeVarInt(content.chance);
-        buf.writeVarInt(content.maxChance);
-        buf.writeVarInt(content.tierChanceBoost);
+        buf.writeVarInt(content.chance());
+        buf.writeVarInt(content.maxChance());
+        buf.writeVarInt(content.tierChanceBoost());
     }
 
     default Content fromNetworkContent(FriendlyByteBuf buf) {
@@ -58,10 +58,10 @@ public interface IContentSerializer<T> {
     @SuppressWarnings("unchecked")
     default JsonElement toJsonContent(Content content) {
         JsonObject json = new JsonObject();
-        json.add("content", toJson((T) content.getContent()));
-        json.addProperty("chance", content.chance);
-        json.addProperty("maxChance", content.maxChance);
-        json.addProperty("tierChanceBoost", content.tierChanceBoost);
+        json.add("content", toJson((T) content.content()));
+        json.addProperty("chance", content.chance());
+        json.addProperty("maxChance", content.maxChance());
+        json.addProperty("tierChanceBoost", content.tierChanceBoost());
         return json;
     }
 

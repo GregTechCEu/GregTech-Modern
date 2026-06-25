@@ -23,11 +23,11 @@ public class GTRecipeCapabilities {
     public static void init() {
         GTRegistries.RECIPE_CAPABILITIES.unfreeze();
 
-        GTRegistries.RECIPE_CAPABILITIES.register(ITEM.name, ITEM);
-        GTRegistries.RECIPE_CAPABILITIES.register(FLUID.name, FLUID);
-        GTRegistries.RECIPE_CAPABILITIES.register(BLOCK_STATE.name, BLOCK_STATE);
-        GTRegistries.RECIPE_CAPABILITIES.register(EU.name, EU);
-        GTRegistries.RECIPE_CAPABILITIES.register(CWU.name, CWU);
+        GTRegistries.RECIPE_CAPABILITIES.register(ITEM.id, ITEM);
+        GTRegistries.RECIPE_CAPABILITIES.register(FLUID.id, FLUID);
+        GTRegistries.RECIPE_CAPABILITIES.register(BLOCK_STATE.id, BLOCK_STATE);
+        GTRegistries.RECIPE_CAPABILITIES.register(EU.id, EU);
+        GTRegistries.RECIPE_CAPABILITIES.register(CWU.id, CWU);
 
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES,

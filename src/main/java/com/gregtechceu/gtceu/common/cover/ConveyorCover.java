@@ -4,16 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IIOCover;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.*;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -22,16 +16,11 @@ import com.gregtechceu.gtceu.api.transfer.item.ItemHandlerDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -45,13 +34,18 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widgets.layout.Flow;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -61,7 +55,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, IControllable {
+public class ConveyorCover extends CoverBehavior implements IIOCover, IMuiCover, IControllable {
 
     // 8 32 128 512 1024
     public static final Int2IntFunction CONVEYOR_SCALING = tier -> 2 * (int) Math.pow(4, Math.min(tier, GTValues.LuV));
@@ -76,12 +70,12 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     @Getter
     @RerenderOnChanged
     protected IO io;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected DistributionMode distributionMode;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
     @SaveField
@@ -89,7 +83,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     @Getter
     protected boolean isWorkingEnabled = true;
     protected int itemsLeftToTransferLastSecond;
-    private Widget ioModeSwitch;
 
     @SaveField
     @SyncToClient
@@ -111,7 +104,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         filterHandler = FilterHandlers.item(this)
                 .onFilterLoaded(f -> configureFilter())
                 .onFilterUpdated(f -> configureFilter())
-                .onFilterRemoved(f -> configureFilter());
+                .onFilterRemoved(this::configureFilter);
     }
 
     public ConveyorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
@@ -129,11 +122,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     protected @Nullable IItemHandler getAdjacentItemHandler() {
         return GTTransferUtils.getAdjacentItemHandler(coverHolder.getLevel(), coverHolder.getBlockPos(), attachedSide)
                 .resolve().orElse(null);
-    }
-
-    public void setDistributionMode(DistributionMode mode) {
-        distributionMode = mode;
-        syncDataHolder.markClientSyncFieldDirty("distributionMode");
     }
 
     //////////////////////////////////////
@@ -156,10 +144,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             this.io = io;
         }
         subscriptionHandler.updateSubscription();
-    }
-
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
     }
 
     @Override
@@ -358,8 +342,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         return maxTransferAmount - itemsLeftToTransfer;
     }
 
-    @NotNull
-    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemHandler inventory) {
+    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
@@ -379,8 +362,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
         return result;
     }
 
-    @NotNull
-    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@NotNull IItemHandler inventory) {
+    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(
                 ItemStackHashStrategy.comparingAllButCount());
@@ -423,54 +405,63 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
+
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 137);
-        group.addWidget(new LabelWidget(10, 5, Component.translatable(getUITitle(), GTValues.VN[tier]).getString()));
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        EnumSyncValue<ManualIOMode> manualMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getManualIOMode, this::setManualIOMode).allowC2S();
 
-        group.addWidget(new IntInputWidget(10, 20, 156, 20, () -> this.transferRate, this::setTransferRate)
-                .setMin(1).setMax(maxItemTransferRate));
+        EnumSyncValue<DistributionMode> distMode = new EnumSyncValue<>(DistributionMode.class,
+                this::getDistributionMode, this::setDistributionMode).allowC2S();
 
-        final EnumSelectorWidget<DistributionMode> distributionSelector = new EnumSelectorWidget<>(146, 67, 20, 20,
-                DistributionMode.values(), distributionMode, this::setDistributionMode);
+        IntSyncValue transferRate = new IntSyncValue(this::getTransferRate, this::setTransferRate).allowC2S();
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo).allowC2S();
 
-        distributionSelector.setVisible(shouldRespectDistributionMode());
-        group.addWidget(distributionSelector);
+        syncManager.syncValue("io", ioSync);
+        syncManager.syncValue("manualMode", manualMode);
+        syncManager.syncValue("distribution", distMode);
+        syncManager.syncValue("throughput", transferRate);
 
-        ioModeSwitch = new SwitchWidget(10, 45, 20, 20,
-                (clickData, value) -> {
-                    setIo(value ? IO.IN : IO.OUT);
-                    distributionSelector.setVisible(shouldRespectDistributionMode());
-                    ioModeSwitch.setHoverTooltips(
-                            LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-                })
-                .setTexture(
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.OUT.icon),
-                        new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, IO.IN.icon))
-                .setPressed(io == IO.IN)
-                .setHoverTooltips(
-                        LocalizationUtils.format("cover.conveyor.mode", LocalizationUtils.format(io.tooltip)));
-        group.addWidget(ioModeSwitch);
+        if (createThroughputRow()) {
+            column.child(GTMuiWidgets.createIntInputWithButtons(transferRate, () -> 1, () -> maxItemTransferRate));
+        }
 
-        group.addWidget(new EnumSelectorWidget<>(146, 107, 20, 20,
-                ManualIOMode.VALUES, manualIOMode, this::setManualIOMode)
-                .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
+        if (createFilterRow()) {
+            column.child(Flow.row()
+                    .coverChildrenHeight()
+                    .widthRel(1.0f)
+                    .child(GTMuiWidgets.createIOCycleButton(ioSync, false).left(0))
+                    .child(Text.comp(Component.translatable(IO.getTitle())).asWidget().verticalCenter().rightRel(0.f)));
+            column.child(GTMuiWidgets.createFilterRow(filterHandler, data, syncManager, settings));
+        }
 
-        group.addWidget(filterHandler.createFilterSlotUI(125, 108));
-        group.addWidget(filterHandler.createFilterConfigUI(10, 72, 156, 60));
-
-        buildAdditionalUI(group);
-
-        return group;
+        if (createDistributionModeRow()) {
+            GTMuiCoverUtil.addDistributionModeRow(column, distMode);
+        }
+        if (createManualIOModeRow()) {
+            GTMuiCoverUtil.addManualIORow(column, manualMode);
+        }
     }
 
-    @NotNull
-    protected String getUITitle() {
-        return "cover.conveyor.title";
+    protected boolean createThroughputRow() {
+        return true;
     }
 
-    protected void buildAdditionalUI(WidgetGroup group) {
-        // Do nothing in the base implementation. This is intended to be overridden by subclasses.
+    protected boolean createFilterRow() {
+        return true;
+    }
+
+    protected boolean createConveyorIORow() {
+        return true;
+    }
+
+    protected boolean createDistributionModeRow() {
+        return true;
+    }
+
+    protected boolean createManualIOModeRow() {
+        return true;
     }
 
     protected void configureFilter() {
@@ -481,7 +472,7 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
     // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
-    private CoverableItemHandlerWrapper itemHandlerWrapper;
+    private @Nullable CoverableItemHandlerWrapper itemHandlerWrapper;
 
     @Nullable
     @Override
@@ -501,9 +492,8 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             super(delegate);
         }
 
-        @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
             if (io == IO.OUT) {
                 if (manualIOMode == ManualIOMode.DISABLED) {
                     return stack;
@@ -518,7 +508,6 @@ public class ConveyorCover extends CoverBehavior implements IIOCover, IUICover, 
             return super.insertItem(slot, stack, simulate);
         }
 
-        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (io == IO.IN) {

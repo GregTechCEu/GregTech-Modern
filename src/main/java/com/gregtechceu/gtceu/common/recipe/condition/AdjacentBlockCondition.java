@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.codec.GTCodecUtils;
@@ -16,10 +17,15 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.widgets.layout.Flow;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
@@ -91,6 +97,29 @@ public class AdjacentBlockCondition extends RecipeCondition<AdjacentBlockConditi
     @Override
     public Component getTooltips() {
         return Component.translatable("recipe.condition.adjacent_block.tooltip");
+    }
+
+    @Override
+    public RecipeUIModifier modifyUI() {
+        return (recipe, widget) -> {
+            var row = Flow.row().coverChildrenHeight().widthRel(1);
+
+            row.child(Text.lang("recipe.condition.adjacent_block.tooltip").asWidget());
+
+            List<ItemStack> stacksToDisplay = new ArrayList<>();
+            for (HolderSet<Block> set : resolvedBlocks) {
+                for (var blockEntry : set) {
+                    stacksToDisplay.add(new ItemStack(blockEntry.value().asItem()));
+                }
+            }
+
+            for (var stack : stacksToDisplay) {
+                row.child(RecipeViewerSlotWidget.create().marginLeft(2).recipeSlotRole(RecipeSlotRole.RENDER_ONLY)
+                        .value(stack));
+            }
+
+            widget.textComponents.child(row);
+        };
     }
 
     @Override

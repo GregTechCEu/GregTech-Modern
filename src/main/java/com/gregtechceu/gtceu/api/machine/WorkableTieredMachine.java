@@ -95,7 +95,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeLogic = attachTrait(new RecipeLogic());
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
-                        IO.IN));
+                        IO.IN, IO.BOTH));
         this.exportItems = attachTrait(
                 new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
                         IO.OUT));
@@ -197,7 +197,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     public GTRecipeType getRecipeType() {
-        return recipeTypes[activeRecipeType];
+        int index = activeRecipeType >= 0 && activeRecipeType < recipeTypes.length ? activeRecipeType : 0;
+        return recipeTypes[index];
     }
 
     /**

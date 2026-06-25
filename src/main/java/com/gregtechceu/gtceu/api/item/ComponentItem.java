@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.gregtechceu.gtceu.api.mui.IItemUIHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -36,6 +33,10 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 
+import brachy.modularui.factory.PlayerInventoryGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -48,8 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item
-                           implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+public class ComponentItem extends Item implements IComponentItem, IItemUIHolder {
 
     protected int burnTime = -1;
 
@@ -295,28 +295,6 @@ public class ComponentItem extends Item
     }
 
     @Override
-    @Nullable
-    public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        for (IItemComponent component : components) {
-            if (component instanceof IItemUIFactory uiFactory) {
-                return uiFactory.createUI(holder, entityPlayer);
-            }
-        }
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        for (IItemComponent component : components) {
-            if (component instanceof ICustomRenderer customRenderer) {
-                return customRenderer.getRenderer();
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         for (IItemComponent component : components) {
             if (component instanceof IItemLifeCycle lifeCycle) {
@@ -442,5 +420,25 @@ public class ComponentItem extends Item
         }
         electricItem.setInfiniteCharge(true);
         return itemStack;
+    }
+
+    @Override
+    public @Nullable ModularPanel<?> buildUI(PlayerInventoryGuiData<?> data, PanelSyncManager syncManager,
+                                             UISettings settings) {
+        for (IItemComponent component : getComponents()) {
+            if (component instanceof IItemUIHolder uiHolder) {
+                return uiHolder.buildUI(data, syncManager, settings);
+            }
+        }
+        GTCEu.LOGGER.error("Tried to get UI of {} item when it does not have one!", data.getUsedItemStack());
+        return null;
+    }
+
+    @Override
+    public boolean shouldOpenUI() {
+        for (IItemComponent component : getComponents()) {
+            if (component instanceof IItemUIHolder holder) return holder.shouldOpenUI();
+        }
+        return false;
     }
 }

@@ -1,30 +1,35 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import com.mojang.serialization.JsonOps;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
 
-    private final String name;
+    private final ResourceLocation id;
     private final IWorldGenLayer.RuleTestSupplier target;
     @Getter
     private final Set<ResourceLocation> levels;
 
-    public SimpleWorldGenLayer(String name, IWorldGenLayer.RuleTestSupplier target, Set<ResourceLocation> levels) {
-        this.name = name;
+    public SimpleWorldGenLayer(ResourceLocation id, IWorldGenLayer.RuleTestSupplier target,
+                               Set<ResourceLocation> levels) {
+        this.id = id;
         this.target = target;
         this.levels = levels;
-        WorldGeneratorUtils.WORLD_GEN_LAYERS.put(name, this);
+
+        GTRegistries.WORLD_GEN_LAYERS.register(id, this);
     }
 
     @Override
-    public String getSerializedName() {
-        return name;
+    public @NotNull String getSerializedName() {
+        return id.toString();
     }
 
     @Override

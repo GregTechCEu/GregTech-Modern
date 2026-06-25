@@ -46,8 +46,8 @@ public final class SyncedKeyMapping {
     private static final Int2BooleanMap updatingKeyDown = new Int2BooleanOpenHashMap();
 
     private final WeakHashMap<ServerPlayer, Boolean> serverMapping = new WeakHashMap<>();
-    private final WeakHashMap<ServerPlayer, Set<IKeyPressedListener>> playerListeners = new WeakHashMap<>();
-    private final Set<IKeyPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
+    private final WeakHashMap<ServerPlayer, Set<TextPressedListener>> playerListeners = new WeakHashMap<>();
+    private final Set<TextPressedListener> globalListeners = Collections.newSetFromMap(new WeakHashMap<>());
 
     private SyncedKeyMapping(Supplier<Supplier<KeyMapping>> mcKeyMapping) {
         if (GTCEu.isClientSide()) {
@@ -172,15 +172,15 @@ public final class SyncedKeyMapping {
     }
 
     /**
-     * Registers an {@link IKeyPressedListener} to this key, which will have its {@link IKeyPressedListener#onKeyPressed
+     * Registers an {@link TextPressedListener} to this key, which will have its {@link TextPressedListener#onKeyPressed
      * onKeyPressed} method called when the provided player presses this key.
      *
      * @param player   The player who owns this listener.
      * @param listener The handler for the key clicked event.
      */
     public @NotNull SyncedKeyMapping registerPlayerListener(@NotNull ServerPlayer player,
-                                                            @NotNull IKeyPressedListener listener) {
-        Set<IKeyPressedListener> listenerSet = playerListeners
+                                                            @NotNull TextPressedListener listener) {
+        Set<TextPressedListener> listenerSet = playerListeners
                 .computeIfAbsent(player, $ -> Collections.newSetFromMap(new WeakHashMap<>()));
         listenerSet.add(listener);
         return this;
@@ -205,20 +205,20 @@ public final class SyncedKeyMapping {
      * @param player   The player who owns this listener.
      * @param listener The handler for the key clicked event.
      */
-    public void removePlayerListener(@NotNull ServerPlayer player, @NotNull IKeyPressedListener listener) {
-        Set<IKeyPressedListener> listenerSet = playerListeners.get(player);
+    public void removePlayerListener(@NotNull ServerPlayer player, @NotNull TextPressedListener listener) {
+        Set<TextPressedListener> listenerSet = playerListeners.get(player);
         if (listenerSet != null) {
             listenerSet.remove(listener);
         }
     }
 
     /**
-     * Registers an {@link IKeyPressedListener} to this key, which will have its {@link IKeyPressedListener#onKeyPressed
+     * Registers an {@link TextPressedListener} to this key, which will have its {@link TextPressedListener#onKeyPressed
      * onKeyPressed} method called when any player presses this key.
      *
      * @param listener The handler for the key clicked event.
      */
-    public @NotNull SyncedKeyMapping registerGlobalListener(@NotNull IKeyPressedListener listener) {
+    public @NotNull SyncedKeyMapping registerGlobalListener(@NotNull TextPressedListener listener) {
         globalListeners.add(listener);
         return this;
     }
@@ -228,7 +228,7 @@ public final class SyncedKeyMapping {
      *
      * @param listener The handler for the key clicked event.
      */
-    public void removeGlobalListener(@NotNull IKeyPressedListener listener) {
+    public void removeGlobalListener(@NotNull TextPressedListener listener) {
         globalListeners.remove(listener);
     }
 
@@ -264,14 +264,14 @@ public final class SyncedKeyMapping {
         this.serverMapping.put(player, keyDown);
 
         // Player listeners
-        Set<IKeyPressedListener> listenerSet = playerListeners.get(player);
+        Set<TextPressedListener> listenerSet = playerListeners.get(player);
         if (listenerSet != null && !listenerSet.isEmpty()) {
-            for (IKeyPressedListener listener : listenerSet) {
+            for (TextPressedListener listener : listenerSet) {
                 listener.onKeyPressed(player, this, keyDown);
             }
         }
         // Global listeners
-        for (IKeyPressedListener listener : globalListeners) {
+        for (TextPressedListener listener : globalListeners) {
             listener.onKeyPressed(player, this, keyDown);
         }
     }

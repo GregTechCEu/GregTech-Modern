@@ -3,15 +3,14 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-
-import com.lowdragmc.lowdraglib.utils.ShapeUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.IdMapper;
@@ -26,6 +25,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import brachy.modularui.theme.ThemeAPI;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import lombok.Getter;
@@ -119,10 +119,13 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter
     private boolean allowCoverOnFront;
-    @Nullable
     @Getter
     @Setter
-    private EditableMachineUI editableUI;
+    @Nullable
+    private PanelFactory UI;
+    @Getter
+    @Setter
+    private String themeId = ThemeAPI.DEFAULT_ID;
     @Getter
     @Setter
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
@@ -164,7 +167,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public VoxelShape getShape(Direction direction) {
         if (shape.isEmpty() || shape == Shapes.block() || direction == Direction.NORTH) return shape;
-        return this.cache.computeIfAbsent(direction, dir -> ShapeUtils.rotate(shape, dir));
+        return this.cache.computeIfAbsent(direction, dir -> GTUtil.rotateVoxelShape(shape, dir));
     }
 
     @Override
