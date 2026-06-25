@@ -13,10 +13,6 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class MaterialIconSet {
 
-    static {
-        GTRegistries.MATERIAL_ICON_SETS.unfreeze();
-    }
-
     public static final MaterialIconSet DULL = REGISTRATE.materialIconSet("dull", null, true);
     public static final MaterialIconSet METALLIC = REGISTRATE.materialIconSet("metallic");
     public static final MaterialIconSet MAGNETIC = REGISTRATE.materialIconSet("magnetic", METALLIC);

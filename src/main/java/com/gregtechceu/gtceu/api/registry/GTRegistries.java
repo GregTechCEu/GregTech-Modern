@@ -46,10 +46,7 @@ import net.minecraftforge.registries.*;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
-import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.ApiStatus;
-
-import java.security.Key;
 
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {

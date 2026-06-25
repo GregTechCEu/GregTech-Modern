@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -46,7 +47,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
@@ -150,8 +150,8 @@ public class Material implements Comparable<Material> {
         flags = new MaterialFlags();
     }
 
-    protected void registerMaterial() {
-        GTRegistries.MATERIALS.register(getResourceLocation(), this);
+    protected void registerMaterial(GTRegistrate registrate) {
+        registrate.generic(getResourceLocation().getPath(), GTRegistries.Keys.MATERIAL, () -> this).build();
     }
 
     public String getName() {
@@ -577,6 +577,7 @@ public class Material implements Comparable<Material> {
     @SuppressWarnings("unused") // API, need to treat all of these as used
     public static class Builder extends BuilderBase<Material> {
 
+        private final GTRegistrate registrate;
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
@@ -609,8 +610,10 @@ public class Material implements Comparable<Material> {
          *                         "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        public Builder(ResourceLocation resourceLocation) {
+        @ApiStatus.Internal
+        public Builder(GTRegistrate registrate, ResourceLocation resourceLocation) {
             super(resourceLocation);
+            this.registrate = registrate;
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
@@ -1880,7 +1883,7 @@ public class Material implements Comparable<Material> {
                 mat.setFormula(formula, formatFormula);
             }
             materialInfo.verifyInfo(properties, averageRGB);
-            mat.registerMaterial();
+            mat.registerMaterial(registrate);
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }

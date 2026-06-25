@@ -2561,11 +2561,7 @@ public class GTItems {
             .onRegister(attach(new GuiModuleBehaviour()))
             .register();
 
-    public static void init() {
-        GTMaterialItems.generateMaterialItems();
-        GTMaterialItems.generateTools();
-        GTMaterialItems.generateArmors();
-    }
+    public static void init() {}
 
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
         return item -> ItemMaterialData.registerMaterialInfo(item, materialInfo);

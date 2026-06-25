@@ -1404,18 +1404,6 @@ public class GTBlocks {
         generateStoneBlocks();
         initializeCobbleReplacements();
 
-        // Procedural Blocks
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
-        GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
-        GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
-        GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
-        GTMaterialBlocks.MATERIAL_BLOCKS = GTMaterialBlocks.MATERIAL_BLOCKS_BUILDER.build();
-
-        // Procedural Pipes/Wires
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
-        GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
-        GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
-        GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
         generateLaserPipeBlocks();    // Laser Pipe Blocks
         generateOpticalPipeBlocks();  // Optical Pipe Blocks
         generateDuctPipeBlocks();     // Duct Pipe Blocks

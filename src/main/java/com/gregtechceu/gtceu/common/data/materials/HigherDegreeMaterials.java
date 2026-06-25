@@ -11,31 +11,32 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class HigherDegreeMaterials {
 
     public static void register() {
-        Electrotine = new Material.Builder(GTCEu.id("electrotine"))
+        Electrotine = REGISTRATE.material("electrotine")
                 .dust().ore(5, 1, true)
                 .color(0x83cbf5).secondaryColor(0x004585).iconSet(SHINY)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Redstone, 1, Electrum, 1)
                 .buildAndRegister();
 
-        EnderEye = new Material.Builder(GTCEu.id("ender_eye"))
+        EnderEye = REGISTRATE.material("ender_eye")
                 .gem(1)
                 .color(0xb5e45a).secondaryColor(0x001430).iconSet(SHINY)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(EnderPearl, 1, Blaze, 1)
                 .buildAndRegister();
 
-        Diatomite = new Material.Builder(GTCEu.id("diatomite"))
+        Diatomite = REGISTRATE.material("diatomite")
                 .dust(1).ore()
                 .color(0xfffafa)
                 .components(Flint, 8, Hematite, 1, Sapphire, 1)
                 .buildAndRegister();
 
-        RedSteel = new Material.Builder(GTCEu.id("red_steel"))
+        RedSteel = REGISTRATE.material("red_steel")
                 .ingot(3).fluid()
                 .color(0xa09191).secondaryColor(0x500404).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_GEAR, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD)
@@ -46,7 +47,7 @@ public class HigherDegreeMaterials {
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
 
-        BlueSteel = new Material.Builder(GTCEu.id("blue_steel"))
+        BlueSteel = REGISTRATE.material("blue_steel")
                 .ingot(3).fluid()
                 .color(0x779ac6).secondaryColor(0x191948).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FRAME, GENERATE_GEAR, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD)
@@ -57,35 +58,35 @@ public class HigherDegreeMaterials {
                         .blastStats(VA[HV], 1000))
                 .buildAndRegister();
 
-        Basalt = new Material.Builder(GTCEu.id("basalt"))
+        Basalt = REGISTRATE.material("basalt")
                 .dust(1)
                 .color(0x5c5c5c).secondaryColor(0x1b2632).iconSet(ROUGH)
                 .flags(NO_SMASHING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Olivine, 1, Calcite, 3, Flint, 8, DarkAsh, 4)
                 .buildAndRegister();
 
-        GraniticMineralSand = new Material.Builder(GTCEu.id("granitic_mineral_sand"))
+        GraniticMineralSand = REGISTRATE.material("granitic_mineral_sand")
                 .dust(1).ore()
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(SAND)
                 .components(Magnetite, 1, Deepslate, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .buildAndRegister();
 
-        Redrock = new Material.Builder(GTCEu.id("redrock"))
+        Redrock = REGISTRATE.material("redrock")
                 .dust(1)
                 .color(0xffa49e).secondaryColor(0x52362a).iconSet(ROUGH)
                 .flags(NO_SMASHING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Calcite, 2, Flint, 1)
                 .buildAndRegister();
 
-        GarnetSand = new Material.Builder(GTCEu.id("garnet_sand"))
+        GarnetSand = REGISTRATE.material("garnet_sand")
                 .dust(1).ore()
                 .color(0xcc4c25).secondaryColor(0x510b04).iconSet(SAND)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Almandine, 1, Andradite, 1, Grossular, 1, Pyrope, 1, Spessartine, 1, Uvarovite, 1)
                 .buildAndRegister();
 
-        HSSG = new Material.Builder(GTCEu.id("hssg"))
+        HSSG = REGISTRATE.material("hssg")
                 .langValue("HSS-G")
                 .ingot(3).fluid()
                 .color(0x9cbabe).secondaryColor(0x032550).iconSet(METALLIC)
@@ -99,7 +100,7 @@ public class HigherDegreeMaterials {
                         .vacuumStats(VA[HV]))
                 .buildAndRegister();
 
-        RedAlloy = new Material.Builder(GTCEu.id("red_alloy"))
+        RedAlloy = REGISTRATE.material("red_alloy")
                 .ingot(0)
                 .liquid(new FluidBuilder().temperature(1400))
                 .color(0xc55252).secondaryColor(0xC80000).iconSet(METALLIC)
@@ -109,14 +110,14 @@ public class HigherDegreeMaterials {
                 .cableProperties(GTValues.V[0], 1, 0)
                 .buildAndRegister();
 
-        BasalticMineralSand = new Material.Builder(GTCEu.id("basaltic_mineral_sand"))
+        BasalticMineralSand = REGISTRATE.material("basaltic_mineral_sand")
                 .dust(1).ore()
                 .color(0x5c5c5c).secondaryColor(0x283228).iconSet(SAND)
                 .components(Magnetite, 1, Basalt, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .buildAndRegister();
 
-        HSSE = new Material.Builder(GTCEu.id("hsse"))
+        HSSE = REGISTRATE.material("hsse")
                 .langValue("HSS-E")
                 .ingot(4).fluid()
                 .color(0x9d9cbe).secondaryColor(0x2b0350).iconSet(METALLIC)
@@ -130,7 +131,7 @@ public class HigherDegreeMaterials {
                         .vacuumStats(VA[HV]))
                 .buildAndRegister();
 
-        HSSS = new Material.Builder(GTCEu.id("hsss"))
+        HSSS = REGISTRATE.material("hsss")
                 .langValue("HSS-S")
                 .ingot(4).fluid()
                 .color(0xa482bf).secondaryColor(0x66000e).iconSet(METALLIC)
@@ -143,35 +144,35 @@ public class HigherDegreeMaterials {
                         .vacuumStats(VA[EV], 200))
                 .buildAndRegister();
 
-        IridiumMetalResidue = new Material.Builder(GTCEu.id("iridium_metal_residue"))
+        IridiumMetalResidue = REGISTRATE.material("iridium_metal_residue")
                 .dust()
                 .color(0x484a5e).secondaryColor(0x3e1c38).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iridium, 1, Chlorine, 3, PlatinumSludgeResidue, 1)
                 .buildAndRegister();
 
-        Granite = new Material.Builder(GTCEu.id("granite"))
+        Granite = REGISTRATE.material("granite")
                 .dust()
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 4, Redrock, 1)
                 .buildAndRegister();
 
-        Brick = new Material.Builder(GTCEu.id("brick"))
+        Brick = REGISTRATE.material("brick")
                 .dust()
                 .color(0xc76245).secondaryColor(0x2d1610).iconSet(ROUGH)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Clay, 1)
                 .buildAndRegister();
 
-        Fireclay = new Material.Builder(GTCEu.id("fireclay"))
+        Fireclay = REGISTRATE.material("fireclay")
                 .dust()
                 .color(0xffeab6).secondaryColor(0x84581c).iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, NO_SMELTING)
                 .components(Clay, 1, Brick, 1)
                 .buildAndRegister();
 
-        Diorite = new Material.Builder(GTCEu.id("diorite"))
+        Diorite = REGISTRATE.material("diorite")
                 .dust()
                 .color(0xe9e9e9).secondaryColor(0x7b7b7b)
                 .iconSet(ROUGH)
@@ -179,7 +180,7 @@ public class HigherDegreeMaterials {
                 .components(Mirabilite, 2, Clay, 7)
                 .buildAndRegister();
 
-        BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))
+        BlueAlloy = REGISTRATE.material("blue_alloy")
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1400))
                 .color(0x64B4FF).secondaryColor(0x3c7dba).iconSet(METALLIC)
@@ -188,14 +189,14 @@ public class HigherDegreeMaterials {
                 .cableProperties(GTValues.V[HV], 2, 1)
                 .buildAndRegister();
 
-        RadAway = new Material.Builder(GTCEu.id("rad_away"))
+        RadAway = REGISTRATE.material("rad_away")
                 .dust()
                 .color(0xe3a1d7).secondaryColor(0x9845a3).iconSet(ROUGH)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(PotassiumIodide, 5, PrussianBlue, 3, DiethylenetriaminepentaaceticAcid, 5)
                 .buildAndRegister();
 
-        Blackstone = new Material.Builder(GTCEu.id("blackstone"))
+        Blackstone = REGISTRATE.material("blackstone")
                 .dust()
                 .color(0x3c3947).secondaryColor(0x160f10).iconSet(ROUGH)
                 .flags(NO_SMASHING)

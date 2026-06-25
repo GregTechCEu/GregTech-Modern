@@ -324,16 +324,16 @@ public class GeodeVeinGenerator extends VeinGenerator {
                                      TagKey<Block> invalidBlocks, @NotNull TagPrefix providerMaterialPrefix) {
 
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("filling_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("filling_provider")
                         .forGetter(config -> config.fillingProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("inner_layer_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("inner_layer_provider")
                         .forGetter(config -> config.innerLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec())
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
                         .fieldOf("alternate_inner_layer_provider")
                         .forGetter(config -> config.alternateInnerLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec())
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec())
                         .fieldOf("middle_layer_provider").forGetter(config -> config.middleLayerProvider),
-                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("outer_layer_provider")
+                Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("outer_layer_provider")
                         .forGetter(config -> config.outerLayerProvider),
                 ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("inner_placements")
                         .forGetter(config -> config.innerPlacements),

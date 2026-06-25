@@ -239,6 +239,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 .generationCondition(hasOreProperty);
     }
 
+    // Materials
+
+    public Material.Builder material(String name) {
+        return new Material.Builder(this, makeResourceLocation(name));
+    }
+
     // Elements
 
     public Element element(String name, long neutrons, long halfLifeSeconds, @Nullable String decayTo, long protons,
