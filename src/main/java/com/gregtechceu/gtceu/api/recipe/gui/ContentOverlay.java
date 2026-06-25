@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
@@ -68,7 +68,7 @@ public record ContentOverlay(Content content, boolean perTick, int recipeTier, i
             Font fontRenderer = Minecraft.getInstance().font;
             int color;
             String s;
-            if (content.content() instanceof IntProviderFluidIngredient) {
+            if (content.content() instanceof IRangedIngredient) {
                 // with only 5 characters worth of space, that's not enough for a fluid range
                 color = ChatFormatting.GOLD.getColor();
                 s = "X-Y";

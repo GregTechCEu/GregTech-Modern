@@ -218,7 +218,7 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
                 FluidStack stack;
                 MutableComponent text = CommonComponents.space();
                 if (fluidOutput instanceof IntProviderFluidIngredient provider) {
-                    stack = provider.getInner().getStacks()[0];
+                    stack = provider.getMaxSizeStack();
                     text.append(Component.translatable("gtceu.gui.content.range",
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMinValue(), true),
                             FluidTextHelper.getUnicodeMillibuckets(provider.getCountProvider().getMaxValue(), true)));
