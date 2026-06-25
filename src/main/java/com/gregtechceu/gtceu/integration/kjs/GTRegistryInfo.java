@@ -55,7 +55,7 @@ public class GTRegistryInfo<K, V> {
     public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
     public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
     public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
-    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+    //public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
 
     // spotless:on
 

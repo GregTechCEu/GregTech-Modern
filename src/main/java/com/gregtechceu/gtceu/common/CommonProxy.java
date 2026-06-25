@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -82,6 +83,8 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 
 import java.util.List;
 
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
+
 public class CommonProxy {
 
     public CommonProxy() {
@@ -102,15 +105,12 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-        GTValueProviderTypes.init(eventBus);
         GTRegistries.init(eventBus);
-        GTFeatures.init(eventBus);
-        GTCommandArguments.init(eventBus);
-        GTMobEffects.init(eventBus);
-        GTParticleTypes.init(eventBus);
+        REGISTRATE.registerEventListeners(eventBus);
 
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
+
 
     public static void init() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -121,6 +121,15 @@ public class CommonProxy {
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
+        GTValueProviderTypes.init(modBus);
+        GTFeatures.init(modBus);
+        GTCommandArguments.init(modBus);
+        GTMobEffects.init(modBus);
+        GTParticleTypes.init(modBus);
+        GTPlaceholders.init(modBus);
+        GTPatternErrors.init(modBus);
+
+        GTCreativeModeTabs.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
         GTToolTiers.init();
@@ -162,7 +171,7 @@ public class CommonProxy {
 
         GTFoods.init();
         GTItems.init();
-        GTDimensionMarkers.init();
+        GTDimensionMarkers.init(modBus);
         ChanceLogic.init();
         WaypointManager.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
@@ -192,7 +201,6 @@ public class CommonProxy {
         IndicatorGenerators.registerAddonGenerators();
 
         GTFeatures.init();
-        GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
         SyncedKeyMappings.init();
