@@ -72,7 +72,7 @@ public class FluidVeinWorldEntry {
             ResourceLocation id = ResourceLocation.parse(tag.getString("vein"));
             info.setDefinition(GTMemoizer.memoize(() -> {
                 return provider.lookup(GTRegistries.Keys.BEDROCK_FLUID)
-                        .flatMap(reg -> reg.get(ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id)))
+                        .flatMap(rg -> rg.get(ResourceKey.create(GTRegistries.Keys.BEDROCK_FLUID, id)))
                         .orElse(null);
             }));
         } else {

@@ -170,35 +170,4 @@ public final class GTRegistries {
     public static Collection<Registry<?>> getRegistries() {
         return LOAD_ORDER.values();
     }
-
-    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-    private static RegistryAccess FROZEN = BLANK;
-
-    /**
-     * You shouldn't call it, you should probably not even look at it just to be extra safe
-     *
-     * @param registryAccess the new value to set to the frozen registry access
-     */
-    @ApiStatus.Internal
-    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
-        FROZEN = registryAccess;
-    }
-
-    public static RegistryAccess builtinRegistry() {
-        if (GTCEu.isClientThread()) {
-            return ClientHelpers.getClientRegistries();
-        }
-        return FROZEN;
-    }
-
-    private static class ClientHelpers {
-
-        private static RegistryAccess getClientRegistries() {
-            if (Minecraft.getInstance().getConnection() != null) {
-                return Minecraft.getInstance().getConnection().registryAccess();
-            } else {
-                return FROZEN;
-            }
-        }
-    }
 }

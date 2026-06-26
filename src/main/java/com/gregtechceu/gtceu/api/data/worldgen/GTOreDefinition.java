@@ -7,10 +7,8 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndic
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -185,7 +183,7 @@ public class GTOreDefinition {
     @HideFromJS
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         if (biomeLookup == null) {
-            GTRegistries.builtinRegistry().registry(GTRegistries.Keys.ORE_VEIN)
+            RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registry(GTRegistries.Keys.ORE_VEIN)
                     .map(reg -> reg.getKey(this))
                     .ifPresentOrElse(id -> {
                         GTCEu.LOGGER.error("Tried to modify ore vein `{}`'s biomes after registry has been frozen!",

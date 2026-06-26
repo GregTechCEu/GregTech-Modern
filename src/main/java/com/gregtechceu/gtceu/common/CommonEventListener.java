@@ -227,7 +227,6 @@ public class CommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        GTRegistries.updateFrozenRegistry(event.getRegistryAccess());
         event.addListener(PostRegistryListener.INSTANCE);
     }
 

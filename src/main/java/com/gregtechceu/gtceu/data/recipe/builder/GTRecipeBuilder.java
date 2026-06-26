@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.codec.CodecUtils;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -1466,8 +1467,8 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public void toJson(JsonObject json) {
-        var ops = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+    public void toJson(HolderLookup.Provider provider, JsonObject json) {
+        var ops = RegistryOps.create(JsonOps.INSTANCE, provider);
         JsonObject serialized = CodecUtils.encodeMap(build(), GTRecipeSerializer.CODEC, ops)
                 .getOrThrow().getAsJsonObject();
         for (String key : serialized.keySet()) {
