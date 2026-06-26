@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import brachy.modularui.api.value.IValue;
+import brachy.modularui.value.ObjectValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -17,6 +19,7 @@ import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -289,6 +292,21 @@ public class GTMuiWidgets {
                         (machine.getCircuitInventory().getStackInSlot(0).isEmpty() ? 0 :
                                 IntCircuitBehaviour
                                         .getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0))))));
+    }
+
+    public static ItemDisplayWidget createCyclingItemDisplay(List<ItemStack> stacks) {
+        final int CYCLE_TIME = 1000;
+
+        IValue<ItemStack> value = new ObjectValue.Dynamic<>(ItemStack.class,
+                () -> stacks.get((int) ((Util.getMillis() % (CYCLE_TIME * stacks.size())) / CYCLE_TIME)), x -> {}
+        );
+        return new ItemDisplayWidget()
+                .item(value)
+                .tooltipDynamic(tooltip -> {
+                    stacks.forEach(stack -> tooltip.addDrawable(new ItemDrawable(stack)));
+                    tooltip.newLine().addFromItem(value.getValue());
+                    tooltip.markDirty();
+                });
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {
