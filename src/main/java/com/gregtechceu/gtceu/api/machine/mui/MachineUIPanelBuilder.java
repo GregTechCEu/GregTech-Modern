@@ -109,7 +109,6 @@ public class MachineUIPanelBuilder {
         }
 
         if (machine instanceof SimpleSteamMachine steamMachine) {
-
             IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
                     () -> new IntSyncValue(() -> steamMachine.steamTank.getFluidInTank(0).getAmount()));
             IntSyncValue steamCapacity = syncManager.getOrCreateSyncHandler("steamCapacity", IntSyncValue.class,
@@ -120,8 +119,10 @@ public class MachineUIPanelBuilder {
                             (float) steamMachine.steamTank.getTankCapacity(0)));
             final int dialWidth = 4;
             final int dialHeight = 12;
+            UITexture background = steamMachine.isHighPressure() ? GTGuiTextures.STEAM_DIAL_STEEL :
+                    GTGuiTextures.STEAM_DIAL_BRONZE;
             attachMain.child(new ParentWidget<>()
-                    .child(GTGuiTextures.STEAM_DIAL_BRONZE.asWidget()
+                    .child(background.asWidget()
                             .size(32, 32)
                             .tooltipAutoUpdate(true)
                             .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
