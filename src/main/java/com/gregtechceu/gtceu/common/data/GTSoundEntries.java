@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -59,11 +60,8 @@ public class GTSoundEntries {
     public static final SoundEntry METAL_PIPE = REGISTRATE.sound("metal_pipe").build();
 
     public static void init() {
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.forEach(SoundEntry::prepare);
         registerSounds();
-
-        GTRegistries.SOUNDS.freeze();
     }
 
     private static void registerSounds() {
@@ -71,4 +69,5 @@ public class GTSoundEntries {
             entry.register(soundEvent -> ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent));
         }
     }
+
 }

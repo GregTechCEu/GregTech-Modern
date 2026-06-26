@@ -103,7 +103,7 @@ public final class GTRegistries {
 
     // Recipe related registries
 
-    public static final GTRegistry<GTRecipeCategory> RECIPE_CATEGORIES = new GTRegistry<>(GTCEu.id("recipe_category"));
+    public static final MappedRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
     public static final MappedRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
     public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
     public static final MappedRegistry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);

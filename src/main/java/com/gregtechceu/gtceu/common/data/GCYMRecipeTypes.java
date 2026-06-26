@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
 
 public class GCYMRecipeTypes {
 
