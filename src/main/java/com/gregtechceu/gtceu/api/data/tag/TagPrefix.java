@@ -70,14 +70,6 @@ public class TagPrefix {
 
     public static void init() {}
 
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}
-     */
-    @Deprecated(since = "8.0.0")
-    public static TagPrefix get(String name) {
-        return GTRegistries.TAG_PREFIXES.get(GTCEu.id(name));
-    }
-
     public boolean isEmpty() {
         return this == NULL_PREFIX;
     }
@@ -1152,22 +1144,6 @@ public class TagPrefix {
         return (long) (GTValues.M * materialAmounts.getFloat(material));
     }
 
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.get(name)}
-     */
-    @Deprecated(since = "8.0.0")
-    public static TagPrefix getPrefix(String prefixName) {
-        return getPrefix(prefixName, null);
-    }
-
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.getOrDefault(prefixName, replacement)}
-     */
-    @Deprecated(since = "8.0.0")
-    public static TagPrefix getPrefix(String prefixName, @Nullable TagPrefix replacement) {
-        return GTRegistries.TAG_PREFIXES.getOptional(GTCEu.id(prefixName)).orElse(replacement);
-    }
-
     public @Unmodifiable List<TagKey<Item>> getItemParentTags() {
         return tags.stream()
                 .filter(TagType::isParentTag)
@@ -1343,14 +1319,6 @@ public class TagPrefix {
     @Override
     public int hashCode() {
         return id.hashCode();
-    }
-
-    /**
-     * @deprecated Use {@code GTRegistries.TAG_PREFIXES.values()}
-     */
-    @Deprecated(since = "8.0.0")
-    public static Collection<TagPrefix> values() {
-        return GTRegistries.TAG_PREFIXES.stream().toList();
     }
 
     @Override

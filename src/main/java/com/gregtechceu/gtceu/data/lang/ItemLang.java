@@ -41,7 +41,7 @@ public class ItemLang {
         provider.add("gtceu.recipe.category.ingot_molding", "Metal Molding");
 
         // TagPrefix
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
         }
         // GTToolType

@@ -61,10 +61,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
@@ -201,8 +199,8 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRegisterLate(RegisterEvent event) {
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRegisterLate(RegisterEvent event) {
         // Material event *should* happen before any of the others here
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
@@ -271,10 +269,7 @@ public class CommonProxy {
     public void preInit(FMLConstructModEvent event) {}
 
     @SubscribeEvent
-    public void register(RegisterEvent event) {
-
-        if (event.getRegistryKey().location().getNamespace().equals(GTCEu.MOD_ID)) GTCEu.LOGGER.info("Firing registry event for gt registry: {}", event.getRegistryKey());
-
+    public void onRegister(RegisterEvent event) {
         if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
             ChestGenHooks.RandomWeightLootFunction.init();
     }

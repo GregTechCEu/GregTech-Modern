@@ -54,7 +54,7 @@ public final class GTRegistries {
     private GTRegistries() {}
 
     public static final class Keys {
-
+        private Keys() {}
         // Material related registries
 
         public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));

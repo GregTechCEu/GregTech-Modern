@@ -658,7 +658,7 @@ public class CommonEventListener {
             }
         });
 
-        for (TagPrefix prefix : TagPrefix.values()) {
+        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
             String first = prefix.invertedName ? prefix.getName() : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : prefix.getName();
             Pattern idPattern = Pattern.compile(first + "_" + last);

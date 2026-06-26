@@ -55,7 +55,7 @@ public class GTMaterialBlocks {
     public static void generateMaterialBlocks() {
         GTCEu.LOGGER.debug("Generating GTCEu Material Blocks...");
 
-        for (TagPrefix tagPrefix : TagPrefix.values()) {
+        for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (!TagPrefix.ORES.containsKey(tagPrefix) && tagPrefix.doGenerateBlock()) {
                 for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateBlock(material)) {

@@ -65,7 +65,7 @@ public class GTMaterialItems {
     // Material Items
     public static void generateMaterialItems() {
         REGISTRATE.creativeModeTab(() -> MATERIAL_ITEM);
-        for (var tagPrefix : TagPrefix.values()) {
+        for (var tagPrefix : GTRegistries.TAG_PREFIXES) {
             if (tagPrefix.doGenerateItem()) {
                 for (Material material : GTRegistries.MATERIALS) {
                     if (tagPrefix.doGenerateItem(material)) {

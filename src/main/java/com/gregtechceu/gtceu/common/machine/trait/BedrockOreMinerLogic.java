@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
@@ -74,6 +75,11 @@ public class BedrockOreMinerLogic extends RecipeLogic {
         }
     }
 
+    private TagPrefix getOreDropPrefix() {
+        return getLevel().registryAccess().registryOrThrow(GTRegistries.Keys.TAG_PREFIX)
+                .getOrThrow(ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix)));
+    }
+
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
@@ -81,7 +87,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (wm == null) return null;
             Material material = wm.material();
             ItemStack stack = GTUtil.getFirstNonEmpty(
-                    ChemicalHelper.get(Objects.requireNonNull(GTRegistries.TAG_PREFIXES.get(GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))), material),
+                    ChemicalHelper.get(getOreDropPrefix(), material),
                     ChemicalHelper.get(TagPrefix.crushed, material),
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),

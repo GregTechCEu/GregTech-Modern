@@ -97,6 +97,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new ResourceLocation(this.getModid(), path);
     }
 
+    @Override
+    public <R> boolean isRegistered(ResourceKey<? extends Registry<R>> registryType) {
+        return super.isRegistered(registryType);
+    }
+
     /**
      * Get or create a new {@link GTRegistrate} and register event listeners for registration and data generation.
      * A new {@code GTRegistrate} instance is only made if one doesn't already exist in the cache.
@@ -224,7 +229,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Recipe types
 
     public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
+        var recipeType = new GTRecipeType(GTCEu.id(name), this, group, proxyRecipes);
         this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
         this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).build();
         return recipeType;
