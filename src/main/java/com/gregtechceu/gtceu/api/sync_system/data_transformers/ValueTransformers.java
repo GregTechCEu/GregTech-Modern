@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -187,7 +188,7 @@ public final class ValueTransformers {
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
         registerTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
-                GTRecipeType::getRegistryName, GTRegistries.RECIPE_TYPES::get));
+                GTRecipeType::getRegistryName, (r) -> (GTRecipeType)BuiltInRegistries.RECIPE_TYPE.get(r)));
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTRegistries.MATERIALS::get));
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());

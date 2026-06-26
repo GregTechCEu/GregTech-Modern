@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
@@ -32,6 +33,8 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputIte
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -129,7 +132,12 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_INPUTS);
             }
             if (map != null) {
-                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+
+
+                var type = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(Registries.RECIPE_TYPE).get(this.type.id);
+                if (!(type instanceof GTRecipeType recipeType)) throw new IllegalStateException("GTRecipeJS is constructing a recipe for a non-GT recipe type, this should never happen");
+
+
                 if (map.get(capability) != null &&
                         map.get(capability).length + obj.length > recipeType.getMaxInputs(capability)) {
                     ConsoleJS.SERVER.warn(String.format(
@@ -154,7 +162,9 @@ public interface GTRecipeSchema {
                 map = getValue(ALL_OUTPUTS);
             }
             if (map != null) {
-                var recipeType = GTRegistries.RECIPE_TYPES.get(this.type.id);
+                var type = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(Registries.RECIPE_TYPE).get(this.type.id);
+                if (!(type instanceof GTRecipeType recipeType)) throw new IllegalStateException("GTRecipeJS is constructing a recipe for a non-GT recipe type, this should never happen");
+
                 if (map.get(capability) != null &&
                         map.get(capability).length + obj.length > recipeType.getMaxOutputs(capability)) {
                     ConsoleJS.SERVER.warn(String.format(

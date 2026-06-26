@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -173,7 +174,7 @@ public final class ResearchManager {
         // spotless:off
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
-                GTRegistries.RECIPE_TYPES.codec().fieldOf("research_type").forGetter(ResearchItem::recipeType)
+                GTRecipeSerializer.GT_RECIPE_TYPE_CODEC.fieldOf("research_type").forGetter(ResearchItem::recipeType)
         ).apply(instance, ResearchItem::new));
         // spotless:on
     }

@@ -15,15 +15,23 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -215,14 +223,20 @@ public class TestUtils {
      */
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
-        GTRegistries.RECIPE_TYPES.unfreeze();
-        GTRegistries.RECIPE_CATEGORIES.unfreeze();
+        var access = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
+        MappedRegistry<RecipeType<?>> recipeTypes = (MappedRegistry<RecipeType<?>>)access.registryOrThrow(Registries.RECIPE_TYPE);
+        MappedRegistry<GTRecipeCategory> categories = (MappedRegistry<GTRecipeCategory>)access.registryOrThrow(GTRegistries.Keys.RECIPE_CATEGORY);
+
+        recipeTypes.unfreeze();
+        categories.unfreeze();
         GTRecipeType type = new GTRecipeType(GTCEu.id(name), ELECTRIC, RecipeType.SMELTING)
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        GTRegistries.RECIPE_CATEGORIES.freeze();
-        GTRegistries.RECIPE_TYPES.freeze();
+        recipeTypes.register(ResourceKey.create(Registries.RECIPE_TYPE, GTCEu.id(name)), type, Lifecycle.stable());
+
+        recipeTypes.freeze();
+        categories.freeze();
         return type;
     }
 

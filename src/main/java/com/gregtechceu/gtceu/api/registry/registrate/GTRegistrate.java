@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
@@ -26,6 +28,7 @@ import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +37,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -214,6 +218,18 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
                 blockEntityFactory);
     }
+
+    // Recipe types
+
+    public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
+        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
+        this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
+        this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).build();
+        return recipeType;
+    }
+
+    // Recipe categories
+
 
     // Tag prefixes
 

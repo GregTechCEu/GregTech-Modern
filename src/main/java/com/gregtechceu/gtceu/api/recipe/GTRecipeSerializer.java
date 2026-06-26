@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
+import com.mojang.serialization.DataResult;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -27,10 +28,20 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
+
+    public static final Codec<GTRecipeType> GT_RECIPE_TYPE_CODEC = BuiltInRegistries.RECIPE_TYPE.byNameCodec()
+            .comapFlatMap(recipeType -> {
+                if (recipeType instanceof GTRecipeType gtRecipeType) {
+                    return DataResult.success(gtRecipeType);
+                } else {
+                    return DataResult.error(() -> "Recipe type " + recipeType + " is not a GTRecipeType");
+                }
+            }, Function.identity());
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
@@ -192,7 +203,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         // spotless:off
         if (!isKubeLoaded) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                            GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
+                            GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
                             RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
                             RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
                             RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
@@ -219,7 +230,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                                     conditions, List.of(), data, duration, recipeCategory, groupColor)));
         } else {
             return RecordCodecBuilder.create(instance -> instance.group(
-                            GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
+                            GT_RECIPE_TYPE_CODEC.fieldOf("type").forGetter(val -> val.recipeType),
                             RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
                             RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
                             RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),

@@ -84,6 +84,9 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -139,21 +142,21 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void init() {
         super.init();
-        //GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
+        /*
+        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
 
 
-        //GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
-        //        true);
+        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
+                 true);
         GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
                 true);
 
-        //GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
+        GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
 
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
         GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
                 true);
 
-        /*
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
@@ -176,15 +179,12 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
                 (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
                 false);
-        */
-        //GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
+        GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
 
-        /*
         GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
-        */
-        //GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
-        //        true);
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
+               true);*/
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
@@ -233,8 +233,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         super.registerRecipeSchemas(event);
 
-        for (var entry : GTRegistries.RECIPE_TYPES.entries()) {
-            event.register(entry.getKey(), GTRecipeSchema.SCHEMA);
+        var recipeTypes = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(Registries.RECIPE_TYPE);
+        for (var id : recipeTypes.keySet()) {
+            RecipeType<?> type = recipeTypes.get(id);
+            if (!(type instanceof GTRecipeType)) continue;
+            event.register(id, GTRecipeSchema.SCHEMA);
         }
         var ns = event.namespace(GTCEu.MOD_ID);
         ns.put("shaped", new WrappingRecipeSchemaType(ns, GTCEu.id("shaped"),
