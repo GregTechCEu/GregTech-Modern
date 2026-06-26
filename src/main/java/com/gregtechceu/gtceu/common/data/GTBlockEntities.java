@@ -49,21 +49,5 @@ public class GTBlockEntities {
             .validBlocks(GTBlocks.DUCT_PIPES)
             .register();
 
-    public static final BlockEntityEntry<SignBlockEntity> GT_SIGN = REGISTRATE
-            .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
-            .validBlocks(GTBlocks.RUBBER_SIGN,
-                    GTBlocks.RUBBER_WALL_SIGN,
-                    GTBlocks.TREATED_WOOD_SIGN,
-                    GTBlocks.TREATED_WOOD_WALL_SIGN)
-            .register();
-
-    public static final BlockEntityEntry<GTHangingSignBlockEntity> GT_HANGING_SIGN = REGISTRATE
-            .blockEntity("hanging_sign", GTHangingSignBlockEntity::new)
-            .validBlocks(GTBlocks.RUBBER_HANGING_SIGN,
-                    GTBlocks.RUBBER_WALL_HANGING_SIGN,
-                    GTBlocks.TREATED_WOOD_HANGING_SIGN,
-                    GTBlocks.TREATED_WOOD_WALL_HANGING_SIGN)
-            .register();
-
     public static void init() {}
 }

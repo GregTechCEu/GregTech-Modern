@@ -119,8 +119,8 @@ public class ClientProxy extends CommonProxy {
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
 
-        event.registerBlockEntityRenderer(GTBlockEntities.GT_SIGN.get(), SignRenderer::new);
-        event.registerBlockEntityRenderer(GTBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);
+        event.registerBlockEntityRenderer(GTSignBlockEntities.GT_SIGN.get(), SignRenderer::new);
+        event.registerBlockEntityRenderer(GTSignBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);
 
         event.registerEntityRenderer(GTEntityTypes.BOAT.get(), c -> new GTBoatRenderer(c, false));
         event.registerEntityRenderer(GTEntityTypes.CHEST_BOAT.get(), c -> new GTBoatRenderer(c, true));

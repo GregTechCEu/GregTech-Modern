@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.common.blockentity.GTHangingSignBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 
+import com.gregtechceu.gtceu.common.data.GTSignBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WallHangingSignBlock;
@@ -23,13 +24,13 @@ public class GTWallHangingSignBlock extends WallHangingSignBlock {
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GTHangingSignBlockEntity(GTBlockEntities.GT_HANGING_SIGN.get(), pos, state);
+        return new GTHangingSignBlockEntity(GTSignBlockEntities.GT_HANGING_SIGN.get(), pos, state);
     }
 
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
                                                                   BlockEntityType<T> blockEntityType) {
-        return createTickerHelper(blockEntityType, GTBlockEntities.GT_HANGING_SIGN.get(), SignBlockEntity::tick);
+        return createTickerHelper(blockEntityType, GTSignBlockEntities.GT_HANGING_SIGN.get(), SignBlockEntity::tick);
     }
 }

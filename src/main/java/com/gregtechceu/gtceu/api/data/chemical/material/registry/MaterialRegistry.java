@@ -81,7 +81,7 @@ public class MaterialRegistry extends MappedRegistry<Material> {
     @Override
     public Registry<Material> freeze() {
         super.freeze();
-        GTCEu.LOGGER.info("Freezing material registry");
+        GTCEu.LOGGER.debug("Freezing material registry");
         registrationPhase = Phase.FROZEN;
         return this;
     }
@@ -89,7 +89,7 @@ public class MaterialRegistry extends MappedRegistry<Material> {
     @Override
     public void unfreeze() {
         super.unfreeze();
-        GTCEu.LOGGER.info("Unfreezing material registry");
+        GTCEu.LOGGER.debug("Unfreezing material registry");
         registrationPhase = Phase.OPEN;
     }
 
