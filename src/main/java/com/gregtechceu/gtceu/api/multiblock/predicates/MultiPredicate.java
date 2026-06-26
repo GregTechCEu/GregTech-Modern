@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -8,38 +9,71 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class MultiPredicate extends BasePredicate {
 
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
-    private final @Nullable String debugName;
+    private final List<List<BlockInfo>> indexedCandidates;
+    private final String debugName;
     private @Nullable Logic type;
+    private boolean hasAir = false;
 
     public MultiPredicate(@Nullable String debugName) {
-        this.debugName = debugName;
+        this.debugName = debugName == null ? "MultiPredicate" : debugName;
+        this.indexedCandidates = Collections.emptyList();
     }
 
     protected MultiPredicate(@Nullable String debugName, Iterable<BasePredicate> predicates, Logic type) {
-        this(debugName);
+        this.debugName = debugName == null ? "MultiPredicate" : debugName;
         this.type = type;
+        List<List<BlockInfo>> indexedCandidates = new ArrayList<>();
         for (BasePredicate predicate : predicates) {
+            this.hasAir |= predicate.hasAir();
             if (!(predicate instanceof MultiPredicate multi)) {
                 addPredicates(predicate);
-                continue;
-            }
-
-            if (!multi.isValid() || multi.getType() == this.getType()) {
-                addPredicates(multi.predicateList);
+                indexedCandidates.add(predicate.getCandidates());
+            } else if (!multi.sameType(this)) {
+                addPredicates(predicate);
+                indexedCandidates.add(predicate.getCandidates());
             } else {
-                addPredicates(multi);
+                addPredicates(multi.predicateList);
+                multi.predicateList.forEach(p -> indexedCandidates.add(p.getCandidates()));
             }
         }
+        this.indexedCandidates = Collections.unmodifiableList(indexedCandidates);
         sorted();
     }
 
     @Override
     public boolean test(PredicateContext ctx) {
+        return testInternal(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+    }
+
+    /// custom testing logic, usually checking if blockstate/entity is correct
+    private boolean testInternal(PredicateContext ctx) {
+        if (this.predicateList.isEmpty()) return true;
+        if (isSingle()) return this.predicateList.get(0).test(ctx);
         return getType().run(ctx, this.predicateList);
+    }
+
+    /// test against global max count
+    private boolean testGlobalMax(PredicateContext ctx) {
+        ctx.globalCache().mergeInt(this, 1, Integer::sum);
+        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
+        int count = ctx.globalCache().getInt(this);
+        if (maxCount == -1 || count <= maxCount) return true;
+        return ctx.error(SinglePredicateError.maxCount(this, count));
+    }
+
+    /// test against slice max count
+    private boolean testSliceMax(PredicateContext ctx) {
+        if (ctx.layerCache() == null) return true;
+        ctx.layerCache().mergeInt(this, 1, Integer::sum);
+        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
+        int count = ctx.layerCache().getInt(this);
+        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
     }
 
     protected MultiPredicate addPredicates(Collection<BasePredicate> predicates) {
@@ -60,50 +94,13 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
+    public List<BlockInfo> getCandidates(int index) {
+        return this.indexedCandidates.get(index);
+    }
+
+    @Override
     public void visit(Consumer<BasePredicate> visitor) {
         predicateList.forEach(p -> p.visit(visitor));
-    }
-
-    @Override
-    public MultiPredicate setMinCount(int minCount) {
-        this.predicateList.forEach(p -> p.setMinCount(minCount));
-        super.setMinCount(minCount);
-        return this;
-    }
-
-    @Override
-    public MultiPredicate setMaxCount(int maxCount) {
-        this.predicateList.forEach(p -> p.setMaxCount(maxCount));
-        super.setMaxCount(maxCount);
-        return this;
-    }
-
-    @Override
-    public MultiPredicate setMinSliceCount(int minSliceCount) {
-        this.predicateList.forEach(p -> p.setMinSliceCount(minSliceCount));
-        super.setMinSliceCount(minSliceCount);
-        return this;
-    }
-
-    @Override
-    public MultiPredicate setMaxSliceCount(int maxSliceCount) {
-        this.predicateList.forEach(p -> p.setMaxSliceCount(maxSliceCount));
-        super.setMaxSliceCount(maxSliceCount);
-        return this;
-    }
-
-    @Override
-    public MultiPredicate setPreviewCount(int previewCount) {
-        this.predicateList.forEach(p -> p.setPreviewCount(previewCount));
-        super.setPreviewCount(previewCount);
-        return this;
-    }
-
-    @Override
-    public MultiPredicate setDisableRenderFormed(boolean disableRenderFormed) {
-        this.predicateList.forEach(p -> p.setDisableRenderFormed(disableRenderFormed));
-        super.setDisableRenderFormed(disableRenderFormed);
-        return this;
     }
 
     public boolean isOr() {
@@ -115,19 +112,20 @@ public class MultiPredicate extends BasePredicate {
     }
 
     public boolean isValid() {
-        return this.type != null;
+        return isSingle() || this.type != null;
     }
 
     protected Logic getType() {
         return Objects.requireNonNull(type, "null type: " + this);
     }
 
+    protected boolean sameType(MultiPredicate other) {
+        return this.type == other.type;
+    }
+
     @Override
     public boolean hasAir() {
-        for (BasePredicate predicate : predicateList) {
-            if (predicate.hasAir()) return true;
-        }
-        return false;
+        return this.hasAir;
     }
 
     protected MultiPredicate sorted() {
@@ -167,18 +165,15 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public boolean isSingle() {
-        return false;
+        return this.predicateList.size() == 1;
     }
 
     @Override
     public StringBuilder appendType(StringBuilder builder) {
-        builder.append("Multi")
+        builder.append(debugName)
                 .append('(')
-                .append(this.type == null ? "INVAlID" : this.type)
+                .append(isValid() ? isSingle() ? "SINGLE" : this.type : "INVAlID")
                 .append(')');
-        if (debugName != null) {
-            builder.append('#').append(debugName);
-        }
         return builder;
     }
 

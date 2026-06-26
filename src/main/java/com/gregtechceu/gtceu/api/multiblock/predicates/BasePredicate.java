@@ -2,18 +2,13 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
-import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,94 +18,89 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @Accessors(chain = true)
 public abstract class BasePredicate {
 
-    public static final BasePredicate AIR = new BasePredicate() {
+    public static final BasePredicate AIR = create("Air", ctx -> ctx.state().is(Blocks.AIR));
 
-        @Override
-        public boolean testInternal(PredicateContext ctx) {
-            return ctx.state().is(Blocks.AIR);
-        }
-
-        @Override
-        public StringBuilder appendType(StringBuilder builder) {
-            return builder.append("Air");
-        }
-    };
-
-    public static final BasePredicate ANY = new BasePredicate() {
-
-        @Override
-        public StringBuilder appendType(StringBuilder builder) {
-            return builder.append("Any");
-        }
-    };
+    public static final BasePredicate ANY = create("Any", ctx -> true);
 
     protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
             .comparingInt(BasePredicate::getPriority);
+
     private @Nullable List<BlockInfo> candidates;
 
     @Getter
     @Setter
-    private int priority = 0;
+    protected int priority = 0;
     @Getter
     @Setter
-    private int minCount = -1;
+    protected int minCount = -1;
     @Getter
     @Setter
-    private int maxCount = -1;
+    protected int maxCount = -1;
     @Getter
     @Setter
-    private int minSliceCount = -1;
+    protected int minSliceCount = -1;
     @Getter
     @Setter
-    private int maxSliceCount = -1;
+    protected int maxSliceCount = -1;
     @Getter
     @Setter
-    private int previewCount = -1;
+    protected int previewCount = -1;
     @Getter
     @Setter
-    private boolean disableRenderFormed = false;
+    protected boolean disableRenderFormed = false;
     @Getter
     @Setter
     private @Nullable String nbtParser; // unsure what this does
 
     /// the main testing method
     public boolean test(PredicateContext ctx) {
-        return testInternal(ctx) && testGlobal(ctx) && testLayer(ctx);
-    }
-
-    /// custom testing logic, usually checking if blockstate/entity is correct
-    public boolean testInternal(PredicateContext ctx) {
         return true;
     }
 
-    /// test against global max count
-    public boolean testGlobal(PredicateContext ctx) {
-        ctx.globalCache().mergeInt(this, 1, Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
-        int count = ctx.globalCache().getInt(this);
-        if (maxCount == -1 || count <= maxCount) return true;
-        return ctx.error(SinglePredicateError.maxCount(this, count));
-    }
-
-    /// test against slice max count
-    public boolean testLayer(PredicateContext ctx) {
-        if (ctx.layerCache() == null) return true;
-        ctx.layerCache().mergeInt(this, 1, Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
-        int count = ctx.layerCache().getInt(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
-        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+    /// method called after all blocks have been iterated, used for checking min values
+    public boolean postTest(PredicateContext ctx) {
+        return true;
     }
 
     /// computes the candidates for this predicate, lazily initialized
     public List<BlockInfo> computeCandidates() {
         return Collections.emptyList();
+    }
+
+    public List<BlockInfo> getCandidates(int index) {
+        return getCandidates();
+    }
+
+    public List<BlockInfo> getCandidates() {
+        if (candidates == null) {
+            candidates = computeCandidates();
+        }
+        return candidates;
+    }
+
+    public List<ItemStack> getCandidateStacks() {
+        return getCandidates().stream()
+                .filter(BlockInfo::nonAir)
+                .map(info -> {
+                    if (GTCEu.isClientSide()) {
+                        Level level = Objects.requireNonNull(Minecraft.getInstance().level);
+                        return info.getItemStackForm(level, BlockPos.ZERO);
+                    }
+
+                    return info.getItemStackForm();
+                })
+                .toList();
+    }
+
+    public Optional<BlockInfo> getFirstCandidate() {
+        return Optional.of(getCandidates())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0));
     }
 
     public boolean isAir() {
@@ -190,33 +180,6 @@ public abstract class BasePredicate {
         return setDisableRenderFormed(true);
     }
 
-    public List<ItemStack> getCandidateStacks() {
-        return getCandidates().stream()
-                .filter(BlockInfo::nonAir)
-                .map(info -> {
-                    if (GTCEu.isClientSide()) {
-                        Level level = Objects.requireNonNull(Minecraft.getInstance().level);
-                        return info.getItemStackForm(level, BlockPos.ZERO);
-                    }
-
-                    return info.getItemStackForm();
-                })
-                .toList();
-    }
-
-    public List<BlockInfo> getCandidates() {
-        if (candidates == null) {
-            candidates = computeCandidates();
-        }
-        return candidates;
-    }
-
-    public Optional<BlockInfo> getFirstCandidate() {
-        return Optional.of(getCandidates())
-                .filter(c -> !c.isEmpty())
-                .map(c -> c.get(0));
-    }
-
     public void visit(Consumer<BasePredicate> visitor) {
         visitor.accept(this);
     }
@@ -281,45 +244,36 @@ public abstract class BasePredicate {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
     }
 
-    public static class Custom extends BasePredicate {
+    public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate) {
+        return create(debugName, predicate, Stream.empty(), null);
+    }
 
-        @Nullable
-        private final String debugName;
-        private final Predicate<PredicateContext> predicate;
-        private final Supplier<Stream<BlockInfo>> candidates;
-        private Consumer<StringBuilder> contents = b -> {};
+    public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
+                                       Stream<BlockInfo> candidates, @Nullable Consumer<StringBuilder> contents) {
+        return new BasePredicate() {
 
-        public Custom(@Nullable String debugName,
-                      Predicate<PredicateContext> predicate,
-                      Supplier<Stream<BlockInfo>> candidates,
-                      @Nullable Consumer<StringBuilder> contents) {
-            this.debugName = debugName;
-            this.predicate = predicate;
-            this.candidates = candidates;
-            if (contents != null) {
-                this.contents = contents;
+            @Override
+            public boolean test(PredicateContext ctx) {
+                return predicate.test(ctx);
             }
-        }
 
-        @Override
-        public boolean testInternal(PredicateContext ctx) {
-            return this.predicate.test(ctx);
-        }
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return candidates.toList();
+            }
 
-        @Override
-        public List<BlockInfo> computeCandidates() {
-            return this.candidates.get().toList();
-        }
+            @Override
+            public StringBuilder appendType(StringBuilder builder) {
+                return builder.append(Objects.requireNonNullElse(debugName, "Predicate"));
+            }
 
-        @Override
-        public StringBuilder appendType(StringBuilder builder) {
-            return builder.append(debugName != null ? debugName : "Custom");
-        }
-
-        @Override
-        protected StringBuilder appendContents(StringBuilder builder) {
-            contents.accept(builder);
-            return builder;
-        }
+            @Override
+            protected StringBuilder appendContents(StringBuilder builder) {
+                if (contents != null) {
+                    contents.accept(builder);
+                }
+                return builder;
+            }
+        };
     }
 }

@@ -216,7 +216,7 @@ public class Predicates {
                                                 Predicate<PredicateContext> predicate,
                                                 Supplier<Stream<BlockInfo>> candidates,
                                                 @Nullable Consumer<StringBuilder> contents) {
-        return new BasePredicate.Custom(debugName, predicate, candidates, contents);
+        return BasePredicate.create(debugName, predicate, candidates.get(), contents);
     }
 
     public static BasePredicate any() {
