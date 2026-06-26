@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -19,7 +18,6 @@ public class VirtualItemStorage extends VirtualEntry {
 
     protected static final int DEFAULT_SLOT_AMOUNT = 1;
 
-    @NotNull
     @Getter
     private final CustomItemStackHandler handler;
 

@@ -18,15 +18,15 @@ public interface ChanceBoostFunction {
      */
     ChanceBoostFunction OVERCLOCK = (entry, recipeTier, chanceTier) -> {
         int tierDiff = chanceTier - recipeTier;
-        if (tierDiff <= 0) return entry.chance; // equal or invalid tiers do not boost at all
+        if (tierDiff <= 0) return entry.chance(); // equal or invalid tiers do not boost at all
         if (recipeTier == GTValues.ULV) tierDiff--; // LV does not boost over ULV
-        return Mth.clamp(entry.chance + (entry.tierChanceBoost * tierDiff), 0, entry.maxChance);
+        return Mth.clamp(entry.chance() + (entry.tierChanceBoost() * tierDiff), 0, entry.maxChance());
     };
 
     /**
      * Chance boosting function which performs no boosting
      */
-    ChanceBoostFunction NONE = (entry, recipeTier, chanceTier) -> entry.chance;
+    ChanceBoostFunction NONE = (entry, recipeTier, chanceTier) -> entry.chance();
 
     /**
      * @param entry      the amount to boost by

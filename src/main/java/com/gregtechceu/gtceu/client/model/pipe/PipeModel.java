@@ -179,18 +179,18 @@ public class PipeModel {
      */
     @ApiStatus.OverrideOnly
     protected BlockModelBuilder getOrCreateBlockModel() {
-        if (this.blockModel != null) {
-            return this.blockModel;
+        if (this.blockModel == null) {
+            // spotless:off
+            this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
+                    // make the "default" model be based on the center part's model
+                    .parent(this.getOrCreateCenterElement())
+                    .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
+                        .centerModels(this.getOrCreateCenterElement().getLocation())
+                        .connectionModels(this.getOrCreateConnectionElement().getLocation())
+                    .end();
+            // spotless:on
         }
-        // spotless:off
-        return this.blockModel = this.provider.models().getBuilder(this.blockId.toString())
-                // make the "default" model be based on the center part's model
-                .parent(this.getOrCreateCenterElement())
-                .customLoader(PipeModelBuilder.begin(this.thickness, this.provider))
-                    .centerModels(this.getOrCreateCenterElement().getLocation())
-                    .connectionModels(this.getOrCreateConnectionElement().getLocation())
-                .end();
-        // spotless:on
+        return this.blockModel;
     }
 
     /**
@@ -202,11 +202,11 @@ public class PipeModel {
      */
     @ApiStatus.OverrideOnly
     protected BlockModelBuilder getOrCreateCenterElement() {
-        if (this.centerElement != null) {
-            return this.centerElement;
+        if (this.centerElement == null) {
+            this.centerElement = makeElementModel(this.blockId.withPath(path -> "block/pipe/" + path + "/center"),
+                    null, minCoord, minCoord, minCoord, maxCoord, maxCoord, maxCoord);
         }
-        return this.centerElement = makeElementModel(this.blockId.withPath(path -> "block/pipe/" + path + "/center"),
-                null, minCoord, minCoord, minCoord, maxCoord, maxCoord, maxCoord);
+        return this.centerElement;
     }
 
     /**
@@ -221,12 +221,12 @@ public class PipeModel {
      */
     @ApiStatus.OverrideOnly
     protected BlockModelBuilder getOrCreateConnectionElement() {
-        if (this.connectionElement != null) {
-            return this.connectionElement;
+        if (this.connectionElement == null) {
+            this.connectionElement = makeElementModel(
+                    this.blockId.withPath(path -> "block/pipe/" + path + "/connection"),
+                    Direction.DOWN, minCoord, 0, minCoord, maxCoord, minCoord, maxCoord);
         }
-        return this.connectionElement = makeElementModel(
-                this.blockId.withPath(path -> "block/pipe/" + path + "/connection"),
-                Direction.DOWN, minCoord, 0, minCoord, maxCoord, minCoord, maxCoord);
+        return this.connectionElement;
     }
 
     /**
@@ -238,10 +238,10 @@ public class PipeModel {
      */
     @ApiStatus.OverrideOnly
     protected ItemModelBuilder getOrCreateItemModel() {
-        if (this.itemModel != null) {
-            return this.itemModel;
+        if (this.itemModel == null) {
+            this.itemModel = createItemModel(this.blockId, this.minCoord, this.maxCoord);
         }
-        return this.itemModel = createItemModel(this.blockId, this.minCoord, this.maxCoord);
+        return this.itemModel;
     }
 
     /**
@@ -274,22 +274,14 @@ public class PipeModel {
      * @return An item model builder.
      */
     protected ItemModelBuilder createItemModel(ResourceLocation name, float min, float max) {
-        Reference2FloatMap<Direction> faceEndpoints = new Reference2FloatOpenHashMap<>();
-        faceEndpoints.put(Direction.DOWN, min);
-        faceEndpoints.put(Direction.UP, max);
-        faceEndpoints.put(Direction.NORTH, 0);
-        faceEndpoints.put(Direction.SOUTH, 16);
-        faceEndpoints.put(Direction.WEST, min);
-        faceEndpoints.put(Direction.EAST, max);
-
         ItemModelBuilder model = this.provider.itemModels().getBuilder(name.toString())
                 .parent(this.getOrCreateCenterElement());
-        makePartModelElement(model, Direction.NORTH, false, faceEndpoints, 0.0f, 0, 1,
+        makePartModelElement(model, Direction.NORTH, false, true, 0.0f, 0, 1,
                 min, min, 0, max, max, 16, this.side, this.end, SIDE_KEY, END_KEY);
-        makePartModelElement(model, Direction.NORTH, true, faceEndpoints, 0.001f, 0, 1,
+        makePartModelElement(model, Direction.NORTH, true, true, 0.001f, 0, 1,
                 min, min, 0, max, max, 16, this.sideSecondary, this.endSecondary, SIDE_SECONDARY_KEY,
                 END_SECONDARY_KEY);
-        makePartModelElement(model, Direction.NORTH, true, faceEndpoints, 0.002f, 2, 2,
+        makePartModelElement(model, Direction.NORTH, true, true, 0.002f, 2, 2,
                 min, min, 0, max, max, 16, this.sideOverlay, this.endOverlay, SIDE_OVERLAY_KEY, END_OVERLAY_KEY);
         return model;
     }
@@ -310,38 +302,47 @@ public class PipeModel {
     protected BlockModelBuilder makeElementModel(ResourceLocation name, @Nullable Direction endFace,
                                                  final float x1, final float y1, final float z1,
                                                  final float x2, final float y2, final float z2) {
-        Reference2FloatMap<Direction> faceEndpoints = makeFaceEndpointMap(x1, y1, z1, x2, y2, z2);
-
         BlockModelBuilder model = this.provider.models().getBuilder(name.toString())
                 .parent(new ModelFile.UncheckedModelFile("block/block"))
                 .texture("particle", "#" + (this.side != null ? SIDE_KEY : END_KEY))
                 .renderType(RENDERTYPE_CUTOUT_MIPPED);
-        makePartModelElement(model, endFace, false, faceEndpoints, 0.0f, 0, 1,
+        makePartModelElement(model, endFace, false, 0.0f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.side, this.end, SIDE_KEY, END_KEY);
-        makePartModelElement(model, endFace, true, faceEndpoints, 0.001f, 0, 1,
+        makePartModelElement(model, endFace, true, 0.001f, 0, 1,
                 x1, y1, z1, x2, y2, z2, this.sideSecondary, this.endSecondary, "side_secondary", "end_secondary");
-        makePartModelElement(model, endFace, true, faceEndpoints, 0.002f, 2, 2,
+        makePartModelElement(model, endFace, true, 0.002f, 2, 2,
                 x1, y1, z1, x2, y2, z2, this.sideOverlay, this.endOverlay, "side_overlay", "end_overlay");
         return model;
     }
 
     protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
                                                                     boolean useEndWithFullCube,
-                                                                    Reference2FloatMap<Direction> faceEndpoints,
                                                                     float offset, int sideTintIndex, int endTintIndex,
                                                                     final float x1, final float y1, final float z1,
                                                                     final float x2, final float y2, final float z2,
                                                                     @Nullable ResourceLocation sideTexture,
                                                                     @Nullable ResourceLocation endTexture,
                                                                     String sideKey, String endKey) {
-        makePartModelElement(model, endFace, useEndWithFullCube, faceEndpoints,
+        makePartModelElement(model, endFace, useEndWithFullCube, false,
+                offset, sideTintIndex, endTintIndex, x1, y1, z1, x2, y2, z2,
+                sideTexture, endTexture, sideKey, endKey);
+    }
+
+    protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
+                                                                    boolean useEndWithFullCube, boolean alwaysAddEnd,
+                                                                    float offset, int sideTintIndex, int endTintIndex,
+                                                                    final float x1, final float y1, final float z1,
+                                                                    final float x2, final float y2, final float z2,
+                                                                    @Nullable ResourceLocation sideTexture,
+                                                                    @Nullable ResourceLocation endTexture,
+                                                                    String sideKey, String endKey) {
+        makePartModelElement(model, endFace, useEndWithFullCube, alwaysAddEnd,
                 offset, sideTintIndex, endTintIndex, x1, y1, z1, x2, y2, z2,
                 sideTexture, endTexture, sideKey, endKey, (face, texture, builder) -> {});
     }
 
     protected <T extends ModelBuilder<T>> void makePartModelElement(T model, @Nullable Direction endFace,
-                                                                    boolean useEndWithFullCube,
-                                                                    Reference2FloatMap<Direction> faceEndpoints,
+                                                                    boolean useEndWithFullCube, boolean alwaysAddEnd,
                                                                     float offset, int sideTintIndex, int endTintIndex,
                                                                     final float x1, final float y1, final float z1,
                                                                     final float x2, final float y2, final float z2,
@@ -364,19 +365,17 @@ public class PipeModel {
                 .to(x2 + offset, y2 + offset, z2 + offset);
 
         for (Direction dir : GTUtil.DIRECTIONS) {
-            ModelBuilder<T>.ElementBuilder.FaceBuilder face = null;
-            boolean isEnd = !fullCube && endFace != null && (endFace == dir || endFace == dir.getOpposite());
+            if (!alwaysAddEnd && endFace == dir.getOpposite()) {
+                // skip the inside face
+                continue;
+            }
+            boolean isEnd = !fullCube && endFace == dir;
             if (isEnd && endTexture != null) {
-                face = element.face(dir).texture("#" + endKey).tintindex(endTintIndex);
+                var face = element.face(dir).cullface(dir).texture("#" + endKey).tintindex(endTintIndex);
                 faceConfigurator.accept(dir, endKey, face);
             } else if (!isEnd && sideTexture != null) {
-                face = element.face(dir).texture("#" + sideKey).tintindex(sideTintIndex);
+                var face = element.face(dir).texture("#" + sideKey).tintindex(sideTintIndex);
                 faceConfigurator.accept(dir, sideKey, face);
-            }
-
-            float faceEnd = faceEndpoints.getFloat(dir);
-            if (face != null && (faceEnd >= 16.0f || faceEnd <= 0.0f)) {
-                face.cullface(dir);
             }
         }
     }
@@ -426,9 +425,9 @@ public class PipeModel {
          * @param texture The texture of the face, usually in {@code #reference} format.
          *                <b>Note that the String does NOT begin with {@code #}</b>.
          * @param builder The face builder.
-         * @see ActivablePipeModel#makePartModelElement(ModelBuilder, Direction, boolean, Reference2FloatMap, float,
-         *      int, int, float, float, float, float, float, float, ResourceLocation, ResourceLocation, String, String,
-         *      boolean, boolean) ActivablePipeModel.makePartModelElement
+         * @see #makePartModelElement(ModelBuilder, Direction, boolean, float, int, int, float, float, float, float,
+         *      float, float, ResourceLocation, ResourceLocation, String, String)
+         *      ActivablePipeModel.makePartModelElement
          */
         void accept(Direction face, String texture, ModelBuilder<T>.ElementBuilder.FaceBuilder builder);
     }

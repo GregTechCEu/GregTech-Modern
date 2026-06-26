@@ -9,19 +9,17 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -44,12 +42,9 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -73,9 +68,10 @@ import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
+@SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends Block implements EntityBlock {
+public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
     @Getter
     public final MachineDefinition definition;
@@ -88,15 +84,10 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);
             if (definition.isAllowExtendedFacing()) {
-                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.NORTH);
+                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.UP);
             }
             registerDefaultState(defaultState);
         }
-    }
-
-    @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return getDefinition().getBlockEntityType().create(blockPos, blockState);
     }
 
     @Override
@@ -136,7 +127,9 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         if (!pLevel.isClientSide) {
             var machine = MetaMachine.getMachine(pLevel, pPos);
             if (machine != null) {
-                machine.onMachinePlaced(player, pStack);
+                if (player instanceof ServerPlayer sPlayer) {
+                    machine.setOwnerUUID(sPlayer.getUUID());
+                }
             }
         }
     }
@@ -155,29 +148,40 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         var player = context.getPlayer();
         var blockPos = context.getClickedPos();
         var state = defaultBlockState();
+        var machine = MetaMachine.getMachine(context.getLevel(), blockPos);
         if (player != null && rotationState != RotationState.NONE) {
+            Direction newFrontDir;
+            Direction newUpFacing;
             if (rotationState == RotationState.Y_AXIS) {
-                state = state.setValue(rotationState.property, Direction.UP);
+                newFrontDir = Direction.UP;
             } else {
-                state = state.setValue(rotationState.property, player.getDirection().getOpposite());
+                newFrontDir = player.getDirection().getOpposite();
             }
+
             Vec3 pos = player.position();
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
                 if (d0 - (double) blockPos.getY() > 2.0D && rotationState.test(Direction.UP)) {
-                    state = state.setValue(rotationState.property, Direction.UP);
+                    newFrontDir = Direction.UP;
                 }
                 if ((double) blockPos.getY() - d0 > 0.0D && rotationState.test(Direction.DOWN)) {
-                    state = state.setValue(rotationState.property, Direction.DOWN);
+                    newFrontDir = Direction.DOWN;
                 }
+            }
+
+            state = state.setValue(rotationState.property, newFrontDir);
+            if (machine != null) {
+                machine.setFrontFacing(newFrontDir);
             }
             if (getDefinition().isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
-                if (frontFacing == Direction.UP) {
+                if (frontFacing.getAxis() == Direction.Axis.Y) {
+                    newUpFacing = player.getDirection();
                     state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection());
-                } else if (frontFacing == Direction.DOWN) {
-                    state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection().getOpposite());
+                    if (machine instanceof MultiblockControllerMachine controller) {
+                        controller.setUpwardsFacing(newUpFacing);
+                    }
                 }
             }
         }
@@ -190,17 +194,19 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
-        if (GTUtil.isShiftDown()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                var pattern = multiblockDefinition.getPatternFactory().get();
-                if (pattern != null) {
-                    var aisleDims = pattern.getDimensions();
-                    assert aisleDims.length == 3;
-                    tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
-                            aisleDims[2]));
-                }
-            }
-        }
+        /*
+         * if (GTUtil.isShiftDown()) {
+         * if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
+         * var pattern = multiblockDefinition.getPatternFactory().get();
+         * if (pattern != null) {
+         * var aisleDims = pattern.getDimensions();
+         * assert aisleDims.length == 3;
+         * tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
+         * aisleDims[2]));
+         * }
+         * }
+         * }
+         */
         if (Language.getInstance().has(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));
         }
@@ -278,40 +284,26 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             machine.setOwnerUUID(sPlayer.getUUID());
         }
 
-        InteractionResult machineInteractResult;
-        if (itemStack.isEmpty()) {
-            machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
-        } else {
-            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
-        }
+        InteractionResult machineInteractResult = InteractionResult.PASS;
 
+        if (!itemStack.isEmpty())
+            machineInteractResult = machine.onUseWithItem(new ExtendedUseOnContext(player, hand, hit));
+        if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
+        machineInteractResult = machine.onUse(new ExtendedUseOnContext(player, hand, hit));
         if (machineInteractResult != InteractionResult.PASS) return getFromInteractionResult(machineInteractResult);
 
-        if (stack.is(GTItems.PORTABLE_SCANNER.get())) {
-            return getFromInteractionResult(stack.getItem().use(level, player, hand).getResult());
-        }
-
-        if (stack.getItem() instanceof IGTTool gtToolItem) {
+        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-                MachineOwner.canOpenOwnerMachine(player, machine)) {
-            return uiMachine.tryToOpenUI(player, hand, hit);
+        if (shouldOpenUi && MachineOwner.canOpenOwnerMachine(player, machine)) {
+            if (machine.getDefinition().getUI() != null) {
+                return getFromInteractionResult(machine.getDefinition().getUI().tryToOpenUI(player, hand, hit));
+            } else if (machine instanceof IMuiMachine muiMachine) {
+                return getFromInteractionResult(muiMachine.tryToOpenUI(player, hand, hit));
+            }
         }
         return shouldOpenUi ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.CONSUME;
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
-                                               Player player, BlockHitResult hit) {
-        var machine = MetaMachine.getMachine(level, pos);
-        if (machine == null) return InteractionResult.PASS;
-        if (machine instanceof IUIMachine uiMachine &&
-                MachineOwner.canOpenOwnerMachine(player, machine)) {
-            uiMachine.tryToOpenUI(player, InteractionHand.MAIN_HAND, hit).result();
-        }
-        return machine.onUse(new ExtendedUseOnContext(player, InteractionHand.MAIN_HAND, hit));
     }
 
     //////////////////////////////////////
@@ -345,27 +337,14 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return machine.getAnalogOutputSignal();
     }
 
-    /////////
-
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos,
-                                boolean isMoving) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
+                                boolean movedByPiston) {
         var machine = MetaMachine.getMachine(level, pos);
         if (machine != null) {
-            machine.onNeighborChanged(block, fromPos, isMoving);
+            machine.onNeighborChanged(neighborBlock, neighborPos, movedByPiston);
         }
-        super.neighborChanged(state, level, pos, block, fromPos, isMoving);
-    }
-
-    public static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
-                                  int index) {
-        if (level != null && pos != null) {
-            var machine = MetaMachine.getMachine(level, pos);
-            if (machine != null) {
-                return machine.tintColor(index);
-            }
-        }
-        return -1;
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
     }
 
     @Override
@@ -578,29 +557,20 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         return getRotationState() == RotationState.NONE ? Direction.NORTH : state.getValue(getRotationState().property);
     }
 
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                  BlockEntityType<T> blockEntityType) {
-        if (blockEntityType == getDefinition().getBlockEntityType()) {
-            if (!level.isClientSide) {
-                return (pLevel, pPos, pState, pTile) -> {
-                    pTile.setChanged();
-                    if (pTile instanceof MetaMachine metaMachine) {
-                        metaMachine.serverTick();
-                    }
-                    if (pTile instanceof ManagedSyncBlockEntity syncObj) {
-                        syncObj.updateTick();
-                    }
-                };
-            } else {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof MetaMachine metaMachine) {
-                        metaMachine.clientTick();
-                    }
-                };
+    public static int colorTinted(BlockState blockState, @Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
+                                  int index) {
+        if (level != null && pos != null) {
+            var machine = MetaMachine.getMachine(level, pos);
+            if (machine != null) {
+                return machine.tintColor(index);
             }
         }
-        return null;
+        return -1;
+    }
+
+    @Nullable
+    @Override
+    public final BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return getDefinition().getBlockEntityType().create(pos, state);
     }
 }

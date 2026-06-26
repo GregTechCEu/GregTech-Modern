@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -156,9 +157,11 @@ public class ItemMaterialData {
 
         // Load new data
         TagsHandler.initExtraUnificationEntries();
-        for (TagPrefix prefix : GTRegistries.TAG_PREFIXES) {
-            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(items, prefix, mat));
-        }
+        GTRegistries.TAG_PREFIXES.holders()
+                .filter(h -> h != null && h.isBound())
+                .map(Holder::value)
+                .forEach(prefix -> prefix.getIgnored()
+                        .forEach((material, item) -> registerMaterialEntries(item, prefix, material)));
         GTMaterialItems.toUnify
                 .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));
         WoodMachineRecipes.registerMaterialInfo();

@@ -3,6 +3,13 @@
         "com/gregtechceu/gtceu/core/IMappedRegistryAccess<T>"
     ],
     "net/minecraft/client/renderer/block/model/BakedQuad": [
-        "com/gregtechceu/gtceu/core/IGTBakedQuad"
+        "com/gregtechceu/gtceu/core/util/extensions/BakedQuadExt"
+    ],
+    "net/neoforged/neoforge/client/model/lighting/QuadLighter": [
+        "com/gregtechceu/gtceu/core/util/extensions/QuadLighterExt"
+    ],
+    "net/minecraft/world/entity/Entity": [
+        "com/gregtechceu/gtceu/core/IFireImmuneEntity",
+        "com/gregtechceu/gtceu/core/IBreathingEntity"
     ]
 }

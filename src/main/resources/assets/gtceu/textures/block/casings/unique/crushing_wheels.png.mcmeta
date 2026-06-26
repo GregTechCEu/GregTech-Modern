@@ -1,5 +1,5 @@
 {
-  "ldlib": {
-    "connection": "gtceu:block/casings/unique/crushing_wheels_ctm"
+  "gtceu": {
+    "connection_texture": "gtceu:block/casings/unique/crushing_wheels_ctm"
   }
 }

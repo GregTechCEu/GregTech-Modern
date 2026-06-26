@@ -54,7 +54,7 @@ public class OreVeinWorldEntry {
     }
 
     @NotNull
-    public static OreVeinWorldEntry readFromNBT(@NotNull CompoundTag tag, HolderLookup.Provider provider) {
+    public static OreVeinWorldEntry readFromNBT(CompoundTag tag, HolderLookup.Provider provider) {
         OreVeinWorldEntry info = new OreVeinWorldEntry();
         info.oreYield = tag.getInt("oreYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");

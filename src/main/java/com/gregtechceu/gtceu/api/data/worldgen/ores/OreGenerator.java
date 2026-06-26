@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -127,7 +128,7 @@ public class OreGenerator {
 
     private Stream<Holder<GTOreDefinition>> getEntries(WorldGenLevel level, BlockPos veinCenter,
                                                        XoroshiroRandomSource random) {
-        return WorldGeneratorUtils.WORLD_GEN_LAYERS.values().stream()
+        return GTRegistries.WORLD_GEN_LAYERS.stream()
                 .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension()))
                 .map(layer -> {
                     int quartX = QuartPos.fromBlock(veinCenter.getX());
@@ -152,9 +153,8 @@ public class OreGenerator {
     private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator, ChunkPos pos,
                                                         RandomSource random, BlockPos veinCenter,
                                                         GTOreDefinition entry) {
-        int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.layer())
-                .map(String::hashCode)
-                .orElse(0);
+        int layerSeed = GTRegistries.WORLD_GEN_LAYERS.getKey(entry.layer()).hashCode();
+
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
         veinCenter = OreVeinUtil.getVeinCenter(pos, layeredRandom).orElse(veinCenter);

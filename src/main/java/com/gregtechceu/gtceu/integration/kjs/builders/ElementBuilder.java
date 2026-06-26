@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.common.data.GTElements;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +15,8 @@ public class ElementBuilder extends BuilderBase<Element> {
 
     public transient final String name;
 
+    public transient final ResourceLocation id;
+
     @Setter
     public transient Component translatableName;
     @Setter
@@ -26,14 +27,15 @@ public class ElementBuilder extends BuilderBase<Element> {
     public transient boolean isIsotope;
 
     public ElementBuilder(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
+        this.id = id;
         name = id.getPath();
         translatableName = Component.translatable(id.toLanguageKey("element"));
     }
 
     @Override
     public Element createObject() {
-        return GTElements.createAndRegister(protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
+        return GTElements.createAndRegister(id, protons, neutrons, halfLifeSeconds, decayTo, name, symbol,
                 isIsotope);
     }
 }

@@ -3,19 +3,17 @@ package com.gregtechceu.gtceu.client.renderer;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -34,12 +32,15 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import brachy.modularui.drawable.UITexture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -77,10 +78,13 @@ public class BlockHighlightRenderer {
                             gridHighlight = new IToolGridHighlight() {
 
                                 @Override
-                                public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state,
-                                                                          Set<GTToolType> toolTypes, ItemStack held,
-                                                                          Direction side) {
-                                    return behavior.showSideTip(state, side) ? GuiTextures.TOOL_FRONT_FACING_ROTATION :
+                                public @Nullable UITexture sideTips(@NotNull Player player, @NotNull BlockPos pos,
+                                                                    @NotNull BlockState state,
+                                                                    @NotNull Set<GTToolType> toolTypes,
+                                                                    @NonNull ItemStack held,
+                                                                    @NotNull Direction side) {
+                                    return behavior.showSideTip(state, side) ?
+                                            GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
                                             null;
                                 }
                             };
@@ -96,7 +100,7 @@ public class BlockHighlightRenderer {
                     drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
                             side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, held, side));
                 } else {
-                    var facing = target.getDirection();
+                    Direction facing = target.getDirection();
                     var texture = gridHighlight.sideTips(player, blockPos, state, toolType, held, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
@@ -116,7 +120,7 @@ public class BlockHighlightRenderer {
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
 
-                        drawResourceTexture(poseStack, multiBufferSource, texture, 0xffffffff,
+                        drawOverlayTexture(poseStack, multiBufferSource, texture, 0xffffffff,
                                 4, 4, 8, 8);
 
                         RenderSystem.disableBlend();
@@ -134,7 +138,7 @@ public class BlockHighlightRenderer {
                 poseStack.pushPose();
 
                 drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
-                        side -> coverable.hasCover(side) ? null : GuiTextures.TOOL_ATTACH_COVER);
+                        side -> coverable.hasCover(side) ? null : GTGuiTextures.TOOL_ATTACH_COVER);
 
                 poseStack.popPose();
             }
@@ -160,7 +164,7 @@ public class BlockHighlightRenderer {
     private static float bColour;
 
     private static void drawGridOverlays(PoseStack poseStack, MultiBufferSource bufferSource, Vec3 cameraPos,
-                                         BlockHitResult blockHitResult, Function<Direction, ResourceTexture> texture) {
+                                         BlockHitResult blockHitResult, Function<Direction, UITexture> texture) {
         rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         BlockPos blockPos = blockHitResult.getBlockPos();
@@ -186,10 +190,15 @@ public class BlockHighlightRenderer {
 
         Direction front = blockHitResult.getDirection();
         Direction back = front.getOpposite();
-        Direction left = RelativeDirection.LEFT.getActualDirection(front);
-        Direction right = RelativeDirection.RIGHT.getActualDirection(front);
-        Direction top = RelativeDirection.UP.getActualDirection(front);
-        Direction bottom = RelativeDirection.DOWN.getActualDirection(front);
+        Direction left = RelativeDirection.LEFT.applyDirection(front);
+        Direction right = RelativeDirection.RIGHT.applyDirection(front);
+        Direction top = RelativeDirection.UP.applyDirection(front);
+        Direction bottom = RelativeDirection.DOWN.applyDirection(front);
+        if (front.getAxis() == Direction.Axis.Y) {
+            Direction tmp = left;
+            left = right;
+            right = tmp;
+        }
 
         Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);
@@ -199,12 +208,12 @@ public class BlockHighlightRenderer {
         shiftX.rotate(rotation);
         shiftY.rotate(rotation);
 
-        ResourceTexture leftBlocked = texture.apply(left);
-        ResourceTexture rightBlocked = texture.apply(right);
-        ResourceTexture topBlocked = texture.apply(top);
-        ResourceTexture bottomBlocked = texture.apply(bottom);
-        ResourceTexture frontBlocked = texture.apply(front);
-        ResourceTexture backBlocked = texture.apply(back);
+        UITexture leftBlocked = texture.apply(left);
+        UITexture rightBlocked = texture.apply(right);
+        UITexture topBlocked = texture.apply(top);
+        UITexture bottomBlocked = texture.apply(bottom);
+        UITexture frontBlocked = texture.apply(front);
+        UITexture backBlocked = texture.apply(back);
 
         topRight.add(cubeCenter);
         bottomRight.add(cubeCenter);
@@ -235,34 +244,36 @@ public class BlockHighlightRenderer {
         RenderUtil.rotateToFace(poseStack, front, Direction.SOUTH);
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
-        poseStack.scale(0.9f, 0.9f, 1);
+
+        // set margin to 1/18 of scaled texture edge length
+        float MARGIN = 0.2f;
 
         if (leftBlocked != null) {
             int color = attachSide == left ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, leftBlocked, color, 0, 6, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, leftBlocked, color, 0, 6, MARGIN);
         }
         if (topBlocked != null) {
             int color = attachSide == top ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, topBlocked, color, 6, 12, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, topBlocked, color, 6, 12, MARGIN);
         }
         if (rightBlocked != null) {
             int color = attachSide == right ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, rightBlocked, color, 12, 6, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, rightBlocked, color, 12, 6, MARGIN);
         }
         if (bottomBlocked != null) {
             int color = attachSide == bottom ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, bottomBlocked, color, 6, 0, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, bottomBlocked, color, 6, 0, MARGIN);
         }
         if (frontBlocked != null) {
             int color = attachSide == front ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, frontBlocked, color, 6, 6, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, frontBlocked, color, 6, 6, MARGIN);
         }
         if (backBlocked != null) {
             int color = attachSide == back ? 0xffffffff : 0x44ffffff;
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 0, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 0, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 0, 12, 4, 4);
-            drawResourceTexture(poseStack, bufferSource, backBlocked, color, 12, 12, 4, 4);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, backBlocked, color, 0, 0, MARGIN);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, backBlocked, color, 12, 0, MARGIN);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, backBlocked, color, 0, 12, MARGIN);
+            drawOverlayTextureWithMargin(poseStack, bufferSource, backBlocked, color, 12, 12, MARGIN);
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
@@ -282,18 +293,25 @@ public class BlockHighlightRenderer {
                 .setNormal(normal.x(), normal.y(), normal.z());
     }
 
-    private static void drawResourceTexture(PoseStack poseStack, MultiBufferSource bufferSource,
-                                            ResourceTexture texture, int color,
-                                            float x, float y, float w, float h) {
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.text(texture.imageLocation));
+    private static void drawOverlayTexture(PoseStack poseStack, MultiBufferSource bufferSource,
+                                           UITexture texture, int color,
+                                           float x, float y, float w, float h) {
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.text(texture.location));
         var pose = poseStack.last().pose();
-        float u0 = texture.offsetX, v0 = texture.offsetY;
-        float u1 = texture.imageWidth, v1 = texture.imageHeight;
+        float u0 = texture.u0, v0 = texture.v0;
+        float u1 = texture.u1, v1 = texture.v1;
         // spotless:off
         consumer.addVertex(pose, x, y + h, 0).setColor(color).setUv(u0, v0 + v1).setLight(LightTexture.FULL_BRIGHT);
         consumer.addVertex(pose, x + w, y + h, 0).setColor(color).setUv(u0 + u1, v0 + v1).setLight(LightTexture.FULL_BRIGHT);
         consumer.addVertex(pose, x + w, y, 0).setColor(color).setUv(u0 + u1, v0).setLight(LightTexture.FULL_BRIGHT);
         consumer.addVertex(pose, x, y, 0).setColor(color).setUv(u0, v0).setLight(LightTexture.FULL_BRIGHT);
         // spotless:on
+    }
+
+    private static void drawOverlayTextureWithMargin(PoseStack poseStack, MultiBufferSource bufferSource,
+                                                     UITexture texture, int color,
+                                                     float x, float y, float m) {
+        drawOverlayTexture(poseStack, bufferSource, texture, color,
+                x + m, y + m, (float) 4 - 2 * m, (float) 4 - 2 * m);
     }
 }

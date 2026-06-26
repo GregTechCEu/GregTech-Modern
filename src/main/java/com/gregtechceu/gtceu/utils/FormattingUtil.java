@@ -9,11 +9,15 @@ import net.minecraft.network.chat.contents.PlainTextContents;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
+import org.joml.Options;
+import org.joml.Runtime;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,7 @@ public class FormattingUtil {
     public static final DecimalFormat DECIMAL_FORMAT_2F = new DecimalFormat("#,##0.##");
     public static final DecimalFormat DECIMAL_FORMAT_SIC = new DecimalFormat("0E00");
     public static final DecimalFormat DECIMAL_FORMAT_SIC_2F = new DecimalFormat("0.00E00");
+    public static final HexFormat HEX_FORMAT = HexFormat.of().withUpperCase();
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
     private static final int SMALL_UP_NUMBER_BASE = '\u2070';
@@ -275,4 +280,46 @@ public class FormattingUtil {
             return formatNumbers(temperature - 273) + " °C";
         else return formatNumbers(temperature) + " K";
     }
+
+    /**
+     * Return a single-line string representation of {@code matrix} using JOML's number formatting.
+     *
+     * @return the string representation
+     */
+    public static String matrixToSingleLineString(Matrix4fc matrix) {
+        String str = matrixToSingleLineString(matrix, Options.NUMBER_FORMAT);
+        StringBuilder res = new StringBuilder();
+        int eIndex = Integer.MIN_VALUE;
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == 'E') {
+                eIndex = i;
+            } else if (c == ' ' && eIndex == i - 1) {
+                // workaround Java 1.4 DecimalFormat bug
+                res.append('+');
+                continue;
+            } else if (Character.isDigit(c) && eIndex == i - 1) {
+                res.append('+');
+            }
+            res.append(c);
+        }
+        return res.toString();
+    }
+
+    /**
+     * Return a single-line string representation of this matrix by formatting the matrix
+     * elements with the given {@link NumberFormat}.
+     *
+     * @param formatter the {@link NumberFormat} used to format the matrix values with
+     * @return the string representation
+     */
+    // spotless:off
+    public static String matrixToSingleLineString(Matrix4fc matrix, NumberFormat formatter) {
+        return "{ [" + Runtime.format(matrix.m00(), formatter) + " " + Runtime.format(matrix.m10(), formatter) + " " + Runtime.format(matrix.m20(), formatter) + " " + Runtime.format(matrix.m30(), formatter) + "]. "
+                + "[" + Runtime.format(matrix.m01(), formatter) + " " + Runtime.format(matrix.m11(), formatter) + " " + Runtime.format(matrix.m21(), formatter) + " " + Runtime.format(matrix.m31(), formatter) + "], "
+                + "[" + Runtime.format(matrix.m02(), formatter) + " " + Runtime.format(matrix.m12(), formatter) + " " + Runtime.format(matrix.m22(), formatter) + " " + Runtime.format(matrix.m32(), formatter) + "]. "
+                + "[" + Runtime.format(matrix.m03(), formatter) + " " + Runtime.format(matrix.m13(), formatter) + " " + Runtime.format(matrix.m23(), formatter) + " " + Runtime.format(matrix.m33(), formatter) + "] }";
+    }
+    // spotless:on
 }

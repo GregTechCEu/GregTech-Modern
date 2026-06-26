@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
@@ -208,7 +209,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
                 allItemContents.addAll(recipe.getOutputContents(ItemRecipeCapability.CAP));
                 allItemContents.addAll(recipe.getTickOutputContents(ItemRecipeCapability.CAP));
                 return allItemContents.stream()
-                        .map(Content::getContent).map(ItemRecipeCapability.CAP::of)
+                        .map(Content::content).map(ItemRecipeCapability.CAP::of)
                         .map(SizedIngredient::getItems).flatMap(Arrays::stream)
                         .map(ItemStack::getItem)
                         .filter(BlockItem.class::isInstance)
@@ -434,8 +435,10 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         RenderFunction.ConfigureOnly STEM = (level, state, progress) -> {
             final StemBlock block = (StemBlock) state.getBlock();
             final int growthStage = GTMath.lerpInt(progress, 0, StemBlock.MAX_AGE + 2);
-            if (growthStage > StemBlock.MAX_AGE)
-                return List.of(new StateWithOffset(((StemBlockAccessor) block).gtceu$getFruit().defaultBlockState()));
+            if (growthStage > StemBlock.MAX_AGE) {
+                ResourceKey<Block> fruitKey = ((StemBlockAccessor) block).gtceu$getFruit();
+                return List.of(new StateWithOffset(BuiltInRegistries.BLOCK.get(fruitKey).defaultBlockState()));
+            }
             state = state.trySetValue(StemBlock.AGE, growthStage);
             return List.of(new StateWithOffset(state));
         };

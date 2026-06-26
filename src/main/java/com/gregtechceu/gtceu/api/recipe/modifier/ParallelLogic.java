@@ -84,7 +84,7 @@ public class ParallelLogic {
         if (minimum == Integer.MAX_VALUE) {
             Component reason = Component.translatable("gtceu.recipe_logic.no_capabilities")
                     .append(Component.literal(": "))
-                    .append(Component.translatable(IO.IN.tooltip));
+                    .append(Component.translatable(IO.IN.getTooltip()));
             RecipeLogic.putFailureReason(holder, recipe, reason);
             return 0;
         }

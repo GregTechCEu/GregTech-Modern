@@ -5,11 +5,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import lombok.Getter;
@@ -33,7 +32,7 @@ public class GTRecipeCategory {
     private final String languageKey;
     @Nullable
     @Setter
-    private IGuiTexture icon = null;
+    private CategoryIcon icon = null;
     @Getter
     @Setter
     private boolean isXEIVisible = true;
@@ -58,10 +57,13 @@ public class GTRecipeCategory {
         return category;
     }
 
-    public IGuiTexture getIcon() {
+    public CategoryIcon getIcon() {
         if (icon == null) {
-            if (recipeType.getIconSupplier() != null) icon = new ItemStackTexture(recipeType.getIconSupplier().get());
-            else icon = new ItemStackTexture(Items.BARRIER);
+            if (recipeType.getIconSupplier() != null) {
+                icon = new CategoryIcon(recipeType.getIconSupplier().get());
+            } else {
+                icon = new CategoryIcon(new ItemStack(Items.BARRIER));
+            }
         }
         return icon;
     }

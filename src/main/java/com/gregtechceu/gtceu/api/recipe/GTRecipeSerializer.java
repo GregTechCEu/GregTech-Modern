@@ -65,7 +65,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     };
 
     public static final Codec<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP_CODEC = Codec.
-            unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.byNameCodec());
+            unboundedMap(GTRegistries.RECIPE_CAPABILITIES.byNameCodec(), GTRegistries.CHANCE_LOGICS.byNameCodec());
 
     public static final MapCodec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
     public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec

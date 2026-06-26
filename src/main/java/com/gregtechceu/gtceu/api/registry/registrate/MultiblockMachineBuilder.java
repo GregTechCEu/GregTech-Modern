@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -9,10 +8,10 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -22,28 +21,30 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 
 import dev.latvian.mods.rhino.util.HideFromJS;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.function.TriFunction;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
 public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
         TYPE extends MultiblockMachineBuilder<DEFINITION, TYPE>> extends MachineBuilder<DEFINITION, TYPE> {
 
     private boolean generator;
-    private Function<MultiblockMachineDefinition, BlockPattern> pattern;
-    private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
-    /**
-     * Set this to false only if your multiblock is set up such that it could have a wall-shared controller.
-     */
+    private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+    private @Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
@@ -54,6 +55,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
                 blockFactory,
                 itemFactory, blockEntityFactory);
+        patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
         // always add the formed property to multi controllers
@@ -65,8 +67,13 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
-        this.pattern = pattern;
+    public TYPE pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+        this.patterns.put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
+        return getThis();
+    }
+
+    public TYPE pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+        this.patterns.put(structureName, pattern);
         return getThis();
     }
 
@@ -80,23 +87,13 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public TYPE partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public TYPE partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
     public TYPE additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
-        return getThis();
-    }
-
-    public TYPE shapeInfo(Function<MultiblockMachineDefinition, MultiblockShapeInfo> shape) {
-        this.shapeInfos.add(d -> List.of(shape.apply(d)));
-        return getThis();
-    }
-
-    public TYPE shapeInfos(Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>> shapes) {
-        this.shapeInfos.add(shapes);
         return getThis();
     }
 
@@ -122,15 +119,13 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     public DEFINITION register() {
         var definition = super.register();
         definition.setGenerator(generator);
-        // noinspection ConstantValue it can be null by mistake.
-        if (pattern == null) {
-            GTCEu.LOGGER.error(
-                    "missing pattern while creating multiblock {}, something's likely gone very wrong! Check the full log.",
-                    name);
+        if (patterns.isEmpty()) {
+            throw new IllegalStateException("Missing default structure pattern for " + name);
         }
-        definition.setPatternFactory(GTMemoizer.memoize(() -> pattern.apply(definition)));
-        definition.setShapes(() -> shapeInfos.stream().map(factory -> factory.apply(definition))
-                .flatMap(Collection::stream).toList());
+        for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : patterns.entrySet()) {
+            definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));
+        }
+
         definition.setAllowFlip(allowFlip);
         if (!recoveryItems.isEmpty()) {
             definition.setRecoveryItems(

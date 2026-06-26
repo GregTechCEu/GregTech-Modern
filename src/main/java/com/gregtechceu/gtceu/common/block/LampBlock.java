@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.item.LampBlockItem;
 
@@ -14,6 +13,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -32,9 +32,9 @@ import java.util.List;
 
 public class LampBlock extends Block {
 
-    public static final BooleanProperty BLOOM = GTBlockStateProperties.BLOOM;
+    public static final BooleanProperty BLOOM = BlockStateProperties.BLOOM;
     public static final BooleanProperty LIGHT = BlockStateProperties.LIT;
-    public static final BooleanProperty INVERTED = GTBlockStateProperties.INVERTED;
+    public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     public static final int BLOOM_FLAG = 1;
@@ -50,7 +50,7 @@ public class LampBlock extends Block {
         this.color = color;
         this.bordered = bordered;
         registerDefaultState(defaultBlockState()
-                .setValue(GTBlockStateProperties.BLOOM, true)
+                .setValue(BLOOM, true)
                 .setValue(LIGHT, true)
                 .setValue(INVERTED, false)
                 .setValue(POWERED, false));
@@ -69,7 +69,7 @@ public class LampBlock extends Block {
     }
 
     public static boolean isBloomEnabled(BlockState state) {
-        return state.getValue(GTBlockStateProperties.BLOOM);
+        return state.getValue(BLOOM);
     }
 
     public LampBlockItem.LampData getDataFromState(BlockState state) {
@@ -87,7 +87,14 @@ public class LampBlock extends Block {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(INVERTED, GTBlockStateProperties.BLOOM, LIGHT, POWERED));
+        builder.add(INVERTED, BLOOM, LIGHT, POWERED);
+    }
+
+    @Override
+    public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState originalState = super.getStateForPlacement(context);
+        if (originalState == null) return null;
+        return originalState.setValue(POWERED, context.getLevel().hasNeighborSignal(context.getClickedPos()));
     }
 
     @Override
@@ -101,33 +108,23 @@ public class LampBlock extends Block {
         return state.getBlock().defaultBlockState();
     }
 
-    @Override
-    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
-        if (!level.isClientSide) {
-            boolean powered = state.getValue(POWERED);
-            if (powered != level.hasNeighborSignal(pos)) {
-                level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
-            }
+    public void update(BlockState state, Level level, BlockPos pos) {
+        if (state.getValue(POWERED) != level.hasNeighborSignal(pos)) {
+            level.setBlock(pos, state.cycle(POWERED), Block.UPDATE_CLIENTS);
         }
-        super.onPlace(state, level, pos, oldState, movedByPiston);
     }
 
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
                                 boolean movedByPiston) {
         if (!level.isClientSide) {
-            boolean powered = state.getValue(POWERED);
-            if (powered != level.hasNeighborSignal(pos)) {
-                level.setBlock(pos, state.setValue(POWERED, !powered), state.getValue(LIGHT) ? 2 | 8 : 2);
-            }
+            update(state, level, pos);
         }
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (state.getValue(POWERED) && !level.hasNeighborSignal(pos)) {
-            level.setBlock(pos, state.cycle(POWERED), state.getValue(LIGHT) ? 2 | 8 : 2);
-        }
+        update(state, level, pos);
     }
 
     @Override

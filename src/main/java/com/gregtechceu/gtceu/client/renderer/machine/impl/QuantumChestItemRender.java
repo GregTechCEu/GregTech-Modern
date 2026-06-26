@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.item.datacomponents.LargeItemContent;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
-import com.gregtechceu.gtceu.client.util.PoseStackExtensions;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -28,13 +27,11 @@ import net.neoforged.api.distmarker.OnlyIn;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
-import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 
 import static com.gregtechceu.gtceu.utils.GTMatrixUtils.*;
 
-@ExtensionMethod(PoseStackExtensions.class)
 public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, QuantumChestItemRender> {
 
     // spotless:off
@@ -117,9 +114,10 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
         var upwardFacing = machine.getUpwardsFacing();
 
         poseStack.translate(0.5f, 0.5f, 0.5f);
-        rotateMatrix(poseStack.last().pose(),
-                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0),
-                getDirectionAxis(frontFacing));
+        float roll = frontFacing.getAxis().isHorizontal() ?
+                frontAxisRollAngle(frontFacing, upwardFacing, Direction.UP) :
+                upwardFacingAngle(upwardFacing) + (upwardFacing.getAxis() == Direction.Axis.X ? Mth.PI : 0);
+        rotateMatrix(poseStack.last().pose(), roll, getDirectionAxis(frontFacing));
         poseStack.translate(-0.5f, -0.5f, -0.5f);
     }
 
@@ -131,7 +129,8 @@ public class QuantumChestItemRender extends DynamicRender<QuantumChestMachine, Q
                 frontFacing.getStepZ() * -1 / 16f);
 
         RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, frontFacing);
-        RenderUtil.rotateToFace(poseStack, frontFacing, Direction.NORTH);
+        Direction spin = frontFacing.getAxis() == Direction.Axis.Y ? Direction.SOUTH : Direction.NORTH;
+        RenderUtil.rotateToFace(poseStack, frontFacing, spin);
         poseStack.scale(1f / 64, 1f / 64, 0);
         poseStack.translate(-32, -32, 0);
 

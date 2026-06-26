@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistry;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -24,7 +22,6 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import com.mojang.serialization.Codec;
 import dev.emi.emi.config.EmiConfig;
-import me.shedaniel.rei.api.client.REIRuntime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.ApiStatus;
@@ -54,7 +51,6 @@ public class GTCEu {
 
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
-        GTCEuAPI.materialManager = (IMaterialRegistry) GTRegistries.MATERIALS;
         GTCEuAPI.initializeHighTier();
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
@@ -117,7 +113,7 @@ public class GTCEu {
 
     /**
      * A friendly reminder that the server instance is populated on the server side only, so null/side check it!
-     * 
+     *
      * @return the current minecraft server instance
      */
     public static MinecraftServer getMinecraftServer() {
@@ -134,7 +130,7 @@ public class GTCEu {
 
     /**
      * For async stuff use this, otherwise use {@link GTCEu isClientSide}
-     * 
+     *
      * @return if the current thread is the client thread
      */
     @SuppressWarnings("ConstantValue")
@@ -154,7 +150,7 @@ public class GTCEu {
 
     /**
      * This check isn't the same for client and server!
-     * 
+     *
      * @return if it's safe to access the current instance {@link net.minecraft.world.level.Level Level} on client or if
      *         it's safe to access any level on server.
      */
@@ -186,10 +182,6 @@ public class GTCEu {
                     isModLoaded(GTValues.MODID_JEI);
         }
 
-        public static boolean isREILoaded() {
-            return isModLoaded(GTValues.MODID_REI) && (!isClientSide() || REIRuntime.getInstance().isOverlayVisible());
-        }
-
         public static boolean isEMILoaded() {
             return isModLoaded(GTValues.MODID_EMI) && (!isClientSide() || EmiConfig.enabled);
         }
@@ -198,12 +190,12 @@ public class GTCEu {
             return isModLoaded(GTValues.MODID_KUBEJS);
         }
 
-        public static boolean isIrisLoaded() {
-            return isModLoaded(GTValues.MODID_IRIS);
+        public static boolean isIrisOculusLoaded() {
+            return isModLoaded(GTValues.MODID_IRIS) || isModLoaded(GTValues.MODID_OCULUS);
         }
 
-        public static boolean isSodiumLoaded() {
-            return isModLoaded(GTValues.MODID_SODIUM);
+        public static boolean isSodiumEmbeddiumLoaded() {
+            return isModLoaded(GTValues.MODID_SODIUM) || isModLoaded(GTValues.MODID_EMBEDDIUM);
         }
 
         public static boolean isAE2Loaded() {

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 
 import net.minecraft.core.HolderLookup;
@@ -37,7 +38,7 @@ public class DamageTypeTagsLoader extends DamageTypeTagsProvider {
 
         var bypassesArmor = this.tag(DamageTypeTags.BYPASSES_ARMOR)
                 .add(GTDamageTypes.HEAT, GTDamageTypes.CHEMICAL, GTDamageTypes.RADIATION, GTDamageTypes.TURBINE);
-        for (MedicalCondition condition : MedicalCondition.CONDITIONS.values()) {
+        for (MedicalCondition condition : GTRegistries.MEDICAL_CONDITIONS) {
             bypassesArmor.add(condition.getDamageType());
         }
     }

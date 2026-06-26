@@ -31,7 +31,7 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.waterTank = new InfiniteWaterTank(initialCapacity);
         // allow both importing and exporting from the tank
-        return new NotifiableFluidTank(this, Collections.singletonList(waterTank), io, IO.BOTH);
+        return new NotifiableFluidTank(Collections.singletonList(waterTank), io, IO.BOTH);
     }
 
     //////////////////////////////////

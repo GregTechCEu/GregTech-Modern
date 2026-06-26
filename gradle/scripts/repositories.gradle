@@ -1,13 +1,29 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    // force gradle to download FastUtil & LWJGL from the central maven so we can get source artifacts
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
     exclusiveContent { // Force
         forRepository { mavenCentral() }
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
+            includeGroup("com.google.guava")
+            includeGroup("io.netty")
         }
+    }
+
+    exclusiveContent { // JEI, embeddium, ModernFix
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
+    }
+
+    maven {
+        name 'GTCEu Maven'
+        url 'https://maven.gtceu.com'
     }
 
     maven { // JEI
@@ -25,6 +41,7 @@ repositories {
         url = "https://maven.firstdark.dev/snapshots"
     }
 
+
     exclusiveContent { // Create, Ponder, Flywheel
         forRepository {
             maven { url = "https://maven.createmod.net" }
@@ -36,7 +53,11 @@ repositories {
         }
     }
     exclusiveContent { // Configuration
-        forRepository { maven { url = "https://repo.repsy.io/mvn/toma/public" } }
+        forRepositories(
+                maven { url = "https://repo.repsy.io/mvn/toma/public" },
+                maven { url = "https://repo.repsy.io/toma/public" },
+                maven { url = "https://api.repsy.io/mvn/toma/public" },
+        )
         filter { includeGroup("dev.toma.configuration")}
     }
     exclusiveContent { // KubeJS and Rhino
@@ -99,5 +120,17 @@ repositories {
     exclusiveContent { // This one lib that KJS 1.21 uses for whatever reason?
         forRepository { maven { url = "https://jitpack.io/" } }
         filter { includeGroup("com.github.rtyley") }
+    }
+    exclusiveContent { // Xaero's
+        forRepository { maven { url = "https://chocolateminecraft.com/maven/" } }
+        filter { includeGroupAndSubgroups("xaero") }
+    }
+    exclusiveContent { // sodium
+        forRepository { maven { url = "https://maven.caffeinemc.net/releases" } }
+        filter { includeGroup("net.caffeinemc") }
+    }
+    exclusiveContent { // forgigied fabric api (dependency of sodium)
+        forRepository { maven { url = "https://maven.su5ed.dev/releases" } }
+        filter { includeGroup("org.sinytra.forgified-fabric-api") }
     }
 }

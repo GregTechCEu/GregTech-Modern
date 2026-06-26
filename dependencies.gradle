@@ -3,17 +3,20 @@ dependencies {
 
     testJarJar(testApi(libs.testframework.get()))
 
-    jarJar(api(forge.ldlib.get()))
-
     // Registrate
     jarJar(api(forge.registrate.get()))
 
     // Configuration
     jarJar(api(forge.configuration.get()))
 
+    // Math Parser
+    compileOnly(libs.evalEx.get())
+
+    // MUI
+    jarJar(implementation(forge.mui.get()))
+
     // Recipe Viewers
     compileOnly(forge.bundles.jei)
-    compileOnly(forge.bundles.rei)
     compileOnly(forge.emi)
 
     // WAILA-likes
@@ -28,14 +31,17 @@ dependencies {
     // Create
     compileOnly(forge.ponder)
     compileOnly(variantOf(forge.create) { classifier("slim") })
-    compileOnly(forge.flywheel.forge.api)
+    compileOnly(forge.flywheel.api)
 
     // KJS
     compileOnly(forge.bundles.kjs)
 
-    // Rendering / Optimizations
-    compileOnly(forge.sodium)
+    // Performance
+    compileOnly(forge.sodium.impl) // we have to depend on the entirety of sodium to mixin into it.
+    compileOnly(forge.sodium.api) // also add api so we get sources :)
+    compileOnly(forge.fabricApi.rendering) // IDK why the version sodium JiJ's doesn't work.
     compileOnly(forge.iris)
+    compileOnly(forge.embeddium)
     compileOnly(forge.modernfix)
 
     // Teams
@@ -48,10 +54,14 @@ dependencies {
 
     // Maps
     compileOnly(forge.ftbchunks)
+    compileOnly(forge.xaeroslib)
     compileOnly(forge.xaerosminimap)
     compileOnly(forge.xaerosworldmap)
     compileOnly(forge.journeymap.api)
     compileOnly(forge.journeymap.forge)
+
+    compileOnly(forge.curios)
+    localRuntime(forge.curios)
 
     // GameStages
     // compileOnly(forge.gamestages)
@@ -67,19 +77,21 @@ dependencies {
     localRuntime(forge.ae2)
     localRuntime(forge.spark)
     localRuntime(forge.modernfix)
-    localRuntime(forge.create) {
-        // Needed to prevent game-test crashes
-        exclude group: "maven.modrinth", module: "journeymap"
-        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
-    }
 
     // Runtime Recipe Viewers - uncomment whichever one you want to use //
     localRuntime(forge.emi)
-    localRuntime(forge.jei.neoforge.impl)
+//    localRuntime(forge.jei.neoforge.impl)
 //    localRuntime(forge.bundles.rei.runtime)
 
     // Client-only runtime mods //
-    clientLocalRuntime(forge.sodium)
+    clientLocalRuntime(forge.sodium.impl)
+    sodiumShellSource(forge.sodium.full)
+    clientLocalRuntime(files(tasks.named('stripSodiumShellLib')))
+
+    clientLocalRuntime(forge.fabricApi.base)
+    clientLocalRuntime(forge.fabricApi.rendering)
+    clientLocalRuntime(forge.fabricApi.renderingData)
+    clientLocalRuntime(forge.fabricApi.blockView)
     clientLocalRuntime(forge.iris)
     renderNurseCfg(libs.renderNurse)
 
@@ -92,7 +104,13 @@ dependencies {
 //    extraLocalRuntime(forge.worldstripper)
     localRuntime(forge.cc.tweaked.forge.impl)
 
-    localRuntime(forge.bundles.kjs)
+    extraLocalRuntime(forge.create) {
+        // Needed to prevent game-test crashes
+        exclude group: "maven.modrinth", module: "journeymap"
+        exclude group: "info.journeymap", module: "journeymap-api-neoforge"
+    }
+
+    extraLocalRuntime(forge.bundles.kjs)
 
     extraLocalRuntime(forge.ftblibrary)
     extraLocalRuntime(forge.ftbteams)

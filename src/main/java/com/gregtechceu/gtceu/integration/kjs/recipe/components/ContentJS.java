@@ -31,8 +31,8 @@ public record ContentJS<T>(RecipeComponentType<T> baseComponent, RecipeCapabilit
     public Content replace(RecipeScriptContext cx, Content original, ReplacementMatchInfo match, Object with) {
         return new Content(
                 baseComponent.instance().replace(cx,
-                        baseComponent.instance().wrap(cx, original.content), match, with),
-                original.chance, original.maxChance, original.tierChanceBoost);
+                        baseComponent.instance().wrap(cx, original.chance()), match, with),
+                original.chance(), original.maxChance(), original.tierChanceBoost());
     }
 
     @Override

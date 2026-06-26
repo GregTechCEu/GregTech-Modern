@@ -4,25 +4,36 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import lombok.Setter;
 
 import java.util.Map;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @SaveField
@@ -32,9 +43,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @SaveField
     @Getter
+    @Setter
     protected int globalVoidingLimit = 1;
-
-    private IntInputWidget stackSizeInput;
 
     public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
@@ -94,8 +104,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     public void setVoidingMode(VoidingMode voidingMode) {
         this.voidingMode = voidingMode;
 
-        configureStackSizeInput();
-
         if (!this.isRemote()) {
             syncDataHolder.markClientSyncFieldDirty("voidingMode");
             configureFilter();
@@ -107,20 +115,27 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     //////////////////////////////////////
 
     @Override
-    protected @NotNull String getUITitle() {
-        return "cover.item.voiding.advanced.title";
-    }
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        super.createCoverUIRows(column, data, syncManager, settings);
 
-    @Override
-    protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(
-                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+        EnumSyncValue<VoidingMode> voidingMode = new EnumSyncValue<>(VoidingMode.class,
+                this::getVoidingMode, this::setVoidingMode);
+        IntSyncValue voidingLimit = new IntSyncValue(this::getGlobalVoidingLimit, this::setGlobalVoidingLimit);
 
-        this.stackSizeInput = new IntInputWidget(64, 20, 80, 20,
-                () -> globalVoidingLimit, val -> globalVoidingLimit = val);
-        configureStackSizeInput();
+        syncManager.syncValue("voidingMode", voidingMode);
+        syncManager.syncValue("voidingLimit", voidingLimit);
 
-        group.addWidget(this.stackSizeInput);
+        column.child(new GTMuiWidgets.EnumRowBuilder<>(VoidingMode.class)
+                .value(voidingMode)
+                .buttonTooltipSupplier((v) -> () -> Component.translatable(v.getTooltip()))
+                .overlay(16, GTGuiTextures.VOIDING_MODES)
+                .lang(Text.dynamic(() -> Component.translatable(getVoidingMode().tooltip)))
+                .build()
+                .marginTop(2));
+
+        column.child(GTMuiWidgets.createIntInputWithButtons(voidingLimit, () -> 1, () -> getVoidingMode().maxStackSize)
+                .setEnabledIf($ -> shouldShowStackSize()));
     }
 
     @Override
@@ -128,17 +143,6 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
             filter.setMaxStackSize(this.voidingMode.maxStackSize);
         }
-
-        configureStackSizeInput();
-    }
-
-    private void configureStackSizeInput() {
-        if (this.stackSizeInput == null)
-            return;
-
-        this.stackSizeInput.setVisible(shouldShowStackSize());
-        this.stackSizeInput.setMin(1);
-        this.stackSizeInput.setMax(this.voidingMode.maxStackSize);
     }
 
     private boolean shouldShowStackSize() {
@@ -152,10 +156,9 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
+    public void copyConfig(CompoundTag tag) {
         tag.putInt("voidingMode", getVoidingMode().ordinal());
         tag.putInt("voidSize", getGlobalVoidingLimit());
-        return super.copyConfig(tag);
     }
 
     @Override

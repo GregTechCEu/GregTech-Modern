@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.function.UnaryOperator;
@@ -31,7 +29,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     private final Material.Builder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
-        super(GTResourceLocation.implicitAsGtceu(id));
+        super(id);
         this.internal = new Material.Builder(this.id);
         this.dummyBuilder = true;
     }
@@ -55,7 +53,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderWrapper fluid(@NotNull FluidStorageKey key, @NotNull FluidState state) {
+    public MaterialBuilderWrapper fluid(FluidStorageKey key, FluidState state) {
         internal.fluid(key, state);
         return this;
     }
@@ -65,7 +63,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             Can be called multiple times to add multiple fluids.
             """)
-    public MaterialBuilderWrapper fluid(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+    public MaterialBuilderWrapper fluid(FluidStorageKey key, FluidBuilder builder) {
         internal.fluid(key, builder);
         return this;
     }
@@ -85,7 +83,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper liquid(@NotNull FluidBuilder builder) {
+    public MaterialBuilderWrapper liquid(FluidBuilder builder) {
         internal.liquid(builder);
         return this;
     }
@@ -110,7 +108,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper plasma(@NotNull FluidBuilder builder) {
+    public MaterialBuilderWrapper plasma(FluidBuilder builder) {
         internal.plasma(builder);
         return this;
     }
@@ -135,7 +133,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
             @see #fluid(FluidStorageKey, FluidState)
             """)
-    public MaterialBuilderWrapper gas(@NotNull FluidBuilder builder) {
+    public MaterialBuilderWrapper gas(FluidBuilder builder) {
         internal.gas(builder);
         return this;
     }

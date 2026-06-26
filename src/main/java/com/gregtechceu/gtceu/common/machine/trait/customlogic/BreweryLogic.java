@@ -338,10 +338,10 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     private static PotionBrewing getPotionBrewing() {
-        if (GTCEu.isClientThread()) {
-            return Minecraft.getInstance().getConnection().potionBrewing();
-        } else {
+        if (GTCEu.getMinecraftServer() != null) {
             return GTCEu.getMinecraftServer().potionBrewing();
+        } else {
+            return Minecraft.getInstance().getConnection().potionBrewing();
         }
     }
 }

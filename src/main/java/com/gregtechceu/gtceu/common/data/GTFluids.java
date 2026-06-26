@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -39,16 +39,12 @@ public class GTFluids {
         NeoForgeMod.enableMilkFluid();
 
         // register fluids for materials
-        REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_FLUID);
-    }
-
-    public static void generateMaterialFluids() {
-        for (var material : GTCEuAPI.materialManager) {
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
+        for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
 
             if (fluidProperty != null) {
-                GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(material.getModid());
-                fluidProperty.registerFluids(material, registrate);
+                fluidProperty.registerFluids(material, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
             }
         }
     }

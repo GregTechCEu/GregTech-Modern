@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -10,6 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -48,7 +48,7 @@ public class GTRecipeComponents {
         VALID_CAPS.put(GTRecipeCapabilities.CWU, CWU);
 
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
-        AddonFinder.getAddonList().forEach(addon -> addon.registerRecipeKeys(event));
+        ModLoader.postEvent(event);
         VALID_CAPS.putAll(event.getRegisteredKeys());
     }
 }

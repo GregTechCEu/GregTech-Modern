@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -10,6 +10,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +18,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class GTStringUtils {
+
+    public static final Component COMMA_SEPERATOR_LITERAL = Component.literal(", ");
 
     /**
      * Better implementation of {@link ItemStack#toString()} which respects the stack-aware
@@ -32,6 +36,18 @@ public class GTStringUtils {
     public static String itemStackToString(@NotNull ItemStack stack) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return stack.getCount() + "x_" + itemId.toDebugFileName();
+    }
+
+    public static int parseInt(String s, int defaultValue) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    public static int parseInt(String s) {
+        return parseInt(s, -1);
     }
 
     @NotNull
@@ -57,82 +73,6 @@ public class GTStringUtils {
         if (x % 10 == 2) return x + "nd";
         if (x % 10 == 3) return x + "rd";
         return x + "th";
-    }
-
-    /**
-     * Returns a string with the result of the provided expression.
-     * This function is intended for use with user input.
-     * For example:
-     * <ul>
-     * <li>{@code {"12", "+", "34"}} -> {@code "46"}</li>
-     * <li>{@code {"sqrt", "16"}} -> {@code "4"}</li>
-     * <li>{@code {"round", "4.5"}} -> {@code "5"}</li>
-     * <li>{@code {"literally any string"}} -> {@code "literally any string"}</li>
-     * <li>{@code {"~", "0"}} -> {@code "-1"} // signed bitwise inversion</li>
-     * </ul>
-     * Currently the operations are: {@code {"+", "-", "*", "/", "%", ">>", "<<", "~", "round", "ceil", "floor",
-     * "sqrt"}}
-     * 
-     * @param args the arguments, including operands and operation to calculate
-     * @return the result of the calculation, {@code "Invalid number!"} or {@code "Invalid expression!"}
-     */
-    @NotNull
-    public static String calc(@NotNull List<String> args) {
-        // yes I know this is terrible code, but I want to be able to do math in placeholders
-        // not going to do anything crazy like including lua or python here
-        if (args.size() == 3) {
-            try {
-                long a = Long.parseLong(args.get(0));
-                long b = Long.parseLong(args.get(2));
-                return switch (args.get(1)) {
-                    case "+" -> String.valueOf(a + b);
-                    case "-" -> String.valueOf(a - b);
-                    case "*" -> String.valueOf(a * b);
-                    case "/" -> String.valueOf(a / b);
-                    case "%" -> String.valueOf(a % b);
-                    case "<<" -> String.valueOf(a << b);
-                    case ">>" -> String.valueOf(a >> b);
-                    default -> "No such operation: '%s'".formatted(args.get(1));
-                };
-            } catch (NumberFormatException e) {
-                try {
-                    double a = Double.parseDouble(args.get(0));
-                    double b = Double.parseDouble(args.get(2));
-                    return switch (args.get(1)) {
-                        case "/" -> String.valueOf(a / b);
-                        case "+" -> String.valueOf(a + b);
-                        case "-" -> String.valueOf(a - b);
-                        case "*" -> String.valueOf(a * b);
-                        default -> "Invalid number: '%s' or operation '%s'".formatted(e.getMessage(), args.get(1));
-                    };
-                } catch (NumberFormatException ex) {
-                    return "Invalid number '%s'!".formatted(ex.getMessage());
-                }
-            }
-        } else if (args.size() == 2) {
-            try {
-                long a = Long.parseLong(args.get(1));
-                return switch (args.get(0)) {
-                    case "~" -> String.valueOf(~a);
-                    case "sqrt" -> String.valueOf(Math.sqrt(a));
-                    default -> "No such operation: '%s'".formatted(args.get(0));
-                };
-            } catch (NumberFormatException e) {
-                try {
-                    double a = Double.parseDouble(args.get(1));
-                    return switch (args.get(0)) {
-                        case "round" -> String.valueOf(Math.round(a));
-                        case "ceil" -> String.valueOf(Math.ceil(a));
-                        case "floor" -> String.valueOf(Math.floor(a));
-                        case "sqrt" -> String.valueOf(Math.sqrt(a));
-                        default -> "Invalid number '%s' or operation '%s'!".formatted(e.getMessage(), args.get(0));
-                    };
-                } catch (NumberFormatException e2) {
-                    return "Invalid number '%s'!".formatted(e2.getMessage());
-                }
-            }
-        } else if (args.size() == 1) return args.get(0);
-        return "Invalid expression!";
     }
 
     public static List<MutableComponent> literalLine(String s) {
@@ -203,32 +143,6 @@ public class GTStringUtils {
         return out.get(0);
     }
 
-    public static Component toComponent(ListTag arr) {
-        return toComponent(List.of(arr.toArray(new String[0])));
-    }
-
-    public static Component toComponent(List<String> arr) {
-        MutableComponent component = Component.literal("[");
-        if (arr.size() <= 5) {
-            for (int i = 0; i < arr.size(); i++) {
-                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
-                if (i != arr.size() - 1) component.append(", ");
-            }
-        } else {
-            for (int i = 0; i < 2; i++) {
-                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
-                component.append(", ");
-            }
-            component.append("..., ");
-            for (int i = arr.size() - 2; i < arr.size(); i++) {
-                component.append(Component.literal('"' + arr.get(i) + '"').withStyle(ChatFormatting.DARK_AQUA));
-                if (i != arr.size() - 1) component.append(", ");
-            }
-        }
-        component.append("]");
-        return component;
-    }
-
     public static Component toCompactedComponent(List<String> list) {
         MutableComponent component = Component.literal("[");
         if (list.size() <= 5) {
@@ -253,5 +167,41 @@ public class GTStringUtils {
         }
         component.append("]");
         return component;
+    }
+
+    public static Component toComponent(List<Component> components) {
+        MutableComponent component = Component.empty();
+        for (Component comp : components) {
+            component.append(comp).append("\n");
+        }
+        return component;
+    }
+
+    public static String formatInt(long n) {
+        Map<Long, String> suffixes = Map.of(
+                1L, "",
+                1000L, "K",
+                1000000L, "M",
+                1000000000L, "B",
+                1000000000000L, "T");
+        long max = 1;
+        for (Long i : suffixes.keySet()) {
+            if (n >= i && max < i) max = i;
+        }
+        return "%.2f%s".formatted(((double) n) / max, suffixes.get(max));
+    }
+
+    public static String getPropertyValueString(Map.Entry<Property<?>, Comparable<?>> entry) {
+        Property<?> property = entry.getKey();
+        Comparable<?> value = entry.getValue();
+
+        String valueString = Util.getPropertyName(property, value);
+        if (Boolean.TRUE.equals(value)) {
+            valueString = ChatFormatting.GREEN + valueString;
+        } else if (Boolean.FALSE.equals(value)) {
+            valueString = ChatFormatting.RED + valueString;
+        }
+
+        return property.getName() + ": " + valueString;
     }
 }

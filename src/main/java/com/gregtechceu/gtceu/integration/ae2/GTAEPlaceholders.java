@@ -42,7 +42,7 @@ public class GTAEPlaceholders {
     private GTAEPlaceholders() {}
 
     private static IGrid getGrid(PlaceholderContext ctx) throws PlaceholderException {
-        if (ctx.pos() == null) throw new NotSupportedException();
+        if (ctx.pos() == null) throw new NoTargetException();
         IInWorldGridNodeHost nodeHost = GridHelper.getNodeHost(ctx.level(), ctx.pos());
         if (nodeHost != null) {
             IGridNode node = nodeHost.getGridNode(ctx.side());

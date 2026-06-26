@@ -96,6 +96,12 @@ public class GTToolItem extends TieredItem implements IGTTool {
     }
 
     @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                  InteractionHand usedHand) {
+        return definition$interactLivingEntity(stack, player, interactionTarget, usedHand);
+    }
+
+    @Override
     public boolean isElectric() {
         return electricTier > -1;
     }

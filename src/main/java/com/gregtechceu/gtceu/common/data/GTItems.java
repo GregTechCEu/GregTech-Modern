@@ -14,12 +14,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.armor.*;
@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.*;
 import com.gregtechceu.gtceu.common.item.behavior.MachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.common.item.datacomponents.DataItem;
+import com.gregtechceu.gtceu.common.item.modules.GuiModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.TextModuleBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -75,6 +76,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -86,13 +88,14 @@ import static com.gregtechceu.gtceu.common.data.models.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
+@SuppressWarnings("unused")
 public class GTItems {
 
     //////////////////////////////////////
     // ******* Misc Items ********//
     //////////////////////////////////////
     static {
-        REGISTRATE.creativeModeTab(ITEM);
+        REGISTRATE.creativeModeTab(() -> ITEM);
     }
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
             .lang("Compressed Clay")
@@ -140,11 +143,11 @@ public class GTItems {
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
     public static final ItemEntry<Item> SHAPE_MOLD_ROTOR;
     public static final ItemEntry<Item> SHAPE_MOLD_PILL;
-    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_TINY;
-    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_SMALL;
-    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_NORMAL;
-    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_LARGE;
-    public static final ItemEntry<Item> SHAPE_MOLD_PIPE_HUGE;
+    public static final ItemEntry<Item> SHAPE_MOLD_TINY_PIPE;
+    public static final ItemEntry<Item> SHAPE_MOLD_SMALL_PIPE;
+    public static final ItemEntry<Item> SHAPE_MOLD_NORMAL_PIPE;
+    public static final ItemEntry<Item> SHAPE_MOLD_LARGE_PIPE;
+    public static final ItemEntry<Item> SHAPE_MOLD_HUGE_PIPE;
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
@@ -199,23 +202,23 @@ public class GTItems {
                 .lang("Casting Mold (Pill)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[13] = SHAPE_MOLD_PIPE_TINY = REGISTRATE.item("tiny_pipe_casting_mold", Item::new)
+        SHAPE_MOLDS[13] = SHAPE_MOLD_TINY_PIPE = REGISTRATE.item("tiny_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Tiny Pipe)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[14] = SHAPE_MOLD_PIPE_SMALL = REGISTRATE.item("small_pipe_casting_mold", Item::new)
+        SHAPE_MOLDS[14] = SHAPE_MOLD_SMALL_PIPE = REGISTRATE.item("small_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Small Pipe)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[15] = SHAPE_MOLD_PIPE_NORMAL = REGISTRATE.item("normal_pipe_casting_mold", Item::new)
+        SHAPE_MOLDS[15] = SHAPE_MOLD_NORMAL_PIPE = REGISTRATE.item("normal_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Normal Pipe)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[16] = SHAPE_MOLD_PIPE_LARGE = REGISTRATE.item("large_pipe_casting_mold", Item::new)
+        SHAPE_MOLDS[16] = SHAPE_MOLD_LARGE_PIPE = REGISTRATE.item("large_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Large Pipe)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
-        SHAPE_MOLDS[17] = SHAPE_MOLD_PIPE_HUGE = REGISTRATE.item("huge_pipe_casting_mold", Item::new)
+        SHAPE_MOLDS[17] = SHAPE_MOLD_HUGE_PIPE = REGISTRATE.item("huge_pipe_casting_mold", Item::new)
                 .lang("Casting Mold (Huge Pipe)")
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
@@ -2199,6 +2202,7 @@ public class GTItems {
             .onRegister(attach(new MachineConfigCopyBehaviour()))
             .register();
 
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<DyeItem>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
         DyeColor[] colors = DyeColor.values();
@@ -2211,7 +2215,7 @@ public class GTItems {
                     .register();
         }
     }
-
+    @SuppressWarnings("unchecked")
     public static final ItemEntry<ComponentItem>[] SPRAY_CAN_DYES = new ItemEntry[DyeColor.values().length];
     static {
         for (int i = 0; i < DyeColor.values().length; i++) {
@@ -2357,8 +2361,8 @@ public class GTItems {
             .tag(ItemTags.HEAD_ARMOR)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.inhalation"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.inhalation"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
@@ -2370,8 +2374,8 @@ public class GTItems {
             .tag(ItemTags.CHEST_ARMOR)
             .tag(CustomTags.PPE_ARMOR)
             .onRegister(attach(new TooltipBehavior(tooltips -> {
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.protection.description"));
-                tooltips.add(Component.translatable("gtceu.hazard_trigger.skin_contact"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.protection"));
+                tooltips.add(Component.translatable("tooltip.gtceu.hazard_trigger.skin_contact"));
             })))
             .register();
     public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE
@@ -2588,6 +2592,10 @@ public class GTItems {
             .onRegister(attach(new ImageModuleBehaviour()))
             .register();
 
+    public static ItemEntry<ComponentItem> GUI_MODULE = REGISTRATE.item("gui_module", ComponentItem::new)
+            .onRegister(attach(new GuiModuleBehaviour()))
+            .register();
+
     public static void init() {
         // GTMaterialItems.generateMaterialItems();
         // GTMaterialItems.generateTools();
@@ -2679,9 +2687,10 @@ public class GTItems {
             builder.clientExtension(item -> () -> () -> new IClientItemExtensions() {
 
                 @Override
-                public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-                                                                       EquipmentSlot equipmentSlot,
-                                                                       HumanoidModel<?> original) {
+                public @NotNull HumanoidModel<?> getHumanoidArmorModel(@NonNull LivingEntity livingEntity,
+                                                                       @NonNull ItemStack itemStack,
+                                                                       @NonNull EquipmentSlot equipmentSlot,
+                                                                       @NonNull HumanoidModel<?> original) {
                     return item.getArmorLogic().getArmorModel(livingEntity, itemStack, equipmentSlot, original);
                 }
             });

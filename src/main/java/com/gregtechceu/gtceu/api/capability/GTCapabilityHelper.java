@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 import com.gregtechceu.gtceu.common.data.GTAttachmentTypes;
 
 import net.minecraft.core.BlockPos;
@@ -100,7 +101,7 @@ public class GTCapabilityHelper {
         return level.getCapability(GTCapability.CAPABILITY_HAZARD_CONTAINER, pos, side);
     }
 
-    public static IMedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
+    public static MedicalConditionTracker getMedicalConditionTracker(@NotNull Player entity) {
         return entity.getData(GTAttachmentTypes.MEDICAL_CONDITION_TRACKER);
     }
 

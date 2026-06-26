@@ -129,7 +129,7 @@ public class EUToFEProvider implements IEnergyContainer {
      * IEnergyStorage should handle it.
      * This simulates that behavior in most places by allowing our "is there space" checks to pass and letting the
      * cable attempt to insert energy.
-     * If the wrapped TE actually cannot accept any more energy, the energy transfer will return 0 before any
+     * If the wrapped BE actually cannot accept any more energy, the energy transfer will return 0 before any
      * changes to our internal rf buffer.
      */
     @Override
