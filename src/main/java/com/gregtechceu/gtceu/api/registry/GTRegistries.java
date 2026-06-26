@@ -55,8 +55,8 @@ public final class GTRegistries {
 
     public static final class Keys {
         private Keys() {}
-        // Material related registries
 
+        // Material related registries
         public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));
         public static final ResourceKey<Registry<Element>> ELEMENT = makeRegistryKey(GTCEu.id("element"));
         public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = makeRegistryKey(GTCEu.id("tag_prefix"));
@@ -70,11 +70,14 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
         public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = makeRegistryKey(GTCEu.id("chance_logic"));
 
+        // Datapack registries
+
+        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = makeRegistryKey(GTCEu.id("bedrock_fluid"));
+        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(GTCEu.id("bedrock_ore"));
+        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
+
         // Worldgen related registries
 
-        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID_DEFINITION = makeRegistryKey(GTCEu.id("bedrock_fluid"));
-        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE_DEFINITION = makeRegistryKey(GTCEu.id("bedrock_ore"));
-        public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
         public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
 
         // Other registries
@@ -119,7 +122,7 @@ public final class GTRegistries {
 
     public static final MappedRegistry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
     public static final MappedRegistry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
-    public static final GTRegistry<SoundEntry> SOUNDS = new GTRegistry<>(GTCEu.id("sound"));
+    public static final MappedRegistry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND);
     public static final MappedRegistry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER);
     public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);
 

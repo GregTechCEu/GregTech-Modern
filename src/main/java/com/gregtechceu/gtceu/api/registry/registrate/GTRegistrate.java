@@ -192,6 +192,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
+    @Override
+    protected void onRegister(RegisterEvent event) {
+        super.onRegister(event);
+    }
+
     // Machines
 
     public <DEFINITION extends MachineDefinition,
@@ -239,7 +244,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public GTRecipeCategory recipeCategory(String categoryName, GTRecipeType recipeType) {
         var category = new GTRecipeCategory(categoryName, recipeType);
-        this.generic(categoryName, GTRegistries.Keys.RECIPE_CATEGORY, () -> category);
+        this.generic(categoryName, GTRegistries.Keys.RECIPE_CATEGORY, () -> category).build();
         return category;
     }
 

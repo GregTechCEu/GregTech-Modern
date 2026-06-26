@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -118,7 +120,8 @@ public class SoundEntryBuilder {
         SoundEntry entry = wrappedEvents.isEmpty() ?
                 new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
                 new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
-        GTRegistries.SOUNDS.register(entry.getId(), entry);
+        GTRegistries.SOUNDS.unfreeze();
+        GTRegistries.SOUNDS.register(ResourceKey.create(GTRegistries.Keys.SOUND, entry.getId()), entry, Lifecycle.stable());
         return entry;
     }
 }

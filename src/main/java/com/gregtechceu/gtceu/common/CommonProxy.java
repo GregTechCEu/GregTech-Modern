@@ -96,6 +96,7 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
+        init(eventBus);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
 
@@ -117,8 +118,7 @@ public class CommonProxy {
     }
 
 
-    public static void init() {
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void init(IEventBus modBus) {
 
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
@@ -284,16 +284,10 @@ public class CommonProxy {
     public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
         event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
                 GTOreDefinition.CODEC, GTOreDefinition.CODEC);
-        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID_DEFINITION,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID,
                 BedrockFluidDefinition.FULL_CODEC, BedrockFluidDefinition.FULL_CODEC);
-        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE_DEFINITION,
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE,
                 BedrockOreDefinition.FULL_CODEC, BedrockOreDefinition.FULL_CODEC);
-    }
-
-    @SubscribeEvent
-    public void modConstruct(FMLConstructModEvent event) {
-        // this is done to delay initialization of content to be after KJS has set up.
-        event.enqueueWork(CommonProxy::init);
     }
 
     @SubscribeEvent
