@@ -96,7 +96,6 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-        init(eventBus);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
 
@@ -111,8 +110,12 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
+
         GTRegistries.init(eventBus);
         REGISTRATE.registerEventListeners(eventBus);
+
+        init(eventBus);
+
 
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
@@ -122,6 +125,7 @@ public class CommonProxy {
 
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
+        ConfigHolder.init();
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();

@@ -192,11 +192,6 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
-    @Override
-    protected void onRegister(RegisterEvent event) {
-        super.onRegister(event);
-    }
-
     // Machines
 
     public <DEFINITION extends MachineDefinition,

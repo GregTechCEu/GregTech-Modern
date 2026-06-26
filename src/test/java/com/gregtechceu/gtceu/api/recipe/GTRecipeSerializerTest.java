@@ -38,7 +38,7 @@ public class GTRecipeSerializerTest {
         @SuppressWarnings("deprecation")
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
+        HolderSet<Fluid> lavaSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.FLUID)
                 .getOrCreateTag(FluidTags.LAVA);
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
@@ -72,7 +72,7 @@ public class GTRecipeSerializerTest {
         @SuppressWarnings("deprecation")
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
-        HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
+        HolderSet<Block> oreSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.BLOCK)
                 .getOrCreateTag(Tags.Blocks.ORES);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
@@ -106,7 +106,7 @@ public class GTRecipeSerializerTest {
         HolderSet<Fluid> waterSet = HolderSet.direct(Fluids.WATER.builtInRegistryHolder(),
                 Fluids.FLOWING_WATER.builtInRegistryHolder());
         TagKey<Fluid> lavaTag = FluidTags.LAVA;
-        HolderSet<Fluid> lavaSet = GTRegistries.builtinRegistry()
+        HolderSet<Fluid> lavaSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.FLUID)
                 .getOrCreateTag(FluidTags.LAVA);
 
@@ -130,7 +130,7 @@ public class GTRecipeSerializerTest {
         @SuppressWarnings("deprecation")
         HolderSet<Block> blockSet = HolderSet.direct(Blocks.DIAMOND_BLOCK.builtInRegistryHolder(),
                 Blocks.GOLD_BLOCK.builtInRegistryHolder());
-        HolderSet<Block> oreSet = GTRegistries.builtinRegistry()
+        HolderSet<Block> oreSet = helper.getLevel().registryAccess()
                 .registryOrThrow(Registries.BLOCK)
                 .getOrCreateTag(Tags.Blocks.ORES);
         List<HolderSet<Block>> blockSetIn = List.of(blockSet, oreSet);
