@@ -50,7 +50,11 @@ public class MaterialIconSet {
      */
     @Nullable
     public final MaterialIconSet parentIconset;
-    
+
+    public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset) {
+        this(id, parentIconset, parentIconset == null);
+    }
+
     /**
      * Create a new MaterialIconSet which is a root
      *

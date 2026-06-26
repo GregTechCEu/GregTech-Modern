@@ -1,9 +1,10 @@
-package com.gregtechceu.gtceu.integration.kjs.builders;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.common.data.GTElements;
 
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,7 +35,12 @@ public class ElementBuilder extends BuilderBase<Element> {
     }
 
     @Override
-    public Element register() {
+    public RegistryInfo<Element> getRegistryType() {
+        return GTRegistryInfo.ELEMENT;
+    }
+
+    @Override
+    public Element createObject() {
         return new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
     }
 }

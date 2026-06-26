@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
@@ -36,7 +35,6 @@ import net.minecraftforge.fluids.FluidStack;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import dev.latvian.mods.rhino.util.HideFromJS;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
@@ -573,11 +571,10 @@ public class Material implements Comparable<Material> {
         return this == GTMaterials.NULL;
     }
 
-    @RemapPrefixForJS("kjs$")
     @SuppressWarnings("unused") // API, need to treat all of these as used
-    public static class Builder extends BuilderBase<Material> {
+    public static class Builder {
 
-        private final GTRegistrate registrate;
+        private final @Nullable GTRegistrate registrate;
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
@@ -611,8 +608,7 @@ public class Material implements Comparable<Material> {
          * @since GTCEu 2.0.0
          */
         @ApiStatus.Internal
-        public Builder(GTRegistrate registrate, ResourceLocation resourceLocation) {
-            super(resourceLocation);
+        public Builder(@Nullable GTRegistrate registrate, ResourceLocation resourceLocation) {
             this.registrate = registrate;
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
@@ -1224,15 +1220,8 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        /** @see #componentStacks(MaterialStack...) */
         public Builder kjs$components(MaterialStackWrapper... components) {
             compositionSupplier = Arrays.asList(components);
-            return this;
-        }
-
-        /** @see #componentStacks(ImmutableList) componentStacks(ImmutableList&lt;MaterialStack&gt;) */
-        public Builder kjs$components(ImmutableList<MaterialStackWrapper> components) {
-            compositionSupplier = components;
             return this;
         }
 
@@ -1855,8 +1844,9 @@ public class Material implements Comparable<Material> {
          *
          * @return The finalized Material.
          */
-        @HideFromJS
         public Material buildAndRegister() {
+            Objects.requireNonNull(registrate, "Material.Builder should not be called from KJS");
+
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
@@ -1890,10 +1880,8 @@ public class Material implements Comparable<Material> {
             return mat;
         }
 
-        @Override
-        @HideFromJS
         public @NotNull Material register() {
-            return value = buildAndRegister();
+            return buildAndRegister();
         }
     }
 

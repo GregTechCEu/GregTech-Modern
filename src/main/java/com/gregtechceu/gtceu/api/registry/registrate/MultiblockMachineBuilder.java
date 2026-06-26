@@ -40,7 +40,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
                                      extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
-    private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
+    private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
@@ -138,6 +138,6 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         }
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
-        return value = definition;
+        return definition;
     }
 }

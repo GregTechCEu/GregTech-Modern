@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.api.data;
 
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.Validator;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -16,10 +13,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
@@ -73,33 +67,5 @@ public class DimensionMarker {
             stack.setHoverName(Component.translatable(overrideName));
         }
         return stack;
-    }
-
-    @Setter
-    @Accessors(fluent = true, chain = true)
-    public static class Builder extends BuilderBase<DimensionMarker> {
-
-        private Supplier<Item> iconSupplier;
-        private int tier = 0;
-        @Nullable
-        private String overrideName;
-
-        public Builder(ResourceLocation dimKey) {
-            super(dimKey);
-        }
-
-        @HideFromJS
-        public DimensionMarker buildAndRegister() {
-            Validator.validate(
-                    id,
-                    Validator.errorIfNull(iconSupplier, "icon"),
-                    Validator.errorIfOutOfRange(tier, "tier", 0, MAX_TIER - 1));
-            return new DimensionMarker(ResourceKey.create(Registries.DIMENSION, id), tier, iconSupplier, overrideName);
-        }
-
-        @Override
-        public DimensionMarker register() {
-            return value = buildAndRegister();
-        }
     }
 }

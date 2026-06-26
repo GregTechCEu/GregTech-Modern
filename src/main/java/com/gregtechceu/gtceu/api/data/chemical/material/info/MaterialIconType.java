@@ -129,9 +129,6 @@ public record MaterialIconType(String name) {
     }
 
     public static void init() {
-        if (GTCEu.Mods.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.MATERIAL_ICON_TYPE.registryKey);
-        }
     }
 
     public static MaterialIconType getByName(String name) {

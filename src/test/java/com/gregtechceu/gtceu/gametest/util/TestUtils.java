@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 

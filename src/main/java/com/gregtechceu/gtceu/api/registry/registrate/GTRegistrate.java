@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -29,7 +28,6 @@ import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -64,7 +62,6 @@ import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -229,7 +226,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Recipe types
 
     public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(GTCEu.id(name), this, group, proxyRecipes);
+        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
         this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).build();
         return recipeType;

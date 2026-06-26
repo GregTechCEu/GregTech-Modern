@@ -6,15 +6,18 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -91,10 +94,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private GTRecipeTypeUILayout uiLayout;
 
     @ApiStatus.Internal
-    public GTRecipeType(ResourceLocation registryName, GTRegistrate registrate, String group, RecipeType<?>... proxyRecipes) {
+    public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
         this.group = group;
-        this.category = registrate.recipeCategory(registryName.getPath(), this);
+        this.category = GTRecipeCategory.registerDefault(this);
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
@@ -102,6 +105,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             map.put(proxyRecipe, new ArrayList<>());
         }
         this.proxyRecipes = map;
+    }
+
+    @ApiStatus.Internal
+    public static GTRecipeType kjsRegister(ResourceLocation id, String group, RecipeType<?>... proxyRecipes) {
+        var recipeType = new GTRecipeType(id, group, proxyRecipes);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, recipeType.registryName, recipeType);
+        Registry.register(BuiltInRegistries.RECIPE_SERIALIZER, recipeType.registryName, new GTRecipeSerializer());
+        return recipeType;
     }
 
     public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {

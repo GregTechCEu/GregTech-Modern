@@ -30,21 +30,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
-import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
-import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.*;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -105,6 +94,7 @@ public final class GTRegistries {
 
     // Recipe related registries
 
+    public static final MappedRegistry<GTRecipeType> RECIPE_TYPE = makeRegistry(Keys.RECIPE_TYPE);
     public static final MappedRegistry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
     public static final MappedRegistry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
     public static final MappedRegistry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);

@@ -102,9 +102,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
-import dev.latvian.mods.kubejs.client.LangEventJS;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
-import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
 import dev.latvian.mods.kubejs.recipe.KubeJSRecipeEventHandler;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.RecipesEventJS;
@@ -142,20 +139,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void init() {
         super.init();
+        GTRegistryInfo.init();
+
         /*
-        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
-
-
-        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
-                 true);
-        GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
+                GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
                 true);
-
-        GTRegistryInfo.MATERIAL.addType("basic", Material.Builder.class, Material.Builder::new, true);
-
-        GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
-                true);
+         */
+        /*
 
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
@@ -195,29 +185,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerEvents();
         GTCEuStartupEvents.GROUP.register();
         GTCEuServerEvents.GROUP.register();
-    }
-
-    @Override
-    public void generateDataJsons(DataJsonGenerator generator) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateDataJsons(generator));
-    }
-
-    public static void generateMachineBlockModels() {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> {
-            try {
-                builderBase.generateAssetJsons(null);
-            } catch (IllegalStateException ignored) {}
-        });
-    }
-
-    @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateAssetJsons(generator));
-    }
-
-    @Override
-    public void generateLang(LangEventJS event) {
-        GTRegistryInfo.ALL_BUILDERS.forEach(builderBase -> builderBase.generateLang(event));
     }
 
     @Override
