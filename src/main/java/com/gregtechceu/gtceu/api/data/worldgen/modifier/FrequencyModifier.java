@@ -23,8 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class FrequencyModifier extends PlacementModifier {
 
-    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries
-            .register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
+    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = () -> FrequencyModifier.CODEC;
 
     public static final Codec<FrequencyModifier> CODEC = ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance")
             .xmap(FrequencyModifier::new, (modifier) -> modifier.frequency).codec();

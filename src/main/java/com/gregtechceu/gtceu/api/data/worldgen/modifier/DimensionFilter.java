@@ -19,8 +19,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 public class DimensionFilter extends PlacementFilter {
 
-    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = GTRegistries
-            .register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("dimension"), () -> DimensionFilter.CODEC);
+    public static final PlacementModifierType<DimensionFilter> DIMENSION_FILTER = () -> DimensionFilter.CODEC;
 
     public static final Codec<DimensionFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.DIMENSION_TYPE).fieldOf("dimension_id")

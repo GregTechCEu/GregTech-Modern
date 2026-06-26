@@ -14,10 +14,7 @@ import com.mojang.serialization.Codec;
 
 public class RubberTreeChancePlacement extends RepeatingPlacement {
 
-    public static final PlacementModifierType<RubberTreeChancePlacement> RUBBER_TREE_CHANCE_PLACEMENT = GTRegistries
-            .register(
-                    BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("rubber_tree_chance"),
-                    () -> RubberTreeChancePlacement.CODEC);
+    public static final PlacementModifierType<RubberTreeChancePlacement> RUBBER_TREE_CHANCE_PLACEMENT = () -> RubberTreeChancePlacement.CODEC;
 
     public static final RubberTreeChancePlacement INSTANCE = new RubberTreeChancePlacement();
     public static final Codec<RubberTreeChancePlacement> CODEC = Codec.unit(INSTANCE);

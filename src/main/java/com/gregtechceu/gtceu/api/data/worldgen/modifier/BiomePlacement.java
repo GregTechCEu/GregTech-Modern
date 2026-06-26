@@ -18,8 +18,7 @@ import java.util.stream.Stream;
 
 public class BiomePlacement extends PlacementModifier {
 
-    public static final PlacementModifierType<BiomePlacement> BIOME_PLACEMENT = GTRegistries.register(
-            BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("biome_placement"), () -> BiomePlacement.CODEC);
+    public static final PlacementModifierType<BiomePlacement> BIOME_PLACEMENT = () -> BiomePlacement.CODEC;
 
     public static final Codec<BiomePlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
             .xmap(BiomePlacement::new, placement -> placement.modifiers).codec();

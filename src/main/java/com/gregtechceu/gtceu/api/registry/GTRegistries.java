@@ -53,6 +53,7 @@ public final class GTRegistries {
 
     private GTRegistries() {}
 
+    // spotless:off
     public static final class Keys {
         private Keys() {}
 
@@ -95,8 +96,6 @@ public final class GTRegistries {
 
     }
 
-    // spotless:off
-
     // Material related registries
 
     public static final MaterialRegistry MATERIALS = makeRegistry(Keys.MATERIAL, new MaterialRegistry());
@@ -129,39 +128,6 @@ public final class GTRegistries {
     public static final MappedRegistry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
     public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
 
-    public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
-    public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
-    public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister.create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
-
-    // spotless:on
-
-    public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
-        ResourceKey<?> registryKey = registry.key();
-        if (registryKey == Registries.RECIPE_TYPE) {
-            ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
-        } else if (registryKey == Registries.RECIPE_SERIALIZER) {
-            ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);
-        } else if (registryKey == Registries.FEATURE) {
-            ForgeRegistries.FEATURES.register(name, (Feature<?>) value);
-        } else if (registryKey == Registries.FOLIAGE_PLACER_TYPE) {
-            ForgeRegistries.FOLIAGE_PLACER_TYPES.register(name, (FoliagePlacerType<?>) value);
-        } else if (registryKey == Registries.TRUNK_PLACER_TYPE) {
-            TRUNK_PLACER_TYPE.register(name.getPath(), () -> (TrunkPlacerType<?>) value);
-        } else if (registryKey == Registries.PLACEMENT_MODIFIER_TYPE) {
-            PLACEMENT_MODIFIER.register(name.getPath(), () -> (PlacementModifierType<?>) value);
-        } else {
-            return Registry.register(registry, name, value);
-        }
-
-        return value;
-    }
-
-    public static void init(IEventBus eventBus) {
-        TRUNK_PLACER_TYPE.register(eventBus);
-        PLACEMENT_MODIFIER.register(eventBus);
-        GLOBAL_LOOT_MODIFIES.register(eventBus);
-    }
-
     private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);
     }
@@ -177,8 +143,7 @@ public final class GTRegistries {
         return registry;
     }
 
-    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-    private static RegistryAccess FROZEN = BLANK;
+    private static RegistryAccess FROZEN = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
 
     /**
      * You shouldn't call it, you should probably not even look at it just to be extra safe

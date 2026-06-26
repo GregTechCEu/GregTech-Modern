@@ -23,6 +23,8 @@ import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
+import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
@@ -72,6 +74,14 @@ public class GTPlaceholders {
     public static void init(IEventBus modBus) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
         PLACEHOLDERS.register(modBus);
+
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init(modBus);
+        }
+
+        if (GTCEu.Mods.isCCTweakedLoaded()) {
+            CCTweakedPlugin.initPlaceholders(modBus);
+        }
     }
 
     public static final RegistryObject<Placeholder> ENERGY = PLACEHOLDERS.register("energy",

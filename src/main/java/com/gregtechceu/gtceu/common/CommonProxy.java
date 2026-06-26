@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifiers;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
@@ -48,7 +49,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
-import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
@@ -111,12 +111,8 @@ public class CommonProxy {
         }
 
 
-        GTRegistries.init(eventBus);
         REGISTRATE.registerEventListeners(eventBus);
-
         init(eventBus);
-
-
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
 
@@ -132,6 +128,7 @@ public class CommonProxy {
 
         GTValueProviderTypes.init(modBus);
         GTFeatures.init(modBus);
+        GTPlacementModifiers.init(modBus);
         GTCommandArguments.init(modBus);
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
@@ -154,14 +151,6 @@ public class CommonProxy {
 
         if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
             GTCreateIntegration.init(modBus);
-        }
-
-        if (GTCEu.Mods.isAE2Loaded()) {
-            GTAEPlaceholders.init(modBus);
-        }
-
-        if (GTCEu.Mods.isCCTweakedLoaded()) {
-            CCTweakedPlugin.initPlaceholders(modBus);
         }
 
         GTCovers.init(modBus);
@@ -192,7 +181,6 @@ public class CommonProxy {
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 
-        GTFeatures.init();
         CustomBlockRotations.init();
         KeyBind.init();
         SyncedKeyMappings.init();
@@ -281,7 +269,7 @@ public class CommonProxy {
     @SubscribeEvent
     public void onRegister(RegisterEvent event) {
         if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
-            ChestGenHooks.RandomWeightLootFunction.init();
+            event.register(Registries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), () -> ChestGenHooks.RandomWeightLootFunction.TYPE);
     }
 
     @SubscribeEvent
