@@ -169,12 +169,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
                 (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
                 false);
-        GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
-
-        GTRegistryInfo.TAG_PREFIX.addType("basic", BasicTagPrefixBuilder.class, BasicTagPrefixBuilder::new, true);
-        GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new, false);
-        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarker.Builder.class, DimensionMarker.Builder::new,
-               true);*/
+    */
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
