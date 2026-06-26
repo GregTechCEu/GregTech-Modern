@@ -15,20 +15,16 @@ public class MultiPredicate extends BasePredicate {
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
     private final List<List<BlockInfo>> indexedCandidates;
     private final String debugName;
-    private @Nullable Logic type;
-    private boolean hasAir = false;
-
-    public MultiPredicate(@Nullable String debugName) {
-        this.debugName = debugName == null ? "MultiPredicate" : debugName;
-        this.indexedCandidates = Collections.emptyList();
-    }
+    private final Logic type;
+    private final boolean hasAir;
 
     protected MultiPredicate(@Nullable String debugName, Iterable<BasePredicate> predicates, Logic type) {
         this.debugName = debugName == null ? "MultiPredicate" : debugName;
         this.type = type;
+        boolean hasAir = false;
         List<List<BlockInfo>> indexedCandidates = new ArrayList<>();
         for (BasePredicate predicate : predicates) {
-            this.hasAir |= predicate.hasAir();
+            hasAir |= predicate.hasAir();
             if (!(predicate instanceof MultiPredicate multi)) {
                 addPredicates(predicate);
                 indexedCandidates.add(predicate.getCandidates());
@@ -41,6 +37,7 @@ public class MultiPredicate extends BasePredicate {
             }
         }
         this.indexedCandidates = Collections.unmodifiableList(indexedCandidates);
+        this.hasAir = hasAir;
         sorted();
     }
 
@@ -110,10 +107,6 @@ public class MultiPredicate extends BasePredicate {
         return this.type == Logic.AND;
     }
 
-    public boolean isValid() {
-        return isSingle() || this.type != null;
-    }
-
     protected Logic getType() {
         return Objects.requireNonNull(type, "null type: " + this);
     }
@@ -138,8 +131,6 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public MultiPredicate or(BasePredicate other) {
-        if (!isValid()) this.type = Logic.OR;
-
         if (!(other instanceof MultiPredicate multi)) {
             return this.copy().addPredicates(other).sorted();
         }
@@ -151,8 +142,6 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public MultiPredicate and(BasePredicate other) {
-        if (!isValid()) this.type = Logic.AND;
-
         if (!(other instanceof MultiPredicate multi)) {
             return this.copy().addPredicates(other).sorted();
         }
@@ -169,10 +158,7 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public String getTypeName() {
-        return debugName +
-                '(' +
-                (isValid() ? isSingle() ? "SINGLE" : this.type : "INVAlID") +
-                ')';
+        return debugName + '(' + (isSingle() ? "SINGLE" : this.type) + ')';
     }
 
     @Override
@@ -182,10 +168,10 @@ public class MultiPredicate extends BasePredicate {
         builder.append(joiner);
     }
 
+    /// @param a will have type set
+    /// @param b will have type set
+    /// @param dest output predicate
     private static MultiPredicate combine(MultiPredicate a, MultiPredicate b, MultiPredicate dest) {
-        if (!b.isValid()) {
-            b.type = a.getType();
-        }
         if (a.getType() == b.getType()) {
             dest.addPredicates(b.predicateList);
         } else {
