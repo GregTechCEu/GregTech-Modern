@@ -9,7 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class MultiPredicate extends BasePredicate {
 
@@ -169,19 +168,18 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public StringBuilder appendType(StringBuilder builder) {
-        builder.append(debugName)
-                .append('(')
-                .append(isValid() ? isSingle() ? "SINGLE" : this.type : "INVAlID")
-                .append(')');
-        return builder;
+    public String getTypeName() {
+        return debugName +
+                '(' +
+                (isValid() ? isSingle() ? "SINGLE" : this.type : "INVAlID") +
+                ')';
     }
 
     @Override
-    protected StringBuilder appendContents(StringBuilder builder) {
+    protected void appendContents(StringBuilder builder) {
         StringJoiner joiner = new StringJoiner(", ");
         this.predicateList.forEach(p -> joiner.add(p.toString()));
-        return builder.append(joiner);
+        builder.append(joiner);
     }
 
     private static MultiPredicate combine(MultiPredicate a, MultiPredicate b, MultiPredicate dest) {

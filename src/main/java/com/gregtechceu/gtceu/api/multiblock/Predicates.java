@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -71,13 +70,13 @@ public class Predicates {
             }
 
             @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("Controller");
+            public String getTypeName() {
+                return "Controller";
             }
 
             @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
-                return builder.append(predicate);
+            protected void appendContents(StringBuilder builder) {
+                builder.append(predicate);
             }
 
             @Override
@@ -101,7 +100,7 @@ public class Predicates {
         }
         return customPredicate(debugName,
                 ctx -> states.contains(ctx.state()) || ctx.error(PLACEHOLDER),
-                () -> states.stream().map(BlockInfo::fromBlockState),
+                states.stream().map(BlockInfo::fromBlockState),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
                     states.forEach(state -> joiner.add(blockToString(state)));
@@ -112,7 +111,7 @@ public class Predicates {
     public static BasePredicate blocks(Block block) {
         return customPredicate("Block",
                 ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
-                () -> Stream.of(BlockInfo.fromBlock(block)),
+                Stream.of(BlockInfo.fromBlock(block)),
                 builder -> builder.append(blockToString(block)));
     }
 
@@ -138,7 +137,7 @@ public class Predicates {
                 if (ctx.state().is(block)) return true;
             }
             return ctx.error(new BlockMatchingError(ctx.pos(), blockList));
-        }, () -> candidates.get().map(BlockInfo::fromBlock), builder -> {
+        }, candidates.get().map(BlockInfo::fromBlock), builder -> {
             StringJoiner joiner = new StringJoiner(", ");
             blocks.get().forEach(block -> joiner.add(blockToString(block)));
             builder.append(joiner);
@@ -163,7 +162,7 @@ public class Predicates {
     public static BasePredicate blockTag(TagKey<Block> tag) {
         return customPredicate("BlockTag",
                 ctx -> ctx.state().is(tag),
-                () -> Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
+                Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
                         .getTag(tag).stream()
                         .map(BlockInfo::fromBlock),
                 builder -> builder.append(tag.location()));
@@ -172,7 +171,7 @@ public class Predicates {
     public static BasePredicate fluids(Fluid... fluids) {
         return customPredicate("Fluids",
                 ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
-                () -> Arrays.stream(fluids).map(BlockInfo::fromFluid),
+                Arrays.stream(fluids).map(BlockInfo::fromFluid),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
                     for (Fluid fluid : fluids) {
@@ -187,7 +186,7 @@ public class Predicates {
     public static BasePredicate fluidTag(TagKey<Fluid> tag) {
         return customPredicate("FluidTag",
                 ctx -> ctx.fluidState().is(tag),
-                () -> Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
+                Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
                         .getTag(tag).stream()
                         .map(BlockInfo::fromFluid),
                 builder -> builder.append(tag.location()));
@@ -198,25 +197,25 @@ public class Predicates {
         return customPredicate(ctx -> {
             PatternError error = predicate.apply(ctx.blockInfo());
             return error == null || ctx.error(error);
-        }, Optional.ofNullable(candidates).orElse(Collections.emptyList())::stream);
+        }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
     }
 
     public static BasePredicate customPredicate(Predicate<PredicateContext> predicate,
-                                                Supplier<Stream<BlockInfo>> candidates) {
+                                                Stream<BlockInfo> candidates) {
         return customPredicate(null, predicate, candidates);
     }
 
     public static BasePredicate customPredicate(@Nullable String debugName,
                                                 Predicate<PredicateContext> predicate,
-                                                Supplier<Stream<BlockInfo>> candidates) {
+                                                Stream<BlockInfo> candidates) {
         return customPredicate(debugName, predicate, candidates, null);
     }
 
     public static BasePredicate customPredicate(@Nullable String debugName,
                                                 Predicate<PredicateContext> predicate,
-                                                Supplier<Stream<BlockInfo>> candidates,
+                                                Stream<BlockInfo> candidates,
                                                 @Nullable Consumer<StringBuilder> contents) {
-        return BasePredicate.create(debugName, predicate, candidates.get(), contents);
+        return BasePredicate.create(debugName, predicate, candidates, contents);
     }
 
     public static BasePredicate any() {
@@ -231,7 +230,7 @@ public class Predicates {
         return customPredicate("Ability",
                 ctx -> ability.isApplicable(ctx.state().getBlock()) ||
                         ctx.error(new PartAbilityError(ctx.pos(), ability)),
-                () -> ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
+                ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
                 builder -> builder.append(ability.getName()));
     }
 
@@ -246,7 +245,7 @@ public class Predicates {
                     }
                     return false;
                 },
-                () -> Arrays.stream(abilities)
+                Arrays.stream(abilities)
                         .flatMap(a -> a.getAllBlocks().stream())
                         .map(BlockInfo::fromBlock),
                 builder -> {
@@ -266,7 +265,7 @@ public class Predicates {
         return customPredicate("Ability[" + sb + "]",
                 ctx -> ability.isApplicable(ctx.state().getBlock()) ||
                         ctx.error(new PartAbilityError(ctx.pos(), ability)),
-                () -> ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
+                ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
     public static BasePredicate autoAbilities(GTRecipeType... recipeType) {
@@ -425,6 +424,6 @@ public class Predicates {
             }
             return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
                     ctx.error(PLACEHOLDER);
-        }, () -> Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
+        }, Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
     }
 }

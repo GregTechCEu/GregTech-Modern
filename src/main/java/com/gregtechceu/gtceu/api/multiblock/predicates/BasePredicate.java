@@ -191,25 +191,19 @@ public abstract class BasePredicate {
         return Collections.unmodifiableList(result);
     }
 
-    public String getTypeName() {
-        return appendType(new StringBuilder()).toString();
-    }
-
     /// the type of this predicate
-    public abstract StringBuilder appendType(StringBuilder builder);
+    public abstract String getTypeName();
 
     /// the contents of this predicate
-    protected StringBuilder appendContents(StringBuilder builder) {
-        return builder;
-    }
+    protected void appendContents(StringBuilder builder) {}
 
     @Override
     public String toString() {
-        StringBuilder builder = appendType(new StringBuilder())
-                .append('{');
-        return appendContents(builder)
-                .append('}')
-                .toString();
+        StringBuilder builder = new StringBuilder(getTypeName());
+        builder.append('{');
+        appendContents(builder);
+        builder.append('}');
+        return builder.toString();
     }
 
     public BasePredicate or(BasePredicate other) {
@@ -263,16 +257,15 @@ public abstract class BasePredicate {
             }
 
             @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append(Objects.requireNonNullElse(debugName, "Predicate"));
+            public String getTypeName() {
+                return Objects.requireNonNullElse(debugName, "Predicate");
             }
 
             @Override
-            protected StringBuilder appendContents(StringBuilder builder) {
+            protected void appendContents(StringBuilder builder) {
                 if (contents != null) {
                     contents.accept(builder);
                 }
-                return builder;
             }
         };
     }

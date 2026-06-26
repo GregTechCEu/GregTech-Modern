@@ -473,7 +473,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     protected static BasePredicate doorPredicate() {
         return Predicates.customPredicate(
                 ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
-                () -> Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
+                Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
                         new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
                                 .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
@@ -483,32 +483,18 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     protected static BasePredicate innerPredicate() {
-        return new BasePredicate() {
-
-            @Override
-            public boolean testInternal(PredicateContext ctx) {
-                // all non-GTMachines are allowed inside by default
-                BlockEntity blockEntity = ctx.blockEntity();
-                if (blockEntity instanceof MetaMachine machine) {
-                    if (isMachineBanned(machine)) {
-                        return ctx.error(Predicates.PLACEHOLDER);
-                    }
-                    // todo do this in structure form not in the predicate
-                    // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
+        return BasePredicate.create("InnerPredicate", ctx -> {
+            // all non-GTMachines are allowed inside by default
+            BlockEntity blockEntity = ctx.blockEntity();
+            if (blockEntity instanceof MetaMachine machine) {
+                if (isMachineBanned(machine)) {
+                    return ctx.error(Predicates.PLACEHOLDER);
                 }
-                return true;
+                // todo do this in structure form not in the predicate
+                // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
             }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return List.of();
-            }
-
-            @Override
-            public StringBuilder appendType(StringBuilder builder) {
-                return builder.append("InnerPredicate");
-            }
-        };
+            return true;
+        });
     }
 
     protected static boolean isMachineBanned(MetaMachine machine) {

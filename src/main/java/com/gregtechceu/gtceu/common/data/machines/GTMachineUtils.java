@@ -670,11 +670,13 @@ public class GTMachineUtils {
                                         IntStream.of(ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV)
                                                 .filter(t -> t >= tier)
                                                 .toArray())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                                                GTValues.VN[tier])))
+//                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
+//                                                GTValues.VN[tier]))
+                        )
                         .where('A',
                                 blocks(intake.get())
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
+//                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1"))
+                        )
                         .where('Y', controller(blocks(definition.getBlock())))
                         .build())
                 .recoveryItems(
@@ -749,11 +751,12 @@ public class GTMachineUtils {
                 return true;
             }
             return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
-        }, () -> PartAbility.ROTOR_HOLDER.getAllBlocks()
+        }, PartAbility.ROTOR_HOLDER.getAllBlocks()
                 .stream()
                 .map(BlockInfo::fromBlock))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]));
+//                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+//                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1", VN[tier]))
+                ;
     }
 
     // Tooltips
