@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.recipe.condition;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -62,7 +62,7 @@ public class BiomeTagCondition extends RecipeCondition<BiomeTagCondition> {
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
         if (level == null) return false;
-        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
+        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getBlockPos());
         return biome.is(this.biome);
     }
 

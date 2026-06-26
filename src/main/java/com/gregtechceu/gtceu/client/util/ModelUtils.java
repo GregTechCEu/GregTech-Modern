@@ -17,7 +17,6 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -31,8 +30,6 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.model.data.ModelData;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,13 +91,8 @@ public class ModelUtils {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void registerReloadListener(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(new ResourceManagerReloadListener() {
-
-            @Override
-            public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-                EVENT_LISTENERS.removeIf(EventListenerHolder::removeOnReload);
-            }
-        });
+        event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> EVENT_LISTENERS
+                .removeIf(EventListenerHolder::removeOnReload));
     }
 
     @SuppressWarnings({ "unchecked", "deprecation" })

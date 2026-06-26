@@ -171,7 +171,7 @@ public class GTStringUtils {
 
     public static void append(List<MutableComponent> components, @Nullable String s) {
         if (s != null)
-            GTUtil.getLast(components).append(s);
+            components.getLast().append(s);
     }
 
     public static void append(List<MutableComponent> components, char c) {
@@ -182,7 +182,7 @@ public class GTStringUtils {
         if (lines == null) return;
         if (lines.isEmpty()) return;
         for (Component line : lines) {
-            GTUtil.getLast(components).append(line);
+            components.getLast().append(line);
             components.add(MutableComponent.create(PlainTextContents.EMPTY));
         }
         components.remove(components.size() - 1);

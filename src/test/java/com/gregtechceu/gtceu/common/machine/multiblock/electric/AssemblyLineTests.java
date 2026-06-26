@@ -20,9 +20,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.TestHolder;
 
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
@@ -60,32 +60,24 @@ public class AssemblyLineTests {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 3, 0)));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(0, 3, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(ASSLINE_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 1)));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 1)));
-        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 1)));
-        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(3, 1, 1)));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(4, 1, 1)));
-        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 1, 0)));
-        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(3, 1, 0)));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 1));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 1));
+        ItemBusPartMachine inputBus3 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 1));
+        ItemBusPartMachine inputBus4 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 1));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(4, 1, 1));
+        FluidHatchPartMachine inputHatch1 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        FluidHatchPartMachine inputHatch2 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(1, 1, 0));
+        FluidHatchPartMachine inputHatch3 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        FluidHatchPartMachine inputHatch4 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(3, 1, 0));
         return new BusHolder(inputBus1, inputBus2, inputBus3, inputBus4,
                 inputHatch1, inputHatch2, inputHatch3, inputHatch4, outputBus1, controller);
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
     public static void AsslineRecipeRunsTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -102,6 +94,7 @@ public class AssemblyLineTests {
         });
     }
 
+    @TestHolder()
     @GameTest(template = "ass_line_4aev_4in", batch = "Assline")
     public static void AsslineRecipeDoesntRunWhenItemsMovedByOneTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

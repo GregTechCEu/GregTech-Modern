@@ -7,14 +7,13 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -28,22 +27,19 @@ import org.jetbrains.annotations.NotNull;
 
 public class FluidRegulatorCover extends PumpCover {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidRegulatorCover.class,
-            PumpCover.MANAGED_FIELD_HOLDER);
-
     private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private TransferMode transferMode = TransferMode.TRANSFER_ANY;
 
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted
-    @DescSynced
+    @SaveField
+    @SyncToClient
     @Getter
     protected int globalTransferLimit;
     protected int fluidTransferBuffered = 0;
@@ -58,11 +54,6 @@ public class FluidRegulatorCover extends PumpCover {
 
     public FluidRegulatorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide, int tier) {
         this(definition, coverHolder, attachedSide, tier, PUMP_SCALING.applyAsInt(tier));
-    }
-
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
     }
 
     //////////////////////////////////////
@@ -107,7 +98,7 @@ public class FluidRegulatorCover extends PumpCover {
                 continue;
 
             int insertableAmount = destination.fill(drained.copy(), FluidAction.SIMULATE);
-            if (insertableAmount <= 0)
+            if (insertableAmount != supplyAmount)
                 continue;
 
             drained.setAmount(insertableAmount);
@@ -162,7 +153,7 @@ public class FluidRegulatorCover extends PumpCover {
         var newMultiplier = transferBucketMode.multiplier;
 
         this.transferBucketMode = transferBucketMode;
-
+        syncDataHolder.markClientSyncFieldDirty("transferBucketMode");
         if (transferSizeInput == null) return;
 
         if (oldMultiplier > newMultiplier) {
@@ -180,6 +171,7 @@ public class FluidRegulatorCover extends PumpCover {
         configureTransferSizeInput();
 
         if (!this.isRemote()) {
+            syncDataHolder.markClientSyncFieldDirty("transferMode");
             configureFilter();
         }
     }
@@ -233,6 +225,7 @@ public class FluidRegulatorCover extends PumpCover {
     private void setCurrentBucketModeTransferSize(int transferSize) {
         this.globalTransferLimit = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
                 MAX_STACK_SIZE);
+        syncDataHolder.markClientSyncFieldDirty("globalTransferLimit");
     }
 
     private void configureTransferSizeInput() {

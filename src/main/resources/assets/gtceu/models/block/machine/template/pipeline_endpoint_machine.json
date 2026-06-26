@@ -2,10 +2,13 @@
   "parent": "block/block",
   "textures": {
     "particle": "#side",
+    "bottom": "gtceu:block/casings/voltage/lv/bottom",
+    "top": "gtceu:block/casings/voltage/lv/top",
+    "side": "gtceu:block/casings/voltage/lv/side",
 
     "pipe": "gtceu:block/overlay/machine/overlay_pipe",
-    "overlay_pipe_in_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
-    "overlay_pipe_out_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
+    "overlay_front_emissive": "gtceu:block/overlay/machine/overlay_pipe_in_emissive",
+    "overlay_back_emissive": "gtceu:block/overlay/machine/overlay_pipe_out_emissive"
   },
   "elements": [
     {
@@ -34,10 +37,10 @@
       "faces": {
         "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_hatch_in",  "rotation": 0,   "cullface": "north" },
         "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_hatch_out", "rotation": 0,   "cullface": "south" },
-        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_side",  "rotation": 180,   "cullface": "up"    },
-        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",  "rotation": 0, "cullface": "down"  },
-        "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",  "rotation": 90,  "cullface": "west"  },
-        "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",  "rotation": 270, "cullface": "east"  }
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_side",      "rotation": 180, "cullface": "up"    },
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",      "rotation": 0,   "cullface": "down"  },
+        "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",      "rotation": 90,  "cullface": "west"  },
+        "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side",      "rotation": 270, "cullface": "east"  }
       }
     },
     {
@@ -46,12 +49,12 @@
       "neoforge_data": { "block_light": 15, "sky_light": 15 },
       "shade": false,
       "faces": {
-        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "rotation": 180,   "cullface": "up",    "tintindex": -101 },
-        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "rotation": 0, "cullface": "down",  "tintindex": -101 },
-        "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "rotation": 90,  "cullface": "west",  "tintindex": -101 },
-        "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive", "rotation": 270, "cullface": "east",  "tintindex": -101 },
-        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_in_emissive",                           "cullface": "north", "tintindex": -101 },
-        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe_out_emissive",                          "cullface": "south", "tintindex": -101 }
+        "up":    { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",  "rotation": 180, "cullface": "up",    "tintindex": -101 },
+        "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",  "rotation": 0,   "cullface": "down",  "tintindex": -101 },
+        "west":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",  "rotation": 90,  "cullface": "west",  "tintindex": -101 },
+        "east":  { "uv": [0, 0, 16, 16], "texture": "#overlay_side_emissive",  "rotation": 270, "cullface": "east",  "tintindex": -101 },
+        "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front_emissive",                  "cullface": "north", "tintindex": -101 },
+        "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back_emissive",                   "cullface": "south", "tintindex": -101 }
       }
     }
   ]

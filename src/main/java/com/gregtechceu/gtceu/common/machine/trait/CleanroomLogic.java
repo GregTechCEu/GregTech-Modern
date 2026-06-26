@@ -5,12 +5,11 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.machine.trait.CleanroomProviderTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
-
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -22,8 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class CleanroomLogic extends RecipeLogic implements IWorkable {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomLogic.class,
-            RecipeLogic.MANAGED_FIELD_HOLDER);
     public static final int BASE_CLEAN_AMOUNT = 2;
     @Setter
     @Nullable
@@ -36,7 +33,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
      */
     @Getter
     @Setter
-    @Persisted
+    @SaveField
     private boolean isActiveAndNeedsUpdate;
 
     public CleanroomLogic(CleanroomMachine machine) {
@@ -48,11 +45,6 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         return (CleanroomMachine) machine;
     }
 
-    @Override
-    public ManagedFieldHolder getFieldHolder() {
-        return MANAGED_FIELD_HOLDER;
-    }
-
     /**
      * Performs the actual cleaning
      * Call this method every tick in update
@@ -62,7 +54,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         if (duration > 0) {
             EnvironmentalHazardSavedData environmentalHazards = EnvironmentalHazardSavedData
                     .getOrCreate((ServerLevel) this.getMachine().getLevel());
-            var zone = environmentalHazards.getZoneByContainedPos(getMachine().getPos());
+            var zone = environmentalHazards.getZoneByContainedPos(getMachine().getBlockPos());
             // all maintenance problems not being fixed or there are environmental hazards in the area
             // means the machine does not run
             if (maintenanceMachine == null || maintenanceMachine.getNumMaintenanceProblems() < 6 || zone != null) {
@@ -121,11 +113,12 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     }
 
     protected boolean consumeEnergy() {
-        var cleanroom = getMachine();
+        var cleanroomTrait = getMachine().getTraitHolder().getTrait(CleanroomProviderTrait.TYPE);
+        if (cleanroomTrait == null) return false;
         // clamp to max for VA indexing
-        var tier = Mth.clamp(cleanroom.getTier(), GTValues.ULV, GTValues.MAX);
+        var tier = Mth.clamp(getMachine().getTier(), GTValues.ULV, GTValues.MAX);
         // use 3/16th an amp when fully clean otherwise 15/16th an amp during cleaning
-        long energyToDrain = cleanroom.isClean() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
+        long energyToDrain = cleanroomTrait.isActive() ? Math.max(8, (3 * GTValues.V[tier] / 16)) :
                 GTValues.VA[tier];
         if (energyContainer != null) {
             long resultEnergy = energyContainer.getEnergyStored() - energyToDrain;

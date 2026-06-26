@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.integration.jei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.worldgen.OreVeinDefinition;
-import com.gregtechceu.gtceu.data.item.GTItems;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTOreVeinWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -29,9 +29,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<OreVeinDefinition>> {
+public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<GTOreDefinition>> {
 
-    public final static RecipeType<Holder<OreVeinDefinition>> RECIPE_TYPE = new RecipeType(GTCEu.id("ore_vein_diagram"),
+    public final static RecipeType<Holder<GTOreDefinition>> RECIPE_TYPE = new RecipeType(GTCEu.id("ore_vein_diagram"),
             Holder.class);
     @Getter
     private final IDrawable background;
@@ -51,12 +51,12 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<OreVei
                 .registryOrThrow(GTRegistries.ORE_VEIN_REGISTRY);
         registry.addRecipes(RECIPE_TYPE, ores.holders()
                 .filter(ore -> ore.value().canGenerate())
-                .<Holder<OreVeinDefinition>>map(Function.identity())
+                .<Holder<GTOreDefinition>>map(Function.identity())
                 .toList());
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, Holder<OreVeinDefinition> definition, IFocusGroup focuses) {
+    public void setRecipe(IRecipeLayoutBuilder builder, Holder<GTOreDefinition> definition, IFocusGroup focuses) {
         super.setRecipe(builder, definition, focuses);
         builder.addInvisibleIngredients(RecipeIngredientRole.OUTPUT)
                 .addItemStacks(GTOreVeinWidget.getContainedOresAndBlocks(definition.value()));
@@ -70,7 +70,7 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<Holder<OreVei
 
     @NotNull
     @Override
-    public RecipeType<Holder<OreVeinDefinition>> getRecipeType() {
+    public RecipeType<Holder<GTOreDefinition>> getRecipeType() {
         return RECIPE_TYPE;
     }
 

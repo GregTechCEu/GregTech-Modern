@@ -1,18 +1,14 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -22,9 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -43,7 +37,6 @@ import com.tterrag.registrate.util.entry.RegistryEntry;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -173,33 +166,31 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION, ?> machine(String name,
                                                                                         Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        Function<IMachineBlockEntity, MetaMachine> metaMachine,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory,
-                                                                                        BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory, metaMachine,
+                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                        Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, definitionFactory,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MachineBuilder<MachineDefinition, ?> machine(String name,
-                                                        Function<IMachineBlockEntity, MetaMachine> metaMachine) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new, metaMachine,
-                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
+                                                        Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, MachineDefinition::new,
+                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder<MultiblockMachineDefinition, ?> multiblock(String name,
-                                                                               Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine,
-                                                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, IMachineBlock> blockFactory,
-                                                                               BiFunction<IMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                               TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, metaMachine,
+                                                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
     public MultiblockMachineBuilder<MultiblockMachineDefinition, ?> multiblock(String name,
-                                                                               Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        return new MultiblockMachineBuilder<>(this, name, metaMachine,
-                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::new);
+                                                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
+                blockEntityFactory);
     }
 
     public SoundEntryBuilder sound(String name) {

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.EntityTypeTags;

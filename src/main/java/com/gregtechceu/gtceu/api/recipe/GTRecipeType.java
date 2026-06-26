@@ -5,13 +5,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.common.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -49,6 +47,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Setter(onMethod_ = { @ApiStatus.Internal })
     public GTRecipeSerializer serializer;
 
+    @Getter
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntSortedMap<RecipeCapability<?>> maxInputs = new Object2IntAVLTreeMap<>(
@@ -90,8 +89,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeCategory category;
     @Getter
     private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
-    @Getter
-    private final GTRecipeLookup lookup = new GTRecipeLookup(this);
     private final RecipeDB db = new RecipeDB();
     @ApiStatus.Internal
     @Getter
@@ -351,6 +348,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public @NotNull RecipeDB db() {
         return db;
+    }
+
+    @ApiStatus.Internal
+    public void beginStagingRecipes() {
+        categoryMap.clear();
+        additionHandler.beginStaging();
     }
 
     public interface ICustomRecipeLogic {

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
 import net.minecraft.core.BlockPos;
@@ -20,6 +20,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.neoforged.testframework.annotation.ForEachTest;
+import net.neoforged.testframework.annotation.TestHolder;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CalculationStrategy;
@@ -34,10 +36,9 @@ import appeng.parts.encoding.PatternEncodingTerminalPart;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import static com.gregtechceu.gtceu.gametest.util.TestUtils.getMetaMachine;
-
 @PrefixGameTestTemplate(false)
 @GameTestHolder(GTCEu.MOD_ID)
+@ForEachTest
 public class PatternBufferTest {
 
     private static GTRecipeType LCR_RECIPE_TYPE;
@@ -68,30 +69,26 @@ public class PatternBufferTest {
      * @return the busses, in the BusHolder record.
      */
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
-        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(1, 2, 0)));
+        WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(1, 2, 0));
+        assert controller != null;
         TestUtils.formMultiblock(controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
-        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 1, 0)));
-        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 0)));
-        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 2, 0)));
-        MEPatternBufferPartMachine patternBuffer = (MEPatternBufferPartMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(2, 2, 1)));
-        patternBuffer.getTerminalPatternInventory().setItemDirect(0,
-                patternBuffer.getTerminalPatternInventory().getStackInSlot(0));
+        ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
+        ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 2, 0));
+        ItemBusPartMachine outputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));
+        FluidHatchPartMachine outputHatch1 = (FluidHatchPartMachine) helper.getBlockEntity(new BlockPos(0, 2, 0));
+        MEPatternBufferPartMachine patternBuffer = (MEPatternBufferPartMachine) helper
+                .getBlockEntity(new BlockPos(2, 2, 1));
         return new BusHolder(inputBus1, inputBus2, outputBus1, outputHatch1, patternBuffer, controller);
     }
 
     // Test for putting ingredient on the normal input bus when the pattern buffer exists on machine
+    @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferNormalInputBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
-        busHolder.patternBuffer.getPatternInventory().onContentsChanged(0);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE));
         helper.succeedWhen(() -> {
             helper.assertTrue(
@@ -103,10 +100,12 @@ public class PatternBufferTest {
     }
 
     // Test for checking if pattern buffers work at all
+    @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
-        busHolder.patternBuffer.getPatternInventory().onContentsChanged(0);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
 
         IGrid grid = busHolder.patternBuffer.getGrid();
 
@@ -149,10 +148,11 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDistinctDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setDistinct(true);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
-
         ICraftingService craftingService = grid.getCraftingService();
 
         CableBusBlockEntity cbbe = (CableBusBlockEntity) helper.getBlockEntity(new BlockPos(3, 2, 1));
@@ -193,13 +193,14 @@ public class PatternBufferTest {
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferDyeingDoesNothingTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
+        busHolder.patternBuffer.onPatternChange(0); // Jank forced pattern update, likely needed because of NBT
+                                                    // placement structure bug
         busHolder.patternBuffer.setPaintingColor(0xff);
 
         IGrid grid = busHolder.patternBuffer.getGrid();
-
         ICraftingService craftingService = grid.getCraftingService();
 
-        CableBusBlockEntity cbbe = (CableBusBlockEntity) helper.getBlockEntity(new BlockPos(3, 2, 1));
+        CableBusBlockEntity cbbe = helper.getBlockEntity(new BlockPos(3, 2, 1));
         PatternEncodingTerminalPart terminal = (PatternEncodingTerminalPart) cbbe.getCableBus()
                 .getPart(Direction.NORTH);
 

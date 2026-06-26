@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.GrowingPlantBlockAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntegerPropertyAccessor;
 import com.gregtechceu.gtceu.core.mixins.StemBlockAccessor;
-import com.gregtechceu.gtceu.data.tag.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
@@ -94,7 +94,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
     @Override
     public AABB getRenderBoundingBox(IRecipeLogicMachine machine) {
-        final BlockPos pos = machine.self().getPos();
+        final BlockPos pos = machine.self().getBlockPos();
 
         List<BlockPos> positions = new ArrayList<>();
         Collections.addAll(positions, pos.offset(-1, 0, -1), pos.offset(2, 2, 2));
@@ -145,7 +145,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
         MetaMachine machine = rlm.self();
         Level level = machine.getLevel();
         assert level != null;
-        BlockPos machinePos = machine.getPos();
+        BlockPos machinePos = machine.getBlockPos();
 
         var statesToDraw = mode.renderFunction().configureState(level, state, progress);
 

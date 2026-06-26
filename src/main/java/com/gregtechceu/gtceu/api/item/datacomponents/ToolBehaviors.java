@@ -10,6 +10,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collections;
@@ -44,7 +45,7 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
         return behaviors.containsKey(type);
     }
 
-    public <T extends IToolBehavior<T>> T getBehavior(ToolBehaviorType<T> type) {
+    public <T extends IToolBehavior<T>> @Nullable T getBehavior(ToolBehaviorType<T> type) {
         return (T) this.behaviors.get(type);
     }
 

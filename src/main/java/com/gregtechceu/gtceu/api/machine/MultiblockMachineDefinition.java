@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
-import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -52,10 +51,10 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter;
     @Getter
     @Setter
-    private TriFunction<IMultiController, IMultiPart, Direction, BlockState> partAppearance;
+    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
     @Getter
     @Setter
-    private BiConsumer<IMultiController, List<Component>> additionalDisplay;
+    private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay;
 
     public MultiblockMachineDefinition(ResourceLocation id) {
         super(id);

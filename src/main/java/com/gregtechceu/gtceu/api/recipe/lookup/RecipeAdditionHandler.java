@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.api.recipe.kind.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.ApiStatus;
