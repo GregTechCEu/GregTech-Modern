@@ -53,7 +53,7 @@ public abstract class BasePredicate {
     protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
             .comparingInt(BasePredicate::getPriority);
     private @Nullable List<BlockInfo> candidates;
-    private @Nullable List<Component> tooltips;
+
     @Getter
     @Setter
     private int priority = 0;
@@ -188,51 +188,6 @@ public abstract class BasePredicate {
 
     public BasePredicate disabledRenderFormed() {
         return setDisableRenderFormed(true);
-    }
-
-    public List<Component> additionalTooltips() {
-        if (this.tooltips == null) {
-            this.tooltips = new ArrayList<>();
-        }
-        return this.tooltips;
-    }
-
-    public BasePredicate addTooltips(Component tooltip) {
-        this.additionalTooltips().add(tooltip);
-        return this;
-    }
-
-    public BasePredicate addTooltips(Component... tooltips) {
-        Collections.addAll(this.additionalTooltips(), tooltips);
-        return this;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public List<Component> getTooltips(@Nullable BasePredicate predicate) {
-        List<Component> result = new ArrayList<>();
-        if (tooltips != null) {
-            result.addAll(tooltips);
-        }
-        if (minCount == maxCount && maxCount != -1) {
-            result.add(Component.translatable("gtceu.multiblock.pattern.error.limited_exact", minCount));
-        } else if (minCount != maxCount && minCount != -1 && maxCount != -1) {
-            result.add(Component.translatable("gtceu.multiblock.pattern.error.limited_within", minCount, maxCount));
-        } else {
-            if (minCount != -1) {
-                result.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 1, minCount));
-            }
-            if (maxCount != -1) {
-                result.add(LangHandler.getFromMultiLang("gtceu.multiblock.pattern.error.limited", 0, maxCount));
-            }
-        }
-        if (predicate == null) return result;
-        if (predicate.isSingle()) {
-            result.add(Component.translatable("gtceu.multiblock.pattern.single"));
-        }
-        if (predicate.hasAir()) {
-            result.add(Component.translatable("gtceu.multiblock.pattern.replaceable_air"));
-        }
-        return result;
     }
 
     public List<ItemStack> getCandidateStacks() {

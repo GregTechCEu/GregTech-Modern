@@ -364,7 +364,7 @@ public class Predicates {
     public static BasePredicate heatingCoils() {
         return blocks("HeatingCoils",
                 () -> GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
+//                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
@@ -376,7 +376,8 @@ public class Predicates {
                         .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                         .map(entry -> entry.getValue().get()))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"));
+//                .addTooltips(Component.translatable("gtceu.multiblock.pattern.cleanroom"))
+                ;
     }
 
     public static BasePredicate powerSubstationBatteries() {
@@ -387,7 +388,8 @@ public class Predicates {
                         .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                         .map(e -> e.getValue().get()))
-                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+//                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"))
+                ;
     }
 
     public static @Nullable BasePredicate dataHatchPredicate() {
