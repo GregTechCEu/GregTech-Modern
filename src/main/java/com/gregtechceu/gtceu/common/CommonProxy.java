@@ -159,7 +159,6 @@ public class CommonProxy {
         GTMenuTypes.init(modBus);
 
         GTBlocks.init();
-        GTFluids.init();
         GTEntityTypes.init();
         GTSignBlockEntities.init();
         GTRecipeTypes.init(modBus);
@@ -258,6 +257,8 @@ public class CommonProxy {
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
 
+        } else if (event.getRegistryKey() == Registries.FLUID) {
+            GTFluids.init();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
         }
