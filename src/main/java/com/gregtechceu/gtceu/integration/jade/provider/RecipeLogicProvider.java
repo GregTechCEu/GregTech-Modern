@@ -46,6 +46,12 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
+        // Returns -1 if not a generator
+        long generatorPower = capability.getRLMachine().getDisplayGeneratorPower();
+        if (generatorPower > 0) {
+            recipeInfo.putLong("generatorPower", generatorPower);
+        }
+
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
@@ -115,6 +121,11 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                         tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
                     } else {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        long generatorPower = recipeInfo.getLong("generatorPower");
+                        if (generatorPower > 0 && generatorPower < EUt) {
+                            tooltip.add(Component.translatable("gtceu.jade.generator.too_small")
+                                    .withStyle(ChatFormatting.RED));
+                        }
                     }
                 }
             }

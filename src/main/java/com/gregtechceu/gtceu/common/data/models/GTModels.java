@@ -297,7 +297,7 @@ public class GTModels {
      * register fluid models for materials
      */
     public static void registerMaterialFluidModels() {
-        for (var material : GTRegistries.MATERIALS.values()) {
+        for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
             if (fluidProperty == null) continue;
             MaterialIconSet iconSet = material.getMaterialIconSet();

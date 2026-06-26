@@ -136,7 +136,7 @@ public interface GTRecipeSchema {
                         map.get(capability).length + obj.length > recipeType.getMaxInputs(capability)) {
                     ConsoleJS.SERVER.warn(String.format(
                             "Trying to add more inputs than RecipeType can support, id: %s, Max %s%sInputs: %s",
-                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxInputs(capability)));
+                            id, (perTick ? "Tick " : ""), capability.id, recipeType.getMaxInputs(capability)));
                 }
                 for (Object object : obj) {
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
@@ -161,7 +161,7 @@ public interface GTRecipeSchema {
                         map.get(capability).length + obj.length > recipeType.getMaxOutputs(capability)) {
                     ConsoleJS.SERVER.warn(String.format(
                             "Trying to add more outputs than RecipeType can support, id: %s, Max %s%sOutputs: %s",
-                            id, (perTick ? "Tick " : ""), capability.name, recipeType.getMaxOutputs(capability)));
+                            id, (perTick ? "Tick " : ""), capability.id, recipeType.getMaxOutputs(capability)));
                 }
                 for (Object object : obj) {
                     map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));

@@ -1,4 +1,6 @@
-# Synced Actions
+---
+title: Synced Actions
+---
 
 ```java
 public class MuiTestMachine extends MetaMachine implements IMuiMachine {

@@ -55,7 +55,7 @@ public class OreBlockRenderer {
     @ApiStatus.Internal
     public static void reinitModels() {
         // first set up all the stone types for all tag prefixes
-        for (MaterialIconSet iconSet : GTRegistries.MATERIAL_ICON_SETS.values()) {
+        for (MaterialIconSet iconSet : GTRegistries.MATERIAL_ICON_SETS) {
             for (var entry : TagPrefix.ORES.entrySet()) {
                 copyOreModelWithBaseStone(entry.getKey(), entry.getValue(), MaterialIconType.ore, iconSet);
                 copyOreModelWithBaseStone(entry.getKey(), entry.getValue(), MaterialIconType.oreEmissive, iconSet);
