@@ -107,6 +107,10 @@ public class MultiPredicate extends BasePredicate {
         return this.type == Logic.AND;
     }
 
+    public boolean isXor() {
+        return this.type == Logic.XOR;
+    }
+
     protected Logic getType() {
         return Objects.requireNonNull(type, "null type: " + this);
     }
@@ -147,6 +151,17 @@ public class MultiPredicate extends BasePredicate {
         }
 
         if (!isAnd()) return multi.and(this);
+
+        return combine(this, multi, this.copy());
+    }
+
+    @Override
+    public BasePredicate xor(BasePredicate other) {
+        if (!(other instanceof MultiPredicate multi)) {
+            return this.copy().addPredicates(other).sorted();
+        }
+
+        if (!isXor()) return multi.xor(this);
 
         return combine(this, multi, this.copy());
     }

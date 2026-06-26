@@ -214,6 +214,10 @@ public abstract class BasePredicate {
         return and(this, other);
     }
 
+    public BasePredicate xor(BasePredicate other) {
+        return xor(this, other);
+    }
+
     private static BasePredicate or(BasePredicate a, BasePredicate b) {
         if (a instanceof MultiPredicate mp) {
             return mp.or(b);
@@ -230,12 +234,24 @@ public abstract class BasePredicate {
         }
     }
 
+    private static BasePredicate xor(BasePredicate a, BasePredicate b) {
+        if (a instanceof MultiPredicate mp) {
+            return mp.xor(b);
+        } else {
+            return and(null, List.of(a, b));
+        }
+    }
+
     public static BasePredicate or(@Nullable String debugName, Iterable<BasePredicate> predicates) {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.OR);
     }
 
     public static BasePredicate and(@Nullable String debugName, Iterable<BasePredicate> predicates) {
         return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
+    }
+
+    public static BasePredicate xor(@Nullable String debugName, Iterable<BasePredicate> predicates) {
+        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.XOR);
     }
 
     public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate) {
