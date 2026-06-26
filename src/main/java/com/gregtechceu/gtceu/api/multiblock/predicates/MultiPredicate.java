@@ -216,12 +216,17 @@ public class MultiPredicate extends BasePredicate {
                 return !OR.run(ctx, predicates);
             }
         },
-        // unused
         XOR {
 
             @Override
             protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
-                return true;
+                int passed = 0;
+                for (BasePredicate basePredicate : predicates) {
+                    if (basePredicate.test(ctx)) {
+                        if (++passed > 1) return false;
+                    }
+                }
+                return passed == 1;
             }
         };
 
