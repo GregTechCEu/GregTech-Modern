@@ -1214,9 +1214,7 @@ public class GTMachines {
     }
 
     public static void bakeRenderStates(Registry<MachineDefinition> registry) {
-        Iterator<MachineDefinition> iter = registry.iterator();
-        while (iter.hasNext()) {
-            MachineDefinition machine = iter.next();
+        for (MachineDefinition machine : registry) {
             for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
                 MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
             }

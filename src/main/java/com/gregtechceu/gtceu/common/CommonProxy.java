@@ -203,7 +203,7 @@ public class CommonProxy {
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
-        initMaterials();
+        GTMaterials.init();
         GTMedicalConditions.init();
         TagPrefix.init();
 
@@ -251,38 +251,56 @@ public class CommonProxy {
         ChestGenHooks.init();
     }
 
-    @ApiStatus.Internal
-    public static void initMaterials() {
-        GTCEu.LOGGER.info("Registering GTCEu Materials");
-        GTMaterials.init();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRegisterLate(RegisterEvent event) {
-        // Material event *should* happen before any of the others here
+    // Fire post material events after all other material registry events.
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
             GTRegistries.MATERIALS.close();
             ModLoader.postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
-            // --spacer--
-        } else if (event.getRegistryKey() == Registries.BLOCK) {
+
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
+                // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
+                var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
+                AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
+                if (accessor.getDoDatagen().get()) {
+                    // noinspection UnstableApiUsage
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
+                            .get(ProviderType.LANG);
+                    NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
+                            .generate((RegistrateLangProvider) provider, namespace);
+                    if (providers == null) {
+                        accessor.getDatagens().put(ProviderType.LANG, generator);
+                    } else {
+                        providers.add(0, generator);
+                    }
+                }
+            });
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onRegisterLate(RegisterEvent event) {
+        // Material event *should* happen before any of the others here
+        if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
             GTMaterialBlocks.generateOreBlocks();        // Ore Blocks
             GTMaterialBlocks.generateOreIndicators();    // Ore Indicators
-            GTMaterialBlocks.buildMaterialBlockTable();
 
             // Material Pipes/Wires
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_PIPE);
             GTMaterialBlocks.generateCableBlocks();        // Cable & Wire Blocks
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
-            // --spacer--
+
+            GTMaterialBlocks.finaliseMaterialBlocks();
         } else if (event.getRegistryKey() == Registries.ITEM) {
             // Material Items & Tools
             GTMaterialItems.generateMaterialItems();
@@ -294,25 +312,6 @@ public class CommonProxy {
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
         }
-    }
-
-    private static void postInitMaterials(Registry<Material> registry) {
-        // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
-            // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            GTRegistrate registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
-            AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
-            if (accessor.getDoDatagen().get()) {
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
-                providers.addFirst(
-                        (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, namespace));
-            }
-
-            ModList.get().getModContainerById(namespace)
-                    .map(ModContainer::getEventBus)
-                    .ifPresent(registrate::registerEventListeners);
-        });
     }
 
     @SubscribeEvent
@@ -332,7 +331,6 @@ public class CommonProxy {
 
     @SubscribeEvent
     public static void modifyRegistries(ModifyRegistriesEvent event) {
-        GTRegistries.MATERIALS.addCallback((BakeCallback<Material>) CommonProxy::postInitMaterials);
         GTRegistries.MACHINES.addCallback((BakeCallback<MachineDefinition>) GTMachines::bakeRenderStates);
     }
 
