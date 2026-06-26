@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -205,7 +205,7 @@ public class GTMachineModels {
             }
 
             for (RelativeDirection relative : RelativeDirection.VALUES) {
-                Direction dir = relative.global;
+                Direction dir = relative.getDefaultFacing();
                 builder.part().modelFile(prov.models().getExistingFile(VENT_OVERLAY))
                         .rotationX(dir == Direction.DOWN ? 90 : dir == Direction.UP ? 270 : 0)
                         .rotationY(dir.getAxis().isVertical() ? 0 : ((int) dir.toYRot() + 180) % 360)

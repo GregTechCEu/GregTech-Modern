@@ -46,6 +46,12 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
 
+        // Returns -1 if not a generator
+        long generatorPower = capability.getRLMachine().getDisplayGeneratorPower();
+        if (generatorPower > 0) {
+            recipeInfo.putLong("generatorPower", generatorPower);
+        }
+
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
@@ -115,6 +121,11 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
                         tooltip.add(Component.translatable("gtceu.top.energy_consumption").append(" ").append(text));
                     } else {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
+                        long generatorPower = recipeInfo.getLong("generatorPower");
+                        if (generatorPower > 0 && generatorPower < EUt) {
+                            tooltip.add(Component.translatable("gtceu.jade.generator.too_small")
+                                    .withStyle(ChatFormatting.RED));
+                        }
                     }
                 }
             }
@@ -122,13 +133,13 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
             if (blockEntity instanceof IRecipeLogicMachine rlm) {
                 var logic = rlm.getRecipeLogic();
 
-                if (logic.showFancyTooltip() && logic.isWorkingEnabled()) {
+                if (!logic.getWaitingReasons().isEmpty() && logic.isWorkingEnabled()) {
                     Component status = logic.isWaiting() ?
                             Component.translatable("gtceu.recipe_logic.recipe_waiting")
                                     .withStyle(ChatFormatting.YELLOW) :
                             Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
                     tooltip.add(status);
-                    logic.getFancyTooltip().forEach(tooltip::add);
+                    logic.getWaitingReasons().forEach(tooltip::add);
                 }
             }
         }

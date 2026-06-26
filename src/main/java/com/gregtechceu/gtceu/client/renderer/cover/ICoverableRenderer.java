@@ -33,8 +33,6 @@ public interface ICoverableRenderer {
 
     @OnlyIn(Dist.CLIENT)
     TextureAtlasSprite[] COVER_BACK_PLATE = new TextureAtlasSprite[1];
-    double THIN_OFFSET = 0.002;
-    double LESS_THIN_OFFSET = 0.005;
 
     @OnlyIn(Dist.CLIENT)
     static void initSprites(TextureAtlas atlas) {
@@ -48,36 +46,46 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
         double thickness = coverable.getCoverPlateThickness();
 
+        byte coverMask = 0;
         for (Direction face : GTUtil.DIRECTIONS) {
-            var cover = coverable.getCoverAtSide(face);
-            if (cover != null) {
-                // it won't ever be null on the client
-                // noinspection DataFlowIssue
-                ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
+            if (coverable.hasCover(face)) {
+                coverMask |= 1 << face.ordinal();
+            }
+        }
 
-                if (thickness > 0 && cover.shouldRenderPlate()) {
-                    double min = thickness + 0.01;
-                    double max = 0.99 - thickness;
-                    var normal = face.getNormal();
-                    var cube = new AABB(
-                            normal.getX() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getY() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getZ() > 0 ? max : LESS_THIN_OFFSET,
-                            normal.getX() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
-                            normal.getY() >= 0 ? 1.0 - LESS_THIN_OFFSET : min,
-                            normal.getZ() >= 0 ? 1.0 - LESS_THIN_OFFSET : min);
+        for (Direction face : GTUtil.DIRECTIONS) {
+            CoverBehavior cover = coverable.getCoverAtSide(face);
+            if (cover == null) continue;
+            // it won't ever be null on the client
+            // noinspection DataFlowIssue
+            ICoverRenderer coverRenderer = cover.getCoverRenderer().get();
 
-                    if (coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
-                        if (side == null) { // render back
-                            quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0]));
-                        } else if (side != face.getOpposite()) { // render sides
-                            quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0]));
+            if (renderType == RenderType.cutoutMipped() && thickness > 0 &&
+                    cover.shouldRenderPlate() && coverRenderer.shouldRenderBackPlateForSide(cover, pos, level, side)) {
+                // All faces are slightly under a full block's size to never show the beginning of
+                // the second row of pixels of the block's texture and to combat Z-fighting.
+                AABB cube = switch (face) {
+                    case DOWN -> StaticFaceBakery.COVER_OVERLAY.setMaxY(thickness);
+                    case UP -> StaticFaceBakery.COVER_OVERLAY.setMinY(1.0 - thickness);
+                    case NORTH -> StaticFaceBakery.COVER_OVERLAY.setMaxZ(thickness);
+                    case SOUTH -> StaticFaceBakery.COVER_OVERLAY.setMinZ(1.0 - thickness);
+                    case WEST -> StaticFaceBakery.COVER_OVERLAY.setMaxX(thickness);
+                    case EAST -> StaticFaceBakery.COVER_OVERLAY.setMinX(1.0 - thickness);
+                };
+
+                if (side == null) { // render back
+                    quads.add(StaticFaceBakery.bakeFace(cube, face.getOpposite(), COVER_BACK_PLATE[0], true));
+                } else if (side != face.getOpposite() &&
+                        (((coverMask >> side.ordinal()) & 1) == 0 || side == face)) { // render sides
+                            quads.add(StaticFaceBakery.bakeFace(cube, side, COVER_BACK_PLATE[0], true));
                         }
-                    }
-                }
-                coverRenderer.renderCover(quads, side, rand, cover, pos, level,
-                        coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) : ModelData.EMPTY,
-                        renderType);
+            }
+
+            ModelData coverData = coverModelData != null ? coverModelData.getOrDefault(face, ModelData.EMPTY) :
+                    ModelData.EMPTY;
+            ChunkRenderTypeSet coverRenderTypes = coverRenderer.getRenderTypes(cover, pos, level, rand, coverData);
+            if (renderType == null || coverRenderTypes.contains(renderType)) {
+                coverRenderer.renderCover(quads, side, rand, cover, pos, level, coverData, renderType);
             }
         }
     }
@@ -106,6 +114,7 @@ public interface ICoverableRenderer {
         Map<Direction, ModelData> coverModelData = modelData.get(GTModelProperties.COVER_MODEL_DATA);
 
         Set<ChunkRenderTypeSet> renderTypeSets = new HashSet<>();
+        renderTypeSets.add(ChunkRenderTypeSet.of(RenderType.cutoutMipped()));
 
         for (Direction side : GTUtil.DIRECTIONS) {
             CoverBehavior cover = coverable.getCoverAtSide(side);

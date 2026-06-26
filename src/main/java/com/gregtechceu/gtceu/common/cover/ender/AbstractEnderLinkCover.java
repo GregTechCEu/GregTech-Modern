@@ -5,56 +5,65 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ColorBlockWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ConfirmTextInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEntry;
-import com.gregtechceu.gtceu.api.misc.virtualregistry.entries.VirtualTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.RichTooltip;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.screen.viewport.GuiContext;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.utils.serialization.network.IByteBufAdapter;
+import brachy.modularui.value.sync.*;
+import brachy.modularui.widget.EmptyWidget;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.*;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.IntSupplier;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("SameParameterValue")
 public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends CoverBehavior
-                                            implements IUICover, IControllable {
+                                            implements IMuiCover, IControllable {
 
-    public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("^[0-9a-fA-F]{0,8}$");
+    public static final Pattern COLOR_INPUT_PATTERN = Pattern.compile("([^0-9a-fA-F])");
 
     protected final ConditionalSubscriptionHandler subscriptionHandler;
 
     @SaveField
     @SyncToClient
+    @Getter(value = AccessLevel.PROTECTED)
     protected String colorStr = VirtualEntry.DEFAULT_COLOR;
     @Getter
     @SaveField
@@ -66,19 +75,12 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     @Getter
     @SaveField
     @SyncToClient
-    protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
-    @Getter
-    @SaveField
-    @SyncToClient
     @RerenderOnChanged
     protected IO io = IO.OUT;
-    protected VirtualEntryWidget virtualEntryWidget;
-    @SyncToClient
-    boolean isAnyChanged = false;
 
     public AbstractEnderLinkCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isSubscriptionActive);
+        subscriptionHandler = new ConditionalSubscriptionHandler(coverHolder, this::update, this::isWorkingEnabled);
     }
 
     @Override
@@ -91,33 +93,13 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
     public abstract boolean canAttach();
 
     @Override
-    public void onAttached(@NotNull ItemStack itemStack, @Nullable ServerPlayer player) {
-        super.onAttached(itemStack, player);
-    }
-
-    @Override
-    public void onRemoved() {
-        super.onRemoved();
-        subscriptionHandler.unsubscribe();
-        if (!isRemote()) {
-            VirtualEnderRegistry.getInstance()
-                    .deleteEntryIf(getOwner(), getEntryType(), getChannelName(), VirtualEntry::canRemove);
-        }
-    }
-
-    @Override
     public void onUnload() {
         super.onUnload();
         subscriptionHandler.unsubscribe();
         if (!isRemote()) {
-            VirtualEnderRegistry.getInstance()
-                    .deleteEntryIf(getOwner(), getEntryType(), getChannelName(), VirtualEntry::canRemove);
+            VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel())
+                    .tryDeleteEntry(getOwner(), getEntryType(), getColorStr());
         }
-    }
-
-    @Override
-    public void onUIClosed() {
-        virtualEntryWidget = null;
     }
 
     @Override
@@ -128,12 +110,6 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         }
     }
 
-    @Override
-    public Widget createUIWidget() {
-        virtualEntryWidget = new VirtualEntryWidget(this);
-        return virtualEntryWidget;
-    }
-
     public void setIo(IO io) {
         if (io == IO.IN || io == IO.OUT) {
             this.io = io;
@@ -142,104 +118,95 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         }
     }
 
-    public UUID getOwner() {
+    public @Nullable UUID getOwner() {
         if (permission == Permissions.PRIVATE && coverHolder instanceof MachineCoverContainer mcc) {
             var owner = mcc.getMachine().getOwner();
             return owner != null ? owner.getPlayerUUID() : null;
         }
+        if (permission == Permissions.PROTECTED && coverHolder instanceof MachineCoverContainer mcc) {
+            var owner = mcc.getMachine().getOwner();
+            return owner != null ? owner.getUUID() : null;
+        }
         return null;
     }
 
-    protected boolean isSubscriptionActive() {
-        return isWorkingEnabled();
-    }
-
-    protected abstract String identifier();
-
-    protected abstract VirtualEntry getEntry();
+    protected @Nullable abstract VirtualEntry getEntry();
 
     protected abstract void setEntry(VirtualEntry entry);
 
-    protected final String getChannelName() {
-        return identifier() + this.colorStr;
-    }
-
-    protected void setChannelName(String name) {
-        if (isRemote()) return;
-        VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
-                VirtualEntry::canRemove);
-        this.colorStr = name;
-        syncDataHolder.markClientSyncFieldDirty("colorStr");
-        setVirtualEntry();
-    }
-
-    protected final String getChannelName(VirtualEntry entry) {
-        return identifier() + entry.getColorStr();
-    }
-
-    protected void setPermission(Permissions permission) {
-        if (isRemote()) return;
-        VirtualEnderRegistry.getInstance().deleteEntryIf(getOwner(), getEntryType(), getChannelName(),
-                VirtualEntry::canRemove);
-        this.permission = permission;
-        syncDataHolder.markClientSyncFieldDirty("permission");
-
-        setVirtualEntry();
-    }
-
-    protected void setVirtualEntry() {
-        setEntry(VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(), getChannelName()));
-        getEntry().setColor(this.colorStr);
-        syncDataHolder.markClientSyncFieldDirty("isAnyChanged");
-        this.isAnyChanged = true;
-        subscriptionHandler.updateSubscription();
-    }
-
     protected abstract EntryTypes<T> getEntryType();
-
-    protected void update() {
-        long timer = coverHolder.getOffsetTimer();
-        if (timer % 5 != 0) return;
-
-        if (isWorkingEnabled() && !isRemote()) {
-            var entry = VirtualEnderRegistry.getInstance().getOrCreateEntry(getOwner(), getEntryType(),
-                    getChannelName());
-            if (!entry.getColorStr().equals(this.colorStr)) {
-                entry.setColor(this.colorStr);
-            }
-            if (!getEntry().equals(entry)) {
-                setEntry(entry);
-            }
-            transfer();
-        }
-
-        if (isAnyChanged) {
-            if (virtualEntryWidget != null) virtualEntryWidget.update();
-            isAnyChanged = false;
-        }
-        subscriptionHandler.updateSubscription();
-    }
 
     protected abstract void transfer();
 
-    protected void setManualIOMode(ManualIOMode manualIOMode) {
-        this.manualIOMode = manualIOMode;
-        syncDataHolder.markClientSyncFieldDirty("manualIOMode");
-        subscriptionHandler.updateSubscription();
-    }
+    /**
+     * All syncers registered through this method MUST use the {@link PanelSyncManager#getOrCreateSyncHandler} method
+     * for applying a syncer to a widget because it gets placed into a {@link DynamicSyncedWidget}.
+     *
+     * @return A widget to represent the entry type for this cover
+     */
+    protected abstract IWidget createVirtualEntryWidget(PanelSyncManager manager, VirtualEntry entry, int w, int h,
+                                                        int idx);
 
     @Nullable
     protected FilterHandler<?, ?> getFilterHandler() {
         return null;
     }
 
-    protected abstract Widget addVirtualEntryWidget(VirtualEntry entry, int x, int y, int width, int height,
-                                                    boolean canClick);
+    protected void setColorStr(String str) {
+        if (isRemote()) return;
+        if (str.length() != 8) str = str.concat("F".repeat(8 - str.length()));
+        VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(),
+                getColorStr());
+        this.colorStr = str;
+        syncDataHolder.markClientSyncFieldDirty("colorStr");
+        setVirtualEntry();
+    }
 
-    protected abstract String getUITitle();
+    protected void setPermission(Permissions permission) {
+        if (isRemote()) return;
+        VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).tryDeleteEntry(getOwner(), getEntryType(),
+                getColorStr());
+        this.permission = permission;
+        syncDataHolder.markClientSyncFieldDirty("permission");
+        setVirtualEntry();
+    }
+
+    protected void setVirtualEntry() {
+        setEntry(VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getOrCreateEntry(getOwner(),
+                getEntryType(), getColorStr()));
+        Objects.requireNonNull(getEntry()).setColor(this.colorStr);
+        subscriptionHandler.updateSubscription();
+    }
+
+    protected void update() {
+        long timer = coverHolder.getOffsetTimer();
+        if (timer % 5 != 0) return;
+
+        if (isWorkingEnabled() && !isRemote()) {
+            var entry = VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getOrCreateEntry(getOwner(),
+                    getEntryType(), getColorStr());
+            if (!entry.getColorStr().equals(this.colorStr)) {
+                entry.setColor(this.colorStr);
+            }
+            if (!Objects.equals(getEntry(), entry)) {
+                setEntry(entry);
+            }
+            transfer();
+        }
+
+        subscriptionHandler.updateSubscription();
+    }
 
     protected int getColor() {
         return VirtualEntry.parseColor(this.colorStr);
+    }
+
+    private String getDescription() {
+        return getEntry() == null ? "null" : getEntry().getDescription();
+    }
+
+    private void setDescription(String description) {
+        if (getEntry() != null) getEntry().setDescription(description);
     }
 
     @Override
@@ -247,284 +214,195 @@ public abstract class AbstractEnderLinkCover<T extends VirtualEntry> extends Cov
         tag.putString("colorStr", colorStr);
         tag.putInt("permission", getPermission().ordinal());
         tag.putInt("io", getIo().ordinal());
-        tag.putInt("manualIO", getManualIOMode().ordinal());
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        setChannelName(tag.getString("colorStr"));
+        setColorStr(tag.getString("colorStr"));
         setPermission(Permissions.values()[tag.getInt("permission")]);
         setIo(IO.values()[tag.getInt("io")]);
-        setManualIOMode(ManualIOMode.values()[tag.getInt("manualIO")]);
         super.pasteConfig(player, tag);
     }
 
-    protected enum Permissions implements EnumSelectorWidget.SelectableEnum {
+    private List<VirtualEntry> getVirtualEntries() {
+        return VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getEntries(getOwner(), getEntryType())
+                .values().stream().toList();
+    }
 
-        PUBLIC("cover.ender_fluid_link.private.tooltip.disabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0, 1, 0.5)),
+    protected enum Permissions {
 
-        PRIVATE("cover.ender_fluid_link.private.tooltip.enabled",
-                GuiTextures.BUTTON_PUBLIC_PRIVATE.getSubTexture(0, 0.5, 1, 0.5));
+        PUBLIC("cover.ender_link.public.tooltip"),
+        PROTECTED("cover.ender_link.protected.tooltip"),
+        PRIVATE("cover.ender_link.private.tooltip");
 
         @Getter
         private final String tooltip;
-        @Getter
-        private final IGuiTexture icon;
 
-        Permissions(String tooltip, IGuiTexture icon) {
+        Permissions(String tooltip) {
             this.tooltip = tooltip;
-            this.icon = icon;
         }
     }
 
-    protected static class VirtualEntryWidget extends WidgetGroup {
+    @Override
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        var channelManager = syncManager.syncedPanel("channelManager", true,
+                (sm, sh) -> createChannelManagerPanel(data, sm, settings));
 
-        private static final int WIDGET_BOARD = 20;
-        private static final int GROUP_WIDTH = 176;
-        private static final int TOTAL_WIDTH = 156;
-        private static final int BUTTON_SIZE = 16;
-        private final AbstractEnderLinkCover<?> cover;
-        private final MutableBoolean showChannels;
-        private final WidgetGroup mainGroup;
-        private final WidgetGroup mainChannelGroup;
-        private final DraggableScrollableWidgetGroup channelsGroup; // client only
+        var colorSyncer = new IntSyncValue(this::getColor);
+        EnumSyncValue<IO> ioSync = new EnumSyncValue<>(IO.class, this::getIo, this::setIo);
 
-        VirtualEntryWidget(AbstractEnderLinkCover<?> cover) {
-            super(0, 0, GROUP_WIDTH, 137);
-            this.cover = cover;
-            this.showChannels = new MutableBoolean(false);
-            mainGroup = new WidgetGroup(0, 0, GROUP_WIDTH, 137);
-            channelsGroup = new DraggableScrollableWidgetGroup(0, 20, 170, 110)
-                    .setYScrollBarWidth(2).setYBarStyle(null, ColorPattern.T_WHITE.rectTexture().setRadius(1));
-            mainChannelGroup = new WidgetGroup(10, 20, 156, 20);
-            initWidgets();
+        syncManager.syncValue("io", ioSync);
+        syncManager.syncValue("color", colorSyncer);
+
+        var currentEntry = GenericSyncValue.builder(VirtualEntry.class)
+                .getter(this::getEntry)
+                .adapter(new VirtualEntryAdapter()).build();
+        syncManager.syncValue("currentEntry", currentEntry);
+
+        DynamicLinkedSyncHandler<GenericSyncValue<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                currentEntry)
+                .widgetProvider((manager, entriesListSyncer) -> createVirtualEntryWidget(manager,
+                        entriesListSyncer.getValue(), 18, 18, 0));
+
+        column.child(coverUIRow()
+                .child(createColorBlock(colorSyncer::getIntValue, 18).asWidget().size(18))
+                .child(new CycleButtonWidget()
+                        .stateCount(3)
+                        .stateOverlay(Permissions.PUBLIC, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
+                        .stateOverlay(Permissions.PROTECTED, GTGuiTextures.PRIVATE_MODE_BUTTON[0])
+                        .stateOverlay(Permissions.PRIVATE, GTGuiTextures.PRIVATE_MODE_BUTTON[1])
+                        .tooltip(0, t -> t.addLine(Text.lang(Permissions.PUBLIC.tooltip)))
+                        .tooltip(1, t -> t.addLine(Text.lang(Permissions.PROTECTED.tooltip)))
+                        .tooltip(2, t -> t.addLine(Text.lang(Permissions.PRIVATE.tooltip)))
+                        .value(new EnumSyncValue<>(Permissions.class, this::getPermission,
+                                this::setPermission)))
+                .child(new TextFieldWidget()
+                        .value(new StringSyncValue(this::getColorStr, this::setColorStr))
+                        .setMaxLength(8)
+                        .setValidator(str -> COLOR_INPUT_PATTERN.matcher(str).replaceAll(""))
+                        .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_name")))
+                .child(new DynamicSyncedWidget<>().syncHandler(dynamicLinkedSyncHandler))
+                .child(new ButtonWidget<>().onMousePressed((GuiContext context, int button) -> {
+                    channelManager.openPanel();
+                    return true;
+                }).posRel(Alignment.CenterRight).tooltip(new RichTooltip()
+                        .addLine(Text.lang("cover.ender_link.tooltip.list_button")))));
+
+        column.child(coverUIRow().child(new TextFieldWidget()
+                .setMaxLength(32)
+                .widthRel(1f)
+                .addTooltipLine(Text.lang("cover.ender_link.tooltip.channel_description"))
+                .value(new StringSyncValue(this::getDescription, this::setDescription))));
+
+        Flow bottomRow = coverUIRow();
+        bottomRow.child(GTMuiWidgets.createPowerButton(this));
+        bottomRow.child(GTMuiWidgets.createIOCycleButton(ioSync, false));
+        if (getFilterHandler() != null)
+            GTMuiWidgets.createFilterRow(bottomRow, getFilterHandler(), data, syncManager, settings);
+        column.child(bottomRow);
+    }
+
+    protected ParentWidget<?> getChannelStatusRowShort(PanelSyncManager syncManager, VirtualEntry entry, int idx) {
+        TextWidget<?> str;
+        if (entry.getDescription().isBlank()) {
+            str = Text.lang("cover.ender_link.description_empty").asWidget().size(98, 12)
+                    .color(Color.GREY.darker(1));
+        } else {
+            str = Text.str(entry.getDescription()).asWidget().size(98, 12);
         }
-
-        public void update() {
-            if (isRemote()) return;
-            widgets.clear();
-            mainGroup.widgets.clear();
-            channelsGroup.widgets.clear();
-            mainChannelGroup.widgets.clear();
-            initWidgets();
-            this.detectAndSendChanges();
-        }
-
-        private void initWidgets() {
-            int currentX = 0;
-            final var titleGroup = new WidgetGroup(10, 5, GROUP_WIDTH, 20);
-
-            this.addWidget(titleGroup);
-            this.addWidget(mainGroup);
-            this.addWidget(channelsGroup.setVisible(false));
-
-            titleGroup.addWidget(createToggleButton());
-            titleGroup.addWidget(new LabelWidget(15, 3, cover.getUITitle()));
-
-            var toggleButtonWidget = createToggleButtonForPrivacy(currentX);
-            mainChannelGroup.addWidget(toggleButtonWidget);
-            currentX += WIDGET_BOARD + 2;
-            mainChannelGroup.addWidget(createColorBlockWidget(currentX));
-            currentX += WIDGET_BOARD + 2;
-            mainChannelGroup.addWidget(createConfirmTextInputWidget(currentX));
-
-            mainChannelGroup.addWidget(new ConfirmTextInputWidget(0, WIDGET_BOARD + 2, GROUP_WIDTH - WIDGET_BOARD,
-                    WIDGET_BOARD, cover.getEntry().getDescription(), cover.getEntry()::setDescription,
-                    t -> t == null ? "" : t, null).setTooltip("cover.ender_fluid_link.tooltip.channel_description"));
-
-            mainGroup.addWidget(mainChannelGroup);
-            mainGroup.addWidget(createWorkingEnabledButton());
-            addEnumSelectorWidgets();
-            mainGroup.addWidget(
-                    cover.addVirtualEntryWidget(cover.getEntry(), 146, WIDGET_BOARD, WIDGET_BOARD, WIDGET_BOARD, true));
-
-            if (cover.getFilterHandler() != null) {
-                mainGroup.addWidget(cover.getFilterHandler().createFilterSlotUI(117, 108));
-                mainGroup.addWidget(cover.getFilterHandler().createFilterConfigUI(10, 72, 156, 60));
-            }
-        }
-
-        @Contract(" -> new")
-        private @NotNull ToggleButtonWidget createToggleButton() {
-            return (ToggleButtonWidget) new ToggleButtonWidget(0, 0, 12, 12, showChannels::getValue, cd -> {
-                showChannels.setValue(!showChannels.getValue());
-                mainGroup.setVisible(showChannels.isFalse());
-                channelsGroup.setVisible(showChannels.isTrue());
-                requestUpdate();
-            }).setTexture(
-                    new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0, 1, 0.5),
-                            GuiTextures.BUTTON_LIST),
-                    new GuiTextureGroup(GuiTextures.TOGGLE_BUTTON_BACK.getSubTexture(0, 0.5, 1, 0.5),
-                            GuiTextures.BUTTON_LIST))
-                    .setHoverTooltips("cover.ender_fluid_link.tooltip.list_button");
-        }
-
-        @Contract("_ -> new")
-        private @NotNull Widget createToggleButtonForPrivacy(int currentX) {
-            return new EnumSelectorWidget<>(currentX, 0,
-                    WIDGET_BOARD, WIDGET_BOARD, Permissions.values(), cover.permission, cover::setPermission);
-        }
-
-        private ColorBlockWidget createColorBlockWidget(int currentX) {
-            return new ColorBlockWidget(currentX, 0, WIDGET_BOARD, WIDGET_BOARD).setColorSupplier(cover::getColor);
-        }
-
-        private ConfirmTextInputWidget createConfirmTextInputWidget(int currentX) {
-            int GROUP_X = 10;
-            int textInputWidth = (GROUP_WIDTH - GROUP_X * 2) - currentX - WIDGET_BOARD - 2;
-            return new ConfirmTextInputWidget(currentX, 0, textInputWidth, WIDGET_BOARD, cover.colorStr,
-                    cover::setChannelName, text -> {
-                        if (text == null || !COLOR_INPUT_PATTERN.matcher(text).matches()) {
-                            return VirtualTank.DEFAULT_COLOR;
-                        }
-                        return text;
-                    }, text -> {
-                        if (text.length() < 8) {
-                            text += "F".repeat(8 - text.length());
-                        }
-                        return text;
-                    }).setTooltip("cover.ender_fluid_link.tooltip.channel_name");
-        }
-
-        @Contract(" -> new")
-        private @NotNull ToggleButtonWidget createWorkingEnabledButton() {
-            return new ToggleButtonWidget(116, 82, WIDGET_BOARD, WIDGET_BOARD, GuiTextures.BUTTON_POWER,
-                    cover::isWorkingEnabled, cover::setWorkingEnabled);
-        }
-
-        private void addEnumSelectorWidgets() {
-            mainGroup.addWidget(new EnumSelectorWidget<>(146, 82, WIDGET_BOARD, WIDGET_BOARD, List.of(IO.IN, IO.OUT),
-                    cover.io, cover::setIo));
-            mainGroup.addWidget(new EnumSelectorWidget<>(146, 107, WIDGET_BOARD, WIDGET_BOARD, ManualIOMode.VALUES,
-                    cover.manualIOMode, cover::setManualIOMode)
-                    .setHoverTooltips("cover.universal.manual_import_export.mode.description"));
-        }
-
-        private void addChannelWidgets(List<? extends VirtualEntry> entries) {
-            channelsGroup.clearAllWidgets();
-            int y = 1;
-            SelectableWidgetGroup selectedWidget = null;
-            for (var entry : entries.stream().sorted(Comparator.comparing(VirtualEntry::getColorStr)).toList()) {
-                SelectableWidgetGroup channelWidget = createChannelWidget(entry, 10, y);
-                if (cover.getChannelName(entry).equals(cover.getChannelName())) {
-                    selectedWidget = channelWidget;
-                }
-                channelsGroup.addWidget(channelWidget);
-                y += 22;
-            }
-            channelsGroup.setSelected(selectedWidget);
-            if (selectedWidget != null) selectedWidget.onSelected();
-            channelsGroup.setClientSideWidget();
-        }
-
-        private @NotNull SelectableWidgetGroup createChannelWidget(@NotNull VirtualEntry entry, int x, int y) {
-            int currentX = 0;
-            int MARGIN = 2;
-            int availableWidth = TOTAL_WIDTH - (BUTTON_SIZE + MARGIN) * 3;
-
-            final MutableBoolean canSelect = new MutableBoolean(false);
-            var des = entry.getDescription();
-            TextBoxWidget textBoxWidget = new TextBoxWidget(BUTTON_SIZE + MARGIN,
-                    !des.isEmpty() ? 0 : 4, availableWidth, List.of(entry.getColorStr())).setCenter(true);
-            SelectableWidgetGroup channelGroup = new SelectableWidgetGroup(x, y, TOTAL_WIDTH, BUTTON_SIZE) {
-
-                @Override
-                public boolean allowSelected(double mouseX, double mouseY, int button) {
-                    return canSelect.getValue() && super.allowSelected(mouseX, mouseY, button);
-                }
-            };
-            channelGroup.setOnSelected(group -> {
-                if (cover.getChannelName().equals(cover.getChannelName(entry))) return;
-                writeClientAction(0, buffer -> {
-                    // send new channel name to server
-                    String newChannelColorStr = entry.getColorStr();
-                    buffer.writeUtf(newChannelColorStr);
-                });
-                playButtonClickSound();
-            }).setSelectedTexture(1, -1);
-
-            // Color block
-            ColorBlockWidget colorBlockWidget = new ColorBlockWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE)
-                    .setCurrentColor(VirtualEntry.parseColor(entry.getColorStr()));
-            channelGroup.addWidget(colorBlockWidget);
-            currentX += BUTTON_SIZE + MARGIN;
-
-            // Text box
-            channelGroup.addWidget(textBoxWidget);
-            currentX += availableWidth + MARGIN;
-            if (!des.isEmpty()) {
-                var desText = new TextTexture(ChatFormatting.DARK_GRAY + des).setDropShadow(false);
-                desText.setType(TextTexture.TextType.ROLL).setRollSpeed(0.7f);
-                channelGroup.addWidget(new ImageWidget(BUTTON_SIZE + MARGIN, 10, availableWidth, 8, desText));
-            }
-
-            // Slot
-            Widget slotWidget = cover.addVirtualEntryWidget(entry, currentX, 0, BUTTON_SIZE, BUTTON_SIZE, false);
-            channelGroup.addWidget(slotWidget);
-            currentX += BUTTON_SIZE + MARGIN;
-
-            // Clear Description button
-            channelGroup.addWidget(
-                    new ButtonWidget(currentX, 0, BUTTON_SIZE, BUTTON_SIZE, GuiTextures.BUTTON_CLEAR_GRID, press -> {
-                        writeClientAction(200, buffer -> buffer.writeUtf(cover.getChannelName(entry)));
-                        requestUpdate();
-                    }) {
-
-                        @Override
-                        public boolean isMouseOverElement(double mouseX, double mouseY) {
-                            var isOver = super.isMouseOverElement(mouseX, mouseY);
-                            if (canSelect.getValue() == isOver) canSelect.setValue(!isOver);
-                            return isOver;
-                        }
-                    }.appendHoverTooltips("cover.ender_fluid_link.tooltip.clear_button"));
-
-            return channelGroup;
-        }
-
-        private void requestUpdate() {
-            writeClientAction(100, buffer -> buffer.writeBoolean(showChannels.isTrue()));
-        }
-
-        @Override
-        public void handleClientAction(int id, FriendlyByteBuf buffer) {
-            super.handleClientAction(id, buffer);
-            if (id == 0) {
-                String newChannelColorStr = buffer.readUtf();
-                cover.setChannelName(newChannelColorStr);
-            } else if (id == 100) {
-                if (!buffer.readBoolean()) return;
-                var entries = VirtualEnderRegistry.getInstance().getEntryNames(cover.getOwner(), cover.getEntryType())
-                        .stream().map(name -> VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(),
-                                cover.getEntryType(), name))
-                        .sorted(Comparator.comparing(VirtualEntry::getColorStr));
-                writeUpdateInfo(101, buf -> {
-                    var list = entries.toList();
-                    buf.writeVarInt(list.size());
-                    for (var entry : list) {
-                        buf.writeNbt(entry.serializeNBT());
+        return coverUIRow()
+                .child(createColorBlock(entry::getColor, 18).asWidget()
+                        .tooltip(t -> t.addLine(entry.getColorStr()))
+                        .size(18, 18))
+                .child(str)
+                .child(createVirtualEntryWidget(syncManager, entry, 18, 18, idx))
+                .child(new ButtonWidget<>().overlay(GTGuiTextures.BUTTON_CROSS).onMousePressed((context, button) -> {
+                    MouseData mouseData = MouseData.create(button);
+                    if (mouseData.mouseButton() == 1) {
+                        syncManager.callSyncedAction("deleteEntry",
+                                buffer -> buffer.writeCharSequence(entry.getColorStr(), StandardCharsets.UTF_8));
+                        return true;
                     }
+                    return false;
+                }).posRel(Alignment.CenterRight));
+    }
+
+    public IDrawable createColorBlock(IntSupplier colorSupplier, int size) {
+        return IDrawable.of(
+                // Border
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().color(Color.BLACK.main)
+                        .draw(context, x, y, size, size, widgetTheme),
+                // Colored block
+                (context, x, y, w, h, widgetTheme) -> new Rectangle().color(colorSupplier.getAsInt())
+                        .draw(context, x + 1, y + 1, size - 2, size - 2, widgetTheme));
+    }
+
+    protected ModularPanel<?> createChannelManagerPanel(GuiData data, PanelSyncManager syncManager,
+                                                        UISettings settings) {
+        var panel = new Dialog<>("channel_manager")
+                .disablePanelsBelow(false)
+                .draggable(true)
+                .closeOnOutOfBoundsClick(true)
+                .child(GTMuiWidgets.createTitleBar(() -> getAttachItem(), 176, GTGuiTextures.BACKGROUND));
+
+        var entries = new GenericListSyncHandler.Builder<VirtualEntry>()
+                .getter(this::getVirtualEntries)
+                .adapter(new VirtualEntryAdapter())
+                .build();
+        syncManager.syncValue("entries", entries);
+
+        DynamicLinkedSyncHandler<GenericListSyncHandler<VirtualEntry>> dynamicLinkedSyncHandler = new DynamicLinkedSyncHandler<>(
+                entries)
+                .widgetProvider((manager, entriesListSyncer) -> {
+                    if (entriesListSyncer == null || entriesListSyncer.getValue() == null) return new EmptyWidget();
+                    ListWidget<IWidget, ?> list = new ListWidget<>();
+                    List<VirtualEntry> entryList = entriesListSyncer.getValue();
+                    for (int i = 0; i < entryList.size(); i++) {
+                        list.child(getChannelStatusRowShort(manager, entryList.get(i), i));
+                    }
+                    return list.childSeparator(GTGuiTextures.SEPERATOR_SIMPLE.asIcon().size(116, 5).margin(12, 0))
+                            .size(162, 154);
                 });
-            } else if (id == 200) {
-                String channelName = buffer.readUtf();
-                VirtualEnderRegistry.getInstance().getEntry(cover.getOwner(), cover.getEntryType(), channelName)
-                        .setDescription("");
+
+        syncManager.registerServerSyncedAction("deleteEntry", (packet) -> {
+            var colorString = packet.readCharSequence(8, StandardCharsets.UTF_8).toString();
+            VirtualEntry entry = VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).getEntry(getOwner(),
+                    getEntryType(), colorString);
+            if (entry != null) {
+                entry.setDescription("");
+                VirtualEnderRegistry.get((ServerLevel) coverHolder.getLevel()).tryDeleteEntry(getOwner(),
+                        getEntryType(), colorString);
             }
+        });
+
+        panel.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicLinkedSyncHandler)
+                .top(7).margin(7, 0)
+                .widthRel(1.0f).coverChildrenHeight());
+
+        return panel;
+    }
+
+    private class VirtualEntryAdapter implements IByteBufAdapter<VirtualEntry> {
+
+        @Override
+        public VirtualEntry deserialize(FriendlyByteBuf buffer) {
+            VirtualEntry entry = getEntryType().createInstance();
+            var nbt = buffer.readNbt();
+            if (nbt == null) return entry;
+            entry.deserializeNBT(nbt);
+            return entry;
         }
 
         @Override
-        public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-            super.readUpdateInfo(id, buffer);
-            if (id == 101) {
-                int size = buffer.readVarInt();
-                List<VirtualEntry> entries = new ArrayList<>();
-                for (int i = 0; i < size; i++) {
-                    VirtualEntry entry = cover.getEntryType().createInstance();
-                    entry.deserializeNBT(Objects.requireNonNull(buffer.readNbt()));
-                    entries.add(entry);
-                }
-                addChannelWidgets(entries);
-            }
+        public void serialize(FriendlyByteBuf buffer, VirtualEntry entry) {
+            buffer.writeNbt(entry.serializeNBT());
+        }
+
+        @Override
+        public boolean areEqual(VirtualEntry t1, VirtualEntry t2) {
+            return t1.getColor() == t2.getColor() && t1.getDescription().equals(t2.getDescription());
         }
     }
 }

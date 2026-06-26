@@ -1,14 +1,17 @@
 dependencies {
     compileOnly(libs.jetbrains.annotations)
 
-    // LDLib
-    jarJar(modApi(forge.ldlib.get()))
-
     // Registrate
     jarJar(modApi(forge.registrate.get()))
 
     // Configuration
     jarJar(modApi(forge.configuration.get()))
+
+    // Math Parser
+    compileOnly(libs.evalEx.get())
+
+    // MUI
+    jarJar(modImplementation(forge.mui.get()))
 
     // Mixin (& Extras)
     annotationProcessor(variantOf(libs.mixin) { classifier("processor") })
@@ -118,4 +121,8 @@ dependencies {
     modExtraLocalRuntime(forge.ponder)
     modExtraLocalRuntime(variantOf(forge.create) { classifier("slim") })
     modExtraLocalRuntime(forge.flywheel.forge)
+
+    modLocalRuntime(forge.curios)
+
+
 }

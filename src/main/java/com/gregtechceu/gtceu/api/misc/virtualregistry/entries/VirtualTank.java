@@ -8,14 +8,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class VirtualTank extends VirtualEntry {
 
     public static final int DEFAULT_CAPACITY = 160_000; // 160B for per second transfer
     protected static final String CAPACITY_KEY = "capacity";
     protected static final String FLUID_KEY = "fluid";
-    @NotNull
     @Getter
     private final FluidTank fluidTank;
     private int capacity;

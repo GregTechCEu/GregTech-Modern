@@ -5,11 +5,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
+import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +22,7 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     @Setter
     private transient GTRecipeType recipeType;
     @Setter
-    private transient IGuiTexture icon;
+    private transient CategoryIcon icon;
     @Setter
     private transient boolean isXEIVisible;
     @Setter
@@ -41,12 +38,12 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     }
 
     public GTRecipeCategoryBuilder setCustomIcon(ResourceLocation location) {
-        this.icon = new ResourceTexture(location.withPrefix("textures/").withSuffix(".png"));
+        this.icon = new CategoryIcon(location);
         return this;
     }
 
-    public GTRecipeCategoryBuilder setItemIcon(ItemStack... stacks) {
-        this.icon = new ItemStackTexture(stacks);
+    public GTRecipeCategoryBuilder setItemIcon(ItemStack stack) {
+        this.icon = new CategoryIcon(stack);
         return this;
     }
 

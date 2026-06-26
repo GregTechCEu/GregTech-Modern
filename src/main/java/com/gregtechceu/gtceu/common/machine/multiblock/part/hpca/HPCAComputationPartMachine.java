@@ -2,14 +2,13 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import brachy.modularui.api.drawable.IDrawable;
 import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,12 +34,12 @@ public class HPCAComputationPartMachine extends HPCAComponentPartMachine {
     }
 
     @Override
-    public ResourceTexture getComponentIcon() {
+    public IDrawable getComponentIcon() {
         if (hpcaComponentTrait.isDamaged()) {
-            return advanced ? GuiTextures.HPCA_ICON_DAMAGED_ADVANCED_COMPUTATION_COMPONENT :
-                    GuiTextures.HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT;
+            return advanced ? GTGuiTextures.HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT :
+                    GTGuiTextures.HPCA_DAMAGED_COMPUTATION_COMPONENT;
         }
-        return advanced ? GuiTextures.HPCA_ICON_ADVANCED_COMPUTATION_COMPONENT :
-                GuiTextures.HPCA_ICON_COMPUTATION_COMPONENT;
+        return advanced ? GTGuiTextures.HPCA_ADVANCED_COMPUTATION_COMPONENT :
+                GTGuiTextures.HPCA_COMPUTATION_COMPONENT;
     }
 }
