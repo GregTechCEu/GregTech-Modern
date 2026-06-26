@@ -40,6 +40,7 @@ import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -390,6 +391,49 @@ public class GTMultiblockTextUtil {
                 })
                 .asWidget()
                 .setEnabledIf((w) -> isFormed.getBoolValue());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<TextWidget<?>> addRecipeFailReasonLines(WorkableMultiblockMachine rlMachine,
+                                                               PanelSyncManager syncManager) {
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(rlMachine::isFormed));
+
+        BooleanSyncValue isIdle = syncManager.getOrCreateSyncHandler("isIdle", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(() -> rlMachine.getRecipeLogic().isIdle()));
+        GenericSyncValue<Component> bestFailureRecipe = (GenericSyncValue<Component>) syncManager
+                .getOrCreateSyncHandler("bestFailureRecipe", GenericSyncValue.class,
+                        () -> GenericSyncValue.builder(Component.class)
+                                .nullable()
+                                .adapter(GTByteBufAdapters.COMPONENT)
+                                .getter(() -> rlMachine.getRecipeLogic().getBestFailureRecipe())
+                                .build());
+        GenericSyncValue<Component> bestFailureReason = (GenericSyncValue<Component>) syncManager
+                .getOrCreateSyncHandler("bestFailureReason", GenericSyncValue.class,
+                        () -> GenericSyncValue.builder(Component.class)
+                                .nullable()
+                                .adapter(GTByteBufAdapters.COMPONENT)
+                                .getter(() -> rlMachine.getRecipeLogic().getBestFailureReason())
+                                .build());
+        var lineList = new ArrayList<TextWidget<?>>();
+
+        lineList.add(Text
+                .dynamic(() -> {
+                    return Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED);
+                })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue() && isIdle.getBoolValue() &&
+                        bestFailureReason.getValue() != null));
+        lineList.add(Text
+                .dynamic(() -> {
+                    var reason = bestFailureReason.getValue();
+                    if (reason == null) return Component.empty();
+                    return Component.literal(" - ").append(reason);
+                })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue() && isIdle.getBoolValue() &&
+                        bestFailureReason.getValue() != null));
+        return lineList;
     }
 
     @SuppressWarnings("unchecked")

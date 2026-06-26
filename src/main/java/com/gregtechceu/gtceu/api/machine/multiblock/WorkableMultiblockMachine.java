@@ -335,6 +335,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         widgets.add(GTMultiblockTextUtil.addSubtickParallelsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         return widgets;
     }
 }

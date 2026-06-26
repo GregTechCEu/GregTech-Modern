@@ -138,6 +138,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
         // .addComputationUsageExactLine(computationProvider.getMaxCWUt()) // TODO: (Onion)
         widgets.add(GTMultiblockTextUtil.addProgressLinePercentOnly(this, syncManager));
+        widgets.addAll(GTMultiblockTextUtil.addRecipeFailReasonLines(this, syncManager));
         return widgets;
     }
 
