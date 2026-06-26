@@ -32,8 +32,6 @@ import java.util.function.Function;
 
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
-    public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
-
     public static final Codec<GTRecipeType> GT_RECIPE_TYPE_CODEC = BuiltInRegistries.RECIPE_TYPE.byNameCodec()
             .comapFlatMap(recipeType -> {
                 if (recipeType instanceof GTRecipeType gtRecipeType) {
@@ -42,6 +40,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                     return DataResult.error(() -> "Recipe type " + recipeType + " is not a GTRecipeType");
                 }
             }, Function.identity());
+
+    public static final Codec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 

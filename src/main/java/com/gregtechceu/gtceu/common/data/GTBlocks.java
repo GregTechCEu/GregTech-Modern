@@ -1408,13 +1408,6 @@ public class GTBlocks {
         generateOpticalPipeBlocks();  // Optical Pipe Blocks
         generateDuctPipeBlocks();     // Duct Pipe Blocks
 
-        // Remove Builder Tables
-        GTMaterialBlocks.MATERIAL_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.SURFACE_ROCK_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.CABLE_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.FLUID_PIPE_BLOCKS_BUILDER = null;
-        GTMaterialBlocks.ITEM_PIPE_BLOCKS_BUILDER = null;
-
         // GCYM
         GCYMBlocks.init();
 

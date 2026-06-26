@@ -199,9 +199,9 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
 
+    // Fire post material events after all other material registry events.
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRegisterLate(RegisterEvent event) {
-        // Material event *should* happen before any of the others here
+    public void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
@@ -229,8 +229,19 @@ public class CommonProxy {
                     }
                 }
             });
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            // Prepare machine render states after all machines have been registered
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+                }
+            }
+        }
+    }
 
-        } else if (event.getRegistryKey() == Registries.BLOCK) {
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void registerMaterialContent(RegisterEvent event) {
+        if (event.getRegistryKey() == Registries.BLOCK) {
             GTCEu.LOGGER.info("Firing block register late event");
 
             // Material Blocks
@@ -245,6 +256,8 @@ public class CommonProxy {
             GTMaterialBlocks.generateFluidPipeBlocks();    // Fluid Pipe Blocks
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
 
+            GTMaterialBlocks.finaliseMaterialBlocks();
+
         } else if (event.getRegistryKey() == Registries.ITEM) {
             GTCEu.LOGGER.info("Firing item register late event");
 
@@ -255,13 +268,6 @@ public class CommonProxy {
 
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
-        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
-            for (MachineDefinition machine : GTRegistries.MACHINES) {
-                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
-                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
-                }
-            }
-
         }
     }
 
