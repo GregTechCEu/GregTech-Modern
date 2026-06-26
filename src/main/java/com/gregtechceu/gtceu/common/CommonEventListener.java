@@ -101,8 +101,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnderscore;
-
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonEventListener {
 
@@ -661,8 +659,8 @@ public class CommonEventListener {
         });
 
         for (TagPrefix prefix : TagPrefix.values()) {
-            String first = prefix.invertedName ? toLowerCaseUnderscore(prefix.name) : "(.+?)";
-            String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnderscore(prefix.name);
+            String first = prefix.invertedName ? prefix.getName() : "(.+?)";
+            String last = prefix.invertedName ? "(.+?)" : prefix.getName();
             Pattern idPattern = Pattern.compile(first + "_" + last);
             event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());

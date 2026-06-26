@@ -59,7 +59,7 @@ public final class PipeRecipeHandler {
             return;
         }
 
-        ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_" + prefix.name)
+        ASSEMBLER_RECIPES.recipeBuilder("assemble_" + material.getName() + "_" + prefix.getName())
                 .inputItems(unrestrictive, material)
                 .inputItems(ring, Iron, 2)
                 .outputItems(prefix, material)

@@ -22,7 +22,7 @@ public class BuiltInRegistriesMixin {
 
     @WrapOperation(method = "validate",
                    at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/core/Registry;forEach(Ljava/util/function/Consumer;)V"))
+                            target = "Lnet/minecraft/core/Registry;forEach(Ljava/util/function/Consumer;)V", remap = false))
     private static <T extends Registry<?>> void gtceu$skipRegistryValidation(Registry<T> instance, Consumer<T> consumer,
                                                                              Operation<Void> original) {
         Consumer<T> callback = (t) -> {

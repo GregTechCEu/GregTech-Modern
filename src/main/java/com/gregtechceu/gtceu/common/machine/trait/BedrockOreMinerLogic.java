@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.WeightedMaterial;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -24,6 +26,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class BedrockOreMinerLogic extends RecipeLogic {
 
@@ -78,7 +81,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (wm == null) return null;
             Material material = wm.material();
             ItemStack stack = GTUtil.getFirstNonEmpty(
-                    ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material),
+                    ChemicalHelper.get(Objects.requireNonNull(GTRegistries.TAG_PREFIXES.get(GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))), material),
                     ChemicalHelper.get(TagPrefix.crushed, material),
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),

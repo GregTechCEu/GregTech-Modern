@@ -62,7 +62,7 @@ public final class OreRecipeHandler {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
             if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) && !prefix.isIgnored(material)) {
-                String name = "smelt_" + prefix.name + "_" + material.getName() + "_to_ingot";
+                String name = "smelt_" + prefix.getName() + "_" + material.getName() + "_to_ingot";
                 TagKey<Item> tag = ChemicalHelper.getTag(prefix, material);
 
                 VanillaRecipeHelper.addSmeltingRecipe(provider, name, tag, ingotStack, 0.5f);
@@ -102,7 +102,7 @@ public final class OreRecipeHandler {
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
         crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
-        String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
+        String prefixString = orePrefix == ore ? "" : orePrefix.getName() + "_";
         if (!crushedStack.isEmpty()) {
             int crushedCount = property.getOreMultiplier() * oreTypeMultiplier;
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES

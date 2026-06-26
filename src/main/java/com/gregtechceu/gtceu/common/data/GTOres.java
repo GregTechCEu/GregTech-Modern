@@ -722,7 +722,7 @@ public class GTOres {
             } else if (oreTag == oreNetherrack) {
                 oreKey = new ResourceLocation("nether_%s_ore".formatted(material.getName()));
             } else {
-                oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.name, material.getName()));
+                oreKey = new ResourceLocation("%s_%s_ore".formatted(oreTag.getName(), material.getName()));
             }
             return BuiltInRegistries.BLOCK.containsKey(oreKey) ? () -> BuiltInRegistries.BLOCK.get(oreKey) :
                     () -> Blocks.AIR;

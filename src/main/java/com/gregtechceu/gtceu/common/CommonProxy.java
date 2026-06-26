@@ -12,7 +12,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -78,6 +81,7 @@ import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
@@ -164,7 +168,6 @@ public class CommonProxy {
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
-        GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
         GTPatternErrors.init(modBus);
@@ -201,6 +204,7 @@ public class CommonProxy {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
+            GTCEu.LOGGER.info("Firing material register late event");
             GTRegistries.MATERIALS.closeRegistry();
             ModLoader.get().postEventWrapContainerInModOrder(new PostMaterialEvent());
             if (GTCEu.Mods.isKubeJSLoaded()) {
@@ -226,6 +230,8 @@ public class CommonProxy {
             });
 
         } else if (event.getRegistryKey() == Registries.BLOCK) {
+            GTCEu.LOGGER.info("Firing block register late event");
+
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -239,6 +245,8 @@ public class CommonProxy {
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
 
         } else if (event.getRegistryKey() == Registries.ITEM) {
+            GTCEu.LOGGER.info("Firing item register late event");
+
             // Material Items & Tools
             GTMaterialItems.generateMaterialItems();
             GTMaterialItems.generateTools();
@@ -246,6 +254,13 @@ public class CommonProxy {
 
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
+        } else if (event.getRegistryKey() == GTRegistries.Keys.MACHINE) {
+            for (MachineDefinition machine : GTRegistries.MACHINES) {
+                for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
+                    MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
+                }
+            }
+
         }
     }
 
@@ -258,13 +273,14 @@ public class CommonProxy {
             ChestGenHooks.RandomWeightLootFunction.init();
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void registerLate(RegisterEvent event) {
-        for (MachineDefinition machine : GTRegistries.MACHINES) {
-            for (MachineRenderState renderState : machine.getStateDefinition().getPossibleStates()) {
-                MachineDefinition.RENDER_STATE_REGISTRY.add(renderState);
-            }
-        }
+    @SubscribeEvent
+    public static void registerDataPackRegistries(DataPackRegistryEvent.NewRegistry event) {
+        event.dataPackRegistry(GTRegistries.Keys.ORE_VEIN,
+                GTOreDefinition.CODEC, GTOreDefinition.CODEC);
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_FLUID_DEFINITION,
+                BedrockFluidDefinition.FULL_CODEC, BedrockFluidDefinition.FULL_CODEC);
+        event.dataPackRegistry(GTRegistries.Keys.BEDROCK_ORE_DEFINITION,
+                BedrockOreDefinition.FULL_CODEC, BedrockOreDefinition.FULL_CODEC);
     }
 
     @SubscribeEvent
