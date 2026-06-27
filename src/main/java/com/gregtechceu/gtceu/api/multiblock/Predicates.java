@@ -120,26 +120,26 @@ public class Predicates {
     }
 
     public static BasePredicate blocks(@Nullable String debugName, Block... blocks) {
-        return blocks(debugName, () -> Arrays.stream(blocks));
+        return blocks(debugName, Arrays.stream(blocks));
     }
 
     public static BasePredicate blocks(@Nullable String debugName,
-                                       Supplier<Stream<Block>> blocks) {
-        return blocks(debugName, blocks, blocks);
+                                       Stream<Block> blocks) {
+        List<Block> blockList = blocks.toList();
+        return blocks(debugName, blockList, blockList.stream());
     }
 
     public static BasePredicate blocks(@Nullable String debugName,
-                                       Supplier<Stream<Block>> blocks,
-                                       Supplier<Stream<Block>> candidates) {
+                                       List<Block> blocks,
+                                       Stream<Block> candidates) {
         return customPredicate(debugName, ctx -> {
-            var blockList = blocks.get().toList();
-            for (var block : blockList) {
+            for (var block : blocks) {
                 if (ctx.state().is(block)) return true;
             }
-            return ctx.error(new BlockMatchingError(ctx.pos(), blockList));
-        }, candidates.get().map(BlockInfo::fromBlock), builder -> {
+            return ctx.error(new BlockMatchingError(ctx.pos(), blocks));
+        }, candidates.map(BlockInfo::fromBlock), builder -> {
             StringJoiner joiner = new StringJoiner(", ");
-            blocks.get().forEach(block -> joiner.add(blockToString(block)));
+            blocks.forEach(block -> joiner.add(blockToString(block)));
             builder.append(joiner);
         });
     }
@@ -362,16 +362,16 @@ public class Predicates {
 
     public static BasePredicate heatingCoils() {
         return blocks("HeatingCoils",
-                () -> GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
+                GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
                 // .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
     public static BasePredicate cleanroomFilters() {
         return blocks("CleanroomFilters",
-                () -> GTCEuAPI.CLEANROOM_FILTERS.values()
-                        .stream().map(Supplier::get),
-                () -> GTCEuAPI.CLEANROOM_FILTERS.entrySet()
+                GTCEuAPI.CLEANROOM_FILTERS.values()
+                        .stream().map(Supplier::get).toList(),
+                GTCEuAPI.CLEANROOM_FILTERS.entrySet()
                         .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getCleanroomType().getTier()))
                         .map(entry -> entry.getValue().get()))
@@ -381,9 +381,9 @@ public class Predicates {
 
     public static BasePredicate powerSubstationBatteries() {
         return blocks("PSS-Batteries",
-                () -> GTCEuAPI.PSS_BATTERIES.values()
-                        .stream().map(Supplier::get),
-                () -> GTCEuAPI.PSS_BATTERIES.entrySet()
+                GTCEuAPI.PSS_BATTERIES.values()
+                        .stream().map(Supplier::get).map(Block.class::cast).toList(),
+                GTCEuAPI.PSS_BATTERIES.entrySet()
                         .stream()
                         .sorted(Comparator.comparingInt(e -> e.getKey().getTier()))
                         .map(e -> e.getValue().get()))
