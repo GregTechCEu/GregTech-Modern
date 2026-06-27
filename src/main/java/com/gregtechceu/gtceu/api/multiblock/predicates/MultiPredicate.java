@@ -44,17 +44,17 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
 
     /// custom testing logic, usually checking if blockstate/entity is correct
     private boolean testInternal(PredicateContext ctx) {
-        return getType().run(ctx, this.predicateList, BasePredicate::test);
+        return getType().run(ctx, this, BasePredicate::test);
     }
 
     @Override
     public boolean testGlobalMin(PredicateContext ctx) {
-        return getType().run(ctx, this.predicateList, BasePredicate::testGlobalMin);
+        return getType().run(ctx, this, BasePredicate::testGlobalMin);
     }
 
     @Override
     public boolean testSliceMin(PredicateContext ctx) {
-        return getType().run(ctx, this.predicateList, BasePredicate::testSliceMin);
+        return getType().run(ctx, this, BasePredicate::testSliceMin);
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
@@ -80,8 +80,13 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
     }
 
     @Override
+    public List<BasePredicate> getInnerPredicates() {
+        return this.predicateList;
+    }
+
+    @Override
     public void visit(Consumer<BasePredicate> visitor) {
-        predicateList.forEach(p -> p.visit(visitor));
+        this.forEach(p -> p.visit(visitor));
     }
 
     public boolean isOr() {
@@ -111,7 +116,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
     }
 
     protected MultiPredicate copy() {
-        return new MultiPredicate(this.debugName, this.predicateList, this.getType());
+        return new MultiPredicate(this.debugName, this, this.getType());
     }
 
     @Override
@@ -142,7 +147,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
     @Override
     protected void appendContents(StringBuilder builder) {
         StringJoiner joiner = new StringJoiner(", ");
-        this.predicateList.forEach(p -> joiner.add(p.toString()));
+        this.forEach(p -> joiner.add(p.toString()));
         builder.append(joiner);
     }
 
@@ -156,7 +161,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         OR {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
+            protected boolean run(PredicateContext ctx, Iterable<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
                 for (BasePredicate basePredicate : predicates) {
                     if (extractor.test(basePredicate, ctx)) {
                         return true;
@@ -168,14 +173,14 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         }, AND {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
+            protected boolean run(PredicateContext ctx, Iterable<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
                 return !OR.run(ctx, predicates, extractor);
             }
 
         }, XOR {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
+            protected boolean run(PredicateContext ctx, Iterable<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
                 int passed = 0;
                 for (BasePredicate basePredicate : predicates) {
                     if (extractor.test(basePredicate, ctx)) {
@@ -186,7 +191,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
             }
         };
 
-        protected abstract boolean run(PredicateContext ctx, List<BasePredicate> predicates,
+        protected abstract boolean run(PredicateContext ctx, Iterable<BasePredicate> predicates,
                                        BiPredicate<BasePredicate, PredicateContext> extractor);
 
         /// @param a will have type set

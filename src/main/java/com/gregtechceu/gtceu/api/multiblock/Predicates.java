@@ -57,33 +57,7 @@ public class Predicates {
     }
 
     public static BasePredicate controller(BasePredicate predicate) {
-        return new BasePredicate() {
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return predicate.getCandidates();
-            }
-
-            @Override
-            public String getTypeName() {
-                return "Controller";
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                builder.append(predicate);
-            }
-
-            @Override
-            public boolean isController() {
-                return true;
-            }
-        };
+        return predicate.setController(true);
     }
 
     public static BasePredicate states(BlockState... allowedStates) {

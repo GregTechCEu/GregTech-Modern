@@ -35,6 +35,9 @@ public abstract class BasePredicate {
 
     @Getter
     @Setter
+    private boolean isController = false;
+    @Getter
+    @Setter
     protected int priority = 0;
     @Getter
     @Setter
@@ -157,10 +160,6 @@ public abstract class BasePredicate {
         return true;
     }
 
-    public boolean isController() {
-        return false;
-    }
-
     public BasePredicate setMinGlobalLimited(int min) {
         return this.setMinCount(min);
     }
@@ -214,6 +213,11 @@ public abstract class BasePredicate {
         return setDisableRenderFormed(true);
     }
 
+    /// @return a non-flattened list of predicates
+    public List<BasePredicate> getInnerPredicates() {
+        return List.of(this);
+    }
+
     /// visits every predicate
     public void visit(Consumer<BasePredicate> visitor) {
         visitor.accept(this);
@@ -236,6 +240,7 @@ public abstract class BasePredicate {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(getTypeName());
+        if (isController()) builder.append("[Controller]");
         builder.append('{');
         appendContents(builder);
         builder.append('}');
