@@ -1,20 +1,22 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.AccessLevel;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-public class MultiPredicate extends BasePredicate {
+public class MultiPredicate extends BasePredicate implements Iterable<BasePredicate> {
 
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
-    private final List<List<BlockInfo>> indexedCandidates;
     private final String debugName;
+    @Getter(AccessLevel.PROTECTED)
     private final Logic type;
     private final boolean hasAir;
 
@@ -22,21 +24,14 @@ public class MultiPredicate extends BasePredicate {
         this.debugName = debugName == null ? "MultiPredicate" : debugName;
         this.type = type;
         boolean hasAir = false;
-        List<List<BlockInfo>> indexedCandidates = new ArrayList<>();
         for (BasePredicate predicate : predicates) {
             hasAir |= predicate.hasAir();
-            if (!(predicate instanceof MultiPredicate multi)) {
-                addPredicates(predicate);
-                indexedCandidates.add(predicate.getCandidates());
-            } else if (!multi.sameType(this)) {
-                addPredicates(predicate);
-                indexedCandidates.add(predicate.getCandidates());
+            if (!(predicate instanceof MultiPredicate multi) || !multi.sameType(this)) {
+                addPredicate(predicate.simplify());
             } else {
-                addPredicates(multi.predicateList);
-                multi.predicateList.forEach(p -> indexedCandidates.add(p.getCandidates()));
+                addPredicates(multi);
             }
         }
-        this.indexedCandidates = Collections.unmodifiableList(indexedCandidates);
         this.hasAir = hasAir;
         sorted();
     }
@@ -48,36 +43,22 @@ public class MultiPredicate extends BasePredicate {
 
     /// custom testing logic, usually checking if blockstate/entity is correct
     private boolean testInternal(PredicateContext ctx) {
-        if (this.predicateList.isEmpty()) return true;
-        if (isSingle()) return this.predicateList.get(0).test(ctx);
         return getType().run(ctx, this.predicateList);
     }
 
-    /// test against global max count
-    private boolean testGlobalMax(PredicateContext ctx) {
-        ctx.globalCache().mergeInt(this, 1, Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
-        int count = ctx.globalCache().getInt(this);
-        if (maxCount == -1 || count <= maxCount) return true;
-        return ctx.error(SinglePredicateError.maxCount(this, count));
+    @Override
+    public Predicate<PredicateContext> getPredicate() {
+        // should a nested multi predicate respect its own global/slice max?
+        // precedent would say no
+        return this::testInternal;
     }
 
-    /// test against slice max count
-    private boolean testSliceMax(PredicateContext ctx) {
-        if (ctx.layerCache() == null) return true;
-        ctx.layerCache().mergeInt(this, 1, Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
-        int count = ctx.layerCache().getInt(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
-        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
-    }
-
-    protected MultiPredicate addPredicates(Collection<BasePredicate> predicates) {
-        predicates.forEach(this::addPredicates);
+    protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
+        predicates.forEach(this::addPredicate);
         return this;
     }
 
-    protected MultiPredicate addPredicates(BasePredicate predicate) {
+    protected MultiPredicate addPredicate(BasePredicate predicate) {
         this.predicateList.add(predicate);
         return this;
     }
@@ -91,7 +72,7 @@ public class MultiPredicate extends BasePredicate {
 
     @Override
     public List<BlockInfo> getCandidates(int index) {
-        return this.indexedCandidates.get(index);
+        return this.predicateList.get(index).getCandidates();
     }
 
     @Override
@@ -109,10 +90,6 @@ public class MultiPredicate extends BasePredicate {
 
     public boolean isXor() {
         return this.type == Logic.XOR;
-    }
-
-    protected Logic getType() {
-        return Objects.requireNonNull(type, "null type: " + this);
     }
 
     protected boolean sameType(MultiPredicate other) {
@@ -134,46 +111,28 @@ public class MultiPredicate extends BasePredicate {
     }
 
     @Override
-    public MultiPredicate or(BasePredicate other) {
-        if (!(other instanceof MultiPredicate multi)) {
-            return this.copy().addPredicates(other).sorted();
-        }
-
-        if (!isOr()) return multi.or(this);
-
-        return combine(this, multi, this.copy());
+    public BasePredicate or(BasePredicate other) {
+        return Logic.OR.combine(this, other);
     }
 
     @Override
-    public MultiPredicate and(BasePredicate other) {
-        if (!(other instanceof MultiPredicate multi)) {
-            return this.copy().addPredicates(other).sorted();
-        }
-
-        if (!isAnd()) return multi.and(this);
-
-        return combine(this, multi, this.copy());
+    public BasePredicate and(BasePredicate other) {
+        return Logic.AND.combine(this, other);
     }
 
     @Override
     public BasePredicate xor(BasePredicate other) {
-        if (!(other instanceof MultiPredicate multi)) {
-            return this.copy().addPredicates(other).sorted();
-        }
-
-        if (!isXor()) return multi.xor(this);
-
-        return combine(this, multi, this.copy());
+        return Logic.XOR.combine(this, other);
     }
 
     @Override
     public boolean isSingle() {
-        return this.predicateList.size() == 1;
+        return false;
     }
 
     @Override
     public String getTypeName() {
-        return debugName + '(' + (isSingle() ? "SINGLE" : this.type) + ')';
+        return debugName + '(' + this.type + ')';
     }
 
     @Override
@@ -183,17 +142,9 @@ public class MultiPredicate extends BasePredicate {
         builder.append(joiner);
     }
 
-    /// @param a will have type set
-    /// @param b will have type set
-    /// @param dest output predicate
-    private static MultiPredicate combine(MultiPredicate a, MultiPredicate b, MultiPredicate dest) {
-        if (a.getType() == b.getType()) {
-            dest.addPredicates(b.predicateList);
-        } else {
-            dest.addPredicates(b);
-        }
-
-        return dest.sorted();
+    @Override
+    public Iterator<BasePredicate> iterator() {
+        return this.predicateList.iterator();
     }
 
     protected enum Logic {
@@ -209,6 +160,7 @@ public class MultiPredicate extends BasePredicate {
                 }
                 return false;
             }
+
         },
         AND {
 
@@ -216,6 +168,7 @@ public class MultiPredicate extends BasePredicate {
             protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
                 return !OR.run(ctx, predicates);
             }
+
         },
         XOR {
 
@@ -229,8 +182,39 @@ public class MultiPredicate extends BasePredicate {
                 }
                 return passed == 1;
             }
+
         };
 
         protected abstract boolean run(PredicateContext ctx, List<BasePredicate> predicates);
+
+        /// @param a will have type set
+        /// @param b may or may not be a multi predicate
+        /// @return copy of {@code a} with {@code b} added
+        protected BasePredicate combine(MultiPredicate a, BasePredicate b) {
+            if (!(b instanceof MultiPredicate multi)) {
+                // b is not a multi predicate, simply add it
+                return a.copy().addPredicate(b.simplify()).sorted();
+            }
+
+            if (a.getType() != this && multi.getType() != this) {
+                // if neither predicate is of this type, make new multi predicate of this type
+                return new MultiPredicate(null, List.of(a, b), this);
+            } else if (a.getType() != this) {
+                // b must be of this type, flip operation to add a to b
+                return this.combine(multi, a);
+            }
+
+            // a must be of this type, b may or may not
+            var dest = a.copy();
+            if (a.getType() == multi.getType()) {
+                // add all inner predicates
+                dest.addPredicates(multi);
+            } else {
+                // add multi predicate as a simplified predicate
+                dest.addPredicate(multi.simplify());
+            }
+
+            return dest.sorted();
+        }
     }
 }
