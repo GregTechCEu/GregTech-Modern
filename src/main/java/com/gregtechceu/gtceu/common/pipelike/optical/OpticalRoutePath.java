@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IDataAccessMachine;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalDataAccessHatch;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.computation.ComputationPort;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 
@@ -16,7 +16,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider> {
+public class OpticalRoutePath implements IRoutePath<IDataAccessMachine> {
 
     @Getter
     private final OpticalPipeBlockEntity targetPipe;
@@ -38,20 +38,21 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
         return dataAccessHatch instanceof IOpticalDataAccessHatch opticalHatch ? opticalHatch : null;
     }
 
-    @Nullable
-    public IOpticalComputationProvider getComputationHatch() {
-        return getTargetCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetPipe.getPipeLevel());
-    }
-
     @Override
     public @NotNull BlockPos getTargetPipePos() {
         return targetPipe.getPipePos();
     }
 
     @Nullable
+    public ComputationPort getComputationPort(Level world) {
+        return GTCapabilityHelper.getComputationPort(world, getTargetPipePos().relative(targetFacing),
+                targetFacing.getOpposite());
+    }
+
+    @Nullable
     @Override
-    public IOpticalComputationProvider getHandler(Level world) {
-        return GTCapabilityHelper.getOpticalComputationProvider(world, getTargetPipePos().relative(targetFacing),
+    public IDataAccessMachine getHandler(Level world) {
+        return GTCapabilityHelper.getDataAccess(world, getTargetPipePos().relative(targetFacing),
                 targetFacing.getOpposite());
     }
 }

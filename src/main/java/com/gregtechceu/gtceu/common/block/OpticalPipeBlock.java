@@ -120,7 +120,9 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
                                          @Nullable BlockEntity tile) {
         if (tile == null) return false;
         if (tile.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, side.getOpposite()).isPresent()) return true;
-        return tile.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, side.getOpposite()).isPresent();
+        return tile.getCapability(GTCapability.CAPABILITY_COMPUTATION_PORT, side.getOpposite())
+                .map(port -> port.getComputationPortPolicy().acceptsOptical())
+                .orElse(false);
     }
 
     @Override

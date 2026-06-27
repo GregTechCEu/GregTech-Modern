@@ -40,6 +40,10 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         return serverLevel;
     }
 
+    public List<T> getPipeNets() {
+        return Collections.unmodifiableList(pipeNets);
+    }
+
     protected void init() {
         this.pipeNets.forEach(PipeNet::onNodeConnectionsUpdate);
     }

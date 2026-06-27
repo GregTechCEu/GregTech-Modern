@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.capability.WorldIDSaveData;
 import com.gregtechceu.gtceu.common.commands.GTCommands;
 import com.gregtechceu.gtceu.common.commands.HazardCommands;
 import com.gregtechceu.gtceu.common.commands.MedicalConditionCommands;
+import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
@@ -248,6 +249,7 @@ public class ForgeCommonEventListener {
     public static void levelTick(TickEvent.LevelTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
+            ComputationNetworkManager.get(serverLevel).tick();
             if (ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
                 EnvironmentalHazardSavedData.getOrCreate(serverLevel).tick();
                 LocalizedHazardSavedData.getOrCreate(serverLevel).tick();

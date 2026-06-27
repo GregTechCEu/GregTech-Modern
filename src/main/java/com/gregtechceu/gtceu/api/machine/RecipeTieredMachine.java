@@ -52,13 +52,8 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
     public final NotifiableFluidTank importFluids;
     @Persisted
     public final NotifiableFluidTank exportFluids;
-    @Persisted
-    public final NotifiableComputationContainer importComputation;
-    @Persisted
-    public final NotifiableComputationContainer exportComputation;
     @Getter
     protected RecipeHandlerList recipeHandlerList;
-
     @Persisted
     @Getter
     protected int overclockTier;
@@ -84,8 +79,6 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
         this.exportItems = createExportItemHandler(args);
         this.importFluids = createImportFluidHandler(args);
         this.exportFluids = createExportFluidHandler(args);
-        this.importComputation = createImportComputationContainer(args);
-        this.exportComputation = createExportComputationContainer(args);
     }
 
     @Override
@@ -118,16 +111,12 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
                 this.tankScalingFunction.applyAsInt(this.getTier()), IO.OUT);
     }
 
-    protected NotifiableComputationContainer createImportComputationContainer(Object... args) {
-        boolean transmitter = true;
-        if (args.length > 0 && args[args.length - 1] instanceof Boolean isTransmitter) {
-            transmitter = isTransmitter;
-        }
-        return new NotifiableComputationContainer(this, IO.IN, transmitter);
+    protected NetworkedComputationContainer createImportComputationContainer(Object... args) {
+        return new NetworkedComputationContainer(this, IO.IN);
     }
 
-    protected NotifiableComputationContainer createExportComputationContainer(Object... args) {
-        return new NotifiableComputationContainer(this, IO.OUT, false);
+    protected NetworkedComputationContainer createExportComputationContainer(Object... args) {
+        return new NetworkedComputationContainer(this, IO.OUT);
     }
 
     @Override

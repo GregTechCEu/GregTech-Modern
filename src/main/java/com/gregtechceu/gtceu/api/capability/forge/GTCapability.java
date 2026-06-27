@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.forge;
 
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.computation.ComputationPort;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
@@ -32,7 +33,7 @@ public class GTCapability {
             .get(new CapabilityToken<>() {});
     public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager
             .get(new CapabilityToken<>() {});
-    public static final Capability<IOpticalComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager
+    public static final Capability<ComputationPort> CAPABILITY_COMPUTATION_PORT = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IDataAccessMachine> CAPABILITY_DATA_ACCESS = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -59,7 +60,7 @@ public class GTCapability {
         event.register(IMaintenanceMachine.class);
         event.register(ITurbineMachine.class);
         event.register(ILaserContainer.class);
-        event.register(IOpticalComputationProvider.class);
+        event.register(ComputationPort.class);
         event.register(IDataAccessMachine.class);
         event.register(IMedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);

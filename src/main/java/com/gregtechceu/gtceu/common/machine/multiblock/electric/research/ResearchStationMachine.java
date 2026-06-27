@@ -1,29 +1,19 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.computation.ComputationConsumer;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.ActionResult;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.machine.trait.NetworkedComputationContainer;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
+
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -31,14 +21,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class ResearchStationMachine extends RecipeElectricMultiblockMachine
-                                    implements IOpticalComputationReceiver, IDisplayUIMachine {
+public class ResearchStationMachine extends RecipeElectricMultiblockMachine {
 
-    @Getter
-    private IOpticalComputationProvider computationProvider;
+    private final NetworkedComputationContainer importComputation;
 
     public ResearchStationMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+        this.importComputation = new NetworkedComputationContainer(this, IO.IN);
     }
 
     @Override
@@ -51,22 +40,7 @@ public class ResearchStationMachine extends RecipeElectricMultiblockMachine
                     return;
                 }
             }
-
-            part.self().holder.self()
-                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
-                    .ifPresent(provider -> this.computationProvider = provider);
         }
-
-        // should never happen, but would rather do this than have an obscure NPE
-        if (computationProvider == null) {
-            onStructureInvalid();
-        }
-    }
-
-    @Override
-    public void onStructureInvalid() {
-        computationProvider = null;
-        super.onStructureInvalid();
     }
 
     @Override
@@ -82,11 +56,8 @@ public class ResearchStationMachine extends RecipeElectricMultiblockMachine
                         "gtceu.multiblock.research_station.researching")
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
+                .addComputationUsageExactLine(importComputation.getReceivedCWUt())
                 .addWorkingStatusLine();
-
-        if(computationProvider != null) {
-            builder.addComputationUsageLine(computationProvider.getMaxCWUt());
-        }
 
         builder.addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
     }

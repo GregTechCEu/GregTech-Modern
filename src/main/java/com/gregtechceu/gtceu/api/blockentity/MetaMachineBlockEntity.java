@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.blockentity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
+import com.gregtechceu.gtceu.api.computation.ComputationPort;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -247,14 +248,10 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
-        } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
-            if (machine instanceof IOpticalComputationProvider computationProvider) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap,
-                        LazyOptional.of(() -> computationProvider));
-            }
-            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IOpticalComputationProvider.class);
+        } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PORT) {
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ComputationPort.class);
             if (!list.isEmpty()) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+                return GTCapability.CAPABILITY_COMPUTATION_PORT.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
             if (machine instanceof IDataAccessMachine computationProvider) {

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.computation.ComputationProducer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
@@ -64,8 +65,7 @@ import static com.gregtechceu.gtceu.data.recipe.CustomTags.HPCA_COOLANTS;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class HPCAMachine extends WorkableElectricMultiblockMachine
-                         implements IOpticalComputationProvider, IControllable {
+public class HPCAMachine extends WorkableElectricMultiblockMachine implements ComputationProducer {
 
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
@@ -128,22 +128,22 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        return getWorkLogic().isWorking() ? hpcaHandler.allocateCWUt(cwut, simulate) : 0;
-    }
-
-    @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public int getOfferedCWUt() {
         return getWorkLogic().isWorking() ? hpcaHandler.getMaxCWUt() : 0;
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        // don't show a problem if the structure is not yet formed
-        return !isFormed() || hpcaHandler.hasHPCABridge();
+    public void applyProducedCWUt(int allocatedCWUt) {
+        hpcaHandler.setAllocatedCWUt(allocatedCWUt);
+    }
+
+    public boolean hasHPCABridge() {
+        return hpcaHandler.hasHPCABridge();
+    }
+
+    @Override
+    public boolean canBridgeComputation() {
+        return hasHPCABridge();
     }
 
     @Override
@@ -177,7 +177,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         if (temperature >= DAMAGE_TEMPERATURE) {
             hpcaHandler.attemptDamageHPCA();
         }
-        hpcaHandler.tick();
     }
 
     private void updateActive(boolean active) {
@@ -243,14 +242,14 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                         // Energy Usage
                         tl.add(Component.translatable(
                                 "gtceu.multiblock.hpca.energy",
-                                FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
+                                FormattingUtil.formatNumbers(hpcaHandler.getCurrentEUt()),
                                 FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
                                 GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
                                 .withStyle(ChatFormatting.GRAY));
 
                         // Provided Computation
                         Component cwutInfo = Component.literal(
-                                hpcaHandler.cachedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
+                                hpcaHandler.allocatedCWUt + " / " + hpcaHandler.getMaxCWUt() + " CWU/t")
                                 .withStyle(ChatFormatting.AQUA);
                         tl.add(Component.translatable(
                                 "gtceu.multiblock.hpca.computation",
@@ -341,12 +340,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         @Getter
         private int allocatedCWUt;
 
-        // cached gui info
-        // holding these values past the computation clear because GUI is too "late" to read the state in time
-        private long cachedEUt;
-
-        private int cachedCWUt;
-
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
             this.controller = controller;
         }
@@ -379,14 +372,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             allocatedCWUt = 0;
         }
 
-        public void tick() {
-            if (cachedCWUt != allocatedCWUt) {
-                cachedCWUt = allocatedCWUt;
-            }
-            cachedEUt = getCurrentEUt();
-            if (allocatedCWUt != 0) {
-                allocatedCWUt = 0;
-            }
+        public void setAllocatedCWUt(int allocatedCWUt) {
+            this.allocatedCWUt = Math.max(0, Math.min(allocatedCWUt, getMaxCWUt()));
         }
 
         /**
@@ -485,18 +472,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                     candidates.get(GTValues.RNG.nextInt(candidates.size())).setDamaged(true);
                 }
             }
-        }
-
-        /** Allocate computation on a given request. Allocates for one tick. */
-        public int allocateCWUt(int cwut, boolean simulate) {
-            if (cwut == 0) return 0;
-            int maxCWUt = getMaxCWUt();
-            int availableCWUt = maxCWUt - this.allocatedCWUt;
-            int toAllocate = Math.min(cwut, availableCWUt);
-            if (!simulate) {
-                this.allocatedCWUt += toAllocate;
-            }
-            return toAllocate;
         }
 
         /** The maximum amount of CWUs (Compute Work Units) created per tick. */

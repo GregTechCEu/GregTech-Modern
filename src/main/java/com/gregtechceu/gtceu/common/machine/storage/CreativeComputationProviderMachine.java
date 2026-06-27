@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
+import com.gregtechceu.gtceu.api.computation.ComputationProducer;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
+import com.gregtechceu.gtceu.api.machine.trait.DirectComputationPortTrait;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -20,17 +21,14 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Collection;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeComputationProviderMachine extends MetaMachine
-                                                implements IUIMachine, IOpticalComputationProvider {
+                                                implements IUIMachine, ComputationProducer {
 
     @Persisted
     private int maxCWUt;
@@ -44,6 +42,7 @@ public class CreativeComputationProviderMachine extends MetaMachine
 
     public CreativeComputationProviderMachine(IMachineBlockEntity holder) {
         super(holder);
+        new DirectComputationPortTrait(this, true, this, null);
     }
 
     @Override
@@ -71,26 +70,13 @@ public class CreativeComputationProviderMachine extends MetaMachine
     }
 
     @Override
-    public int requestCWUt(
-                           int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        int requestedCWUt = active ? Math.min(cwut, maxCWUt) : 0;
-        if (!simulate) {
-            this.requestedCWUPerSec += requestedCWUt;
-        }
-        return requestedCWUt;
-    }
-
-    @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
+    public int getOfferedCWUt() {
         return active ? maxCWUt : 0;
     }
 
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        return true;
+    public void applyProducedCWUt(int allocatedCWUt) {
+        this.requestedCWUPerSec += allocatedCWUt;
     }
 
     public void setActive(boolean active) {

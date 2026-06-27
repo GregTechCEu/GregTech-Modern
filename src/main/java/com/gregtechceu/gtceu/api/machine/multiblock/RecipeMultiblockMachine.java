@@ -33,7 +33,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine implements IRecipeLogicMachine {
+public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine
+                                            implements IRecipeLogicMachine {
 
     @Nullable
     @Getter
