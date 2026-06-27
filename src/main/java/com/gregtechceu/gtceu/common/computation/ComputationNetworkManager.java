@@ -99,6 +99,81 @@ public class ComputationNetworkManager {
         return 0;
     }
 
+    public List<DebugTopology> getDebugTopologies() {
+        List<DebugTopology> topologies = new ArrayList<>();
+        for (ComputationNetwork network : networks) {
+            Set<ComputationPortTrait> networkNodes = new HashSet<>(network.nodes);
+            List<BlockPos> nodes = network.nodes.stream()
+                    .map(ComputationPortTrait::getPortPos)
+                    .toList();
+            List<DebugEdge> edges = new ArrayList<>();
+
+            collectDebugAdjacentEdges(networkNodes, edges);
+            collectDebugOpticalEdges(networkNodes, edges);
+            collectDebugNetworkSwitchEdges(networkNodes, edges);
+
+            topologies.add(new DebugTopology(nodes, edges));
+        }
+        return topologies;
+    }
+
+    private void collectDebugAdjacentEdges(Set<ComputationPortTrait> networkNodes, List<DebugEdge> edges) {
+        Map<BlockPos, ComputationPortTrait> portsByPos = new HashMap<>();
+        for (ComputationPortTrait port : networkNodes) {
+            portsByPos.put(port.getPortPos(), port);
+        }
+
+        for (ComputationPortTrait port : networkNodes) {
+            if (!port.getComputationPortPolicy().acceptsAdjacent()) continue;
+            for (Direction direction : GTUtil.DIRECTIONS) {
+                ComputationPortTrait other = portsByPos.get(port.getPortPos().relative(direction));
+                if (other != null && other.getComputationPortPolicy().acceptsAdjacent()) {
+                    addDebugEdge(edges, port, other);
+                }
+            }
+        }
+    }
+
+    private void collectDebugOpticalEdges(Set<ComputationPortTrait> networkNodes, List<DebugEdge> edges) {
+        for (ComputationPortTrait port : networkNodes) {
+            if (!port.getComputationPortPolicy().acceptsOptical()) continue;
+            ComputationPortTrait target = findOpticalRouteTarget(port);
+            if (target == null || target == port || !networkNodes.contains(target) ||
+                    !target.getComputationPortPolicy().acceptsOptical()) continue;
+            if (!canUseComputationRoute(port, target)) continue;
+            addDebugEdge(edges, port, target);
+        }
+    }
+
+    private void collectDebugNetworkSwitchEdges(Set<ComputationPortTrait> networkNodes, List<DebugEdge> edges) {
+        Map<NetworkSwitchMachine, ComputationPortTrait> firstPortBySwitch = new HashMap<>();
+        for (ComputationPortTrait port : networkNodes) {
+            if (!(port.getMachine() instanceof IMultiPart part) || !part.isFormed()) continue;
+            for (IMultiController controller : part.getControllers()) {
+                if (controller instanceof NetworkSwitchMachine networkSwitch && isNetworkSwitchUsable(networkSwitch)) {
+                    ComputationPortTrait first = firstPortBySwitch.putIfAbsent(networkSwitch, port);
+                    if (first != null) {
+                        addDebugEdge(edges, first, port);
+                    }
+                }
+            }
+        }
+    }
+
+    private void addDebugEdge(List<DebugEdge> edges, ComputationPortTrait first, ComputationPortTrait second) {
+        BlockPos firstPos = first.getPortPos();
+        BlockPos secondPos = second.getPortPos();
+        if (firstPos.asLong() > secondPos.asLong()) {
+            BlockPos swap = firstPos;
+            firstPos = secondPos;
+            secondPos = swap;
+        }
+        DebugEdge edge = new DebugEdge(firstPos, secondPos);
+        if (!edges.contains(edge)) {
+            edges.add(edge);
+        }
+    }
+
     private void rebuildNetworks() {
         topologyDirty = false;
         networks.clear();
@@ -229,6 +304,12 @@ public class ComputationNetworkManager {
         }
     }
 
+    public record DebugTopology(List<BlockPos> nodes, List<DebugEdge> edges) {
+    }
+
+    public record DebugEdge(BlockPos first, BlockPos second) {
+    }
+
     private static class ComputationNetwork {
 
         private final ComputationSolver solver = new ComputationSolver();
@@ -244,7 +325,7 @@ public class ComputationNetworkManager {
             nodes.clear();
             consumers.clear();
             nodes.addAll(newNodes);
-            for(var node: newNodes) {
+            for (var node : newNodes) {
                 node.getComputationConsumer().ifPresent(consumers::add);
             }
         }

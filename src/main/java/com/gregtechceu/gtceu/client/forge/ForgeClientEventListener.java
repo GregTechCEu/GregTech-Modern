@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.client.EnvironmentalHazardClientHandler;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighlightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.NetworkDebugRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.commands.GTClientCommands;
@@ -61,6 +62,7 @@ public class ForgeClientEventListener {
             // transparent blocks.
             MultiblockInWorldPreviewRenderer.renderInWorldPreview(event.getPoseStack(), event.getCamera(),
                     event.getPartialTick());
+            NetworkDebugRenderer.render(event.getPoseStack(), event.getCamera());
         }
     }
 
@@ -148,6 +150,7 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onLevelUnloadEvent(LevelEvent.Unload event) {
         FacadeCoverRenderer.clearItemModelCache();
+        NetworkDebugRenderer.clear();
     }
 
     private static final String BLOCK_INFO_LINE_START = ChatFormatting.UNDERLINE + "Targeted Block: ";
@@ -203,6 +206,7 @@ public class ForgeClientEventListener {
 
     @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
+        NetworkDebugRenderer.clear();
         ClientCacheManager.allowReinit();
     }
 

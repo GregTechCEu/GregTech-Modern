@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.capability.LocalizedHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.SPacketNetworkDebug;
 import com.gregtechceu.gtceu.common.network.packets.prospecting.SPacketProspectBedrockFluid;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -72,7 +73,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         SHOW_MACHINE_INFO("behavior.portable_scanner.mode.show_machine_info"),
         SHOW_ELECTRICAL_INFO("behavior.portable_scanner.mode.show_electrical_info"),
         SHOW_RECIPE_INFO("behavior.portable_scanner.mode.show_recipe_info"),
-        SHOW_ENVIRONMENTAL_INFO("behavior.portable_scanner.mode.show_environmental_info");
+        SHOW_ENVIRONMENTAL_INFO("behavior.portable_scanner.mode.show_environmental_info"),
+        SHOW_NETWORK_DEBUG("behavior.portable_scanner.mode.show_network_debug");
 
         private final String langKey;
 
@@ -158,6 +160,13 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     public int addScannerInfo(Player player, Level level, BlockPos pos, DisplayMode mode, List<Component> list) {
+        if (mode == DisplayMode.SHOW_NETWORK_DEBUG && level instanceof ServerLevel serverLevel &&
+                player instanceof ServerPlayer serverPlayer) {
+            GTNetwork.sendToPlayer(serverPlayer, new SPacketNetworkDebug(serverLevel));
+            list.add(Component.translatable("behavior.portable_scanner.network_debug.synced"));
+            return 0;
+        }
+
         BlockEntity tileEntity = level.getBlockEntity(pos);
         int energyCost = 0;
 
@@ -181,7 +190,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             // Hardness and blast resistance
             list.add(Component.translatable("behavior.portable_scanner.block_hardness",
                     Component.translatable(
-                            FormattingUtil.formatNumbers(block.defaultDestroyTime()))
+                                    FormattingUtil.formatNumbers(block.defaultDestroyTime()))
                             .withStyle(ChatFormatting.YELLOW),
                     Component.translatable(FormattingUtil.formatNumbers(block.getExplosionResistance()))
                             .withStyle(ChatFormatting.YELLOW)));
@@ -273,7 +282,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
+                                                GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
                                         .withStyle(ChatFormatting.RED)));
@@ -284,10 +293,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
+                                                GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                        FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
+                                                FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                     list.add(Component.translatable("behavior.portable_scanner.energy_container_storage",
@@ -340,7 +349,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(EUt.getTotalEU()))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                        FormattingUtil.formatNumbers(EUt.amperage()))
+                                                FormattingUtil.formatNumbers(EUt.amperage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                 }
@@ -406,7 +415,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(stack.getTranslationKey())
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(
-                                        veinData.getFluidYield(chunkX, chunkZ)))
+                                                veinData.getFluidYield(chunkX, chunkZ)))
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(fluidPercent))
                                         .withStyle(ChatFormatting.YELLOW)));

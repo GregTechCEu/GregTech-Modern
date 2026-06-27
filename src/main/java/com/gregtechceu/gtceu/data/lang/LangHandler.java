@@ -838,6 +838,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.mode.show_electrical_info", "Show electrical info");
         provider.add("behavior.portable_scanner.mode.show_recipe_info", "Show recipe info");
         provider.add("behavior.portable_scanner.mode.show_environmental_info", "Show environmental info");
+        provider.add("behavior.portable_scanner.mode.show_network_debug", "Show network debug");
+        provider.add("behavior.portable_scanner.network_debug.synced", "Network debug data synced");
         provider.add("behavior.item_magnet.enabled", "§aMagnetic Field Enabled");
         provider.add("behavior.item_magnet.disabled", "§cMagnetic Field Disabled");
         provider.add("behavior.data_item.title", "§n%s Construction Data:");
