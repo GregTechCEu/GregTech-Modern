@@ -249,28 +249,15 @@ public abstract class BasePredicate {
 
     // === instance methods ===
     public BasePredicate or(BasePredicate other) {
-        return or(this, other);
+        return or(null, List.of(this, other));
     }
 
     public BasePredicate and(BasePredicate other) {
-        return and(this, other);
+        return and(null, List.of(this, other));
     }
 
     public BasePredicate xor(BasePredicate other) {
-        return xor(this, other);
-    }
-
-    // === private static helpers ===
-    private static BasePredicate or(BasePredicate a, BasePredicate b) {
-        return or(null, List.of(a, b));
-    }
-
-    private static BasePredicate and(BasePredicate a, BasePredicate b) {
-        return and(null, List.of(a, b));
-    }
-
-    private static BasePredicate xor(BasePredicate a, BasePredicate b) {
-        return xor(null, List.of(a, b));
+        return xor(null, List.of(this, other));
     }
 
     // === public static helpers ===
