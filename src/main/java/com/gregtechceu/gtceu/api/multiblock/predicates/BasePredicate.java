@@ -82,32 +82,22 @@ public abstract class BasePredicate {
         return ctx.error(SinglePredicateError.maxLayerCount(this, count));
     }
 
-    /// method called after all blocks have been iterated, used for checking min values
-    public boolean postTest(PredicateContext ctx) {
-        return true;
-    }
-
     /// test against global max count
-    protected boolean testGlobalMin(PredicateContext ctx) {
-        ctx.globalCache().mergeInt(this, 1, Integer::sum);
+    public boolean testGlobalMin(PredicateContext ctx) {
         if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
         int count = ctx.globalCache().getInt(this);
-        if (maxCount == -1 || count <= maxCount) return true;
-        return ctx.error(SinglePredicateError.maxCount(this, count));
+        if (minCount == -1 || count >= minCount) return true;
+        return ctx.error(SinglePredicateError.minCount(this, count));
     }
 
     /// test against slice max count
-    protected boolean testSliceMin(PredicateContext ctx) {
+    public boolean testSliceMin(PredicateContext ctx) {
         if (ctx.layerCache() == null) return true;
-        ctx.layerCache().mergeInt(this, 1, Integer::sum);
         if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
         int count = ctx.layerCache().getInt(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
-        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+        if (minSliceCount == -1 || count >= minSliceCount) return true;
+        return ctx.error(SinglePredicateError.minLayerCount(this, count));
     }
-
-    /// returns the internal predicate
-    public abstract Predicate<PredicateContext> getPredicate();
 
     /// computes the candidates for this predicate
     public List<BlockInfo> computeCandidates() {
@@ -237,16 +227,6 @@ public abstract class BasePredicate {
         return Collections.unmodifiableList(result);
     }
 
-    protected boolean isSimplified() {
-        return false;
-    }
-
-    /// simplify this predicate to just the internal predicate
-    public final BasePredicate simplify() {
-        if (isSimplified()) return this;
-        return simplify(getTypeName(), getPredicate(), getCandidates(), this::appendContents);
-    }
-
     /// the type of this predicate
     public abstract String getTypeName();
 
@@ -305,42 +285,6 @@ public abstract class BasePredicate {
         return create(debugName, predicate, Stream.empty(), null);
     }
 
-    private static BasePredicate simplify(String debugName, Predicate<PredicateContext> predicate,
-                                          List<BlockInfo> candidateList, Consumer<StringBuilder> contents) {
-        return new BasePredicate() {
-
-            @Override
-            public String getTypeName() {
-                return debugName + "(Simplified)";
-            }
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return candidateList;
-            }
-
-            @Override
-            public Predicate<PredicateContext> getPredicate() {
-                return predicate;
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                contents.accept(builder);
-            }
-
-            @Override
-            protected boolean isSimplified() {
-                return true;
-            }
-        };
-    }
-
     // this uses stream for lazy initialization
     public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
                                        Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
@@ -349,11 +293,6 @@ public abstract class BasePredicate {
             @Override
             public boolean test(PredicateContext ctx) {
                 return predicate.test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
-            }
-
-            @Override
-            public Predicate<PredicateContext> getPredicate() {
-                return predicate;
             }
 
             @Override

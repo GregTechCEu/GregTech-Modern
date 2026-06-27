@@ -7,10 +7,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public class MultiPredicate extends BasePredicate implements Iterable<BasePredicate> {
 
@@ -27,7 +28,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         for (BasePredicate predicate : predicates) {
             hasAir |= predicate.hasAir();
             if (!(predicate instanceof MultiPredicate multi) || !multi.sameType(this)) {
-                addPredicate(predicate.simplify());
+                addPredicate(predicate);
             } else {
                 addPredicates(multi);
             }
@@ -43,14 +44,17 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
 
     /// custom testing logic, usually checking if blockstate/entity is correct
     private boolean testInternal(PredicateContext ctx) {
-        return getType().run(ctx, this.predicateList);
+        return getType().run(ctx, this.predicateList, BasePredicate::test);
     }
 
     @Override
-    public Predicate<PredicateContext> getPredicate() {
-        // should a nested multi predicate respect its own global/slice max?
-        // precedent would say no
-        return this::testInternal;
+    public boolean testGlobalMin(PredicateContext ctx) {
+        return getType().run(ctx, this.predicateList, BasePredicate::testGlobalMin);
+    }
+
+    @Override
+    public boolean testSliceMin(PredicateContext ctx) {
+        return getType().run(ctx, this.predicateList, BasePredicate::testSliceMin);
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
@@ -152,40 +156,38 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         OR {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
                 for (BasePredicate basePredicate : predicates) {
-                    if (basePredicate.test(ctx)) {
+                    if (extractor.test(basePredicate, ctx)) {
                         return true;
                     }
                 }
                 return false;
             }
 
-        },
-        AND {
+        }, AND {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
-                return !OR.run(ctx, predicates);
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
+                return !OR.run(ctx, predicates, extractor);
             }
 
-        },
-        XOR {
+        }, XOR {
 
             @Override
-            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates) {
+            protected boolean run(PredicateContext ctx, List<BasePredicate> predicates, BiPredicate<BasePredicate, PredicateContext> extractor) {
                 int passed = 0;
                 for (BasePredicate basePredicate : predicates) {
-                    if (basePredicate.test(ctx)) {
+                    if (extractor.test(basePredicate, ctx)) {
                         if (++passed > 1) return false;
                     }
                 }
                 return passed == 1;
             }
-
         };
 
-        protected abstract boolean run(PredicateContext ctx, List<BasePredicate> predicates);
+        protected abstract boolean run(PredicateContext ctx, List<BasePredicate> predicates,
+                                       BiPredicate<BasePredicate, PredicateContext> extractor);
 
         /// @param a will have type set
         /// @param b may or may not be a multi predicate
@@ -193,7 +195,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         protected BasePredicate combine(MultiPredicate a, BasePredicate b) {
             if (!(b instanceof MultiPredicate multi)) {
                 // b is not a multi predicate, simply add it
-                return a.copy().addPredicate(b.simplify()).sorted();
+                return a.copy().addPredicate(b).sorted();
             }
 
             if (a.getType() != this && multi.getType() != this) {
@@ -211,7 +213,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
                 dest.addPredicates(multi);
             } else {
                 // add multi predicate as a simplified predicate
-                dest.addPredicate(multi.simplify());
+                dest.addPredicate(multi);
             }
 
             return dest.sorted();

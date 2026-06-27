@@ -167,10 +167,11 @@ public class BlockPattern implements IBlockPattern {
         sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
+        // global min check
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().getMinCount()) {
-                patternState.setError(SinglePredicateError
-                        .minCount(entry.getKey(), entry.getIntValue()));
+            List<PatternError> res = new ArrayList<>();
+            if (!entry.getKey().testGlobalMin(patternState.toContext(res::add))) {
+                patternState.setErrors(res);
                 return false;
             }
         }
@@ -220,8 +221,8 @@ public class BlockPattern implements IBlockPattern {
                 }
 
                 List<PatternError> res = new ArrayList<>();
-                boolean passed = pred.test(patternState.toContext(res::add));
-                if (!passed) {
+                // internal predicate check, global/slice max checks
+                if (!pred.test(patternState.toContext(res::add))) {
                     patternState.setErrors(res);
                     return false;
                 }
@@ -233,10 +234,11 @@ public class BlockPattern implements IBlockPattern {
             charPos.set(stringStart);
         }
 
+        // slice min check
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().getMinSliceCount()) {
-                patternState.setError(
-                        SinglePredicateError.minLayerCount(entry.getKey(), entry.getIntValue()));
+            List<PatternError> res = new ArrayList<>();
+            if (!entry.getKey().testSliceMin(patternState.toContext(res::add))) {
+                patternState.setErrors(res);
                 return false;
             }
         }
