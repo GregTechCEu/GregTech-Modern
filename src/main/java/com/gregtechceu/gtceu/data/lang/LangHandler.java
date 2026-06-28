@@ -627,7 +627,7 @@ public class LangHandler {
         replace(provider, GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
 
         provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
-        provider.add("block.surface_rock", "%s Surface Rock");
+        provider.add("block.gtceu.surface_rock", "%s Surface Rock");
 
         provider.add("item.gtceu.tiny_gunpowder_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gtceu.small_gunpowder_dust", "Small Pile of Gunpowder");
