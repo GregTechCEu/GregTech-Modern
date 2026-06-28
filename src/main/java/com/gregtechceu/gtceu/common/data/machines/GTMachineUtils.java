@@ -533,8 +533,8 @@ public class GTMachineUtils {
                                                                      Supplier<Block> casing,
                                                                      Supplier<MetaMachineBlock> valve,
                                                                      @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder<?, ?, ?> builder = registrate
+                                                                     BiConsumer<MultiblockMachineBuilder<MultiblockTankMachine>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<MultiblockTankMachine> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
@@ -571,12 +571,11 @@ public class GTMachineUtils {
         return builder.register();
     }
 
-    public static <
-            MACHINE extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate,
-                                                                                                            String name,
-                                                                                                            MachineInstanceFactory.Tiered<MACHINE> factory,
-                                                                                                            BiFunction<Integer, MultiblockMachineBuilder<?, MACHINE, ?>, MultiblockMachineDefinition> builder,
-                                                                                                            int... tiers) {
+    public static <M extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate,
+                                                                                                             String name,
+                                                                                                             MachineInstanceFactory.Tiered<M> factory,
+                                                                                                             BiFunction<Integer, MultiblockMachineBuilder<M>, MultiblockMachineDefinition> builder,
+                                                                                                             int... tiers) {
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate

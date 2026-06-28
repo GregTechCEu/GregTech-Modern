@@ -187,34 +187,33 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         });
     }
 
-    public <DEFINITION extends MachineDefinition,
-            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory,
-                blockFactory, itemFactory, blockEntityFactory);
+    // Machines
+
+    public <D extends MachineDefinition, M extends MetaMachine, S extends MachineBuilder<D, M, S>> MachineBuilder<D, M, S> machine(String name,
+                                                                                                                                   Function<ResourceLocation, D> definitionFactory,
+                                                                                                                                   BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory,
+                                                                                                                                   BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                                   MachineInstanceFactory<M> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, definitionFactory, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new,
-                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
+    public <M extends MetaMachine, S extends MachineBuilder<MachineDefinition, M, S>> MachineBuilder<MachineDefinition, M, S> machine(String name,
+                                                                                                                                      MachineInstanceFactory<M> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name,
-                blockFactory, itemFactory, blockEntityFactory);
+    // Multiblock machines
+
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<M> multiblock(String name,
+                                                                                          BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                          BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
-                blockEntityFactory);
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<M> multiblock(String name,
+                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     // Recipe types
@@ -349,7 +348,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?, ?>, RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?, ?>, @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> creativeModeTab() {
         return this.currentTab;

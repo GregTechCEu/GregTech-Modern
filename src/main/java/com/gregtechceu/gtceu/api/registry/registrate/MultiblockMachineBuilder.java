@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -30,33 +29,24 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
-        MACHINE extends MultiblockControllerMachine,
-        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>>
-                                     extends MachineBuilder<DEFINITION, MACHINE, SELF> {
+public class MultiblockMachineBuilder<M extends MultiblockControllerMachine> extends MachineBuilder<MultiblockMachineDefinition, M, MultiblockMachineBuilder<M>> {
 
     private boolean generator;
     private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
+
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
     private @Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
-
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
-                blockFactory,
-                itemFactory, blockEntityFactory);
+                                    MachineInstanceFactory<M> blockEntityFactory) {
+        super(registrate, name, MultiblockMachineDefinition::new, blockFactory, itemFactory, blockEntityFactory);
         patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
@@ -64,61 +54,61 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public SELF generator(boolean generator) {
+    public MultiblockMachineBuilder<M> generator(boolean generator) {
         this.generator = generator;
         return getThis();
     }
 
-    public SELF pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<M> pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
         return getThis();
     }
 
-    public SELF pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<M> pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(structureName, pattern);
         return getThis();
     }
 
-    public SELF allowFlip(boolean allowFlip) {
+    public MultiblockMachineBuilder<M> allowFlip(boolean allowFlip) {
         this.allowFlip = allowFlip;
         return getThis();
     }
 
-    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public MultiblockMachineBuilder<M> partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public SELF partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilder<M> partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public SELF additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
+    public MultiblockMachineBuilder<M> additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }
 
-    public SELF recoveryItems(Supplier<ItemLike[]> items) {
+    public MultiblockMachineBuilder<M> recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
         return getThis();
     }
 
-    public SELF recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public MultiblockMachineBuilder<M> recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return getThis();
     }
 
     @Tolerate
-    public SELF partSorter(Comparator<MultiblockPartMachine> sorter) {
+    public MultiblockMachineBuilder<M> partSorter(Comparator<MultiblockPartMachine> sorter) {
         this.partSorter = $ -> sorter;
         return getThis();
     }
 
     @Override
     @HideFromJS
-    public DEFINITION register() {
+    public MultiblockMachineDefinition register() {
         var definition = super.register();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
