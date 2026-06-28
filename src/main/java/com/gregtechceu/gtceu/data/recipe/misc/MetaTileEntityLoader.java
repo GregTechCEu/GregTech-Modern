@@ -1227,10 +1227,7 @@ public class MetaTileEntityLoader {
             // Leaves UHV+ machine recipes to be implemented by addons.
             if (machine != null) {
                 Object[] prepRecipe = prepareRecipe(machine.getTier(), Arrays.copyOf(recipe, recipe.length));
-                if (prepRecipe == null) {
-                    return;
-                }
-                VanillaRecipeHelper.addShapedRecipe(provider, setMaterialInfoData, machine.getName(), machine.asStack(),
+                VanillaRecipeHelper.addShapedRecipe(provider, setMaterialInfoData, machine.getId(), machine.asStack(),
                         prepRecipe);
             }
         }

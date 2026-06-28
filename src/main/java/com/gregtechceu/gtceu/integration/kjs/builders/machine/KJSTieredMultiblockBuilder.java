@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 
@@ -22,12 +21,12 @@ import java.util.Locale;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMultiblockBuilder<P, M extends MultiblockControllerMachine> extends BuilderBase<MultiblockMachineDefinition> {
+public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition> {
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
     @Setter
-    public transient MachineInstanceFactory.Tiered<M> machine;
+    public transient MachineInstanceFactory.Tiered<? extends MultiblockControllerMachine> machine;
     @Setter
     public transient DefinitionFunction definition = (tier, def) -> def.tier(tier);
 
@@ -37,7 +36,8 @@ public class KJSTieredMultiblockBuilder<P, M extends MultiblockControllerMachine
         this.dummyBuilder = true;
     }
 
-    public KJSTieredMultiblockBuilder(ResourceLocation id, MachineInstanceFactory.Tiered<M> machine) {
+    public KJSTieredMultiblockBuilder(ResourceLocation id,
+                                      MachineInstanceFactory.Tiered<MultiblockControllerMachine> machine) {
         this(id);
         this.machine = machine;
     }
@@ -60,7 +60,7 @@ public class KJSTieredMultiblockBuilder<P, M extends MultiblockControllerMachine
 
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> builder = GTRegistrate
+            MultiblockMachineBuilder<?, ?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.buildMachine(holder, tier));
@@ -75,6 +75,6 @@ public class KJSTieredMultiblockBuilder<P, M extends MultiblockControllerMachine
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?, ?> builder);
+        void apply(int tier, MultiblockMachineBuilder<?, ?> builder);
     }
 }

@@ -139,7 +139,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements ISyncM
                     cover.coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
                 if (machine != null) {
-                    smart.setModeFromMachine(machine.getDefinition().getName());
+                    // TODO make this use machines' definitions or full IDs?
+                    smart.setModeFromMachine(machine.getDefinition().getId().getPath());
                 }
             }
             this.onFilterLoaded.accept(this.filter);

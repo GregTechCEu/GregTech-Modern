@@ -108,7 +108,6 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
-import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
@@ -143,13 +142,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
             reg.add(GTCEu.id("generator"), KJSTieredMachineBuilder.class, (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
 
-            @SuppressWarnings("unchecked")
-            Class<? extends BuilderBase<? extends MachineDefinition>> multiblockBuilderClass = (Class<? extends BuilderBase<? extends MachineDefinition>>) KJSMultiblockMachineBuilder.class;
-            reg.add(GTCEu.id("multiblock"), multiblockBuilderClass, KJSMultiblockMachineBuilder::createKJSMulti);
-            @SuppressWarnings("unchecked")
-            Class<? extends BuilderBase<? extends MachineDefinition>> tieredMultiblockBuilderClass = (Class<? extends BuilderBase<? extends MachineDefinition>>) KJSTieredMultiblockBuilder.class;
-            reg.add(GTCEu.id("tiered_multiblock"), tieredMultiblockBuilderClass, KJSTieredMultiblockBuilder::new);
-            reg.add(GTCEu.id("primitive"), multiblockBuilderClass, (id) -> KJSMultiblockMachineBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new));
+            reg.add(GTCEu.id("multiblock"), KJSMultiblockMachineBuilder.class, KJSMultiblockMachineBuilder::create);
+            reg.add(GTCEu.id("tiered_multiblock"), KJSTieredMultiblockBuilder.class, KJSTieredMultiblockBuilder::new);
+            reg.add(GTCEu.id("primitive"), KJSMultiblockMachineBuilder.class, (id) -> KJSMultiblockMachineBuilder.create(id, PrimitiveWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {

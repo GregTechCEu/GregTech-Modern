@@ -54,7 +54,8 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
             itemFilter = ItemFilter.loadFilter(attachItem);
             if (itemFilter instanceof SmartItemFilter smart && coverHolder instanceof MachineCoverContainer mcc) {
                 var machine = MetaMachine.getMachine(mcc.getLevel(), mcc.getBlockPos());
-                if (machine != null) smart.setModeFromMachine(machine.getDefinition().getName());
+                // TODO make this use machines' definitions or full IDs?
+                if (machine != null) smart.setModeFromMachine(machine.getDefinition().getId().getPath());
             }
         }
         return itemFilter;

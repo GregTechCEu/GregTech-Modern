@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 
-public class MachineBuilderWrapper<D extends MachineDefinition, B extends MachineBuilder<D, ?, B>> extends BuilderBase<D> implements IMachineBuilderKJS {
+public class MachineBuilderWrapper<D extends MachineDefinition, B extends MachineBuilder<D, ?, ?, B>> extends BuilderBase<D> implements IMachineBuilderKJS {
 
     protected final B builder;
 

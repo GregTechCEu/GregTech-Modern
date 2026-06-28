@@ -26,7 +26,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private boolean generator;
     @Getter
-    private Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
+    private final Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
     @Getter
     @Setter
     private boolean allowFlip;
@@ -35,8 +35,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private boolean renderXEIPreview;
     @Setter
     @Getter
-    @Nullable
-    private Supplier<ItemStack[]> recoveryItems;
+    private @Nullable Supplier<ItemStack[]> recoveryItems;
     @Setter
     @Getter
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter;

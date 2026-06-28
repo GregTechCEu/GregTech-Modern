@@ -20,21 +20,17 @@ public class QuantumTankMachineItem extends MetaMachineItem {
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        long capacity = 0L;
-
-        if (!QuantumTankMachine.TANK_CAPACITY.containsKey(getDefinition())) {
-            GTCEu.LOGGER.error(
-                    "Quantum tank " + getDefinition().getName() +
-                            " does not have a registered TANK_CAPACITY, using capacity 0.");
+        final long capacity;
+        if (QuantumTankMachine.TANK_CAPACITY.containsKey(getDefinition().getHolder())) {
+            capacity = QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition().getHolder());
         } else {
-            capacity = QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition());
+            GTCEu.LOGGER.error("Quantum tank {} does not have a registered TANK_CAPACITY, will have capacity 0.",
+                    getDefinition().getId());
+            capacity = 0L;
         }
 
-        final long finalCapacity = capacity;
-
-        event.registerItem(
-                Capabilities.FluidHandler.ITEM,
-                (stack, ignored) -> new QuantumFluidHandlerItemStack(stack, finalCapacity),
+        event.registerItem(Capabilities.FluidHandler.ITEM,
+                (stack, ignored) -> new QuantumFluidHandlerItemStack(stack, capacity),
                 this);
     }
 }
