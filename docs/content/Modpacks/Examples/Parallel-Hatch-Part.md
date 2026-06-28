@@ -12,7 +12,7 @@ const $ParallelHatchPartMachine = Java.loadClass(
     "com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine"
 ); // (1)
 
-GTCEuStartupEvents.registry("gtceu:machine", (event) => {
+StartupEvents.registry("gtceu:machine", (event) => {
   event
       .create("parallel_hatch", "custom") // (2)
       .tiers(GTValues.UHV, GTValues.UIV, GTValues.UEV, GTValues.UXV) // (3)

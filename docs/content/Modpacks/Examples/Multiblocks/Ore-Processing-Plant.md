@@ -9,7 +9,7 @@ title: "Ore Processing Plant"
 
 === "JavaScript"
     ```js title="ore_processing_plant.js"
-    GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
+    StartupEvents.registry('gtceu:recipe_type', event => {
         event.create('ore_processing_plant')
             .category('ore_processing_plant')
             .setEUIO('in')
@@ -30,7 +30,7 @@ title: "Ore Processing Plant"
 ## Multiblock
 === "JavaScript"
     ```js title="ore_processing_plant.js"
-    GTCEuStartupEvents.registry('gtceu:machine', event => {
+    StartupEvents.registry('gtceu:machine', event => {
         event.create('ore_processing_plant', 'multiblock')
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType('ore_processing_plant')

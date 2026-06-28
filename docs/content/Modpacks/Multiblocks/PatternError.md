@@ -44,13 +44,15 @@ You also need to register your new PatternErrors statically:
 
 ```java
 public class ExampleMod {
+
+    private static final DeferredRegister<PatternError.PatternErrorType> PATTERN_ERRORS = DeferredRegister
+            .create(GTRegistries.Keys.PATTERN_ERROR_TYPE, MY_ADDON.modId);
+
+    public static final RegistryObject<PatternError.PatternErrorType> MY_PATTERN_ERROR = PATTERN_ERRORS.create("my_pattern_error", MyPatternError.TYPE);
+
     public ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(PatternError.PatternErrorType.class, this::registerPatternErrors);
-    }
-
-    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, PatternError.PatternErrorType> event) {
-        event.register(MyPatternError.TYPE.id(), MyPatternError.TYPE);
+        PATTERN_ERRORS.register(modEventBus);
     }
 }
 ```

@@ -9,7 +9,7 @@ To add text component to the UI, you need to use `.additionalDisplay` in the mul
 An example of using it would be:  
 
 ```js title="ui_modified_multiblock.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('ui_modified_multiblock', 'multiblock')
 		.rotationState(RotationState.NON_Y_AXIS)
 		.recipeType('electrolyzer')

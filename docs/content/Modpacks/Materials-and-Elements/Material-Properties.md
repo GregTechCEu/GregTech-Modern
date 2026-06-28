@@ -9,7 +9,7 @@ Properties can be applied to a material to decide how they behave. An example of
 
 === "Javascript"
     ```js
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('my_material')
             // ...
             .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
@@ -19,8 +19,7 @@ Properties can be applied to a material to decide how they behave. An example of
     ```java
     public static Material MY_MATERIAL;
     public static void register() {
-       MY_MATERIAL = new Material.Builder(
-            your_mod_id.id('my_material'))
+       MY_MATERIAL = REGISTRATE.material('my_material')
             // ...
             .blastTemp(3700, "mid", GTValues.VA[GTValues.EV], 1600)
             .buildAndRegister();

@@ -64,7 +64,7 @@ You can change the properties of the material by adding any combination of the f
 
 === "JavaScript"
     ```js title="ingot.js"
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('andesite_alloy')
             .ingot()
             .components('1x andesite', '1x iron')
@@ -76,8 +76,7 @@ You can change the properties of the material by adding any combination of the f
     ```java title="Ingot.java"
     public static Material ANDESITE_ALLOY;
     public static void register() {
-        ANDESITE_ALLOY = new Material.Builder(
-                your_mod_id.id("andesite_alloy"))
+        ANDESITE_ALLOY = REGISTRATE.material("andesite_alloy")
                 .ingot()
                 .components("1x andesite", "1x iron")
                 .color(0xFF0000).secondaryColor(0x840707).iconSet(GTMaterialIconSet.DULL)
@@ -90,7 +89,7 @@ You can change the properties of the material by adding any combination of the f
 
 === "JavaScript"
     ```js title="dust.js"
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('mysterious_dust')
             .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
@@ -101,8 +100,7 @@ You can change the properties of the material by adding any combination of the f
     ```java title="Dust.java"
     public static Material MYSTERIOUS_DUST;
     public static void register() {
-        MYSTERIOUS_DUST = new Material.Builder(
-            your_mod_id.id("mysterious_dust"))
+        MYSTERIOUS_DUST = REGISTRATE.material("mysterious_dust")
             .dust() // The harvest level and burn time can be specified in the brackets. Example: `.dust(2, 4000)`
             .color(0x7D2DDB)
             .buildAndRegister();
@@ -113,7 +111,7 @@ You can change the properties of the material by adding any combination of the f
 
 === "JavaScript"
     ```js title="gem.js"
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('purple_coal')
             .gem(2, 4000) 
             .element(GTElements.C) 
@@ -127,8 +125,7 @@ You can change the properties of the material by adding any combination of the f
     ```java title="Gem.java"
     public static Material PURPLE_COAL;
     public static void register() {
-        PURPLE_COAL = new Material.Builder(
-            your_mod_id.id("purple_coal"))
+        PURPLE_COAL = REGISTRATE.material("purple_coal")
             .gem(2, 4000)
             .element(GTElements.C)
             .ore(2, 3) 
@@ -142,7 +139,7 @@ You can change the properties of the material by adding any combination of the f
 === "JavaScript"
     ```js title="fluid.js"
     // const $FluidBuilder = Java.loadClass('com.gregtechceu.gtceu.api.fluids.FluidBuilder'); Uncomment if you want to use the Fluid Builder.
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('mysterious_ooze')
           .fluid() // Or .liquid(Int Temperature)
           .color(0x500bbf)
@@ -153,8 +150,7 @@ You can change the properties of the material by adding any combination of the f
     ```java title="Fluid.java"
     public static Material MYSTERIOUS_OOZE;
     public static void register() {
-        MYSTERIOUS_OOZE = new Material.Builder(
-            your_mod_id.id("mysterious_ooze"))
+        MYSTERIOUS_OOZE = REGISTRATE.material("mysterious_ooze")
             .fluid() // Or .liquid(Int Temperature)
             .color(0x500bbf)
             .buildAndRegister();

@@ -75,7 +75,7 @@ GTCEuStartupEvents.materialModification(event => { // (1)
    generate a duplicate iron ingot.
 
 The `Material` for which you are adjusting the TagPrefix must be registered in GTCEu Modern's material registry; if this
-material is custom, this is done using `GTCEuStartupEvents.registry()`, as depicted in these docs.
+material is custom, this is done using `StartupEvents.registry()`, as depicted in these docs.
 
 
 ## What about fluids?

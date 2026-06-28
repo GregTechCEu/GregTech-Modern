@@ -9,7 +9,7 @@ This happens when there's multiple overloads (e.g. methods with the same name bu
 For example, when you do:
 ```js
 
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('unboxinator', 'multiblock')
         .tooltips(Component.literal("I am a multiblock"))
     // Rest of the multiblock
@@ -18,7 +18,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 
 you'd get the error:
 ```
-Error in 'GTCEuStartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
+Error in 'StartupEvents.registry': The choice of Java method com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder.tooltips matching JavaScript argument types (net.minecraft.network.chat.MutableComponent) is ambiguous; candidate methods are: 
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(java.util.List)
     class com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder tooltips(net.minecraft.network.chat.Component[])
 ```
@@ -37,7 +37,7 @@ In this case, there's ambiguity between the following 2 java functions:
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('unboxinator', 'multiblock')
         ["tooltips(java.util.List)"]([Component.literal("I am a multiblock")])
         // Rest of the multiblock
@@ -45,7 +45,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ```
 or
 ```js
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('unboxinator', 'multiblock')
         ["tooltips(net.minecraft.network.chat.Component[])"]([Component.literal("I am a multiblock")])
         // Rest of the multiblock
@@ -58,7 +58,7 @@ Because of the way javascript indexing works, `.foo` and `["foo"]` are the same 
 This same problem can occur when trying to call a constructor.  
 For example, when you do
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+StartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
     .setProgressBar(
       new ResourceTexture("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
@@ -76,7 +76,7 @@ dev.latvian.mods.rhino.EvaluatorException: The choice of Java constructor com.lo
 
 You would want to select one of the two, and this can be done in the following way:
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+StartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
     .setProgressBar(
       ResourceTexture["(java.lang.String)"]("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png"),
@@ -87,7 +87,7 @@ GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
 ```
 or
 ```js
-GTCEuStartupEvents.registry("gtceu:recipe_type", event => {
+StartupEvents.registry("gtceu:recipe_type", event => {
   event.create("unboxinator")
     .setProgressBar(
       ResourceTexture["(net.minecraft.resources.ResourceLocation)"](new ResourceLocation("kubejs:textures/gui/progress_bar/progress_bar_stone_oreifier.png")),

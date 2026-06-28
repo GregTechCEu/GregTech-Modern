@@ -15,40 +15,22 @@ They are registered using
 @Mod(ExampleMod.MOD_ID)
 public class ExampleMod {
     
-    // in 1.20.1
-    public static RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION;
+    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITION = DeferredRegister
+            .create(GTRegistries.Keys.RECIPE_CONDITION, ExampleMod.MOD_ID);
+
+    // On 1.21, the registry object has type DeferredHolder<RecipeConditionType<?>, RecipeConditionType<ExampleCondition>>
+    public static RegistryObject<RecipeConditionType<ExampleCondition>> EXAMPLE_CONDITION = RECIPE_CONDITION.register("example_condition", // (1)
+            () ->new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
 
     public ExampleMod() {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addGenericListener(RecipeConditionType.class, this::registerConditions);
+        
+        // Register the deferred registry to the mod bus, so that the recipe condition is registered during registration.
+        RECIPE_CONDITION.register(modBus);
     }
-    
-    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition", // (1)
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-    }
-    // end 1.20.1
-    
-    // in 1.21.1
-    public static final RecipeConditionType<ExampleCondition> EXAMPLE_CONDITION = GTRegistries.register(GTRegistries.RECIPE_CONDITIONS,
-            ResourceLocation.fromNamespaceAndPath(ExampleMod.MOD_ID, "example_condition"), // (2)
-            new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-
-    public ExampleMod(IEventBus modBus, FMLModContainer container) {
-        modBus.addListener(CommonInit::onRegister);
-        bus.addListener(RecipeConditionType.class, this::registerConditions);
-    }
-    
-    public void registerConditions(GTCEuAPI.RegisterEvent<String, RecipeConditionType<?>> event) {
-        EXAMPLE_CONDITION = GTRegistries.RECIPE_CONDITIONS.register("example_condition",
-                new RecipeConditionType<>(ExampleCondition::new, ExampleCondition.CODEC));
-    }
-    // end 1.21.1
 }
 ```
-
-1. The 1.20.1 version doesn't require a namespace, so make sure you don't use the same ID as someone else!  
-2. You may use a helper method akin to `GTCEu.id` for creating the ResourceLocation, but you **must** use your own namespace for it.
 
 We will set up a condition that requires that the power buffer of the machine is above a certain Y level.
 ```java

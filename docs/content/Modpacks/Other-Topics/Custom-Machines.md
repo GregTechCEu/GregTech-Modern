@@ -9,7 +9,7 @@ title: Custom Machines
 ## Creating Custom Steam Machine
 
 ```js title="test_steam_machine.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_simple_steam_machine', 'steam', true) // (1)
 })
 ```
@@ -20,7 +20,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ## Creating Custom Electric Machine
 
 ```js title="test_electric_machine.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_electric', 'simple', 0, GTValues.LV, GTValues.MV, GTValues.HV) // (1)
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeType('test_recipe_type')
@@ -36,7 +36,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ## Creating Custom Kinetic Machine
 
 ```js title="test_kinetic_machine.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_kinetic', 'kinetic', GTValues.LV, GTValues.MV, GTValues.HV)
         .rotationState(RotationState.NON_Y_AXIS)
         .recipeType('test_kinetic_recipe_type')
@@ -48,7 +48,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ## Creating Custom Generator
 
 ```js title="test_generator.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_generator', 'generator', GTValues.LV, GTValues.MV, GTValues.HV) // (1)
         .recipeType('test_generator_recipe_type')
         .tankScalingFunction(tier => tier * 3200)
@@ -59,7 +59,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 ## Creating Custom Multiblock
 
 ```js title="test_multiblock.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_generator', 'multiblock')
         .tooltips(Component.translatable('your.langfile.entry.here')) // (1)
         .rotationState(RotationState.NON_Y_AXIS)
@@ -94,7 +94,7 @@ GTCEuStartupEvents.registry('gtceu:machine', event => {
 Shape Info is used to manually define how your multiblock appears in the JEI/REI/EMI multiblock preview tab.
 
 ```js title="shape_info_test.js"
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
     event.create('test_generator', 'multiblock')
         .rotationState(RotationState.NON_Y_AXIS)
         .appearanceBlock(GTBlocks.CASING_STEEL_SOLID)

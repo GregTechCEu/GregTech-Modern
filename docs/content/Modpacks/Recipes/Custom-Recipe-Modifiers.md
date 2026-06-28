@@ -38,7 +38,7 @@ function TemperatureModifier(machine, recipe) {
 ```js title="example_temperature_multiblock.js"
 const $CoilWorkableElectricMultiblockMachine = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine");
 
-GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
+StartupEvents.registry('gtceu:recipe_type', event => {
 	event.create('example_smelting')
 		.category('multiblock')
 		.setMaxIOSize(1, 1, 0, 0)
@@ -46,7 +46,7 @@ GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
 		.setSound(GTSoundEntries.BATH);
 });
 
-GTCEuStartupEvents.registry('gtceu:machine', event => {
+StartupEvents.registry('gtceu:machine', event => {
 
 	GTRecipeTypes.get("example_smelting").addDataInfo((data) => (
 		`Temperature: ${data.getInt("RequiredTemp")}K` // (4)

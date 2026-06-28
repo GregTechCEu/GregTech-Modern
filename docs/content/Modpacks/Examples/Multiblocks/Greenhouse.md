@@ -10,7 +10,7 @@ title: "Greenhouse"
 
 === "JavaScript"
     ```js title="greenhouse_recipe_type.js"
-    GTCEuStartupEvents.registry('gtceu:recipe_type', event => {
+    StartupEvents.registry('gtceu:recipe_type', event => {
         event.create('greenhouse')
             .category('drack')
             .setEUIO('in')
@@ -35,7 +35,7 @@ title: "Greenhouse"
     const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic')
     const $List = Java.loadClass('java.util.List')
 
-    GTCEuStartupEvents.registry('gtceu:machine', event => {
+    StartupEvents.registry('gtceu:machine', event => {
         event.create('greenhouse', 'multiblock')
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType('greenhouse')

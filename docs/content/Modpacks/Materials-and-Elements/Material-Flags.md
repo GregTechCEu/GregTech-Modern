@@ -10,7 +10,7 @@ can influence how the material behaves, as well as which items are generated for
 
 === "Javascript"
     ```js
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('my_material')
             // ...
             .flags(GTMaterialFlags.FLAMMABLE)
@@ -20,8 +20,7 @@ can influence how the material behaves, as well as which items are generated for
     ```java
     public static Material MY_MATERIAL;
     public static void register() {
-       MY_MATERIAL = new Material.Builder(
-            your_mod_id.id('my_material'))
+       MY_MATERIAL = REGISTRATE.material('my_material')
             // ...
             .flags(GTMaterialFlags.FLAMMABLE)
             .buildAndRegister();

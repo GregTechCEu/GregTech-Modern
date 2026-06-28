@@ -37,7 +37,7 @@ private void registerDimensionMarkers(GTCEuAPI.RegisterEvent<ResourceLocation, D
 `Dimension Icons` also can be made/edited using `KubeJS` scripts using similar syntax.
 
 ```js
-GTCEuStartupEvents.registry("gtceu:dimension_marker", event => {
+StartupEvents.registry("gtceu:dimension_marker", event => {
     // Edit existing dimension icon,
     const DimensionMarker = Java.loadClass('com.gregtechceu.gtceu.api.data.DimensionMarker')
     

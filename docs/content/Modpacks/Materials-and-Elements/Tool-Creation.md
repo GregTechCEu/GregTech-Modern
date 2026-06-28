@@ -25,7 +25,7 @@ An example of this being used is included below.
     // When working with tools in kubejs you will need to load these classes at the top of your file.
     Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey');
     Java.loadClass('com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty');
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('aluminfrost')
             .ingot()
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
@@ -40,8 +40,8 @@ An example of this being used is included below.
 === "Java"
     ```java title="ExampleToolMaterial.java"
             public static Material ALUMINFROST;
-            ALUMINFROST = new Material.Builder(
-                your_mod_id.id("aluminfrost"))
+            ALUMINFROST = REGISTRATE.material(
+                "aluminfrost")
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
                 .toolStats(new ToolProperty(12.0F, 7.0F, 3072, 6,
                         new GTToolType[] { GTToolType.DRILL_LV, GTToolType.MINING_HAMMER }))
@@ -69,7 +69,7 @@ The builder has the same arguments as the constructor, and can have chained meth
 Here is an example of using the builder in a material:
 === "JavaScript"
     ```js title="example_tool_material.js"
-    GTCEuStartupEvents.registry('gtceu:material', event => {
+    StartupEvents.registry('gtceu:material', event => {
         event.create('aluminfrost')
             .ingot()
             .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(GTMaterialIconSet.DULL)
@@ -90,8 +90,8 @@ Here is an example of using the builder in a material:
 === "Java"
     ```java title="ExampleToolMaterial.java"
         public static Material ALUMINFROST;
-        ALUMINFROST = new Material.Builder(
-                your_mod_id.id("aluminfrost"))
+        ALUMINFROST = REGISTRATE.material(
+                "aluminfrost")
                 .ingot()
                 .color(0xadd8e6).secondaryColor(0xc0c0c0).iconSet(MaterialIconSet.DULL)
                 .toolStats(ToolProperty.Builder.of(1.8F, 1.7F, 700, 3)

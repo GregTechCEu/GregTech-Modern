@@ -15,7 +15,7 @@ Steam multiblocks such as the Steam Grinder and Steam Oven use this class.
     // In order to use multiblock logic extending beyond the default multiblock type for KJS (WorkableElectricMultiblockMachine), you need to load a class.
     const $SteamMulti = Java.loadClass('com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine');
 
-    GTCEuStartupEvents.registry('gtceu:machine', event => {
+    StartupEvents.registry('gtceu:machine', event => {
         event.create('large_steam_compressor', 'multiblock')
             .machine((holder) => new $SteamMulti(holder, 4))
             // The number in holder is the max amount of parallel it can use.

@@ -43,7 +43,7 @@ The following icon sets are available by default:
 Custom iconsets can be specified as well, using the `gtceu:matieral_icon_set` event:
 
 ```js title="custom_iconsets.js"
-GTCEuStartupEvents.registry('gtceu:material_icon_set', event => {
+StartupEvents.registry('gtceu:material_icon_set', event => {
     event.create('starry')
         .parent('shiny')
 })

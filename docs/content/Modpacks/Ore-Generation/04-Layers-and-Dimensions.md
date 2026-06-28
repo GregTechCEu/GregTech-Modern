@@ -12,7 +12,7 @@ To create ore veins in another dimension (or just at the location of certain blo
 You may also need to add a custom stone type for your ores.
 
 ```js title="startup_scripts/world_gen_layers.js"
-GTCEuStartupEvents.registry('gtceu:world_gen_layer', event => {
+StartupEvents.registry('gtceu:world_gen_layer', event => {
     event.create('my_custom_layer')
         .targets('#minecraft:stone_ore_replaceables', 'minecraft:endstone') // [*] (1)
         .dimensions('minecraft:overworld', 'minecraft:the_end') // [*]

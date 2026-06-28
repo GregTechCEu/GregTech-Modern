@@ -16,7 +16,7 @@ For example purposes, this guide uses the block "Blockium" (ID: `my_mod:blockium
 Replace this with the block you want to add ores for.
 
 ```js title="startup_scripts/ore_types.js"
-GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
+StartupEvents.registry('gtceu:tag_prefix', event => {
     event.create('blockium', 'ore') // (1)
         .stateSupplier(() => Block.getBlock('my_mod:blockium').defaultBlockState()) // (2)
         .baseModelLocation('my_mod:block/blockium') // (3)
@@ -67,7 +67,7 @@ In this case you have to specify the actually generated block state in your ore 
 ```js
 let UtilsJS = Java.loadClass("dev.latvian.mods.kubejs.util.UtilsJS")
 
-GTCEuStartupEvents.registry('gtceu:tag_prefix', event => {
+StartupEvents.registry('gtceu:tag_prefix', event => {
     event.create(type.path, 'ore')
         .stateSupplier(() => UtilsJS.parseBlockState("my_mod:blockium[some_blockstate_property=true]"))
 })
