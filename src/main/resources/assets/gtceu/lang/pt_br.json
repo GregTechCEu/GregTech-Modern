@@ -1722,7 +1722,7 @@
   "block.gtceu.zpm_wiremill": "§cTrefiladora de Elite III§r",
   "block.gtceu.zpm_world_accelerator": "§cAcelerador de Mundo de Elite III§r",
   "block.sterilizing_filter_casing.tooltip": "Cria um ambiente §aEsterilizado§7",
-  "block.surface_rock": "Rocha de Superfície de %s",
+  "block.gtceu.surface_rock": "Rocha de Superfície de %s",
   "button.gtceu.mark_as_depleted.name": "Marcar como Esgotado",
   "button.gtceu.toggle_waypoint.name": "Alternar Waypoint",
   "command.gtceu.cape.failure.does_not_exist": "A capa %s não existe",

@@ -1707,7 +1707,7 @@
   "block.gtceu.zpm_wiremill": "§c精鋭型ワイヤー作製機 III§r",
   "block.gtceu.zpm_world_accelerator": "§c精鋭型世界加速機 III§r",
   "block.sterilizing_filter_casing.tooltip": "§a滅菌§7環境を構築する",
-  "block.surface_rock": "%sの小石",
+  "block.gtceu.surface_rock": "%sの小石",
   "button.gtceu.mark_as_depleted.name": "枯渇済みとしてマーク",
   "button.gtceu.toggle_waypoint.name": "ウェイポイントを切り替え",
   "command.gtceu.cape.failure.does_not_exist": "マント %s は存在しません",

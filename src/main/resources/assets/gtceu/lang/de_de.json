@@ -1723,7 +1723,7 @@
     "block.gtceu.zpm_wiremill": "§bZPM Drahtwerk",
     "block.gtceu.zpm_world_accelerator": "§cElite World Accelerator III§r",
     "block.sterilizing_filter_casing.tooltip": "Erstellt eine §asterilisierte§7 Umgebung",
-    "block.surface_rock": "%s Oberflächengestein",
+    "block.gtceu.surface_rock": "%s Oberflächengestein",
     "button.gtceu.mark_as_depleted.name": "Als erschöpft markieren",
     "button.gtceu.toggle_waypoint.name": "Wegpunkt umschalten",
     "command.gtceu.cape.failure.does_not_exist": "Kap %s existiert nicht",
