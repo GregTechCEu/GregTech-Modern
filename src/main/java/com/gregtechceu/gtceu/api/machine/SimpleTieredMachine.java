@@ -396,8 +396,6 @@ public class SimpleTieredMachine extends RecipeTieredMachine
                     storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
                     storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
                     storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
-                    storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
-                    storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
                     tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
                             new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
@@ -10,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -17,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -29,6 +32,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
+import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.doTrim;
 
 public class GTRecipeModifiers {
 
@@ -91,7 +95,7 @@ public class GTRecipeModifiers {
                     .map(hatch -> ParallelLogic.getParallelAmount(group, recipe, hatch.getCurrentParallel()))
                     .orElse(1);
 
-            if (parallels == 1) return null;
+            if (parallels <= 1) return null;
             recipe.multiplyAllContents(parallels);
             recipe.parallels *= parallels;
         }
@@ -104,8 +108,7 @@ public class GTRecipeModifiers {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
                 parallel = ParallelLogic.getParallelAmount(group, recipe, parallel, false);
 
-                if (parallel == 0) return RecipeModifier.DEFAULT_FAILURE;
-                if (parallel == 1) return null;
+                if (parallel <= 1) return null;
 
                 recipe.multiplyInputs(parallel);
                 recipe.multiplyOutputs(parallel);
@@ -132,7 +135,10 @@ public class GTRecipeModifiers {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return RecipeModifier.DEFAULT_FAILURE;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
+            return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
+        }
+
 
         var failReason = OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe,
                 coilMachine.getOverclockVoltage());
@@ -199,7 +205,9 @@ public class GTRecipeModifiers {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) return RecipeModifier.DEFAULT_FAILURE;
+        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()){
+            return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
+        }
 
         int tier = coilMachine.getCoilTier();
         double durationMultiplier = (tier == 0) ? (4.0 / 3.0) : (2.0 / (tier + 1)); // 75% speed with cupro coils
@@ -237,10 +245,10 @@ public class GTRecipeModifiers {
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();
         int parallels = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
-        if (parallels == 0) return RecipeModifier.DEFAULT_FAILURE;
+        if (parallels <= 1) return null;
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
-        long eut = (long) (4 * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
+        long eut = (long) (4L * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
         EURecipeCapability.putEUContent(recipe.tickInputs, new EnergyStack(Math.max(1, eut)));
         recipe.duration = Math.max(1, duration);
 
@@ -249,5 +257,16 @@ public class GTRecipeModifiers {
         recipe.multiplyAllContents(parallels);
         recipe.parallels *= parallels;
         return null;
+    }
+
+    public static RecipeModifier trimRecipeOutputs(Reference2IntMap<RecipeCapability<?>> trimLimits) {
+        if (trimLimits.isEmpty() || trimLimits.values().intStream().allMatch(integer -> integer == -1)) {
+            return RecipeModifier.NO_MODIFIER;
+        }
+        return (machine, group, recipe) -> {
+            doTrim(recipe.outputs, trimLimits);
+            doTrim(recipe.tickOutputs, trimLimits);
+            return null;
+        };
     }
 }

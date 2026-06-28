@@ -199,7 +199,7 @@ public interface IRotorHolderMachine extends IMultiPart {
             return Component.translatable("gtceu.multiblock.universal.rotor_obstructed");
         }
         if (!hasRotor()) {
-            return Component.translatable("gtceu.recipe_modifier.missing_turbine_rotor");
+            return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
         }
         return IMultiPart.super.modifyRecipe(recipe);
     }

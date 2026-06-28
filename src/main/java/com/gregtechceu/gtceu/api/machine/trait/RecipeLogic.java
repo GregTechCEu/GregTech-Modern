@@ -10,14 +10,13 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
-import lombok.Setter;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.api.distmarker.Dist;
@@ -38,11 +37,7 @@ public class RecipeLogic extends WorkLogic {
     public final IRecipeLogicMachine machine;
 
     @Getter
-    @DescSynced
-    protected final List<Component> failureReasons = new ArrayList<>();
-
-    @Getter
-    protected final Map<GTRecipe, Component> failureReasonMap = new HashMap<>();
+    protected final Map<ResourceLocation, Component> failureReasonsMap = new HashMap<>();
     /**
      * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
      */
@@ -92,7 +87,7 @@ public class RecipeLogic extends WorkLogic {
         lastGroupColor= UNDYED;
         progress = 0;
         duration = 0;
-        failureReasons.clear();
+        failureReasonsMap.clear();
 
     }
 
@@ -121,10 +116,7 @@ public class RecipeLogic extends WorkLogic {
                 findAndHandleRecipe();
             }
         }
-        if (isIdle()) {
-            failureReasons.clear();
-            failureReasons.addAll(failureReasonMap.values());
-        }
+
         if ((isSuspend() || (isIdle() && !machine.keepSubscribing()))) {
             unsubscribeTick();
         }
@@ -149,7 +141,7 @@ public class RecipeLogic extends WorkLogic {
             if (recipeMatch.isSuccess()) {
                 setupRecipe(modified);
             } else {
-                failureReasonMap.put(modified, recipeMatch.reason());
+                failureReasonsMap.put(match.id, recipeMatch.reason());
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
                 lastOriginRecipe = match;
@@ -157,7 +149,7 @@ public class RecipeLogic extends WorkLogic {
             }
         }
         else {
-            failureReasonMap.put(modified, failReason);
+            failureReasonsMap.put(match.id, failReason);
         }
         return false;
     }
@@ -192,7 +184,7 @@ public class RecipeLogic extends WorkLogic {
     }
 
     public void findAndHandleRecipe() {
-        failureReasonMap.clear();
+        failureReasonsMap.clear();
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
@@ -239,13 +231,12 @@ public class RecipeLogic extends WorkLogic {
             setStatus(Status.IDLE);
             progress = 0;
             duration = 0;
-            failureReasonMap.put(recipe, failReason);
+            failureReasonsMap.put(recipe.id, failReason);
             return;
         }
         var handledIO = handleRecipeIO(recipe, IO.IN);
         if (handledIO.isSuccess()) {
-            failureReasonMap.clear();
-            failureReasons.clear();
+            failureReasonsMap.clear();
             recipeDirty = false;
             lastRecipe = recipe;
             setStatus(Status.WORKING);
@@ -306,7 +297,7 @@ public class RecipeLogic extends WorkLogic {
                         lastRecipe = lastOriginRecipe.toRuntime();
                         var failReason = machine.modifyRecipe(lastRecipe, getLastGroup());
                         if(failReason != null) {
-                            failureReasonMap.put(lastRecipe, failReason);
+                            failureReasonsMap.put(lastOriginRecipe.id, failReason);
                             lastRecipe = null;
                         }
                     }
@@ -380,8 +371,8 @@ public class RecipeLogic extends WorkLogic {
         if (isWaiting() && waitingReason != null) {
             return List.of(waitingReason);
         }
-        if (isIdle() && !failureReasons.isEmpty()) {
-            return failureReasons;
+        if (isIdle() && !failureReasonsMap.isEmpty()) {
+            return new ArrayList<>(failureReasonsMap.values());
         }
         return Collections.emptyList();
     }
@@ -397,23 +388,6 @@ public class RecipeLogic extends WorkLogic {
 
     @Override
     public boolean showFancyTooltip() {
-        return waitingReason != null || !failureReasons.isEmpty();
-    }
-
-    public static void putFailureReason(Object machine, GTRecipe recipe, Component reason) {
-        if (machine instanceof IRecipeLogicMachine rlm) {
-            putFailureReason(rlm.getRecipeLogic(), recipe, reason);
-        }
-    }
-
-    public static void putFailureReason(RecipeLogic logic, GTRecipe recipe, Component reason) {
-        var map = logic.getFailureReasonMap();
-        if (map.containsKey(recipe)) {
-            if (reason != RecipeModifier.DEFAULT_FAILURE) {
-                map.put(recipe, reason);
-            }
-        } else {
-            map.put(recipe, reason);
-        }
+        return waitingReason != null || !failureReasonsMap.isEmpty();
     }
 }

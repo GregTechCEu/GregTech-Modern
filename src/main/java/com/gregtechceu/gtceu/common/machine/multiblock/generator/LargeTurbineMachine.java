@@ -146,14 +146,15 @@ public class LargeTurbineMachine extends RecipeElectricMultiblockMachine impleme
         }
 
         var rotorHolder = turbineMachine.getRotorHolder();
-        if (rotorHolder == null) return RecipeModifier.DEFAULT_FAILURE;
+        if (rotorHolder == null) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
 
         EnergyStack EUt = recipe.getOutputEUt();
         long turbineMaxVoltage = turbineMachine.getOverclockVoltage();
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
+        if(holderEfficiency <= 0) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
 
-        if (EUt.isEmpty() || turbineMaxVoltage <= EUt.voltage() || holderEfficiency <= 0) return RecipeModifier.DEFAULT_FAILURE;
-
+        if (EUt.isEmpty()) return RecipeModifier.DEFAULT_FAILURE;
+        if(turbineMaxVoltage <= EUt.voltage()) return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         // get the amount of parallel required to match the desired output voltage
         // Max Parallel is Ceilinged not Floored to ensure the output voltage is actually met,
         // at the cost of slightly increased fuel

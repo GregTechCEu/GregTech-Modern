@@ -129,17 +129,23 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
         }
         EnergyStack EUt = recipe.getOutputEUt();
         // has lubricant
-        if (!EUt.isEmpty() && !engineMachine.isIntakesObstructed() &&
-                RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
-            int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
-            int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
-
-            recipe.multiplyAllContents(actualParallel);
-            recipe.multiplyEUt(engineMachine.getProductionBoost());
-            recipe.parallels *= actualParallel;
-            return null;
+        if (EUt.isEmpty()) return RecipeModifier.DEFAULT_FAILURE;
+        if (engineMachine.isIntakesObstructed()) {
+            return Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed");
         }
-        return RecipeModifier.DEFAULT_FAILURE;
+        if(!RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
+            return Component.translatable("gtceu.recipe_modifier.missing_lubricant");
+        }
+
+        int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
+        int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
+
+        if(actualParallel <= 1) return null;
+
+        recipe.multiplyAllContents(actualParallel);
+        recipe.multiplyEUt(engineMachine.getProductionBoost());
+        recipe.parallels *= actualParallel;
+        return null;
     }
 
     @Override

@@ -64,7 +64,7 @@ public class ComputationNetworkManager {
     }
 
     public void tick() {
-        if (topologyDirty) {
+        if (topologyDirty && level.getServer().getTickCount() % 20 == 0) {
             rebuildNetworks();
         }
         for (ComputationNetwork network : networks) {
@@ -94,6 +94,15 @@ public class ComputationNetworkManager {
         for (ComputationNetwork network : networks) {
             if (network.contains(computationPortTrait)) {
                 return network.lastAllocatedCWUt;
+            }
+        }
+        return 0;
+    }
+
+    public int getNetWorkAvailableCWUt(ComputationPortTrait computationPortTrait) {
+        for (ComputationNetwork network : networks) {
+            if (network.contains(computationPortTrait)) {
+                return network.lastSpareCWUt;
             }
         }
         return 0;
@@ -376,7 +385,7 @@ public class ComputationNetworkManager {
             consumers.addAll(allocations.keySet());
             for (ComputationConsumer consumer : consumers) {
                 int previous = lastAllocations.getOrDefault(consumer, 0);
-                int current = allocations.getOrDefault(consumer, 0);
+                int current = allocations.getOrDefault(consumer, -1);
                 if (previous != current) {
                     consumer.onComputationChanged();
                 }

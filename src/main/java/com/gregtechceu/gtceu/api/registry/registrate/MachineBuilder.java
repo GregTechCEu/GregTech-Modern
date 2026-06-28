@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -72,7 +73,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused",  "removal"})
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -123,7 +124,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     private final List<Component> tooltips = new ArrayList<>();
     @Nullable
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    private RecipeModifier[] recipeModifiers = new RecipeModifier[]{GTRecipeModifiers.OC_NON_PERFECT};
+    private ArrayList<RecipeModifier> recipeModifiers = GTUtil.list(RecipeModifier.NO_MODIFIER);
     private boolean alwaysTryModifyRecipe;
     @NotNull
     @Getter
@@ -554,7 +555,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE recipeModifier(RecipeModifier recipeModifier) {
-        this.recipeModifiers = new RecipeModifier[]{recipeModifier};
+        this.recipeModifiers = GTUtil.list(recipeModifier);
         return getThis();
     }
 
@@ -564,7 +565,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE recipeModifiers(RecipeModifier... recipeModifiers) {
-        this.recipeModifiers = Arrays.stream(recipeModifiers).toArray(RecipeModifier[]::new);
+        this.recipeModifiers = GTUtil.list(recipeModifiers);
         return getThis();
     }
 
@@ -575,7 +576,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     }
 
     public TYPE noRecipeModifier() {
-        this.recipeModifiers = new RecipeModifier[]{RecipeModifier.NO_MODIFIER};
+        this.recipeModifiers.clear();
         this.alwaysTryModifyRecipe = false;
         return getThis();
     }
@@ -649,15 +650,20 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
         definition.setTier(tier);
-        definition.setRecipeOutputLimits(recipeOutputLimits);
+
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setMachineSupplier(machine);
         definition.setTooltipBuilder((itemStack, components) -> {
             components.addAll(tooltips);
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
-        definition.setRecipeModifiers(recipeModifiers);
+
+        if(!recipeOutputLimits.isEmpty()) {
+            recipeModifiers.add(GTRecipeModifiers.trimRecipeOutputs(recipeOutputLimits));
+        }
+        definition.setRecipeModifiers(recipeModifiers.toArray(new RecipeModifier[]{}));
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
+
         definition.setBeforeWorking(this.beforeWorking);
         definition.setOnWorking(this.onWorking);
         definition.setOnWaiting(this.onWaiting);

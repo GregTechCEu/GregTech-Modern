@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -17,6 +16,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -53,10 +55,18 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             recipeInfo.putLong("voltage", getVoltage(capability));
             recipeInfo.putBoolean("isInput", EUt.isInput());
         }
-
+        if(!capability.getFailureReasonsMap().isEmpty()) {
+            ListTag listTag = new ListTag();
+            for(var reason: capability.getFailureReasonsMap().values()) {
+                listTag.add(StringTag.valueOf(Component.Serializer.toJson(reason)));
+            }
+            recipeInfo.put("failureReasons", listTag);
+        }
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
+
+
     }
 
     public static long getVoltage(RecipeLogic capability) {
@@ -69,9 +79,9 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
-        if (capData.getBoolean("Working")) {
-            var recipeInfo = capData.getCompound("Recipe");
-            if (!recipeInfo.isEmpty()) {
+        var recipeInfo = capData.getCompound("Recipe");
+        if(!recipeInfo.isEmpty()) {
+            if (capData.getBoolean("Working")) {
                 var EUt = recipeInfo.getLong("EUt");
                 var isInput = recipeInfo.getBoolean("isInput");
                 boolean isSteam = false;
@@ -116,8 +126,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                         }
                         text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                                (Component.translatable("gtceu.recipe.eu.total",
-                                        FormattingUtil.formatNumbers(EUt))))
+                                        (Component.translatable("gtceu.recipe.eu.total",
+                                                FormattingUtil.formatNumbers(EUt))))
                                 .withStyle(ChatFormatting.WHITE));
                     }
 
@@ -128,13 +138,16 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                     }
                 }
             }
-        } else if (blockEntity instanceof MetaMachineBlockEntity mbe &&
-                mbe.metaMachine instanceof IRecipeLogicMachine rlm) {
-            var logic = rlm.getRecipeLogic();
-            if (logic.isIdle() && !logic.getFailureReasons().isEmpty() && logic.isWorkingEnabled()) {
-                tooltip.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
-                logic.getFailureReasons().forEach(tooltip::add);
+            else {
+                ListTag listTag = recipeInfo.getList("failureReasons", Tag.TAG_STRING);
+                if(!listTag.isEmpty()) {
+                    tooltip.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
+                    for(var tag: listTag) {
+                        tooltip.add(Component.literal(" - ").append(Component.Serializer.fromJson(tag.getAsString())));
+                    }
+                }
             }
         }
+
     }
 }

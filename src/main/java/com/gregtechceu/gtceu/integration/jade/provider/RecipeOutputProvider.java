@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -54,7 +53,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     @Override
     protected void write(CompoundTag data, RecipeLogic recipeLogic) {
         if (recipeLogic.isWorking()) {
-            data.putBoolean("Working", recipeLogic.isWorking());
+            data.putBoolean("Working", true);
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
                 int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
@@ -68,16 +67,20 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (var item : itemContents) {
                     ItemStack stack;
                     CompoundTag itemTag = new CompoundTag();
-                    if (item instanceof RangedItemIngredient ranged) {
-                        var stacks = ranged.getInner().getItems();
-                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
-                        stack = stacks[0].copyWithCount(1);
+                    RangedItemIngredient ranged;
+                    if (item instanceof RangedItemIngredient ranged1) {
+                        ranged = ranged1;
+                    } else {
+                        ranged = item.isChanced() && item.getInner() instanceof RangedItemIngredient ranged1 ? ranged1 : null;
+                    }
+                    if (ranged != null) {
+                        stack = copyFirst(ranged.getInner().getItems());
+                        if (stack.isEmpty()) continue;
                         itemTag.putInt("MinCount", ranged.getMinCount());
                         itemTag.putInt("MaxCount", ranged.getCount());
                     } else {
-                        var stacks = item.getItems();
-                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
-                        stack = stacks[0].copy();
+                        stack = copyFirst(item.getItems());
+                        if (stack.isEmpty()) continue;
                     }
                     GTUtil.saveItemStack(stack, itemTag);
                     if (item.isChanced()) {
@@ -97,18 +100,20 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 for (var fluid : fluidContents) {
                     FluidStack stack;
                     CompoundTag fluidTag = new CompoundTag();
-                    if (fluid instanceof RangedFluidIngredient ranged) {
-                        FluidStack[] stacks = ranged.getInner().getFluids();
-                        if (stacks.length == 0 || stacks[0].isEmpty()) continue;
-                        stack = stacks[0].copy();
-                        stack.setAmount(ranged.getAmount());
+                    RangedFluidIngredient ranged;
+                    if (fluid instanceof RangedFluidIngredient ranged1) {
+                        ranged = ranged1;
+                    } else {
+                        ranged = fluid.isChanced() && fluid.getInner() instanceof RangedFluidIngredient ranged1 ? ranged1 : null;
+                    }
+                    if (ranged != null) {
+                        stack = copyFirst(ranged.getInner().getFluids());
+                        if (stack.isEmpty()) continue;
                         fluidTag.putInt("MinAmount", ranged.getMinAmount());
                         fluidTag.putInt("MaxAmount", ranged.getAmount());
                     } else {
-                        FluidStack[] stacks = fluid.getFluids();
-                        if (stacks.length == 0) continue;
-                        if (stacks[0].isEmpty()) continue;
-                        stack = stacks[0].copy();
+                        stack = copyFirst(fluid.getFluids());
+                        if (stack.isEmpty()) continue;
                     }
                     stack.writeToNBT(fluidTag);
                     if (fluid.isChanced()) {
@@ -131,25 +136,23 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         if (capData.getBoolean("Working")) {
-            List<ItemStack> outputItems = new ArrayList<>();
+            List<ItemOutput> outputItems = new ArrayList<>();
             if (capData.contains("OutputItems", Tag.TAG_LIST)) {
                 ListTag itemTags = capData.getList("OutputItems", Tag.TAG_COMPOUND);
-                if (!itemTags.isEmpty()) {
-                    for (Tag tag : itemTags) {
-                        if (tag instanceof CompoundTag tCompoundTag) {
-                            var stack = GTUtil.loadItemStack(tCompoundTag);
-                            if (!stack.isEmpty()) outputItems.add(stack);
-                        }
+                for (Tag tag : itemTags) {
+                    if (tag instanceof CompoundTag itemTag) {
+                        var stack = GTUtil.loadItemStack(itemTag);
+                        if (!stack.isEmpty()) outputItems.add(new ItemOutput(stack, itemTag));
                     }
                 }
             }
-            List<FluidStack> outputFluids = new ArrayList<>();
+            List<FluidOutput> outputFluids = new ArrayList<>();
             if (capData.contains("OutputFluids", Tag.TAG_LIST)) {
                 ListTag fluidTags = capData.getList("OutputFluids", Tag.TAG_COMPOUND);
                 for (Tag tag : fluidTags) {
-                    if (tag instanceof CompoundTag tCompoundTag) {
-                        var stack = FluidStack.loadFluidStackFromNBT(tCompoundTag);
-                        if (!stack.isEmpty()) outputFluids.add(stack);
+                    if (tag instanceof CompoundTag fluidTag) {
+                        var stack = FluidStack.loadFluidStackFromNBT(fluidTag);
+                        if (!stack.isEmpty()) outputFluids.add(new FluidOutput(stack, fluidTag));
                     }
                 }
             }
@@ -161,14 +164,14 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         }
     }
 
-    private void addItemTooltips(ITooltip iTooltip, List<ItemStack> outputItems) {
+    private void addItemTooltips(ITooltip iTooltip, List<ItemOutput> outputItems) {
         IElementHelper helper = iTooltip.getElementHelper();
-        for (ItemStack itemOutput : outputItems) {
-            if (itemOutput != null && !itemOutput.isEmpty()) {
-                ItemStack item = itemOutput.copy();
+        for (ItemOutput itemOutput : outputItems) {
+            ItemStack item = itemOutput.stack().copy();
+            if (!item.isEmpty()) {
                 MutableComponent text = CommonComponents.space();
-                CompoundTag tag = item.getTag();
-                if (tag != null && tag.contains("MinCount") && tag.contains("MaxCount")) {
+                CompoundTag tag = itemOutput.tag();
+                if (tag.contains("MinCount", Tag.TAG_INT) && tag.contains("MaxCount", Tag.TAG_INT)) {
                     text.append(Component.translatable("gtceu.gui.content.range",
                             tag.getInt("MinCount"), tag.getInt("MaxCount")));
                 } else {
@@ -176,7 +179,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 }
                 item.setCount(1);
                 text.append(Component.translatable("gtceu.gui.content.times_item",
-                        getItemName(item))
+                                item.getDisplayName().copy().withStyle(ChatFormatting.WHITE))
                         .withStyle(ChatFormatting.WHITE));
 
                 iTooltip.add(helper.smallItem(item));
@@ -185,13 +188,13 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
         }
     }
 
-    private void addFluidTooltips(ITooltip iTooltip, List<FluidStack> outputFluids) {
-        for (FluidStack fluidOutput : outputFluids) {
-            if (fluidOutput != null && !fluidOutput.isEmpty()) {
-                FluidStack stack = fluidOutput.copy();
+    private void addFluidTooltips(ITooltip iTooltip, List<FluidOutput> outputFluids) {
+        for (FluidOutput fluidOutput : outputFluids) {
+            FluidStack stack = fluidOutput.stack().copy();
+            if (!stack.isEmpty()) {
                 MutableComponent text = CommonComponents.space();
-                CompoundTag tag = stack.getTag();
-                if (tag != null && tag.contains("MinAmount") && tag.contains("MaxAmount")) {
+                CompoundTag tag = fluidOutput.tag();
+                if (tag.contains("MinAmount", Tag.TAG_INT) && tag.contains("MaxAmount", Tag.TAG_INT)) {
                     text.append(Component.translatable("gtceu.gui.content.range",
                             FluidTextHelper.getUnicodeMillibuckets(tag.getInt("MinAmount"), true),
                             FluidTextHelper.getUnicodeMillibuckets(tag.getInt("MaxAmount"), true)));
@@ -199,24 +202,30 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     text.append(FluidTextHelper.getUnicodeMillibuckets(stack.getAmount(), true));
                 }
                 text.append(CommonComponents.space())
-                        .append(getFluidName(stack))
+                        .append(ComponentUtils.wrapInSquareBrackets(stack.getDisplayName()).withStyle(ChatFormatting.WHITE))
                         .withStyle(ChatFormatting.WHITE);
 
-                iTooltip.add(GTElementHelper.smallFluid(getFluid(stack)));
+                iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.getFluid(), stack.getAmount(), stack.getTag())));
                 iTooltip.append(text);
             }
         }
     }
 
-    private Component getItemName(ItemStack stack) {
-        return stack.getDisplayName().copy().withStyle(ChatFormatting.WHITE);
+    private static ItemStack copyFirst(ItemStack[] stacks) {
+        for (ItemStack stack : stacks) {
+            if (!stack.isEmpty()) return stack.copy();
+        }
+        return ItemStack.EMPTY;
     }
 
-    private Component getFluidName(FluidStack stack) {
-        return ComponentUtils.wrapInSquareBrackets(stack.getDisplayName()).withStyle(ChatFormatting.WHITE);
+    private static FluidStack copyFirst(FluidStack[] stacks) {
+        for (FluidStack stack : stacks) {
+            if (!stack.isEmpty()) return stack.copy();
+        }
+        return FluidStack.EMPTY;
     }
 
-    private JadeFluidObject getFluid(FluidStack stack) {
-        return JadeFluidObject.of(stack.getFluid(), stack.getAmount());
-    }
+    private record ItemOutput(ItemStack stack, CompoundTag tag) {}
+
+    private record FluidOutput(FluidStack stack, CompoundTag tag) {}
 }

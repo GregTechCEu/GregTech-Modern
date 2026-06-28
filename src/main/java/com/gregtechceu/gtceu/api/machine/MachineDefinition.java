@@ -125,9 +125,6 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private EditableMachineUI editableUI;
-    @Getter
-    @Setter
-    private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
 
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)

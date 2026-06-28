@@ -649,7 +649,19 @@ public class GTUtil {
         return list.get(list.size() - 1);
     }
 
-    public static <T> ArrayList<T> list(T obj) {
+    public static <T> ArrayList<T> list(T... obj) {
         return new ArrayList<>(List.of(obj));
+    }
+
+    public static String getCallChain(int depth) {
+        StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+        return java.util.stream.IntStream.range(2, Math.min(stack.length, depth + 2))
+                .mapToObj(i -> {
+                    StackTraceElement e = stack[i];
+                    String cls = e.getClassName();
+                    cls = cls.substring(cls.lastIndexOf('.') + 1);
+                    return cls + "." + e.getMethodName();
+                })
+                .collect(java.util.stream.Collectors.joining(" <- "));
     }
 }

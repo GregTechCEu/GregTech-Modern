@@ -165,11 +165,10 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
         var parallelResult = tower.getMaxParallel(group, recipe, maxParallel);
         if (parallelResult.failReason() != null) return parallelResult.failReason();
         int parallel = parallelResult.amount();
-        if (parallel == 0) return RecipeModifier.DEFAULT_FAILURE;
-        if (parallel != 1) {
-            recipe.multiplyAllContents(parallel);
-            recipe.parallels *= parallel;
-        }
+        if(parallel <= 1) return null;
+
+        recipe.multiplyAllContents(parallel);
+        recipe.parallels *= parallel;
         return null;
     }
 
@@ -184,13 +183,12 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
 
             var batchResult = tower.getMaxParallel(group, recipe, parallel);
             if (batchResult.failReason() != null) return batchResult.failReason();
-            if (batchResult.amount() == 0) return RecipeModifier.DEFAULT_FAILURE;
-            if (batchResult.amount() != 1) {
-                recipe.multiplyInputs(batchResult.amount());
-                recipe.multiplyOutputs(batchResult.amount());
-                recipe.multiplyDuration(batchResult.amount());
-                recipe.batchParallels *= batchResult.amount();
-            }
+            if(batchResult.amount() <= 1) return null;
+
+            recipe.multiplyInputs(batchResult.amount());
+            recipe.multiplyOutputs(batchResult.amount());
+            recipe.multiplyDuration(batchResult.amount());
+            recipe.batchParallels *= batchResult.amount();
         }
 
         return null;
@@ -241,7 +239,6 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
 
         if (max == 0 && !canVoidFluids) {
             Component reason = insufficientFluidOutputReason();
-            RecipeLogic.putFailureReason(group, recipe, reason);
             return new ParallelResult(0, reason);
         }
         return new ParallelResult(max, null);

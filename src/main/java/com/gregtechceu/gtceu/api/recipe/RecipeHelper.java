@@ -231,72 +231,44 @@ public class RecipeHelper {
     }
 
     /**
-     * Creates a copy of the recipe matching the trim limits -
-     * Returns the recipe itself if no valid trim limits are passed
-     */
-    @Contract(pure = true)
-    public static GTRecipe trimRecipeOutputs(GTRecipe recipe, Reference2IntMap<RecipeCapability<?>> trimLimits) {
-        // Fast return early if no trimming desired
-        if (trimLimits.isEmpty() || trimLimits.values().intStream().allMatch(integer -> integer == -1)) {
-            return recipe;
-        }
-
-        GTRecipe copy = recipe.copy();
-
-        copy.outputs.clear();
-        copy.outputs.putAll(doTrim(recipe.outputs, trimLimits));
-        copy.tickOutputs.clear();
-        copy.tickOutputs.putAll(doTrim(recipe.tickOutputs, trimLimits));
-
-        return copy;
-    }
-
-    /**
      * Returns the maximum possible recipe outputs from a recipe, divided into regular and chanced outputs
      * Takes into account any specific output limiters, ie macerator slots, to trim down the output list
      * Trims from chanced outputs first, then regular outputs
      *
      * @param trimLimits The limit(s) on the number of outputs
-     * @return All recipe outputs, limited by some factor(s)
      */
-    @Contract(pure = true)
-    public static ContentListMap doTrim(ContentListMap current, Reference2IntMap<RecipeCapability<?>> trimLimits) {
-        ContentListMap outputs = new ContentListMap();
-
+    public static void doTrim(ContentListMap current, Reference2IntMap<RecipeCapability<?>> trimLimits) {
         current.forEachEntry(new ContentListMap.EntryConsumer() {
             @Override
             public <T> void accept(RecipeCapability<T> cap, List<T> contents) {
-                if (contents.isEmpty()) return;
                 int N = trimLimits.getOrDefault(cap, -1);
-                if (N == 0) return; // Skip this cap if limit is 0
+                if(N < 0) return;
 
-                List<T> list = outputs.computeIfAbsent(cap, c -> new ArrayList<>());
-                if (N == -1) { // Add all if limit is -1/not in map
-                    list.addAll(contents);
-                    return;
-                }
+                int toTrim = contents.size() - N;
+                if(toTrim <= 0) return;
 
-                int added = 0;
-                List<T> chanced = new ArrayList<>();
-                // Add non-chanced contents with priority and store chanced contents for later
-                for (T content : contents) {
-                    if (added == N) break;
-                    if (cap.isChanced(content)) {
-                        chanced.add(content);
-                    } else {
-                        list.add(content);
-                        added++;
+                //trim chanced first
+                var iter = contents.iterator();
+                while (iter.hasNext()) {
+                    var content = iter.next();
+                    if(cap.isChanced(content)) {
+                        iter.remove();
+                        toTrim--;
                     }
+                    if(toTrim <= 0) return;
                 }
 
-                // Add as many chanced contents as needed
-                if (added < N) {
-                    int rem = Math.min(chanced.size(), N - added);
-                    list.addAll(chanced.subList(0, rem));
+                iter = contents.iterator();
+                while (iter.hasNext()) {
+                    iter.next();
+                    if(toTrim > 0) {
+                        iter.remove();
+                        toTrim--;
+                    }
+                    else break;
                 }
             }
         });
-        return outputs;
     }
 
     public static int getRatioForDistillery(FluidIngredient fluidInput, FluidIngredient fluidOutput,

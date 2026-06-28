@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -373,7 +372,7 @@ public class MultiblockDisplayText {
         public Builder addRecipeFailReasonLine(RecipeLogic recipeLogic) {
             if (!isStructureFormed || !recipeLogic.isIdle())
                 return this;
-            var reasons = recipeLogic.getFailureReasons();
+            var reasons = recipeLogic.getFailureReasonsMap().values();
             if (!reasons.isEmpty()) {
                 textList.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
                 for (var reason : reasons) {

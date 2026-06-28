@@ -26,7 +26,7 @@ public class ParallelLogic {
     /**
      * Calculates the maximum parallel amount that can be done for the given machine and recipe, up to the passed limit
      *
-     * @param machine       machine to test against
+     * @param group       handler group to test against
      * @param recipe        recipe to test with
      * @param parallelLimit hard upper limit of parallels that can be done
      * @return The number of possible parallels, 0 if the recipe cannot be done
@@ -63,10 +63,6 @@ public class ParallelLogic {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
                 var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, false);
                 if (capParallel == 0) {
-                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
-                            .append(": ")
-                            .append(cap.getName());
-                    RecipeLogic.putFailureReason(holder, recipe, reason);
                     return 0;
                 }
                 minimum = Math.min(minimum, capParallel);
@@ -80,10 +76,6 @@ public class ParallelLogic {
                     // Find the maximum number of recipes that can be performed from the contents of the input inventories
                     var capParallel = cap.getMaxParallelByInput(holder, recipe, parallelLimit, true);
                     if (capParallel == 0) {
-                        Component reason = Component.translatable("gtceu.recipe_logic.insufficient_in")
-                                .append(": ")
-                                .append(cap.getName());
-                        RecipeLogic.putFailureReason(holder, recipe, reason);
                         return 0;
                     }
                     minimum = Math.min(minimum, capParallel);
@@ -91,13 +83,6 @@ public class ParallelLogic {
             }
         }
 
-        if (minimum == Integer.MAX_VALUE) {
-            Component reason = Component.translatable("gtceu.recipe_logic.no_capabilities")
-                    .append(Component.literal(": "))
-                    .append(Component.translatable(IO.IN.tooltip));
-            RecipeLogic.putFailureReason(holder, recipe, reason);
-            return 0;
-        }
         return minimum;
     }
 
@@ -120,10 +105,6 @@ public class ParallelLogic {
                 int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, false);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
-                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_out")
-                            .append(": ")
-                            .append(cap.getName());
-                    RecipeLogic.putFailureReason(holder, recipe, reason);
                     return 0;
                 }
                 max = Math.min(max, limit);
@@ -138,10 +119,6 @@ public class ParallelLogic {
                 int limit = cap.limitMaxParallelByOutput(holder, recipe, parallelLimit, true);
                 // If we are not voiding, and cannot fit any items, return 0
                 if (limit == 0) {
-                    Component reason = Component.translatable("gtceu.recipe_logic.insufficient_out")
-                            .append(": ")
-                            .append(cap.getName());
-                    RecipeLogic.putFailureReason(holder, recipe, reason);
                     return 0;
                 }
                 max = Math.min(max, limit);
@@ -184,7 +161,7 @@ public class ParallelLogic {
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of parallelLimit.
      *
-     * @param machine       recipe holder
+     * @param group       recipe holder
      * @param recipe        current recipe
      * @param parallelLimit max parallel limited
      * @return Returns the number of parallels that can be done (fast calc)

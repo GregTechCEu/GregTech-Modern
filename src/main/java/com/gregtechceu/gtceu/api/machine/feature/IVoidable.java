@@ -23,12 +23,7 @@ import java.util.function.Predicate;
 public interface IVoidable extends IMachineFeature {
 
     default boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return getVoidingMode().canVoid(capability) ||
-                self().getDefinition().getRecipeOutputLimits().getOrDefault(capability, -1) == 0;
-    }
-
-    default Reference2IntMap<RecipeCapability<?>> getOutputLimits() {
-        return self().getDefinition().getRecipeOutputLimits();
+        return getVoidingMode().canVoid(capability);
     }
 
     default void setVoidingMode(VoidingMode mode) {}

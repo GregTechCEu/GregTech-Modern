@@ -12,8 +12,11 @@ import com.gregtechceu.gtceu.api.machine.trait.NetworkedComputationContainer;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 
 
+import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.List;
 
@@ -48,6 +51,16 @@ public class ResearchStationMachine extends RecipeElectricMultiblockMachine {
         return false;
     }
 
+    private int getMaxComputation() {
+       for(var part: getParts()) {
+           if(part instanceof OpticalComputationHatchMachine opticalMachine) {
+               return ComputationNetworkManager.get((ServerLevel) getLevel())
+                       .getNetWorkAvailableCWUt(opticalMachine.getComputationPort());
+           }
+       }
+       return 0;
+    }
+
     @Override
     public void addDisplayText(List<Component> textList) {
         var builder = MultiblockDisplayText.builder(textList, isFormed())
@@ -56,7 +69,7 @@ public class ResearchStationMachine extends RecipeElectricMultiblockMachine {
                         "gtceu.multiblock.research_station.researching")
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(tier)
-                .addComputationUsageExactLine(importComputation.getReceivedCWUt())
+                .addComputationUsageLine(getMaxComputation())
                 .addWorkingStatusLine();
 
         builder.addProgressLineOnlyPercent(recipeLogic.getProgressPercent());
