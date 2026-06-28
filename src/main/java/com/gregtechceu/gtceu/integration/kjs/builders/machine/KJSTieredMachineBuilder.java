@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -9,13 +8,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.base.Preconditions;
-import dev.latvian.mods.kubejs.client.LangEventJS;
-import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -30,10 +27,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
-
-    private final @Nullable MachineBuilder<?, ?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
-    private final @Nullable MachineDefinition[] machines = new MachineDefinition[TIER_COUNT];
+public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -58,49 +52,29 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> impl
         this.dummyBuilder = true;
     }
 
-    @Override
-    public RegistryInfo<MachineDefinition> getRegistryType() {
-        return GTRegistryInfo.MACHINE;
-    }
-
     public KJSTieredMachineBuilder(ResourceLocation id, TieredCreationFunction machine,
                                    boolean isGenerator) {
         super(id);
         this.machine = machine;
         this.isGenerator = isGenerator;
+
+        this.dummyBuilder = true;
     }
 
     @Override
-    public void generateMachineModels() {
-        for (int tier : this.tiers) {
-            generateMachineModel(this.builders[tier], this.machines[tier]);
-        }
+    public RegistryInfo<MachineDefinition> getRegistryType() {
+        return GTRegistryInfo.MACHINE;
     }
 
-    @Override
-    public void generateAssetJsons(AssetJsonGenerator generator) {
-        for (int tier : this.tiers) {
-            var definition = this.machines[tier];
-            if (definition == null) continue;
-
-            final ResourceLocation id = definition.getId();
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/").toString()));
-        }
-    }
-
-    @Override
-    public void generateLang(LangEventJS lang) {
-        super.generateLang(lang);
-        for (int tier : this.tiers) {
-            MachineDefinition def = this.machines[tier];
-            if (def != null && def.getLangValue() != null) {
-                lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
-            }
-        }
-    }
-
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public MachineDefinition createObject() {
+        // this method is never called on dummy builders (which this class is)
+        return null;
+    }
+
+    @Override
+    public void createAdditionalObjects() {
         Preconditions.checkNotNull(tiers, "Tiers can't be null!");
         Preconditions.checkArgument(tiers.length > 0, "tiers must have at least one tier!");
         Preconditions.checkNotNull(machine, "You must set a machine creation function! " +
@@ -108,14 +82,12 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> impl
         Preconditions.checkNotNull(definition, "You must set a definition function! " +
                 "See GTMachines for examples");
 
-        MachineDefinition anyDefinition = null;
-
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            var builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            var builder = GTRegistrate.create(this.id.getNamespace(), false)
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 
@@ -135,11 +107,8 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> impl
                 }
             }
 
-            this.builders[tier] = builder;
-            this.machines[tier] = builder.createEntry();
-            anyDefinition = this.machines[tier];
+            GTRegistryInfo.MACHINE.addBuilder(new MachineBuilderWrapper<>(builder));
         }
-        return Objects.requireNonNull(anyDefinition);
     }
 
     @FunctionalInterface

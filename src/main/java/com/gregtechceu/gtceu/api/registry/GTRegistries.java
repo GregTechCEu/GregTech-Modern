@@ -45,11 +45,11 @@ import java.util.Set;
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
 
-    private static final HashMap<ResourceLocation, Registry<?>> REGISTRIES = new HashMap<>();
-
     private GTRegistries() {}
 
     // spotless:off
+    private static final HashMap<ResourceKey<Registry<?>>, Registry<?>> REGISTRIES = new HashMap<>();
+
     public static final class Keys {
 
         private Keys() {}
@@ -91,7 +91,7 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
 
         @UnmodifiableView
-        public static Set<ResourceLocation> all() {
+        public static Set<ResourceKey<Registry<?>>> all() {
             return REGISTRIES.keySet();
         }
     }
@@ -142,7 +142,7 @@ public final class GTRegistries {
     private static <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
         BuiltInRegistriesAccessor.gtceu$getWritableRegistry()
                 .register((ResourceKey<WritableRegistry<?>>) (ResourceKey<?>) key, registry, Lifecycle.stable());
-        REGISTRIES.put(key.location(), registry);
+        REGISTRIES.put((ResourceKey<Registry<?>>) (ResourceKey<?>) key, registry);
         return registry;
     }
 

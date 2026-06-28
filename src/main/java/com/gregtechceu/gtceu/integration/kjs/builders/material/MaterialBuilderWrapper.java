@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
 import net.minecraft.resources.ResourceLocation;
@@ -32,7 +32,6 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
         this.internal = new Material.Builder(null, id);
-        this.dummyBuilder = true;
     }
 
     @Override
@@ -448,7 +447,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
     }
 
     public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
-        internal.kjs$components(components);
+        internal.componentStacks(components);
         return this;
     }
 

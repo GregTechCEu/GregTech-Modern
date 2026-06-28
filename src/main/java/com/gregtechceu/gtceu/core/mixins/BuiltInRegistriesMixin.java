@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.Registry;
@@ -26,9 +25,10 @@ public class BuiltInRegistriesMixin {
                             remap = false))
     private static <T extends Registry<?>> void gtceu$skipRegistryValidation(Registry<T> instance, Consumer<T> consumer,
                                                                              Operation<Void> original) {
-        Consumer<T> callback = (t) -> {
-            if (!t.key().location().getNamespace().equals(GTCEu.MOD_ID))
-                consumer.accept(t);
+        Consumer<T> callback = (registry) -> {
+            if (!GTRegistries.Keys.all().contains(registry.key())) {
+                consumer.accept(registry);
+            }
         };
 
         original.call(instance, callback);

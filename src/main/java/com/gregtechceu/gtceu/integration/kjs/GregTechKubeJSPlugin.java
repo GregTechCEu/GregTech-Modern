@@ -80,7 +80,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -91,6 +91,8 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import dev.latvian.mods.kubejs.bindings.event.StartupEvents;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
@@ -141,58 +143,51 @@ import static dev.latvian.mods.kubejs.recipe.schema.minecraft.ShapedRecipeSchema
 
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void initStartup() {
         super.initStartup();
+
+        for (var extraId : GTCEuStartupEvents.REGISTRY.findUniqueExtraIds(ScriptType.STARTUP)) {
+            if (extraId instanceof ResourceKey<?> key) {
+                RegistryInfo<?> registry = RegistryInfo.of((ResourceKey) key);
+
+                var event = new GTRegistryEventJS<>(registry);
+                GTCEuStartupEvents.REGISTRY.post(event, key);
+                event.created.forEach(BuilderBase::createAdditionalObjects);
+            }
+        }
     }
 
     @Override
     public void init() {
-        super.init();
-
+        // spotless:off
         GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
-        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
-                true);
+        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new, true);
         GTRegistryInfo.MATERIAL.addType("basic", MaterialBuilderWrapper.class, MaterialBuilderWrapper::new, true);
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
-                true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("basic", TagPrefixBuilder.class, TagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
-        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new,
-                true);
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new, true);
+
+        GTRegistryInfo.MACHINE.addType("simple", KJSTieredMachineBuilder.class, (id) -> new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false), true);
+        GTRegistryInfo.MACHINE.addType("custom", KJSTieredMachineBuilder.class, KJSTieredMachineBuilder::new);
+        GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
+        GTRegistryInfo.MACHINE.addType("generator", KJSTieredMachineBuilder.class, (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
+        @SuppressWarnings("unchecked")
+        Class<? extends BuilderBase<? extends MachineDefinition>> multiblockBuilderClass = (Class<? extends BuilderBase<? extends MachineDefinition>>) KJSMultiblockMachineBuilder.class;
+        GTRegistryInfo.MACHINE.addType("multiblock", multiblockBuilderClass, KJSMultiblockMachineBuilder::createKJSMulti);
+        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSTieredMultiblockBuilder.class, KJSTieredMultiblockBuilder::new);
+        GTRegistryInfo.MACHINE.addType("primitive", multiblockBuilderClass, (id) -> KJSMultiblockMachineBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new));
+
+        // GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new, true);
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
-
-        GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
-                true);
-        GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
-        GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
-                KJSSteamMachineBuilder::new);
-        GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
-        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class,
-                MultiblockMachineBuilderWrapper::createKJSMulti);
-        GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
-                KJSWrappingMultiblockBuilder::new);
-        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
-                (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
-
-        /*
-         * GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class,
-         * MaterialIconTypeBuilder::new,
-         * true);
-         */
-
-        RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
-        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
+        // spotless:on
     }
 
     @Override

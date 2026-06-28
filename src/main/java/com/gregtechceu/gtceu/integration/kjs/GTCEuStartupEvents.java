@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialIconTypeEventJS;
@@ -15,18 +13,7 @@ public interface GTCEuStartupEvents {
 
     EventGroup GROUP = EventGroup.of("GTCEuStartupEvents");
 
-    Extra REGISTRY_EXTRA = Extra.REQUIRES_STRING.copy().validator(GTCEuStartupEvents::validateRegistry);
-
-    private static boolean validateRegistry(Object o) {
-        try {
-            var id = GTCEu.id(o.toString());
-            return GTRegistry.REGISTERED.containsKey(id);
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-    EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
+    EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(Extra.REQUIRES_REGISTRY);
     EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
     EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsEventJS.class);
     EventHandler MATERIAL_ICON_TYPE = GROUP.startup("materialIconType", () -> MaterialIconTypeEventJS.class);
