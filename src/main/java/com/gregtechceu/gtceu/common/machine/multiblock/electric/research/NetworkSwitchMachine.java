@@ -6,17 +6,16 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,8 +54,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         List<IOpticalComputationHatch> receivers = new ArrayList<>();
         List<IOpticalComputationHatch> transmitters = new ArrayList<>();
         for (var part : this.getParts()) {
@@ -86,8 +85,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         computationHandler.reset();
     }
 
@@ -115,18 +114,18 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         return true;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addEnergyUsageExactLine(getEnergyUsage())
-                .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
-                .addWorkingStatusLine();
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // MultiblockDisplayText.builder(textList, getDefaultPatternState())
+    // .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+    // .setWorkingStatusKeys(
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.data_bank.providing")
+    // .addEnergyUsageExactLine(getEnergyUsage())
+    // .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
+    // .addWorkingStatusLine();
+    // }
 
     /*
      * @Override

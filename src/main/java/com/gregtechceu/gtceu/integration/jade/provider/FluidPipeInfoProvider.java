@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.IBlockComponentProvider;
 import snownee.jade.api.IServerDataProvider;
@@ -40,5 +42,7 @@ public class FluidPipeInfoProvider implements IBlockComponentProvider, IServerDa
     }
 
     @Override
-    public ResourceLocation getUid() {return GTCEu.id("fluid_pipe_info");}
+    public ResourceLocation getUid() {
+        return GTCEu.id("fluid_pipe_info");
+    }
 }

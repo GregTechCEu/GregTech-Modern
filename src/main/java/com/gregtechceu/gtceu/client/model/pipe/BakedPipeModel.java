@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
-import com.gregtechceu.gtceu.client.util.GTQuadTransformers;
+import com.gregtechceu.gtceu.client.util.quad.transformers.GTQuadTransformers;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -192,8 +192,10 @@ public class BakedPipeModel extends BaseBakedModel implements ICoverableRenderer
         return ChunkRenderTypeSet.union(renderTypes, coverRenderTypes);
     }
 
-    private void renderInsulationOverlay(List<BakedQuad> quads, @Nullable Integer connectionMask, @Nullable BlockState state,
-                                         @Nullable Direction side, RandomSource rand, ModelData modelData, @Nullable RenderType renderType) {
+    private void renderInsulationOverlay(List<BakedQuad> quads, @Nullable Integer connectionMask,
+                                         @Nullable BlockState state,
+                                         @Nullable Direction side, RandomSource rand, ModelData modelData,
+                                         @Nullable RenderType renderType) {
         BakedModel overlayCenter = insulation.get(null);
         if (overlayCenter != null && (renderType == null ||
                 (state != null && overlayCenter.getRenderTypes(state, rand, modelData).contains(renderType)))) {

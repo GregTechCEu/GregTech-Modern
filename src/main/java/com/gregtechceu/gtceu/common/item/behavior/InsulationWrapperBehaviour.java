@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.common.item.behavior;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
-import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +28,8 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
         }
 
         if (!(level.getBlockState(pos).getBlock() instanceof FluidPipeBlock)) {
-            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.invalid_pipe"), true);
+            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.invalid_pipe"),
+                    true);
             return InteractionResult.FAIL;
         }
 
@@ -42,9 +44,11 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
             return InteractionResult.FAIL;
         }
 
-        // get all pipes in the network with amount of available wrappers as the limit, should function similar to spray cans
+        // get all pipes in the network with amount of available wrappers as the limit, should function similar to spray
+        // cans
         var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, first, level, IPipeNode::getBlockPos,
-                (parent, child, dir) -> parent == null || (parent.isConnected(dir) && child.isConnected(dir.getOpposite())),
+                (parent, child, dir) -> parent == null ||
+                        (parent.isConnected(dir) && child.isConnected(dir.getOpposite())),
                 available, Integer.MAX_VALUE);
 
         List<BlockPos> toInsulate = new ArrayList<>();
@@ -55,7 +59,8 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
         }
 
         if (toInsulate.isEmpty()) {
-            player.displayClientMessage(Component.translatable("item.gtceu.insulation_wrapper.message.already_insulated"), true);
+            player.displayClientMessage(
+                    Component.translatable("item.gtceu.insulation_wrapper.message.already_insulated"), true);
             return InteractionResult.FAIL;
         }
 
@@ -69,16 +74,16 @@ public class InsulationWrapperBehaviour implements IInteractionItem {
         }
 
         // clear needed amount from inventory
-        if (!player.isCreative()){
+        if (!player.isCreative()) {
             player.getInventory().clearOrCountMatchingItems(
                     itemStack -> itemStack.getItem() == GTItems.INSULATION_WRAPPER.get(),
                     needed, player.inventoryMenu.getCraftSlots());
         }
 
-        // it always insulates pipes matching amount of available wrappers so partial insulation message is no longer possible
+        // it always insulates pipes matching amount of available wrappers so partial insulation message is no longer
+        // possible
         player.displayClientMessage(Component.translatable(
                 "item.gtceu.insulation_wrapper.message.success", needed), true);
         return InteractionResult.SUCCESS;
     }
-
 }

@@ -236,7 +236,8 @@ public class ItemLang {
         provider.add("item.gtceu.ram_chip.tooltip", "§7Random Access Memory");
         provider.add("item.gtceu.soc.tooltip", "§7System on Chip");
         provider.add("item.gtceu.simple_soc.tooltip", "§7Simple System on Chip");
-        provider.add("item.gtceu.insulation_wrapper.message.already_insulated", "§eAll pipes in this network are already insulated");
+        provider.add("item.gtceu.insulation_wrapper.message.already_insulated",
+                "§eAll pipes in this network are already insulated");
         provider.add("item.gtceu.insulation_wrapper.message.invalid_pipe", "§eNot a fluid pipe");
         provider.add("item.gtceu.insulation_wrapper.message.success", "§aInsulated §f%s pipe(s)");
         provider.add("item.gtceu.insulation_wrapper.message.removed", "§cRemoved Insulation");

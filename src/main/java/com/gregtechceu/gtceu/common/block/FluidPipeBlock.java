@@ -114,7 +114,8 @@ public class FluidPipeBlock extends MaterialPipeBlock<FluidPipeType, FluidPipePr
         if (properties.isAcidProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.acid_proof"));
         if (properties.isCryoProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.cryo_proof"));
         if (properties.isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));
-        if (properties.isInsulatedByDefault()) tooltip.add(Component.translatable("gtceu.fluid_pipe.insulated_by_default"));
+        if (properties.isInsulatedByDefault())
+            tooltip.add(Component.translatable("gtceu.fluid_pipe.insulated_by_default"));
     }
 
     @Override

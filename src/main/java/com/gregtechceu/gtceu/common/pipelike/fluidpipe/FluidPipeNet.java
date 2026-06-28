@@ -38,7 +38,8 @@ public class FluidPipeNet extends PipeNet<FluidPipeProperties> {
         boolean plasmaProof = tagCompound.getBoolean("plasma_proof");
         boolean insulatedByDefault = tagCompound.getBoolean("insulated_by_default");
         int channels = tagCompound.getInt("channels");
-        return new FluidPipeProperties(maxTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, insulatedByDefault,
+        return new FluidPipeProperties(maxTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof,
+                insulatedByDefault,
                 channels);
     }
 }

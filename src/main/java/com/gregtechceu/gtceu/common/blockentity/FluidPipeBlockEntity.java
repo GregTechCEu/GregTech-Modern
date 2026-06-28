@@ -30,7 +30,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,6 +55,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +65,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties>
-        implements IDataInfoProvider {
+                                  implements IDataInfoProvider {
 
     public static final int FREQUENCY = 5;
 
@@ -77,7 +77,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Getter
     @SyncToClient
     @RerenderOnChanged
-    @SaveField(nbtKey = "Insulated")
+    @SaveField(nbtKey = "insulated")
     private boolean insulated = false;
     private long timer = 0L;
     private final int offset = GTValues.RNG.nextInt(20);

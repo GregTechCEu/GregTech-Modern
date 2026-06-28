@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -16,6 +15,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
@@ -150,7 +150,7 @@ public class Material implements Comparable<Material> {
     }
 
     protected void registerMaterial() {
-        GTCEuAPI.materialManager.getRegistry(getModid()).register(this);
+        GTRegistries.MATERIALS.register(getResourceLocation(), this);
     }
 
     public String getName() {
@@ -176,7 +176,7 @@ public class Material implements Comparable<Material> {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials())
+        if (!GTRegistries.MATERIALS.canModifyMaterials())
             throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
     }
@@ -263,7 +263,9 @@ public class Material implements Comparable<Material> {
      * @see #getFluid(FluidStorageKey, int)
      */
     public FluidStack getFluid(int amount) {
-        return new FluidStack(getFluid(), amount);
+        Fluid fluid = getFluid();
+        if (fluid != null) return new FluidStack(fluid, amount);
+        else return FluidStack.EMPTY;
     }
 
     /**
@@ -272,7 +274,9 @@ public class Material implements Comparable<Material> {
      * @return a FluidStack with the fluid and amount
      */
     public FluidStack getFluid(@NotNull FluidStorageKey key, int amount) {
-        return new FluidStack(getFluid(key), amount);
+        Fluid fluid = getFluid(key);
+        if (fluid != null) return new FluidStack(fluid, amount);
+        else return FluidStack.EMPTY;
     }
 
     /**
@@ -333,14 +337,23 @@ public class Material implements Comparable<Material> {
         return prop.getTier(this);
     }
 
+    /**
+     * @return the correct "molten" fluid for a material
+     */
     public Fluid getHotFluid() {
-        AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
-        return prop == null ? null : prop.getFluid();
+        if (hasProperty(PropertyKey.ALLOY_BLAST)) {
+            return getFluid(FluidStorageKeys.MOLTEN);
+        }
+        if (!TagPrefix.ingotHot.doGenerateItem(this) && hasProperty(PropertyKey.FLUID)) {
+            return getFluid(FluidStorageKeys.LIQUID);
+        }
+        return null;
     }
 
     public FluidStack getHotFluid(int amount) {
-        AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
-        return prop == null ? null : new FluidStack(prop.getFluid(), amount);
+        Fluid fluid = getHotFluid();
+        if (fluid != null) return new FluidStack(fluid, amount);
+        else return FluidStack.EMPTY;
     }
 
     public Item getBucket() {
@@ -533,7 +546,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials()) {
+        if (!GTRegistries.MATERIALS.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
@@ -1811,21 +1824,27 @@ public class Material implements Comparable<Material> {
         /**
          * Add Fluid Pipes to this Material.
          *
-         * @param maxTemp     The maximum temperature of Fluid that this Pipe can handle before causing damage to the
-         *                    Pipe.
-         * @param throughput  The rate at which Fluid can flow through this Pipe.
-         * @param gasProof    Whether this Pipe can hold Gases. If not, some Gas will be lost as it travels through the
-         *                    Pipe.
-         * @param acidProof   Whether this Pipe can hold Acids. If not, the Pipe may lose fluid or cause damage.
-         * @param cryoProof   Whether this Pipe can hold Cryogenic Fluids (below 120K). If not, the Pipe may lose fluid
-         *                    or cause damage.
-         * @param plasmaProof Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause damage.
-         * @param insulatedByDefault Whether this Pipe is insulated by default. If not, the Pipe may cause damage when storing thermogenics/cryogenics.
+         * @param maxTemp            The maximum temperature of Fluid that this Pipe can handle before causing damage to
+         *                           the
+         *                           Pipe.
+         * @param throughput         The rate at which Fluid can flow through this Pipe.
+         * @param gasProof           Whether this Pipe can hold Gases. If not, some Gas will be lost as it travels
+         *                           through the
+         *                           Pipe.
+         * @param acidProof          Whether this Pipe can hold Acids. If not, the Pipe may lose fluid or cause damage.
+         * @param cryoProof          Whether this Pipe can hold Cryogenic Fluids (below 120K). If not, the Pipe may lose
+         *                           fluid
+         *                           or cause damage.
+         * @param plasmaProof        Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause
+         *                           damage.
+         * @param insulatedByDefault Whether this Pipe is insulated by default. If not, the Pipe may cause damage when
+         *                           storing thermogenics/cryogenics.
          */
         public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
                                            boolean cryoProof, boolean plasmaProof, boolean insulatedByDefault) {
             properties.setProperty(PropertyKey.FLUID_PIPE,
-                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof, insulatedByDefault, 1));
+                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof,
+                            insulatedByDefault, 1));
             return this;
         }
 
@@ -1896,7 +1915,7 @@ public class Material implements Comparable<Material> {
 
         @Override
         @HideFromJS
-        public Material register() {
+        public @NotNull Material register() {
             return value = buildAndRegister();
         }
     }

@@ -335,12 +335,13 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
             for (int i = 0; i < GTUtil.DIRECTIONS.length; i++) {
                 Direction dir = GTUtil.DIRECTIONS[i];
                 insulation.add(dir.getName(), configuredModelToJSON(ConfiguredModel.builder()
-                                .modelFile(new ModelFile.UncheckedModelFile(this.insulation[i].getLocation()))
-                                .buildLast(), false));
+                        .modelFile(new ModelFile.UncheckedModelFile(this.insulation[i].getLocation()))
+                        .buildLast(), false));
             }
             insulation.add(PipeModelLoader.PRIMARY_CENTER_KEY, configuredModelToJSON(ConfiguredModel.builder()
-                                .modelFile(new ModelFile.UncheckedModelFile(this.insulation[GTUtil.DIRECTIONS.length].getLocation()))
-                                .buildLast(), false));
+                    .modelFile(
+                            new ModelFile.UncheckedModelFile(this.insulation[GTUtil.DIRECTIONS.length].getLocation()))
+                    .buildLast(), false));
             json.add("insulation", insulation);
         }
 
@@ -356,7 +357,8 @@ public class PipeModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBui
     private static final MemoizedBiFunction<BlockModelProvider, Float, BlockModelBuilder[]> RESTRICTOR_MODEL_CACHE = GTMemoizer
             .memoizeFunctionWeakIdent(PipeModelBuilder::makeRestrictorModels);
 
-    private static BlockModelBuilder[] makeInsulationModels(BlockModelProvider provider, float thickness, ResourceLocation sideTexture) {
+    private static BlockModelBuilder[] makeInsulationModels(BlockModelProvider provider, float thickness,
+                                                            ResourceLocation sideTexture) {
         BlockModelBuilder[] models = new BlockModelBuilder[GTUtil.DIRECTIONS.length + 1];
 
         float min = (16.0f - thickness) / 2.0f - 0.003f;

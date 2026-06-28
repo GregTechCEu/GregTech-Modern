@@ -57,8 +57,10 @@ public class CraftingRecipeLoader {
                 CustomTags.LV_CIRCUITS);
 
         // insulation wrapper
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "insulation_wrapper", INSULATION_WRAPPER.asStack(), "DDD", "WFW", "DDD",
-                'D', new MaterialEntry(dust, Asbestos), 'W', new ItemStack(Items.WHITE_WOOL), 'F', new MaterialEntry(foil, Steel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "insulation_wrapper", INSULATION_WRAPPER.asStack(), "DDD",
+                "WFW", "DDD",
+                'D', new MaterialEntry(dust, Asbestos), 'W', new ItemStack(Items.WHITE_WOOL), 'F',
+                new MaterialEntry(foil, Steel));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "item_filter", ITEM_FILTER.asStack(), "XXX", "XYX", "XXX", 'X',
                 new MaterialEntry(foil, Zinc), 'Y', new MaterialEntry(plate, Steel));
