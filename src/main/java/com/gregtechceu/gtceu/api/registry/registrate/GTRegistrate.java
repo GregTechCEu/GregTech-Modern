@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.holder.HolderRegistryEntry;
+import com.gregtechceu.gtceu.api.registry.registrate.holder.NoConfigHolderBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -185,6 +187,45 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
             }
         }
         return this;
+    }
+
+    /* === Builder helpers === */
+
+    // Generic
+    @Override
+    public <R, T extends R> HolderRegistryEntry<T> simple(ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return simple(currentName(), registryType, factory);
+    }
+
+    @Override
+    public <R, T extends R> HolderRegistryEntry<T> simple(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return simple(this, name, registryType, factory);
+    }
+
+    @Override
+    public <R, T extends R, P> HolderRegistryEntry<T> simple(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return simple(parent, currentName(), registryType, factory);
+    }
+
+    @Override
+    public <R, T extends R, P> HolderRegistryEntry<T> simple(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return genericHolder(parent, name, registryType, factory).register();
+    }
+
+    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> genericHolder(ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return genericHolder(self(), registryType, factory);
+    }
+
+    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> genericHolder(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return genericHolder(self(), name, registryType, factory);
+    }
+
+    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> genericHolder(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return genericHolder(parent, currentName(), registryType, factory);
+    }
+
+    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> genericHolder(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return entry(name, callback -> new NoConfigHolderBuilder<>(this, parent, name, callback, registryType, factory));
     }
 
     // Machines
