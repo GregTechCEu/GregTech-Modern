@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
@@ -23,14 +24,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
-public class MaterialBuilderWrapper extends BuilderBase<Material> {
+public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGTDummyBuilder<Material> {
 
     private final Material.Builder internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
         this.internal = new Material.Builder(null, id);
-        this.dummyBuilder = true;
     }
 
     @Override

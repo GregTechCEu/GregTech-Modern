@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 /**
  * This mixin defaults string resource locations for GT registries to use the gtceu namespace instead of the kjs namespace.
  */
-@Mixin(RegistryEventJS.class)
+@Mixin(value = RegistryEventJS.class, remap = false)
 public class RegistryEventJSMixin {
 
     @Final
