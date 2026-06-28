@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 
 import lombok.Getter;

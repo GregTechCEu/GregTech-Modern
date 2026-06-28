@@ -27,7 +27,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class BedrockOreMinerLogic extends RecipeLogic {
 
@@ -77,7 +76,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     private TagPrefix getOreDropPrefix() {
         return getLevel().registryAccess().registryOrThrow(GTRegistries.Keys.TAG_PREFIX)
-                .getOrThrow(ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix)));
+                .getOrThrow(ResourceKey.create(GTRegistries.Keys.TAG_PREFIX,
+                        GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix)));
     }
 
     @Nullable

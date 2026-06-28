@@ -70,7 +70,8 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
             DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.stream()
                     .filter(marker -> marker.dimension == this.dimension)
                     .findFirst()
-                    .orElse(new DimensionMarker(this.dimension, DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
+                    .orElse(new DimensionMarker(this.dimension, DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
+                            this.dimension.toString()));
             ItemStack icon = dimMarker.getIcon();
             String dimTier = "T" + (dimMarker.tier >= DimensionMarker.MAX_TIER ? "?" : dimMarker.tier);
 

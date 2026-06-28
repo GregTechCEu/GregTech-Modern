@@ -7,12 +7,12 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import com.mojang.serialization.Lifecycle;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -54,7 +54,9 @@ public class GTRecipeCategory {
 
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(ResourceKey.create(GTRegistries.Keys.RECIPE_CATEGORY, category.registryKey), category, Lifecycle.stable());
+        GTRegistries.RECIPE_CATEGORIES.register(
+                ResourceKey.create(GTRegistries.Keys.RECIPE_CATEGORY, category.registryKey), category,
+                Lifecycle.stable());
         return category;
     }
 

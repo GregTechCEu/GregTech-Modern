@@ -6,16 +6,16 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
 
 import net.minecraftforge.eventbus.api.IEventBus;
-
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public final class GTRecipeConditions {
-    
+
     private GTRecipeConditions() {}
 
-    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITION = DeferredRegister.create(GTRegistries.Keys.RECIPE_CONDITION, GTCEu.MOD_ID);
-    
+    private static final DeferredRegister<RecipeConditionType<?>> RECIPE_CONDITION = DeferredRegister
+            .create(GTRegistries.Keys.RECIPE_CONDITION, GTCEu.MOD_ID);
+
     // spotless:off
     public static final RegistryObject<RecipeConditionType<BiomeCondition>> BIOME = RECIPE_CONDITION.register("biome", () ->  new RecipeConditionType<>(BiomeCondition::new, BiomeCondition.CODEC));
     public static final RegistryObject<RecipeConditionType<BiomeTagCondition>> BIOME_TAG = RECIPE_CONDITION.register("biome_tag", () -> new RecipeConditionType<>( BiomeTagCondition::new, BiomeTagCondition.CODEC));
@@ -40,15 +40,18 @@ public final class GTRecipeConditions {
     public static void init(IEventBus modBus) {
         RECIPE_CONDITION.register(modBus);
         if (GTCEu.Mods.isFTBQuestsLoaded()) {
-            FTB_QUEST = RECIPE_CONDITION.register("ftb_quest", () -> new RecipeConditionType<>( FTBQuestCondition::new, FTBQuestCondition.CODEC));
+            FTB_QUEST = RECIPE_CONDITION.register("ftb_quest",
+                    () -> new RecipeConditionType<>(FTBQuestCondition::new, FTBQuestCondition.CODEC));
         }
         if (GTCEu.Mods.isGameStagesLoaded()) {
-            GAMESTAGE = RECIPE_CONDITION.register("game_stage", () -> new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
+            GAMESTAGE = RECIPE_CONDITION.register("game_stage",
+                    () -> new RecipeConditionType<>(GameStageCondition::new, GameStageCondition.CODEC));
         }
         if (GTCEu.Mods.isHeraclesLoaded()) {
-            HERACLES_QUEST = RECIPE_CONDITION.register("heracles_quest", () -> new RecipeConditionType<>( HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
+            HERACLES_QUEST = RECIPE_CONDITION.register("heracles_quest",
+                    () -> new RecipeConditionType<>(HeraclesQuestCondition::new, HeraclesQuestCondition.CODEC));
         }
         // fix the rock breaker condition's ID
-        //GTRegistries.RECIPE_CONDITIONS.remap(GTCEu.id("rock_breaker"), GTCEu.id("adjacent_fluid"));
+        // GTRegistries.RECIPE_CONDITIONS.remap(GTCEu.id("rock_breaker"), GTCEu.id("adjacent_fluid"));
     }
 }

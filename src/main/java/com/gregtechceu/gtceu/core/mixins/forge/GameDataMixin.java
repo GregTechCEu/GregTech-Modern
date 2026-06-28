@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.core.mixins.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.CommonProxy;
-import com.llamalad7.mixinextras.sugar.Local;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.GameData;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,8 +47,12 @@ public class GameDataMixin {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    @Inject(method = "postRegisterEvents", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/ModLoader;postEventWrapContainerInModOrder(Lnet/minecraftforge/eventbus/api/Event;)V", shift = At.Shift.AFTER))
-    private static void postLateRegistryEvent(CallbackInfo ci, @Local(name = "registryKey") ResourceKey<? extends Registry<?>> registryKey) {
-        //CommonProxy.onRegisterLate(registryKey);
+    @Inject(method = "postRegisterEvents",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/minecraftforge/fml/ModLoader;postEventWrapContainerInModOrder(Lnet/minecraftforge/eventbus/api/Event;)V",
+                     shift = At.Shift.AFTER))
+    private static void postLateRegistryEvent(CallbackInfo ci,
+                                              @Local(name = "registryKey") ResourceKey<? extends Registry<?>> registryKey) {
+        // CommonProxy.onRegisterLate(registryKey);
     }
 }

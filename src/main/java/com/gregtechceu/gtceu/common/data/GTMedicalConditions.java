@@ -2,9 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
-import net.minecraftforge.registries.DeferredRegister;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -12,14 +9,13 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTMedicalConditions {
 
-
     // General Conditions
     public static final MedicalCondition NONE = REGISTRATE.medicalCondition("none", 0xffffff, 0,
             MedicalCondition.IdleProgressionType.NONE, 0, false);
 
     // takes 5 minutes of having burn-causing items in the player's inventory for them to get the weakness effect
     // heals 2 seconds' worth of progression every second when not holding those items
-    public static final MedicalCondition CHEMICAL_BURNS = REGISTRATE.medicalCondition("chemical_burns",0xbc305a, 300,
+    public static final MedicalCondition CHEMICAL_BURNS = REGISTRATE.medicalCondition("chemical_burns", 0xbc305a, 300,
             MedicalCondition.IdleProgressionType.HEAL, 2, false,
             new Symptom.ConfiguredSymptom(Symptom.WEAKNESS))
             .setRecipeModifier(builder -> builder
@@ -58,7 +54,7 @@ public class GTMedicalConditions {
     // takes 5 minutes of having nauseating items in the player's inventory for them to get the nausea effect
     // heals 5 seconds' worth of progression every second when not holding those items
     public static final MedicalCondition NAUSEA = REGISTRATE.medicalCondition("nausea",
-             0x1D4A00, 600,
+            0x1D4A00, 600,
             MedicalCondition.IdleProgressionType.HEAL, 5, false,
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA, 1, 420, 600))
             .setRecipeModifier(builder -> builder
@@ -110,22 +106,23 @@ public class GTMedicalConditions {
             .setRecipeModifier(builder -> builder
                     .outputItems(dust, Arsenic, 4));
 
-    public static final MedicalCondition METHANOL_POISONING = REGISTRATE.medicalCondition("methanol_poisoning", 0xaa8800, 600,
-            MedicalCondition.IdleProgressionType.HEAL, .5f, true,
-            new Symptom.ConfiguredSymptom(Symptom.POISONING),
-            new Symptom.ConfiguredSymptom(Symptom.BLINDNESS, 2, 450, 600),
-            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 300, 600),
-            new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, 150, 600))
+    public static final MedicalCondition METHANOL_POISONING = REGISTRATE
+            .medicalCondition("methanol_poisoning", 0xaa8800, 600,
+                    MedicalCondition.IdleProgressionType.HEAL, .5f, true,
+                    new Symptom.ConfiguredSymptom(Symptom.POISONING),
+                    new Symptom.ConfiguredSymptom(Symptom.BLINDNESS, 2, 450, 600),
+                    new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 300, 600),
+                    new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 1, 150, 600))
             .setRecipeModifier(builder -> builder
                     .outputFluids(Methanol.getFluid(1000)));
 
-    public static final MedicalCondition CARBON_MONOXIDE_POISONING = REGISTRATE.medicalCondition("carbon_monoxide_poisoning",
+    public static final MedicalCondition CARBON_MONOXIDE_POISONING = REGISTRATE.medicalCondition(
+            "carbon_monoxide_poisoning",
             0x041525, 2000,
-                    MedicalCondition.IdleProgressionType.HEAL, 1, true, new Symptom.ConfiguredSymptom(Symptom.DEATH),
+            MedicalCondition.IdleProgressionType.HEAL, 1, true, new Symptom.ConfiguredSymptom(Symptom.DEATH),
             new Symptom.ConfiguredSymptom(Symptom.NAUSEA),
             new Symptom.ConfiguredSymptom(Symptom.SLOWNESS, 2, 1500, 2000),
-            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 500, 2000)
-    );
+            new Symptom.ConfiguredSymptom(Symptom.WEAKNESS, 2, 500, 2000));
 
     public static void init() {}
 }

@@ -18,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 
-import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.tterrag.registrate.providers.ProviderType;
@@ -26,7 +25,6 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -43,9 +41,11 @@ public class GTMaterialItems {
     static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS_BUILDER = ImmutableTable
             .builder();
 
-    static ImmutableTable.Builder<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS_BUILDER = ImmutableTable.builder();
+    static ImmutableTable.Builder<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS_BUILDER = ImmutableTable
+            .builder();
 
-    static ImmutableTable.Builder<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS_BUILDER = ImmutableTable.builder();
+    static ImmutableTable.Builder<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS_BUILDER = ImmutableTable
+            .builder();
 
     // Reference Maps
     public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
@@ -108,7 +108,6 @@ public class GTMaterialItems {
             }
         }
         TOOL_ITEMS = TOOL_ITEMS_BUILDER.build();
-
     }
 
     @SuppressWarnings("unchecked")

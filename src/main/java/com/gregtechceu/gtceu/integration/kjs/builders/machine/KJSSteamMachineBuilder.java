@@ -12,17 +12,20 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
-public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
+public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
+                                    implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
 
     @Setter
     public transient boolean hasLowPressure = true, hasHighPressure = true;

@@ -109,7 +109,8 @@ public class OreBlockRenderer {
 
         GTDynamicResourcePack.addBlockModel(
                 iconSet.id
-                        .withPath(ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.getName(), iconType.name())),
+                        .withPath(ORE_MODEL_NAME_FORMAT.formatted(iconSet.getName(), tagPrefix.getName(),
+                                iconType.name())),
                 newJson);
     }
 

@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
@@ -11,10 +14,10 @@ import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("unused")
-public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
+public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition>
+                                       implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
 
     @HideFromJS
     @Getter

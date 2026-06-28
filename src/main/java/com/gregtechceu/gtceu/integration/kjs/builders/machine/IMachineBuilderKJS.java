@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.utils.data.RuntimeBlockstateProvider;
-import com.tterrag.registrate.providers.DataGenContext;
+
 import net.minecraft.world.level.block.Block;
+
+import com.tterrag.registrate.providers.DataGenContext;
 import org.jetbrains.annotations.Nullable;
 
 public interface IMachineBuilderKJS {

@@ -9,5 +9,6 @@ import com.gregtechceu.gtceu.core.mixins.kjs.RegistryInfoMixin;
  * This logic is handled by {@link RegistryInfoMixin}
  */
 public interface IGTDummyBuilder<T> {
+
     T createObject();
 }

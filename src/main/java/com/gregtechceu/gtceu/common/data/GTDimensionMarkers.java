@@ -8,10 +8,10 @@ import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.IEventBus;
-
-import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+
+import com.tterrag.registrate.util.entry.BlockEntry;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -22,20 +22,24 @@ public class GTDimensionMarkers {
         REGISTRATE.creativeModeTab(() -> null);
     }
 
-    private static final DeferredRegister<DimensionMarker> DIMENSION_MARKER = DeferredRegister.create(GTRegistries.Keys.DIMENSION_MARKER, "gtceu");
+    private static final DeferredRegister<DimensionMarker> DIMENSION_MARKER = DeferredRegister
+            .create(GTRegistries.Keys.DIMENSION_MARKER, "gtceu");
 
     public static final BlockEntry<Block> OVERWORLD_MARKER = createMarker("overworld");
     public static final BlockEntry<Block> NETHER_MARKER = createMarker("the_nether");
     public static final BlockEntry<Block> END_MARKER = createMarker("the_end");
 
-    public static final RegistryObject<DimensionMarker> OVERWORLD = DIMENSION_MARKER.register("overworld", () -> new DimensionMarker(Level.OVERWORLD, 0,
-            () -> OVERWORLD_MARKER, null));
+    public static final RegistryObject<DimensionMarker> OVERWORLD = DIMENSION_MARKER.register("overworld",
+            () -> new DimensionMarker(Level.OVERWORLD, 0,
+                    () -> OVERWORLD_MARKER, null));
 
-    public static final RegistryObject<DimensionMarker> NETHER = DIMENSION_MARKER.register("nether", () -> new DimensionMarker(Level.NETHER, 0,
-            () -> NETHER_MARKER, null));
+    public static final RegistryObject<DimensionMarker> NETHER = DIMENSION_MARKER.register("nether",
+            () -> new DimensionMarker(Level.NETHER, 0,
+                    () -> NETHER_MARKER, null));
 
-    public static final RegistryObject<DimensionMarker> END =  DIMENSION_MARKER.register("end", () -> new DimensionMarker(Level.END, 0,
-            () -> END_MARKER, null));
+    public static final RegistryObject<DimensionMarker> END = DIMENSION_MARKER.register("end",
+            () -> new DimensionMarker(Level.END, 0,
+                    () -> END_MARKER, null));
 
     private static BlockEntry<Block> createMarker(String name) {
         return REGISTRATE.block("%s_marker".formatted(name), Block::new)

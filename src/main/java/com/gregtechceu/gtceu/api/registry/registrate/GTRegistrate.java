@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -281,9 +280,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Medical conditions
 
     public MedicalCondition medicalCondition(String name, int color,
-                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType, float progressionRate,
+                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType,
+                                             float progressionRate,
                                              boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms);
+        var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType,
+                progressionRate, canBePermanent, symptoms);
         this.generic(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> medicalCondition).register();
         return medicalCondition;
     }
@@ -317,7 +318,6 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
         return iconSet;
     }
-
 
     // Blocks
     @Override

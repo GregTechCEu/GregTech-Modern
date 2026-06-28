@@ -16,10 +16,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.Util;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceKey;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
-import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -146,7 +146,8 @@ public final class WireRecipeHandler {
         }
 
         int cableAmount = (int) (prefix.getMaterialAmount(material) * 2 / M);
-        TagPrefix cablePrefix = GTRegistries.TAG_PREFIXES.getOrThrow(ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, GTCEu.id("cable" + prefix.getName().substring(4))));
+        TagPrefix cablePrefix = GTRegistries.TAG_PREFIXES.getOrThrow(
+                ResourceKey.create(GTRegistries.Keys.TAG_PREFIX, GTCEu.id("cable" + prefix.getName().substring(4))));
         int voltageTier = GTUtil.getTierByVoltage(property.getVoltage());
         int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
 

@@ -3,17 +3,16 @@ package com.gregtechceu.gtceu.integration.kjs.builders.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.common.data.GTRecipeCategories;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import dev.latvian.mods.kubejs.registry.BuilderBase;
-import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.latvian.mods.kubejs.client.LangEventJS;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -58,7 +57,8 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
     public void generateLang(LangEventJS lang) {
         super.generateLang(lang);
         if (langValue != null) lang.add(langValue, langValue);
-        else lang.add(GTCEu.MOD_ID, "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, name), FormattingUtil.toEnglishName(name));
+        else lang.add(GTCEu.MOD_ID, "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, name),
+                FormattingUtil.toEnglishName(name));
     }
 
     @Override

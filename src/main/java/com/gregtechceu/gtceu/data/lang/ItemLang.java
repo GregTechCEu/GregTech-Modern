@@ -5,10 +5,11 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
 import static com.gregtechceu.gtceu.data.lang.LangHandler.replace;
@@ -24,9 +25,11 @@ public class ItemLang {
 
     private static void initGeneratedNames(RegistrateLangProvider provider) {
         // RecipeTypes
-        for (var recipeType : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(Registries.RECIPE_TYPE)) {
+        for (var recipeType : RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
+                .registryOrThrow(Registries.RECIPE_TYPE)) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                provider.add(gtRecipeType.registryName.toLanguageKey(), toEnglishName(gtRecipeType.registryName.getPath()));
+                provider.add(gtRecipeType.registryName.toLanguageKey(),
+                        toEnglishName(gtRecipeType.registryName.getPath()));
             }
         }
 

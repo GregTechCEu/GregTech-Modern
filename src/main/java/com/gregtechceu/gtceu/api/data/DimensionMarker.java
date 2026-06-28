@@ -47,7 +47,8 @@ public class DimensionMarker {
                 .orElse(ItemStack.EMPTY));
     }
 
-    public DimensionMarker(ResourceKey<Level> dim, int tier, Supplier<? extends ItemLike> supplier, @Nullable String overrideName) {
+    public DimensionMarker(ResourceKey<Level> dim, int tier, Supplier<? extends ItemLike> supplier,
+                           @Nullable String overrideName) {
         if (tier < 0 || tier >= MAX_TIER) {
             throw new IllegalArgumentException("Tier must be between 0 and " + (MAX_TIER - 1));
         }

@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.client.LangEventJS;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import dev.latvian.mods.kubejs.generator.DataJsonGenerator;
@@ -11,7 +14,6 @@ import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
                                           implements IMachineBuilderKJS, IGTDummyBuilder<MultiblockMachineDefinition> {

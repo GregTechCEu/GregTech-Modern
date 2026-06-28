@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common;
 
-import com.google.common.collect.Multimaps;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -57,10 +56,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.RegistrateProvider;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -85,6 +80,11 @@ import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
+import com.google.common.collect.Multimaps;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.providers.RegistrateProvider;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 
 import java.util.List;
 
@@ -110,15 +110,12 @@ public class CommonProxy {
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
         }
 
-
         REGISTRATE.registerEventListeners(eventBus);
         init(eventBus);
         eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
 
-
     public static void init(IEventBus modBus) {
-
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
         ConfigHolder.init();
@@ -209,7 +206,8 @@ public class CommonProxy {
                 AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
                 if (accessor.getDoDatagen().get()) {
                     // noinspection UnstableApiUsage
-                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
                             .get(ProviderType.LANG);
                     NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
                             .generate((RegistrateLangProvider) provider, namespace);
@@ -270,7 +268,8 @@ public class CommonProxy {
     @SubscribeEvent
     public void onRegister(RegisterEvent event) {
         if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
-            event.register(Registries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), () -> ChestGenHooks.RandomWeightLootFunction.TYPE);
+            event.register(Registries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"),
+                    () -> ChestGenHooks.RandomWeightLootFunction.TYPE);
     }
 
     @SubscribeEvent

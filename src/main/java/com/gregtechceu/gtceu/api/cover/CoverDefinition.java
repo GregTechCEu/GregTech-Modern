@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
-
 import com.gregtechceu.gtceu.client.renderer.cover.SimpleCoverRenderer;
+
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 

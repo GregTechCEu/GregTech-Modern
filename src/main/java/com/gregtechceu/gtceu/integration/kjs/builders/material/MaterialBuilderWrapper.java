@@ -15,11 +15,13 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.function.UnaryOperator;
@@ -160,15 +162,15 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Add a `DustProperty` to this Material.
             Will be created with no Burn Time (Furnace Fuel).
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper dust(int harvestLevel) {
         internal.dust(harvestLevel);
         return this;
@@ -177,20 +179,20 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
     @Info(value = """
             Add a `DustProperty` to this Material.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """),
-                    @Param(name = "burnTime",
-                            value = """
+                  @Param(name = "burnTime",
+                         value = """
                                  The Burn Time (in ticks) of this Material as a Furnace Fuel.
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper dust(int harvestLevel, int burnTime) {
         internal.dust(harvestLevel, burnTime);
         return this;
@@ -211,15 +213,15 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Useful for marking a Material as Wood for various additional behaviors.
             Will be created with a Burn Time of 300 (Furnace Fuel).
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper wood(int harvestLevel) {
         internal.wood(harvestLevel);
         return this;
@@ -229,20 +231,20 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Add a `WoodProperty` to this Material.
             Useful for marking a Material as Wood for various additional behaviors.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """),
-                    @Param(name = "burnTime",
-                            value = """
+                  @Param(name = "burnTime",
+                         value = """
                                  The Burn Time (in ticks) of this Material as a Furnace Fuel.
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper wood(int harvestLevel, int burnTime) {
         internal.wood(harvestLevel, burnTime);
         return this;
@@ -263,15 +265,15 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Will be created with no Burn Time (Furnace Fuel).
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper ingot(int harvestLevel) {
         internal.ingot(harvestLevel);
         return this;
@@ -281,20 +283,20 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Add an `IngotProperty` to this Material.
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """),
-                    @Param(name = "burnTime",
-                            value = """
+                  @Param(name = "burnTime",
+                         value = """
                                  The Burn Time (in ticks) of this Material as a Furnace Fuel.
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper ingot(int harvestLevel, int burnTime) {
         internal.ingot(harvestLevel, burnTime);
         return this;
@@ -315,15 +317,15 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Will be created with no Burn Time (Furnace Fuel).
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper gem(int harvestLevel) {
         internal.gem(harvestLevel);
         return this;
@@ -333,20 +335,20 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Add a `GemProperty` to this Material.
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """),
-                    @Param(name = "burnTime",
-                            value = """
+                  @Param(name = "burnTime",
+                         value = """
                                  The Burn Time (in ticks) of this Material as a Furnace Fuel.
                                  If this Material already had a Burn Time defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper gem(int harvestLevel, int burnTime) {
         internal.gem(harvestLevel, burnTime);
         return this;
@@ -367,15 +369,15 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Will automatically add a `DustProperty` to this Material if it does not already have one.
             Will have a burn time of 0
             """,
-            params = {
-                    @Param(name = "harvestLevel",
-                            value = """
+          params = {
+                  @Param(name = "harvestLevel",
+                         value = """
                                  The Harvest Level of this block for Mining.
                                  If this Material also has a `ToolProperty`, this value will
                                  also be used to determine the tool's Mining level.
                                  If this Material already had a Harvest Level defined, it will be overridden.
                                  """)
-            })
+          })
     public MaterialBuilderWrapper polymer(int harvestLevel) {
         internal.polymer(harvestLevel);
         return this;
@@ -437,9 +439,9 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             </ul>
             Default will be determined by first-found Property in this order, unless specified.
             """,
-            params = {
-                    @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
-            })
+          params = {
+                  @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
+          })
     public MaterialBuilderWrapper iconSet(MaterialIconSet iconSet) {
         internal.iconSet(iconSet);
         return this;
@@ -465,12 +467,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> implements IGT
             Dependent Flags (for example, `MaterialFlags#GENERATE_LONG_ROD` requiring
             `MaterialFlags#GENERATE_ROD`) will be automatically applied.
             """,
-            params = {
-                    @Param(name = "f1",
-                            value = "A `Collection` of `MaterialFlag`. Provided this way for easy Flag presets to be applied."),
-                    @Param(name = "f2",
-                            value = "An Array of `MaterialFlag`. If no `Collection` is required, use `MaterialBuilderWrapper#flags(MaterialFlag...)`.")
-            })
+          params = {
+                  @Param(name = "f1",
+                         value = "A `Collection` of `MaterialFlag`. Provided this way for easy Flag presets to be applied."),
+                  @Param(name = "f2",
+                         value = "An Array of `MaterialFlag`. If no `Collection` is required, use `MaterialBuilderWrapper#flags(MaterialFlag...)`.")
+          })
     // rename for kjs conflicts
     public MaterialBuilderWrapper appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
         internal.appendFlags(f1, f2);

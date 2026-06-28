@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -109,6 +108,7 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import com.google.gson.JsonPrimitive;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
@@ -145,8 +145,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.initStartup();
     }
 
-
-
     @Override
     public void init() {
         super.init();
@@ -156,12 +154,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 true);
         GTRegistryInfo.MATERIAL.addType("basic", MaterialBuilderWrapper.class, MaterialBuilderWrapper::new, true);
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new,
+                true);
 
         GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("basic", TagPrefixBuilder.class, TagPrefixBuilder::new, true);
         GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
-        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new, true);
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new,
+                true);
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
@@ -177,15 +177,17 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
-        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class, MultiblockMachineBuilderWrapper::createKJSMulti);
+        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class,
+                MultiblockMachineBuilderWrapper::createKJSMulti);
         GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
                 KJSWrappingMultiblockBuilder::new);
         GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
                 (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
 
         /*
-                GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
-                true);
+         * GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class,
+         * MaterialIconTypeBuilder::new,
+         * true);
          */
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
@@ -222,7 +224,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     public void registerRecipeSchemas(RegisterRecipeSchemasEvent event) {
         super.registerRecipeSchemas(event);
 
-        var recipeTypes = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY).registryOrThrow(Registries.RECIPE_TYPE);
+        var recipeTypes = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
+                .registryOrThrow(Registries.RECIPE_TYPE);
         for (var id : recipeTypes.keySet()) {
             RecipeType<?> type = recipeTypes.get(id);
             if (!(type instanceof GTRecipeType)) continue;
@@ -344,13 +347,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTCapes", GTCapes.class);
         event.add("CapeRegistry", CapeRegistry.class);
     }
-    
+
     private static @Nullable ResourceLocation unwrapResourceLocation(Object o) {
         ResourceLocation inner;
         if (o == null) inner = null;
         else if (o instanceof ResourceLocation resLoc) inner = resLoc;
         else if (o instanceof ResourceKey<?> key) inner = key.location();
-        else if (o instanceof Holder<?> holder) inner = holder.unwrapKey().isEmpty() ? null : holder.unwrapKey().get().location();
+        else if (o instanceof Holder<?> holder)
+            inner = holder.unwrapKey().isEmpty() ? null : holder.unwrapKey().get().location();
         else {
             var s = o instanceof JsonPrimitive p ? p.getAsString() : o.toString();
             s = GTCEu.appendIdString(s);
@@ -372,7 +376,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof GTRecipeType recipeType) return recipeType;
             ResourceLocation location = unwrapResourceLocation(o);
             if (location == null) return null;
-            return (GTRecipeType)BuiltInRegistries.RECIPE_TYPE.get(location);
+            return (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(location);
         });
         typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
             o = Wrapper.unwrapped(o);

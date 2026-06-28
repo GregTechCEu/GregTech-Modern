@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -12,13 +9,12 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 
 public class GTRecipeCapabilities {
 
-    private static final DeferredRegister<RecipeCapability<?>> RECIPE_CAPABILITY = DeferredRegister.create(GTRegistries.Keys.RECIPE_CAPABILITY, GTCEu.MOD_ID);
+    private static final DeferredRegister<RecipeCapability<?>> RECIPE_CAPABILITY = DeferredRegister
+            .create(GTRegistries.Keys.RECIPE_CAPABILITY, GTCEu.MOD_ID);
 
     public final static RecipeCapability<Ingredient> ITEM = ItemRecipeCapability.CAP;
     public final static RecipeCapability<FluidIngredient> FLUID = FluidRecipeCapability.CAP;

@@ -1,27 +1,24 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
-
-import net.minecraftforge.fml.ModLoader;
-
-import net.minecraftforge.registries.DeferredRegister;
-import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class GTRecipeCategories {
 
-    public static final GTRecipeCategory ORE_CRUSHING = REGISTRATE.recipeCategory("ore_crushing", GTRecipeTypes.MACERATOR_RECIPES);
-    public static final GTRecipeCategory ORE_FORGING = REGISTRATE.recipeCategory("ore_forging", GTRecipeTypes.FORGE_HAMMER_RECIPES);
-    public static final GTRecipeCategory ORE_BATHING = REGISTRATE.recipeCategory("ore_bathing", GTRecipeTypes.CHEMICAL_BATH_RECIPES);
-    public static final GTRecipeCategory CHEM_DYES = REGISTRATE.recipeCategory("chem_dyes", GTRecipeTypes.CHEMICAL_BATH_RECIPES);
-    public static final GTRecipeCategory INGOT_MOLDING = REGISTRATE.recipeCategory("ingot_molding", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
+    public static final GTRecipeCategory ORE_CRUSHING = REGISTRATE.recipeCategory("ore_crushing",
+            GTRecipeTypes.MACERATOR_RECIPES);
+    public static final GTRecipeCategory ORE_FORGING = REGISTRATE.recipeCategory("ore_forging",
+            GTRecipeTypes.FORGE_HAMMER_RECIPES);
+    public static final GTRecipeCategory ORE_BATHING = REGISTRATE.recipeCategory("ore_bathing",
+            GTRecipeTypes.CHEMICAL_BATH_RECIPES);
+    public static final GTRecipeCategory CHEM_DYES = REGISTRATE.recipeCategory("chem_dyes",
+            GTRecipeTypes.CHEMICAL_BATH_RECIPES);
+    public static final GTRecipeCategory INGOT_MOLDING = REGISTRATE.recipeCategory("ingot_molding",
+            GTRecipeTypes.ALLOY_SMELTER_RECIPES);
 
     public static final GTRecipeCategory ARC_FURNACE_RECYCLING = REGISTRATE.recipeCategory("arc_furnace_recycling",
             GTRecipeTypes.ARC_FURNACE_RECIPES)

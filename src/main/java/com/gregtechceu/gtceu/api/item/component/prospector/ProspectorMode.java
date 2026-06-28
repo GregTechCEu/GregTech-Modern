@@ -336,7 +336,8 @@ public abstract class ProspectorMode<T> {
         public IDrawable getItemIcon(BedrockOreInfo item) {
             Material material = item.material;
             ItemStack stack = GTUtil.getFirstNonEmpty(
-                    ChemicalHelper.get(Objects.requireNonNull(GTRegistries.TAG_PREFIXES.get(GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))), material),
+                    ChemicalHelper.get(Objects.requireNonNull(GTRegistries.TAG_PREFIXES
+                            .get(GTCEu.id(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))), material),
                     ChemicalHelper.get(TagPrefix.crushed, material),
                     ChemicalHelper.get(TagPrefix.gem, material),
                     ChemicalHelper.get(TagPrefix.ore, material),

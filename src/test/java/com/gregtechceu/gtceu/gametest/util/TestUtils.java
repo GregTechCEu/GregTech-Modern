@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.item.behavior.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
@@ -49,6 +48,7 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraftforge.fluids.FluidStack;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.serialization.Lifecycle;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -223,8 +223,10 @@ public class TestUtils {
     public static GTRecipeType createRecipeType(String name, int maxInputs, int maxOutputs, int maxFluidInputs,
                                                 int maxFluidOutputs) {
         var access = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-        MappedRegistry<RecipeType<?>> recipeTypes = (MappedRegistry<RecipeType<?>>)access.registryOrThrow(Registries.RECIPE_TYPE);
-        MappedRegistry<GTRecipeCategory> categories = (MappedRegistry<GTRecipeCategory>)access.registryOrThrow(GTRegistries.Keys.RECIPE_CATEGORY);
+        MappedRegistry<RecipeType<?>> recipeTypes = (MappedRegistry<RecipeType<?>>) access
+                .registryOrThrow(Registries.RECIPE_TYPE);
+        MappedRegistry<GTRecipeCategory> categories = (MappedRegistry<GTRecipeCategory>) access
+                .registryOrThrow(GTRegistries.Keys.RECIPE_CATEGORY);
 
         recipeTypes.unfreeze();
         categories.unfreeze();

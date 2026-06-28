@@ -188,7 +188,7 @@ public final class ValueTransformers {
         registerTransformer(GTRecipe.class, new GTRecipeTransformer());
         registerTransformer(MachineRenderState.class, new CodecTransformer<>(MachineRenderState.CODEC));
         registerTransformer(GTRecipeType.class, new ResourceLocationReferenceTransformer<>(
-                GTRecipeType::getRegistryName, (r) -> (GTRecipeType)BuiltInRegistries.RECIPE_TYPE.get(r)));
+                GTRecipeType::getRegistryName, (r) -> (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(r)));
         registerTransformer(Material.class, new ResourceLocationReferenceTransformer<>(
                 Material::getResourceLocation, GTRegistries.MATERIALS::get));
         registerTransformer(MonitorGroup.class, new MonitorGroupTransformer());

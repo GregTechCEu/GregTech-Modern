@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.condition.ResearchCondition;
 
-import com.mojang.serialization.DataResult;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,6 +21,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
@@ -80,7 +80,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(FriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.getOrThrow(buf.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY));
+        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES
+                .getOrThrow(buf.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY));
         List<Content> contents = buf.readList(capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
@@ -121,16 +122,20 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
 
         Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES
+                        .getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
                 buf1 -> GTRegistries.CHANCE_LOGICS.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.CHANCE_LOGIC)));
         Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES
+                        .getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
                 buf1 -> GTRegistries.CHANCE_LOGICS.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.CHANCE_LOGIC)));
         Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES
+                        .getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
                 buf1 -> GTRegistries.CHANCE_LOGICS.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.CHANCE_LOGIC)));
         Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES
+                        .getOrThrow(buf1.readResourceKey(GTRegistries.Keys.RECIPE_CAPABILITY)),
                 buf1 -> GTRegistries.CHANCE_LOGICS.getOrThrow(buf1.readResourceKey(GTRegistries.Keys.CHANCE_LOGIC)));
 
         List<RecipeCondition<?>> conditions = buf.readCollection(c -> new ArrayList<>(),
@@ -178,16 +183,20 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
 
         buf.writeMap(recipe.inputChanceLogics,
-                (buf1, cap) -> buf1.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
+                (buf1, cap) -> buf1
+                        .writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
                 (buf1, logic) -> buf1.writeResourceKey(GTRegistries.CHANCE_LOGICS.getResourceKey(logic).orElseThrow()));
         buf.writeMap(recipe.outputChanceLogics,
-                (buf1, cap) -> buf1.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
+                (buf1, cap) -> buf1
+                        .writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
                 (buf1, logic) -> buf1.writeResourceKey(GTRegistries.CHANCE_LOGICS.getResourceKey(logic).orElseThrow()));
         buf.writeMap(recipe.tickInputChanceLogics,
-                (buf1, cap) -> buf1.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
+                (buf1, cap) -> buf1
+                        .writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
                 (buf1, logic) -> buf1.writeResourceKey(GTRegistries.CHANCE_LOGICS.getResourceKey(logic).orElseThrow()));
         buf.writeMap(recipe.tickOutputChanceLogics,
-                (buf1, cap) -> buf1.writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
+                (buf1, cap) -> buf1
+                        .writeResourceKey(GTRegistries.RECIPE_CAPABILITIES.getResourceKey(cap).orElseThrow()),
                 (buf1, logic) -> buf1.writeResourceKey(GTRegistries.CHANCE_LOGICS.getResourceKey(logic).orElseThrow()));
 
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);

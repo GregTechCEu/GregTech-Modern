@@ -9,12 +9,12 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraftforge.registries.DeferredRegister;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -28,12 +28,13 @@ import java.util.List;
  */
 public abstract class ChanceLogic {
 
-    private static final DeferredRegister<ChanceLogic> CHANCE_LOGIC = DeferredRegister.create(GTRegistries.Keys.CHANCE_LOGIC, GTCEu.MOD_ID);
+    private static final DeferredRegister<ChanceLogic> CHANCE_LOGIC = DeferredRegister
+            .create(GTRegistries.Keys.CHANCE_LOGIC, GTCEu.MOD_ID);
 
     public static void init(IEventBus modBus) {
         CHANCE_LOGIC.register(modBus);
 
-        CHANCE_LOGIC.register("or" , () -> OR);
+        CHANCE_LOGIC.register("or", () -> OR);
         CHANCE_LOGIC.register("and", () -> AND);
         CHANCE_LOGIC.register("first", () -> FIRST);
         CHANCE_LOGIC.register("xor", () -> XOR);

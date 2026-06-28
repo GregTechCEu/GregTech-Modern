@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.common.blockentity.GTHangingSignBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-
 import com.gregtechceu.gtceu.common.data.GTSignBlockEntities;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WallHangingSignBlock;

@@ -27,7 +27,6 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 public class HazardProperty implements IMaterialProperty {
 

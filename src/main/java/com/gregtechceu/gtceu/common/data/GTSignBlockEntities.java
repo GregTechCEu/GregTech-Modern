@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.blockentity.GTHangingSignBlockEntity;
-import com.tterrag.registrate.util.entry.BlockEntityEntry;
+
 import net.minecraft.world.level.block.entity.SignBlockEntity;
+
+import com.tterrag.registrate.util.entry.BlockEntityEntry;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
-// This has to be seperate from GTBlockEntities because of the order in which forge events are fired, as the main block entities class can't be loaded before the registries are populated.
+// This has to be seperate from GTBlockEntities because of the order in which forge events are fired, as the main block
+// entities class can't be loaded before the registries are populated.
 public class GTSignBlockEntities {
 
     public static void init() {}
@@ -26,5 +29,4 @@ public class GTSignBlockEntities {
                     GTBlocks.TREATED_WOOD_HANGING_SIGN,
                     GTBlocks.TREATED_WOOD_WALL_HANGING_SIGN)
             .register();
-
 }

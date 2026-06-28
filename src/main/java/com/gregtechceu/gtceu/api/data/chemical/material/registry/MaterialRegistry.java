@@ -1,31 +1,22 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
-import com.google.common.collect.Multimaps;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
-import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.mojang.serialization.Lifecycle;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.providers.RegistrateProvider;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.Lifecycle;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,7 +38,8 @@ public class MaterialRegistry extends MappedRegistry<Material> {
     }
 
     @Override
-    public Holder.@NotNull Reference<Material> register(ResourceKey<Material> key, Material value, Lifecycle lifecycle) {
+    public Holder.@NotNull Reference<Material> register(ResourceKey<Material> key, Material value,
+                                                        Lifecycle lifecycle) {
         if (registrationPhase == Phase.CLOSED || registrationPhase == Phase.FROZEN) {
             GTCEu.LOGGER.error(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",
