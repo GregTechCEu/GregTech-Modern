@@ -229,32 +229,31 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Machines
 
-    public <D extends MachineDefinition, M extends MetaMachine> MachineBuilder<D, M, ?> machine(String name,
-                                                                                                Function<ResourceLocation, D> definitionFactory,
-                                                                                                BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory,
-                                                                                                BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                MachineInstanceFactory<M> blockEntityFactory) {
+    public <D extends MachineDefinition, M extends MetaMachine, S extends MachineBuilder<D, M, S>> MachineBuilder<D, M, S> machine(String name,
+                                                                                                                                   Function<ResourceLocation, D> definitionFactory,
+                                                                                                                                   BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory,
+                                                                                                                                   BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                                   MachineInstanceFactory<M> blockEntityFactory) {
         return new MachineBuilder<>(this, name, definitionFactory, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <M extends MetaMachine> MachineBuilder<MachineDefinition, M, ?> machine(String name,
-                                                                                               MachineInstanceFactory<M> blockEntityFactory) {
+    public <M extends MetaMachine, T extends MachineBuilder<MachineDefinition, M, T>> MachineBuilder<MachineDefinition, M, T> machine(String name,
+                                                                                                                                      MachineInstanceFactory<M> blockEntityFactory) {
         return new MachineBuilder<>(this, name, MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     // Multiblock machines
 
-    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, M, ?> multiblock(String name,
-                                                                                                                          BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                          BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<M> multiblock(String name,
+                                                                                          BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                          BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, M, ?> multiblock(String name,
-                                                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
-                blockEntityFactory);
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<M> multiblock(String name,
+                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     // Recipe types
@@ -373,7 +372,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Creative mode tabs
 
     private @Nullable RegistryEntry<CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private static final Map<RegistryEntry<?>, @Nullable RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
     public @Nullable RegistryEntry<CreativeModeTab> creativeModeTab() {
         return this.currentTab;
@@ -408,14 +407,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
-        return createCreativeModeTab(parent, name, config);
-    }
-
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
         return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
-            var builder = CreativeModeTab.builder()
-                    .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
-                            .map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)));
+            CreativeModeTab.Builder builder = CreativeModeTab.builder()
+                    .icon(() -> getAll(Registries.ITEM).stream().findFirst()
+                            .map(ItemEntry::cast)
+                            .map(ItemEntry::asStack)
+                            .orElse(new ItemStack(Items.AIR)));
             config.accept(builder);
             return builder.build();
         });

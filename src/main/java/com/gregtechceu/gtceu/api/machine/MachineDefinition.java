@@ -37,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
 /**
@@ -116,8 +117,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private boolean allowCoverOnFront;
     @Getter
     @Setter
-    @Nullable
-    private PanelFactory UI;
+    private @Nullable PanelFactory UI;
     @Getter
     @Setter
     private String themeId = ThemeAPI.DEFAULT_ID;
@@ -128,6 +128,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     private StateDefinition<MachineDefinition, MachineRenderState> stateDefinition;
+    @SuppressWarnings("NotNullFieldNotInitialized")
     @Accessors(fluent = true)
     @Getter
     private MachineRenderState defaultRenderState;
@@ -192,7 +193,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -206,10 +207,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return id.hashCode();
     }
 
-    static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+    static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
     public static MachineDefinition getBuilt() {
-        return STATE.get();
+        return Objects.requireNonNull(STATE.get(), "Not building a machine definition currently");
     }
 
     public static void setBuilt(MachineDefinition state) {
