@@ -57,6 +57,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -72,6 +73,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -115,7 +117,7 @@ public class GTMachineUtils {
     public static final Int2IntFunction genericGeneratorTankSizeFunction = tier -> Math.min(4 * (1 << (tier - 1)),
             16) * FluidType.BUCKET_VOLUME;
 
-    public static Object2IntMap<MachineDefinition> DRUM_CAPACITY = new Object2IntArrayMap<>();
+    public static Object2IntMap<Holder<MachineDefinition>> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
     public static final PartAbility[] DUAL_INPUT_HATCH_ABILITIES = new PartAbility[] {
             PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS,
@@ -129,7 +131,7 @@ public class GTMachineUtils {
      * @deprecated Use {@link SimpleMachineBuilder}
      */
     @Deprecated(since = "8.0.0")
-    public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
+    public static Holder<MachineDefinition>[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
                                                              boolean hasPollutionDebuff, PanelFactory panelFactory) {
@@ -144,7 +146,7 @@ public class GTMachineUtils {
      * @deprecated Use {@link SimpleMachineBuilder}
      */
     @Deprecated(since = "8.0.0")
-    public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
+    public static Holder<MachineDefinition>[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
                                                              PanelFactory panelFactory) {
@@ -158,14 +160,14 @@ public class GTMachineUtils {
      * @deprecated Use {@link SimpleMachineBuilder}
      */
     @Deprecated(since = "8.0.0")
-    public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate, String name,
+    public static Holder<MachineDefinition>[] registerSimpleMachines(GTRegistrate registrate, String name,
                                                              GTRecipeType recipeType, PanelFactory panelFactory) {
         return new SimpleMachineBuilder(registrate, name, recipeType)
                 .panelFactory(panelFactory)
                 .register();
     }
 
-    public static MachineDefinition[] registerSimpleMachines(GTRegistrate registrate,
+    public static Holder<MachineDefinition>[] registerSimpleMachines(GTRegistrate registrate,
                                                              String name,
                                                              GTRecipeType recipeType,
                                                              Int2IntFunction tankScalingFunction,
@@ -180,12 +182,13 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static <MACHINE extends MetaMachine> MachineDefinition[] registerTieredMachines(GTRegistrate registrate,
-                                                                                           String name,
-                                                                                           MachineInstanceFactory.Tiered<MACHINE> factory,
-                                                                                           BiFunction<Integer, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder,
-                                                                                           int... tiers) {
-        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static <M extends MetaMachine> Holder<MachineDefinition>[] registerTieredMachines(GTRegistrate registrate,
+                                                                                             String name,
+                                                                                             MachineInstanceFactory.Tiered<M> factory,
+                                                                                             BiFunction<Integer, SimpleMachineBuilder<GTRegistrate, M>, Holder<MachineDefinition>> builder,
+                                                                                             int... tiers) {
+        Holder<MachineDefinition>[] definitions = new Holder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
                     .machine(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
@@ -196,11 +199,10 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static <
-            MACHINE extends MetaMachine> Pair<MachineDefinition, MachineDefinition> registerSteamMachines(GTRegistrate registrate,
-                                                                                                          String name,
-                                                                                                          MachineInstanceFactory.Steam<MACHINE> factory,
-                                                                                                          BiFunction<Boolean, MachineBuilder<MachineDefinition, MACHINE, ?>, MachineDefinition> builder) {
+    public static <M extends MetaMachine> Pair<Holder<MachineDefinition>, Holder<MachineDefinition>> registerSteamMachines(GTRegistrate registrate,
+                                                                                                                           String name,
+                                                                                                                           MachineInstanceFactory.Steam<M> factory,
+                                                                                                                           BiFunction<Boolean, SimpleMachineBuilder<GTRegistrate, M>, Holder<MachineDefinition>> builder) {
         MachineDefinition lowTier = builder.apply(false,
                 registrate.machine("lp_%s".formatted(name), holder -> factory.buildMachine(holder, false))
                         .langValue("Low Pressure " + FormattingUtil.toEnglishName(name))
@@ -212,10 +214,10 @@ public class GTMachineUtils {
         return Pair.of(lowTier, highTier);
     }
 
-    public static MachineDefinition[] registerFluidHatches(GTRegistrate registrate, String name, String displayName,
-                                                           String tooltip,
-                                                           IO io, int initialCapacity, int slots,
-                                                           int[] tiers, PartAbility... abilities) {
+    public static Holder<MachineDefinition>[] registerFluidHatches(GTRegistrate registrate, String name,
+                                                                   String displayName, String tooltip,
+                                                                   IO io, int initialCapacity, int slots,
+                                                                   int[] tiers, PartAbility... abilities) {
         final String pipeOverlay;
         if (slots >= 9) {
             pipeOverlay = "overlay_pipe_9x";
@@ -251,7 +253,7 @@ public class GTMachineUtils {
                 tiers);
     }
 
-    public static MachineDefinition[] registerTransformerMachines(GTRegistrate registrate, String langName,
+    public static Holder<MachineDefinition>[] registerTransformerMachines(GTRegistrate registrate, String langName,
                                                                   int baseAmp) {
         return registerTieredMachines(registrate, "transformer_%da".formatted(baseAmp),
                 (holder, tier) -> new TransformerMachine(holder, tier, baseAmp),
@@ -283,11 +285,11 @@ public class GTMachineUtils {
         // UHV not needed, as a UV transformer transforms up to UHV
     }
 
-    public static MachineDefinition[] registerSimpleGenerator(GTRegistrate registrate, String name,
-                                                              GTRecipeType recipeType,
-                                                              Int2IntFunction tankScalingFunction,
-                                                              float hazardStrengthPerOperation,
-                                                              int... tiers) {
+    public static Holder<MachineDefinition>[] registerSimpleGenerator(GTRegistrate registrate, String name,
+                                                                      GTRecipeType recipeType,
+                                                                      Int2IntFunction tankScalingFunction,
+                                                                      float hazardStrengthPerOperation,
+                                                                      int... tiers) {
         return registerTieredMachines(registrate, name,
                 (holder, tier) -> new SimpleGeneratorMachine(holder, tier, hazardStrengthPerOperation * tier,
                         tankScalingFunction),
@@ -306,9 +308,9 @@ public class GTMachineUtils {
                 tiers);
     }
 
-    public static Pair<MachineDefinition, MachineDefinition> registerSimpleSteamMachines(GTRegistrate registrate,
-                                                                                         String name,
-                                                                                         GTRecipeType recipeType) {
+    public static Pair<Holder<MachineDefinition>, Holder<MachineDefinition>> registerSimpleSteamMachines(GTRegistrate registrate,
+                                                                                                         String name,
+                                                                                                         GTRecipeType recipeType) {
         return registerSteamMachines(registrate, "steam_" + name, SimpleSteamMachine::new,
                 (pressure, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -321,7 +323,7 @@ public class GTMachineUtils {
                         .register());
     }
 
-    public static MachineDefinition[] registerBatteryBuffer(GTRegistrate registrate, int batterySlotSize) {
+    public static Holder<MachineDefinition>[] registerBatteryBuffer(GTRegistrate registrate, int batterySlotSize) {
         return registerTieredMachines(registrate, "battery_buffer_" + batterySlotSize + "x",
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize, AMPS_PER_BATTERY_NORMAL,
                         batterySlotSize),
@@ -344,7 +346,7 @@ public class GTMachineUtils {
                 ALL_TIERS);
     }
 
-    public static MachineDefinition[] registerCharger(GTRegistrate registrate, int itemSlotSize) {
+    public static Holder<MachineDefinition>[] registerCharger(GTRegistrate registrate, int itemSlotSize) {
         return registerTieredMachines(registrate, "charger_" + itemSlotSize + "x",
                 (holder, tier) -> new BatteryBufferMachine(holder, tier, itemSlotSize,
                         BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0),
@@ -365,14 +367,14 @@ public class GTMachineUtils {
                 ALL_TIERS);
     }
 
-    public static MachineDefinition[] registerConverter(GTRegistrate registrate, int amperage) {
+    public static Holder<MachineDefinition>[] registerConverter(GTRegistrate registrate, int amperage) {
         final var tab = registrate.creativeModeTab();
 
         if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
             registrate.creativeModeTab(() -> null);
         }
 
-        MachineDefinition[] converters = registerTieredMachines(registrate, amperage + "a_energy_converter",
+        Holder<MachineDefinition>[] converters = registerTieredMachines(registrate, amperage + "a_energy_converter",
                 (holder, tier) -> new ConverterMachine(holder, tier, amperage),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
@@ -399,7 +401,7 @@ public class GTMachineUtils {
         return converters;
     }
 
-    public static MachineDefinition[] registerLaserHatch(GTRegistrate registrate, IO io, int amperage,
+    public static Holder<MachineDefinition>[] registerLaserHatch(GTRegistrate registrate, IO io, int amperage,
                                                          PartAbility ability) {
         String name = io == IN ? "target" : "source";
         return registerTieredMachines(registrate, amperage + "a_laser_" + name + "_hatch",
@@ -424,7 +426,7 @@ public class GTMachineUtils {
                 HIGH_TIERS);
     }
 
-    public static MachineDefinition registerCrate(GTRegistrate registrate, Material material, int capacity,
+    public static Holder<MachineDefinition> registerCrate(GTRegistrate registrate, Material material, int capacity,
                                                   int rowLength, String lang) {
         final boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
@@ -441,7 +443,7 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MachineDefinition registerDrum(GTRegistrate registrate, Material material, int capacity,
+    public static Holder<MachineDefinition> registerDrum(GTRegistrate registrate, Material material, int capacity,
                                                  String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
@@ -469,8 +471,9 @@ public class GTMachineUtils {
         return definition;
     }
 
-    public static MachineDefinition[] registerQuantumTanks(GTRegistrate registrate, String name, int... tiers) {
-        MachineDefinition[] definitions = new MachineDefinition[GTValues.TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static Holder<MachineDefinition>[] registerQuantumTanks(GTRegistrate registrate, String name, int... tiers) {
+        Holder<MachineDefinition>[] definitions = new Holder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             long maxAmount = 4000 * FluidType.BUCKET_VOLUME * (long) Math.pow(2, tier - 1);
             var register = registrate.machine(
@@ -497,7 +500,7 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static MachineDefinition[] registerQuantumChests(GTRegistrate registrate, String name, int... tiers) {
+    public static Holder<MachineDefinition>[] registerQuantumChests(GTRegistrate registrate, String name, int... tiers) {
         return registerTieredMachines(registrate, name,
                 (holder, tier) -> new QuantumChestMachine(holder, tier,
                         tier == MAX ? Long.MAX_VALUE : 4_000_000 * (long) Math.pow(2, tier - 1)),
@@ -523,13 +526,13 @@ public class GTMachineUtils {
     //////////////////////////////////////
     // multi register helpers
 
-    public static MultiblockMachineDefinition registerMultiblockTank(GTRegistrate registrate, String name,
-                                                                     String displayName, int capacity,
-                                                                     Supplier<? extends Block> casing,
-                                                                     Supplier<? extends Block> valve,
-                                                                     @Nullable PropertyFluidFilter filter,
-                                                                     BiConsumer<MultiblockMachineBuilder<MultiblockTankMachine>, ResourceLocation> rendererSetup) {
-        MultiblockMachineBuilder<MultiblockTankMachine> builder = registrate
+    public static Holder<MultiblockMachineDefinition> registerMultiblockTank(GTRegistrate registrate, String name,
+                                                                             String displayName, int capacity,
+                                                                             Supplier<? extends Block> casing,
+                                                                             Supplier<? extends Block> valve,
+                                                                             @Nullable PropertyFluidFilter filter,
+                                                                             BiConsumer<MultiblockMachineBuilder<GTRegistrate, MultiblockTankMachine>, ResourceLocation> rendererSetup) {
+        MultiblockMachineBuilder<GTRegistrate, MultiblockTankMachine> builder = registrate
                 .multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
                 .langValue(displayName)
                 .tooltips(
@@ -543,7 +546,7 @@ public class GTMachineUtils {
                         .slice("CCC", "CCC", "CCC")
                         .slice("CCC", "C#C", "CCC")
                         .slice("CCC", "CSC", "CCC")
-                        .where('S', controller(blocks(definition.get())))
+                        .where('S', controller(definition))
                         .where('C', blocks(casing.get())
                                 .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
@@ -555,8 +558,8 @@ public class GTMachineUtils {
 
     public static MachineDefinition registerTankValve(GTRegistrate registrate, String name, String displayName,
                                                       boolean isMetal,
-                                                      BiConsumer<MachineBuilder<?, ?, ?>, ResourceLocation> rendererSetup) {
-        MachineBuilder<MachineDefinition, ?, ?> builder = registrate
+                                                      BiConsumer<SimpleMachineBuilder<GTRegistrate, TankValvePartMachine> , ResourceLocation> rendererSetup) {
+        SimpleMachineBuilder<GTRegistrate, TankValvePartMachine> builder = registrate
                 .machine(name, holder -> new TankValvePartMachine(holder, isMetal))
                 .langValue(displayName)
                 .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"),
@@ -566,12 +569,13 @@ public class GTMachineUtils {
         return builder.register();
     }
 
-    public static <M extends MultiblockControllerMachine> MultiblockMachineDefinition[] registerTieredMultis(GTRegistrate registrate,
-                                                                                                             String name,
-                                                                                                             MachineInstanceFactory.Tiered<M> factory,
-                                                                                                             BiFunction<Integer, MultiblockMachineBuilder<M>, MultiblockMachineDefinition> builder,
-                                                                                                             int... tiers) {
-        MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[GTValues.TIER_COUNT];
+    @SuppressWarnings("unchecked")
+    public static <M extends MultiblockControllerMachine> Holder<MultiblockMachineDefinition>[] registerTieredMultis(GTRegistrate registrate,
+                                                                                                                     String name,
+                                                                                                                     MachineInstanceFactory.Tiered<M> factory,
+                                                                                                                     BiFunction<Integer, MultiblockMachineBuilder<GTRegistrate, M>, Holder<MultiblockMachineDefinition>> builder,
+                                                                                                                     int... tiers) {
+        Holder<MultiblockMachineDefinition>[] definitions = new Holder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             var register = registrate
                     .multiblock(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
@@ -582,12 +586,12 @@ public class GTMachineUtils {
         return definitions;
     }
 
-    public static MultiblockMachineDefinition registerLargeBoiler(GTRegistrate registrate, String name,
-                                                                  Supplier<? extends Block> casing,
-                                                                  Supplier<? extends Block> pipe,
-                                                                  Supplier<? extends Block> fireBox,
-                                                                  ResourceLocation texture, BoilerFireboxType firebox,
-                                                                  int maxTemperature, int heatSpeed) {
+    public static Holder<MultiblockMachineDefinition> registerLargeBoiler(GTRegistrate registrate, String name,
+                                                                          Supplier<? extends Block> casing,
+                                                                          Supplier<? extends Block> pipe,
+                                                                          Supplier<? extends Block> fireBox,
+                                                                          ResourceLocation texture, BoilerFireboxType firebox,
+                                                                          int maxTemperature, int heatSpeed) {
         // spotless:off
         return registrate
                 .multiblock("%s_large_boiler".formatted(name),
@@ -617,7 +621,7 @@ public class GTMachineUtils {
                             .slice("XXX", "CCC", "CCC", "CCC")
                             .slice("XXX", "CPC", "CPC", "CCC")
                             .slice("XXX", "CSC", "CCC", "CCC")
-                            .where('S', Predicates.controller(blocks(definition.getBlock())))
+                            .where('S', controller(definition))
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
                             .where('C', blocks(casing.get()).setMinGlobalLimited(20)
@@ -643,7 +647,7 @@ public class GTMachineUtils {
         // spotless:on
     }
 
-    public static MultiblockMachineDefinition registerLargeCombustionEngine(GTRegistrate registrate,
+    public static Holder<MultiblockMachineDefinition> registerLargeCombustionEngine(GTRegistrate registrate,
                                                                             String name, int tier,
                                                                             Supplier<? extends Block> casing,
                                                                             Supplier<? extends Block> gear,
@@ -676,7 +680,7 @@ public class GTMachineUtils {
                         .where('A',
                                 blocks(intake.get())
                                         .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_1")))
-                        .where('Y', controller(blocks(definition.getBlock())))
+                        .where('Y', controller(definition))
                         .build())
                 .recoveryItems(
                         () -> new ItemLike[] {
@@ -694,23 +698,23 @@ public class GTMachineUtils {
                 .register();
     }
 
-    public static MultiblockMachineDefinition registerLargeTurbine(GTRegistrate registrate,
-                                                                   String name, int tier, GTRecipeType recipeType,
-                                                                   Supplier<? extends Block> casing,
-                                                                   Supplier<? extends Block> gear,
-                                                                   ResourceLocation casingTexture,
-                                                                   ResourceLocation overlayModel) {
+    public static Holder<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
+                                                                           String name, int tier, GTRecipeType recipeType,
+                                                                           Supplier<? extends Block> casing,
+                                                                           Supplier<? extends Block> gear,
+                                                                           ResourceLocation casingTexture,
+                                                                           ResourceLocation overlayModel) {
         return registerLargeTurbine(registrate, name, tier, recipeType, casing, gear, casingTexture, overlayModel,
                 true);
     }
 
-    public static MultiblockMachineDefinition registerLargeTurbine(GTRegistrate registrate,
-                                                                   String name, int tier, GTRecipeType recipeType,
-                                                                   Supplier<? extends Block> casing,
-                                                                   Supplier<? extends Block> gear,
-                                                                   ResourceLocation casingTexture,
-                                                                   ResourceLocation overlayModel,
-                                                                   boolean needsMuffler) {
+    public static Holder<MultiblockMachineDefinition> registerLargeTurbine(GTRegistrate registrate,
+                                                                           String name, int tier, GTRecipeType recipeType,
+                                                                           Supplier<? extends Block> casing,
+                                                                           Supplier<? extends Block> gear,
+                                                                           ResourceLocation casingTexture,
+                                                                           ResourceLocation overlayModel,
+                                                                           boolean needsMuffler) {
         return registrate.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
@@ -721,7 +725,7 @@ public class GTMachineUtils {
                         .slice("CCCC", "CHHC", "CCCC")
                         .slice("CHHC", "RGGR", "CHHC")
                         .slice("CCCC", "CSHC", "CCCC")
-                        .where('S', controller(blocks(definition.getBlock())))
+                        .where('S', controller(definition))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
                         .where('R', rotorHolder(tier).setExactLimit(1)
@@ -838,7 +842,7 @@ public class GTMachineUtils {
             this.recipeType = recipeType;
         }
 
-        public MachineDefinition[] register() {
+        public Holder<MachineDefinition>[] register() {
             if (panelFactory == null) {
                 panelFactory = GTSingleblockMachinePanels.GENERAL_MACHINE;
             }

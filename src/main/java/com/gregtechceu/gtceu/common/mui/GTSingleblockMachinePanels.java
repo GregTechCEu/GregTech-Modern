@@ -38,15 +38,15 @@ public class GTSingleblockMachinePanels {
         } else {
             GTCEu.LOGGER.error(
                     "{} is not a SimpleTieredMachine/SimpleGeneratorMachine/SimpleSteamMachine, cannot add slots to its content",
-                    machine.getDefinition().getName());
-            return new ModularPanel<>(machine.getDefinition().getName());
+                    machine.getDefinition());
+            return new ModularPanel<>(machine.getDefinition().getId().toString());
         }
 
         if (type.getUiLayout() == null) {
             GTCEu.LOGGER.error(
                     "Tried to draw a singleblock recipe type UI for {}, but it does not have a recipe type UI",
-                    machine.getDefinition().getName());
-            return new ModularPanel<>(machine.getDefinition().getName());
+                    machine.getDefinition());
+            return new ModularPanel<>(machine.getDefinition().getId().toString());
         }
 
         var builder = !isSteam ? MachineUIPanelBuilder.panelBuilder(machine).drawGTLogo(true) :

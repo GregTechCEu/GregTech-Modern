@@ -15,6 +15,7 @@ import com.tterrag.registrate.builders.BuilderCallback;
 import com.tterrag.registrate.providers.*;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.nullness.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -96,8 +97,14 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     }
 
     @Override
-    public GTBlockBuilder<T, P> lang(String name) {
-        return (GTBlockBuilder<T, P>) super.lang(name);
+    public GTBlockBuilder<T, P> lang(@Nullable String name) {
+        return lang(Block::getDescriptionId, name);
+    }
+
+    @Override
+    public GTBlockBuilder<T, P> lang(net.minecraftforge.common.util.NonNullFunction<T, String> langKeyProvider, @Nullable String name) {
+        if (name == null) return this;
+        return (GTBlockBuilder<T, P>) super.lang(langKeyProvider, name);
     }
 
     @Override
@@ -127,8 +134,13 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
     }
 
     @Override
-    public  <D extends RegistrateProvider> GTBlockBuilder<T, P> setData(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, T>, D> cons) {
+    public <D extends RegistrateProvider> GTBlockBuilder<T, P> setData(ProviderType<? extends D> type, NonNullBiConsumer<DataGenContext<Block, T>, D> cons) {
         return (GTBlockBuilder<T, P>) super.setData(type, cons);
+    }
+
+    @Override
+    public GTBlockBuilder<T, P> onRegister(NonNullConsumer<? super T> callback) {
+        return (GTBlockBuilder<T, P>) super.onRegister(callback);
     }
 
     // spotless:on

@@ -63,7 +63,7 @@ public class QuantumTankFluidRender extends DynamicRender<QuantumTankMachine, Qu
             if (storedAmount == 0 && !stored.isEmpty()) storedAmount = stored.getAmount();
             long maxAmount = 0;
             if (stack.getItem() instanceof MetaMachineItem machineItem) {
-                maxAmount = TANK_CAPACITY.getLong(machineItem.getDefinition());
+                maxAmount = TANK_CAPACITY.getLong(machineItem.getDefinition().getHolder());
             }
             // Don't need to handle locked fluids here since they don't get saved to the item
             renderTank(poseStack, buffer, Direction.NORTH,

@@ -9,15 +9,16 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -52,9 +53,9 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     // This is only stored here for KJS use.
     @Getter
     @Setter
-    private String langValue;
+    private @Nullable String langValue;
     @Setter
-    private Supplier<? extends Block> blockSupplier;
+    private Supplier<? extends MetaMachineBlock> blockSupplier;
     @Setter
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
@@ -145,7 +146,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         this.defaultRenderState = state;
     }
 
-    public Block getBlock() {
+    public MetaMachineBlock getBlock() {
         return blockSupplier.get();
     }
 
@@ -172,7 +173,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     @Override
     public MetaMachineBlock get() {
-        return (MetaMachineBlock) blockSupplier.get();
+        return getBlock();
     }
 
     public String getName() {
@@ -190,6 +191,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public BlockState defaultBlockState() {
         return getBlock().defaultBlockState();
+    }
+
+    public Holder<MachineDefinition> getHolder() {
+        return GTRegistries.MACHINES.wrapAsHolder(this);
     }
 
     @Override

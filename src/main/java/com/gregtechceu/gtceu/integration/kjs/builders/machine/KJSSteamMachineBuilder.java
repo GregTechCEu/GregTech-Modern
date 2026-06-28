@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.SimpleMachineBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -23,8 +24,7 @@ import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
-public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
-                                    implements IMachineBuilderKJS {
+public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
 
     @Setter
     public transient boolean hasLowPressure = true, hasHighPressure = true;
@@ -33,12 +33,13 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private @Nullable MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
+    private @Nullable SimpleMachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
     @Nullable
     private MachineDefinition lpObject = null, hpObject = null;
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
+
         this.dummyBuilder = true;
     }
 
@@ -61,7 +62,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
                     .workableSteamHullModel(false, id.withPrefix("block/machines/"));
 
             definition.apply(false, lowPressureBuilder);
-            this.lpObject = lowPressureBuilder.register();
+            this.lpObject = lowPressureBuilder.createEntry();
             value = lpObject;
         }
 
@@ -76,7 +77,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
                     .workableSteamHullModel(true, id.withPrefix("block/machines/"));
 
             definition.apply(true, highPressureBuilder);
-            this.hpObject = highPressureBuilder.register();
+            this.hpObject = highPressureBuilder.createEntry();
             if (value == null) value = hpObject;
         }
 
@@ -106,10 +107,10 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
 
     @Override
     public void generateLang(LangEventJS lang) {
-        if (lpObject != null) {
+        if (lpObject != null && lpObject.getLangValue() != null) {
             lang.add(GTCEu.MOD_ID, lpObject.getDescriptionId(), lpObject.getLangValue());
         }
-        if (hpObject != null) {
+        if (hpObject != null && hpObject.getLangValue() != null) {
             lang.add(GTCEu.MOD_ID, hpObject.getDescriptionId(), hpObject.getLangValue());
         }
     }
@@ -123,6 +124,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        void apply(boolean isHighPressure, MachineBuilder<?, ?, ?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?, ?, ?, ?> builder);
     }
 }

@@ -11,7 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
@@ -27,8 +26,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     @Setter
     private boolean generator;
     @Getter
-    @NonNull
-    private Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
+    private final Map<String, Supplier<IBlockPattern>> structurePatterns = new HashMap<>();
     @Getter
     @Setter
     private boolean allowFlip;
@@ -37,8 +35,7 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private boolean renderXEIPreview;
     @Setter
     @Getter
-    @Nullable
-    private Supplier<ItemStack[]> recoveryItems;
+    private @Nullable Supplier<ItemStack[]> recoveryItems;
     @Setter
     @Getter
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter;

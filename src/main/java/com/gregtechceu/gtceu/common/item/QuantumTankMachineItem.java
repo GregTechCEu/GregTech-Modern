@@ -20,11 +20,10 @@ public class QuantumTankMachineItem extends MetaMachineItem {
 
     @Override
     public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        if (!QuantumTankMachine.TANK_CAPACITY.containsKey(getDefinition())) {
-            GTCEu.LOGGER
-                    .error("Quantum tank " + getDefinition().getName() + " does not have a registered TANK_CAPACITY," +
-                            " will have capacity 0.");
+        if (!QuantumTankMachine.TANK_CAPACITY.containsKey(getDefinition().getHolder())) {
+            GTCEu.LOGGER.error("Quantum tank {} does not have a registered TANK_CAPACITY, will have capacity 0.",
+                    getDefinition().getId());
         }
-        return new QuantumFluidHandlerItemStack(stack, QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition()));
+        return new QuantumFluidHandlerItemStack(stack, QuantumTankMachine.TANK_CAPACITY.getLong(getDefinition().getHolder()));
     }
 }

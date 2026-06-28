@@ -30,10 +30,9 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
-public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
-                                     implements IMachineBuilderKJS {
+public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
 
-    private final @Nullable MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
+    private final @Nullable MachineBuilder<?, ?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
     private final @Nullable MachineDefinition[] machines = new MachineDefinition[TIER_COUNT];
 
     @Setter
@@ -55,6 +54,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
         super(id);
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
+
         this.dummyBuilder = true;
     }
 
@@ -93,7 +93,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
         super.generateLang(lang);
         for (int tier : this.tiers) {
             MachineDefinition def = this.machines[tier];
-            if (def != null) {
+            if (def != null && def.getLangValue() != null) {
                 lang.add(GTCEu.MOD_ID, def.getDescriptionId(), def.getLangValue());
             }
         }
@@ -115,7 +115,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            MachineBuilder<?, ?, ?> builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            var builder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 
@@ -136,7 +136,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
             }
 
             this.builders[tier] = builder;
-            this.machines[tier] = builder.register();
+            this.machines[tier] = builder.createEntry();
             anyDefinition = this.machines[tier];
         }
         return Objects.requireNonNull(anyDefinition);
@@ -157,6 +157,6 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?, ?> builder);
+        void apply(int tier, MachineBuilder<?, ?, ?, ?> builder);
     }
 }

@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -20,7 +19,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -29,14 +28,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -55,15 +51,15 @@ import java.util.function.*;
 
 @SuppressWarnings("unused")
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
-                                             implements IMachineBuilderKJS {
+                                             implements IMachineBuilderKJS,
+                                             IGTDummyBuilder<MultiblockMachineDefinition> {
 
-    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
+    private final MultiblockMachineBuilder<?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
+                                           MultiblockMachineBuilder<?> internal) {
         super(id);
         this.internal = internal;
-        this.dummyBuilder = true;
     }
 
     @Override
@@ -86,12 +82,12 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partSorter(Comparator<MultiblockPartMachine> partSorter) {
+    public MultiblockMachineBuilderWrapper partSorter(Comparator<IMultiPart> partSorter) {
         internal.partSorter(partSorter);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
         internal.partAppearance(partAppearance);
         return this;
     }
@@ -116,8 +112,8 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
-        internal.instanceFactory(machine);
+    public MultiblockMachineBuilderWrapper blockEntityFactory(Function<BlockEntityCreationInfo, MetaMachine> machine) {
+        internal.blockEntityFactory(machine);
         return this;
     }
 
@@ -159,16 +155,6 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     public MultiblockMachineBuilderWrapper itemProp(NonNullUnaryOperator<Item.Properties> itemProp) {
         internal.itemProp(itemProp);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
-        internal.blockBuilder(blockBuilder);
-        return this;
-    }
-
-    public MultiblockMachineBuilderWrapper itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
-        internal.itemBuilder(itemBuilder);
         return this;
     }
 
@@ -387,7 +373,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper onBlockEntityRegister(NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister) {
+    public MultiblockMachineBuilderWrapper onBlockEntityRegister(NonNullConsumer<BlockEntityType<MetaMachine>> onBlockEntityRegister) {
         internal.onBlockEntityRegister(onBlockEntityRegister);
         return this;
     }
@@ -410,31 +396,25 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
 
     @Override
     public void generateLang(LangEventJS lang) {
-        if (object != null) {
+        if (object != null && object.getLangValue() != null) {
             lang.add(id.getNamespace(), object.getDescriptionId(), object.getLangValue());
         }
     }
 
     public MultiblockMachineDefinition createObject() {
-        return internal.register();
+        return internal.createEntry();
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                WorkableElectricMultiblockMachine::new);
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
+                .multiblock(id.getPath(), WorkableElectricMultiblockMachine::new);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 
     public static MultiblockMachineBuilderWrapper createKJSMulti(ResourceLocation id,
                                                                  KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        var baseBuilder = new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
-                id.getPath(),
-                MetaMachineBlock::new,
-                MetaMachineItem::new,
-                machine::create);
+        var baseBuilder = GTRegistrate.createIgnoringListenerErrors(id.getNamespace())
+                .multiblock(id.getPath(), machine::create);
         return new MultiblockMachineBuilderWrapper(id, baseBuilder);
     }
 }
