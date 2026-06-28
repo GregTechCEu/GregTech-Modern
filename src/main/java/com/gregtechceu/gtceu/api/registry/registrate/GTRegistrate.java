@@ -64,10 +64,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -189,6 +186,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return this;
     }
 
+    // spotless:off
     /* === Builder helpers === */
 
     // Generic
@@ -230,34 +228,30 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Machines
 
-    public <DEFINITION extends MachineDefinition,
-            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory,
-                blockFactory, itemFactory, blockEntityFactory);
+    public <D extends MachineDefinition, M extends MetaMachine> MachineBuilder<D, M, ?> machine(String name,
+                                                                                                Function<ResourceLocation, D> definitionFactory,
+                                                                                                BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory,
+                                                                                                BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                MachineInstanceFactory<M> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, definitionFactory, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new,
-                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
+    public <M extends MetaMachine> MachineBuilder<MachineDefinition, M, ?> machine(String name,
+                                                                                               MachineInstanceFactory<M> blockEntityFactory) {
+        return new MachineBuilder<>(this, name, MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
     // Multiblock machines
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name,
-                blockFactory, itemFactory, blockEntityFactory);
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, M, ?> multiblock(String name,
+                                                                                                                          BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                                          BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
+        return new MultiblockMachineBuilder<>(this, name, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, M, ?> multiblock(String name,
+                                                                                                                          MachineInstanceFactory<M> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
                 blockEntityFactory);
     }
@@ -310,16 +304,15 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Elements
 
-    public Element element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
-                           String symbol, boolean isIsotope) {
+    public Element element(String name, long protons, long neutrons, long halfLifeSeconds,
+                           @Nullable String decayTo, String symbol, boolean isIsotope) {
         var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
         this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
         return element;
     }
 
-    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
-                           String symbol,
-                           boolean isIsotope) {
+    public Element element(long protons, long neutrons, long halfLifeSeconds,
+                           @Nullable String decayTo, String name, String symbol, boolean isIsotope) {
         return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
     }
 
@@ -342,8 +335,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Medical conditions
 
     public MedicalCondition medicalCondition(String name, int color,
-                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType,
-                                             float progressionRate,
+                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType, float progressionRate,
                                              boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
         var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType,
                 progressionRate, canBePermanent, symptoms);
@@ -359,8 +351,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // World gen layers
 
-    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
-                                                   Set<ResourceKey<Level>> levels) {
+    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target, Set<ResourceKey<Level>> levels) {
         var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
         this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
         return worldGenLayer;
@@ -373,31 +364,25 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     }
 
     @Override
-    public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(String name,
-                                                                   NonNullFunction<BlockBehaviour.Properties, T> factory) {
+    public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(String name, NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(this, name, factory);
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent,
-                                                           NonNullFunction<BlockBehaviour.Properties, T> factory) {
+    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return block(parent, currentName(), factory);
     }
 
     @Override
-    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name,
-                                                           NonNullFunction<BlockBehaviour.Properties, T> factory) {
-        return (GTBlockBuilder<T, P>) entry(name,
-                callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name, NonNullFunction<BlockBehaviour.Properties, T> factory) {
+        return (GTBlockBuilder<T, P>) entry(name, callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
     // Fluids
-    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture,
-                                       ResourceLocation flowingTexture) {
-        return entry(name,
-                callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture,
-                        flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource()
-                        .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
+    public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return entry(name, callback -> new GTFluidBuilder<>(this, this, material, name, langKey, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType)
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .defaultSource());
     }
 
     // Creative mode tabs
@@ -425,10 +410,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         TAB_LOOKUP.put(entry, tab);
     }
 
-    protected <R,
-            T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type,
-                                                 Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator,
-                                                 NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
+    protected <R, T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type,
+                                                       Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator,
+                                                       NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
         RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
 
         if (this.currentTab != null) {
@@ -438,13 +422,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return entry;
     }
 
-    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
-                                                                                       Consumer<CreativeModeTab.Builder> config) {
+    public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
     }
 
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name,
-                                                                                             Consumer<CreativeModeTab.Builder> config) {
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
         return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
             var builder = CreativeModeTab.builder()
                     .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast)
@@ -453,4 +435,5 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
             return builder.build();
         });
     }
+    // spotless:on
 }
