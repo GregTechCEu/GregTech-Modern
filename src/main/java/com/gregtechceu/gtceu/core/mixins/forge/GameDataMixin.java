@@ -33,11 +33,6 @@ public class GameDataMixin {
     private static Set<ResourceLocation> gtceuFirst(Set<ResourceLocation> ordered) {
         return ordered.stream()
                 .sorted((a, b) -> {
-
-                    // fire the material registry first
-                    if (a.equals(GTCEu.id("material"))) return -1;
-                    if (b.equals(GTCEu.id("material"))) return 1;
-
                     boolean aGt = a.getNamespace().equals("gtceu");
                     boolean bGt = b.getNamespace().equals("gtceu");
                     if (aGt && !bGt) return -1;

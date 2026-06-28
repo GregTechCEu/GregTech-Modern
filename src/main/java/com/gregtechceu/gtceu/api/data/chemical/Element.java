@@ -58,7 +58,6 @@ public class Element {
         return protons + neutrons;
     }
 
-    @ApiStatus.Internal
     public Element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol,
                    boolean isIsotope) {
         this.protons = protons;
