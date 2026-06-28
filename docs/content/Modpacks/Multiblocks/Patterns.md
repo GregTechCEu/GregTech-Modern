@@ -34,7 +34,7 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
 
 1. The three directions passed in `.start()` are the directions to traverse per-slice, per-string-in-slice, and per-char-in-string respectively. The directions are relative based on the controllers front and upwards facing. Calling `.start()` with no arguments uses `BACK, UP, RIGHT`.
 
-2. How the 2-D view of this specific slice's mapping looks.\
+2. How the 2-D view of this specific slice's mapping looks.
 
 3. A slice with an optional amount of repeats allowed, first value is min allowed(can be zero to make the whole slice optional), second is max allowed.
 
