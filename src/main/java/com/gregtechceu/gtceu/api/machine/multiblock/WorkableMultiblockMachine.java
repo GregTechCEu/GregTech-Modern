@@ -233,12 +233,13 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        IRecipeLogicMachine.super.notifyStatusChanged(oldStatus, newStatus);
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        IRecipeLogicMachine.super.recipeLogicStatusChanged(oldStatus, newStatus);
         if (shouldUpdateActiveBlocks()) {
             updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
         }
         for (IMultiPart part : getParts()) {
+            part.recipeLogicStatusChanged(oldStatus, newStatus);
             MachineRenderState state = part.self().getRenderState();
             if (state.hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
                 part.self().setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
@@ -286,23 +287,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         return IRecipeLogicMachine.super.onWorking();
     }
 
-    @Override
-    public void onWaiting() {
-        for (IMultiPart part : getParts()) {
-            part.onWaiting(this);
-        }
-        IRecipeLogicMachine.super.onWaiting();
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if (!isWorkingAllowed) {
-            for (IMultiPart part : getParts()) {
-                part.onPaused(this);
-            }
-        }
-        IRecipeLogicMachine.super.setWorkingEnabled(isWorkingAllowed);
-    }
 
     public GTRecipeType getRecipeType() {
         int index = activeRecipeType >= 0 && activeRecipeType < recipeTypes.length ? activeRecipeType : 0;

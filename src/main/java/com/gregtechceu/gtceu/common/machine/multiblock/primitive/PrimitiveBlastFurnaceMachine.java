@@ -93,8 +93,8 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        super.notifyStatusChanged(oldStatus, newStatus);
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.recipeLogicStatusChanged(oldStatus, newStatus);
         if (newStatus == RecipeLogic.Status.WORKING) {
             this.hurtSubscription = subscribeServerTick(this.hurtSubscription, this::hurtEntitiesAndBreakSnow);
         } else if (oldStatus == RecipeLogic.Status.WORKING && hurtSubscription != null) {
@@ -254,7 +254,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
     }
 
     private void hurtEntitiesAndBreakSnow() {
-        BlockPos middlePos = self().getBlockPos().offset(getFrontFacing().getOpposite().getNormal());
+        BlockPos middlePos = getBlockPos().offset(getFrontFacing().getOpposite().getNormal());
         getLevel().getEntities(null, new AABB(middlePos)).forEach(e -> e.hurt(e.damageSources().lava(), 3.0f));
 
         if (getOffsetTimer() % 10 == 0) {

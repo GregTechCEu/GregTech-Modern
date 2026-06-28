@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -31,11 +32,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     void setActiveRecipeType(int type);
 
     /**
-     * Called when recipe logic status changed
-     */
-    default void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
-
-    /**
      * Recipe logic
      */
     @NotNull
@@ -54,6 +50,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
+        for (var trait: self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait) {
+                recipe = rlTrait.modifyRecipe(recipe);
+                if (recipe == null) return null;
+            };
+        }
         return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
     }
 
@@ -74,30 +76,53 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     /**
-     * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
+     * Called when the recipe logic status changes
+     * @param oldStatus Old recipe logic status
+     * @param newStatus New recipe logic status
+     */
+    default void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        for (var trait: self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait) rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
+        }
+    }
+
+    /**
+     * Called when a recipe is about to be run, just before inputs are consumed.
+     *
+     * @return true to cancel the recipe, false to continue
+     *
+     * @see RecipeLogic#setupRecipe(GTRecipe)
      */
     default boolean beforeWorking(@Nullable GTRecipe recipe) {
+        for (var trait: self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.beforeWorking(recipe)) return false;
+        }
         return self().getDefinition().getBeforeWorking().test(this, recipe);
     }
 
     /**
-     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
+     * Called every tick while the recipe is working.
+     *
+     * @return true to interrupt and suspend the recipe, false to continue working
+     *
+     * @see RecipeLogic#handleRecipeWorking()
      */
     default boolean onWorking() {
+        for (var trait: self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.onWorking()) return false;
+        }
         return self().getDefinition().getOnWorking().test(this);
     }
 
     /**
-     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
-     */
-    default void onWaiting() {
-        self().getDefinition().getOnWaiting().accept(this);
-    }
-
-    /**
-     * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
+     * Called when the recipe finishes, before outputs are produced.
+     *
+     * @see RecipeLogic#onRecipeFinish()
      */
     default void afterWorking() {
+        for (var trait: self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait) rlTrait.afterWorking();
+        }
         self().getDefinition().getAfterWorking().accept(this);
     }
 

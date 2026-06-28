@@ -75,7 +75,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private boolean alwaysTryModifyRecipe;
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    private BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking = (machine, recipe) -> true;
     @Getter
     @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
@@ -134,6 +134,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public MachineDefinition(ResourceLocation id) {
         this.id = id;
+    }
+
+    public boolean isTiered() {
+        return tier != -1;
     }
 
     public final void registerDefaultState(MachineRenderState state) {

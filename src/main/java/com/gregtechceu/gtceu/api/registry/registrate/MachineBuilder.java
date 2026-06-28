@@ -122,7 +122,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     @Getter // getter for KJS
     private @NotNull GTRecipeType @NotNull [] recipeTypes = new GTRecipeType[0];
     @Getter // getter for KJS
-    private int tier;
+    private int tier = -1;
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?

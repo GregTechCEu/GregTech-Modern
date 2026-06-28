@@ -436,7 +436,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 status = Status.SUSPEND;
                 suspendAfterFinish = false;
             }
-            getRLMachine().notifyStatusChanged(this.status, status);
+            getRLMachine().recipeLogicStatusChanged(this.status, status);
             this.status = status;
             syncDataHolder.markClientSyncFieldDirty("status");
             setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
@@ -452,7 +452,6 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         setStatus(Status.WAITING);
         waitingReason = reason;
         syncDataHolder.markClientSyncFieldDirty("waitingReason");
-        getRLMachine().onWaiting();
     }
 
     /**

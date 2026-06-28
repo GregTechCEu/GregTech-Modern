@@ -20,7 +20,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     public static final float MIN_CLEANING_PER_OPERATION = 10;
 
-    private MedicalCondition currentRecipeMedicalCondition;
+    private @Nullable MedicalCondition currentRecipeMedicalCondition;
 
     @Getter
     private float removedLastSecond;
@@ -59,7 +59,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
 
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        if (super.beforeWorking(recipe) && recipe != null) {
+        if (super.beforeWorking(recipe) && recipe != null && currentRecipeMedicalCondition != null) {
             // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
             return cleanerTrait.beginCleaningOperation(currentRecipeMedicalCondition,
                     MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1));

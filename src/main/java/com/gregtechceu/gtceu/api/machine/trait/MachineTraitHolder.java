@@ -165,7 +165,7 @@ public final class MachineTraitHolder {
                 trait.getSyncDataHolder().deserializeNBT(compoundTag.getCompound(key), context.isClientSync());
             }
 
-            return null;
+            return traitHolder;
         }
     }
 

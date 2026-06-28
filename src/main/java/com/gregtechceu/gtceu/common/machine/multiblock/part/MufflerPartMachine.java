@@ -98,13 +98,12 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     }
 
     @Override
-    public boolean afterWorking(WorkableMultiblockMachine controller) {
+    public void afterWorking(WorkableMultiblockMachine controller) {
         hazardEmitter.emitHazard();
         var supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());
         }
-        return super.afterWorking(controller);
     }
 
     @Override

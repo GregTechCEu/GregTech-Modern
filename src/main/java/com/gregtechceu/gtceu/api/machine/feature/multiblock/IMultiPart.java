@@ -98,39 +98,41 @@ public interface IMultiPart extends IMachineFeature {
     }
 
     /**
-     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
+     * Called when the recipe logic status changes
+     * @param oldStatus Old recipe logic status
+     * @param newStatus New recipe logic status
+     */
+    default void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
+
+    /**
+     * Called when a recipe is about to be run, just before inputs are consumed.
+     *
+     * @return true to cancel the recipe, false to continue
+     *
+     * @see RecipeLogic#setupRecipe(GTRecipe)
+     */
+    default boolean beforeWorking(WorkableMultiblockMachine controller) {
+        return true;
+    }
+
+    /**
+     * Called every tick while the recipe is working.
+     *
+     * @return true to interrupt and suspend the recipe, false to continue working
+     *
+     * @see RecipeLogic#handleRecipeWorking()
      */
     default boolean onWorking(WorkableMultiblockMachine controller) {
         return true;
     }
 
     /**
-     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
+     * Called when the recipe finishes, before outputs are produced.
+     *
+     * @see RecipeLogic#onRecipeFinish()
      */
-    default boolean onWaiting(WorkableMultiblockMachine controller) {
-        return true;
-    }
+    default void afterWorking(WorkableMultiblockMachine controller) {}
 
-    /**
-     * Called in {@link WorkableMultiblockMachine#setWorkingEnabled(boolean)}
-     */
-    default boolean onPaused(WorkableMultiblockMachine controller) {
-        return true;
-    }
-
-    /**
-     * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
-     */
-    default boolean afterWorking(WorkableMultiblockMachine controller) {
-        return true;
-    }
-
-    /**
-     * Called in {@link RecipeLogic#setupRecipe(GTRecipe)}
-     */
-    default boolean beforeWorking(WorkableMultiblockMachine controller) {
-        return true;
-    }
 
     /**
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc

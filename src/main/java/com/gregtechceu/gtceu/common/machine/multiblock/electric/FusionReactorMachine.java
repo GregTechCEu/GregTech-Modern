@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -252,10 +253,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Override
-    public void onWaiting() {
-        super.onWaiting();
-        color = -1;
-        syncDataHolder.markClientSyncFieldDirty("color");
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        super.recipeLogicStatusChanged(oldStatus, newStatus);
+        if (newStatus == RecipeLogic.Status.WAITING) {
+            color = -1;
+            syncDataHolder.markClientSyncFieldDirty("color");
+        }
     }
 
     @Override
