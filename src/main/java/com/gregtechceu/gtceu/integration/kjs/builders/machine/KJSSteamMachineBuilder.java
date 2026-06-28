@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -15,13 +14,13 @@ import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
+import dev.latvian.mods.kubejs.registry.AdditionalObjectRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
-public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> implements IMachineBuilderKJS {
+public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
 
     @Setter
     public transient boolean hasLowPressure = true, hasHighPressure = true;
@@ -30,10 +29,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private @Nullable MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
-    @Nullable
-    private MachineDefinition lpObject = null, hpObject = null;
-
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
         this.dummyBuilder = true;
@@ -41,9 +36,14 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
 
     @Override
     public MachineDefinition createObject() {
-        MachineDefinition value = null;
+        // this method is never called on dummy builders (which this class is)
+        return null;
+    }
+
+    @Override
+    public void createAdditionalObjects(AdditionalObjectRegistry registry) {
         if (hasLowPressure) {
-            this.lowPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            var lowPressureBuilder = GTRegistrate.create(id.getNamespace(), false)
                     .machine(String.format("lp_%s", this.id.getPath()),
                             holder -> machine.create(holder, false))
                     .langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -53,12 +53,11 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .workableSteamHullModel(false, id.withPrefix("block/machines/"));
 
             definition.apply(false, lowPressureBuilder);
-            this.lpObject = lowPressureBuilder.register();
-            value = lpObject;
+            registry.add(GTRegistries.Keys.MACHINE, new MachineBuilderWrapper<>(lowPressureBuilder));
         }
 
         if (hasHighPressure) {
-            this.highPressureBuilder = GTRegistrate.createIgnoringListenerErrors(this.id.getNamespace())
+            var highPressureBuilder = GTRegistrate.create(id.getNamespace(), false)
                     .machine(String.format("hp_%s", this.id.getPath()),
                             holder -> machine.create(holder, true))
                     .langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -68,42 +67,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
                     .workableSteamHullModel(true, id.withPrefix("block/machines/"));
 
             definition.apply(true, highPressureBuilder);
-            this.hpObject = highPressureBuilder.register();
-            if (value == null) value = hpObject;
-        }
-
-        return value;
-    }
-
-    @Override
-    public void generateMachineModels() {
-        generateMachineModel(lowPressureBuilder, lpObject);
-        generateMachineModel(highPressureBuilder, hpObject);
-    }
-
-    @Override
-    public void generateAssets(KubeAssetGenerator generator) {
-        if (this.lowPressureBuilder != null) {
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
-        }
-        if (this.highPressureBuilder != null) {
-            generator.itemModel(id, gen -> gen.parent(id.withPrefix("block/machine/")));
-        }
-    }
-
-    @Override
-    public String getTranslationKeyGroup() {
-        return "block";
-    }
-
-    @SuppressWarnings("DataFlowIssue")
-    @Override
-    public void generateLang(LangKubeEvent lang) {
-        if (lpObject != null) {
-            lang.add(GTCEu.MOD_ID, lpObject.getDescriptionId(), lpObject.getLangValue());
-        }
-        if (hpObject != null) {
-            lang.add(GTCEu.MOD_ID, hpObject.getDescriptionId(), hpObject.getLangValue());
+            registry.add(GTRegistries.Keys.MACHINE, new MachineBuilderWrapper<>(highPressureBuilder));
         }
     }
 

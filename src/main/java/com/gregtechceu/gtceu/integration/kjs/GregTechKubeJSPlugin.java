@@ -83,14 +83,8 @@ import com.gregtechceu.gtceu.integration.kjs.builders.WorldGenLayerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.OreVeinDefinitionBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
@@ -114,6 +108,7 @@ import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentTypeRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeFactoryRegistry;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.BuilderTypeRegistry;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
@@ -142,15 +137,19 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new);
 
         registry.of(GTRegistries.Keys.MACHINE, reg -> {
-            reg.addDefault(KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
+            reg.addDefault(KJSTieredMachineBuilder.class, (id) -> new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false));
 
-            reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
+            reg.add(GTCEu.id("custom"), KJSTieredMachineBuilder.class, KJSTieredMachineBuilder::new);
             reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
-            reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+            reg.add(GTCEu.id("generator"), KJSTieredMachineBuilder.class, (id) -> new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true));
 
-            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class, MultiblockMachineBuilderWrapper::createKJSMulti);
-            reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class, KJSWrappingMultiblockBuilder::new);
-            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class, (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
+            @SuppressWarnings("unchecked")
+            Class<? extends BuilderBase<? extends MachineDefinition>> multiblockBuilderClass = (Class<? extends BuilderBase<? extends MachineDefinition>>) KJSMultiblockMachineBuilder.class;
+            reg.add(GTCEu.id("multiblock"), multiblockBuilderClass, KJSMultiblockMachineBuilder::createKJSMulti);
+            @SuppressWarnings("unchecked")
+            Class<? extends BuilderBase<? extends MachineDefinition>> tieredMultiblockBuilderClass = (Class<? extends BuilderBase<? extends MachineDefinition>>) KJSTieredMultiblockBuilder.class;
+            reg.add(GTCEu.id("tiered_multiblock"), tieredMultiblockBuilderClass, KJSTieredMultiblockBuilder::new);
+            reg.add(GTCEu.id("primitive"), multiblockBuilderClass, (id) -> KJSMultiblockMachineBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {

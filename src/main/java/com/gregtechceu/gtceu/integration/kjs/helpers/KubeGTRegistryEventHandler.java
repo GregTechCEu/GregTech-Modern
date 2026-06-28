@@ -60,11 +60,9 @@ public class KubeGTRegistryEventHandler {
 
         for (BuilderBase<? extends T> builder : objStorage) {
             if (builder.dummyBuilder) {
-                // don't actually register anything here, the wrapper builders register themselves with Registrate
-                builder.createTransformedObject();
-            } else {
-                event.register(registryKey, builder.id, builder::createTransformedObject);
+                continue;
             }
+            event.register(registryKey, builder.id, builder::createTransformedObject);
 
             if (DevProperties.get().logRegistryEventObjects) {
                 ConsoleJS.STARTUP.info("+ " + registryKey.location() + " | " + builder.id);
