@@ -41,7 +41,7 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
     With this done, you can reference said variables in the `BedrockFluidDefinition` builder. Let's use `DIM_OVERWORLD` in this example.  
     
     ```java title="ExampleBedrockFluidVeins.java"
-    pubic class ExampleBedrockFluidVeins {
+    public class ExampleBedrockFluidVeins {
         public static void init() {}
         
         public static final Set<ResourceKey<Level>> DIM_OVERWORLD = Set.of(Level.OVERWORLD);
@@ -72,5 +72,46 @@ Bedrock Fluid Veins are invisible veins that exist under the bedrock, to find Fl
             ExampleBedrockFluidVeins.init();
         }
         // ...
+    }
+    ```
+
+
+## Modifying a Bedrock Fluid Vein
+
+=== "JavaScript"
+    ```js title="fluid_veins.js"
+    // In server events
+    GTCEuServerEvents.fluidVeins(event => {
+        event.modify('gtceu:heavy_oil_deposit', vein => {
+            vein.setWeight(9999);
+        });
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockFluidVeins.java"
+    public class ExampleBedrockFluidVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.get(GTCEu.id('heavy_oil_deposit')).setWeight(9999);
+        }
+    }
+    ```
+
+## Removing a Bedrock Fluid Vein
+
+=== "JavaScript"
+    ```js title="fluid_veins.js"
+    // In server events
+    GTCEuServerEvents.fluidVeins(event => {
+        event.remove('gtceu:heavy_oil_deposit');
+    });
+    ```
+
+=== "Java"
+    ```java title="ExampleBedrockFluidVeins.java"
+    public class ExampleBedrockFluidVeins {
+        public static void init() {
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(GTCEu.id("heavy_oil_deposit"));
+        }
     }
     ```

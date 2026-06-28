@@ -91,7 +91,20 @@ public class RecipeRunner {
                 // searchRecipeContents == recipeContents, so all contents, chanced and unchanced, must match
                 if (simulated) continue;
 
-                if (cont.chance() > 0) {
+                if (cont.chance() >= cont.maxChance()) {
+                    contentList.add(cont.content());
+                } else if (cont.chance() > 0) {
+                    chancedContents.add(cont);
+                }
+                // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
+            }
+
+            // add chanced contents to the recipe content map
+            if (!chancedContents.isEmpty()) {
+                var cache = this.chanceCaches.get(cap);
+                chancedContents = logic.roll(cap, chancedContents, cache, recipe.getTotalRuns());
+
+                for (Content cont : chancedContents) {
                     contentList.add(cont.content());
                 }
             }
