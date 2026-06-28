@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
@@ -22,12 +21,10 @@ import brachy.modularui.drawable.Rectangle;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.value.sync.FluidSlotSyncHandler;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Flow;
-import brachy.modularui.widgets.slot.FluidSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
 
@@ -144,12 +141,9 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        syncManager.syncValue("fluid",
-                new FluidSlotSyncHandler(new FluidCacheTankWrapper(cache)).controlsAmount(false).phantom(true));
-
-        IntSyncValue mbPerCycle = new IntSyncValue(this::getMBPerCycle, this::setmBPerCycle);
+        IntSyncValue mbPerCycle = new IntSyncValue(this::getMBPerCycle, this::setmBPerCycle).allowC2S();
         syncManager.syncValue("mbPerCycle", mbPerCycle);
-        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle);
+        IntSyncValue ticksPerCycle = new IntSyncValue(this::getTicksPerCycle, this::setTicksPerCycle).allowC2S();
         syncManager.syncValue("ticksPerCycle", ticksPerCycle);
 
         mainWidget
@@ -162,8 +156,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
                                 .child(Text.lang("gtceu.creative.tank.fluid").asWidget()
                                         .marginRight(4)
                                         .verticalCenter())
-                                .child(new FluidSlot().syncHandler("locked_fluid_slot", 0)
-                                        .background(GTGuiTextures.FLUID_SLOT)))
+                                .child(createPhantomLockedFluidSlot(syncManager)))
                         .child(new Rectangle().color(0xFF555555).asWidget()
                                 .height(1).widthRel(0.95f).marginBottom(4).marginTop(4))
                         .child(Flow.row()

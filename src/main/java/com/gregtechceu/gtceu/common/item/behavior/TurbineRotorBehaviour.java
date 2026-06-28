@@ -26,7 +26,7 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
 
     @Override
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        for (Material material : GTRegistries.MATERIALS.values()) {
+        for (Material material : GTRegistries.MATERIALS) {
             if (!material.shouldGenerateRecipesFor(turbineBlade) || !material.hasProperty(PropertyKey.INGOT)) {
                 continue;
             }

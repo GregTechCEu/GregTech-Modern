@@ -69,7 +69,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
      * @param io   IO mode of this item bus.
      */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
-        this(info, tier, io, new NotifiableItemStackHandler(getInventorySize(tier), io));
+        this(info, tier, io, new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
     }
 
     /**

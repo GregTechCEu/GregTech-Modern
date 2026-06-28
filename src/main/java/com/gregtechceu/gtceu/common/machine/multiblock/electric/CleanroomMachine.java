@@ -148,7 +148,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
         initializeAbilities();
 
-        // var cache = getSubstructure(name).getCache();
         var cache = patternStates.get(substructureName).getCache();
         IFilterType filterType = null;
         for (var entry : cache.long2ObjectEntrySet()) {
@@ -225,15 +224,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-        // Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             if (isPartIgnored(part)) continue;
-            // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                // if (!handlerList.isValid(io)) continue;
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
@@ -279,55 +273,6 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
             return new IntArrayList(new int[] { 0, d, l, r, f, b });
         };
-
-        /*
-         * BlockPos.MutableBlockPos lPos = getPos().mutable();
-         * BlockPos.MutableBlockPos rPos = getPos().mutable();
-         * BlockPos.MutableBlockPos fPos = getPos().mutable();
-         * BlockPos.MutableBlockPos bPos = getPos().mutable();
-         * BlockPos.MutableBlockPos hPos = getPos().mutable();
-         *
-         * // find the distances from the controller to the plascrete blocks on one horizontal axis and the Y axis
-         * // repeatable aisles take care of the second horizontal axis
-         * int lDist = 0;
-         * int rDist = 0;
-         * int bDist = 0;
-         * int fDist = 0;
-         * int hDist = 0;
-         *
-         * // find the left, right, back, and front distances for the structure pattern
-         * // maximum size is 15x15x15 including walls, so check 7 block radius around the controller for blocks
-         * for (int i = 1; i < 8; i++) {
-         * if (lDist == 0 && isBlockEdge(world, lPos, left)) lDist = i;
-         * if (rDist == 0 && isBlockEdge(world, rPos, right)) rDist = i;
-         * if (bDist == 0 && isBlockEdge(world, bPos, back)) bDist = i;
-         * if (fDist == 0 && isBlockEdge(world, fPos, front)) fDist = i;
-         * if (lDist != 0 && rDist != 0 && bDist != 0 && fDist != 0) break;
-         * }
-         *
-         * // height is diameter instead of radius, so it needs to be done separately
-         * for (int i = 1; i < 15; i++) {
-         * if (isBlockFloor(world, hPos, Direction.DOWN)) hDist = i;
-         * if (hDist != 0) break;
-         * }
-         *
-         * if (Math.abs(lDist - rDist) > 1 || Math.abs(bDist - fDist) > 1) {
-         * this.isFormed = false;
-         * return;
-         * }
-         *
-         * if (lDist < MIN_RADIUS || rDist < MIN_RADIUS || bDist < MIN_RADIUS || fDist < MIN_RADIUS || hDist <
-         * MIN_DEPTH) {
-         * this.isFormed = false;
-         * return;
-         * }
-         *
-         * this.lDist = lDist;
-         * this.rDist = rDist;
-         * this.bDist = bDist;
-         * this.fDist = fDist;
-         * this.hDist = hDist;
-         */
     }
 
     public static int findWallPos(Level level, Direction dir, BlockPos.MutableBlockPos pos) {
@@ -368,7 +313,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = getValidFloorBlocks();
+            PatternPredicate wallPredicate = getValidFloorBlocks().or(states(getCasingState(), getGlassState()));
             PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
@@ -388,7 +333,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                             IntIntPair.of(MIN_RADIUS, MAX_RADIUS), IntIntPair.of(MIN_RADIUS, MAX_RADIUS)))
                     .predicateProvider((bp, b) -> {
                         if (bp.equals(BlockPos.ZERO))
-                            return Predicates.controller(Predicates.blocks(definition.getBlock()));
+                            return Predicates.controller(definition);
 
                         int intersections = 0;
                         boolean topAisle = bp.getX() == b.get(0);

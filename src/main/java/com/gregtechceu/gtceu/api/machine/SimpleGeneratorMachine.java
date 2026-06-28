@@ -99,4 +99,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
     public long getDisplayRecipeVoltage() {
         return GTValues.V[this.tier];
     }
+
+    @Override
+    public long getDisplayGeneratorPower() {
+        return energyContainer.getOutputVoltage() * energyContainer.getOutputAmperage();
+    }
 }
