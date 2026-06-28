@@ -66,10 +66,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -262,103 +259,87 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Recipe types
 
-    public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
-        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
-        this.generic(name, GTRegistries.Keys.RECIPE_TYPE, () -> recipeType).build();
-        return recipeType;
+    // TODO make a builder for this
+    public HolderRegistryEntry<GTRecipeType> recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
+        return this.simple(name, GTRegistries.Keys.RECIPE_TYPE, () -> new GTRecipeType(makeResourceLocation(name), group, proxyRecipes));
     }
 
     // Recipe categories
 
-    public GTRecipeCategory recipeCategory(String categoryName, GTRecipeType recipeType) {
-        var category = new GTRecipeCategory(categoryName, recipeType);
-        this.generic(categoryName, GTRegistries.Keys.RECIPE_CATEGORY, () -> category).build();
-        return category;
+    // TODO make a builder for this
+    public HolderRegistryEntry<GTRecipeCategory> recipeCategory(String categoryName, GTRecipeType recipeType) {
+        return this.simple(categoryName, GTRegistries.Keys.RECIPE_CATEGORY, () -> new GTRecipeCategory(categoryName, recipeType));
     }
 
     // Tag prefixes
 
-    public TagPrefix tagPrefix(String name) {
-        return tagPrefix(name, false);
+    // TODO make a builder for this
+    public HolderRegistryEntry<TagPrefix> tagPrefix(String name) {
+        return tagPrefix(name, UnaryOperator.identity());
     }
 
-    public TagPrefix tagPrefix(String name, boolean invertedName) {
-        var tagPrefix = new TagPrefix(makeResourceLocation(name), invertedName);
-        this.generic(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> tagPrefix).register();
-        return tagPrefix;
+    // TODO make a builder for this
+    public HolderRegistryEntry<TagPrefix> tagPrefix(String name, UnaryOperator<TagPrefix> configurator) {
+        return this.simple(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> configurator.apply(new TagPrefix(makeResourceLocation(name))));
     }
 
-    public TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
-        return tagPrefix(name)
-                .defaultTagPath("ores/%s")
-                .prefixOnlyTagPath("ores_in_ground/%s")
-                .unformattedTagPath("ores")
-                .materialIconType(MaterialIconType.ore)
-                .miningToolTag(miningToolTag)
-                .unificationEnabled(true)
-                .blockConstructor(OreBlock::new)
-                .generationCondition(hasOreProperty);
+    public HolderRegistryEntry<TagPrefix> oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return tagPrefix(name,
+                tagPrefix -> tagPrefix.defaultTagPath("ores/%s")
+                        .prefixOnlyTagPath("ores_in_ground/%s")
+                        .unformattedTagPath("ores")
+                        .materialIconType(MaterialIconType.ore)
+                        .miningToolTag(miningToolTag)
+                        .unificationEnabled(true)
+                        .blockConstructor(OreBlock::new)
+                        .generationCondition(hasOreProperty));
     }
 
     // Materials
 
+    // TODO convert into registrate builder
     public Material.Builder material(String name) {
         return new Material.Builder(this, makeResourceLocation(name));
     }
 
     // Elements
 
-    public Element element(String name, long protons, long neutrons, long halfLifeSeconds,
-                           @Nullable String decayTo, String symbol, boolean isIsotope) {
-        var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
-        return element;
-    }
-
-    public Element element(long protons, long neutrons, long halfLifeSeconds,
-                           @Nullable String decayTo, String name, String symbol, boolean isIsotope) {
-        return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
+    public HolderRegistryEntry<Element> element(String name, long protons, long neutrons, long halfLifeSeconds,
+                                                @Nullable String decayTo, String symbol, boolean isIsotope) {
+        // TODO require names to be lowercase
+        return this.simple(name.toLowerCase(Locale.ROOT), GTRegistries.Keys.ELEMENT, () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
     }
 
     // Material icon sets
 
-    public MaterialIconSet materialIconSet(String id) {
+    public HolderRegistryEntry<MaterialIconSet> materialIconSet(String id) {
         return materialIconSet(id, MaterialIconSet.DULL);
     }
 
-    public MaterialIconSet materialIconSet(String id, MaterialIconSet parent) {
-        return materialIconSet(id, parent, false);
-    }
-
-    public MaterialIconSet materialIconSet(String id, @Nullable MaterialIconSet parent, boolean isRoot) {
-        var iconSet = new MaterialIconSet(makeResourceLocation(id), parent, isRoot);
-        this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
-        return iconSet;
+    public HolderRegistryEntry<MaterialIconSet> materialIconSet(String id, @Nullable MaterialIconSet parent) {
+        return this.simple(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(id), parent, parent == null));
     }
 
     // Medical conditions
 
-    public MedicalCondition medicalCondition(String name, int color,
-                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType, float progressionRate,
-                                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
-        var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType,
-                progressionRate, canBePermanent, symptoms);
-        this.generic(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> medicalCondition).register();
-        return medicalCondition;
+    public HolderRegistryEntry<MedicalCondition> medicalCondition(String name, int color,
+                                                                  int maxProgression, MedicalCondition.IdleProgressionType progressionType, float progressionRate,
+                                                                  boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
+        return this.simple(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> new MedicalCondition(makeResourceLocation(name),
+                color, maxProgression, progressionType, progressionRate, canBePermanent, symptoms));
     }
 
     // Sounds
 
     public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(new ResourceLocation(getModid(), name));
+        return new SoundEntryBuilder(makeResourceLocation(name));
     }
 
     // World gen layers
 
-    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target, Set<ResourceKey<Level>> levels) {
-        var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
-        this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
-        return worldGenLayer;
+    public HolderRegistryEntry<SimpleWorldGenLayer> simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
+                                                                        Set<ResourceKey<Level>> levels) {
+        return this.simple(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> new SimpleWorldGenLayer(makeResourceLocation(id), target, levels));
     }
 
     // Blocks
