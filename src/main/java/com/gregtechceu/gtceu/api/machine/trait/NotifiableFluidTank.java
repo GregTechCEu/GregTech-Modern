@@ -118,16 +118,9 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
             FluidStack[] fluids;
 
-            if (ingredient instanceof IntProviderFluidIngredient provider) {
-                provider.setFluidStacks(null);
-                provider.setSampledCount(-1);
-
-                if (simulate) {
-                    fluids = new FluidStack[] { provider.getMaxSizeStack() };
-                } else {
-                    fluids = provider.getStacks();
-                }
-            } else {
+            if (ingredient instanceof IntProviderFluidIngredient provider && simulate) {
+                fluids = new FluidStack[]{provider.getMaxSizeStack()};
+            }else{
                 fluids = ingredient.getStacks();
             }
             if (fluids.length == 0 || fluids[0].isEmpty()) {

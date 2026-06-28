@@ -38,7 +38,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Nullable
     public FluidStack[] stacks;
     @Getter
-    protected int amount;
+    private int amount;
     @Getter
     protected CompoundTag nbt;
     protected boolean changed = true;

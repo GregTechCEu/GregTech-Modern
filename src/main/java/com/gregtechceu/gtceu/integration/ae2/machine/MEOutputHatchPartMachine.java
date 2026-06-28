@@ -196,15 +196,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                 }
 
                 FluidStack[] fluids;
-                if (ingredient instanceof IntProviderFluidIngredient provider) {
-                    provider.setFluidStacks(null);
-                    provider.setSampledCount(-1);
-
-                    if (simulate) {
+                if (ingredient instanceof IntProviderFluidIngredient provider && simulate) {
                         fluids = new FluidStack[] { provider.getMaxSizeStack() };
-                    } else {
-                        fluids = provider.getStacks();
-                    }
                 } else {
                     fluids = ingredient.getStacks();
                 }
