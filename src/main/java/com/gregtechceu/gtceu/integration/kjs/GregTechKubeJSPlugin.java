@@ -38,6 +38,8 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
+import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -75,6 +77,10 @@ import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -144,37 +150,43 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void init() {
         super.init();
-        GTRegistryInfo.init();
 
-        /*
-                GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
+        GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
+        GTRegistryInfo.MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
                 true);
-         */
-        /*
+        GTRegistryInfo.MATERIAL.addType("basic", MaterialBuilderWrapper.class, MaterialBuilderWrapper::new, true);
+        GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
+        GTRegistryInfo.RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
+
+        GTRegistryInfo.WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
+        GTRegistryInfo.TAG_PREFIX.addType("basic", TagPrefixBuilder.class, TagPrefixBuilder::new, true);
+        GTRegistryInfo.TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
+        GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new, true);
+
+        RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
+        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
 
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
                 true);
         GTRegistryInfo.MACHINE.addType("custom", KJSWrappingMachineBuilder.class,
-                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)),
-                false);
+                (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
         GTRegistryInfo.MACHINE.addType("steam", KJSSteamMachineBuilder.class,
-                KJSSteamMachineBuilder::new, false);
+                KJSSteamMachineBuilder::new);
         GTRegistryInfo.MACHINE.addType("generator", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
-                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)),
-                false);
-        GTRegistryInfo.MACHINE.addType("multiblock",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                KJSWrappingMultiblockBuilder::createKJSMulti, false);
+                        new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+        GTRegistryInfo.MACHINE.addType("multiblock", MultiblockMachineBuilderWrapper.class, MultiblockMachineBuilderWrapper::createKJSMulti);
         GTRegistryInfo.MACHINE.addType("tiered_multiblock", KJSWrappingMultiblockBuilder.class,
-                (id) -> new KJSWrappingMultiblockBuilder(id, new KJSTieredMultiblockBuilder(id)), false);
-        GTRegistryInfo.MACHINE.addType("primitive",
-                (Class<? extends BuilderBase<? extends MachineDefinition>>) (Class<?>) MultiblockMachineBuilder.class,
-                (id) -> KJSWrappingMultiblockBuilder.createKJSMulti(id, PrimitiveWorkableMachine::new),
-                false);
-    */
+                KJSWrappingMultiblockBuilder::new);
+        GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
+                (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
+
+        /*
+                GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class, MaterialIconTypeBuilder::new,
+                true);
+         */
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);

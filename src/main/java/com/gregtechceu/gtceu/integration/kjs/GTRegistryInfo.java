@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.builders.DimensionMarkerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
@@ -29,19 +31,4 @@ public class GTRegistryInfo {
     public static final RegistryInfo<TagPrefix> TAG_PREFIX = RegistryInfo.of(GTRegistries.Keys.TAG_PREFIX, TagPrefix.class);
     public static final RegistryInfo<DimensionMarker> DIMENSION_MARKER = RegistryInfo.of(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarker.class);
     public static final RegistryInfo<MachineDefinition> MACHINE = RegistryInfo.of(GTRegistries.Keys.MACHINE, MachineDefinition.class);
-
-    public static void init() {
-        ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);
-        MATERIAL_ICON_SET.addType("basic", MaterialIconSetBuilder.class, MaterialIconSetBuilder::new,
-                true);
-        MATERIAL.addType("basic", MaterialBuilderWrapper.class, MaterialBuilderWrapper::new, true);
-        RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
-        RECIPE_CATEGORY.addType("basic", GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new, true);
-
-        WORLD_GEN_LAYER.addType("basic", WorldGenLayerBuilder.class, WorldGenLayerBuilder::new, true);
-        TAG_PREFIX.addType("basic", TagPrefixBuilder.class, TagPrefixBuilder::new, true);
-        TAG_PREFIX.addType("ore", OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
-        DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new, true);
-    }
-
 }

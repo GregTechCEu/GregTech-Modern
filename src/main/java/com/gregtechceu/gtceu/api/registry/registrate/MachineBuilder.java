@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -63,6 +64,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,6 +75,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -85,9 +88,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
 
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
-    protected final MachineInstanceFactory<MACHINE> instanceFactory;
 
-    protected final Function<ResourceLocation, DEFINITION> definition;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    protected MachineInstanceFactory<MACHINE> instanceFactory;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    protected Function<ResourceLocation, DEFINITION> definition;
+
     @Nullable
     @Getter
     private MachineBuilder.ModelInitializer model = null;
@@ -171,7 +177,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return (SELF) this;
     }
 
-    public SELF blockModel(NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
+    public SELF blockModel(@Nullable NonNullBiConsumer<DataGenContext<Block, ? extends Block>, GTBlockstateProvider> blockModel) {
         this.blockModel = blockModel;
         return getThis();
     }
@@ -216,12 +222,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF blockBuilder(Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
+    public SELF blockBuilder(@Nullable Consumer<BlockBuilder<? extends Block, ?>> blockBuilder) {
         this.blockBuilder = blockBuilder;
         return getThis();
     }
 
-    public SELF itemBuilder(Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
+    public SELF itemBuilder(@Nullable Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder) {
         this.itemBuilder = itemBuilder;
         return getThis();
     }
@@ -251,7 +257,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF tooltipBuilder(BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
+    public SELF tooltipBuilder(@Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder) {
         this.tooltipBuilder = tooltipBuilder;
         return getThis();
     }
@@ -291,17 +297,17 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public SELF appearance(Supplier<BlockState> appearance) {
+    public SELF appearance(@Nullable Supplier<BlockState> appearance) {
         this.appearance = appearance;
         return getThis();
     }
 
-    public SELF ui(PanelFactory ui) {
+    public SELF ui(@Nullable PanelFactory ui) {
         this.ui = ui;
         return getThis();
     }
 
-    public SELF langValue(String langValue) {
+    public SELF langValue(@Nullable String langValue) {
         this.langValue = langValue;
         return getThis();
     }
@@ -348,7 +354,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         }
     }
 
-    public SELF model(MachineBuilder.ModelInitializer model) {
+    public SELF model(@Nullable MachineBuilder.ModelInitializer model) {
         this.model = model;
         return getThis();
     }
