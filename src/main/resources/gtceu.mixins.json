@@ -102,6 +102,7 @@
         "forge.StrictNBTIngredientAccessor",
         "forge.GameDataMixin",
         "jei.FluidHelperMixin",
+        "kjs.RegistryEventJSMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",

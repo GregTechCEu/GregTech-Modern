@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
+import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -84,10 +85,13 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -118,6 +122,7 @@ import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
 import it.unimi.dsi.fastutil.chars.Char2IntMap;
 import it.unimi.dsi.fastutil.chars.Char2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map;
@@ -180,6 +185,16 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         super.registerEvents();
         GTCEuStartupEvents.GROUP.register();
         GTCEuServerEvents.GROUP.register();
+    }
+
+    public static void generateMachineBlockModels() {
+        GTRegistryInfo.MACHINE.forEach(builder -> {
+            if (builder instanceof IMachineBuilderKJS machineBuilder) {
+                try {
+                    machineBuilder.generateMachineModels();
+                } catch (IllegalStateException ignored) {}
+            }
+        });
     }
 
     @Override
@@ -317,69 +332,99 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTCapes", GTCapes.class);
         event.add("CapeRegistry", CapeRegistry.class);
     }
+    
+    private static @Nullable ResourceLocation unwrapResourceLocation(Object o) {
+        ResourceLocation inner;
+        if (o == null) inner = null;
+        else if (o instanceof ResourceLocation resLoc) inner = resLoc;
+        else if (o instanceof ResourceKey<?> key) inner = key.location();
+        else if (o instanceof Holder<?> holder) inner = holder.unwrapKey().isEmpty() ? null : holder.unwrapKey().get().location();
+        else {
+            var s = o instanceof JsonPrimitive p ? p.getAsString() : o.toString();
+            s = GTCEu.appendIdString(s);
+
+            try {
+                inner = ResourceLocation.tryParse(s);
+            } catch (ResourceLocationException ex) {
+                throw new RuntimeException("Could not create ID from '%s'!".formatted(s));
+            }
+        }
+        return inner;
+    }
 
     @Override
     public void registerTypeWrappers(ScriptType type, TypeWrappers typeWrappers) {
         super.registerTypeWrappers(type, typeWrappers);
         typeWrappers.registerSimple(GTRecipeType.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
+            o = Wrapper.unwrapped(o);
             if (o instanceof GTRecipeType recipeType) return recipeType;
-            if (o instanceof CharSequence chars) return GTRecipeTypes.get(chars.toString());
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return (GTRecipeType)BuiltInRegistries.RECIPE_TYPE.get(location);
         });
         typeWrappers.registerSimple(GTRecipeCategory.class, o -> {
-            if (o instanceof Wrapper w) {
-                o = w.unwrap();
-            }
+            o = Wrapper.unwrapped(o);
             if (o instanceof GTRecipeCategory recipeCategory) return recipeCategory;
-            if (o instanceof CharSequence chars) return GTRecipeCategories.get(chars.toString());
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.RECIPE_CATEGORIES.get(location);
         });
 
         typeWrappers.registerSimple(Element.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.ELEMENTS.get(location);
         });
         typeWrappers.registerSimple(Material.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof Material material) return material;
-            if (o instanceof CharSequence chars) return GTMaterials.get(chars.toString());
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.MATERIALS.get(location);
         });
         typeWrappers.registerSimple(MachineDefinition.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof MachineDefinition definition) return definition;
-            if (o instanceof CharSequence chars) return GTMachines.get(chars.toString());
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.MACHINES.get(location);
         });
 
         typeWrappers.registerSimple(TagPrefix.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof TagPrefix tagPrefix) return tagPrefix;
-            if (o instanceof CharSequence chars) return GTRegistries.TAG_PREFIXES.get(GTCEu.id(chars.toString()));
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.TAG_PREFIXES.get(location);
         });
-        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
+
         typeWrappers.registerSimple(RecipeCapability.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof RecipeCapability<?> capability) return capability;
-            if (o instanceof ResourceLocation loc) return GTRegistries.RECIPE_CAPABILITIES.get(loc);
-            if (o instanceof CharSequence chars)
-                return GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(chars.toString()));
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.RECIPE_CAPABILITIES.get(location);
         });
         typeWrappers.registerSimple(ChanceLogic.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof ChanceLogic capability) return capability;
-            if (o instanceof CharSequence chars) return GTRegistries.CHANCE_LOGICS.get(GTCEu.id(chars.toString()));
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.CHANCE_LOGICS.get(location);
         });
-        typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
 
         typeWrappers.registerSimple(MaterialIconSet.class, o -> {
+            o = Wrapper.unwrapped(o);
             if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
-                    .get(GTCEu.id(chars.toString()));
-            return null;
+            ResourceLocation location = unwrapResourceLocation(o);
+            if (location == null) return null;
+            return GTRegistries.MATERIAL_ICON_SETS.get(location);
         });
+
+        typeWrappers.registerSimple(MaterialEntry.class, MaterialEntry::of);
+        typeWrappers.registerSimple(ExtendedOutputItem.class, ExtendedOutputItem::of);
         typeWrappers.registerSimple(MaterialStack.class, o -> {
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);

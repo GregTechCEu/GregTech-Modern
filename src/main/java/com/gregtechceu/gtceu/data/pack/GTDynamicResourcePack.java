@@ -75,6 +75,10 @@ public class GTDynamicResourcePack implements PackResources {
         CLIENT_DOMAINS.addAll(domains);
     }
 
+    public static void addNamespace(String namespace) {
+        CLIENT_DOMAINS.add(namespace);
+    }
+
     public static void clearClient() {
         CONTENTS.clearData();
     }
