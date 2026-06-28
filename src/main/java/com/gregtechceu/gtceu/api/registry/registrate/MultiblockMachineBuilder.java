@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -43,8 +43,8 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     private Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
-    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+    private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
+    private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
 
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
@@ -83,12 +83,12 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         return getThis();
     }
 
-    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter) {
+    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public SELF partAppearance(TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public SELF partAppearance(TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
@@ -110,7 +110,7 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
     }
 
     @Tolerate
-    public SELF partSorter(Comparator<IMultiPart> sorter) {
+    public SELF partSorter(Comparator<MultiblockPartMachine> sorter) {
         this.partSorter = $ -> sorter;
         return getThis();
     }

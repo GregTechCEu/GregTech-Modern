@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.recipe.condition.VentCondition;
@@ -29,7 +30,7 @@ import lombok.Setter;
  * 
  * @see VentCondition
  */
-public class ExhaustVentMachineTrait extends MachineTrait {
+public class ExhaustVentMachineTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<ExhaustVentMachineTrait> TYPE = new MachineTraitType<>(
             ExhaustVentMachineTrait.class, false);
@@ -60,6 +61,12 @@ public class ExhaustVentMachineTrait extends MachineTrait {
     @Override
     public void onMachineLoad() {
         this.ventingDirection = getMachine().getFrontFacing().getOpposite();
+    }
+
+    @Override
+    public void afterWorking() {
+        needsVenting = true;
+        checkVenting();
     }
 
     public boolean isVentingBlocked() {

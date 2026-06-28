@@ -49,7 +49,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     @SaveField
     private final CustomItemStackHandler inventory;
 
-    private TickableSubscription snowSubscription;
+    private @Nullable TickableSubscription snowSubscription;
     @Getter
     private final EnvironmentalHazardEmitterTrait hazardEmitter;
 

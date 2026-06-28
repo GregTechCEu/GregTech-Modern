@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -154,7 +154,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         // Otherwise, we need to test for if the item is configured
         // in any stocking bus in the multi (besides ourselves).
         for (MultiblockControllerMachine controller : getControllers()) {
-            for (IMultiPart part : controller.getParts()) {
+            for (MultiblockPartMachine part : controller.getParts()) {
                 if (part instanceof MEStockingBusPartMachine bus) {
                     // We don't need to check for ourselves, as this case is handled elsewhere.
                     if (bus == this || bus.isDistinct()) continue;

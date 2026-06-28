@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.ChatFormatting;
@@ -24,7 +25,7 @@ public class SteamBoilerBlockProvider extends MachineInfoProvider<SteamBoilerMac
     @Override
     protected CompoundTag write(SteamBoilerMachine machine) {
         CompoundTag data = new CompoundTag();
-        data.putBoolean("isBurning", machine.getRecipeLogic().isWorking());
+        data.putBoolean("isBurning", machine.getTraitOptional(RecipeLogic.TYPE).orElseThrow().isWorking());
         data.putBoolean("hasWater", !machine.isHasNoWater());
         data.putLong("steamProduction", machine.getTotalSteamOutput());
         data.putInt("currentTemperature", machine.getCurrentTemperature());

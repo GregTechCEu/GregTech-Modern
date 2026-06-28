@@ -85,6 +85,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.importFluids = attachTrait(
@@ -117,6 +118,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(new RecipeLogic());
+        this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
                         IO.IN, IO.BOTH));
@@ -213,11 +215,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
             recipeLogic.updateSound();
         }
-    }
-
-    @Override
-    public boolean keepSubscribing() {
-        return false;
     }
 
     public GTRecipeType getRecipeType() {

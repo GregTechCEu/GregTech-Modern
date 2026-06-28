@@ -73,6 +73,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.activeRecipeType = 0;
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
@@ -159,11 +160,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
             return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
         return super.onWrenchClick(context);
-    }
-
-    @Override
-    public boolean keepSubscribing() {
-        return false;
     }
 
     @Override

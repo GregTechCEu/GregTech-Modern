@@ -8,10 +8,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -19,6 +18,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -72,7 +72,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
 
     private static final BigInteger BIG_INTEGER_MAX_LONG = BigInteger.valueOf(Long.MAX_VALUE);
 
-    private @Nullable IMaintenanceMachine maintenance;
+    private @Nullable MaintenanceHatchPartMachine maintenance;
 
     @SaveField
     private final PowerStationEnergyBank energyBank;
@@ -105,10 +105,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         List<IEnergyContainer> outputs = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             // if (io == IO.NONE) continue;
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             var handlerLists = part.getRecipeHandlers();
@@ -246,8 +246,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
     public long getPassiveDrain() {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             if (maintenance == null) {
-                for (IMultiPart part : getParts()) {
-                    if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                for (MultiblockPartMachine part : getParts()) {
+                    if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                         this.maintenance = maintenanceMachine;
                         break;
                     }

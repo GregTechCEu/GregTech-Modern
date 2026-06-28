@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -67,7 +67,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.requestCWUt(cwut, simulate, seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return 0;
                     }
@@ -109,7 +109,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.getMaxCWUt(seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return 0;
                     }
@@ -153,7 +153,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                 // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
                 if (machine instanceof IOpticalComputationProvider provider) {
                     return provider.canBridge(seen);
-                } else if (machine instanceof IMultiPart part) {
+                } else if (machine instanceof MultiblockPartMachine part) {
                     if (!part.isFormed()) {
                         return false;
                     }
@@ -206,7 +206,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                             // first, remove the progress the recipe logic adds.
                             rlm.getRecipeLogic().progress -= 1;
                             rlm.getRecipeLogic().progress += drawn;
-                        } else if (machine instanceof IMultiPart multiPart) {
+                        } else if (machine instanceof MultiblockPartMachine multiPart) {
                             for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
                                     rlm.getRecipeLogic().progress -= 1;

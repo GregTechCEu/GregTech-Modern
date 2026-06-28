@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -113,7 +113,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             // if (io == IO.NONE || io == IO.OUT) continue;
             var handlerLists = part.getRecipeHandlers();

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client.renderer.machine.impl;
 
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
@@ -92,7 +92,8 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
     @SuppressWarnings("DataFlowIssue")
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller, IMultiPart part,
+    public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller,
+                                MultiblockPartMachine part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (this.fireboxIdleModel == null) {
@@ -117,7 +118,10 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         int partY = partPos.get(relativeDown.getAxis());
         if (belowControllerY == partY) {
             // firebox
-            if (controller instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic().isWorking()) {
+
+            var recipeLogic = controller.getTrait(RecipeLogic.TYPE);
+
+            if (recipeLogic != null && recipeLogic.isWorking()) {
                 emitQuads(quads, fireboxActiveModel, controller.getLevel(), partPos, fireboxActive,
                         side, rand, modelData, renderType);
             } else {

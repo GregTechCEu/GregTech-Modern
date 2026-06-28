@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
@@ -56,7 +56,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     public static final String DEFAULT_STRUCTURE = "main";
 
     private @Nullable CurrentBlockInfo controllerBlockInfo = null;
-    private final List<IMultiPart> parts = new ArrayList<>();
+    private final List<MultiblockPartMachine> parts = new ArrayList<>();
     private @Nullable ParallelHatchPartMachine parallelHatch = null;
     @Getter
     @SyncToClient
@@ -71,7 +71,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     @SyncToClient
     protected boolean isFlipped;
 
-    protected static final Table<@NotNull MultiblockMachineDefinition, @NotNull String, @NotNull IBlockPattern> structurePatterns = HashBasedTable
+    protected static final Table<MultiblockMachineDefinition, String, IBlockPattern> structurePatterns = HashBasedTable
             .create();
     protected final Object2ObjectMap<String, PatternState> patternStates = new Object2ObjectOpenHashMap<>();
 
@@ -114,7 +114,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     protected void onPartsUpdated() {
         parts.clear();
         for (var pos : partPositions) {
-            if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+            if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
                 parts.add(part);
             }
         }
@@ -126,12 +126,12 @@ public class MultiblockControllerMachine extends MetaMachine {
         syncDataHolder.markClientSyncFieldDirty("partPositions");
     }
 
-    public List<IMultiPart> getParts() {
+    public List<MultiblockPartMachine> getParts() {
         // for the client side, when the chunk unloaded
         if (this.parts.size() != this.partPositions.length) {
             this.parts.clear();
             for (BlockPos pos : this.partPositions) {
-                if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
                     this.parts.add(part);
                 }
             }
@@ -178,7 +178,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * Whether the specific part should be added to the part list
      */
-    public boolean shouldAddPartToController(IMultiPart part) {
+    public boolean shouldAddPartToController(MultiblockPartMachine part) {
         return true;
     }
 
@@ -390,10 +390,10 @@ public class MultiblockControllerMachine extends MetaMachine {
         return structurePatterns.get(this.getDefinition(), name);
     }
 
-    protected final boolean forEachMultiPart(String name, Predicate<IMultiPart> action) {
+    protected final boolean forEachMultiPart(String name, Predicate<MultiblockPartMachine> action) {
         var cache = patternStates.get(name).getCache();
         for (BlockInfo info : cache.values()) {
-            if (info.getBlockEntity() instanceof IMultiPart part) {
+            if (info.getBlockEntity() instanceof MultiblockPartMachine part) {
                 if (!action.test(part)) return false;
             }
         }
@@ -412,8 +412,8 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * mark multiblockState as unload error first.
      * if it's actually cuz by block breaking.
-     * {@link #//onStructureInvalid(String)} will be called from
-     * {@link #//onBlockStateChanged(BlockPos, BlockState)}
+     * {@link #invalidateStructure()} will be called from
+     * {@link PatternState#onBlockStateChanged(BlockPos, BlockState, BlockState)}
      */
     public void onPartUnload() {
         parts.removeIf(part -> part.self().isRemoved());
@@ -437,15 +437,16 @@ public class MultiblockControllerMachine extends MetaMachine {
         return getDefinition().isAllowFlip();
     }
 
-    public @Nullable BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState,
-                                                  BlockPos sourcePos) {
+    public @Nullable BlockState getPartAppearance(MultiblockPartMachine part, Direction side,
+                                                  @Nullable BlockState sourceState,
+                                                  @Nullable BlockPos sourcePos) {
         if (isFormed()) {
             return getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
     }
 
-    public Comparator<IMultiPart> getPartSorter() {
+    public Comparator<MultiblockPartMachine> getPartSorter() {
         return getDefinition().getPartSorter().apply(this);
     }
 

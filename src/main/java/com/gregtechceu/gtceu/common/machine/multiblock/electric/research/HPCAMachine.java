@@ -7,9 +7,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
@@ -71,7 +71,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
 
-    private IMaintenanceMachine maintenance;
+    private MaintenanceHatchPartMachine maintenance;
     private IEnergyContainer energyContainer;
     private IFluidHandler coolantHandler;
     @SaveField
@@ -101,10 +101,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<HPCAComponentTrait> componentTraits = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
             componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             // if (io == IO.NONE || io == IO.OUT) continue;

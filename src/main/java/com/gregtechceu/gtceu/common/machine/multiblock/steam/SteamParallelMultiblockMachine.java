@@ -36,7 +36,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -72,7 +71,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
         for (var part : getParts()) {

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -81,7 +81,8 @@ public enum RelativeDirection implements StringRepresentable {
         };
     }
 
-    public ToIntFunction<IMultiPart> getMultiSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
+    public ToIntFunction<MultiblockPartMachine> getMultiSorter(Direction frontFacing, Direction upwardsFacing,
+                                                               boolean isFlipped) {
         // get the direction to go in for the part sorter
         Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 

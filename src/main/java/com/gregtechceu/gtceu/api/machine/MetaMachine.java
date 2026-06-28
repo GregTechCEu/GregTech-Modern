@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitHolder;
@@ -377,19 +376,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     /**
-     * Gets a trait registered by {@code registerPersistentTrait}
+     * Gets a trait registered by {@code registerPersistentTrait}.
      *
-     * @param traitName the unique identifier for the trait
-     * @return the trait, or null if not present
+     * @param traitName The unique identifier for the trait.
+     * @return The trait, or null if not present.
      */
     public @Nullable <T extends MachineTrait> T getPersistentTrait(String traitName) {
         return traitHolder.getPersistentTrait(traitName);
     }
 
     /**
-     * Gets the first trait (trait with highest priority) of a specified type
+     * Gets the first trait (trait with highest priority) of a specified type.
      *
-     * @param type The trait type to get
+     * @param type The trait type to get.
      * @return The trait, or null if no traits of the given type are present.
      */
     public <T extends MachineTrait> @Nullable T getTrait(MachineTraitType<T> type) {
@@ -404,6 +403,19 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public <T extends MachineTrait> Optional<T> getTraitOptional(MachineTraitType<T> type) {
         return Optional.ofNullable(getTrait(type));
+    }
+
+    /**
+     * Gets the first trait (trait with the highest priority) of a specified type.<br>
+     * Throws if no trait is present.
+     * 
+     * @param type The trait type to get
+     * @return The trait
+     */
+    public <T extends MachineTrait> T getTraitOrThrow(MachineTraitType<T> type) {
+        T trait = getTrait(type);
+        if (trait == null) throw new NoSuchElementException("No trait present");
+        return trait;
     }
 
     /**
@@ -1209,11 +1221,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap,
                         LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
-            }
-        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
-            if (machine instanceof IMaintenanceMachine maintenanceMachine) {
-                return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap,
-                        LazyOptional.of(() -> maintenanceMachine));
             }
         } else if (cap == ForgeCapabilities.ITEM_HANDLER) {
             var handler = machine.getItemHandlerCap(side, true);

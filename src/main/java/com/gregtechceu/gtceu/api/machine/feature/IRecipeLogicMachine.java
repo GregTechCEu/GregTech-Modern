@@ -50,22 +50,16 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
-        for (var trait: self().getAllTraits()) {
+        recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        if (recipe == null) return null;
+
+        for (var trait : self().getAllTraits()) {
             if (trait instanceof IRecipeLogicModifierTrait rlTrait) {
                 recipe = rlTrait.modifyRecipe(recipe);
                 if (recipe == null) return null;
-            };
+            }
         }
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
-    }
-
-    /**
-     * Whether the recipe logic should keep subscribing tick logic when no recipe is available after one cycle.
-     * if false. you should call {@link RecipeLogic#updateTickSubscription()} manually later to active recipe logic
-     * again.
-     */
-    default boolean keepSubscribing() {
-        return true;
+        return recipe;
     }
 
     /**
@@ -77,12 +71,14 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
 
     /**
      * Called when the recipe logic status changes
+     * 
      * @param oldStatus Old recipe logic status
      * @param newStatus New recipe logic status
      */
     default void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        for (var trait: self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait) rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
+        for (var trait : self().getAllTraits()) {
+            if (trait instanceof IRecipeLogicModifierTrait rlTrait)
+                rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
         }
     }
 
@@ -94,10 +90,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * @see RecipeLogic#setupRecipe(GTRecipe)
      */
     default boolean beforeWorking(@Nullable GTRecipe recipe) {
-        for (var trait: self().getAllTraits()) {
+        if (!self().getDefinition().getBeforeWorking().test(this, recipe)) return false;
+
+        for (var trait : self().getAllTraits()) {
             if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.beforeWorking(recipe)) return false;
         }
-        return self().getDefinition().getBeforeWorking().test(this, recipe);
+        return true;
     }
 
     /**
@@ -108,10 +106,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * @see RecipeLogic#handleRecipeWorking()
      */
     default boolean onWorking() {
-        for (var trait: self().getAllTraits()) {
+        if (!self().getDefinition().getOnWorking().test(this)) return false;
+
+        for (var trait : self().getAllTraits()) {
             if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.onWorking()) return false;
         }
-        return self().getDefinition().getOnWorking().test(this);
+        return true;
     }
 
     /**
@@ -120,29 +120,10 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * @see RecipeLogic#onRecipeFinish()
      */
     default void afterWorking() {
-        for (var trait: self().getAllTraits()) {
+        self().getDefinition().getAfterWorking().accept(this);
+        for (var trait : self().getAllTraits()) {
             if (trait instanceof IRecipeLogicModifierTrait rlTrait) rlTrait.afterWorking();
         }
-        self().getDefinition().getAfterWorking().accept(this);
-    }
-
-    /**
-     * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
-     */
-    default boolean regressWhenWaiting() {
-        return self().getDefinition().isRegressWhenWaiting();
-    }
-
-    /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
-     * 
-     * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
-     *         false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
-     */
-    default boolean alwaysTryModifyRecipe() {
-        // make it *always* do overclock and parallel so that the machine doesn't get stuck running a lower-tier recipe
-        // in any possible scenario.
-        return true;
     }
 
     default boolean shouldWorkingPlaySound() {

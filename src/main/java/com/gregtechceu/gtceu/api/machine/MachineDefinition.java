@@ -63,7 +63,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    private int tier;
+    private int tier = -1;
     @Getter
     @Setter
     private int defaultPaintingColor;

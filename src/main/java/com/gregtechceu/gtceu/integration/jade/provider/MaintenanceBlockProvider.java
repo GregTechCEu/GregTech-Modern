@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -23,7 +22,7 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 import snownee.jade.api.ui.IElementHelper;
 
-public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenanceMachine> {
+public class MaintenanceBlockProvider extends CapabilityBlockProvider<MaintenanceHatchPartMachine> {
 
     public MaintenanceBlockProvider() {
         super(GTCEu.id("maintenance_info"));
@@ -31,14 +30,11 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
 
     @Nullable
     @Override
-    protected IMaintenanceMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
-        var cap = GTCapabilityHelper.getMaintenanceMachine(level, blockPos, direction);
-        if (cap != null) {
-            return cap;
-        }
+    protected MaintenanceHatchPartMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
+        if (level.getBlockEntity(blockPos) instanceof MaintenanceHatchPartMachine maintenanceHatchPartMachine) return maintenanceHatchPartMachine;
         if (MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller) {
             for (var part : controller.getParts()) {
-                if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                     return maintenanceMachine;
                 }
             }
@@ -47,7 +43,7 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
     }
 
     @Override
-    protected void write(CompoundTag compoundTag, IMaintenanceMachine maintenanceMachine) {
+    protected void write(CompoundTag compoundTag, MaintenanceHatchPartMachine maintenanceMachine) {
         compoundTag.putBoolean("hasProblems", maintenanceMachine.hasMaintenanceProblems());
         if (maintenanceMachine.hasMaintenanceProblems()) {
             compoundTag.putInt("maintenanceProblems", maintenanceMachine.getMaintenanceProblems());

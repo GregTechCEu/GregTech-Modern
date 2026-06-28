@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -71,7 +71,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
         final int startY = getBlockPos().getY() + yOffset;
-        List<IMultiPart> parts = getParts().stream()
+        List<MultiblockPartMachine> parts = getParts().stream()
                 .filter(part -> PartAbility.EXPORT_FLUIDS.isApplicable(part.self().getBlockState().getBlock()))
                 .filter(part -> part.self().getBlockPos().getY() >= startY)
                 .toList();

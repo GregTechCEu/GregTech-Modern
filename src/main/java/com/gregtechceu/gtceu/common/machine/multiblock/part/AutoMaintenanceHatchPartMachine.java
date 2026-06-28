@@ -1,14 +1,23 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 
-public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implements IMaintenanceMachine {
+public class AutoMaintenanceHatchPartMachine extends MaintenanceHatchPartMachine {
 
     public AutoMaintenanceHatchPartMachine(BlockEntityCreationInfo info) {
-        super(info, GTValues.HV);
+        super(info, GTValues.HV, false);
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createInventory() {
+        return new NotifiableItemStackHandler(0, IO.NONE, IO.NONE);
     }
 
     @Override
@@ -44,4 +53,7 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
 
     @Override
     public void setTimeActive(int time) {}
+
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager, UISettings settings) {}
 }

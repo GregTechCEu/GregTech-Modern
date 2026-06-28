@@ -31,11 +31,7 @@ public class AirScrubberMachine extends SimpleTieredMachine {
     public AirScrubberMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, GTMachineUtils.largeTankSizeFunction);
         this.cleanerTrait = attachTrait(new EnvironmentalHazardCleanerTrait(tier / 2, this::validateCleaningOperation));
-    }
-
-    @Override
-    public boolean regressWhenWaiting() {
-        return false;
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     public boolean validateCleaningOperation(MedicalCondition condition, float amount) {
@@ -65,19 +61,5 @@ public class AirScrubberMachine extends SimpleTieredMachine {
                     MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1));
         }
         return false;
-    }
-
-    @Override
-    public boolean onWorking() {
-        if (!super.onWorking() || !ConfigHolder.INSTANCE.gameplay.environmentalHazards) {
-            return false;
-        }
-        cleanerTrait.cleanHazard();
-        return true;
-    }
-
-    @Override
-    public void afterWorking() {
-        cleanerTrait.endCleaningOperation();
     }
 }

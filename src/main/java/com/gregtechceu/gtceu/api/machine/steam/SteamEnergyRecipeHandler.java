@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<EnergyStack> {
 
     @Override
     public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
-                                                        boolean simulate) {
+                                               boolean simulate) {
         for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {

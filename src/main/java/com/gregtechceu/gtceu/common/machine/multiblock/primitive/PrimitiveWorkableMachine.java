@@ -66,10 +66,4 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
         return new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
                 32 * FluidType.BUCKET_VOLUME, IO.OUT);
     }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        hazardEmitter.emitHazard();
-    }
 }

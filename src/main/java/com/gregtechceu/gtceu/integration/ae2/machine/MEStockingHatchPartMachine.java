@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -148,7 +148,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         if (!isFormed()) return false;
 
         for (MultiblockControllerMachine controller : getControllers()) {
-            for (IMultiPart part : controller.getParts()) {
+            for (MultiblockPartMachine part : controller.getParts()) {
                 if (part instanceof MEStockingHatchPartMachine hatch) {
                     if (hatch == this) continue;
                     if (hatch.aeFluidHandler.hasStackInConfig(config, false)) {

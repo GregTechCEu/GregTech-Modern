@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -53,7 +53,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         this(info, false);
     }
 
-    public static Comparator<IMultiPart> partSorter(MultiblockControllerMachine mc) {
+    public static Comparator<MultiblockPartMachine> partSorter(MultiblockControllerMachine mc) {
         return Comparator.comparingInt(
                 RelativeDirection.RIGHT.getMultiSorter(mc.getFrontFacing(), mc.getUpwardsFacing(), mc.isFlipped()));
     }

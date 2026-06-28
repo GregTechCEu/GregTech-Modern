@@ -148,11 +148,4 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
         return builder.build();
     }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        exhaustVentTrait.setNeedsVenting(true);
-        exhaustVentTrait.checkVenting();
-    }
 }

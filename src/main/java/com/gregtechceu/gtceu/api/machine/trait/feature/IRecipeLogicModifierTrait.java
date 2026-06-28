@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.trait.feature;
 
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -13,6 +13,7 @@ public interface IRecipeLogicModifierTrait {
 
     /**
      * Called when the recipe logic status changes
+     * 
      * @param oldStatus Old recipe logic status
      * @param newStatus New recipe logic status
      */
@@ -26,7 +27,9 @@ public interface IRecipeLogicModifierTrait {
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default GTRecipe modifyRecipe(GTRecipe recipe) { return recipe; }
+    default GTRecipe modifyRecipe(GTRecipe recipe) {
+        return recipe;
+    }
 
     /**
      * Called when a recipe is about to be run, just before inputs are consumed.
