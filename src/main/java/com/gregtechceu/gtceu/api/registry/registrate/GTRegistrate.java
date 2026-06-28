@@ -207,23 +207,27 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     @Override
     public <R, T extends R, P> HolderRegistryEntry<T> simple(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return genericHolder(parent, name, registryType, factory).register();
+        return generic(parent, name, registryType, factory).register();
     }
 
-    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> genericHolder(ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return genericHolder(self(), registryType, factory);
+    @Override
+    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> generic(ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return generic(self(), registryType, factory);
     }
 
-    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> genericHolder(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return genericHolder(self(), name, registryType, factory);
+    @Override
+    public <R, T extends R> NoConfigHolderBuilder<R, T, GTRegistrate> generic(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return generic(self(), name, registryType, factory);
     }
 
-    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> genericHolder(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return genericHolder(parent, currentName(), registryType, factory);
+    @Override
+    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> generic(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return generic(parent, currentName(), registryType, factory);
     }
 
-    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> genericHolder(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
-        return entry(name, callback -> new NoConfigHolderBuilder<>(this, parent, name, callback, registryType, factory));
+    @Override
+    public <R, T extends R, P> NoConfigHolderBuilder<R, T, P> generic(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<T> factory) {
+        return (NoConfigHolderBuilder<R, T, P>) entry(name, callback -> new NoConfigHolderBuilder<>(this, parent, name, callback, registryType, factory));
     }
 
     // Machines
