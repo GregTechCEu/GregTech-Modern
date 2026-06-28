@@ -20,6 +20,7 @@ public class CCTweakedPlugin {
         ComputerCraftAPI.registerGenericSource(new WorkablePeripheral());
         ComputerCraftAPI.registerGenericSource(new CoverHolderPeripheral());
         ComputerCraftAPI.registerGenericSource(new CentralMonitorPeripheral());
+        ComputerCraftAPI.registerGenericSource(new FusionReactorMachinePeripheral());
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_CONTROLLABLE);
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER);
         ForgeComputerCraftAPI.registerGenericCapability(GTCapability.CAPABILITY_WORKABLE);
