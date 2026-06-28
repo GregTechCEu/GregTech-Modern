@@ -107,10 +107,8 @@ public final class GTRegistries {
 
     // Worldgen related registries
 
-    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(
-            GTCEu.id("bedrock_fluid"));
-    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(
-            GTCEu.id("bedrock_ore"));
+    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_fluid"));
+    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_ore"));
     public static final GTRegistry<GTOreDefinition> ORE_VEINS = new GTRegistry<>(GTCEu.id("ore_vein"));
     public static final MappedRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
@@ -123,8 +121,8 @@ public final class GTRegistries {
     public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);
 
     public static final MappedRegistry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
-    public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(
-            Keys.PATTERN_ERROR_TYPE);
+    public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
+    // spotless:on
 
     private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);
@@ -136,10 +134,15 @@ public final class GTRegistries {
 
     @SuppressWarnings("unchecked")
     private static <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
-        BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register((ResourceKey<WritableRegistry<?>>) (Object) key,
-                registry, Lifecycle.stable());
+        BuiltInRegistriesAccessor.gtceu$getWritableRegistry()
+                .register((ResourceKey<WritableRegistry<?>>) (ResourceKey<?>) key, registry, Lifecycle.stable());
         REGISTRIES.put(key.location(), registry);
         return registry;
+    }
+
+    @UnmodifiableView
+    public static Collection<Registry<?>> getRegistries() {
+        return REGISTRIES.values();
     }
 
     private static RegistryAccess FROZEN = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
@@ -170,11 +173,6 @@ public final class GTRegistries {
                 return FROZEN;
             }
         }
-    }
-
-    @UnmodifiableView
-    public static Collection<Registry<?>> getRegistries() {
-        return REGISTRIES.values();
     }
 
     public static void init() {}
