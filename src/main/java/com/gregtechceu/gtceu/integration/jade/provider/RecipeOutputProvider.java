@@ -54,10 +54,8 @@ public class RecipeOutputProvider extends MachineTraitProvider<RecipeLogic, Comp
         CompoundTag data = new CompoundTag();
         if (recipeLogic.isWorking()) {
             data.putBoolean("Working", recipeLogic.isWorking());
-            var recipe = recipeLogic.getLastRecipe();
+            var recipe = recipeLogic.getLastDisplayedRecipe();
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-                int chanceTier = recipeTier + recipe.ocLevel;
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);
                 var fluidContents = recipe.getOutputContents(FluidRecipeCapability.CAP);
                 int runs = recipe.getTotalRuns();

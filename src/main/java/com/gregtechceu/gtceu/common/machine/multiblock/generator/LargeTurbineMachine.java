@@ -101,8 +101,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     public long getCurrentProduction() {
-        return isActive() && recipeLogic.getLastRecipe() != null ?
-                recipeLogic.getLastRecipe().getOutputEUt().voltage() : 0;
+        return isActive() && recipeLogic.getLastDisplayedRecipe() != null ?
+                recipeLogic.getLastDisplayedRecipe().getOutputEUt().voltage() : 0;
     }
 
     public int getRotorDurabilityPercent() {

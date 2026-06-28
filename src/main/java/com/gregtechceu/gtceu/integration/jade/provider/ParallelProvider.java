@@ -31,10 +31,10 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
         } else if (machine instanceof MultiblockControllerMachine controller) {
             if (controller instanceof IRecipeLogicMachine rlm &&
                     rlm.getRecipeLogic().isActive() &&
-                    rlm.getRecipeLogic().getLastRecipe() != null) {
-                compoundTag.putInt("parallel", rlm.getRecipeLogic().getLastRecipe().parallels);
-                compoundTag.putInt("batch", rlm.getRecipeLogic().getLastRecipe().batchParallels);
-                compoundTag.putInt("subtickParallel", rlm.getRecipeLogic().getLastRecipe().subtickParallels);
+                    rlm.getRecipeLogic().getLastDisplayedRecipe() != null) {
+                compoundTag.putInt("parallel", rlm.getRecipeLogic().getLastDisplayedRecipe().parallels);
+                compoundTag.putInt("batch", rlm.getRecipeLogic().getLastDisplayedRecipe().batchParallels);
+                compoundTag.putInt("subtickParallel", rlm.getRecipeLogic().getLastDisplayedRecipe().subtickParallels);
                 compoundTag.putBoolean("exact", true);
             } else {
                 controller.getParallelHatch()

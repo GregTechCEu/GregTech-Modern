@@ -31,7 +31,7 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
     public long getInputAmperage() {
         var recipeLogic = getMachine().getTrait(RecipeLogic.TYPE);
         if (recipeLogic == null) return 0;
-        var lastRecipe = recipeLogic.getLastRecipe();
+        var lastRecipe = recipeLogic.getLastDisplayedRecipe();
         long amperage;
         if (lastRecipe != null) {
             amperage = lastRecipe.getInputEUt().amperage();
@@ -49,7 +49,7 @@ public class RecipeAmperageEnergyContainer extends NotifiableEnergyContainer {
     public long getOutputAmperage() {
         var recipeLogic = getMachine().getTrait(RecipeLogic.TYPE);
         if (recipeLogic == null) return 0;
-        var lastRecipe = recipeLogic.getLastRecipe();
+        var lastRecipe = recipeLogic.getLastDisplayedRecipe();
         if (lastRecipe != null) {
             return lastRecipe.getOutputEUt().amperage();
         } else {

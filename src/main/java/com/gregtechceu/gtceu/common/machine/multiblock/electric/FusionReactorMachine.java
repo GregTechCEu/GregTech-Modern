@@ -200,7 +200,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
     @Override
     public boolean onWorking() {
-        GTRecipe recipe = recipeLogic.getLastRecipe();
+        GTRecipe recipe = recipeLogic.getLastDisplayedRecipe();
         assert recipe != null;
         if (recipe.data.contains("eu_to_start")) {
             long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;

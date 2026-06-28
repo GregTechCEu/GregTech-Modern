@@ -204,7 +204,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     @Nullable
     public String getRecipeFluidInputInfo() {
         // Previous Recipe is always null on first world load, so try to acquire a new recipe
-        GTRecipe recipe = recipeLogic.getLastRecipe();
+        GTRecipe recipe = recipeLogic.getLastDisplayedRecipe();
         if (recipe == null) {
             Iterator<GTRecipe> iterator = recipeLogic.searchRecipe();
             recipe = iterator.hasNext() ? iterator.next() : null;

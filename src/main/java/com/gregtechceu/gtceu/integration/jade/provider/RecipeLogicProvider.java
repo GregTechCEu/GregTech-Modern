@@ -37,7 +37,7 @@ public class RecipeLogicProvider extends MachineTraitProvider<RecipeLogic, Compo
         var data = new CompoundTag();
         data.putBoolean("Working", capability.isWorking());
         var recipeInfo = new CompoundTag();
-        var recipe = capability.getLastRecipe();
+        var recipe = capability.getLastDisplayedRecipe();
         if (recipe != null) {
             var EUt = RecipeHelper.getRealEUtWithIO(recipe);
 

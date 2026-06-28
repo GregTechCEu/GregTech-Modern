@@ -81,8 +81,8 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
     @Override
     public void afterWorking() {
         super.afterWorking();
-        if (recipeLogic.getLastRecipe() != null) {
-            var inputs = recipeLogic.getLastRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
+        if (recipeLogic.getLastDisplayedRecipe() != null) {
+            var inputs = recipeLogic.getLastDisplayedRecipe().inputs.getOrDefault(ItemRecipeCapability.CAP,
                     Collections.emptyList());
             if (!inputs.isEmpty()) {
                 var input = ItemRecipeCapability.CAP.of(inputs.get(0).content()).getItems();
