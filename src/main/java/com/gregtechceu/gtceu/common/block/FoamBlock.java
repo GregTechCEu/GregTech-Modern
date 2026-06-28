@@ -11,12 +11,16 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -25,9 +29,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FoamBlock extends Block {
 
     private final boolean isReinforced;
+    private final DyeColor color;
 
-    public FoamBlock(Properties properties, boolean isReinforced) {
+    public FoamBlock(Properties properties, DyeColor color, boolean isReinforced) {
         super(properties);
+        this.color = color;
         this.isReinforced = isReinforced;
     }
 
@@ -57,7 +63,19 @@ public class FoamBlock extends Block {
     }
 
     private BlockState getPetrifiedBlock(BlockState state) {
-        var block = isReinforced ? GTBlocks.REINFORCED_STONE : GTBlocks.PETRIFIED_FOAM;
+        var block = this.isReinforced ? GTBlocks.REINFORCED_STONES.get(this.color) :
+                GTBlocks.PETRIFIED_FOAMS.get(this.color);
         return block.getDefaultState();
+    }
+
+    @Override
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        if (entity instanceof LivingEntity) {
+            float reinforced = this.isReinforced ? 0.85f : 0.9f;
+            entity.makeStuckInBlock(state, new Vec3(reinforced, reinforced, reinforced));
+        }
+
+        entity.setSharedFlagOnFire(false);
+        entity.clearFire();
     }
 }

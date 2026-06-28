@@ -4,6 +4,21 @@
     "gtceu:long_distance_fluid_pipeline",
     "gtceu:filter_casing",
     "gtceu:sterilizing_filter_casing",
-    "gtceu:petrified_foam"
+    "gtceu:white_petrified",
+    "gtceu:orange_petrified",
+    "gtceu:magenta_petrified",
+    "gtceu:light_blue_petrified",
+    "gtceu:yellow_petrified",
+    "gtceu:lime_petrified",
+    "gtceu:pink_petrified",
+    "gtceu:gray_petrified",
+    "gtceu:light_gray_petrified",
+    "gtceu:cyan_petrified",
+    "gtceu:purple_petrified",
+    "gtceu:blue_petrified",
+    "gtceu:brown_petrified",
+    "gtceu:green_petrified",
+    "gtceu:red_petrified",
+    "gtceu:black_petrified"
   ]
 }

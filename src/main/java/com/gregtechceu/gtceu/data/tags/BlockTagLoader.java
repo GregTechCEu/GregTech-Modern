@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.data.tags;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -40,6 +42,12 @@ public class BlockTagLoader {
 
         var studs = provider.addTag(CustomTags.FAST_WALKABLE_BLOCKS);
         GTBlocks.STUDS.forEach((color, block) -> studs.add(block.get()));
+
+        provider.addTag(CustomTags.REINFORCED_FOAM_MAKING_BLOCKS)
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.Steel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.BlackSteel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.TungstenSteel))
+                .add(ChemicalHelper.getBlock(TagPrefix.frameGt, GTMaterials.BlueSteel));
 
         provider.addTag(CustomTags.ENDSTONE_ORE_REPLACEABLES).add(Blocks.END_STONE);
 

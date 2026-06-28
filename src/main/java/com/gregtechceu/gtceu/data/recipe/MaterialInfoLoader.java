@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -29,6 +30,10 @@ public class MaterialInfoLoader {
                     new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dye + "_glazed_terracotta")))
                             .getItem(),
                     new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, M * 4)));
+
+            ItemMaterialData.registerMaterialInfo(GTBlocks.FOAMS.get(color).get().asItem(), new ItemMaterialInfo(
+                    new MaterialStack(GTMaterials.Rubber, M / 9),
+                    new MaterialStack(GTMaterials.Concrete, M / 9)));
         }
 
         ItemMaterialData.registerMaterialInfo(Blocks.LEVER, new ItemMaterialInfo(

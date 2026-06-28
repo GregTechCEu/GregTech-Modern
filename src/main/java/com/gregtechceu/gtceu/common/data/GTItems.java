@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.common.entity.GTBoat;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.common.item.behavior.*;
+import com.gregtechceu.gtceu.common.item.behavior.FoamSprayBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
 import com.gregtechceu.gtceu.common.item.behavior.MachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.common.item.modules.GuiModuleBehaviour;
@@ -2040,8 +2041,15 @@ public class GTItems {
             .tag(CustomTags.SKIP_ITEM_DETECTOR)
             .register();
 
-    // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",
-    // ComponentItem::create).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
+    public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::create)
+            // .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .model((ctx, provider) -> {
+                provider.handheld(ctx::getEntry);
+            })
+            .onRegister(attach(new FoamSprayBehavior()))
+            .properties(p -> p.stacksTo(1))
+            .register();
+
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
             .register();
 

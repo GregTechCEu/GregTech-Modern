@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -79,13 +80,14 @@ public class AssemblerRecipeLoader {
                 .outputItems(SPRAY_EMPTY)
                 .duration(200).EUt(VA[ULV]).save(provider);
 
-        // TODO Foam Sprayer
-        // ASSEMBLER_RECIPES.recipeBuilder("foam_sprayer")
-        // .inputItems(plate, Tin, 6)
-        // .inputItems(SPRAY_EMPTY)
-        // .inputItems(paneGlass.name(), 1)
-        // .outputItems(FOAM_SPRAYER)
-        // .duration(200).EUt(VA[ULV]).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("foam_sprayer")
+                .inputItems(plate, Tin, 6)
+                .inputItems(SPRAY_EMPTY)
+                .inputItems(Tags.Items.GLASS_PANES)
+                .outputItems(FOAM_SPRAYER)
+                .duration(200).EUt(VA[ULV])
+                .addMaterialInfo(true)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_invar")
                 .inputItems(plate, Invar, 2)

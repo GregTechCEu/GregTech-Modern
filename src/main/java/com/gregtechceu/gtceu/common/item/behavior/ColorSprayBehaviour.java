@@ -48,6 +48,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllTags;
 import com.simibubi.create.foundation.utility.BlockHelper;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -108,6 +109,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     private final Supplier<ItemStack> empty;
+    @Getter
     private final DyeColor color;
     public final int totalUses;
     private final IntIntPair durabilityBarColors;

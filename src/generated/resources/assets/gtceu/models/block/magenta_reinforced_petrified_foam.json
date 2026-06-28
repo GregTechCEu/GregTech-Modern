@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "gtceu:block/foam/magenta_reinforced_petrified_foam"
+  }
+}

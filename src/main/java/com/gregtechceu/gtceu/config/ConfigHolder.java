@@ -735,6 +735,10 @@ public class ConfigHolder {
         @Configurable.Range(min = 1, max = 400)
         public int treeFellingDelay = 2;
         @Configurable
+        @Configurable.Comment({ "Amount of foam to use per block (in mB)", "Default: 100" })
+        @Configurable.Range(min = 0, max = 1000)
+        public int foamSprayerFluidUse = 100;
+        @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();
         @Configurable
