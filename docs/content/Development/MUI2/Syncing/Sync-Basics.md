@@ -1,4 +1,6 @@
-# Sync Basics
+---
+title: Sync Basics
+---
 
 ## Basics of Syncing
 To display dynamic values on the client, you have to send the data from the server to the client. When making UIs, it is very important to keep track of if and how your data is being synced to the client. There are a few ways to do so, which will be discussed below.  
@@ -20,7 +22,8 @@ This would not work, intSyncValue hasn't had time to send data over yet and thus
 
 If you try to access values on the client that aren't synced or don't have a `SyncValue` or `SyncHandler`, they will have a default value, but they will not reflect the values or changes happening on the server.
 
-
+!!! Note
+    By default, `SyncValue`s or `SyncHandler`s don't allow client-to-server syncing. For that you will need to chain `.allowC2S()`. This gets called on the `SyncHandler` itself, so if you're using a builder, after the `.build()`
 
 ## Method 1: Dynamic Widgets
 The first method is using dynamic widgets, which update every frame regardless of what happens.

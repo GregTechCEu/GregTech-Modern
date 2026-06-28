@@ -213,7 +213,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                     (getMachine().hasFrontFacing() && getMachine().getFrontFacing() == outputFacing))
                 return;
             this.fluidOutputDirection = outputFacing;
-            syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
+            syncDataHolder.markClientSyncFieldDirty("fluidOutputDirection");
             updateFluidOutputSubscription();
         }
     }

@@ -86,6 +86,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private int minRecipeConditions = 0;
 
     @Getter
+    @Setter
     private GTRecipeTypeUILayout uiLayout;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
