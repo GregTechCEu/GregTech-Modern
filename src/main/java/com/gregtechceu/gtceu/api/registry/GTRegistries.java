@@ -40,6 +40,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
@@ -88,6 +89,11 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
         public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
+
+        @UnmodifiableView
+        public static Set<ResourceLocation> all() {
+            return REGISTRIES.keySet();
+        }
     }
 
     // Material related registries
