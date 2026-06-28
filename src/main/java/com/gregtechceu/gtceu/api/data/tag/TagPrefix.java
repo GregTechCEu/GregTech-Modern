@@ -1033,12 +1033,10 @@ public class TagPrefix {
     @Getter
     protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
 
-    @ApiStatus.Internal
     public TagPrefix(ResourceLocation id) {
         this(id, false);
     }
 
-    @ApiStatus.Internal
     public TagPrefix(ResourceLocation id, boolean invertedName) {
         this.id = id;
         this.idPattern = "%s_" + id.getPath();

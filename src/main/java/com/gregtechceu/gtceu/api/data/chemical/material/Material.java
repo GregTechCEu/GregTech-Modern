@@ -606,7 +606,6 @@ public class Material implements Comparable<Material> {
          *                         "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        @ApiStatus.Internal
         public Builder(@Nullable GTRegistrate registrate, ResourceLocation resourceLocation) {
             this.registrate = registrate;
             String name = resourceLocation.getPath();

@@ -277,6 +277,22 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return element;
     }
 
+    // Material icon sets
+
+    public MaterialIconSet materialIconSet(String id) {
+        return materialIconSet(id, MaterialIconSet.DULL);
+    }
+
+    public MaterialIconSet materialIconSet(String id, MaterialIconSet parent) {
+        return materialIconSet(id, parent, false);
+    }
+
+    public MaterialIconSet materialIconSet(String id, @Nullable MaterialIconSet parent, boolean isRoot) {
+        var iconSet = new MaterialIconSet(makeResourceLocation(id), parent, isRoot);
+        this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
+        return iconSet;
+    }
+
     // Medical conditions
 
     public MedicalCondition medicalCondition(String name, int color,
@@ -302,21 +318,6 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
         this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
         return worldGenLayer;
-    }
-
-    // Material icon sets
-    public MaterialIconSet materialIconSet(String id) {
-        return materialIconSet(id, MaterialIconSet.DULL);
-    }
-
-    public MaterialIconSet materialIconSet(String id, MaterialIconSet parent) {
-        return materialIconSet(id, parent, false);
-    }
-
-    public MaterialIconSet materialIconSet(String id, @Nullable MaterialIconSet parent, boolean isRoot) {
-        var iconSet = new MaterialIconSet(makeResourceLocation(id), parent, isRoot);
-        this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
-        return iconSet;
     }
 
     // Blocks

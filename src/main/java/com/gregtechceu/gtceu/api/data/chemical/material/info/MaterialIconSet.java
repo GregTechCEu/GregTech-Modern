@@ -62,7 +62,6 @@ public class MaterialIconSet {
      * @param parentIconset the parent iconset, should be null if this should be a root iconset
      * @param isRootIconset true if this should be a root iconset, otherwise false
      */
-    @ApiStatus.Internal
     public MaterialIconSet(@NotNull ResourceLocation id, @Nullable MaterialIconSet parentIconset,
                            boolean isRootIconset) {
         this.id = id;
