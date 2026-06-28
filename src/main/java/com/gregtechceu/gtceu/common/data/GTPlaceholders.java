@@ -435,7 +435,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
                 if (ctx.pos() == null) throw new NoTargetException();
                 MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
-                if (machine instanceof MaintenanceHatchPartMachine maint) return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
+                if (machine instanceof MaintenanceHatchPartMachine maint)
+                    return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
                 throw new NotSupportedException();
             }
 

@@ -31,7 +31,8 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<Maintenanc
     @Nullable
     @Override
     protected MaintenanceHatchPartMachine getCapability(Level level, BlockPos blockPos, @Nullable Direction direction) {
-        if (level.getBlockEntity(blockPos) instanceof MaintenanceHatchPartMachine maintenanceHatchPartMachine) return maintenanceHatchPartMachine;
+        if (level.getBlockEntity(blockPos) instanceof MaintenanceHatchPartMachine maintenanceHatchPartMachine)
+            return maintenanceHatchPartMachine;
         if (MetaMachine.getMachine(level, blockPos) instanceof MultiblockControllerMachine controller) {
             for (var part : controller.getParts()) {
                 if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {

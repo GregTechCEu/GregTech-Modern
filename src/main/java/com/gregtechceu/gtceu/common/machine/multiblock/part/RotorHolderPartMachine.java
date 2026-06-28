@@ -189,8 +189,9 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
         if (self().getOffsetTimer() % 20 == 0) {
             var numMaintenanceProblems = 0;
 
-            for (var part: getControllers().first().getParts()) {
-                if (part instanceof MaintenanceHatchPartMachine maintenance) numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
+            for (var part : getControllers().first().getParts()) {
+                if (part instanceof MaintenanceHatchPartMachine maintenance)
+                    numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
             }
             damageRotor(1 + numMaintenanceProblems);
         }

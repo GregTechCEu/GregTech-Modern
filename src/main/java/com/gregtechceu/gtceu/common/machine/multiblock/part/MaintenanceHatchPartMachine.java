@@ -75,7 +75,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public static final byte ALL_PROBLEMS = 0;
     public static final byte NO_PROBLEMS = 0b111111;
 
-
     @Getter
     private final boolean isConfigurable;
     @SaveField
@@ -93,8 +92,8 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     @SyncToClient
     protected byte maintenanceProblems = startProblems();
     /**
-     *  Duration modifier for recipe.
-     *  It's configurable in the Configurable Maintenance Part.
+     * Duration modifier for recipe.
+     * It's configurable in the Configurable Maintenance Part.
      */
     @Getter
     @SaveField
