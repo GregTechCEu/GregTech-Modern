@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
+import com.gregtechceu.gtceu.integration.sable.GTSableIntegration;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -64,8 +65,12 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     @Override
     public boolean canInteractWith(Player player, PosGuiData guiData) {
-        return player == guiData.getPlayer() && getMachine(guiData) != null &&
-                guiData.getSquaredDistance(player) <= 8 * 8;
+        if (player != guiData.getPlayer() || getMachine(guiData) == null) {
+            return false;
+        }
+        return guiData.getSquaredDistance(player) <= 8 * 8 ||
+                (GTCEu.Mods.isSableLoaded() &&
+                        GTSableIntegration.isWithinSubLevel(guiData.getLevel(), guiData.getBlockPos()));
     }
 
     @Override
