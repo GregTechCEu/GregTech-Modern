@@ -60,7 +60,8 @@ public final class MachineTraitHolder {
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
-        if (!allowTraitAttachment) throw new IllegalStateException("Cannot add traits to machine after machine has been loaded.");
+        if (!allowTraitAttachment)
+            throw new IllegalStateException("Cannot add traits to machine after machine has been loaded.");
 
         trait.setTraitPriority(callbackPriority);
 

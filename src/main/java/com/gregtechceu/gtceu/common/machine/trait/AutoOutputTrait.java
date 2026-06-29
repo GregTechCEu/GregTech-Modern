@@ -310,7 +310,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     @Override
     public @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                  Set<GTToolType> toolTypes, Direction side) {
+                                                  Set<GTToolType> toolTypes, ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!getMachine().hasFrontFacing() || side != getMachine().getFrontFacing()) {
