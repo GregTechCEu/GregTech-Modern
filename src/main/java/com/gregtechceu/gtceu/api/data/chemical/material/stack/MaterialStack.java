@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -11,9 +14,13 @@ import java.util.WeakHashMap;
 
 public record MaterialStack(@NotNull Material material, long amount) {
 
-    public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
+    public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.nullMaterial(), 0);
 
     private static final Map<String, MaterialStack> PARSE_CACHE = new WeakHashMap<>();
+
+    public MaterialStack(Holder<Material> material, long amount) {
+        this(material.get(), amount);
+    }
 
     public MaterialStack copy() {
         if (isEmpty()) return EMPTY;
@@ -54,13 +61,13 @@ public record MaterialStack(@NotNull Material material, long amount) {
             copy = copy.substring(spaceIndex + 1);
         }
 
-        cached = new MaterialStack(GTMaterials.get(copy), count);
+        cached = new MaterialStack(GTRegistries.MATERIALS.get(GTCEu.id(copy)), count);
         PARSE_CACHE.put(trimmed, cached);
         return cached;
     }
 
     public boolean isEmpty() {
-        return this.material == GTMaterials.NULL || this.amount < 1;
+        return this.material == GTMaterials.nullMaterial() || this.amount < 1;
     }
 
     @Override

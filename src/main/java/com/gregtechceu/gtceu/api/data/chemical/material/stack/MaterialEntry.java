@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +22,18 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         Preconditions.checkNotNull(material, "MaterialEntry Material cannot be null!");
     }
 
+    public MaterialEntry(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        this(tagPrefix.get(), material.get());
+    }
+
+    public MaterialEntry(TagPrefix tagPrefix, Holder<Material> material) {
+        this(tagPrefix, material.get());
+    }
+
+    public MaterialEntry(Holder<TagPrefix> tagPrefix, Material material) {
+        this(tagPrefix.get(), material);
+    }
+
     public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
@@ -30,7 +43,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     }
 
     public boolean isEmpty() {
-        return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
+        return this == NULL_ENTRY || material().isNull() || tagPrefix().isEmpty();
     }
 
     public boolean isIgnored() {
@@ -52,7 +65,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         if (tagPrefix.isEmpty()) {
             return material.getResourceLocation().toString();
         }
@@ -74,7 +87,8 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
             if (values.length > 1) {
                 var prefix = GTRegistries.TAG_PREFIXES.get(GTCEu.id(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
-                cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
+
+                cached = new MaterialEntry(prefix, GTRegistries.MATERIALS.get(GTCEu.id(values[1])));
                 PARSE_CACHE.put(str, cached);
                 return cached;
             }

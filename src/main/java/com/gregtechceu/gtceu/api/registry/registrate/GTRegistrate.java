@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -27,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.holder.NoConfigHolderBuilde
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -320,9 +322,12 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Materials
 
-    // TODO convert into registrate builder
-    public Material.Builder material(String name) {
-        return new Material.Builder(this, makeResourceLocation(name));
+    public Material.Builder<GTRegistrate> material(String name) {
+        return material(this, name);
+    }
+
+    public <P> Material.Builder<P> material(P parent, String name) {
+        return entry(name, callback -> new Material.Builder<>(this, parent, name, callback));
     }
 
     // Elements
@@ -339,8 +344,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return materialIconSet(id, MaterialIconSet.DULL);
     }
 
-    public HolderRegistryEntry<MaterialIconSet> materialIconSet(String id, @Nullable MaterialIconSet parent) {
-        return this.simple(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(id), parent, parent == null));
+    public HolderRegistryEntry<MaterialIconSet> materialIconSet(String id, @Nullable Holder<MaterialIconSet> parent) {
+        return this.simple(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> new MaterialIconSet(makeResourceLocation(id), parent != null ? parent.get() : null, parent == null));
     }
 
     // Medical conditions

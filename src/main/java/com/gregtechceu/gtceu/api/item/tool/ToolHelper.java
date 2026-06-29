@@ -27,6 +27,7 @@ import com.gregtechceu.gtceu.utils.DummyRecipeUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -137,7 +138,7 @@ public class ToolHelper {
     /**
      * @return finds the registered tool with the crafting symbol
      */
-    public static GTToolType getToolFromSymbol(char symbol) {
+    public static @Nullable GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
     }
 
@@ -176,6 +177,10 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack get(GTToolType toolType, Holder<Material> material) {
+        return get(toolType, material.get());
+    }
+
     public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
         if (material.hasProperty(PropertyKey.ARMOR)) {
             var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
@@ -186,6 +191,10 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack getArmor(ArmorItem.Type armorType, Holder<Material> material) {
+        return getArmor(armorType, material.get());
+    }
+
     public static boolean is(ItemStack stack, GTToolType toolType) {
         return getToolTypes(stack).contains(toolType);
     }
@@ -194,7 +203,7 @@ public class ToolHelper {
         return stack.getDamageValue() <= stack.getMaxDamage();
     }
 
-    public static void damageItem(@NotNull ItemStack stack, @Nullable LivingEntity user, int damage) {
+    public static void damageItem(ItemStack stack, @Nullable LivingEntity user, int damage) {
         if (!(stack.getItem() instanceof IGTTool tool)) {
             if (user != null) stack.hurtAndBreak(damage, user, p -> {});
         } else {

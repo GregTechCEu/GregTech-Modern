@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -250,13 +251,24 @@ public class MachineRecipeLoader {
     }
 
     private static void registerCokeOvenRecipes(Consumer<FinishedRecipe> provider) {
-        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal").inputItems(ItemTags.LOGS_THAT_BURN)
+        COKE_OVEN_RECIPES.recipeBuilder("log_to_charcoal")
+                .inputItems(ItemTags.LOGS_THAT_BURN)
                 .outputItems(gem, Charcoal)
-                .outputFluids(Creosote.getFluid(250)).duration(900).save(provider);
-        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke").inputItems(gem, Coal).outputItems(gem, Coke)
-                .outputFluids(Creosote.getFluid(500)).duration(900).save(provider);
-        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block").inputItems(block, Coal).outputItems(block, Coke)
-                .outputFluids(Creosote.getFluid(4500)).duration(8100).save(provider);
+                .outputFluids(Creosote.get().getFluid(250))
+                .duration(900)
+                .save(provider);
+        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke")
+                .inputItems(gem, Coal)
+                .outputItems(gem, Coke)
+                .outputFluids(Creosote.get().getFluid(500))
+                .duration(900)
+                .save(provider);
+        COKE_OVEN_RECIPES.recipeBuilder("coal_to_coke_block")
+                .inputItems(block, Coal)
+                .outputItems(block, Coke)
+                .outputFluids(Creosote.get().getFluid(4500))
+                .duration(8100)
+                .save(provider);
     }
 
     private static void registerStoneBricksRecipes(Consumer<FinishedRecipe> provider) {
@@ -318,7 +330,7 @@ public class MachineRecipeLoader {
     private static void registerMixingCrystallizationRecipes(Consumer<FinishedRecipe> provider) {
         AUTOCLAVE_RECIPES.recipeBuilder("silicon_dioxide_to_quartzite_gem")
                 .inputItems(dust, SiliconDioxide)
-                .inputFluids(DistilledWater.getFluid(250))
+                .inputFluids(DistilledWater.get().getFluid(250))
                 .chancedOutput(ChemicalHelper.get(gem, Quartzite), 4500)
                 .duration(1200).EUt(24).save(provider);
 
@@ -332,8 +344,8 @@ public class MachineRecipeLoader {
         MIXER_RECIPES.recipeBuilder("indium_concentrate")
                 .inputItems(crushedPurified, Sphalerite)
                 .inputItems(crushedPurified, Galena)
-                .inputFluids(SulfuricAcid.getFluid(4000))
-                .outputFluids(IndiumConcentrate.getFluid(1000))
+                .inputFluids(SulfuricAcid.get().getFluid(4000))
+                .outputFluids(IndiumConcentrate.get().getFluid(1000))
                 .duration(60).EUt(150).save(provider);
 
         // TODO Asphalt
@@ -432,9 +444,9 @@ public class MachineRecipeLoader {
 
     private static void registerAssemblerRecipes(Consumer<FinishedRecipe> provider) {
         for (int i = 0; i < CHEMICAL_DYES.length; i++) {
-            CANNER_RECIPES.recipeBuilder("spray_can_" + CHEMICAL_DYES[i].getName())
+            CANNER_RECIPES.recipeBuilder("spray_can_" + CHEMICAL_DYES[i].get().getName())
                     .inputItems(SPRAY_EMPTY)
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L * 4))
+                    .inputFluids(CHEMICAL_DYES[i].get().getFluid(L * 4))
                     .outputItems(SPRAY_CAN_DYES[i])
                     .EUt(VA[ULV]).duration(200)
                     .addMaterialInfo(true)
@@ -447,7 +459,7 @@ public class MachineRecipeLoader {
                 ASSEMBLER_RECIPES.recipeBuilder("lamp_" + color + "_" + lampMeta)
                         .inputItems(plate, Glass, 6)
                         .inputItems(dust, Glowstone, 1)
-                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].get().getFluid(GTValues.L))
                         .outputItems(lamp.getStackFromIndex(lampMeta))
                         .circuitMeta(lampMeta + 1).EUt(VA[ULV]).duration(40)
                         .addMaterialInfo(true)
@@ -458,7 +470,7 @@ public class MachineRecipeLoader {
                 ASSEMBLER_RECIPES.recipeBuilder("borderless_lamp_" + color + "_" + lampMeta)
                         .inputItems(plate, Glass, 6)
                         .inputItems(dust, Glowstone, 1)
-                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].getFluid(GTValues.L))
+                        .inputFluids(GTMaterials.CHEMICAL_DYES[i].get().getFluid(GTValues.L))
                         .outputItems(lamp.getStackFromIndex(lampMeta))
                         .circuitMeta(lampMeta + 9).EUt(VA[ULV]).duration(40)
                         .addMaterialInfo(true)
@@ -469,7 +481,7 @@ public class MachineRecipeLoader {
 
         CANNER_RECIPES.recipeBuilder("spray_can_solvent")
                 .inputItems(SPRAY_EMPTY)
-                .inputFluids(Acetone.getFluid(1000))
+                .inputFluids(Acetone.get().getFluid(1000))
                 .outputItems(SPRAY_SOLVENT)
                 .EUt(VA[ULV]).duration(200)
                 .addMaterialInfo(true)
@@ -774,10 +786,15 @@ public class MachineRecipeLoader {
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).addMaterialInfo(true).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
-                .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)
-                .outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50)
-                .addMaterialInfo(true, true).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert")
+                .inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
+                .inputFluids(Polytetrafluoroethylene.get().getFluid(216))
+                .circuitMeta(6)
+                .outputItems(GTBlocks.CASING_PTFE_INERT.asStack())
+                .EUt(16)
+                .duration(50)
+                .addMaterialInfo(true, true)
+                .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_bronze_firebox")
                 .inputItems(rod, Bronze, 3)
@@ -1124,35 +1141,35 @@ public class MachineRecipeLoader {
 
         BLAST_RECIPES.recipeBuilder("tetrahedrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Tetrahedrite)
-                .inputFluids(Oxygen.getFluid(3000))
+                .inputFluids(Oxygen.get().getFluid(3000))
                 .outputItems(dust, CupricOxide)
                 .outputItems(dustTiny, AntimonyTrioxide, 3)
-                .outputFluids(SulfurDioxide.getFluid(2000))
+                .outputFluids(SulfurDioxide.get().getFluid(2000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("cobaltite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Cobaltite)
-                .inputFluids(Oxygen.getFluid(3000))
+                .inputFluids(Oxygen.get().getFluid(3000))
                 .outputItems(dust, CobaltOxide)
                 .outputItems(dust, ArsenicTrioxide)
-                .outputFluids(SulfurDioxide.getFluid(1000))
+                .outputFluids(SulfurDioxide.get().getFluid(1000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("galena_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Galena)
-                .inputFluids(Oxygen.getFluid(3000))
+                .inputFluids(Oxygen.get().getFluid(3000))
                 .outputItems(dust, Massicot)
                 .outputItems(nugget, Silver, 6)
-                .outputFluids(SulfurDioxide.getFluid(1000))
+                .outputFluids(SulfurDioxide.get().getFluid(1000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Chalcopyrite)
                 .inputItems(dust, SiliconDioxide)
-                .inputFluids(Oxygen.getFluid(3000))
+                .inputFluids(Oxygen.get().getFluid(3000))
                 .outputItems(dust, CupricOxide)
                 .outputItems(dust, Ferrosilite)
-                .outputFluids(SulfurDioxide.getFluid(2000))
+                .outputFluids(SulfurDioxide.get().getFluid(2000))
                 .save(provider);
 
         BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(2273)
@@ -1160,19 +1177,19 @@ public class MachineRecipeLoader {
                 .inputItems(dust, Carbon, 2)
                 .outputItems(ingotHot, Silicon)
                 .chancedOutput(dust, Ash, "1/9")
-                .outputFluids(CarbonMonoxide.getFluid(2000))
+                .outputFluids(CarbonMonoxide.get().getFluid(2000))
                 .save(provider);
     }
 
-    private static void createSulfurDioxideRecipe(Consumer<FinishedRecipe> provider, Material inputMaterial,
-                                                  Material outputMaterial, int sulfurDioxideAmount) {
-        BLAST_RECIPES.recipeBuilder(inputMaterial.getName() + "_metallurgy").duration(120).EUt(VA[MV])
+    private static void createSulfurDioxideRecipe(Consumer<FinishedRecipe> provider, Holder<Material> inputMaterial,
+                                                  Holder<Material> outputMaterial, int sulfurDioxideAmount) {
+        BLAST_RECIPES.recipeBuilder(inputMaterial.get().getName() + "_metallurgy").duration(120).EUt(VA[MV])
                 .blastFurnaceTemp(1200)
                 .inputItems(dust, inputMaterial)
-                .inputFluids(Oxygen.getFluid(3000))
+                .inputFluids(Oxygen.get().getFluid(3000))
                 .outputItems(dust, outputMaterial)
                 .chancedOutput(dust, Ash, "1/9")
-                .outputFluids(SulfurDioxide.getFluid(sulfurDioxideAmount))
+                .outputFluids(SulfurDioxide.get().getFluid(sulfurDioxideAmount))
                 .save(provider);
     }
 
@@ -1391,28 +1408,33 @@ public class MachineRecipeLoader {
 
     private static void registerFluidRecipes(Consumer<FinishedRecipe> provider) {
         FLUID_HEATER_RECIPES.recipeBuilder("heat_ice_to_water").duration(32).EUt(4)
-                .inputFluids(Ice.getFluid(L))
+                .inputFluids(Ice.get().getFluid(L))
                 .circuitMeta(1)
-                .outputFluids(Water.getFluid(L)).save(provider);
+                .outputFluids(Water.get().getFluid(L)).save(provider);
 
         FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_gelled_toluene")
-                .inputFluids(Toluene.getFluid(100))
+                .inputFluids(Toluene.get().getFluid(100))
                 .notConsumable(SHAPE_MOLD_BALL)
                 .outputItems(GELLED_TOLUENE)
                 .duration(100).EUt(16).save(provider);
 
         for (int i = 0; i < CHEMICAL_DYES.length; i++) {
-            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + CHEMICAL_DYES[i].getName() + "_to_ball")
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L / 2))
+            FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + CHEMICAL_DYES[i].get().getName() + "_to_ball")
+                    .inputFluids(CHEMICAL_DYES[i].get().getFluid(L / 2))
                     .notConsumable(SHAPE_MOLD_BALL)
                     .outputItems(DYE_ONLY_ITEMS[i])
                     .duration(100).EUt(16).save(provider);
         }
 
         FLUID_HEATER_RECIPES.recipeBuilder("heat_water_to_steam").duration(30).EUt(VA[LV])
-                .inputFluids(Water.getFluid(6)).circuitMeta(1).outputFluids(Steam.getFluid(960)).save(provider);
+                .inputFluids(Water.get().getFluid(6))
+                .circuitMeta(1)
+                .outputFluids(Steam.get().getFluid(960))
+                .save(provider);
         FLUID_HEATER_RECIPES.recipeBuilder("heat_distilled_to_steam").duration(30).EUt(VA[LV])
-                .inputFluids(DistilledWater.getFluid(6)).circuitMeta(1).outputFluids(Steam.getFluid(960))
+                .inputFluids(DistilledWater.get().getFluid(6))
+                .circuitMeta(1)
+                .outputFluids(Steam.get().getFluid(960))
                 .save(provider);
     }
 
@@ -1461,14 +1483,14 @@ public class MachineRecipeLoader {
             MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_moss_block")
                     .inputItems(regularStack.get(i))
                     .inputItems(new ItemStack(Blocks.MOSS_BLOCK))
-                    .inputFluids(Water.getFluid(250))
+                    .inputFluids(Water.get().getFluid(250))
                     .outputItems(mossStack.get(i))
                     .duration(40).EUt(1).save(provider);
 
             MIXER_RECIPES.recipeBuilder(mossId.getPath() + "_from_vine")
                     .inputItems(regularStack.get(i))
                     .inputItems(new ItemStack(Blocks.VINE))
-                    .inputFluids(Water.getFluid(250))
+                    .inputFluids(Water.get().getFluid(250))
                     .outputItems(mossStack.get(i))
                     .duration(40).EUt(1).save(provider);
         }

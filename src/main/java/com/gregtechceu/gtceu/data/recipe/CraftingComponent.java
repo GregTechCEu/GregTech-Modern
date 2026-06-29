@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +48,21 @@ public class CraftingComponent {
         return of(id, new MaterialEntry(prefix, material));
     }
 
+    public static CraftingComponent of(@NotNull String id, @NotNull Holder<TagPrefix> prefix,
+                                       @NotNull Holder<Material> material) {
+        return of(id, new MaterialEntry(prefix, material));
+    }
+
+    public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix,
+                                       @NotNull Holder<Material> material) {
+        return of(id, new MaterialEntry(prefix, material));
+    }
+
+    public static CraftingComponent of(@NotNull String id, @NotNull Holder<TagPrefix> prefix,
+                                       @NotNull Material material) {
+        return of(id, new MaterialEntry(prefix, material));
+    }
+
     public @NotNull Object get(int tier) {
         if (this == EMPTY) return ItemStack.EMPTY;
         if (tier < 0 || tier >= values.length)
@@ -64,6 +80,19 @@ public class CraftingComponent {
 
     public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
         return add(tier, new MaterialEntry(prefix, material));
+    }
+
+    public @NotNull CraftingComponent add(int tier, @NotNull Holder<TagPrefix> prefix,
+                                          @NotNull Holder<Material> material) {
+        return add(tier, prefix.get(), material.get());
+    }
+
+    public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Holder<Material> material) {
+        return add(tier, prefix, material.get());
+    }
+
+    public @NotNull CraftingComponent add(int tier, @NotNull Holder<TagPrefix> prefix, @NotNull Material material) {
+        return add(tier, prefix.get(), material);
     }
 
     public void remove(int tier) {

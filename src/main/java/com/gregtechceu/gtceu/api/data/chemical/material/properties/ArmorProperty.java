@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,6 +22,7 @@ import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -42,9 +44,8 @@ public class ArmorProperty implements IMaterialProperty {
     @Setter
     private float knockbackResistance;
 
-    @Nullable
     @Setter
-    private Supplier<@NotNull Ingredient> repairIngredient;
+    private @Nullable Supplier<Ingredient> repairIngredient;
     private boolean noRepair;
 
     @Setter
@@ -59,7 +60,7 @@ public class ArmorProperty implements IMaterialProperty {
 
     @Getter
     private final ArmorMaterial armorMaterial;
-    private Material material;
+    private @UnknownNullability Holder<Material> material;
 
     public ArmorProperty(int durabilityMultiplier, int[] protectionValues) {
         this.durabilityMultiplier = durabilityMultiplier;

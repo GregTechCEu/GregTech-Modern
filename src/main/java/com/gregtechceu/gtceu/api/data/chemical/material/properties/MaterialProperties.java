@@ -5,12 +5,15 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.Holder;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 
 public class MaterialProperties {
 
-    private static final Set<PropertyKey<?>> baseTypes = new HashSet<>(Arrays.asList(
+    private static final Set<PropertyKey<?>> baseTypes = new HashSet<>(Set.of(
             PropertyKey.FLUID, PropertyKey.DUST,
             PropertyKey.INGOT, PropertyKey.GEM, PropertyKey.EMPTY));
 
@@ -22,7 +25,8 @@ public class MaterialProperties {
     private final Map<PropertyKey<? extends IMaterialProperty>, IMaterialProperty> propertyMap;
     @Getter
     @Setter
-    private Material material;
+    @ApiStatus.Internal
+    private Holder<Material> material;
 
     public MaterialProperties() {
         propertyMap = new HashMap<>();
@@ -32,7 +36,7 @@ public class MaterialProperties {
         return propertyMap.isEmpty();
     }
 
-    public <T extends IMaterialProperty> T getProperty(PropertyKey<T> key) {
+    public <T extends IMaterialProperty> @UnknownNullability T getProperty(PropertyKey<T> key) {
         return key.cast(propertyMap.get(key));
     }
 
@@ -41,21 +45,27 @@ public class MaterialProperties {
     }
 
     public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty value) {
-        if (value == null) throw new IllegalArgumentException("Material Property must not be null!");
-        if (!key.getType().isInstance(value))
+        if (value == null) {
+            throw new IllegalArgumentException("Material Property must not be null!");
+        }
+        if (!key.getType().isInstance(value)) {
             throw new IllegalArgumentException("Material Property must be of the same type as the property key!");
-        if (hasProperty(key))
-            throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
+        }
+        if (hasProperty(key)) {
+            throw new IllegalArgumentException("Material Property " + key + " already registered!");
+        }
         propertyMap.put(key, value);
         propertyMap.remove(PropertyKey.EMPTY);
     }
 
     public <T extends IMaterialProperty> void removeProperty(PropertyKey<T> property) {
-        if (!hasProperty(property))
-            throw new IllegalArgumentException("Material Property " + property.toString() + " not present!");
+        if (!hasProperty(property)) {
+            throw new IllegalArgumentException("Material Property " + property + " not present!");
+        }
         propertyMap.remove(property);
-        if (propertyMap.isEmpty())
+        if (propertyMap.isEmpty()) {
             propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
+        }
     }
 
     public <T extends IMaterialProperty> void ensureSet(PropertyKey<T> key, boolean verify) {
@@ -83,8 +93,9 @@ public class MaterialProperties {
                     GTCEu.LOGGER.debug("Creating empty placeholder Material {}", material);
                 }
                 propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
-            } else
+            } else {
                 throw new IllegalArgumentException("Material must have at least one of: " + baseTypes + " specified!");
+            }
         }
     }
 

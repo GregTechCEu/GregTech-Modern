@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.registry.registrate.holder;
 
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
@@ -30,10 +31,14 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
 
     @ApiStatus.Internal
     @Getter
+    private final AbstractRegistrate<?> owner;
+    @ApiStatus.Internal
+    @Getter
     private final RegistryObject<T> delegate;
 
     public HolderRegistryEntry(AbstractRegistrate<?> owner, RegistryObject<T> delegate) {
         super(owner, delegate);
+        this.owner = owner;
         this.delegate = delegate;
     }
 
@@ -46,6 +51,17 @@ public class HolderRegistryEntry<T> extends RegistryEntry<T> implements Holder<T
     @Override
     public T value() {
         return this.get();
+    }
+
+    /**
+     * Add a callback to be invoked when this entry is registered. Can be called multiple times to add multiple callbacks.
+     *
+     * @param callback the callback to invoke
+     * @return this
+     */
+    public HolderRegistryEntry<T> onRegister(NonNullConsumer<? super T> callback) {
+        getOwner().addRegisterCallback(getId().getPath(), ResourceKey.createRegistryKey(getKey().registry()), callback);
+        return this;
     }
 
     /**

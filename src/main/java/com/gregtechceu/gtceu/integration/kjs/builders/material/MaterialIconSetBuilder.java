@@ -14,7 +14,7 @@ public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
 
     public MaterialIconSetBuilder(ResourceLocation id) {
         super(id);
-        parent = MaterialIconSet.DULL;
+        parent = MaterialIconSet.DULL.get();
     }
 
     public MaterialIconSetBuilder parent(MaterialIconSet parent) {

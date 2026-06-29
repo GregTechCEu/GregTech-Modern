@@ -34,10 +34,10 @@ public class AlloyBlastPropertyAddition {
         }
 
         // Manual overrides
-        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.NiobiumNitride.get().getProperty(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
 
-        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
+        GTMaterials.IndiumTinBariumTitaniumCuprate.get().getProperty(PropertyKey.ALLOY_BLAST)
                 .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 

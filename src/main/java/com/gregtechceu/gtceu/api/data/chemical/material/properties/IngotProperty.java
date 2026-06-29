@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
 
 public class IngotProperty implements IMaterialProperty {
@@ -15,7 +16,7 @@ public class IngotProperty implements IMaterialProperty {
     @Getter
     @Setter
     @NotNull
-    private Material smeltingInto = GTMaterials.NULL;
+    private Holder<Material> smeltingInto = GTMaterials.NULL;
 
     /**
      * Specifies a material into which this material parts turn when heated in arc furnace
@@ -23,7 +24,7 @@ public class IngotProperty implements IMaterialProperty {
     @Getter
     @Setter
     @NotNull
-    private Material arcSmeltingInto = GTMaterials.NULL;
+    private Holder<Material> arcSmeltingInto = GTMaterials.NULL;
 
     /**
      * Specifies a Material into which this Material Macerates into.
@@ -33,7 +34,7 @@ public class IngotProperty implements IMaterialProperty {
     @Getter
     @Setter
     @NotNull
-    private Material macerateInto = GTMaterials.NULL;
+    private Holder<Material> macerateInto = GTMaterials.NULL;
 
     /**
      * Material which obtained when this material is polarized
@@ -41,7 +42,7 @@ public class IngotProperty implements IMaterialProperty {
     @Getter
     @Setter
     @NotNull
-    private Material magneticMaterial = GTMaterials.NULL;
+    private Holder<Material> magneticMaterial = GTMaterials.NULL;
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
@@ -52,16 +53,16 @@ public class IngotProperty implements IMaterialProperty {
                             " has both Ingot and Gem Property, which is not allowed!");
         }
 
-        if (smeltingInto.isNull()) smeltingInto = properties.getMaterial();
-        else smeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (smeltingInto.get().isNull()) smeltingInto = properties.getMaterial();
+        else smeltingInto.get().getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (arcSmeltingInto.isNull()) arcSmeltingInto = properties.getMaterial();
-        else arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (arcSmeltingInto.get().isNull()) arcSmeltingInto = properties.getMaterial();
+        else arcSmeltingInto.get().getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (macerateInto.isNull()) macerateInto = properties.getMaterial();
-        else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (macerateInto.get().isNull()) macerateInto = properties.getMaterial();
+        else macerateInto.get().getProperties().ensureSet(PropertyKey.INGOT, true);
 
-        if (!magneticMaterial.isNull())
-            magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (!magneticMaterial.get().isNull())
+            magneticMaterial.get().getProperties().ensureSet(PropertyKey.INGOT, true);
     }
 }

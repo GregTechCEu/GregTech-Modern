@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 
@@ -27,11 +28,12 @@ import java.util.function.UnaryOperator;
 
 public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
-    private final Material.Builder internal;
+    private final Material.Builder<?> internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(null, id);
+        GTRegistrate registrate = GTRegistrate.create(id.getNamespace(), false);
+        this.internal = registrate.material(id.getPath());
     }
 
     @Override
@@ -664,6 +666,6 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     @Override
     public Material createObject() {
-        return internal.buildAndRegister();
+        return internal.createEntry();
     }
 }

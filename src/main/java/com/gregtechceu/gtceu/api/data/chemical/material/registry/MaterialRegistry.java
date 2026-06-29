@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import net.minecraft.core.DefaultedMappedRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Lifecycle;
 import lombok.Getter;
@@ -20,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MaterialRegistry extends MappedRegistry<Material> {
+public class MaterialRegistry extends DefaultedMappedRegistry<Material> {
 
     @Getter
     private final Set<String> usedNamespaces = new HashSet<>();
@@ -28,13 +26,7 @@ public class MaterialRegistry extends MappedRegistry<Material> {
     private Phase registrationPhase = Phase.PRE;
 
     public MaterialRegistry() {
-        super(GTRegistries.Keys.MATERIAL, Lifecycle.stable());
-    }
-
-    public Material get(String name) {
-        ResourceLocation location = ResourceLocation.tryParse(GTCEu.appendIdString(name));
-        if (location != null) return get(location);
-        return GTMaterials.NULL;
+        super("gtceu:null", GTRegistries.Keys.MATERIAL, Lifecycle.stable(), true);
     }
 
     @Override

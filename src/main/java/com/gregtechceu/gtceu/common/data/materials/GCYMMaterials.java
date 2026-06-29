@@ -19,7 +19,7 @@ public class GCYMMaterials {
                 .components(Tantalum, 1, Carbon, 1)
                 .blast(b -> b.temp(4120, GasTier.MID)
                         .blastStats(VA[EV], 1200))
-                .buildAndRegister();
+                .register();
 
         HSLASteel = REGISTRATE.material("hsla_steel")
                 .langValue("HSLA Steel")
@@ -29,7 +29,7 @@ public class GCYMMaterials {
                 .components(Invar, 2, Vanadium, 1, Titanium, 1, Molybdenum, 1)
                 .blast(b -> b.temp(1711, GasTier.LOW)
                         .blastStats(VA[GTValues.HV], 1000))
-                .buildAndRegister();
+                .register();
 
         MolybdenumDisilicide = REGISTRATE.material("molybdenum_disilicide")
                 .ingot(2).fluid()
@@ -38,7 +38,7 @@ public class GCYMMaterials {
                 .components(Molybdenum, 1, Silicon, 2)
                 .blast(b -> b.temp(2300, GasTier.MID)
                         .blastStats(VA[EV], 800))
-                .buildAndRegister();
+                .register();
 
         Zeron100 = REGISTRATE.material("zeron_100")
                 .langValue("Zeron-100")
@@ -48,7 +48,7 @@ public class GCYMMaterials {
                 .components(Iron, 10, Nickel, 2, Tungsten, 2, Niobium, 1, Cobalt, 1)
                 .blast(b -> b.temp(3693, GasTier.MID)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
 
         WatertightSteel = REGISTRATE.material("watertight_steel")
                 .ingot(4).fluid()
@@ -57,7 +57,7 @@ public class GCYMMaterials {
                 .components(Iron, 7, Aluminium, 4, Nickel, 2, Chromium, 1, Sulfur, 1)
                 .blast(b -> b.temp(3850, GasTier.MID)
                         .blastStats(VA[EV], 800))
-                .buildAndRegister();
+                .register();
 
         IncoloyMA956 = REGISTRATE.material("incoloy_ma_956")
                 .langValue("Incoloy MA-956")
@@ -67,7 +67,7 @@ public class GCYMMaterials {
                 .components(VanadiumSteel, 4, Manganese, 2, Aluminium, 5, Yttrium, 2)
                 .blast(b -> b.temp(3652, GasTier.MID)
                         .blastStats(VA[EV], 800))
-                .buildAndRegister();
+                .register();
 
         MaragingSteel300 = REGISTRATE.material("maraging_steel_300")
                 .ingot(4).fluid()
@@ -76,7 +76,7 @@ public class GCYMMaterials {
                 .components(Iron, 16, Titanium, 1, Aluminium, 1, Nickel, 4, Cobalt, 2)
                 .blast(b -> b.temp(4000, GasTier.HIGH)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
 
         HastelloyX = REGISTRATE.material("hastelloy_x")
                 .ingot(5).fluid()
@@ -85,7 +85,7 @@ public class GCYMMaterials {
                 .components(Nickel, 8, Iron, 3, Tungsten, 4, Molybdenum, 2, Chromium, 1, Niobium, 1)
                 .blast(b -> b.temp(4200, GasTier.HIGH)
                         .blastStats(VA[EV], 900))
-                .buildAndRegister();
+                .register();
 
         Stellite100 = REGISTRATE.material("stellite_100")
                 .langValue("Stellite-100")
@@ -95,7 +95,7 @@ public class GCYMMaterials {
                 .components(Iron, 4, Chromium, 3, Tungsten, 2, Molybdenum, 1)
                 .blast(b -> b.temp(3790, GasTier.HIGH)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
 
         TitaniumCarbide = REGISTRATE.material("titanium_carbide")
                 .ingot(3).fluid()
@@ -104,7 +104,7 @@ public class GCYMMaterials {
                 .components(Titanium, 1, Carbon, 1)
                 .blast(b -> b.temp(3430, GasTier.MID)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
 
         TitaniumTungstenCarbide = REGISTRATE.material("titanium_tungsten_carbide")
                 .ingot(6).fluid()
@@ -113,7 +113,7 @@ public class GCYMMaterials {
                 .components(TitaniumCarbide, 2, TungstenCarbide, 1)
                 .blast(b -> b.temp(3800, GasTier.HIGH)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
 
         HastelloyC276 = REGISTRATE.material("hastelloy_c_276")
                 .langValue("Hastelloy C-276")
@@ -123,6 +123,6 @@ public class GCYMMaterials {
                 .components(Nickel, 12, Molybdenum, 8, Chromium, 7, Tungsten, 1, Cobalt, 1, Copper, 1)
                 .blast(b -> b.temp(3800, GasTier.HIGH)
                         .blastStats(VA[EV], 1000))
-                .buildAndRegister();
+                .register();
     }
 }

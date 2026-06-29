@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,7 +47,7 @@ public class HazardProperty implements IMaterialProperty {
     @Override
     public void verifyProperty(MaterialProperties properties) {}
 
-    public record HazardTrigger(String name, ProtectionType protectionType, Set<TagPrefix> affectedTagPrefixes)
+    public record HazardTrigger(String name, ProtectionType protectionType, Set<Holder<TagPrefix>> affectedTagPrefixes)
             implements StringRepresentable {
 
         public static final Map<String, HazardTrigger> ALL_TRIGGERS = new HashMap<>();
@@ -64,14 +65,15 @@ public class HazardProperty implements IMaterialProperty {
             ALL_TRIGGERS.put(name, this);
         }
 
-        public HazardTrigger(String name, ProtectionType protectionType, TagPrefix... tagPrefixes) {
+        @SafeVarargs
+        public HazardTrigger(String name, ProtectionType protectionType, Holder<TagPrefix>... tagPrefixes) {
             this(name, protectionType, new HashSet<>());
             affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
         }
 
         public boolean isAffected(TagPrefix prefix) {
             if (affectedTagPrefixes.isEmpty()) return true; // empty list means all prefixes are affected
-            return affectedTagPrefixes.contains(prefix);
+            return affectedTagPrefixes.contains(prefix.getHolder());
         }
 
         public Component getTranslatableName() {

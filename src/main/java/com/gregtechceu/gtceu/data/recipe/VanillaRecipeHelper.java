@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
+import brachy.modularui.integration.recipeviewer.entry.item.ItemTagList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
@@ -12,9 +13,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SmithingTransformRecipeBuilder;
@@ -22,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
@@ -32,6 +38,7 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class VanillaRecipeHelper {
@@ -646,7 +653,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addToolUpgradingRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull GTToolType tool,
-                                              @NotNull Material upgradeMaterial, @NotNull Material baseMaterial,
+                                              @NotNull Holder<Material> upgradeMaterial, @NotNull Holder<Material> baseMaterial,
                                               @NotNull ItemLike template, @NotNull ItemLike addition) {
         ItemStack upgradeToolStack = ToolHelper.get(tool, upgradeMaterial);
         ItemStack baseToolStack = ToolHelper.get(tool, baseMaterial);
@@ -654,8 +661,8 @@ public class VanillaRecipeHelper {
         if (upgradeToolStack.isEmpty() || baseToolStack.isEmpty()) return;
 
         VanillaRecipeHelper.addSmithingTransformRecipe(provider,
-                String.format("%s_%s_smithing_transform_from_%s", upgradeMaterial.getName(), tool.name,
-                        baseMaterial.getName()),
+                String.format("%s_%s_smithing_transform_from_%s", upgradeMaterial.get().getName(), tool.name,
+                        baseMaterial.get().getName()),
                 upgradeToolStack.getItem(), baseToolStack.getItem(),
                 template, addition);
     }
@@ -696,46 +703,76 @@ public class VanillaRecipeHelper {
             // by an earlier method call parsing the recipe.
             if (lastChar == ' ') return null;
 
-            ItemLike itemLike;
-            if (ingredient instanceof Ingredient ingr) {
-                ItemStack[] stacks = ingr.getItems();
-                if (stacks.length == 0) continue;
-                ItemStack stack = stacks[0];
-                if (stack == ItemStack.EMPTY) continue;
-                itemLike = stack.getItem();
+            MaterialEntry entry = MaterialEntry.NULL_ENTRY;
+            Item item;
+            if (ingredient instanceof ItemLike itemLike) {
+                item = itemLike.asItem();
             } else if (ingredient instanceof ItemStack itemStack) {
-                itemLike = itemStack.getItem();
-            } else if (ingredient instanceof TagKey<?> key) {
-                continue; // todo can this be improved?
-            } else if (ingredient instanceof ItemLike) {
-                itemLike = (ItemLike) ingredient;
-            } else if (ingredient instanceof MaterialEntry entry) {
-                ItemStack stack = ChemicalHelper.get(entry.tagPrefix(), entry.material());
-                if (stack == ItemStack.EMPTY) continue;
-                itemLike = stack.getItem();
-            } else if (ingredient instanceof ItemProviderEntry<?> entry) {
-                itemLike = entry.asItem();
+                item = itemStack.getItem();
+            } else if (ingredient instanceof Ingredient ingr) {
+                var values = ((IngredientAccessor) ingr).getValues();
+                if (values.length > 0 && values[0] instanceof TagValueAccessor tagValue) {
+                    TagKey<Item> tag = tagValue.getTag();
+                    // Replace the ingredient with a tag and go again with the same index
+                    recipe[i] = tag;
+                    i--;
+                    continue;
+                } else {
+                    ItemStack[] stacks = ingr.getItems();
+                    if (stacks.length == 0) continue;
+                    ItemStack stack = stacks[0];
+                    if (stack.isEmpty()) continue;
+                    item = stack.getItem();
+                }
+            } else if (ingredient instanceof TagKey<?> key && key.isFor(Registries.ITEM)) {
+                item = null;
+                // noinspection unchecked
+                TagKey<Item> tag = (TagKey<Item>) key;
+                entry = ChemicalHelper.getMaterialEntry(tag);
+            } else if (ingredient instanceof MaterialEntry materialEntry) {
+                entry = materialEntry;
+
+                List<ItemLike> items = ChemicalHelper.getItems(materialEntry);
+                if (!items.isEmpty()) {
+                    item = items.get(0).asItem();
+                } else {
+                    item = null;
+                }
             } else continue; // throw out bad entries
 
-            // First try to get ItemMaterialInfo
-            ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
-            if (info != null) {
-                for (MaterialStack ms : info.getMaterials()) {
-                    if (!(ms.material() instanceof MarkerMaterial)) {
-                        addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
+            if (item != null && item != Items.AIR) {
+                // First try to get ItemMaterialInfo if we have an item
+                ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(item);
+                if (info != null) {
+                    for (MaterialStack ms : info.getMaterials()) {
+                        if (!(ms.material() instanceof MarkerMaterial)) {
+                            addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
+                        }
                     }
+                    continue;
                 }
+
+                // Then fetch the material entry for that item
+                if (entry.isEmpty()) {
+                    entry = ChemicalHelper.getMaterialEntry(item);
+                }
+            }
+
+            // Skip the rest if we couldn't find a valid material entry
+            if (entry.isEmpty()) {
                 continue;
             }
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
-            MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
+            Material entryMaterial = entry.material();
+            MaterialStack materialStack = new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
+
             if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
                 addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 
-            // Gather any secondary materials if this item has an OrePrefix
-            TagPrefix prefix = ChemicalHelper.getPrefix(itemLike);
+            // Gather any secondary materials if this item has a TagPrefix
+            TagPrefix prefix = entry.tagPrefix();
             if (!prefix.isEmpty() && !prefix.secondaryMaterials().isEmpty()) {
                 for (MaterialStack ms : prefix.secondaryMaterials()) {
                     addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);

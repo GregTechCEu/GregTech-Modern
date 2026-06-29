@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -45,7 +46,8 @@ public final class ToolRecipeHandler {
             new ItemEntry[] { GTItems.POWER_UNIT_LV, GTItems.POWER_UNIT_MV, GTItems.POWER_UNIT_HV,
                     GTItems.POWER_UNIT_EV, GTItems.POWER_UNIT_IV });
 
-    public static final Material[] softMaterials = new Material[] {
+    @SuppressWarnings("unchecked")
+    public static final Holder<Material>[] softMaterials = new Holder[] {
             GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
             GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole,
             GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
@@ -220,7 +222,7 @@ public final class ToolRecipeHandler {
 
         final int voltageMultiplier = material.getBlastTemperature() > 2800 ? GTValues.VA[GTValues.LV] :
                 GTValues.VA[GTValues.ULV];
-        TagPrefix toolPrefix;
+        Holder<TagPrefix> toolPrefix;
 
         if (material.hasFlag(GENERATE_PLATE)) {
             final MaterialEntry plate = new MaterialEntry(TagPrefix.plate, material);
@@ -331,7 +333,8 @@ public final class ToolRecipeHandler {
         }
     }
 
-    private static void addElectricToolRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull TagPrefix toolHead,
+    private static void addElectricToolRecipe(@NotNull Consumer<FinishedRecipe> provider,
+                                              @NotNull Holder<TagPrefix> toolHead,
                                               @NotNull GTToolType @NotNull [] toolItems,
                                               @NotNull Material material) {
         for (GTToolType toolType : toolItems) {
@@ -363,6 +366,11 @@ public final class ToolRecipeHandler {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.getName()),
                     toolStack, recipe);
         }
+    }
+
+    public static void addToolRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull Holder<Material> material,
+                                     @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
+        addToolRecipe(provider, material.get(), tool, mirrored, recipe);
     }
 
     public static void addNetheriteToolRecipe(@NotNull Consumer<FinishedRecipe> provider, @NotNull GTToolType tool) {

@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import net.minecraft.core.Holder;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record MaterialStackWrapper(Supplier<Material> material, long amount) {
+public record MaterialStackWrapper(Supplier<Holder<Material>> material, long amount) {
 
     public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> GTMaterials.NULL, 0);
 
@@ -33,7 +35,7 @@ public record MaterialStackWrapper(Supplier<Material> material, long amount) {
         }
 
         final String copyFinal = copy;
-        Supplier<Material> mat = () -> GTMaterials.get(copyFinal);
+        Supplier<Holder<Material>> mat = () -> GTMaterials.get(GTCEu.id(copyFinal));
         cached = new MaterialStackWrapper(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();

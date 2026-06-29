@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
@@ -44,7 +45,7 @@ import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.*;
 public final class CustomToolRecipes {
 
     private static final Int2ReferenceMap<ItemEntry<? extends Item>> motorItems = new Int2ReferenceArrayMap<>();
-    private static final Int2ReferenceMap<Material> baseMaterials = new Int2ReferenceArrayMap<>();
+    private static final Int2ReferenceMap<Holder<Material>> baseMaterials = new Int2ReferenceArrayMap<>();
     private static final Int2ReferenceMap<List<ItemEntry<? extends Item>>> batteryItems = new Int2ReferenceArrayMap<>();
 
     private CustomToolRecipes() {}
@@ -181,7 +182,7 @@ public final class CustomToolRecipes {
         final ItemStack stick = new ItemStack(Items.STICK);
 
         for (int i = 0; i < softMaterials.length; i++) {
-            Material material = softMaterials[i];
+            Material material = softMaterials[i].get();
 
             if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored

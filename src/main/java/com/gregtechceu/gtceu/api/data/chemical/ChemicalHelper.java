@@ -71,7 +71,7 @@ public class ChemicalHelper {
         return getMaterialStack(itemStack.getItem());
     }
 
-    public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
+    public static MaterialStack getMaterialStack(MaterialEntry entry) {
         Material entryMaterial = entry.material();
         if (!entryMaterial.isNull()) {
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
@@ -80,7 +80,7 @@ public class ChemicalHelper {
     }
 
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
-        var entry = getMaterialEntry(itemLike);
+        MaterialEntry entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) {
             Material entryMaterial = entry.material();
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
@@ -92,6 +92,15 @@ public class ChemicalHelper {
             return MaterialStack.EMPTY;
         }
         return info.getMaterial();
+    }
+
+    public static MaterialStack getMaterialStack(TagKey<Item> tag) {
+        MaterialEntry entry = getMaterialEntry(tag);
+        if (!entry.isEmpty()) {
+            Material entryMaterial = entry.material();
+            return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
+        }
+        return MaterialStack.EMPTY;
     }
 
     public static Material getMaterial(Fluid fluid) {
@@ -112,13 +121,13 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL);
+        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.nullMaterial());
     }
 
     public static TagPrefix getPrefix(ItemLike itemLike) {
         MaterialEntry entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) return entry.tagPrefix();
-        return TagPrefix.NULL_PREFIX;
+        return TagPrefix.NULL_PREFIX.get();
     }
 
     public static ItemStack getDust(Material material, long materialAmount) {
@@ -167,8 +176,8 @@ public class ChemicalHelper {
 
     public static ItemStack getGem(MaterialStack materialStack) {
         if (materialStack.material().hasProperty(PropertyKey.GEM) &&
-                !TagPrefix.gem.isIgnored(materialStack.material()) &&
-                materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
+                !TagPrefix.gem.get().isIgnored(materialStack.material()) &&
+                materialStack.amount() == TagPrefix.gem.get().getMaterialAmount(materialStack.material())) {
             return get(TagPrefix.gem, materialStack.material(), (int) (materialStack.amount() / M));
         }
         return getDust(materialStack);
@@ -248,12 +257,36 @@ public class ChemicalHelper {
         return stack;
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material, int stackSize) {
-        return get(new MaterialEntry(orePrefix, material), stackSize);
+    public static ItemStack get(TagPrefix tagPrefix, Material material, int stackSize) {
+        return get(new MaterialEntry(tagPrefix, material), stackSize);
     }
 
-    public static ItemStack get(TagPrefix orePrefix, Material material) {
-        return get(orePrefix, material, 1);
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material, int stackSize) {
+        return get(tagPrefix.get(), material.get(), stackSize);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material, int stackSize) {
+        return get(tagPrefix.get(), material, stackSize);
+    }
+
+    public static ItemStack get(TagPrefix tagPrefix, Holder<Material> material, int stackSize) {
+        return get(tagPrefix, material.get(), stackSize);
+    }
+
+    public static ItemStack get(TagPrefix tagPrefix, Material material) {
+        return get(tagPrefix, material, 1);
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return get(tagPrefix.get(), material.get());
+    }
+
+    public static ItemStack get(TagPrefix tagPrefix, Holder<Material> material) {
+        return get(tagPrefix, material.get());
+    }
+
+    public static ItemStack get(Holder<TagPrefix> tagPrefix, Material material) {
+        return get(tagPrefix.get(), material);
     }
 
     public static List<Block> getBlocks(MaterialEntry materialEntry) {
@@ -289,7 +322,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
+    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (tags.isEmpty()) {
             return null;
@@ -297,13 +330,24 @@ public class ChemicalHelper {
         return tags.get(0);
     }
 
-    @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, Material material) {
-        var tags = orePrefix.getItemTags(material);
+    public static @Nullable TagKey<Item> getTag(TagPrefix tagPrefix, Material material) {
+        var tags = tagPrefix.getItemTags(material);
         if (tags.isEmpty()) {
             return null;
         }
         return tags.get(0);
+    }
+
+    public static @Nullable TagKey<Item> getTag(Holder<TagPrefix> tagPrefix, Holder<Material> material) {
+        return getTag(tagPrefix.get(), material.get());
+    }
+
+    public static @Nullable TagKey<Item> getTag(TagPrefix tagPrefix, Holder<Material> material) {
+        return getTag(tagPrefix, material.get());
+    }
+
+    public static @Nullable TagKey<Item> getTag(Holder<TagPrefix> tagPrefix, Material material) {
+        return getTag(tagPrefix.get(), material);
     }
 
     public static List<Pair<ItemStack, ItemMaterialInfo>> getAllItemInfos() {

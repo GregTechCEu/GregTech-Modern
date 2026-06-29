@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -33,9 +34,9 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(
             ToolHeadReplaceRecipe::new);
 
-    private static final Map<TagPrefix, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
+    private static final Map<Holder<TagPrefix>, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
 
-    public static void setToolHeadForTool(TagPrefix toolHead, GTToolType tool) {
+    public static void setToolHeadForTool(Holder<TagPrefix> toolHead, GTToolType tool) {
         if (!(tool.electricTier > -1)) return;
         TOOL_HEAD_TO_TOOL_MAP.computeIfAbsent(toolHead, p -> new GTToolType[GTValues.MAX])[tool.electricTier] = tool;
     }
@@ -70,11 +71,13 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else if (stack2.getItem() instanceof IGTTool) {
                 tool = (IGTTool) stack2.getItem();
                 toolHead = ChemicalHelper.getMaterialEntry(stack1.getItem());
-            } else return false;
+            } else {
+                return false;
+            }
 
             if (!tool.isElectric()) return false;
             if (toolHead.isEmpty()) return false;
-            GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
+            GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix().getHolder());
             return output != null && output[tool.getElectricTier()] != null &&
                     GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), output[tool.getElectricTier()]) != null;
         }
@@ -99,19 +102,23 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             IGTTool tool;
             MaterialEntry toolHead;
             ItemStack realTool;
-            if (first.getItem() instanceof IGTTool) {
-                tool = (IGTTool) first.getItem();
+            if (first.getItem() instanceof IGTTool gtTool) {
+                tool = gtTool;
                 toolHead = ChemicalHelper.getMaterialEntry(second.getItem());
                 realTool = first;
-            } else if (second.getItem() instanceof IGTTool) {
-                tool = (IGTTool) second.getItem();
+            } else if (second.getItem() instanceof IGTTool gtTool) {
+                tool = gtTool;
                 toolHead = ChemicalHelper.getMaterialEntry(first.getItem());
                 realTool = second;
-            } else return ItemStack.EMPTY;
+            } else {
+                return ItemStack.EMPTY;
+            }
+
             if (!tool.isElectric()) return ItemStack.EMPTY;
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(realTool);
             if (toolHead.isEmpty() || powerUnit == null) return ItemStack.EMPTY;
-            GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix());
+
+            GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix().getHolder());
             ItemStack newTool = GTMaterialItems.TOOL_ITEMS.get(toolHead.material(), toolArray[tool.getElectricTier()])
                     .get().get(powerUnit.getCharge(), powerUnit.getMaxCharge());
             if (newTool == null) return ItemStack.EMPTY;

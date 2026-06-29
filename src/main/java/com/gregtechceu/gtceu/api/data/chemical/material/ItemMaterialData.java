@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
@@ -90,9 +91,9 @@ public class ItemMaterialData {
      * @see #registerMaterialEntry(Supplier, MaterialEntry)
      */
     public static void registerMaterialEntries(@NotNull Collection<Supplier<? extends ItemLike>> items,
-                                               @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+                                               @NotNull TagPrefix tagPrefix, @NotNull Holder<Material> material) {
         if (!items.isEmpty()) {
-            MaterialEntry entry = new MaterialEntry(tagPrefix, material);
+            MaterialEntry entry = new MaterialEntry(tagPrefix, material.get());
             for (var supplier : items) {
                 registerMaterialEntry(supplier, entry);
             }

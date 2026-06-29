@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
 
+import net.minecraft.Util;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -49,13 +50,11 @@ public class GTMaterialItems {
 
     // Reference Maps
     public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
-    public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
-
-    static {
-        purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
-        purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
-        purifyMap.put(TagPrefix.dustPure, TagPrefix.dust);
-    }
+    public static final Map<TagPrefix, TagPrefix> purifyMap = Util.make(new HashMap<>(), purifyMap -> {
+        purifyMap.put(TagPrefix.crushed.get(), TagPrefix.crushedPurified.get());
+        purifyMap.put(TagPrefix.dustImpure.get(), TagPrefix.dust.get());
+        purifyMap.put(TagPrefix.dustPure.get(), TagPrefix.dust.get());
+    });
 
     // Reference Tables
     public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
