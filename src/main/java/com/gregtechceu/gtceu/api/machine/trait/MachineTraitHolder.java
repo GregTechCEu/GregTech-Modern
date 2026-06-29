@@ -19,6 +19,9 @@ import java.util.*;
 public final class MachineTraitHolder {
 
     private final MetaMachine machine;
+
+    private boolean allowTraitAttachment = true;
+
     private final List<MachineTrait> traits;
     private final Map<MachineTraitType<?>, List<MachineTrait>> traitsByType;
 
@@ -57,6 +60,8 @@ public final class MachineTraitHolder {
      * @return The attached trait
      */
     public <T extends MachineTrait> T attachTrait(T trait, int callbackPriority) {
+        if (!allowTraitAttachment) throw new IllegalStateException("Cannot add traits to machine after machine has been loaded.");
+
         trait.setTraitPriority(callbackPriority);
 
         var traitType = trait.getTraitType();
@@ -136,6 +141,10 @@ public final class MachineTraitHolder {
         List<T> traitList = (List<T>) traitsByType.get(type);
         if (traitList == null) return List.of();
         return Collections.unmodifiableList(traitList);
+    }
+
+    public void machineLoaded() {
+        allowTraitAttachment = false;
     }
 
     private static class MachineTraitHolderTransformer implements ValueTransformer<MachineTraitHolder> {

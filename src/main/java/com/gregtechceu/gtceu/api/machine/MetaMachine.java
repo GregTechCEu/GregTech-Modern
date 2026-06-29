@@ -175,6 +175,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     @MustBeInvokedByOverriders
     public void onLoad() {
+        getTraitHolder().machineLoaded();
         getAllTraits().forEach(MachineTrait::onMachineLoad);
 
         if (isOldMachineData) {
