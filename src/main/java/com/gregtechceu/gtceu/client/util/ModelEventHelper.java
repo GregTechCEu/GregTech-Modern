@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.gregtechceu.gtceu.core.mixins.ReloadableResourceManagerAccessor;
+import com.gregtechceu.gtceu.core.mixins.client.ModelBakeryAccessor;
 import com.gregtechceu.gtceu.integration.modernfix.GTModernFixIntegration;
 
 import net.minecraft.client.Minecraft;
@@ -114,12 +115,15 @@ public class ModelEventHelper {
 
         for (var entry : event.getModels().entrySet()) {
             BakedModel model = entry.getValue();
+            ModelResourceLocation mrl = entry.getKey();
+            ModelBakery modelBakery = event.getModelBakery();
 
             // process all model replacers
             for (var listener : EVENT_LISTENERS) {
                 if (!(listener.listener instanceof AssetEventListener.BakedModelReplacement modelReplacement)) continue;
-                model = modelReplacement.modifyBakedModel(entry.getKey(), model,
-                        event.getModelBakery().getModel(entry.getKey().id()), event.getModelBakery());
+
+                UnbakedModel originalModel = ((ModelBakeryAccessor) modelBakery).getTopLevelModels().get(mrl);
+                model = modelReplacement.modifyBakedModel(mrl, model, originalModel, modelBakery);
             }
             entry.setValue(model);
         }
