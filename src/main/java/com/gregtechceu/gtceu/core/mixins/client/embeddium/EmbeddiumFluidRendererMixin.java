@@ -10,6 +10,7 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.embeddedt.embeddium.impl.model.quad.properties.ModelQuadFacing;
 import org.embeddedt.embeddium.impl.render.chunk.compile.pipeline.FluidRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -54,6 +55,22 @@ public class EmbeddiumFluidRendererMixin {
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "down"),
     }, expect = 10)
     private Direction gtceu$invertFluidCulling(Direction original) {
+        if (gtceu$drawingUpsideDownFluid) {
+            return original.getOpposite();
+        } else {
+            return original;
+        }
+    }
+
+    @Definition(id = "NEG_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;NEG_Y")
+    @Definition(id = "POS_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;POS_Y")
+    @Expression(value = "POS_Y", id = "pos_y")
+    @Expression(value = "NEG_Y", id = "neg_y")
+    @ModifyExpressionValue(method = "*", at = {
+            @At(value = "MIXINEXTRAS:EXPRESSION", id = "pos_y"),
+            @At(value = "MIXINEXTRAS:EXPRESSION", id = "neg_y"),
+    }, expect = 3)
+    private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
         } else {

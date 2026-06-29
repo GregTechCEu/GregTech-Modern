@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins.client.sodium;
 
 import com.gregtechceu.gtceu.client.renderer.fluid.InvertedFluidRenderer;
 
+import net.caffeinemc.mods.sodium.client.model.quad.properties.ModelQuadFacing;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.DefaultFluidRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -56,7 +57,23 @@ public class SodiumDefaultFluidRendererMixin {
             @At(value = "MIXINEXTRAS:EXPRESSION", id = "down"),
     }, expect = 9)
     private Direction gtceu$invertFluidCulling(Direction original) {
-        if (original.getAxis() == Direction.Axis.Y && gtceu$drawingUpsideDownFluid) {
+        if (gtceu$drawingUpsideDownFluid) {
+            return original.getOpposite();
+        } else {
+            return original;
+        }
+    }
+
+    @Definition(id = "POS_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y")
+    @Definition(id = "NEG_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y")
+    @Expression(value = "POS_Y", id = "pos_y")
+    @Expression(value = "NEG_Y", id = "neg_y")
+    @ModifyExpressionValue(method = "*", at = {
+            @At(value = "MIXINEXTRAS:EXPRESSION", id = "pos_y"),
+            @At(value = "MIXINEXTRAS:EXPRESSION", id = "neg_y"),
+    }, expect = 5)
+    private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
+        if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
         } else {
             return original;
