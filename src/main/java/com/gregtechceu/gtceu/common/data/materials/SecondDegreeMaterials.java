@@ -294,10 +294,8 @@ public class SecondDegreeMaterials {
                 .ingotSmeltInto(Steel)
                 .arcSmeltInto(Steel)
                 .macerateInto(Steel)
-                .onRegister(mat -> {
-                    Steel.get().getProperty(PropertyKey.INGOT).setMagneticMaterial(mat);
-                })
                 .register();
+        Steel.get().getProperty(PropertyKey.INGOT).setMagneticMaterial(SteelMagnetic);
 
         VanadiumSteel = REGISTRATE.material("vanadium_steel")
                 .ingot(3)
