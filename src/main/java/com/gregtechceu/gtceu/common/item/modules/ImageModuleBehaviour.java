@@ -56,7 +56,7 @@ public class ImageModuleBehaviour implements IMonitorModuleItem, IAddInformation
     }
 
     public String getUrl(ItemStack stack) {
-        return stack.get(GTDataComponents.IMAGE_MODULE_URL);
+        return stack.getOrDefault(GTDataComponents.IMAGE_MODULE_URL, "");
     }
 
     public void setUrl(ItemStack stack, String url) {

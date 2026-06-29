@@ -274,6 +274,8 @@ public class CommonProxy {
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
             // --spacer--
+        } else if (event.getRegistryKey() == Registries.FLUID) {
+            GTFluids.registerMaterialFluids();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
         }

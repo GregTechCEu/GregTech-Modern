@@ -37,16 +37,6 @@ public class GTFluids {
         handleNonMaterialFluids(GTMaterials.Lava, Fluids.LAVA);
         handleNonMaterialFluids(GTMaterials.Milk, NeoForgeMod.MILK);
         NeoForgeMod.enableMilkFluid();
-
-        // register fluids for materials
-        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
-        for (var material : GTRegistries.MATERIALS) {
-            var fluidProperty = material.getProperty(PropertyKey.FLUID);
-
-            if (fluidProperty != null) {
-                fluidProperty.registerFluids(material, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
-            }
-        }
     }
 
     public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Fluid fluid) {
@@ -56,5 +46,16 @@ public class GTFluids {
     public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Supplier<Fluid> fluid) {
         var property = material.getProperty(PropertyKey.FLUID);
         property.getStorage().store(FluidStorageKeys.LIQUID, fluid, null);
+    }
+
+    public static void registerMaterialFluids() {
+        REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_FLUID);
+        for (var material : GTRegistries.MATERIALS) {
+            var fluidProperty = material.getProperty(PropertyKey.FLUID);
+
+            if (fluidProperty != null) {
+                fluidProperty.registerFluids(material, GTRegistrate.createIgnoringListenerErrors(material.getModid()));
+            }
+        }
     }
 }
