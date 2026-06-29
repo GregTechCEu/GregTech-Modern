@@ -110,6 +110,13 @@ enumExtensions = "META-INF/enum_extensions.json"
     ordering = "NONE"
     side = "BOTH"
 
+[[dependencies.${mod_id}]]
+    modId = "sable"
+    type = "optional"
+    versionRange = "[${sable_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
 
 #[features.${mod_id}]
 #openGLVersion = "[3.2,)"

@@ -33,6 +33,9 @@ dependencies {
     compileOnly(variantOf(forge.create) { classifier("slim") })
     compileOnly(forge.flywheel.api)
 
+    // Sable (Create Aeronautics physics sub-levels)
+    compileOnly(forge.sable)
+
     // KJS
     compileOnly(forge.bundles.kjs)
 
