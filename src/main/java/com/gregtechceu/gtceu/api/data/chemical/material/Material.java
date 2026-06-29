@@ -55,7 +55,7 @@ import java.util.function.UnaryOperator;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
-public class Material implements Comparable<Material> {
+public sealed class Material implements Comparable<Material> permits MarkerMaterial {
 
     /**
      * Basic Info of this Material.
