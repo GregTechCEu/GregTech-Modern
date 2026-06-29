@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Holder;
-import org.jetbrains.annotations.NotNull;
 
 public class IngotProperty implements IMaterialProperty {
 
@@ -15,7 +14,6 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
     private Holder<Material> smeltingInto = GTMaterials.NULL;
 
     /**
@@ -23,7 +21,6 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
     private Holder<Material> arcSmeltingInto = GTMaterials.NULL;
 
     /**
@@ -33,7 +30,6 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
     private Holder<Material> macerateInto = GTMaterials.NULL;
 
     /**
@@ -41,7 +37,6 @@ public class IngotProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
     private Holder<Material> magneticMaterial = GTMaterials.NULL;
 
     @Override
