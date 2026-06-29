@@ -59,7 +59,7 @@ public class GTArmorItem extends ArmorItem {
     }
 
     @Override
-    public Component getName(ItemStack stack) {
+    public @NotNull Component getName(@NotNull ItemStack stack) {
         return this.getDescription();
     }
 

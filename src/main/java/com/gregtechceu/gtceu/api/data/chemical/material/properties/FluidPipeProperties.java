@@ -102,7 +102,7 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     }
 
     @Override
-    public boolean canContain(@NotNull FluidState state) {
+    public boolean canContain(FluidState state) {
         return switch (state) {
             case LIQUID -> true;
             case GAS -> gasProof;
@@ -115,17 +115,17 @@ public class FluidPipeProperties implements IMaterialProperty, IPropertyFluidFil
     }
 
     @Override
-    public boolean canContain(@NotNull FluidAttribute attribute) {
+    public boolean canContain(FluidAttribute attribute) {
         return containmentPredicate.getBoolean(attribute);
     }
 
     @Override
-    public void setCanContain(@NotNull FluidAttribute attribute, boolean canContain) {
+    public void setCanContain(FluidAttribute attribute, boolean canContain) {
         containmentPredicate.put(attribute, canContain);
     }
 
     @Override
-    public @NotNull @UnmodifiableView Collection<@NotNull FluidAttribute> getContainedAttributes() {
+    public @UnmodifiableView Collection<FluidAttribute> getContainedAttributes() {
         return containmentPredicate.keySet();
     }
 }

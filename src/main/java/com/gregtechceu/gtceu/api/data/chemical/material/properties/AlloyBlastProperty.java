@@ -4,13 +4,12 @@ import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.AlloyBlastRecipeProduce
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 public class AlloyBlastProperty implements IMaterialProperty {
 
     @Getter
     @Setter
-    private @NotNull AlloyBlastRecipeProducer recipeProducer = AlloyBlastRecipeProducer.DEFAULT_PRODUCER;
+    private AlloyBlastRecipeProducer recipeProducer = AlloyBlastRecipeProducer.DEFAULT_PRODUCER;
 
     public AlloyBlastProperty() {}
 

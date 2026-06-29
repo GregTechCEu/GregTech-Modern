@@ -15,8 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.function.Supplier;
 
@@ -26,25 +26,25 @@ public class FluidProperty implements IMaterialProperty, FluidStorage {
     private final FluidStorageImpl storage = new FluidStorageImpl();
     @Getter
     @Setter
-    private FluidStorageKey primaryKey = null;
+    private @UnknownNullability FluidStorageKey primaryKey = null;
     @Setter
     private @Nullable Fluid solidifyingFluid = null;
 
-    public FluidProperty(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+    public FluidProperty(FluidStorageKey key, FluidBuilder builder) {
         enqueueRegistration(key, builder);
     }
 
-    public @NotNull FluidStorage getStorage() {
+    public FluidStorage getStorage() {
         return this;
     }
 
     @ApiStatus.Internal
-    public void registerFluids(@NotNull Material material, @NotNull GTRegistrate registrate) {
+    public void registerFluids(Material material, GTRegistrate registrate) {
         this.storage.registerFluids(material, registrate);
     }
 
     @Override
-    public void enqueueRegistration(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+    public void enqueueRegistration(FluidStorageKey key, FluidBuilder builder) {
         storage.enqueueRegistration(key, builder);
         if (primaryKey == null) {
             primaryKey = key;
@@ -52,8 +52,7 @@ public class FluidProperty implements IMaterialProperty, FluidStorage {
     }
 
     @Override
-    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid,
-                      @Nullable FluidBuilder builder) {
+    public void store(FluidStorageKey key, Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
         storage.store(key, fluid, builder);
         if (primaryKey == null) {
             primaryKey = key;
@@ -61,17 +60,17 @@ public class FluidProperty implements IMaterialProperty, FluidStorage {
     }
 
     @Override
-    public @Nullable Fluid get(@NotNull FluidStorageKey key) {
+    public @Nullable Fluid get(FluidStorageKey key) {
         return storage.get(key);
     }
 
     @Override
-    public @Nullable FluidEntry getEntry(@NotNull FluidStorageKey key) {
+    public @Nullable FluidEntry getEntry(FluidStorageKey key) {
         return storage.getEntry(key);
     }
 
     @Override
-    public @Nullable FluidBuilder getQueuedBuilder(@NotNull FluidStorageKey key) {
+    public @Nullable FluidBuilder getQueuedBuilder(FluidStorageKey key) {
         return storage.getQueuedBuilder(key);
     }
 
@@ -89,7 +88,7 @@ public class FluidProperty implements IMaterialProperty, FluidStorage {
      * @param amount the size of the returned FluidStack.
      * @return a FluidStack of the Fluid which solidifies into the material.
      */
-    public @NotNull FluidStack solidifiesFrom(int amount) {
+    public FluidStack solidifiesFrom(int amount) {
         Fluid fluid = solidifiesFrom();
         if (fluid == null) {
             return FluidStack.EMPTY;

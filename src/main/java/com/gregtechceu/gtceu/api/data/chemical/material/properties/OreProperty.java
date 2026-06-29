@@ -9,7 +9,6 @@ import net.minecraft.util.Mth;
 import it.unimi.dsi.fastutil.objects.ObjectIntPair;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +60,6 @@ public class OreProperty implements IMaterialProperty {
      */
     @Getter
     @Setter
-    @NotNull
     private Holder<Material> directSmeltResult = GTMaterials.NULL;
 
     /**
@@ -71,7 +69,6 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Setter
-    @NotNull
     private Holder<Material> washedIn = GTMaterials.NULL;
 
     /**

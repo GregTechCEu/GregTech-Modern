@@ -19,7 +19,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import com.google.common.base.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.UnknownNullability;
@@ -28,7 +27,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-// TODO document
 public class ArmorProperty implements IMaterialProperty {
 
     @Setter
@@ -154,7 +152,7 @@ public class ArmorProperty implements IMaterialProperty {
         /**
          * Set an Ingredient to use as the repair ingredient when repairing armors made of this Material in an Anvil.
          */
-        public ArmorProperty.Builder repairIngredient(@Nullable Supplier<@NotNull Ingredient> repairIngredient) {
+        public ArmorProperty.Builder repairIngredient(@Nullable Supplier<Ingredient> repairIngredient) {
             if (repairIngredient == null) {
                 armorProperty.repairIngredient = null;
                 armorProperty.noRepair = true;
@@ -198,7 +196,7 @@ public class ArmorProperty implements IMaterialProperty {
         /**
          * Set a custom worn armor texture for armor made of this Material.
          */
-        public ArmorProperty.Builder customTexture(ArmorProperty.@NotNull CustomTextureGetter textureGetter) {
+        public ArmorProperty.Builder customTexture(ArmorProperty.CustomTextureGetter textureGetter) {
             armorProperty.customTextureGetter = textureGetter;
             return this;
         }
@@ -211,6 +209,7 @@ public class ArmorProperty implements IMaterialProperty {
     @FunctionalInterface
     public interface CustomTextureGetter {
 
+        @Nullable
         ResourceLocation getCustomTexture(ItemStack stack, Entity entity, EquipmentSlot slot, boolean overlay);
     }
 
@@ -225,12 +224,12 @@ public class ArmorProperty implements IMaterialProperty {
                 });
 
         @Override
-        public int getDurabilityForType(ArmorItem.@NotNull Type type) {
+        public int getDurabilityForType(ArmorItem.Type type) {
             return HEALTH_FUNCTION_FOR_TYPE.get(type) * ArmorProperty.this.durabilityMultiplier;
         }
 
         @Override
-        public int getDefenseForType(ArmorItem.@NotNull Type type) {
+        public int getDefenseForType(ArmorItem.Type type) {
             return ArmorProperty.this.protectionValues.get(type);
         }
 
@@ -240,19 +239,19 @@ public class ArmorProperty implements IMaterialProperty {
         }
 
         @Override
-        public @NotNull SoundEvent getEquipSound() {
+        public SoundEvent getEquipSound() {
             return ArmorProperty.this.sound.get();
         }
 
         @Override
-        public @NotNull Ingredient getRepairIngredient() {
+        public Ingredient getRepairIngredient() {
             return ArmorProperty.this.repairIngredient != null ?
                     ArmorProperty.this.repairIngredient.get() :
                     Ingredient.EMPTY;
         }
 
         @Override
-        public @NotNull String getName() {
+        public String getName() {
             return ArmorProperty.this.name;
         }
 

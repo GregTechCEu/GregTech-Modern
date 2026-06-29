@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 public class RotorProperty implements IMaterialProperty {
 
@@ -64,7 +63,7 @@ public class RotorProperty implements IMaterialProperty {
     }
 
     @Override
-    public void verifyProperty(@NotNull MaterialProperties properties) {
+    public void verifyProperty(MaterialProperties properties) {
         properties.ensureSet(PropertyKey.INGOT, true);
     }
 }
