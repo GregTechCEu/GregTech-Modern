@@ -10,8 +10,9 @@
     "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
     "client": [],
     "mixins": [
-        "sable.MachineUIFactorySubLevelRangeMixin",
-        "sable.CoverUIFactorySubLevelRangeMixin"
+        "sable.PipeBlockSubLevelMixin",
+        "sable.MetaMachineBlockSubLevelMixin",
+        "sable.SubLevelAssemblyHelperRotationCaptureMixin"
     ],
     "injectors": {
         "defaultRequire": 1,

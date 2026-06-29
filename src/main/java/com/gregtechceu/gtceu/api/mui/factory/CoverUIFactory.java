@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
+import com.gregtechceu.gtceu.integration.sable.GTSableIntegration;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -67,7 +68,9 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
 
     @Override
     public boolean canInteractWith(Player player, SidedPosGuiData guiData) {
-        return guiData.getSquaredDistance(player) <= 8 * 8;
+        return guiData.getSquaredDistance(player) <= 8 * 8 ||
+                (GTCEu.Mods.isSableLoaded() &&
+                        GTSableIntegration.isWithinSubLevel(guiData.getLevel(), guiData.getBlockPos()));
     }
 
     @Override
