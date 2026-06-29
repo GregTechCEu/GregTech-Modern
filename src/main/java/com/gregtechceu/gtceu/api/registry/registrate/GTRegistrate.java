@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -299,26 +298,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Tag prefixes
 
-    // TODO make a builder for this
-    public HolderRegistryEntry<TagPrefix> tagPrefix(String name) {
-        return tagPrefix(name, UnaryOperator.identity());
+    public TagPrefixBuilder<GTRegistrate> tagPrefix(String name) {
+        return tagPrefix(this, name);
     }
 
-    // TODO make a builder for this
-    public HolderRegistryEntry<TagPrefix> tagPrefix(String name, UnaryOperator<TagPrefix> configurator) {
-        return this.simple(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> configurator.apply(new TagPrefix(makeResourceLocation(name))));
+    public <P> TagPrefixBuilder<P> tagPrefix(P parent, String name) {
+        return entry(name, callback -> new TagPrefixBuilder<>(this, parent, name, callback));
     }
 
-    public HolderRegistryEntry<TagPrefix> oreTagPrefix(String name, TagKey<Block> miningToolTag) {
-        return tagPrefix(name,
-                tagPrefix -> tagPrefix.defaultTagPath("ores/%s")
-                        .prefixOnlyTagPath("ores_in_ground/%s")
-                        .unformattedTagPath("ores")
-                        .materialIconType(MaterialIconType.ore)
-                        .miningToolTag(miningToolTag)
-                        .unificationEnabled(true)
-                        .blockConstructor(OreBlock::new)
-                        .generationCondition(hasOreProperty));
+    public TagPrefixBuilder<GTRegistrate> oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return tagPrefix(name)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty);
     }
 
     // Materials

@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.holder.HolderRegistryEntry;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.Holder;
@@ -201,16 +201,16 @@ public class GTMaterials {
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
             if (oreType.material() != null) {
-                prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), dustMaterialAmount));
+                prefix.addSecondaryMaterial(new LazyMaterialStack(oreType.material(), dustMaterialAmount));
             }
         }
 
-        crushed.get().addSecondaryMaterial(new MaterialStack(Stone, dustMaterialAmount));
+        crushed.get().addSecondaryMaterial(new LazyMaterialStack(Stone, dustMaterialAmount));
 
-        toolHeadDrill.get().addSecondaryMaterial(new MaterialStack(Steel, plateMaterialAmount * 4));
-        toolHeadChainsaw.get().addSecondaryMaterial(new MaterialStack(Steel, plateMaterialAmount * 4 + ringMaterialAmount * 2));
-        toolHeadWrench.get().addSecondaryMaterial(new MaterialStack(Steel, ringMaterialAmount + screwMaterialAmount * 2));
-        toolHeadWireCutter.get().addSecondaryMaterial(new MaterialStack(Steel, ringMaterialAmount + screwMaterialAmount * 2));
+        toolHeadDrill.get().addSecondaryMaterial(new LazyMaterialStack(Steel, plateMaterialAmount * 4));
+        toolHeadChainsaw.get().addSecondaryMaterial(new LazyMaterialStack(Steel, plateMaterialAmount * 4 + ringMaterialAmount * 2));
+        toolHeadWrench.get().addSecondaryMaterial(new LazyMaterialStack(Steel, ringMaterialAmount + screwMaterialAmount * 2));
+        toolHeadWireCutter.get().addSecondaryMaterial(new LazyMaterialStack(Steel, ringMaterialAmount + screwMaterialAmount * 2));
 
         pipeTinyFluid.get().setIgnored(Wood);
         pipeHugeFluid.get().setIgnored(Wood);
@@ -221,16 +221,16 @@ public class GTMaterials {
         pipeQuadrupleFluid.get().setIgnored(TreatedWood);
         pipeNonupleFluid.get().setIgnored(TreatedWood);
 
-        pipeSmallRestrictive.get().addSecondaryMaterial(new MaterialStack(Iron, ringMaterialAmount * 2));
-        pipeNormalRestrictive.get().addSecondaryMaterial(new MaterialStack(Iron, ringMaterialAmount * 2));
-        pipeLargeRestrictive.get().addSecondaryMaterial(new MaterialStack(Iron, ringMaterialAmount * 2));
-        pipeHugeRestrictive.get().addSecondaryMaterial(new MaterialStack(Iron, ringMaterialAmount * 2));
+        pipeSmallRestrictive.get().addSecondaryMaterial(new LazyMaterialStack(Iron, ringMaterialAmount * 2));
+        pipeNormalRestrictive.get().addSecondaryMaterial(new LazyMaterialStack(Iron, ringMaterialAmount * 2));
+        pipeLargeRestrictive.get().addSecondaryMaterial(new LazyMaterialStack(Iron, ringMaterialAmount * 2));
+        pipeHugeRestrictive.get().addSecondaryMaterial(new LazyMaterialStack(Iron, ringMaterialAmount * 2));
 
-        cableGtSingle.get().addSecondaryMaterial(new MaterialStack(Rubber, plateMaterialAmount));
-        cableGtDouble.get().addSecondaryMaterial(new MaterialStack(Rubber, plateMaterialAmount));
-        cableGtQuadruple.get().addSecondaryMaterial(new MaterialStack(Rubber, plateMaterialAmount * 2));
-        cableGtOctal.get().addSecondaryMaterial(new MaterialStack(Rubber, plateMaterialAmount * 3));
-        cableGtHex.get().addSecondaryMaterial(new MaterialStack(Rubber, plateMaterialAmount * 5));
+        cableGtSingle.get().addSecondaryMaterial(new LazyMaterialStack(Rubber, plateMaterialAmount));
+        cableGtDouble.get().addSecondaryMaterial(new LazyMaterialStack(Rubber, plateMaterialAmount));
+        cableGtQuadruple.get().addSecondaryMaterial(new LazyMaterialStack(Rubber, plateMaterialAmount * 2));
+        cableGtOctal.get().addSecondaryMaterial(new LazyMaterialStack(Rubber, plateMaterialAmount * 3));
+        cableGtHex.get().addSecondaryMaterial(new LazyMaterialStack(Rubber, plateMaterialAmount * 5));
 
         plateDouble.get().setIgnored(BorosilicateGlass);
         plateDouble.get().setIgnored(Wood);

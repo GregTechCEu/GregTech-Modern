@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -22,6 +21,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
@@ -81,10 +82,10 @@ public class MixinHelpers {
 
                 if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
                     OreProperty ore = material.getProperty(PropertyKey.ORE);
-                    Material washedIn = ore.getWashedIn().first();
-                    if (washedIn.isNull()) return;
+                    Holder<Material> washedIn = ore.getWashedIn().first();
+                    if (washedIn.get().isNull()) return;
                     ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
-                    ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());
+                    ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.get().getName());
 
                     tagMap.computeIfAbsent(generalTag, path -> new ArrayList<>()).addAll(entries);
                     tagMap.computeIfAbsent(specificTag, path -> new ArrayList<>()).addAll(entries);
@@ -149,13 +150,13 @@ public class MixinHelpers {
                     tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(entries);
                 }
                 // Add tool tags
-                if (!entry.isIgnored() && !entry.tagPrefix().miningToolTag().isEmpty()) {
+                if (!entry.isIgnored() && !entry.tagPrefix().miningToolTags().isEmpty()) {
                     tagMap.computeIfAbsent(CustomTags.TOOL_TIERS[material.getBlockHarvestLevel()].location(),
                             path -> new ArrayList<>()).addAll(entries);
                     if (material.hasProperty(PropertyKey.WOOD)) {
                         // Wood blocks with this tag always allow a Wrench, but only allow an Axe if the config is
                         // not set. Pickaxe is never allowed (special case)
-                        if (entry.tagPrefix().miningToolTag()
+                        if (entry.tagPrefix().miningToolTags()
                                 .contains(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)) {
                             tagMap.computeIfAbsent(CustomTags.MINEABLE_WITH_WRENCH.location(),
                                     path -> new ArrayList<>()).addAll(entries);
@@ -170,7 +171,7 @@ public class MixinHelpers {
                                     .addAll(entries);
                         }
                     } else {
-                        for (var tag : entry.tagPrefix().miningToolTag()) {
+                        for (var tag : entry.tagPrefix().miningToolTags()) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).addAll(entries);
                         }
                     }
@@ -293,8 +294,8 @@ public class MixinHelpers {
 
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
-                    for (MaterialStack secondaryMaterial : prefix.secondaryMaterials()) {
-                        if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
+                    for (LazyMaterialStack secondaryMaterial : prefix.secondaryMaterials()) {
+                        if (secondaryMaterial.material().get().hasProperty(PropertyKey.DUST)) {
                             ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
                             pool.add(LootItem.lootTableItem(dustStack.getItem())
                                     .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)

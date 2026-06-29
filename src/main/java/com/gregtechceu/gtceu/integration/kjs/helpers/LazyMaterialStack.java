@@ -4,19 +4,38 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 import net.minecraft.core.Holder;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-public record MaterialStackWrapper(Supplier<Holder<Material>> material, long amount) {
+public record LazyMaterialStack(Supplier<Material> material, long amount) {
 
-    public static MaterialStackWrapper EMPTY = new MaterialStackWrapper(() -> GTMaterials.NULL, 0);
+    public static LazyMaterialStack EMPTY = new LazyMaterialStack(GTMaterials.NULL, 0);
 
-    private static final Map<String, MaterialStackWrapper> PARSE_CACHE = new WeakHashMap<>();
+    private static final Map<String, LazyMaterialStack> PARSE_CACHE = new WeakHashMap<>();
 
-    public static MaterialStackWrapper fromString(CharSequence str) {
+    public LazyMaterialStack {
+        material = GTMemoizer.memoize(material);
+    }
+
+    public LazyMaterialStack copy() {
+        if (isEmpty()) return EMPTY;
+        return new LazyMaterialStack(material, amount);
+    }
+
+    public boolean isEmpty() {
+        return this.amount < 1 || this.material == null;
+    }
+
+    public MaterialStack resolve() {
+        if (isEmpty()) return MaterialStack.EMPTY;
+        return new MaterialStack(this.material.get(), this.amount);
+    }
+
+    public static LazyMaterialStack fromString(CharSequence str) {
         String trimmed = str.toString().trim();
         String copy = trimmed;
 
@@ -35,23 +54,9 @@ public record MaterialStackWrapper(Supplier<Holder<Material>> material, long amo
         }
 
         final String copyFinal = copy;
-        Supplier<Holder<Material>> mat = () -> GTMaterials.get(GTCEu.id(copyFinal));
-        cached = new MaterialStackWrapper(mat, count);
+        Holder<Material> mat = GTMaterials.get(GTCEu.id(copyFinal));
+        cached = new LazyMaterialStack(mat, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached.copy();
-    }
-
-    public MaterialStackWrapper copy() {
-        if (isEmpty()) return EMPTY;
-        return new MaterialStackWrapper(material, amount);
-    }
-
-    public boolean isEmpty() {
-        return this.amount < 1 || this.material == null;
-    }
-
-    public MaterialStack toMatStack() {
-        if (isEmpty()) return MaterialStack.EMPTY;
-        return new MaterialStack(this.material.get(), this.amount);
     }
 }

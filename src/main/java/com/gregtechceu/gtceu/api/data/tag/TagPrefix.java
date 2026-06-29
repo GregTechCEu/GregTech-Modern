@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -20,6 +19,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.GTOreByProduct;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -70,117 +70,132 @@ public class TagPrefix {
         return this == NULL_PREFIX.get();
     }
 
-    public static final Holder<TagPrefix> NULL_PREFIX = REGISTRATE.tagPrefix("null");
+    public static final Holder<TagPrefix> NULL_PREFIX = REGISTRATE.tagPrefix("null").register();
 
     public static final Holder<TagPrefix> ore = REGISTRATE.oreTagPrefix("stone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("%s Ore")
             .registerOre(
-                    Blocks.STONE::defaultBlockState, () -> GTMaterials.Stone, BlockBehaviour.Properties.of()
+                    Blocks.STONE::defaultBlockState, () -> GTMaterials.Stone.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.STONE).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    new ResourceLocation("block/stone"), false, false, true);
+                    new ResourceLocation("block/stone"), false, false, true)
+            .register();
 
     public static final Holder<TagPrefix> oreGranite = REGISTRATE.oreTagPrefix("granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Granite %s Ore")
             .registerOre(
-                    Blocks.GRANITE::defaultBlockState, () -> GTMaterials.Granite, BlockBehaviour.Properties.of()
+                    Blocks.GRANITE::defaultBlockState, () -> GTMaterials.Granite.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    new ResourceLocation("block/granite"));
+                    new ResourceLocation("block/granite"))
+            .register();
 
     public static final Holder<TagPrefix> oreDiorite = REGISTRATE.oreTagPrefix("diorite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Diorite %s Ore")
             .registerOre(
-                    Blocks.DIORITE::defaultBlockState, () -> GTMaterials.Diorite, BlockBehaviour.Properties.of()
+                    Blocks.DIORITE::defaultBlockState, () -> GTMaterials.Diorite.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    new ResourceLocation("block/diorite"));
+                    new ResourceLocation("block/diorite"))
+            .register();
 
     public static final Holder<TagPrefix> oreAndesite = REGISTRATE.oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Andesite %s Ore")
             .registerOre(
-                    Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, BlockBehaviour.Properties.of()
+                    Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    new ResourceLocation("block/andesite"));
+                    new ResourceLocation("block/andesite"))
+            .register();
 
     public static final Holder<TagPrefix> oreRedGranite = REGISTRATE
             .oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Red Granite %s Ore")
-            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed,
+            .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
-                    GTCEu.id("block/red_granite"));
+                    GTCEu.id("block/red_granite"))
+            .register();
 
     public static final Holder<TagPrefix> oreMarble = REGISTRATE.oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Marble %s Ore")
             .registerOre(
-                    () -> GTBlocks.MARBLE.getDefaultState(), () -> GTMaterials.Marble, BlockBehaviour.Properties.of()
+                    () -> GTBlocks.MARBLE.getDefaultState(), () -> GTMaterials.Marble.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
-                    GTCEu.id("block/marble"));
+                    GTCEu.id("block/marble"))
+            .register();
 
     public static final Holder<TagPrefix> oreDeepslate = REGISTRATE.oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Deepslate %s Ore")
             .registerOre(
-                    Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of()
+                    Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F)
                             .sound(SoundType.DEEPSLATE),
-                    new ResourceLocation("block/deepslate"), false, false, true);
+                    new ResourceLocation("block/deepslate"), false, false, true)
+            .register();
 
     public static final Holder<TagPrefix> oreTuff = REGISTRATE.oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
             .registerOre(
-                    Blocks.TUFF::defaultBlockState, () -> GTMaterials.Tuff, BlockBehaviour.Properties.of()
+                    Blocks.TUFF::defaultBlockState, () -> GTMaterials.Tuff.get(), BlockBehaviour.Properties.of()
                             .mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F)
                             .sound(SoundType.TUFF),
-                    new ResourceLocation("block/tuff"));
+                    new ResourceLocation("block/tuff"))
+            .register();
 
     public static final Holder<TagPrefix> oreSand = REGISTRATE.oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Sand %s Ore")
-            .registerOre(Blocks.SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide,
+            .registerOre(Blocks.SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
-                    new ResourceLocation("block/sand"), false, true, false);
+                    new ResourceLocation("block/sand"), false, true, false)
+            .register();
 
     public static final Holder<TagPrefix> oreRedSand = REGISTRATE.oreTagPrefix("red_sand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Red Sand %s Ore")
-            .registerOre(Blocks.RED_SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide,
+            .registerOre(Blocks.RED_SAND::defaultBlockState, () -> GTMaterials.SiliconDioxide.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.5F).sound(SoundType.SAND),
-                    new ResourceLocation("block/red_sand"), false, true, false);
+                    new ResourceLocation("block/red_sand"), false, true, false)
+            .register();
 
     public static final Holder<TagPrefix> oreGravel = REGISTRATE.oreTagPrefix("gravel", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Gravel %s Ore")
-            .registerOre(Blocks.GRAVEL::defaultBlockState, () -> GTMaterials.Flint,
+            .registerOre(Blocks.GRAVEL::defaultBlockState, () -> GTMaterials.Flint.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.STONE).instrument(NoteBlockInstrument.SNARE)
                             .strength(0.6F).sound(SoundType.GRAVEL),
-                    new ResourceLocation("block/gravel"), false, true, false);
+                    new ResourceLocation("block/gravel"), false, true, false)
+            .register();
 
     public static final Holder<TagPrefix> oreBasalt = REGISTRATE.oreTagPrefix("basalt", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Basalt %s Ore")
-            .registerOre(Blocks.BASALT::defaultBlockState, () -> GTMaterials.Basalt,
+            .registerOre(Blocks.BASALT::defaultBlockState, () -> GTMaterials.Basalt.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(2.5F, 4.2F)
                             .sound(SoundType.BASALT),
-                    new ResourceLocation("block/basalt"), true);
+                    new ResourceLocation("block/basalt"), true)
+            .register();
 
     public static final Holder<TagPrefix> oreNetherrack = REGISTRATE.oreTagPrefix("netherrack", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Nether %s Ore")
-            .registerOre(Blocks.NETHERRACK::defaultBlockState, () -> GTMaterials.Netherrack,
+            .registerOre(Blocks.NETHERRACK::defaultBlockState, () -> GTMaterials.Netherrack.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
-                    new ResourceLocation("block/netherrack"), true, false, true);
+                    new ResourceLocation("block/netherrack"), true, false, true)
+            .register();
 
     public static final Holder<TagPrefix> oreBlackstone = REGISTRATE.oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Blackstone %s Ore")
-            .registerOre(Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone,
+            .registerOre(Blocks.BLACKSTONE::defaultBlockState, () -> GTMaterials.Blackstone.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK)
                             .instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops()
                             .strength(3.0F, 3.0F),
-                    new ResourceLocation("block/blackstone"), true, false, false);
+                    new ResourceLocation("block/blackstone"), true, false, false)
+            .register();
 
     public static final Holder<TagPrefix> oreEndstone = REGISTRATE.oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("End %s Ore")
-            .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone,
+            .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone.get(),
                     BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(4.5F, 9.0F),
-                    new ResourceLocation("block/end_stone"), true, false, true);
+                    new ResourceLocation("block/end_stone"), true, false, true)
+            .register();
 
     public static final Holder<TagPrefix> rawOre = REGISTRATE.tagPrefix("raw")
             .idPattern("raw_%s")
@@ -190,7 +205,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.rawOre)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasOreProperty);
+            .generationCondition(hasOreProperty)
+            .register();
 
     public static final Holder<TagPrefix> rawOreBlock = REGISTRATE.tagPrefix("raw_ore_block")
             .idPattern("raw_%s_block")
@@ -201,7 +217,8 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generateBlock(true)
-            .generationCondition(hasOreProperty);
+            .generationCondition(hasOreProperty)
+            .register();
 
     public static final Holder<TagPrefix> crushedRefined = REGISTRATE.tagPrefix("refined_ore")
             .idPattern("refined_%s_ore")
@@ -211,7 +228,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.crushedRefined)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasOreProperty);
+            .generationCondition(hasOreProperty)
+            .register();
 
     public static final Holder<TagPrefix> crushedPurified = REGISTRATE.tagPrefix("purified_ore")
             .idPattern("purified_%s_ore")
@@ -222,7 +240,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.crushedPurified)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasOreProperty);
+            .generationCondition(hasOreProperty)
+            .register();
 
     public static final Holder<TagPrefix> crushed = REGISTRATE.tagPrefix("crushed_ore")
             .idPattern("crushed_%s_ore")
@@ -233,7 +252,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.crushed.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.crushed.tooltip.purify")))
+            .register();
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final Holder<TagPrefix> ingotHot = REGISTRATE.tagPrefix("hot_ingot")
@@ -246,7 +266,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(
-                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750));
+                    hasBlastProperty.and(mat -> mat.getProperty(PropertyKey.BLAST).getBlastTemperature() > 1750))
+            .register();
 
     // A regular Ingot.
     public static final Holder<TagPrefix> ingot = REGISTRATE.tagPrefix("ingot")
@@ -257,7 +278,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasIngotProperty);
+            .generationCondition(hasIngotProperty)
+            .register();
 
     // A regular Gem worth one Dust.
     public static final Holder<TagPrefix> gem = REGISTRATE.tagPrefix("gem")
@@ -269,7 +291,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasGemProperty);
+            .generationCondition(hasGemProperty)
+            .register();
 
     // A regular Gem worth one small Dust.
     public static final Holder<TagPrefix> gemChipped = REGISTRATE.tagPrefix("chipped_gem")
@@ -282,7 +305,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
+            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems))
+            .register();
 
     // A regular Gem worth two small Dusts.
     public static final Holder<TagPrefix> gemFlawed = REGISTRATE.tagPrefix("flawed_gem")
@@ -295,7 +319,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems));
+            .generationCondition(hasGemProperty.and(unused -> ConfigHolder.INSTANCE.recipes.generateLowQualityGems))
+            .register();
 
     // A regular Gem worth two Dusts.
     public static final Holder<TagPrefix> gemFlawless = REGISTRATE.tagPrefix("flawless_gem")
@@ -309,7 +334,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasGemProperty);
+            .generationCondition(hasGemProperty)
+            .register();
 
     // A regular Gem worth four Dusts.
     public static final Holder<TagPrefix> gemExquisite = REGISTRATE.tagPrefix("exquisite_gem")
@@ -323,7 +349,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasGemProperty);
+            .generationCondition(hasGemProperty)
+            .register();
 
     // 1/4th of a Dust.
     public static final Holder<TagPrefix> dustSmall = REGISTRATE.tagPrefix("small_dust")
@@ -335,7 +362,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.dustSmall)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasDustProperty);
+            .generationCondition(hasDustProperty)
+            .register();
 
     // 1/9th of a Dust.
     public static final Holder<TagPrefix> dustTiny = REGISTRATE.tagPrefix("tiny_dust")
@@ -347,7 +375,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.dustTiny)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(hasDustProperty);
+            .generationCondition(hasDustProperty)
+            .register();
 
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
     public static final Holder<TagPrefix> dustImpure = REGISTRATE.tagPrefix("impure_dust")
@@ -360,7 +389,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.dust.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.dust.tooltip.purify")))
+            .register();
 
     // Pure Dust worth of one Ingot or Gem.
     public static final Holder<TagPrefix> dustPure = REGISTRATE.tagPrefix("pure_dust")
@@ -373,7 +403,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .generateItem(true)
             .generationCondition(hasOreProperty)
-            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.dust.tooltip.purify")));
+            .tooltip((mat, tooltips) -> tooltips.add(Component.translatable("metaitem.dust.tooltip.purify")))
+            .register();
 
     public static final Holder<TagPrefix> dust = REGISTRATE.tagPrefix("dust")
             .defaultTagPath("dusts/%s")
@@ -383,7 +414,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasDustProperty);
+            .generationCondition(hasDustProperty)
+            .register();
 
     // A Nugget.
     public static final Holder<TagPrefix> nugget = REGISTRATE.tagPrefix("nugget")
@@ -394,7 +426,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(hasIngotProperty);
+            .generationCondition(hasIngotProperty)
+            .register();
 
     // 9 Plates combined in one Item.
     public static final Holder<TagPrefix> plateDense = REGISTRATE.tagPrefix("dense_plate")
@@ -408,7 +441,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_DENSE));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_DENSE))
+            .register();
 
     // 2 Plates combined in one Item
     public static final Holder<TagPrefix> plateDouble = REGISTRATE.tagPrefix("double_plate")
@@ -423,7 +457,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasIngotProperty
-                    .and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE) && !mat.hasFlag(MaterialFlags.NO_SMASHING)));
+                    .and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE) && !mat.hasFlag(MaterialFlags.NO_SMASHING)))
+            .register();
 
     // Regular Plate made of one Ingot/Dust.
     public static final Holder<TagPrefix> plate = REGISTRATE.tagPrefix("plate")
@@ -434,7 +469,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
+            .register();
 
     // Round made of 1 Nugget
     public static final Holder<TagPrefix> round = REGISTRATE.tagPrefix("round")
@@ -445,7 +481,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROUND));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROUND))
+            .register();
 
     // Foil made of 1/4 Ingot/Dust.
     public static final Holder<TagPrefix> foil = REGISTRATE.tagPrefix("foil")
@@ -456,7 +493,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FOIL));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FOIL))
+            .register();
 
     // Stick made of an Ingot.
     public static final Holder<TagPrefix> rodLong = REGISTRATE.tagPrefix("long_rod")
@@ -469,7 +507,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD))
+            .register();
 
     // Stick made of half an Ingot.
     public static final Holder<TagPrefix> rod = REGISTRATE.tagPrefix("rod")
@@ -481,7 +520,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROD));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROD))
+            .register();
 
     // consisting out of 1/8 Ingot or 1/4 Stick.
     public static final Holder<TagPrefix> bolt = REGISTRATE.tagPrefix("bolt")
@@ -492,7 +532,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_BOLT_SCREW));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_BOLT_SCREW))
+            .register();
 
     // consisting out of 1/9 Ingot.
     public static final Holder<TagPrefix> screw = REGISTRATE.tagPrefix("screw")
@@ -503,7 +544,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_BOLT_SCREW));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_BOLT_SCREW))
+            .register();
 
     // consisting out of 1/2 Stick.
     public static final Holder<TagPrefix> ring = REGISTRATE.tagPrefix("ring")
@@ -514,7 +556,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_RING));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_RING))
+            .register();
 
     // consisting out of 1 Fine Wire.
     public static final Holder<TagPrefix> springSmall = REGISTRATE.tagPrefix("small_spring")
@@ -528,7 +571,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(
-                    mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING_SMALL) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
+                    mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING_SMALL) && !mat.hasFlag(MaterialFlags.NO_SMASHING))
+            .register();
 
     // consisting out of 2 Sticks.
     public static final Holder<TagPrefix> spring = REGISTRATE.tagPrefix("spring")
@@ -540,7 +584,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(
-                    mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
+                    mat -> mat.hasFlag(MaterialFlags.GENERATE_SPRING) && !mat.hasFlag(MaterialFlags.NO_SMASHING))
+            .register();
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
     public static final Holder<TagPrefix> wireFine = REGISTRATE.tagPrefix("fine_wire")
@@ -553,7 +598,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FINE_WIRE));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_FINE_WIRE))
+            .register();
 
     // consisting out of 4 Plates, 1 Ring and 1 Screw.
     public static final Holder<TagPrefix> rotor = REGISTRATE.tagPrefix("rotor")
@@ -565,7 +611,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROTOR));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_ROTOR))
+            .register();
 
     // Consisting of 1 Plate.
     public static final Holder<TagPrefix> gearSmall = REGISTRATE.tagPrefix("small_gear")
@@ -578,7 +625,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_SMALL_GEAR));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_SMALL_GEAR))
+            .register();
 
     // Consisting of 4 Plates.
     public static final Holder<TagPrefix> gear = REGISTRATE.tagPrefix("gear")
@@ -590,7 +638,8 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_GEAR));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_GEAR))
+            .register();
 
     // 3/4 of a Plate or Gem used to shape a Lens. Normally only used on Transparent Materials.
     public static final Holder<TagPrefix> lens = REGISTRATE.tagPrefix("lens")
@@ -601,12 +650,14 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling()
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_LENS))
+            .register();
 
     public static final Holder<TagPrefix> dye = REGISTRATE.tagPrefix("dye")
             .defaultTagPath("dyes/%s")
             .unformattedTagPath("dyes")
-            .materialAmount(-1);
+            .materialAmount(-1)
+            .register();
 
     // made of 4 Ingots.
     public static final Holder<TagPrefix> toolHeadBuzzSaw = REGISTRATE.tagPrefix("buzz_saw_blade")
@@ -619,7 +670,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.BUZZSAW)))
+            .register();
 
     // made of 1 Ingots.
     public static final Holder<TagPrefix> toolHeadScrewdriver = REGISTRATE.tagPrefix("screwdriver_tip")
@@ -632,7 +684,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_LONG_ROD))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.SCREWDRIVER_LV)))
+            .register();
 
     // made of 4 Ingots.
     public static final Holder<TagPrefix> toolHeadDrill = REGISTRATE.tagPrefix("drill_head")
@@ -645,7 +698,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.DRILL_LV)))
+            .register();
 
     // made of 2 Ingots.
     public static final Holder<TagPrefix> toolHeadChainsaw = REGISTRATE.tagPrefix("chainsaw_head")
@@ -658,7 +712,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.CHAINSAW_LV)))
+            .register();
 
     // made of 4 Ingots.
     public static final Holder<TagPrefix> toolHeadWrench = REGISTRATE.tagPrefix("wrench_tip")
@@ -671,7 +726,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WRENCH_LV)))
+            .register();
 
     public static final Holder<TagPrefix> toolHeadWireCutter = REGISTRATE.tagPrefix("wire_cutter_head")
             .itemTable(() -> GTMaterialItems.MATERIAL_ITEMS)
@@ -683,7 +739,8 @@ public class TagPrefix {
             .enableRecycling()
             .generateItem(true)
             .generationCondition(hasNoCraftingToolProperty.and(mat -> mat.hasFlag(MaterialFlags.GENERATE_PLATE))
-                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)));
+                    .and(mat -> mat.getProperty(PropertyKey.TOOL).hasType(GTToolType.WIRE_CUTTER_LV)))
+            .register();
 
     // made of 5 Ingots.
     public static final Holder<TagPrefix> turbineBlade = REGISTRATE.tagPrefix("turbine_blade")
@@ -696,7 +753,8 @@ public class TagPrefix {
             .generateItem(true)
             .generationCondition(hasRotorProperty
                     .and(m -> m.hasFlags(MaterialFlags.GENERATE_BOLT_SCREW, MaterialFlags.GENERATE_PLATE) &&
-                            !m.hasProperty(PropertyKey.GEM)));
+                            !m.hasProperty(PropertyKey.GEM)))
+            .register();
 
     // Storage Block consisting out of 9 Ingots/Gems/Dusts.
     public static final Holder<TagPrefix> block = REGISTRATE.tagPrefix("block")
@@ -710,22 +768,30 @@ public class TagPrefix {
             .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) ||
                     material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> log = REGISTRATE.tagPrefix("log")
-            .unformattedTagPath("logs", true);
+            .unformattedTagPath("logs", true)
+            .register();
     public static final Holder<TagPrefix> planks = REGISTRATE.tagPrefix("planks")
-            .unformattedTagPath("planks", true);
+            .unformattedTagPath("planks", true)
+            .register();
     public static final Holder<TagPrefix> slab = REGISTRATE.tagPrefix("slab")
-            .unformattedTagPath("slabs", true);
+            .unformattedTagPath("slabs", true)
+            .register();
     public static final Holder<TagPrefix> stairs = REGISTRATE.tagPrefix("stairs")
-            .unformattedTagPath("stairs", true);
+            .unformattedTagPath("stairs", true)
+            .register();
     public static final Holder<TagPrefix> fence = REGISTRATE.tagPrefix("fence")
-            .unformattedTagPath("fences");
+            .unformattedTagPath("fences")
+            .register();
     public static final Holder<TagPrefix> fenceGate = REGISTRATE.tagPrefix("fenceGate")
-            .unformattedTagPath("fence_gates");
+            .unformattedTagPath("fence_gates")
+            .register();
     public static final Holder<TagPrefix> door = REGISTRATE.tagPrefix("door")
-            .unformattedTagPath("doors", true);
+            .unformattedTagPath("doors", true)
+            .register();
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
@@ -735,7 +801,8 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(false)
             .generateBlock(true) // generate a block but not really, for TagPrefix#setIgnoredBlock
-            .generationCondition((material) -> false);
+            .generationCondition((material) -> false)
+            .register();
 
     public static final Holder<TagPrefix> frameGt = REGISTRATE.tagPrefix("frame")
             .defaultTagPath("frames/%s")
@@ -749,7 +816,8 @@ public class TagPrefix {
             .generateBlock(true)
             .blockProperties(() -> RenderType::translucent, BlockBehaviour.Properties::noOcclusion)
             .generationCondition(material -> material.hasProperty(PropertyKey.DUST) &&
-                    material.hasFlag(MaterialFlags.GENERATE_FRAME));
+                    material.hasFlag(MaterialFlags.GENERATE_FRAME))
+            .register();
 
     // Pipes
     public static final Holder<TagPrefix> pipeTinyFluid = REGISTRATE.tagPrefix("pipe_tiny_fluid")
@@ -758,35 +826,40 @@ public class TagPrefix {
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeSmallFluid = REGISTRATE.tagPrefix("pipe_small_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Small %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeNormalFluid = REGISTRATE.tagPrefix("pipe_normal_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Normal %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeLargeFluid = REGISTRATE.tagPrefix("pipe_large_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Large %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeHugeFluid = REGISTRATE.tagPrefix("pipe_huge_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Huge %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> pipeQuadrupleFluid = REGISTRATE.tagPrefix("pipe_quadruple_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
@@ -794,14 +867,16 @@ public class TagPrefix {
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeNonupleFluid = REGISTRATE.tagPrefix("pipe_nonuple_fluid")
             .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Nonuple %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 9)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> pipeSmallItem = REGISTRATE.tagPrefix("pipe_small_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
@@ -809,28 +884,32 @@ public class TagPrefix {
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeNormalItem = REGISTRATE.tagPrefix("pipe_normal_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Normal %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeLargeItem = REGISTRATE.tagPrefix("pipe_large_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Large %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeHugeItem = REGISTRATE.tagPrefix("pipe_huge_item")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Huge %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> pipeSmallRestrictive = REGISTRATE.tagPrefix("pipe_small_restrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
@@ -838,22 +917,26 @@ public class TagPrefix {
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeNormalRestrictive = REGISTRATE.tagPrefix("pipe_normal_restrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeLargeRestrictive = REGISTRATE.tagPrefix("pipe_large_restrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> pipeHugeRestrictive = REGISTRATE.tagPrefix("pipe_huge_restrictive")
             .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     // Wires and cables
     public static final Holder<TagPrefix> wireGtHex = REGISTRATE.tagPrefix("wire_gt_hex")
@@ -863,7 +946,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M * 8)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> wireGtOctal = REGISTRATE.tagPrefix("wire_gt_octal")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Wire")
@@ -871,7 +955,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M * 4)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> wireGtQuadruple = REGISTRATE.tagPrefix("wire_gt_quadruple")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("4x %s Wire")
@@ -879,7 +964,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M * 2)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> wireGtDouble = REGISTRATE.tagPrefix("wire_gt_double")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Wire")
@@ -887,7 +973,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> wireGtSingle = REGISTRATE.tagPrefix("wire_gt_single")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Wire")
@@ -895,7 +982,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M / 2)
             .materialIconType(MaterialIconType.wire)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> cableGtHex = REGISTRATE.tagPrefix("cable_gt_hex")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
@@ -903,40 +991,46 @@ public class TagPrefix {
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> cableGtOctal = REGISTRATE.tagPrefix("cable_gt_octal")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> cableGtQuadruple = REGISTRATE.tagPrefix("cable_gt_quadruple")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> cableGtDouble = REGISTRATE.tagPrefix("cable_gt_double")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
     public static final Holder<TagPrefix> cableGtSingle = REGISTRATE.tagPrefix("cable_gt_Single")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
-            .enableRecycling();
+            .enableRecycling()
+            .register();
 
     public static final Holder<TagPrefix> surfaceRock = REGISTRATE.tagPrefix("surface_rock")
             .langValue("%s Surface Rock")
             .defaultTagPath("surface_rocks/%s")
             .unformattedTagPath("surface_rocks")
-            .materialAmount(GTValues.M / 3);
+            .materialAmount(GTValues.M / 3)
+            .register();
 
     public static class Conditions {
 
@@ -962,13 +1056,15 @@ public class TagPrefix {
     public final ResourceLocation id;
 
     @Getter
-    @Setter
+    @Setter(onMethod_ = @ApiStatus.Internal)
     private String idPattern;
 
+    @ApiStatus.Internal
+    @Getter(onMethod_ = @ApiStatus.Internal)
     protected final List<TagType> tags = new ArrayList<>();
-    @Setter
     @Getter
-    public String langValue;
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private String langValue;
 
     @Getter
     @Setter
@@ -1023,11 +1119,18 @@ public class TagPrefix {
     private int maxStackSize = 64;
 
     @Getter
-    private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
+    private final List<LazyMaterialStack> secondaryMaterials = new ArrayList<>();
 
     @Getter
-    protected final Set<TagKey<Block>> miningToolTag = new HashSet<>();
+    protected final Set<TagKey<Block>> miningToolTags = new HashSet<>();
 
+    public TagPrefix(ResourceLocation id, String idPattern, String langValue) {
+        this.id = id;
+        this.idPattern = idPattern;
+        this.langValue = langValue;
+    }
+
+    @ApiStatus.Internal
     public TagPrefix(ResourceLocation id) {
         this.id = id;
         this.idPattern = "%s_" + id.getPath();
@@ -1042,7 +1145,7 @@ public class TagPrefix {
         return GTRegistries.TAG_PREFIXES.wrapAsHolder(this);
     }
 
-    public void addSecondaryMaterial(MaterialStack secondaryMaterial) {
+    public void addSecondaryMaterial(LazyMaterialStack secondaryMaterial) {
         Preconditions.checkNotNull(secondaryMaterial, "secondaryMaterial");
         secondaryMaterials.add(secondaryMaterial);
     }
@@ -1115,7 +1218,7 @@ public class TagPrefix {
     }
 
     public TagPrefix miningToolTag(TagKey<Block> tag) {
-        this.miningToolTag.add(tag);
+        this.miningToolTags.add(tag);
         return this;
     }
 
@@ -1215,7 +1318,7 @@ public class TagPrefix {
     }
 
     public String getUnlocalizedName() {
-        return "tagprefix." + getName();
+        return id.toLanguageKey("tagprefix");
     }
 
     public MutableComponent getLocalizedName(Material material) {
@@ -1229,7 +1332,7 @@ public class TagPrefix {
             return matSpecificKey;
         }
         if (material.hasProperty(PropertyKey.POLYMER)) {
-            String localizationKey = String.format("tagprefix.polymer.%s", getName());
+            String localizationKey = String.format("tagprefix.gtceu.polymer.%s", getName());
             // Not every polymer tag prefix gets a special name
             if (Language.getInstance().has(localizationKey)) {
                 return localizationKey;

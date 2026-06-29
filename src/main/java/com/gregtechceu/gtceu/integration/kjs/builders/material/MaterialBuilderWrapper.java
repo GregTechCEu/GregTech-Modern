@@ -14,8 +14,9 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import dev.latvian.mods.kubejs.registry.BuilderBase;
@@ -26,6 +27,7 @@ import dev.latvian.mods.kubejs.typings.Param;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
+@SuppressWarnings("unused")
 public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     private final Material.Builder<?> internal;
@@ -443,12 +445,12 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
           params = {
                   @Param(name = "iconSet", value = "The `MaterialIconSet` of this Material.")
           })
-    public MaterialBuilderWrapper iconSet(MaterialIconSet iconSet) {
+    public MaterialBuilderWrapper iconSet(Holder<MaterialIconSet> iconSet) {
         internal.iconSet(iconSet);
         return this;
     }
 
-    public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
+    public MaterialBuilderWrapper components(LazyMaterialStack... components) {
         internal.componentStacks(components);
         return this;
     }
@@ -480,10 +482,11 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
+    @SafeVarargs
     @Info("""
             Added `TagPrefix` to be ignored by this Material.
             """)
-    public MaterialBuilderWrapper ignoredTagPrefixes(TagPrefix... prefixes) {
+    public final MaterialBuilderWrapper ignoredTagPrefixes(Holder<TagPrefix>... prefixes) {
         internal.ignoredTagPrefixes(prefixes);
         return this;
     }
@@ -587,47 +590,49 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m) {
+    public MaterialBuilderWrapper washedIn(Holder<Material> m) {
         internal.washedIn(m);
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m, int washedAmount) {
+    public MaterialBuilderWrapper washedIn(Holder<Material> m, int washedAmount) {
         internal.washedIn(m, washedAmount);
         return this;
     }
 
-    public MaterialBuilderWrapper separatedInto(Material... m) {
+    @SafeVarargs
+    public final MaterialBuilderWrapper separatedInto(Holder<Material>... m) {
         internal.separatedInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper oreSmeltInto(Material m) {
+    public MaterialBuilderWrapper oreSmeltInto(Holder<Material> m) {
         internal.oreSmeltInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper polarizesInto(Material m) {
+    public MaterialBuilderWrapper polarizesInto(Holder<Material> m) {
         internal.polarizesInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper arcSmeltInto(Material m) {
+    public MaterialBuilderWrapper arcSmeltInto(Holder<Material> m) {
         internal.arcSmeltInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper macerateInto(Material m) {
+    public MaterialBuilderWrapper macerateInto(Holder<Material> m) {
         internal.macerateInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper ingotSmeltInto(Material m) {
+    public MaterialBuilderWrapper ingotSmeltInto(Holder<Material> m) {
         internal.ingotSmeltInto(m);
         return this;
     }
 
-    public MaterialBuilderWrapper addOreByproducts(Material... byproducts) {
+    @SafeVarargs
+    public final MaterialBuilderWrapper addOreByproducts(Holder<Material>... byproducts) {
         internal.addOreByproducts(byproducts);
         return this;
     }

@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -105,12 +107,12 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilder setIgnored(Material material, ItemLike... items) {
+    public TagPrefixBuilder setIgnored(Holder<Material> material, ItemLike... items) {
         base.setIgnored(material, items);
         return this;
     }
 
-    public TagPrefixBuilder addSecondaryMaterial(MaterialStack secondaryMaterial) {
+    public TagPrefixBuilder addSecondaryMaterial(LazyMaterialStack secondaryMaterial) {
         base.addSecondaryMaterial(secondaryMaterial);
         return this;
     }

@@ -24,7 +24,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.holder.HolderBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.holder.HolderRegistryEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -598,7 +598,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
         /**
          * The temporary list of components for this Material.
          */
-        private List<MaterialStackWrapper> composition = new ArrayList<>();
+        private List<LazyMaterialStack> composition = new ArrayList<>();
 
         /**
          * Temporary value to use to determine how to calculate default RGB.
@@ -1194,9 +1194,9 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
                             "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
                 }
                 final int index = i;
-                composition.add(new MaterialStackWrapper(() ->
-                        components[index] instanceof CharSequence chars ? GTMaterials.get(GTCEu.id(chars.toString())) :
-                                (Holder<Material>) components[index],
+                composition.add(new LazyMaterialStack(() ->
+                        components[index] instanceof CharSequence chars ? GTRegistries.MATERIALS.get(GTCEu.id(chars.toString())) :
+                                ((Holder<Material>) components[index]).get(),
                         ((Number) components[i + 1]).longValue()));
             }
             return this;
@@ -1209,7 +1209,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          * @param components An array of {@link MaterialStack}, each representing the
          *                   Material and the amount of said Material in this Material's composition.
          */
-        public Builder<P> componentStacks(MaterialStackWrapper... components) {
+        public Builder<P> componentStacks(LazyMaterialStack... components) {
             composition = Arrays.asList(components);
             return this;
         }
@@ -1221,7 +1221,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          * @param components An {@link ImmutableList} of {@link MaterialStack}, each representing the
          *                   Material and the amount of said Material in this Material's composition.
          */
-        public Builder<P> componentStacks(ImmutableList<MaterialStackWrapper> components) {
+        public Builder<P> componentStacks(ImmutableList<LazyMaterialStack> components) {
             composition = components;
             return this;
         }
@@ -1677,7 +1677,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          *
          * @param m The Material that this Material will be polarized into.
          */
-        public Builder<P> polarizesInto(HolderRegistryEntry<Material> m) {
+        public Builder<P> polarizesInto(Holder<Material> m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setMagneticMaterial(m);
             return this;
@@ -1690,7 +1690,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          *
          * @param m The Material that this Material will turn into in any Arc Furnace recipes.
          */
-        public Builder<P> arcSmeltInto(HolderRegistryEntry<Material> m) {
+        public Builder<P> arcSmeltInto(Holder<Material> m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setArcSmeltingInto(m);
             return this;
@@ -1704,7 +1704,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          *
          * @param m The Material that this Material's Ingot should macerate directly into.
          */
-        public Builder<P> macerateInto(HolderRegistryEntry<Material> m) {
+        public Builder<P> macerateInto(Holder<Material> m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setMacerateInto(m);
             return this;
@@ -1718,7 +1718,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          *
          * @param m The Material that this Material's Ingot should smelt directly into.
          */
-        public Builder<P> ingotSmeltInto(HolderRegistryEntry<Material> m) {
+        public Builder<P> ingotSmeltInto(Holder<Material> m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setSmeltingInto(m);
             return this;
@@ -1732,7 +1732,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
          * @param byproducts The list of Materials which serve as byproducts during ore processing.
          */
         @SafeVarargs
-        public final Builder<P> addOreByproducts(HolderRegistryEntry<Material>... byproducts) {
+        public final Builder<P> addOreByproducts(Holder<Material>... byproducts) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setOreByProducts(byproducts);
             return this;
@@ -1852,7 +1852,7 @@ public sealed class Material implements Comparable<Material> permits MarkerMater
         @ApiStatus.Internal
         public @NotNull Material createEntry() {
             materialInfo.componentList = composition.stream()
-                    .map(MaterialStackWrapper::toMatStack)
+                    .map(LazyMaterialStack::resolve)
                     .toList();
             if (!properties.hasProperty(HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {

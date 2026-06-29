@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Pair;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -181,6 +181,10 @@ public class ChemicalHelper {
             return get(TagPrefix.gem, materialStack.material(), (int) (materialStack.amount() / M));
         }
         return getDust(materialStack);
+    }
+
+    public static ItemStack getGem(LazyMaterialStack materialStack) {
+        return getGem(materialStack.resolve());
     }
 
     public static MaterialEntry getMaterialEntry(ItemLike itemLike) {

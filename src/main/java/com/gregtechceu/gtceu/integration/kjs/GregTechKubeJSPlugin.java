@@ -83,7 +83,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuil
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.integration.kjs.helpers.LazyMaterialStack;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
@@ -91,7 +91,6 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.WrappingRecipeSchemaType;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ExtendedOutputItem;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
-import dev.latvian.mods.kubejs.bindings.event.StartupEvents;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.core.Holder;
@@ -443,11 +442,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
-        typeWrappers.registerSimple(MaterialStackWrapper.class, o -> {
-            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
-            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
-            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
-            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
+        typeWrappers.registerSimple(LazyMaterialStack.class, o -> {
+            if (o instanceof LazyMaterialStack lazy) return lazy;
+            if (o instanceof MaterialStack stack) return new LazyMaterialStack(stack::material, stack.amount());
+            if (o instanceof Material material) return new LazyMaterialStack(() -> material, 1);
+            if (o instanceof CharSequence chars) return LazyMaterialStack.fromString(chars);
             return null;
         });
 
@@ -708,7 +707,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             var prefix = ChemicalHelper.getPrefix(item);
             if (!prefix.isEmpty()) {
                 for (var ms : prefix.secondaryMaterials()) {
-                    materials.addTo(ms.material(), (ms.amount() * inCount) / outCount);
+                    materials.addTo(ms.material().get(), (ms.amount() * inCount) / outCount);
                 }
             }
         }

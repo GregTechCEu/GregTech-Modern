@@ -45,7 +45,7 @@ public class ItemLang {
 
         // TagPrefix
         for (TagPrefix tagPrefix : GTRegistries.TAG_PREFIXES) {
-            provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
+            provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue());
         }
         // GTToolType
         for (GTToolType toolType : GTToolType.getTypes().values()) {
