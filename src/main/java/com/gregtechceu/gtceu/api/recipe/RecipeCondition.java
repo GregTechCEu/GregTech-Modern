@@ -3,16 +3,15 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 
+import brachy.modularui.api.drawable.Text;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.Products;
 import com.mojang.serialization.Codec;
@@ -55,24 +54,15 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
 
     public abstract RecipeConditionType<T> getType();
 
-    public String getTranslationKey() {
-        return "gtceu.recipe.condition." + getType();
-    }
-
-    public IGuiTexture getInValidTexture() {
-        return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0, 1, 0.5f);
-    }
-
-    public IGuiTexture getValidTexture() {
-        return new ResourceTexture("gtceu:textures/gui/condition/" + getType() + ".png").getSubTexture(0, 0.5f, 1,
-                0.5f);
-    }
-
     public boolean isOr() {
         return false;
     }
 
     public abstract Component getTooltips();
+
+    public RecipeUIModifier modifyUI() {
+        return RecipeUIModifier.textLine(Text.of(getTooltips()));
+    }
 
     public boolean check(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         boolean test = testCondition(recipe, recipeLogic);

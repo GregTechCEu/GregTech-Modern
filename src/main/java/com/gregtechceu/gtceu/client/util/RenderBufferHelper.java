@@ -26,6 +26,7 @@ import java.util.Set;
 import static com.gregtechceu.gtceu.utils.GTMath.getFirstPerpendicular;
 import static com.gregtechceu.gtceu.utils.GTMath.getSecondPerpendicular;
 
+@SuppressWarnings("DuplicatedCode")
 @OnlyIn(Dist.CLIENT)
 public class RenderBufferHelper {
 
@@ -178,8 +179,8 @@ public class RenderBufferHelper {
         renderSide(buf, stack, bottomLeft2, bottomRight2, bottomLeft, bottomRight, colorARGB);
     }
 
-
-    public static void renderAABBOutline(VertexConsumer buf, PoseStack pose, AABB aabb, double thickness, int colorARGB) {
+    public static void renderAABBOutline(VertexConsumer buf, PoseStack pose, AABB aabb, double thickness,
+                                         int colorARGB) {
         double minX = aabb.minX;
         double minY = aabb.minY;
         double minZ = aabb.minZ;

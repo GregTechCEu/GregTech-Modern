@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CentralMonitorMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorGroup;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-
 import net.minecraft.world.item.ItemStack;
+
+import brachy.modularui.api.IPanelHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
 
 public interface IMonitorModuleItem extends IItemComponent {
 
@@ -15,9 +16,10 @@ public interface IMonitorModuleItem extends IItemComponent {
 
     default void tickInPlaceholder(ItemStack stack, PlaceholderContext context) {}
 
-    IMonitorRenderer getRenderer(ItemStack stack);
+    IMonitorRenderer getRenderer(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
 
-    Widget createUIWidget(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group);
+    IPanelHandler createModularPanel(ItemStack stack, CentralMonitorMachine machine, MonitorGroup group,
+                                     PanelSyncManager syncManager);
 
     default String getType() {
         return "unknown";

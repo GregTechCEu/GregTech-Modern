@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeUIModifier;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.gregtechceu.gtceu.common.recipe.gui.GTRecipeUIModifiers;
 
 import net.minecraft.network.chat.Component;
 
@@ -54,5 +56,10 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
     @Override
     public ResearchCondition createTemplate() {
         return new ResearchCondition();
+    }
+
+    @Override
+    public RecipeUIModifier modifyUI() {
+        return GTRecipeUIModifiers.RESEARCH_INFO;
     }
 }

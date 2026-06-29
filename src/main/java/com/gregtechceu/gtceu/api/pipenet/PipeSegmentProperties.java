@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import com.gregtechceu.gtceu.api.sync_system.ISyncAnnotated;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -12,7 +11,7 @@ import java.util.List;
 /**
  * Represents the properties for a specific pipe segment
  */
-public abstract class PipeSegmentProperties implements ISyncAnnotated {
+public abstract class PipeSegmentProperties {
 
     public PipeSegmentProperties() {}
 
