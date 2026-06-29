@@ -135,6 +135,6 @@ repositories {
     }
     exclusiveContent { // Sable (Create Aeronautics physics sub-levels)
         forRepository { maven { url = "https://maven.ryanhcode.dev/releases" } }
-        filter { includeGroup("dev.ryanhcode.sable") }
+        filter { includeGroupAndSubgroups("dev.ryanhcode") }
     }
 }

@@ -52,6 +52,9 @@ enumExtensions = "META-INF/enum_extensions.json"
 [[mixins]]
     config = "mixin_configs/${mod_id}-xaeroworldmap.mixins.json"
     requiredMods = ["xaeroworldmap"]
+[[mixins]]
+    config = "mixin_configs/${mod_id}-sable.mixins.json"
+    requiredMods = ["sable"]
 
 [[accessTransformers]]
     file = "META-INF/accesstransformer.cfg"
