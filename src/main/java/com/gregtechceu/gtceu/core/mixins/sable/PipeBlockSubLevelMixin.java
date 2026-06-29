@@ -16,11 +16,12 @@ import org.spongepowered.asm.mixin.Shadow;
 
 /**
  * Sable assembles a contraption by copying each block's saved data straight into the destination
- * sub-level, but the suppressed onPlace leaves a pipe out of its network and never turns its connection
- * mask or covers to match the angle the contraption was assembled at. From afterMove the pipe's saved
- * orientation is rotated to the assembly angle first, then its own tick is run once to join the network
- * from that corrected data; the join is guarded so an already-present node is not registered twice,
- * which would leak the net's chunk references.
+ * sub-level. That copy leaves a pipe out of its network, never turns its connection mask or covers to
+ * the angle the contraption was assembled at, and restores the saved fields without marking them for
+ * sync so the client keeps drawing the old shape. From afterMove the saved orientation is rotated to
+ * the assembly angle, the client is told to resend and redraw, and the pipe's own tick is run once to
+ * join the network from the corrected data. The join is guarded so an already present node is not
+ * registered twice, which would leak the net's chunk references.
  */
 @Mixin(value = PipeBlock.class, remap = false)
 public abstract class PipeBlockSubLevelMixin implements BlockSubLevelAssemblyListener {
@@ -36,6 +37,8 @@ public abstract class PipeBlockSubLevelMixin implements BlockSubLevelAssemblyLis
                           BlockPos newPos) {
         if (resultingLevel.getBlockEntity(newPos) instanceof PipeBlockEntity<?, ?> pipe) {
             SableAssemblyRotation.rotatePipe(pipe, SableAssemblyRotation.current(), resultingLevel.registryAccess());
+            pipe.getSyncDataHolder().resyncAllFields();
+            pipe.scheduleRenderUpdate();
         }
         if (getWorldPipeNet(resultingLevel).getNetFromPos(newPos) == null) {
             tick(state, resultingLevel, newPos, resultingLevel.getRandom());
