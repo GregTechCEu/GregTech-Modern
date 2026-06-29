@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.GTBiomeModifiers;
 import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;

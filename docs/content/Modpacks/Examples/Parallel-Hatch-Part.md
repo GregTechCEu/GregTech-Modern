@@ -48,7 +48,7 @@ StartupEvents.registry("gtceu:machine", (event) => {
                 GTMachineModels.createWorkableTieredHullMachineModel(
                     GTCEu.id("block/machines/parallel_hatch_mk4") // (6)
                 )[
-                    "andThen(com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder$ModelInitializer)"
+                    "andThen(com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder$ModelInitializer)"
                     ]((ctx, prov, model) => {
                   model.addReplaceableTextures("bottom", "top", "side");
                 })
