@@ -26,6 +26,8 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -251,7 +253,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
+    public @NotNull List<FluidEntryList> createXEIContainerContents(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
         return contents.stream()
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
@@ -348,5 +350,17 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public boolean shouldBypassDistinct() {
         return false;
+    }
+
+    @Override
+    public List<?> getXEIIngredients(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
+        var list = createXEIContainerContents(contents, recipe, io);
+        return list.stream()
+                .map(FluidEntryList::getStacks)
+                .map(fluidStacks -> fluidStacks.stream()
+                        .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(), fluidStack.getAmount()))
+                        .toList())
+                .map(EmiIngredient::of)
+                .toList();
     }
 }

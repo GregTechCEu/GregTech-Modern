@@ -156,7 +156,7 @@ public abstract class RecipeCapability<T> {
                            boolean perTick, boolean isInput, MutableInt yOffset) {}
 
     @NotNull
-    public List<Object> createXEIContainerContents(List<T> contents, GTRecipeDefinition recipe, IO io) {
+    public List<?> createXEIContainerContents(List<T> contents, GTRecipeDefinition recipe, IO io) {
         return new ArrayList<>();
     }
 
@@ -199,5 +199,9 @@ public abstract class RecipeCapability<T> {
      */
     public boolean shouldBypassDistinct() {
         return true;
+    }
+
+    public List<?> getXEIIngredients(List<T> contents, GTRecipeDefinition recipe, IO io) {
+        return new ArrayList<>();
     }
 }

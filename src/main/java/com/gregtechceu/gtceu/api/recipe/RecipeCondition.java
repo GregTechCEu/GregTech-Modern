@@ -23,6 +23,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Accessors(chain = true)
@@ -108,5 +109,13 @@ public abstract class RecipeCondition<T extends RecipeCondition<T>> {
     public static RecipeCondition<?> fromNetwork(FriendlyByteBuf buf) {
         var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         return buf.readWithCodec(ops, CODEC);
+    }
+
+    public boolean hasXEICatalysts() {
+        return false;
+    }
+
+    public List<?> getXEICatalysts() {
+        return List.of();
     }
 }

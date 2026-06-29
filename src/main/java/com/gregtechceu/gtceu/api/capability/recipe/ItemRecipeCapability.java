@@ -27,6 +27,8 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -43,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
@@ -249,13 +252,13 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
-        List<Object> entryLists = contents.stream()
+    public @NotNull List<ItemEntryList> createXEIContainerContents(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
+        List<ItemEntryList> entryLists = contents.stream()
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
 
         if (io == IO.OUT && recipe.recipeType.isScanner()) {
-            List<Object> scannerPossibilities = new ArrayList<>();
+            List<ItemEntryList> scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
             ResearchManager.ResearchItem researchData = null;
             for (var ingredient : recipe.getOutputContents(this)) {
@@ -402,5 +405,15 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     @Override
     public boolean shouldBypassDistinct() {
         return false;
+    }
+
+    @Override
+    public List<?> getXEIIngredients(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
+        var list = createXEIContainerContents(contents, recipe, io);
+        return list.stream()
+                .map(ItemEntryList::getStacks)
+                .map(stacks -> stacks.stream().map(EmiStack::of).toList())
+                .map(EmiIngredient::of)
+                .toList();
     }
 }

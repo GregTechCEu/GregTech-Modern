@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -306,7 +303,7 @@ public class GTRecipeWidget extends WidgetGroup {
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> list) {
-                List<Object> xeiContents = capability.createXEIContainerContents(list, recipe, io);
+                List<?> xeiContents = capability.createXEIContainerContents(list, recipe, io);
                 int maxContents = io == IO.IN ? recipe.recipeType.getMaxInputs(capability) :
                         recipe.recipeType.getMaxOutputs(capability);
                 while (xeiContents.size() < maxContents) {
@@ -340,10 +337,10 @@ public class GTRecipeWidget extends WidgetGroup {
         });
     }
 
-    public static class PlaceHolderWidget extends WidgetGroup {
-        public PlaceHolderWidget(GTRecipeDefinition definition) {
-            super(getXOffset(definition), 0, definition.recipeType.getRecipeUI().getJEISize().width,
-                    definition.recipeType.getRecipeUI().getJEISize().height);
-        }
+    public static WidgetGroup getPlaceHolder(GTRecipeDefinition definition) {
+        return new WidgetGroup(getXOffset(definition), 0,
+                        definition.recipeType.getRecipeUI().getJEISize().width,
+                        definition.recipeType.getRecipeUI().getJEISize().height);
     }
+
 }

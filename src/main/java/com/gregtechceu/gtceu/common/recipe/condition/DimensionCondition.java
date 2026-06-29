@@ -14,10 +14,12 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 
+import dev.emi.emi.api.stack.EmiIngredient;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
@@ -26,6 +28,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition<DimensionCondition> {
@@ -63,13 +67,19 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
         return Component.translatable("recipe.condition.dimension.tooltip", dimension);
     }
 
+    public ItemStack getIcon() {
+        DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension.location(),
+                new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
+        return dimMarker.getIcon();
+    }
+
     public SlotWidget setupDimensionMarkers(int xOffset, int yOffset) {
         DimensionMarker dimMarker = GTRegistries.DIMENSION_MARKERS.getOrDefault(this.dimension.location(),
                 new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER, this.dimension.toString()));
         ItemStack icon = dimMarker.getIcon();
         CustomItemStackHandler handler = new CustomItemStackHandler(1);
         SlotWidget dimSlot = new SlotWidget(handler, 0, xOffset, yOffset, false, false)
-                .setIngredientIO(IngredientIO.INPUT);
+                .setIngredientIO(IngredientIO.CATALYST);
         handler.setStackInSlot(0, icon);
         if (ConfigHolder.INSTANCE.compat.showDimensionTier) {
             dimSlot.setOverlay(
@@ -88,5 +98,15 @@ public class DimensionCondition extends RecipeCondition<DimensionCondition> {
     @Override
     public DimensionCondition createTemplate() {
         return new DimensionCondition();
+    }
+
+    @Override
+    public boolean hasXEICatalysts() {
+        return true;
+    }
+
+    @Override
+    public List<?> getXEICatalysts() {
+        return List.of(EmiIngredient.of(Ingredient.of(getIcon())));
     }
 }
