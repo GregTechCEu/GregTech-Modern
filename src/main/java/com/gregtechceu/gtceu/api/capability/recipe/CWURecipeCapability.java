@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -37,8 +37,8 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<Integer> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<Integer> contents,
+                           boolean perTick, boolean isInput, MutableInt yOffset) {
         if (perTick) {
             int cwu = contents.stream().mapToInt(Integer::intValue).sum();
             group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
@@ -50,4 +50,5 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
                             FormattingUtil.formatNumbers(recipe.duration))));
         }
     }
+
 }

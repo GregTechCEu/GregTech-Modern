@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
@@ -53,7 +52,7 @@ public class GTRecipeWidget extends WidgetGroup {
     public static final int LINE_HEIGHT = 10;
 
     private final int xOffset;
-    private final GTRecipe recipe;
+    private final GTRecipeDefinition recipe;
     private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
     private LabelWidget recipeVoltageText = null;
     private final int minTier;
@@ -64,10 +63,9 @@ public class GTRecipeWidget extends WidgetGroup {
     public GTRecipeWidget(GTRecipeDefinition definition) {
         super(getXOffset(definition), 0, definition.recipeType.getRecipeUI().getJEISize().width,
                 definition.recipeType.getRecipeUI().getJEISize().height);
-        GTRecipe recipe = definition.toRuntime();
-        this.recipe = recipe;
+        this.recipe = definition;
         this.xOffset = getXOffset(definition);
-        this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
+        this.minTier = RecipeHelper.getRecipeEUtTier(definition);
         setRecipeWidget();
         setTierToMin();
         initializeRecipeTextWidget();
@@ -196,7 +194,7 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     @NotNull
-    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration,
+    private static List<Component> getRecipeParaText(GTRecipeDefinition recipe, int duration,
                                                      EnergyStack.WithIO eu) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
@@ -262,7 +260,8 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     private void setRecipeOverclockWidget(OverclockingLogic logic) {
-        EnergyStack inputEUt = recipe.getInputEUt();
+        var recipeEUt = RecipeHelper.getRealEUtWithIO(recipe);
+        EnergyStack inputEUt = recipeEUt.isInput() ? recipeEUt.stack() : EnergyStack.EMPTY;
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
 
@@ -339,5 +338,12 @@ public class GTRecipeWidget extends WidgetGroup {
                         });
             }
         });
+    }
+
+    public static class PlaceHolderWidget extends WidgetGroup {
+        public PlaceHolderWidget(GTRecipeDefinition definition) {
+            super(getXOffset(definition), 0, definition.recipeType.getRecipeUI().getJEISize().width,
+                    definition.recipeType.getRecipeUI().getJEISize().height);
+        }
     }
 }

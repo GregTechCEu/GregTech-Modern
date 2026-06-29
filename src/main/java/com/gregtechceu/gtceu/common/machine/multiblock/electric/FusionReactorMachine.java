@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMach
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -279,7 +280,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine implem
         }
     }
 
-    public static void addEUToStartLabel(GTRecipe recipe, WidgetGroup group) {
+    public static void addEUToStartLabel(GTRecipeDefinition recipe, WidgetGroup group) {
         long euToStart = recipe.data.getLong("eu_to_start");
         if (euToStart <= 0) return;
         int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);

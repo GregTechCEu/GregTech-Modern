@@ -59,6 +59,7 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
     @Getter
     @Nullable
     @Persisted
+    @DescSynced
     protected Component waitingReason = null;
 
     protected TickableSubscription subscription;

@@ -159,7 +159,7 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
         return this;
     }
 
-    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
+    public GTRecipeType setUiBuilder(BiConsumer<GTRecipeDefinition, WidgetGroup> uiBuilder) {
         this.recipeUI.setUiBuilder(uiBuilder);
         return this;
     }

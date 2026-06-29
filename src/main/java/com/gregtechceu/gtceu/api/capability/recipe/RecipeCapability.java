@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -11,17 +12,14 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
 import com.mojang.serialization.Codec;
-import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
 
@@ -154,11 +152,11 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipe recipe, List<T> contents, boolean perTick,
-                           boolean isInput, MutableInt yOffset) {}
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<T> contents,
+                           boolean perTick, boolean isInput, MutableInt yOffset) {}
 
     @NotNull
-    public List<Object> createXEIContainerContents(List<T> contents, GTRecipe recipe, IO io) {
+    public List<Object> createXEIContainerContents(List<T> contents, GTRecipeDefinition recipe, IO io) {
         return new ArrayList<>();
     }
 
@@ -186,11 +184,11 @@ public abstract class RecipeCapability<T> {
                                 IO io,
                                 @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
-                                @Nullable("null when content == null") GTRecipe recipe,
+                                @Nullable("null when content == null") GTRecipeDefinition recipe,
                                 @Nullable T content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {}
 
-    public boolean isTickSlot(int index, IO io, GTRecipe recipe) {
+    public boolean isTickSlot(int index, IO io, GTRecipeDefinition recipe) {
         return index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size();
     }
 

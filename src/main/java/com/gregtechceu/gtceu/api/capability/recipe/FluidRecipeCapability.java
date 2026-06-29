@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
@@ -42,7 +43,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
@@ -251,12 +251,10 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<FluidIngredient> contents, GTRecipe recipe, IO io) {
-        List<Object> entryLists = contents.stream()
+    public @NotNull List<Object> createXEIContainerContents(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
+        return contents.stream()
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
-
-        return entryLists;
     }
 
     public Object createXEIContainer(List<?> contents) {
@@ -287,7 +285,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                                  IO io,
                                  GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
                                  @NotNull GTRecipeType recipeType,
-                                 @UnknownNullability("null when content == null") GTRecipe recipe,
+                                 @UnknownNullability("null when content == null") GTRecipeDefinition recipe,
                                  @Nullable FluidIngredient content,
                                  @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {

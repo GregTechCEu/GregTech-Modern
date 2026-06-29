@@ -20,7 +20,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +34,12 @@ public class RecipeHelper {
         return recipe.getOutputEUt();
     }
 
+    public static EnergyStack getRealEUt(@NotNull GTRecipeDefinition recipe) {
+        EnergyStack stack = getInputEUt(recipe);
+        if (!stack.isEmpty()) return stack;
+        return getOutputEUt(recipe);
+    }
+
     /**
      * Get a pair of the absolute EU/t value this recipe inputs or outputs and if it's input or output
      *
@@ -47,11 +52,25 @@ public class RecipeHelper {
         return new EnergyStack.WithIO(recipe.getOutputEUt(), IO.OUT);
     }
 
+    public static EnergyStack.WithIO getRealEUtWithIO(@NotNull GTRecipeDefinition recipe) {
+        EnergyStack stack = getInputEUt(recipe);
+        if (!stack.isEmpty()) return new EnergyStack.WithIO(stack, IO.IN);
+        return new EnergyStack.WithIO(getOutputEUt(recipe), IO.OUT);
+    }
+
     public static int getRecipeEUtTier(GTRecipe recipe) {
         EnergyStack stack = getRealEUt(recipe);
         long EUt = stack.voltage();
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         return GTUtil.getTierByVoltage(EUt);
+    }
+
+    public static int getRecipeEUtTier(GTRecipeDefinition recipe) {
+        return GTUtil.getTierByVoltage(getRealEUt(recipe).voltage());
+    }
+
+    public static int getPreOCRecipeEuTier(GTRecipeDefinition recipe) {
+        return GTUtil.getTierByVoltage(getRealEUt(recipe).getTotalEU());
     }
 
     public static int getPreOCRecipeEuTier(GTRecipe recipe) {
@@ -60,6 +79,25 @@ public class RecipeHelper {
         if (recipe.parallels > 1) EUt /= recipe.parallels;
         EUt >>= (recipe.ocLevel * 2);
         return GTUtil.getTierByVoltage(EUt);
+    }
+
+    private static EnergyStack getInputEUt(GTRecipeDefinition recipe) {
+        return calculateEUt(recipe.tickInputs);
+    }
+
+    private static EnergyStack getOutputEUt(GTRecipeDefinition recipe) {
+        return calculateEUt(recipe.tickOutputs);
+    }
+
+    private static EnergyStack calculateEUt(ContentListMap contents) {
+        var outputs = contents.get(EURecipeCapability.CAP);
+        if (outputs == null) return EnergyStack.EMPTY;
+        long v = 0, a = 0;
+        for (var stack : outputs) {
+            v += stack.voltage();
+            a += stack.amperage();
+        }
+        return new EnergyStack(v, a);
     }
 
     /*

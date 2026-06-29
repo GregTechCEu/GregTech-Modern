@@ -35,18 +35,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
-import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
@@ -253,7 +249,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<ItemIngredient> contents, GTRecipe recipe, IO io) {
+    public @NotNull List<Object> createXEIContainerContents(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
         List<Object> entryLists = contents.stream()
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
@@ -324,7 +320,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                                 IO io,
                                 GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
-                                @UnknownNullability("null when content == null") GTRecipe recipe,
+                                @UnknownNullability("null when content == null") GTRecipeDefinition recipe,
                                 @Nullable ItemIngredient content,
                                 @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof SlotWidget slot) {

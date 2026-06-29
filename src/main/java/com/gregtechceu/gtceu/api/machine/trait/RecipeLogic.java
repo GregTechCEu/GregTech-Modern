@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
 
+import com.lowdragmc.lowdraglib.misc.SyncableMap;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
@@ -37,10 +38,9 @@ public class RecipeLogic extends WorkLogic {
     public final IRecipeLogicMachine machine;
 
     @Getter
-    protected final Map<ResourceLocation, Component> failureReasonsMap = new HashMap<>();
-    /**
-     * unsafe, it may not be found from {@link RecipeManager}. Do not index it.
-     */
+    @DescSynced
+    protected final SyncableMap<ResourceLocation, Component> failureReasonsMap = new SyncableMap<>() {};
+
     @Nullable
     @Getter
     @Persisted
@@ -390,4 +390,6 @@ public class RecipeLogic extends WorkLogic {
     public boolean showFancyTooltip() {
         return waitingReason != null || !failureReasonsMap.isEmpty();
     }
+
+
 }

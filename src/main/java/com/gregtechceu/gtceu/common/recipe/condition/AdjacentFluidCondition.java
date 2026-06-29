@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.recipe.condition;
 import com.gregtechceu.gtceu.api.codec.GTCodecUtils;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
@@ -13,6 +14,7 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -128,28 +130,18 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
     }
 
     public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable GTRecipe recipe) {
+        return getOrInitFluids(recipe == null ? null : recipe.data);
+    }
+
+    public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable GTRecipeDefinition recipe) {
+        return getOrInitFluids(recipe == null ? null : recipe.data);
+    }
+
+    private @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable CompoundTag data) {
         if (resolvedFluids.isEmpty() && !fluids.isEmpty()) {
             for (var holderSetSupplier : this.fluids) {
                 this.resolvedFluids.add(holderSetSupplier.get());
             }
-        }
-        if (!resolvedFluids.isEmpty()) {
-            return resolvedFluids;
-        }
-
-        if (recipe != null && recipe.data.contains("fluidA") && recipe.data.contains("fluidB")) {
-            this.resolvedFluids.clear();
-
-            Fluid fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
-            if (!fluidA.defaultFluidState().isEmpty()) {
-                this.resolvedFluids.add(HolderSet.direct(fluidA.builtInRegistryHolder()));
-            }
-            Fluid fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
-            if (!fluidB.defaultFluidState().isEmpty()) {
-                this.resolvedFluids.add(HolderSet.direct(fluidB.builtInRegistryHolder()));
-            }
-            // init the fluid supplier list, just to be safe
-            getFluidSuppliers();
         }
         return this.resolvedFluids;
     }
