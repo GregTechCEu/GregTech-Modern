@@ -204,7 +204,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int count;
             if (ing instanceof SizedIngredient sized) count = sized.getAmount();
-            else if (ing instanceof IntProviderIngredient provider) count = provider.getCountProvider().getMaxValue();
+            else if (ing instanceof IntProviderIngredient provider) count = provider.getMaxRoll();
             else count = 1;
 
             if (content.chance() == 0) {

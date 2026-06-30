@@ -120,9 +120,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             ItemStack[] items;
             int amount;
             if (ingredient instanceof IntProviderIngredient provider) {
-                provider.setItemStacks(null);
-                provider.setSampledCount(-1);
-
                 ItemStack output;
                 if (simulate) {
                     output = provider.getMaxSizeStack();
