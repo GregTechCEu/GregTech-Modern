@@ -438,8 +438,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             duration = recipe.duration;
             isActive = true;
             syncDataHolder.resyncAllFields();
-        }
-        else {
+        } else {
             lastDisplayedRecipe = null;
         }
     }

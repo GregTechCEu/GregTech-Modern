@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-
 import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -234,38 +234,35 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return new EnergyStack(v, a);
     }
 
-
-
     public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         var rangedContents = getFullContents()
                 .filter(i -> i.content() instanceof IRangedIngredient)
                 .toList();
-        for (var item : rangedContents){
+        for (var item : rangedContents) {
             ((IRangedIngredient) item.content()).rollSampledCount();
         }
     }
 
-    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches){
+    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
         var rangedContents = getFullTickContents()
                 .filter(i -> i.content() instanceof IRangedIngredient)
                 .toList();
-        for (var item : rangedContents){
+        for (var item : rangedContents) {
             ((IRangedIngredient) item.content()).rollSampledCount();
         }
     }
 
-
-    public Stream<Content> getFullContents(){
+    public Stream<Content> getFullContents() {
         return Stream.concat(
-                        inputs.values().stream(),
-                        outputs.values().stream())
+                inputs.values().stream(),
+                outputs.values().stream())
                 .flatMap(List::stream);
     }
 
-    public Stream<Content> getFullTickContents(){
+    public Stream<Content> getFullTickContents() {
         return Stream.concat(
-                        tickInputs.values().stream(),
-                        tickOutputs.values().stream())
+                tickInputs.values().stream(),
+                tickOutputs.values().stream())
                 .flatMap(List::stream);
     }
 

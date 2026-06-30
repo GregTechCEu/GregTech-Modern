@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -82,9 +81,10 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     }
 
     @Override
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return (this.getAmount() == 0);
     }
+
     /**
      * Gets a usable {@link FluidStack FluidStack[]} from this {@link IntProviderFluidIngredient}.
      * If this ingredient has not yet had its {@link IntProviderFluidIngredient#sampledCount} rolled, rolls it.
@@ -157,7 +157,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     /**
      * Also sets the Amount of this ingredient
      */
-    public void setSampledCount(int count){
+    public void setSampledCount(int count) {
         this.sampledCount = count;
         super.setAmount(count);
     }

@@ -43,7 +43,7 @@ public record ContentModifier(double multiplier, double addition) {
      */
     public Map<RecipeCapability<?>, List<Content>> applyContents(Map<RecipeCapability<?>, List<Content>> contents) {
         // Prerolls require copying, even on IDENTITY
-        //        if (this == IDENTITY) return new HashMap<>(contents);
+        // if (this == IDENTITY) return new HashMap<>(contents);
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
             var contentList = entry.getValue();
