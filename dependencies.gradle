@@ -113,6 +113,15 @@ dependencies {
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
     }
 
+    // Create Aeronautics suite (Sable physics sub-levels) for dev-testing the compat
+//    extraLocalRuntime(forge.sable)
+//    extraLocalRuntime(forge.sableRapier)
+//    extraLocalRuntime(forge.sableCompanion)
+//    extraLocalRuntime(forge.veil)
+//    extraLocalRuntime(forge.aeronautics) { transitive = false }
+//    extraLocalRuntime(forge.simulated) { transitive = false }
+//    extraLocalRuntime(forge.offroad) { transitive = false }
+
     extraLocalRuntime(forge.bundles.kjs)
 
     extraLocalRuntime(forge.ftblibrary)
