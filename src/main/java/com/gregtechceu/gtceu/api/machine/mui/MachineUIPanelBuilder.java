@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.mui.widgets.SteamDialWidget;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
@@ -126,7 +127,8 @@ public class MachineUIPanelBuilder {
                             .size(32, 32)
                             .tooltipAutoUpdate(true)
                             .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
-                                    steamAmount.getIntValue(), steamCapacity.getIntValue()))))
+                                    FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                                    FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .child(new SteamDialWidget(steamProgress)
                             .setMinAngle((float) Math.PI)
                             .setMaxAngle((float) 0.0f)
