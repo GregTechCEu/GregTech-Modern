@@ -115,7 +115,7 @@ public class FisherMachine extends TieredEnergyMachine
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
 
-        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.BOTH, IO.IN));
+        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.BOTH));
         baitHandler.setFilter(item -> item.is(Items.STRING));
 
         this.chargerInventory = new CustomItemStackHandler();
@@ -311,21 +311,23 @@ public class FisherMachine extends TieredEnergyMachine
 
         mainWidget
                 .name("content")
-                .coverChildren()
+                .coverChildrenWidth()
+                .coverChildrenHeight(54)
                 .child(Flow.row()
                         .name("mainRow")
-                        .horizontalCenter()
+                        .center()
                         .coverChildren()
-                        .margin(0, 3)
+                        .margin(2, 3)
                         .childPadding(4)
-                        .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
+                        .child(new ItemSlot()
+                                .slot(new ModularSlot(baitHandler, 0).singletonSlotGroup(0).accessibility(true, true))
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
                         .child(new ProgressWidget()
                                 .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
                                 .value(progressPercent))
                         .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
                                 "output_item_inv", cache.getSize(), 'i',
-                                syncManager, outputItemGrid).marginLeft(2))
+                                syncManager, outputItemGrid))
                         .padding(4, 0));
     }
 }

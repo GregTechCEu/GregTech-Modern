@@ -140,7 +140,8 @@ public class MachineUIPanelBuilder {
                             .top(16)
                             .tooltipAutoUpdate(true)
                             .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
-                                    steamAmount.getIntValue(), steamCapacity.getIntValue()))))
+                                    FormattingUtil.formatNumbers(steamAmount.getIntValue()),
+                                    FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
                     .leftRel(0.0f).left(-36).top(4));
         }
 
