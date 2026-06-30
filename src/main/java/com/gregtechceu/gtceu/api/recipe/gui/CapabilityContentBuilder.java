@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.gui;
 
+import brachy.modularui.api.MCHelper;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
@@ -108,10 +109,6 @@ public interface CapabilityContentBuilder {
         recipeViewerSlotWidget.chance(chance);
 
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
-            if (ingredient.getStacks().length > 0) {
-                FluidStack stack = ingredient.getStacks()[0];
-                TooltipsHandler.appendFluidTooltips(stack, tooltip::addLine, TooltipFlag.NORMAL);
-            }
             if (ingredient instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
                 tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",
