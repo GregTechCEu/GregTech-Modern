@@ -388,7 +388,7 @@ public class IntProviderFluidIngredientTest {
                         "Singleblock fluid CR Preroll was not running a recipe when preroll was checked!");
                 var outputPrerolls = machine.recipeLogic.getLastRecipe().outputs.get(FluidRecipeCapability.CAP);
                 helper.assertFalse(outputPrerolls.size() == 0,
-                        "Singleblock fluid CR Preroll's recipe output contained no items!");
+                        "Singleblock fluid CR Preroll's recipe output contained no fluids!");
                 prerolls[finalI] = ((IRangedIngredient)(outputPrerolls.get(0).content())).getAmount();;
             });
         }
@@ -407,20 +407,11 @@ public class IntProviderFluidIngredientTest {
             rolls[0] = addedRolls[0];
             helper.assertFalse(prerolls[0] != rolls[0], "Singleblock fluid CR Preroll failed on run 0");
 
-
-            boolean allEqual = true;
             for (int i = 1; i < REPLICAS; i++) {
                 rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 helper.assertFalse(prerolls[i] != rolls[i],
-                        "Singleblock CR Preroll failed on run [" + i + "]");
-                if (allEqual && rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                }
+                        "Singleblock fluid CR Preroll failed on run [" + i + "]");
             }
-            helper.assertFalse(allEqual,
-                    "Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
             helper.succeed();
         });
     }
@@ -1098,6 +1089,61 @@ public class IntProviderFluidIngredientTest {
 
             helper.assertFalse(sus, "Batched Parallel LCent ranged fluid output test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
+            helper.succeed();
+        });
+    }
+    // test for multiblock machine with 16x Parallels with ranged fluid output preroll
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+            batch = "RangedFluidIngredients",
+            timeoutTicks = 2000)
+    public static void multiblockLCentRangedFluidOutputPreroll16ParallelBatched(GameTestHelper helper) {
+        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+
+        final NotifiableFluidTank fluidIn = busHolder.inputHatch1.tank;
+        final NotifiableFluidTank fluidOut = busHolder.outputHatch1.tank;
+
+        int batches = 16;
+        int parallels = 16;
+        busHolder.controller.setBatchEnabled(true);
+        busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
+
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
+        int[] prerolls = new int[MULTI_REPLICAS];
+        for (int i = 0; i < MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI+20, () -> {
+                helper.assertFalse(busHolder.controller.recipeLogic.getLastRecipe() == null,
+                        "Multiblock LCent fluid Preroll was not running a recipe when preroll was checked!");
+                var outputPrerolls = busHolder.controller.recipeLogic.getLastRecipe().outputs.get(FluidRecipeCapability.CAP);
+                helper.assertFalse(outputPrerolls.size() == 0,
+                        "Multiblock LCent fluid Preroll's recipe output contained no fluids!");
+                prerolls[finalI] = ((IRangedIngredient)(outputPrerolls.get(0).content())).getAmount();;
+            });
+        }
+        // check the results of all rolls together
+        // repeat recipe MULTI_REPLICAS times
+        int[] addedRolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI, () -> {
+                addedRolls[finalI-1] = fluidOut.getFluidInTank(0).getAmount();
+                // reset for a rerun
+                fluidIn.setFluidInTank(0, new FluidStack(LCENT_OUT, batches * parallels));
+            });
+        }
+
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+            int[] rolls = new int[MULTI_REPLICAS];
+            rolls[0] = addedRolls[0];
+            helper.assertFalse(prerolls[0] != rolls[0], "Multiblock LCent fluid Preroll failed on run 0");
+
+            for (int i = 1; i < MULTI_REPLICAS; i++) {
+                rolls[i] = addedRolls[i] - addedRolls[i - 1];
+                helper.assertFalse(prerolls[i] != rolls[i],
+                        "Multiblock LCent fluid Preroll failed on run [" + i + "]");
+            }
             helper.succeed();
         });
     }

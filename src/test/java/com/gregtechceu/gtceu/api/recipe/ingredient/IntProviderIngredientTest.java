@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -1036,7 +1037,7 @@ public class IntProviderIngredientTest {
         // 16 parallels
         // check the results of all rolls together
         // repeat recipe MULTI_REPLICAS times
-        int[] addedRolls = new int[MULTI_REPLICAS];
+        int[] rolls = new int[MULTI_REPLICAS];
         for (int i = 1; i <= MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(75 * finalI, () -> {
@@ -1054,7 +1055,7 @@ public class IntProviderIngredientTest {
                         "Batched Parallel LCent didn't produce correct number of items, produced [" +
                                 resultCount + "] not [" + lowerLimit + "-" + upperLimit + "]");
 
-                addedRolls[finalI - 1] = resultCount;
+                rolls[finalI - 1] = resultCount;
 
                 // reset for a rerun
                 for (int j = 0; j < batches; j++) {
@@ -1070,9 +1071,7 @@ public class IntProviderIngredientTest {
         helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
             // check if each roll was a multiple of run count
             boolean sus = false;
-            int[] rolls = new int[MULTI_REPLICAS];
 
-            rolls[0] = addedRolls[0];
             if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[0], batches, parallels, 1)) {
                 sus = true;
                 GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + 1 + " produced [" +
@@ -1080,7 +1079,6 @@ public class IntProviderIngredientTest {
                         "). If this message only appears once, this is likely a false positive.");
             }
             for (int i = 1; i < MULTI_REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
                 if (TestUtils.isStackSizeExactlyEvenMultiple(rolls[i], batches, parallels, 1)) {
                     sus = true;
                     GTCEu.LOGGER.warn("Batched Parallel LCent ranged item output test iteration " + (i + 1) +
@@ -1095,6 +1093,71 @@ public class IntProviderIngredientTest {
 
             helper.assertFalse(sus, "Batched Parallel LCent ranged item output test rolled exactly even to" +
                     " Batch * Parallel count on every iteration");
+            helper.succeed();
+        });
+    }
+
+    // test for multiblock machine with 16x Parallels with ranged item output
+    @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
+            batch = "RangedIngredients",
+            timeoutTicks = 2000)
+    public static void multiblockLCentRangedItemOutputPreroll16ParallelBatched(GameTestHelper helper) {
+        BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
+
+        NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
+        NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
+
+        int batches = 16;
+        int parallels = 16;
+        busHolder.controller.setBatchEnabled(true);
+        busHolder.parallelHatch.setCurrentParallel(parallels);
+
+        for (int j = 0; j < batches; j++) {
+            itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+        }
+
+        // 1t to turn on, 64t per recipe run, 10t buffer for sanity
+        // 16 parallels
+        int[] prerolls = new int[MULTI_REPLICAS];
+        for (int i = 0; i < MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI+20, () -> {
+                helper.assertFalse(busHolder.controller.recipeLogic.getLastRecipe() == null,
+                        "Multiblock LCent item Preroll was not running a recipe when preroll was checked!");
+                var outputPrerolls = busHolder.controller.recipeLogic.getLastRecipe().outputs.get(ItemRecipeCapability.CAP);
+                helper.assertFalse(outputPrerolls.size() == 0,
+                        "Multiblock LCent item Preroll's recipe output contained no items!");
+                prerolls[finalI] = ((IRangedIngredient)(outputPrerolls.get(0).content())).getAmount();;
+            });
+        }
+        // check the results of all rolls together
+        // repeat recipe MULTI_REPLICAS times
+        int[] rolls = new int[MULTI_REPLICAS];
+        for (int i = 1; i <= MULTI_REPLICAS; i++) {
+            final int finalI = i; // lambda preserve you
+            helper.runAfterDelay(75 * finalI, () -> {
+                int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
+                rolls[finalI - 1] = resultCount;
+
+                // reset for a rerun
+                for (int j = 0; j < batches; j++) {
+                    itemIn.setStackInSlot(j, LCENT_OUT.copyWithCount(16));
+                }
+                // Don't overflow the output bus
+                for (int j = 0; j < itemOut.getSize(); j++) {
+                    itemOut.setStackInSlot(j, ItemStack.EMPTY);
+                }
+            });
+        }
+
+        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
+
+            helper.assertFalse(prerolls[0] != rolls[0], "Multiblock LCent item Preroll failed on run 0");
+
+            for (int i = 1; i < REPLICAS; i++) {
+                helper.assertFalse(prerolls[i] != rolls[i],
+                        "Multiblock LCent item Preroll failed on run [" + i + "]");
+            }
             helper.succeed();
         });
     }
