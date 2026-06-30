@@ -1,7 +1,4 @@
 {
-    "net/minecraft/core/MappedRegistry": [
-        "com/gregtechceu/gtceu/core/IMappedRegistryAccess"
-    ],
     "net/minecraft/client/renderer/block/model/BakedQuad": [
         "com/gregtechceu/gtceu/core/util/extensions/BakedQuadExt"
     ],
