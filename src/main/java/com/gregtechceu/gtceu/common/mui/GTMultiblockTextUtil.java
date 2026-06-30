@@ -480,7 +480,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new ItemDrawable(stack).asWidget())
+                            .child(new ItemDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.addFromItem(stack)))
                             .child(
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
@@ -492,7 +494,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new ItemDrawable(stack).asWidget())
+                            .child(new ItemDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.addFromItem(stack)))
                             .child(
                                     Text.lang(
                                             key, stack.getHoverName(), displaycount,
@@ -545,7 +549,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new FluidDrawable(stack).asWidget())
+                            .child(new FluidDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.add(stack.getDisplayName())))
                             .child(
                                     Text.lang(
                                             key, stack.getDisplayName(), displaycount,
@@ -557,7 +563,9 @@ public class GTMultiblockTextUtil {
                     Flow.row()
                             .coverChildren()
                             .childPadding(2)
-                            .child(new FluidDrawable(stack).asWidget())
+                            .child(new FluidDrawable(stack).asWidget()
+                                    .size(16)
+                                    .tooltip(r -> r.add(stack.getDisplayName())))
                             .child(
                                     Text.lang(key, stack.getDisplayName(), displaycount,
                                             FormattingUtil.formatNumber2Places(amountD / maxDurationSec))
