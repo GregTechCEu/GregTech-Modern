@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
@@ -32,7 +33,6 @@ import brachy.modularui.widgets.slot.ModularSlot;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,17 +53,7 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine {
             if (FluidUtil.getFluidContained(itemStack).isPresent()) {
                 return false;
             }
-            return FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
-                if (isRemote()) return true;
-                return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
-                    var list = recipe.value().inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-                    if (!list.isEmpty()) {
-                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.getFirst().content()).getItems())
-                                .map(ItemStack::getItem).anyMatch(i -> i == item);
-                    }
-                    return false;
-                });
-            });
+            return FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> GTUtil.getItemBurnTime((Item) item) > 0);
         });
         this.ashHandler = attachTrait(new NotifiableItemStackHandler(1, IO.OUT, IO.OUT));
     }
