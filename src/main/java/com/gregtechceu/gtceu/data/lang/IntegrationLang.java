@@ -111,6 +111,7 @@ public class IntegrationLang {
         provider.add("gtceu.jade.hours", "%s hours");
         provider.add("gtceu.jade.days", "%s days");
         provider.add("gtceu.jade.years", "%s years");
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

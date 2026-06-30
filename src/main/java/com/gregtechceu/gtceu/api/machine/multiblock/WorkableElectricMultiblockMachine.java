@@ -239,6 +239,21 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         return voltage;
     }
 
+    @Override
+    public long getDisplayGeneratorPower() {
+        if (this.isGenerator()) {
+            long power = -1;
+            var handlers = getCapabilitiesFlat(IO.OUT, EURecipeCapability.CAP);
+            for (IRecipeHandler<?> handler : handlers) {
+                if (handler instanceof IEnergyContainer container) {
+                    power += container.getOutputVoltage() * container.getOutputAmperage();
+                }
+            }
+            return power;
+        }
+        return -1;
+    }
+
     /**
      * Is this multiblock a generator?
      * Used for max voltage calculations.

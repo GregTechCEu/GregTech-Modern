@@ -36,10 +36,10 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -66,11 +66,15 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.register(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.register(placeholder.getId(), placeholder);
     }
 
     public static void addOrOverridePlaceholder(Placeholder placeholder) {
-        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getId(), placeholder);
+    }
+
+    public static @Nullable Placeholder getPlaceholder(String str) {
+        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(str));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -96,12 +100,12 @@ public class PlaceholderHandler {
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         @Nullable PlaceholderContext context) throws PlaceholderException {
-        if (!GTRegistries.PLACEHOLDERS.containKey(placeholder.get(0).toString()))
+        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.get(0).toString())))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context != null && context.level().isClientSide &&
-                !GTRegistries.PLACEHOLDERS.get(placeholder.get(0).toString()).isView())
+                !GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).isView())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
-        return GTRegistries.PLACEHOLDERS.get(placeholder.get(0).toString()).apply(context,
+        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -330,7 +334,7 @@ public class PlaceholderHandler {
                                         .sorted()
                                         .map(s -> (IWidget) Flow.row()
                                                 .coverChildren()
-                                                .child(new TextWidget<>(s)
+                                                .child(new TextWidget<>(s.toString().replaceAll("gtceu:", ""))
                                                         .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
@@ -488,17 +492,18 @@ public class PlaceholderHandler {
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
-                if (GTRegistries.PLACEHOLDERS.containKey(s)) {
-                    if (GTRegistries.PLACEHOLDERS.get(s).isPure()) {
+                var id = GTCEu.id(s);
+                if (GTRegistries.PLACEHOLDERS.containsKey(id)) {
+                    if (GTRegistries.PLACEHOLDERS.get(id).isPure()) {
                         pureStarts.push(everything.length() - 1);
                     } else pureStarts.clear();
-                    if (GTRegistries.PLACEHOLDERS.get(s).isView()) {
+                    if (GTRegistries.PLACEHOLDERS.get(id).isView()) {
                         viewStarts.push(everything.length() - 1);
                     } else viewStarts.clear();
                     everything.append(s);
                     openPlaceholders.push(s);
                     if (s.equals("if")) ifDepth++;
-                    else if (ifDepth > 0 && !GTRegistries.PLACEHOLDERS.get(s).isView()) {
+                    else if (ifDepth > 0 && !GTRegistries.PLACEHOLDERS.get(id).isView()) {
                         return Component.literal(s)
                                 .withStyle(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(

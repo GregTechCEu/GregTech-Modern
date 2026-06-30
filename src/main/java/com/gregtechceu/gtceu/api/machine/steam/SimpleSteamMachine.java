@@ -94,8 +94,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
-            updateModelVentDirection();
             exhaustVentTrait.setVentingDirection(outputFacing);
+            updateModelVentDirection();
         }
     }
 

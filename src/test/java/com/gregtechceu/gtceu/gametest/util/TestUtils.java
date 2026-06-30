@@ -165,6 +165,7 @@ public class TestUtils {
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
     public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
+        if (controller.isFormed()) return;
         controller.checkAndFormStructure();
         helper.assertTrue(controller.isFormed(),
                 "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());

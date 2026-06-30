@@ -67,27 +67,29 @@ public class MultiblockSchemaInfo {
         Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
         IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
 
-        if (pattern instanceof BlockPattern blockPattern) {
-            if (this.userSliceRepeats.isEmpty()) {
-                for (int i = 0; i < blockPattern.getSlices().length; i++) {
-                    this.userSliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
+        if (this.structureHelper == null) {
+            if (pattern instanceof BlockPattern blockPattern) {
+                if (this.userSliceRepeats.isEmpty()) {
+                    for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                        this.userSliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                    }
                 }
-            }
-            // reinterpret slider values as slice repeats?
-            this.structureHelper = AbstractStructureHelper.blockPattern(this.userSliceRepeats);
+                // reinterpret slider values as slice repeats?
+                this.structureHelper = AbstractStructureHelper.blockPattern(this.userSliceRepeats);
 
-        } else if (pattern instanceof ExpandablePattern expandablePattern) {
-            if (this.userDimensions.isEmpty()) {
-                expandablePattern.getBoundsConstraints().apply().stream()
-                        .mapToInt(Pair::left)
-                        .forEach(this.userDimensions::add);
-            }
-            // reinterpret slider values as bounds?
-            this.structureHelper = AbstractStructureHelper.expandable(this.userDimensions);
+            } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                if (this.userDimensions.isEmpty()) {
+                    expandablePattern.getBoundsConstraints().apply().stream()
+                            .mapToInt(Pair::left)
+                            .forEach(this.userDimensions::add);
+                }
+                // reinterpret slider values as bounds?
+                this.structureHelper = AbstractStructureHelper.expandable(this.userDimensions);
 
-        } else {
-            // throw? log?
-            return;
+            } else {
+                // throw? log?
+                return;
+            }
         }
 
         this.structureHelper.populate(resultStructure, pattern, this.userGlobalBlockPreferences,

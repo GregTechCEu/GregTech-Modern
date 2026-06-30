@@ -7,13 +7,20 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
+import com.gregtechceu.gtceu.common.mui.widgets.SteamDialWidget;
+
+import net.minecraft.network.chat.Component;
 
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ButtonWidget;
@@ -99,6 +106,40 @@ public class MachineUIPanelBuilder {
                     attachConfiguratorsTrait.attachRightConfigurators(attachRight, panel, syncManager);
                 }
             }
+        }
+
+        if (machine instanceof SimpleSteamMachine steamMachine) {
+            IntSyncValue steamAmount = syncManager.getOrCreateSyncHandler("steamTank", IntSyncValue.class,
+                    () -> new IntSyncValue(() -> steamMachine.steamTank.getFluidInTank(0).getAmount()));
+            IntSyncValue steamCapacity = syncManager.getOrCreateSyncHandler("steamCapacity", IntSyncValue.class,
+                    () -> new IntSyncValue(() -> steamMachine.steamTank.getTankCapacity(0)));
+
+            DoubleSyncValue steamProgress = syncManager.getOrCreateSyncHandler("steamTankRatio", DoubleSyncValue.class,
+                    () -> new DoubleSyncValue(() -> steamMachine.steamTank.getFluidInTank(0).getAmount() /
+                            (float) steamMachine.steamTank.getTankCapacity(0)));
+            final int dialWidth = 4;
+            final int dialHeight = 12;
+            UITexture background = steamMachine.isHighPressure() ? GTGuiTextures.STEAM_DIAL_STEEL :
+                    GTGuiTextures.STEAM_DIAL_BRONZE;
+            attachMain.child(new ParentWidget<>()
+                    .child(background.asWidget()
+                            .size(32, 32)
+                            .tooltipAutoUpdate(true)
+                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
+                                    steamAmount.getIntValue(), steamCapacity.getIntValue()))))
+                    .child(new SteamDialWidget(steamProgress)
+                            .setMinAngle((float) Math.PI)
+                            .setMaxAngle((float) 0.0f)
+                            .setColor(Color.BLACK.brighterSafe(4))
+                            .asWidget().decoration()
+
+                            .size(dialHeight, dialWidth)
+                            .left(16)
+                            .top(16)
+                            .tooltipAutoUpdate(true)
+                            .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
+                                    steamAmount.getIntValue(), steamCapacity.getIntValue()))))
+                    .leftRel(0.0f).left(-36).top(4));
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
