@@ -1708,7 +1708,7 @@
   "block.gtceu.zpm_wiremill": "§cЕлітний волок III§r",
   "block.gtceu.zpm_world_accelerator": "§cЕлітний світовий прискорювач III§r",
   "block.sterilizing_filter_casing.tooltip": "Створює§a стерильне§7 середовище",
-  "block.surface_rock": "%s (поверхневий поклад)",
+  "block.gtceu.surface_rock": "%s (поверхневий поклад)",
   "button.gtceu.mark_as_depleted.name": "Позначити як виснажений",
   "button.gtceu.toggle_waypoint.name": "Перемикнути маршрутну точку",
   "command.gtceu.cape.failure.does_not_exist": "Плаща «%s» не існує",

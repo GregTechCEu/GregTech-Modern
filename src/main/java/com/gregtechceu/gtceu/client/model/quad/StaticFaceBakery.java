@@ -228,9 +228,13 @@ public class StaticFaceBakery {
         vertexData[i + POSITION_INDEX + 2] = Float.floatToRawIntBits(face.z());
         vertexData[i + COLOR_INDEX] = 0xffffffff;
         vertexData[i + UV_INDEX] = Float.floatToRawIntBits(
-                sprite.getU(blockFaceUV.getU(vertexIndex) * 0.999f + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001f));
+                sprite.getU(
+                        (blockFaceUV.getU(vertexIndex) * 0.999f + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001f) /
+                                16.0F));
         vertexData[i + UV_INDEX + 1] = Float.floatToRawIntBits(
-                sprite.getV(blockFaceUV.getV(vertexIndex) * 0.999f + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001f));
+                sprite.getV(
+                        (blockFaceUV.getV(vertexIndex) * 0.999f + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001f) /
+                                16.0F));
     }
 
     private static float[] setupShape(Vector3f min, Vector3f max) {

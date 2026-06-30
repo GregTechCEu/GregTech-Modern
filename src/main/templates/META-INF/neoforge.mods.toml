@@ -52,6 +52,9 @@ enumExtensions = "META-INF/enum_extensions.json"
 [[mixins]]
     config = "mixin_configs/${mod_id}-xaeroworldmap.mixins.json"
     requiredMods = ["xaeroworldmap"]
+[[mixins]]
+    config = "mixin_configs/${mod_id}-sable.mixins.json"
+    requiredMods = ["sable"]
 
 [[accessTransformers]]
     file = "META-INF/accesstransformer.cfg"
@@ -107,6 +110,13 @@ enumExtensions = "META-INF/enum_extensions.json"
     modId = "jade"
     type = "optional"
     versionRange = "[${jade_version},)"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "sable"
+    type = "optional"
+    versionRange = "[${sable_version},)"
     ordering = "NONE"
     side = "BOTH"
 

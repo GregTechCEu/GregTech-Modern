@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.mui.GTGuiScreen;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -18,6 +20,7 @@ import brachy.modularui.factory.GuiManager;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.ModularScreen;
+import dev.ryanhcode.sable.Sable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -64,8 +67,16 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     @Override
     public boolean canInteractWith(Player player, PosGuiData guiData) {
-        return player == guiData.getPlayer() && getMachine(guiData) != null &&
-                guiData.getSquaredDistance(player) <= 8 * 8;
+        if (player != guiData.getPlayer() || getMachine(guiData) == null) {
+            return false;
+        }
+        if (guiData.getSquaredDistance(player) <= 8 * 8) {
+            return true;
+        }
+        if (!GTCEu.Mods.isSableLoaded()) {
+            return false;
+        }
+        return SableUtils.isWithinSubLevel(guiData.getLevel(), guiData.getBlockPos());
     }
 
     @Override
@@ -90,5 +101,12 @@ public class MachineUIFactory extends AbstractUIFactory<PosGuiData> {
 
     public String getThemeId(PosGuiData data) {
         return getMachine(data).getDefinition().getThemeId();
+    }
+
+    private static class SableUtils {
+
+        public static boolean isWithinSubLevel(Level level, BlockPos pos) {
+            return Sable.HELPER.getContaining(level, (Vec3i) pos) != null;
+        }
     }
 }

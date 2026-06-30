@@ -253,7 +253,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         if (pState.hasBlockEntity()) {
             if (!pState.is(pNewState.getBlock())) { // new block
                 MetaMachine machine = MetaMachine.getMachine(pLevel, pPos);
-                if (machine != null) {
+                if (machine != null && !pIsMoving) {
                     machine.onMachineDestroyed();
                 }
 

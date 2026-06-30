@@ -133,4 +133,12 @@ repositories {
         forRepository { maven { url = "https://maven.su5ed.dev/releases" } }
         filter { includeGroup("org.sinytra.forgified-fabric-api") }
     }
+    exclusiveContent { // Sable + Create Aeronautics (physics sub-levels)
+        forRepository { maven { url = "https://maven.ryanhcode.dev/releases" } }
+        filter {
+            includeGroupAndSubgroups("dev.ryanhcode")
+            includeGroupAndSubgroups("dev.eriksonn")
+            includeGroupAndSubgroups("dev.simulated_team")
+        }
+    }
 }

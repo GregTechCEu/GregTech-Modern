@@ -58,12 +58,15 @@ public class BlockHighlightRenderer {
         if (level != null && player != null) {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
-            Vector3fc blockCenter = blockPos.getCenter().toVector3f();
+            Vec3 cameraPos = camera.getPosition();
+            Vector3f blockCenter = new Vector3f(
+                    (float) (blockPos.getX() + 0.5 - cameraPos.x()),
+                    (float) (blockPos.getY() + 0.5 - cameraPos.y()),
+                    (float) (blockPos.getZ() + 0.5 - cameraPos.z()));
 
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
-            Vec3 cameraPos = camera.getPosition();
             // draw tool grid highlight
             if ((!toolType.isEmpty()) || (held.isEmpty() && player.isShiftKeyDown())) {
                 IToolGridHighlight gridHighlight = null;
@@ -72,24 +75,27 @@ public class BlockHighlightRenderer {
                 } else if (level.getBlockState(blockPos).getBlock() instanceof IToolGridHighlight highLight) {
                     gridHighlight = highLight;
                 } else
-                    if (toolType.contains(GTToolType.WRENCH) || held.canPerformAction(GTItemAbilities.WRENCH_ROTATE)) {
-                        var behavior = CustomBlockRotations.getCustomRotation(level.getBlockState(blockPos).getBlock());
-                        if (behavior != null && behavior.showGrid()) {
-                            gridHighlight = new IToolGridHighlight() {
+                    if (toolType.contains(GTToolType.WRENCH) ||
+                            held.canPerformAction(GTItemAbilities.WRENCH_ROTATE)) {
+                                var behavior = CustomBlockRotations
+                                        .getCustomRotation(level.getBlockState(blockPos).getBlock());
+                                if (behavior != null && behavior.showGrid()) {
+                                    gridHighlight = new IToolGridHighlight() {
 
-                                @Override
-                                public @Nullable UITexture sideTips(@NotNull Player player, @NotNull BlockPos pos,
-                                                                    @NotNull BlockState state,
-                                                                    @NotNull Set<GTToolType> toolTypes,
-                                                                    @NonNull ItemStack held,
-                                                                    @NotNull Direction side) {
-                                    return behavior.showSideTip(state, side) ?
-                                            GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
-                                            null;
+                                        @Override
+                                        public @Nullable UITexture sideTips(@NotNull Player player,
+                                                                            @NotNull BlockPos pos,
+                                                                            @NotNull BlockState state,
+                                                                            @NotNull Set<GTToolType> toolTypes,
+                                                                            @NonNull ItemStack held,
+                                                                            @NotNull Direction side) {
+                                            return behavior.showSideTip(state, side) ?
+                                                    GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
+                                                    null;
+                                        }
+                                    };
                                 }
-                            };
-                        }
-                    }
+                            }
                 if (gridHighlight == null) {
                     return;
                 }
@@ -109,7 +115,6 @@ public class BlockHighlightRenderer {
 
                         poseStack.translate(facing.getStepX() * 0.01f, facing.getStepY() * 0.01f,
                                 facing.getStepZ() * 0.01f);
-                        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 
                         RenderUtil.moveToFace(poseStack, blockCenter, facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
@@ -144,9 +149,11 @@ public class BlockHighlightRenderer {
             }
 
             // draw pipe connection grid highlight
-            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
+            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ?
+                    pipeBlockItem.getBlock().pipeType :
                     null;
-            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
+            if (pipeType instanceof IPipeType<?> type &&
+                    blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
                     pipeBlockEntity.getPipeType().type().equals(type.type())) {
                 poseStack.pushPose();
 
@@ -168,11 +175,11 @@ public class BlockHighlightRenderer {
         rColour = gColour = 0.2F + (float) Math.sin((System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         BlockPos blockPos = blockHitResult.getBlockPos();
-        float minX = blockPos.getX();
-        float maxX = blockPos.getX() + 1;
-        float minY = blockPos.getY();
-        float maxY = blockPos.getY() + 1;
-        float maxZ = blockPos.getZ() + 1.01f;
+        float minX = (float) (blockPos.getX() - cameraPos.x());
+        float maxX = (float) (blockPos.getX() + 1 - cameraPos.x());
+        float minY = (float) (blockPos.getY() - cameraPos.y());
+        float maxY = (float) (blockPos.getY() + 1 - cameraPos.y());
+        float maxZ = (float) (blockPos.getZ() + 1.01 - cameraPos.z());
         Direction attachSide = ICoverable.traceCoverSide(blockHitResult);
         Vector3f topRight = new Vector3f(maxX, maxY, maxZ);
         Vector3f bottomRight = new Vector3f(maxX, minY, maxZ);
@@ -181,7 +188,10 @@ public class BlockHighlightRenderer {
         Vector3f shiftX = new Vector3f(0.25f, 0, 0);
         Vector3f shiftY = new Vector3f(0, 0.25f, 0);
 
-        Vector3f cubeCenter = blockPos.getCenter().toVector3f();
+        Vector3f cubeCenter = new Vector3f(
+                (float) (blockPos.getX() + 0.5 - cameraPos.x()),
+                (float) (blockPos.getY() + 0.5 - cameraPos.y()),
+                (float) (blockPos.getZ() + 0.5 - cameraPos.z()));
 
         topRight.sub(cubeCenter);
         bottomRight.sub(cubeCenter);
@@ -221,7 +231,6 @@ public class BlockHighlightRenderer {
         topLeft.add(cubeCenter);
 
         poseStack.pushPose();
-        poseStack.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderType.lines());
         RenderSystem.lineWidth(3);

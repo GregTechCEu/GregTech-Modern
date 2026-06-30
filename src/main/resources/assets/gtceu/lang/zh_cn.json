@@ -1722,7 +1722,7 @@
     "block.gtceu.zpm_wiremill": "§c精英线材轧机 III§r",
     "block.gtceu.zpm_world_accelerator": "§c精英世界加速器 III§r",
     "block.sterilizing_filter_casing.tooltip": "创造一个§a无菌§r环境",
-    "block.surface_rock": "地表岩石（%s）",
+    "block.gtceu.surface_rock": "地表岩石（%s）",
     "button.gtceu.mark_as_depleted.name": "标记为枯竭",
     "button.gtceu.toggle_waypoint.name": "切换路径点",
     "command.gtceu.cape.failure.does_not_exist": "披风%s不存在",
