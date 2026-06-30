@@ -56,7 +56,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
@@ -94,8 +94,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
-            updateModelVentDirection();
             exhaustVentTrait.setVentingDirection(outputFacing);
+            updateModelVentDirection();
         }
     }
 

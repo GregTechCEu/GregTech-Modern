@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -27,6 +28,7 @@ public abstract class AbstractStructureHelper {
     public static final Direction[] DIRECTIONS_IN_ORDER = { Direction.NORTH, Direction.SOUTH, Direction.WEST,
             Direction.EAST, Direction.UP, Direction.DOWN };
 
+    @Getter
     protected final HashBasedTable<PatternPredicate, BasePredicate, BlockInfo> blockPreferences = HashBasedTable
             .create();
     protected final HashBasedTable<PatternPredicate, BasePredicate, IntIntPair> minMaxPreferences = HashBasedTable
@@ -39,10 +41,6 @@ public abstract class AbstractStructureHelper {
 
     public static AbstractStructureHelper expandable(IntList sliceRepeats) {
         return new ExpandablePatternHelper(sliceRepeats);
-    }
-
-    public Table<PatternPredicate, BasePredicate, BlockInfo> getBlockPreferences() {
-        return this.blockPreferences;
     }
 
     public Table<PatternPredicate, BasePredicate, IntIntPair> getMinMaxPreferences() {
