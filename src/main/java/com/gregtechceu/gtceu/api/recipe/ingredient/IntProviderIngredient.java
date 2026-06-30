@@ -113,6 +113,11 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         return itemStacks;
     }
 
+    public int getAmount(){
+        if (!isRolled()) return getMaxRoll();
+        else return (getItems().length!=0 ? getItems()[0].getCount() : 0);
+    }
+
     /**
      * Gets a {@link ItemStack} containing the maximum possible output from this {@link IntProviderIngredient}.
      * Mainly used for things like Recipe provider simulations to see if there is enough inventory space to handle
