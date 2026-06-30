@@ -32,9 +32,6 @@ import static com.gregtechceu.gtceu.client.model.quad.MutableQuadView.*;
 @UtilityClass
 public class TextureHelper {
 
-    public static final float NORMALIZER = 1f / 16f;
-    public static final float DENORMALIZER = 16f;
-
     private static final int BAKE_ROTATE_ANY = BAKE_ROTATE_270 | BAKE_ROTATE_180 | BAKE_ROTATE_90;
 
     /**
@@ -52,12 +49,6 @@ public class TextureHelper {
         if (quad.nominalFace() != null && (BAKE_LOCK_UV & bakeFlags) != 0) {
             // Assigns normalized UV coordinates based on vertex positions
             applyModifier(quad, UV_LOCKERS[quad.nominalFace().get3DDataValue()]);
-        } else if ((BAKE_NORMALIZED & bakeFlags) == 0) {
-            // flag is NOT set, UVs are assumed to not be normalized yet as is the default.
-            // normalize through dividing by 16
-
-            // Scales from 0-16 to 0-1
-            applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * NORMALIZER, q.v(i) * NORMALIZER));
         }
 
         final int rotation = bakeFlags & BAKE_ROTATE_ANY;
@@ -103,9 +94,7 @@ public class TextureHelper {
      * Textures must be already baked.
      *
      * <p>
-     * Note this the function's order of operations is reversed in relation to {@link #bakeSprite}.<br>
-     * The {@link MutableQuadView#BAKE_NORMALIZED BAKE_NORMALIZED} flag also works inversely
-     * to the one in {@link #bakeSprite}.
+     * Note this the function's order of operations is reversed in relation to {@link #bakeSprite}.
      *
      * <p>
      * If {@code sprite == null}, only the UV modifiers will be applied,
@@ -137,13 +126,6 @@ public class TextureHelper {
             applyModifier(quad, ROTATIONS[rotation]);
         }
 
-        if ((BAKE_NORMALIZED & bakeFlags) == 0) {
-            // flag is NOT set, UVs are assumed to be normalized as is the default.
-            // denormalize through multiplying by 16
-
-            // Scales from 0-1 to 0-16
-            applyModifier(quad, (q, i) -> q.uv(i, q.u(i) * DENORMALIZER, q.v(i) * DENORMALIZER));
-        }
         if ((BAKE_DEROTATE_UV & bakeFlags) != 0) {
             // Cycles texture coordinates so that vertex 0's UVs are the smallest
             derotateUV(quad);
