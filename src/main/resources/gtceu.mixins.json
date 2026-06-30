@@ -21,6 +21,7 @@
         "client.KeyboardHandlerMixin",
         "client.LevelRendererMixin",
         "client.ModelBakerImplMixin",
+        "client.ModelBakeryAccessor",
         "client.ModelManagerMixin",
         "client.MultiPlayerGameModeMixin",
         "client.PlayerSkinAccessor",

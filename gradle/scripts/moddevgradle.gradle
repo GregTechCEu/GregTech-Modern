@@ -155,9 +155,7 @@ neoForge {
             // "SCAN": For mods scan.
             // "REGISTRIES": For firing of registry events.
             // "REGISTRYDUMP": For getting the contents of all registries.
-            systemProperty 'forge.logging.marker.loading', 'ALLOW'
-            systemProperty 'forge.logging.marker.scan', 'ALLOW'
-            systemProperty 'forge.logging.marker.registries', 'ALLOW'
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
             // Enable assertions for our classes in dev environment
             jvmArgument('-ea:com.gregtechceu.gtceu...')
 
@@ -167,7 +165,7 @@ neoForge {
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
-            logLevel = org.slf4j.event.Level.DEBUG
+            logLevel = org.slf4j.event.Level.INFO
 
             // Disable JOML using scientific notation for its types' toString() outputs
             systemProperty 'joml.format', 'false'
