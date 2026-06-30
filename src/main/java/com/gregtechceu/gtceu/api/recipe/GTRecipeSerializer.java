@@ -40,6 +40,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
     public @NotNull GTRecipeDefinition fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {
         ResourceLocation typeLoc = new ResourceLocation(GsonHelper.getAsString(json, TYPE));
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(typeLoc);
+
+        int tier = GsonHelper.getAsInt(json, TIER, 0);
+
         int duration = GsonHelper.getAsInt(json, DURATION, 0);
 
         ContentListMap inputs = readContentMap(json, INPUTS);
@@ -50,7 +53,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         List<RecipeCondition<?>> conditions = readConditions(json);
         CompoundTag data = readData(json);
         GTRecipeCategory category = readCategory(json, recipeType);
-        int tier = GsonHelper.getAsInt(json, TIER, 0);
+
 
         return new GTRecipeDefinition(id, recipeType, category, inputs, outputs, tickInputs, tickOutputs,
                 duration, conditions, data, tier);
@@ -59,6 +62,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
     public JsonObject toJson(GTRecipeDefinition recipe) {
         JsonObject json = new JsonObject();
         json.addProperty(TYPE, recipe.recipeType.registryName.toString());
+        json.addProperty(TIER, recipe.tier);
         json.addProperty(DURATION, recipe.duration);
         writeContentMap(json, INPUTS, recipe.inputs);
         writeContentMap(json, OUTPUTS, recipe.outputs);
@@ -69,9 +73,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         if (recipe.category != null && recipe.category != recipe.recipeType.getCategory()) {
             json.addProperty(CATEGORY, recipe.category.registryKey.toString());
         }
-        if (recipe.tier != 0) {
-            json.addProperty(TIER, recipe.tier);
-        }
         return json;
     }
 
@@ -79,6 +80,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
     @NotNull
     public GTRecipeDefinition fromNetwork(@NotNull ResourceLocation id, @NotNull FriendlyByteBuf buf) {
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(buf.readResourceLocation());
+        int tier = buf.readVarInt();
         int duration = buf.readVarInt();
         ContentListMap inputs = ContentListMap.fromNetwork(buf);
         ContentListMap outputs = ContentListMap.fromNetwork(buf);
@@ -90,7 +92,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
             data = new CompoundTag();
         }
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(buf.readResourceLocation());
-        int tier = buf.readVarInt();
+
 
         return new GTRecipeDefinition(id, recipeType, category, inputs, outputs, tickInputs, tickOutputs,
                 duration, conditions, data, tier);
@@ -99,6 +101,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
     @Override
     public void toNetwork(FriendlyByteBuf buf, GTRecipeDefinition recipe) {
         buf.writeResourceLocation(recipe.recipeType.registryName);
+        buf.writeVarInt(recipe.tier);
         buf.writeVarInt(recipe.duration);
         recipe.inputs.toNetwork(buf);
         recipe.outputs.toNetwork(buf);
@@ -107,7 +110,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         buf.writeCollection(recipe.conditions, (buffer, condition) -> condition.toNetwork(buffer));
         buf.writeNbt(recipe.data);
         buf.writeResourceLocation(recipe.category.registryKey);
-        buf.writeVarInt(recipe.tier);
+
     }
 
     private static ContentListMap readContentMap(JsonObject json, String key) {

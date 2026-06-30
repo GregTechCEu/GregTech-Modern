@@ -82,6 +82,11 @@ public class ContentListMap{
                 .add(content);
     }
 
+    public <T> void add(RecipeCapability<T> capability, T... contents) {
+        ((List<T>) contentsMap.computeIfAbsent(capability, c -> new ArrayList<T>()))
+                .addAll(List.of(contents));
+    }
+
     public <T> T getFirst(RecipeCapability<T> capability) {
         List<T> list = (List<T>) contentsMap.get(capability);
         if(list != null) {

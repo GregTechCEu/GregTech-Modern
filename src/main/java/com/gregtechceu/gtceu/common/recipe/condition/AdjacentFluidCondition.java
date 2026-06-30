@@ -110,7 +110,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         if (level == null) {
             return false;
         }
-        Set<HolderSet<Fluid>> remainingFluids = new HashSet<>(getOrInitFluids(recipe));
+        Set<HolderSet<Fluid>> remainingFluids = new HashSet<>(getOrInitFluids());
         if (remainingFluids.isEmpty()) {
             return true;
         }
@@ -129,15 +129,7 @@ public class AdjacentFluidCondition extends RecipeCondition<AdjacentFluidConditi
         return false;
     }
 
-    public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable GTRecipe recipe) {
-        return getOrInitFluids(recipe == null ? null : recipe.data);
-    }
-
-    public @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable GTRecipeDefinition recipe) {
-        return getOrInitFluids(recipe == null ? null : recipe.data);
-    }
-
-    private @NotNull List<HolderSet<Fluid>> getOrInitFluids(@Nullable CompoundTag data) {
+    public @NotNull List<HolderSet<Fluid>> getOrInitFluids() {
         if (resolvedFluids.isEmpty() && !fluids.isEmpty()) {
             for (var holderSetSupplier : this.fluids) {
                 this.resolvedFluids.add(holderSetSupplier.get());

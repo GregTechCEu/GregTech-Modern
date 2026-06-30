@@ -49,21 +49,12 @@ public class SimpleGeneratorMachine extends RecipeTieredMachine
                                   Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.hazardStrengthPerOperation = hazardStrengthPerOperation;
+        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
     }
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                   Object... args) {
         this(holder, tier, 0.25f, tankScalingFunction, args);
-    }
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        var energyContainer = super.createEnergyContainer(args);
-        energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
-        return energyContainer;
     }
 
     @Override

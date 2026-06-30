@@ -659,7 +659,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         });
 
         if(!recipeOutputLimits.isEmpty()) {
-            recipeModifiers.add(GTRecipeModifiers.trimRecipeOutputs(recipeOutputLimits));
+            recipeModifiers.add(0, GTRecipeModifiers.trimRecipeOutputs(recipeOutputLimits));
         }
         definition.setRecipeModifiers(recipeModifiers.toArray(new RecipeModifier[]{}));
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);

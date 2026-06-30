@@ -54,7 +54,7 @@ public class GTRecipeSerializerTest {
         for (var condition : recipe.conditions) {
             if (condition instanceof AdjacentFluidCondition recipeFluidCondition) {
                 foundFluid = true;
-                helper.assertTrue(equalHolderSetLists(recipeFluidCondition.getOrInitFluids(null), fluidSetIn),
+                helper.assertTrue(equalHolderSetLists(recipeFluidCondition.getOrInitFluids(), fluidSetIn),
                         "AdjacentFluidCondition did not deserialize properly");
             } else {
                 helper.fail("Found condition that should not be present: " + condition);
@@ -113,13 +113,13 @@ public class GTRecipeSerializerTest {
         List<HolderSet<Fluid>> fluidSetIn = List.of(waterSet, lavaSet);
         AdjacentFluidCondition condition = new AdjacentFluidCondition(fluidSetIn);
 
-        helper.assertTrue(equalHolderSetLists(condition.getOrInitFluids(null), fluidSetIn),
+        helper.assertTrue(equalHolderSetLists(condition.getOrInitFluids(), fluidSetIn),
                 "AdjacentFluidCondition did not store its data properly");
 
         JsonObject jsonConfig = condition.serialize();
         AdjacentFluidCondition newCondition = (AdjacentFluidCondition) AdjacentFluidCondition.deserialize(jsonConfig);
 
-        helper.assertTrue(equalHolderSetLists(newCondition.getOrInitFluids(null), fluidSetIn),
+        helper.assertTrue(equalHolderSetLists(newCondition.getOrInitFluids(), fluidSetIn),
                 "AdjacentFluidCondition did not deserialize properly");
 
         helper.succeed();

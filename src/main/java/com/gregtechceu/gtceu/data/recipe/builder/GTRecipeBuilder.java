@@ -22,7 +22,6 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.condition.*;
@@ -37,7 +36,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -55,7 +53,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
@@ -90,6 +87,8 @@ public class GTRecipeBuilder {
     public ResourceLocation id;
     @Setter
     public GTRecipeType recipeType;
+
+    public int tier = 0;
     public int duration = 100;
     @Setter
     public boolean perTick;
@@ -178,31 +177,25 @@ public class GTRecipeBuilder {
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T obj) {
         var t = (perTick ? tickInput : input);
-        warnTooManyIngredients(capability, true, t, 1);
         t.add(capability, obj);
         return this;
     }
 
     public <T> GTRecipeBuilder input(RecipeCapability<T> capability, T... obj) {
         var t = (perTick ? tickInput : input);
-        warnTooManyIngredients(capability, true, t, obj.length);
-        var list = t.computeIfAbsent(capability, c -> new ArrayList<>());
-        list.addAll(List.of(obj));
+        t.add(capability, obj);
         return this;
     }
 
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T obj) {
         var t = (perTick ? tickOutput : output);
-        warnTooManyIngredients(capability, false, t, 1);
         t.add(capability, obj);
         return this;
     }
 
     public <T> GTRecipeBuilder output(RecipeCapability<T> capability, T... obj) {
         var t = (perTick ? tickOutput : output);
-        warnTooManyIngredients(capability, false, t, obj.length);
-        var list = t.computeIfAbsent(capability, c -> new ArrayList<>());
-        list.addAll(List.of(obj));
+        t.add(capability, obj);
         return this;
     }
 
@@ -217,6 +210,14 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("Recipe duration must be non negative, id: {}", this.id);
         }
         this.duration = Math.max(duration, 0);
+        return this;
+    }
+
+    public GTRecipeBuilder tier(int tier) {
+        if(tier < GTValues.ULV || tier > GTValues.MAX) {
+            GTCEu.LOGGER.error("Recipe tier out of range, id: {}", this.id);
+        }
+        this.tier = tier;
         return this;
     }
 
@@ -1242,7 +1243,7 @@ public class GTRecipeBuilder {
      * @param researchStack the stack to use for research
      * @return this
      */
-    public GTRecipeBuilder scannerResearch(@NotNull ItemStack researchStack) {
+    public GTRecipeBuilder scannerResearch(ItemStack researchStack) {
         return scannerResearch(b -> b.researchStack(researchStack));
     }
 
@@ -1336,6 +1337,8 @@ public class GTRecipeBuilder {
         if (onSave != null) {
             onSave.accept(this, consumer);
         }
+        warnTooManyIngredients(true, input);
+        warnTooManyIngredients(false, output);
         ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
                 .map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
@@ -1457,22 +1460,25 @@ public class GTRecipeBuilder {
     public GTRecipeDefinition buildRawRecipe() {
         return new GTRecipeDefinition(id.withPrefix(recipeType.registryName.getPath() + "/"), recipeType, recipeCategory,
                 input, output, tickInput, tickOutput,
-                duration, conditions, data, 0);
+                duration, conditions, data, tier);
     }
 
-    protected void warnTooManyIngredients(RecipeCapability<?> capability,
-                                          boolean isInput,
-                                          ContentListMap table,
-                                          int addedEntries) {
+    protected void warnTooManyIngredients(boolean isInput,
+                                          ContentListMap table) {
         var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;
-        if (!recipeCapabilityMax.containsKey(capability)) return;
+        table.forEachEntry(new ContentListMap.EntryConsumer() {
+            @Override
+            public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
+                if(!recipeCapabilityMax.containsKey(capability)) return;
+                int max = recipeCapabilityMax.getInt(capability);
+                if(contents.size() > max) {
+                    String io = isInput ? "inputs" : "outputs";
+                    GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
+                            id, io, capability.name, io, max);
+                }
+            }
+        });
 
-        int max = recipeCapabilityMax.getInt(capability);
-        if (table.getOrDefault(capability, List.of()).size() + addedEntries > max) {
-            String io = isInput ? "inputs" : "outputs";
-            GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
-                    id, io, capability.name, io, max);
-        }
     }
 
     protected boolean missingIngredientError(int index, boolean isInput,

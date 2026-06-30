@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
-import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
@@ -31,8 +30,7 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
     @Override
     public void appendTooltip(ITooltip iTooltip, BlockAccessor blockAccessor, IPluginConfig iPluginConfig) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof ChargerMachine ||
-                    blockEntity.getMetaMachine() instanceof BatteryBufferMachine) {
+            if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine) {
                 CompoundTag serverData = blockAccessor.getServerData();
                 if (serverData.contains("batteries")) {
                     CompoundTag tag = serverData.getCompound("batteries");
@@ -80,14 +78,8 @@ public class BatteryStorageInfoProvider implements IBlockComponentProvider, ISer
     @Override
     public void appendServerData(CompoundTag compoundTag, BlockAccessor blockAccessor) {
         if (blockAccessor.getBlockEntity() instanceof IMachineBlockEntity blockEntity) {
-            if (blockEntity.getMetaMachine() instanceof ChargerMachine machine) {
+            if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine machine) {
                 CompoundTag tag = new CompoundTag();
-                tag.put("energy", getEnergyData(machine.energyContainer));
-                tag.put("storage", machine.getChargerInventory().serializeNBT());
-                compoundTag.put("batteries", tag);
-            } else if (blockEntity.getMetaMachine() instanceof BatteryBufferMachine machine) {
-                CompoundTag tag = new CompoundTag();
-                IEnergyContainer container = machine.energyContainer;
                 tag.put("energy", getEnergyData(machine.energyContainer));
                 tag.put("storage", machine.getBatteryInventory().serializeNBT());
                 compoundTag.put("batteries", tag);

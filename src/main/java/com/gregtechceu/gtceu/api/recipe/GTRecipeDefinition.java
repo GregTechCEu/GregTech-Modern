@@ -25,6 +25,8 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
     public final GTRecipeType recipeType;
     public final GTRecipeCategory category;
 
+    public final int tier;
+
     public final ContentListMap inputs;
     public final ContentListMap outputs;
     public final ContentListMap tickInputs;
@@ -35,8 +37,6 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
     public final List<RecipeCondition<?>> conditions;
 
     public final CompoundTag data;
-
-    public final int tier;
 
     public GTRecipeDefinition(ResourceLocation id, GTRecipeType recipeType, GTRecipeCategory category,
                               ContentListMap inputs, ContentListMap outputs,

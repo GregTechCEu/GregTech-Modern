@@ -81,18 +81,6 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
         this.exportFluids = createExportFluidHandler(args);
     }
 
-    @Override
-    protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        long tierVoltage = GTValues.V[getTier()];
-        if (isEnergyEmitter()) {
-            return RecipeAmperageEnergyContainer.makeEmitterContainer(this, tierVoltage * 64L,
-                    tierVoltage, getMaxInputOutputAmperage());
-        } else {
-            return RecipeAmperageEnergyContainer.makeReceiverContainer(this, tierVoltage * 64L,
-                    tierVoltage, getMaxInputOutputAmperage());
-        }
-    }
-
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
     }
