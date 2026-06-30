@@ -1182,6 +1182,11 @@ public class GTMachines {
         if (GTCEu.Mods.isAE2Loaded()) {
             GTAEMachines.init();
         }
+
+        // Dev-only test machines
+        if (GTCEu.isDev()) {
+            GTDevMachines.init();
+        }
     }
 
     public static void bakeRenderStates(Registry<MachineDefinition> registry) {

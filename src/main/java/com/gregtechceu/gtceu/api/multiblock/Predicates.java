@@ -39,6 +39,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Predicates {
@@ -75,6 +76,12 @@ public class Predicates {
 
     public static PatternPredicate blocks(Block... blocks) {
         return new PatternPredicate(new PredicateBlocks(blocks));
+    }
+
+    @SafeVarargs
+    @HideFromJS
+    public static PatternPredicate blocks(Supplier<Block>... blocks) {
+        return blocks(Arrays.stream(blocks).map(Supplier::get).toArray(Block[]::new));
     }
 
     /*
