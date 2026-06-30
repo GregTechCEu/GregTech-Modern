@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -14,13 +13,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
-public record Content(Object content, int chance, int maxChance, int tierChanceBoost) {
+public record Content(Object content, int chance, int maxChance) {
 
-    public Content(Object content, int chance, int maxChance, int tierChanceBoost) {
+    public Content(Object content, int chance, int maxChance) {
         this.content = content;
         this.chance = chance;
         this.maxChance = maxChance;
-        this.tierChanceBoost = fixBoost(tierChanceBoost);
     }
 
     public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
@@ -29,9 +27,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("chance", ChanceLogic.getMaxChancedValue())
                         .forGetter(val -> val.chance),
                 ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("maxChance", ChanceLogic.getMaxChancedValue())
-                        .forGetter(val -> val.maxChance),
-                Codec.INT.optionalFieldOf("tierChanceBoost", 0)
-                        .forGetter(val -> val.tierChanceBoost))
+                        .forGetter(val -> val.maxChance))
                 .apply(instance, Content::new));
     }
 
@@ -39,7 +35,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
      * Directly copies a Content.
      */
     public Content copy(RecipeCapability<?> capability) {
-        return new Content(capability.copyContent(content), chance, maxChance, tierChanceBoost);
+        return new Content(capability.copyContent(content), chance, maxChance);
     }
 
     /**
@@ -49,7 +45,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
         if (modifier == ContentModifier.IDENTITY || chance < maxChance) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance);
         }
     }
 
@@ -60,7 +56,7 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
         if (modifier == ContentModifier.IDENTITY) {
             return copy(capability);
         } else {
-            return new Content(capability.copyContent(content, modifier), chance, maxChance, tierChanceBoost);
+            return new Content(capability.copyContent(content, modifier), chance, maxChance);
         }
     }
 
@@ -84,51 +80,21 @@ public record Content(Object content, int chance, int maxChance, int tierChanceB
         return chanceBoost < 0 ? -fixed : fixed;
     }
 
-    public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic, int recipeTier,
-                                         int chanceTier, ChanceBoostFunction function) {
+    public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic) {
         if (content.chance() < ChanceLogic.getMaxChancedValue()) {
-            int boostedChance = function.getBoostedChance(content, recipeTier, chanceTier);
-            if (boostedChance == 0) {
+            if (content.chance() == 0) {
                 tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
             } else {
                 float baseChanceFloat = 100f * content.chance() / content.maxChance();
-                if (content.tierChanceBoost() != 0) {
-                    float boostedChanceFloat = 100f * boostedChance / content.maxChance();
 
-                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_base_logic",
-                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
-                                .withStyle(ChatFormatting.YELLOW));
-                    } else {
-                        tooltip.addLine(
-                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base",
-                                        baseChanceFloat));
-                    }
-
-                    String key = "gtceu.gui.content.chance_tier_boost_" +
-                            ((content.tierChanceBoost() > 0) ? "plus" : "minus");
-                    tooltip.addLine(FormattingUtil.formatPercentage2Places(key,
-                            Math.abs(100f * content.tierChanceBoost() / content.maxChance())));
-
-                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_boosted_logic",
-                                FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
-                                .withStyle(ChatFormatting.YELLOW));
-                    } else {
-                        tooltip.addLine(
-                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
-                                        boostedChanceFloat));
-                    }
+                if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                    tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
+                            FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                            .withStyle(ChatFormatting.YELLOW));
                 } else {
-                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
-                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
-                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
-                                .withStyle(ChatFormatting.YELLOW));
-                    } else {
-                        tooltip.addLine(
-                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
-                                        baseChanceFloat));
-                    }
+                    tooltip.addLine(
+                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                                    baseChanceFloat));
                 }
             }
         }

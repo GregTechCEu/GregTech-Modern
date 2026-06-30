@@ -347,7 +347,6 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
         InteractionSyncHandler syncHandler = new InteractionSyncHandler();
-        // syncManager.syncValue("button_idk", syncHandler);
         Flow maintenanceStatusWidget = Flow.column()
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .coverChildren()
@@ -363,7 +362,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine
                             .children(Stream.iterate(Byte.valueOf("0"), i -> i < 6, i -> ++i)
                                     .filter(i -> ((getMaintenanceProblems() >> i) & 1) == 0)
                                     .map(GTUtil::getMaintenanceText)
-                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getA())))
+                                    .map(i -> new IDrawable.DrawableWidget(new ItemDrawable(i.getFirst())))
                                     .map(IWidget.class::cast)
                                     .toList()));
         };
