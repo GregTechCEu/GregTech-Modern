@@ -93,7 +93,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      */
     @Override
     public FluidStack[] getStacks() {
-        if (fluidStacks == null) {
+        if (changed || fluidStacks == null) {
             int cachedAmount = rollSampledCount(GTValues.RNG);
             if (cachedAmount == 0) {
                 return EMPTY_STACK_ARRAY;
@@ -104,6 +104,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
                 fluidStacks[i] = innerStacks[i].copy();
                 fluidStacks[i].setAmount(cachedAmount);
             }
+            changed = false;
         }
         return fluidStacks;
     }
@@ -134,7 +135,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
             sampledCount = countProvider.sample(random);
             this.setAmount(sampledCount);
         }
-        return sampledCount;
+        return getAmount();
     }
 
     /**
