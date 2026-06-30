@@ -113,9 +113,9 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         return itemStacks;
     }
 
-    public int getAmount(){
+    public int getAmount() {
         if (!isRolled()) return getMaxRoll();
-        else return (getItems().length!=0 ? getItems()[0].getCount() : 0);
+        else return (getItems().length != 0 ? getItems()[0].getCount() : 0);
     }
 
     /**

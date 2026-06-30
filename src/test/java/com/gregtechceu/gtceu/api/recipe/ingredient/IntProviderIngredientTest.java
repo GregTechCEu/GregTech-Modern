@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -11,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
@@ -26,13 +24,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test cases:
@@ -375,7 +369,6 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        
         itemIn.setStackInSlot(0, CR_OUT.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
         // get the result of each preroll independently
@@ -388,7 +381,7 @@ public class IntProviderIngredientTest {
                 var outputPrerolls = machine.recipeLogic.getLastRecipe().outputs.get(ItemRecipeCapability.CAP);
                 helper.assertFalse(outputPrerolls.size() == 0,
                         "Singleblock item CR Preroll's recipe output contained no items!");
-                prerolls[finalI] = ((IRangedIngredient)(outputPrerolls.get(0).content())).getAmount();;
+                prerolls[finalI] = ((IRangedIngredient) (outputPrerolls.get(0).content())).getAmount();;
             });
         }
         // get the result of each roll independently
@@ -426,7 +419,6 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        
         itemIn.setStackInSlot(0, CR_IN.copyWithCount(64));
         itemIn.setStackInSlot(1, COBBLE.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
@@ -485,7 +477,6 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
                 .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
 
-        
         itemIn.setStackInSlot(0, CR_OUT.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
@@ -537,7 +528,6 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
         NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
 
-        
         itemIn.setStackInSlot(0, LCR_IN.copyWithCount(64));
         itemIn.setStackInSlot(1, COBBLE.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
@@ -592,7 +582,6 @@ public class IntProviderIngredientTest {
         NotifiableItemStackHandler itemIn = busHolder.inputBus1.getInventory();
         NotifiableItemStackHandler itemOut = busHolder.outputBus1.getInventory();
 
-        
         itemIn.setStackInSlot(0, LCR_OUT.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
         // get the result of each roll independently
@@ -1099,8 +1088,8 @@ public class IntProviderIngredientTest {
 
     // test for multiblock machine with 16x Parallels with ranged item output
     @GameTest(template = "large_centrifuge_zpm_batch_parallel16",
-            batch = "RangedIngredients",
-            timeoutTicks = 2000)
+              batch = "RangedIngredients",
+              timeoutTicks = 2000)
     public static void multiblockLCentRangedItemOutputPreroll16ParallelBatched(GameTestHelper helper) {
         BusHolderBatchParallel busHolder = getBussesAndFormLCENT(helper);
 
@@ -1121,13 +1110,14 @@ public class IntProviderIngredientTest {
         int[] prerolls = new int[MULTI_REPLICAS];
         for (int i = 0; i < MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(75 * finalI+20, () -> {
+            helper.runAfterDelay(75 * finalI + 20, () -> {
                 helper.assertFalse(busHolder.controller.recipeLogic.getLastRecipe() == null,
                         "Multiblock LCent item Preroll was not running a recipe when preroll was checked!");
-                var outputPrerolls = busHolder.controller.recipeLogic.getLastRecipe().outputs.get(ItemRecipeCapability.CAP);
+                var outputPrerolls = busHolder.controller.recipeLogic.getLastRecipe().outputs
+                        .get(ItemRecipeCapability.CAP);
                 helper.assertFalse(outputPrerolls.size() == 0,
                         "Multiblock LCent item Preroll's recipe output contained no items!");
-                prerolls[finalI] = ((IRangedIngredient)(outputPrerolls.get(0).content())).getAmount();;
+                prerolls[finalI] = ((IRangedIngredient) (outputPrerolls.get(0).content())).getAmount();;
             });
         }
         // check the results of all rolls together
