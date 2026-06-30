@@ -336,30 +336,5 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                                         "output_item_inv", output.getSize(), 'i',
                                         syncManager, outputItemGrid))
                                 .padding(4, 0)));
-
-        /*
-         * mainWidget.child(Flow.column()
-         * .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 150)
-         * .crossAxisAlignment(Alignment.CrossAxis.START)
-         * .child(Flow.row()
-         * .coverChildren()
-         * .childPadding(2)
-         * .margin(5)
-         * .horizontalCenter()
-         * .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
-         * .child(new TextFieldWidget()
-         * .setNumbers(1, maxRange)
-         * .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
-         * .child(Flow.row()
-         * .coverChildrenHeight()
-         * .widthRel(1)
-         * .child(new ItemSlot()
-         * .slot(filterInventory, 0)
-         * .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY)
-         * .margin(7))
-         * .child(GTMuiMachineUtil
-         * .createSquareSlotGroupFromInventory(output, "main_inv", syncManager)
-         * .horizontalCenter())));
-         */
     }
 }
