@@ -9,13 +9,13 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -269,12 +269,20 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        var slotHeight = (int) Math.sqrt(inventorySize);
+        var outputItemGrid = GTMuiWidgets.createGrid(cache.getSize(), (int) Math.sqrt(cache.getSize()), true, 'i');
+
         mainWidget
-                .child(Flow.col()
-                        .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 18 * slotHeight)
-                        .margin(0, 10)
-                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(this.cache, "output_cache",
-                                syncManager)));
+                .name("content")
+                .coverChildrenWidth()
+                .coverChildrenHeight(54)
+                .child(Flow.row()
+                        .name("mainRow")
+                        .center()
+                        .coverChildren()
+                        .margin(2, 3)
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                "output_item_inv", cache.getSize(), 'i',
+                                syncManager, outputItemGrid))
+                        .padding(4, 0));
     }
 }

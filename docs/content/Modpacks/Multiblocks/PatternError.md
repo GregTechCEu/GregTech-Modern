@@ -5,10 +5,9 @@ title: PatternError
 
 Each PatternError also must implement the ui modifier, which is the way to display that information to the player (through the main multiblock GUI).
 
-```java title="ExmaplePatternError.java
-
+```java title="ExamplePatternError.java"
 public class MyPatternError extends PatternError {
-    
+
     // This codec is needed for serialization. It should send all the needed data to display the error on the client. 
     public static Codec<PlaceholderError> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                     BlockPos.CODEC.fieldOf("pos").forGetter(PatternError::getPos),
@@ -20,17 +19,17 @@ public class MyPatternError extends PatternError {
     public MyPatternError(@Nullable BlockPos pos, List<List<BlockInfo>> candidates) {
         super(pos, candidates);
     }
-    
+
     // The UI modifier adds the widget to be displayed to the user if this error occurs.
     public PatternErrorUI getPatternErrorUIModifier() {
         return (widget) -> {
-                widget.child(new ContextMenuButton<>("predicate")
-                        .menuList(l -> l
-                                .maxSize(40)
-                                .children(candidates, candidate -> {
-                                    return new ItemDrawable(candidate.getItemStackForm()).asWidget()
-                                            .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
-                                })));
+            widget.child(new ContextMenuButton<>("predicate")
+                    .menuList(l -> l
+                            .maxSize(40)
+                            .children(candidates, candidate -> {
+                                return new ItemDrawable(candidate.getItemStackForm()).asWidget()
+                                        .tooltip(r -> r.add(candidate.getItemStackForm().getHoverName()));
+                            })));
         };
     }
 
@@ -44,7 +43,6 @@ public class MyPatternError extends PatternError {
 You also need to register your new PatternErrors statically:
 
 ```java
-
 public class ExampleMod {
     public ExampleMod() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

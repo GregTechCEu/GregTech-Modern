@@ -65,8 +65,8 @@ public class MaintenanceBlockProvider extends CapabilityBlockProvider<IMaintenan
                         if (((problems >> i) & 1) == 0) {
                             var tuple = GTUtil.getMaintenanceText(i);
                             IElementHelper helper = iTooltip.getElementHelper();
-                            iTooltip.add(helper.smallItem(tuple.getA()));
-                            iTooltip.append(tuple.getB());
+                            iTooltip.add(helper.smallItem(tuple.getFirst()));
+                            iTooltip.append(tuple.getSecond());
                         }
                     }
                 } else {

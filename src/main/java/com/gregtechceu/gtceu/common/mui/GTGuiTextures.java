@@ -197,6 +197,9 @@ public interface GTGuiTextures {
 
     UITexture INFO = fullImage("textures/gui/widget/information.png");
 
+    UITexture STEAM_DIAL_BRONZE = fullImage("textures/gui/widget/steam_dial_bronze.png");
+    UITexture STEAM_DIAL_STEEL = fullImage("textures/gui/widget/steam_dial_steel.png");
+
     UITexture[] MANUAL_IO_OVERLAY_IN = { fullImage("textures/gui/icon/manual_io_mode/disabled.png"),
             fullImage("textures/gui/icon/manual_io_mode/filtered.png"),
             fullImage("textures/gui/icon/manual_io_mode/unfiltered.png") };

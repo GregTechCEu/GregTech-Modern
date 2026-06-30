@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
@@ -19,6 +18,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -34,7 +34,6 @@ import net.minecraft.world.phys.Vec3;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
@@ -307,27 +306,35 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(Flow.column()
-                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 150)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .child(Flow.row()
+        var outputItemGrid = GTMuiWidgets.createGrid(output.getSize(), (int) Math.sqrt(output.getSize()), true, 'i');
+
+        mainWidget
+                .name("content")
+                .coverChildren()
+                .child(Flow.col()
                         .coverChildren()
+                        .margin(0, 3)
                         .childPadding(2)
-                        .margin(5)
-                        .horizontalCenter()
-                        .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
-                        .child(new TextFieldWidget()
-                                .setNumbers(1, maxRange)
-                                .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
-                .child(Flow.row()
-                        .coverChildrenHeight()
-                        .widthRel(1)
-                        .child(new ItemSlot()
-                                .slot(filterInventory, 0)
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY)
-                                .margin(7))
-                        .child(GTMuiMachineUtil
-                                .createSquareSlotGroupFromInventory(output, "main_inv", syncManager)
-                                .horizontalCenter())));
+                        .child(Flow.row()
+                                .coverChildren()
+                                .childPadding(2)
+                                .horizontalCenter()
+                                .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
+                                .child(new TextFieldWidget()
+                                        .setNumbers(1, maxRange)
+                                        .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
+                        .child(Flow.row()
+                                .name("mainRow")
+                                .horizontalCenter()
+                                .coverChildren()
+                                .margin(2, 3)
+                                .childPadding(3)
+                                .child(new ItemSlot()
+                                        .slot(filterInventory, 0)
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
+                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output,
+                                        "output_item_inv", output.getSize(), 'i',
+                                        syncManager, outputItemGrid))
+                                .padding(4, 0)));
     }
 }
