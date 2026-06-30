@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 
@@ -73,9 +72,6 @@ public class RecipeRunner {
      * Populates the content match list to know if conditions are satisfied.
      */
     private void fillContentMatchList(Map<RecipeCapability<?>, List<Content>> entries) {
-        ChanceBoostFunction function = recipe.getType().getChanceFunction();
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
-        int chanceTier = recipeTier + recipe.ocLevel;
         for (var entry : entries.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             if (!cap.doMatchInRecipe()) continue;
@@ -97,7 +93,7 @@ public class RecipeRunner {
 
                 if (cont.chance() >= cont.maxChance()) {
                     contentList.add(cont.content());
-                } else if (cont.chance() > 0 || cont.tierChanceBoost() > 0) {
+                } else if (cont.chance() > 0) {
                     chancedContents.add(cont);
                 }
                 // Do not add Non-Consumed ingredients; they'd just get dropped after the chance roll anyway
@@ -106,8 +102,7 @@ public class RecipeRunner {
             // add chanced contents to the recipe content map
             if (!chancedContents.isEmpty()) {
                 var cache = this.chanceCaches.get(cap);
-                chancedContents = logic.roll(cap, chancedContents, function, recipeTier, chanceTier, cache,
-                        recipe.getTotalRuns());
+                chancedContents = logic.roll(cap, chancedContents, cache, recipe.getTotalRuns());
 
                 for (Content cont : chancedContents) {
                     contentList.add(cont.content());
