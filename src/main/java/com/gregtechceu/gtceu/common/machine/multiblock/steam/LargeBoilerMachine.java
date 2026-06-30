@@ -189,6 +189,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         return value;
     }
 
+    private void setThrottle(int newThrottle) {
+        this.throttle = newThrottle;
+        ((LargeBoilerRecipeLogic) (this.recipeLogic)).setCurrentThrottle(newThrottle);
+    }
+
     /**
      * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>
@@ -252,7 +257,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         IntSyncValue steamGenerated = new IntSyncValue(() -> this.steamGenerated);
         syncManager.syncValue("steamGenerated", steamGenerated);
 
-        IntSyncValue throttle = new IntSyncValue(() -> this.throttle, newValue -> this.throttle = newValue).allowC2S();
+        IntSyncValue throttle = new IntSyncValue(() -> this.throttle, this::setThrottle).allowC2S();
         syncManager.syncValue("throttle", throttle);
 
         widgets.add(Text.dynamic(() -> {
@@ -367,8 +372,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
             return List.of(LargeBoilerMachine.class);
         }
 
-        public void setCurrentThrottle(int currentThrottle) {
-            this.currentThrottle = currentThrottle;
+        public void setCurrentThrottle(int newThrottle) {
+            this.modifyFuelBurnTime(newThrottle);
+            this.currentThrottle = newThrottle;
             syncDataHolder.markClientSyncFieldDirty("currentThrottle");
         }
 
@@ -377,7 +383,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
                 setCurrentThrottle(getMachine().getThrottle());
-                duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }
 
@@ -387,7 +392,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 duration = (int) Math.round(lastRecipe.duration / (newThrottle / 100.0));
                 progress = (int) Math.round(newThrottleMultiplier * progress);
             }
-            setCurrentThrottle(newThrottle);
         }
     }
 }
