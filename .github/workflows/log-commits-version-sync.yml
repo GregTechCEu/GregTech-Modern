@@ -1,0 +1,67 @@
+name: Log Commits for Version Sync
+
+on:
+  push:
+    branches:
+      - '1.20.1'
+      - '1.21'
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: log-commits-to-issue
+  cancel-in-progress: false
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Append commit links to the branch's tracking issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Map the pushed branch to its tracking issue
+            const issueByBranch = {
+              '1.20.1': 5041,
+              '1.21': 5040,
+            };
+            const branch = context.ref.replace('refs/heads/', '');
+            const issueNumber = issueByBranch[branch];
+
+            if (!issueNumber) {
+              core.info(`No tracking issue configured for branch '${branch}', skipping.`);
+              return;
+            }
+
+            // Build a markdown list item for each commit in this push
+            const lines = context.payload.commits.map((c) => {
+              const shortSha = c.id.substring(0, 7);
+              const title = c.message.split('\n')[0];
+              return `- [\`${shortSha}\`](${c.url}) ${title}`;
+            });
+
+            if (lines.length === 0) {
+              core.info('No commits in this push, nothing to append.');
+              return;
+            }
+
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+            });
+
+            const body = issue.body || '';
+            const separator = body.length > 0 && !body.endsWith('\n') ? '\n' : '';
+            const newBody = body + separator + lines.join('\n') + '\n';
+
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: newBody,
+            });
+
+            core.info(`Appended ${lines.length} commit link(s) to issue #${issueNumber}.`);
