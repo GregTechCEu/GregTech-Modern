@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.longs.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -171,10 +171,9 @@ public class ExpandablePattern implements IBlockPattern {
                 patternState.cache.put(mPos.asLong(), new BlockInfo(state, blockEntity));
             }
 
-            List<PatternError> res = new ArrayList<>();
-            boolean passed = pred.test(patternState.noLayer(res::add));
-            if (!passed) {
-                patternState.setErrors(res);
+            PredicateContext ctx = patternState.noLayer();
+            if (!pred.test(ctx)) {
+                patternState.setErrors(ctx.getErrors());
                 return false;
             }
         }

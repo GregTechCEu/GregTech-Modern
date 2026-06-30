@@ -14,19 +14,35 @@ import net.minecraft.world.level.material.FluidState;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
-public record PredicateContext(CurrentBlockInfo blockInfo,
-                               Consumer<PatternError> errorConsumer,
-                               Object2IntMap<BasePredicate> globalCache,
-                               @Nullable Object2IntMap<BasePredicate> layerCache) {
+public final class PredicateContext {
+    private final CurrentBlockInfo blockInfo;
+    private final List<PatternError> errors = new ArrayList<>();
+    private final Object2IntMap<BasePredicate> globalCache;
+    private final @Nullable Object2IntMap<BasePredicate> layerCache;
+
+    public PredicateContext(CurrentBlockInfo blockInfo,
+                            Object2IntMap<BasePredicate> globalCache,
+                            @Nullable Object2IntMap<BasePredicate> layerCache) {
+        this.blockInfo = blockInfo;
+        this.globalCache = globalCache;
+        this.layerCache = layerCache;
+    }
 
     /// accepts a pattern error
+    ///
     /// @return false
     public boolean error(PatternError error) {
-        this.errorConsumer.accept(error);
+        this.errors.add(error);
         return false;
+    }
+
+    public List<PatternError> getErrors() {
+        return Collections.unmodifiableList(errors);
     }
 
     /// @return the current Level
@@ -58,9 +74,17 @@ public record PredicateContext(CurrentBlockInfo blockInfo,
         return this.blockInfo.retrieveCurrentBlockEntity();
     }
 
-    public static PredicateContext of(CurrentBlockInfo blockInfo, Consumer<PatternError> errorConsumer,
+    public static PredicateContext of(CurrentBlockInfo blockInfo,
                                       Object2IntMap<BasePredicate> cache,
                                       @Nullable Object2IntMap<BasePredicate> layerCache) {
-        return new PredicateContext(blockInfo, errorConsumer, cache, layerCache);
+        return new PredicateContext(blockInfo, cache, layerCache);
+    }
+
+    public Object2IntMap<BasePredicate> globalCache() {
+        return globalCache;
+    }
+
+    public @Nullable Object2IntMap<BasePredicate> layerCache() {
+        return layerCache;
     }
 }

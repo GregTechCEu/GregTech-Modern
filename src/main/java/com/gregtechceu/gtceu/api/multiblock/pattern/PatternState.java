@@ -21,7 +21,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 /*
  * Contains vital information to an instanced version of a structure pattern.
@@ -111,12 +110,12 @@ public class PatternState {
         }
     }
 
-    public PredicateContext toContext(Consumer<PatternError> errorConsumer) {
-        return PredicateContext.of(this.currentBlockInfo, errorConsumer, this.globalCount, this.layerCount);
+    public PredicateContext toContext() {
+        return PredicateContext.of(this.currentBlockInfo, this.globalCount, this.layerCount);
     }
 
-    public PredicateContext noLayer(Consumer<PatternError> errorConsumer) {
-        return PredicateContext.of(this.currentBlockInfo, errorConsumer, this.globalCount, null);
+    public PredicateContext noLayer() {
+        return PredicateContext.of(this.currentBlockInfo, this.globalCount, null);
     }
 
     @Getter

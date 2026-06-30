@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -169,9 +169,9 @@ public class BlockPattern implements IBlockPattern {
 
         // global min check
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
-            List<PatternError> res = new ArrayList<>();
-            if (!entry.getKey().testGlobalMin(patternState.toContext(res::add))) {
-                patternState.setErrors(res);
+            PredicateContext ctx = patternState.toContext();
+            if (!entry.getKey().testGlobalMin(ctx)) {
+                patternState.setErrors(ctx.getErrors());
                 return false;
             }
         }
@@ -220,10 +220,10 @@ public class BlockPattern implements IBlockPattern {
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
 
-                List<PatternError> res = new ArrayList<>();
+                PredicateContext ctx = patternState.toContext();
                 // internal predicate check, global/slice max checks
-                if (!pred.test(patternState.toContext(res::add))) {
-                    patternState.setErrors(res);
+                if (!pred.test(ctx)) {
+                    patternState.setErrors(ctx.getErrors());
                     return false;
                 }
 
@@ -236,9 +236,9 @@ public class BlockPattern implements IBlockPattern {
 
         // slice min check
         for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-            List<PatternError> res = new ArrayList<>();
-            if (!entry.getKey().testSliceMin(patternState.toContext(res::add))) {
-                patternState.setErrors(res);
+            PredicateContext ctx = patternState.toContext();
+            if (!entry.getKey().testSliceMin(ctx)) {
+                patternState.setErrors(ctx.getErrors());
                 return false;
             }
         }
