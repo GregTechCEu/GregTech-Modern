@@ -26,6 +26,7 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -122,8 +123,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @NotNull
+    @Nullable
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
+        if (!buf.readBoolean()) return null;
         ResourceLocation recipeType = buf.readResourceLocation();
         ResourceLocation id = buf.readResourceLocation();
         int duration = buf.readVarInt();
@@ -181,6 +183,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
+        buf.writeBoolean(recipe != null);
+        if (recipe == null) return;
         buf.writeResourceLocation(recipe.recipeType.registryName);
         buf.writeResourceLocation(recipe.id);
         buf.writeVarInt(recipe.duration);
