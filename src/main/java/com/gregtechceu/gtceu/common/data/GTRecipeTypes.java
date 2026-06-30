@@ -596,10 +596,8 @@ public class GTRecipeTypes {
 
                         if (shouldDivide && fluidsDivisible) {
                             builder.chance(inputContent.chance())
-                                    .tierChanceBoost(inputContent.tierChanceBoost())
                                     .inputFluids(dividedInputFluid)
                                     .chance(outputContent.chance())
-                                    .tierChanceBoost(outputContent.tierChanceBoost())
                                     .outputFluids(dividedOutputFluid)
                                     .duration(Math.max(1, recipeDuration / ratio));
                         } else if (!shouldDivide) {
@@ -608,10 +606,8 @@ public class GTRecipeTypes {
                             }
                             builder.conditions.addAll(recipeBuilder.conditions);
                             builder.chance(inputContent.chance())
-                                    .tierChanceBoost(inputContent.tierChanceBoost())
                                     .inputFluids(input)
                                     .chance(outputContent.chance())
-                                    .tierChanceBoost(outputContent.tierChanceBoost())
                                     .outputFluids(output)
                                     .duration(recipeDuration)
                                     .save(provider);

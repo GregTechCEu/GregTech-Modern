@@ -39,7 +39,6 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -110,7 +109,7 @@ public class FisherMachine extends TieredEnergyMachine
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
 
-        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.BOTH, IO.IN));
+        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.BOTH));
         baitHandler.setFilter(item -> item.is(Items.STRING));
 
         autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
@@ -260,7 +259,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .value(new BoolValue.Dynamic(this::isJunkEnabled, this::setJunkEnabled))
                                 .overlay(new ItemDrawable(Items.NAME_TAG))
                                 .tooltipAutoUpdate(true)
-                                .tooltipBuilder((r) -> {
+                                .tooltipDynamic((r) -> {
                                     var lines = LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
                                             GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
                                     for (var line : lines) {
@@ -277,18 +276,25 @@ public class FisherMachine extends TieredEnergyMachine
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
 
-        mainWidget.child(Flow.row()
-                .coverChildren()
-                .center()
-                .margin(0, 15)
-                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
-                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
-                .child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
-                        .value(progressPercent))
-                .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
-                        "output_item_inv", cache.getSize(), 'i',
-                        syncManager, outputItemGrid).marginLeft(2)));
+        mainWidget
+                .name("content")
+                .coverChildrenWidth()
+                .coverChildrenHeight(54)
+                .child(Flow.row()
+                        .name("mainRow")
+                        .center()
+                        .coverChildren()
+                        .margin(2, 3)
+                        .childPadding(4)
+                        .child(new ItemSlot()
+                                .slot(new ModularSlot(baitHandler, 0).singletonSlotGroup(0).accessibility(true, true))
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
+                        .child(new ProgressWidget()
+                                .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
+                                .value(progressPercent))
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                "output_item_inv", cache.getSize(), 'i',
+                                syncManager, outputItemGrid))
+                        .padding(4, 0));
     }
 }
