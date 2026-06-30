@@ -388,7 +388,7 @@ public class GTUtil {
     }
 
     public static String formatLongNumber(long number, long threshold) {
-        return (number > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
+        return (Math.abs(number) > threshold) ? DECIMAL_FORMAT_SIC_2F.format(number) : String.valueOf(number);
     }
 
     public static String formatLongNumber(long number) {
