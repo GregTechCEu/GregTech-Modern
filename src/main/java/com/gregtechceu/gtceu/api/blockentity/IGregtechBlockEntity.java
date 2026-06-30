@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,6 +32,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
      * Called to notify neighboring blocks that this block has changed.
      */
     default void notifyBlockUpdate() {
+        if (isChunkUnloaded()) return;
         if (getLevel() != null) {
             getLevel().updateNeighborsAt(getBlockPos(), getLevel().getBlockState(getBlockPos()).getBlock());
         }
@@ -41,6 +43,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
         BlockPos pos = getBlockPos();
 
         if (level == null) return;
+        if (isChunkUnloaded()) return;
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
     }
@@ -50,6 +53,7 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
     }
 
     default void scheduleRenderUpdate() {
+        if (isChunkUnloaded()) return;
         var pos = getBlockPos();
         var level = getLevel();
         if (level != null) {
@@ -65,5 +69,13 @@ public interface IGregtechBlockEntity extends ISyncManaged, ITickSubscription, I
 
     default @Nullable BlockEntity getNeighbor(Direction direction) {
         return getLevel().getBlockEntity(getBlockPos().relative(direction));
+    }
+
+    private boolean isChunkUnloaded() {
+        if (getLevel() instanceof ServerLevel serverLevel) {
+            BlockPos pos = getBlockPos();
+            return serverLevel.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4) == null;
+        }
+        return false;
     }
 }
