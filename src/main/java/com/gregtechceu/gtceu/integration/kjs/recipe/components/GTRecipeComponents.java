@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
@@ -122,7 +124,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCapability<?> value) {
-            return new JsonPrimitive(GTRegistries.RECIPE_CAPABILITIES.getKey(value));
+            return new JsonPrimitive(GTRegistries.RECIPE_CAPABILITIES.getKey(value).toString());
         }
 
         @Override
@@ -130,8 +132,8 @@ public class GTRecipeComponents {
             if (from instanceof RecipeCapability<?> capability) {
                 return capability;
             }
-            return from instanceof CharSequence c ? GTRegistries.RECIPE_CAPABILITIES.get(c.toString()) :
-                    GTRegistries.RECIPE_CAPABILITIES.get(String.valueOf(from));
+            return from instanceof CharSequence c ? GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(c.toString())) :
+                    GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(String.valueOf(from)));
         }
 
         @Override
@@ -158,7 +160,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, ChanceLogic value) {
-            return new JsonPrimitive(GTRegistries.CHANCE_LOGICS.getKey(value));
+            return new JsonPrimitive(GTRegistries.CHANCE_LOGICS.getKey(value).toString());
         }
 
         @Override
@@ -166,8 +168,8 @@ public class GTRecipeComponents {
             if (from instanceof ChanceLogic capability) {
                 return capability;
             }
-            return from instanceof CharSequence c ? GTRegistries.CHANCE_LOGICS.get(c.toString()) :
-                    GTRegistries.CHANCE_LOGICS.get(String.valueOf(from));
+            return from instanceof CharSequence c ? GTRegistries.CHANCE_LOGICS.get(GTCEu.id(c.toString())) :
+                    GTRegistries.CHANCE_LOGICS.get(GTCEu.id(String.valueOf(from)));
         }
 
         @Override
@@ -200,14 +202,14 @@ public class GTRecipeComponents {
         public RecipeCondition<?> read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
-                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(GTCEu.id(conditionKey));
                 if (type != null) {
                     return type.factory.createDefault();
                 }
             }
             if (from instanceof JsonPrimitive primitive) {
                 var conditionKey = primitive.getAsString();
-                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(GTCEu.id(conditionKey));
                 if (type != null) {
                     return type.factory.createDefault();
                 }
@@ -399,7 +401,8 @@ public class GTRecipeComponents {
 
         @Override
         public long kjs$getAmount() {
-            return ingredient.getAmount();
+            return (ingredient instanceof IRangedIngredient ? ((IRangedIngredient) ingredient).getMaxRoll() :
+                    ingredient.getAmount());
         }
 
         @Override

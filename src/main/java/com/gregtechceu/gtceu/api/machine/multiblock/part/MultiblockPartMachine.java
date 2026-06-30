@@ -62,10 +62,12 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     // Not sure if necessary, but added to match the Controller class
     @ClientFieldChangeListener(fieldName = "controllerPositions")
     public void onControllersUpdated() {
-        controllers.clear();
-        for (BlockPos blockPos : controllerPositions) {
-            if (MetaMachine.getMachine(getLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
-                controllers.add(controller);
+        synchronized (controllers) {
+            controllers.clear();
+            for (BlockPos blockPos : controllerPositions) {
+                if (MetaMachine.getMachine(getLevel(), blockPos) instanceof MultiblockControllerMachine controller) {
+                    controllers.add(controller);
+                }
             }
         }
     }
@@ -73,11 +75,13 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @Override
     @UnmodifiableView
     public SortedSet<MultiblockControllerMachine> getControllers() {
-        // Necessary to rebuild the set of controllers on client-side
-        if (controllers.size() != controllerPositions.size()) {
-            onControllersUpdated();
+        synchronized (controllers) {
+            // Necessary to rebuild the set of controllers on client-side
+            if (controllers.size() != controllerPositions.size()) {
+                onControllersUpdated();
+            }
+            return Collections.unmodifiableSortedSet(new ReferenceLinkedOpenHashSet<>(controllers));
         }
-        return Collections.unmodifiableSortedSet(controllers);
     }
 
     public List<RecipeHandlerList> getRecipeHandlers() {
@@ -108,9 +112,11 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     public void onUnload() {
         super.onUnload();
         if (getLevel() instanceof ServerLevel serverLevel) {
-            // Need to copy if > 1 so that we can call removedFromController safely without CME
-            Set<MultiblockControllerMachine> toIter = controllers.size() > 1 ? new ObjectOpenHashSet<>(controllers) :
-                    controllers;
+            // Copy so we can call removedFromController (which mutates controllers) safely without CME
+            Set<MultiblockControllerMachine> toIter;
+            synchronized (controllers) {
+                toIter = new ObjectOpenHashSet<>(controllers);
+            }
             for (MultiblockControllerMachine controller : toIter) {
                 if (serverLevel.isLoaded(controller.self().getBlockPos())) {
                     removedFromController(controller);
@@ -119,7 +125,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
             }
         }
         controllerPositions.clear();
-        controllers.clear();
+        synchronized (controllers) {
+            controllers.clear();
+        }
         substructureName = null;
     }
 
@@ -131,9 +139,13 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         controllerPositions.remove(controller.getBlockPos());
-        controllers.remove(controller);
+        boolean empty;
+        synchronized (controllers) {
+            controllers.remove(controller);
+            empty = controllers.isEmpty();
+        }
 
-        if (controllers.isEmpty()) {
+        if (empty) {
             this.substructureName = null;
             MachineRenderState renderState = getRenderState();
             if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
@@ -147,7 +159,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     @Override
     public void addedToController(MultiblockControllerMachine controller, String substructureName) {
         controllerPositions.add(controller.getBlockPos());
-        controllers.add(controller);
+        synchronized (controllers) {
+            controllers.add(controller);
+        }
         this.substructureName = substructureName;
 
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");

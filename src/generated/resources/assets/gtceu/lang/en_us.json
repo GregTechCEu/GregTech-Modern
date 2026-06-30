@@ -2584,6 +2584,7 @@
   "gtceu.jade.days": "%s days",
   "gtceu.jade.energy_stored": "%d / %d EU",
   "gtceu.jade.fluid_use": "%s mB/t",
+  "gtceu.jade.generator.too_small": "Energy Output too small!",
   "gtceu.jade.hours": "%s hours",
   "gtceu.jade.minutes": "%s minutes",
   "gtceu.jade.progress_computation": "%s / %s CWU",

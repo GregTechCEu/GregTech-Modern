@@ -126,7 +126,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     }
 
     public static String capabilityWidgetName(RecipeCapability<?> cap, IO io, int index) {
-        return "%s_%s_%s".formatted(cap.name, io.toString().toLowerCase(), index);
+        return "%s_%s_%s".formatted(cap.id, io.toString().toLowerCase(), index);
     }
 
     private void loadContentIntoSlots() {
