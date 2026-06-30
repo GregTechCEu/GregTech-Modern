@@ -39,7 +39,7 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
 
     @Override
     public boolean test(PredicateContext ctx) {
-        return testInternal(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+        return testInternal(ctx);
     }
 
     /// custom testing logic, usually checking if blockstate/entity is correct
@@ -47,15 +47,15 @@ public class MultiPredicate extends BasePredicate implements Iterable<BasePredic
         return getType().run(ctx, this, BasePredicate::test);
     }
 
-    @Override
-    public boolean testGlobalMin(PredicateContext ctx) {
-        return getType().run(ctx, this, BasePredicate::testGlobalMin);
-    }
-
-    @Override
-    public boolean testSliceMin(PredicateContext ctx) {
-        return getType().run(ctx, this, BasePredicate::testSliceMin);
-    }
+//    @Override
+//    public boolean testGlobalMin(PredicateContext ctx) {
+//        return getType().run(ctx, this, BasePredicate::testGlobalMin);
+//    }
+//
+//    @Override
+//    public boolean testSliceMin(PredicateContext ctx) {
+//        return getType().run(ctx, this, BasePredicate::testSliceMin);
+//    }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
         predicates.forEach(this::addPredicate);

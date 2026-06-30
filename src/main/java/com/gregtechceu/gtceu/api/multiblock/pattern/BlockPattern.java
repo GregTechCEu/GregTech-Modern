@@ -163,18 +163,25 @@ public class BlockPattern implements IBlockPattern {
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
+        // handle slices
         sliceStrategy.setPattern(this);
         sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         // global min check
-        for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
-            PredicateContext ctx = patternState.toContext();
-            if (!entry.getKey().testGlobalMin(ctx)) {
+        PredicateContext ctx = patternState.toContext();
+        for (BasePredicate predicate : predicates.values()) {
+            if (ctx.testGlobalMin(predicate)) {
                 patternState.setErrors(ctx.getErrors());
                 return false;
             }
         }
+//        for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
+//            if (!entry.getKey().testGlobalMin(ctx)) {
+//                patternState.setErrors(ctx.getErrors());
+//                return false;
+//            }
+//        }
 
         patternState.setError(null);
         return true;
@@ -207,27 +214,29 @@ public class BlockPattern implements IBlockPattern {
         BlockPos.MutableBlockPos charPos = sliceStart.mutable();
         PatternSlice slice = slices[sliceIndex];
 
+        // theoretically, predicates could track their own current layer/global count
         patternState.layerCount.clear();
 
+        PredicateContext ctx = patternState.toContext();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 patternState.currentBlockInfo.setCurrentPos(charPos);
                 BasePredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
                 if (!pred.isAny()) {
-                    BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
-                    BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
+                    BlockEntity blockEntity = ctx.blockEntity();
+                    BlockState state = ctx.state();
                     patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
                 }
 
-                PredicateContext ctx = patternState.toContext();
                 // internal predicate check, global/slice max checks
-                if (!pred.test(ctx)) {
+                if (pred.test(ctx) && ctx.testGlobalMax(pred) && ctx.testSliceMax(pred)) {
+                    charPos.move(absoluteChar);
+                    // continue...
+                } else {
                     patternState.setErrors(ctx.getErrors());
                     return false;
                 }
-
-                charPos.move(absoluteChar);
             }
 
             stringStart.move(absoluteString);
@@ -235,13 +244,17 @@ public class BlockPattern implements IBlockPattern {
         }
 
         // slice min check
-        for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-            PredicateContext ctx = patternState.toContext();
-            if (!entry.getKey().testSliceMin(ctx)) {
+        for (BasePredicate predicate : predicates.values()) {
+            if (ctx.testSliceMin(predicate)) {
                 patternState.setErrors(ctx.getErrors());
-                return false;
             }
         }
+//        for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
+//            if (!entry.getKey().testSliceMin(ctx)) {
+//                patternState.setErrors(ctx.getErrors());
+//                return false;
+//            }
+//        }
 
         return true;
     }

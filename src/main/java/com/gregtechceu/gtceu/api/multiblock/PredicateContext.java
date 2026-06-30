@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
@@ -86,5 +87,47 @@ public final class PredicateContext {
 
     public @Nullable Object2IntMap<BasePredicate> layerCache() {
         return layerCache;
+    }
+
+    /// test against global max count
+    public boolean testGlobalMax(BasePredicate predicate) {
+        if (predicate.skipGlobalTest() || layerCache() == null) return true;
+        int count = incrementGlobalCount(predicate);
+        if (predicate.testGlobalMax(count)) return true;
+        return error(SinglePredicateError.maxCount(predicate, count));
+    }
+
+    /// test against slice max count
+    public boolean testSliceMax(BasePredicate predicate) {
+        if (predicate.skipSliceTest() || layerCache() == null) return true;
+        int count = incrementSliceCount(predicate);
+        if (predicate.testSliceMax(count)) return true;
+        return error(SinglePredicateError.maxLayerCount(predicate, count));
+    }
+
+    private int incrementGlobalCount(BasePredicate predicate) {
+        globalCache().mergeInt(predicate, 1, Integer::sum);
+        return globalCache().getInt(predicate);
+    }
+
+    private int incrementSliceCount(BasePredicate predicate) {
+        Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
+        return layerCache().getInt(predicate);
+    }
+
+    /// test against global min count
+    public boolean testGlobalMin(BasePredicate predicate) {
+        if (predicate.skipGlobalTest() || layerCache() == null) return true;
+        int count = globalCache().getInt(predicate);
+        if (predicate.testGlobalMin(count)) return true;
+        return error(SinglePredicateError.minCount(predicate, count));
+    }
+
+    /// test against slice min count
+    public boolean testSliceMin(BasePredicate predicate) {
+        if (predicate.skipSliceTest() || layerCache() == null) return true;
+        int count = layerCache().getInt(predicate);
+        if (predicate.testSliceMin(count)) return true;
+        return error(SinglePredicateError.minLayerCount(predicate, count));
     }
 }

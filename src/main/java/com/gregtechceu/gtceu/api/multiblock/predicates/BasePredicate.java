@@ -67,39 +67,31 @@ public abstract class BasePredicate {
     }
 
     /// test against global max count
-    protected boolean testGlobalMax(PredicateContext ctx) {
-        ctx.globalCache().mergeInt(this, 1, Integer::sum);
-        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
-        int count = ctx.globalCache().getInt(this);
-        if (maxCount == -1 || count <= maxCount) return true;
-        return ctx.error(SinglePredicateError.maxCount(this, count));
+    public boolean testGlobalMax(int count) {
+        return maxCount == -1 || count <= maxCount;
     }
 
     /// test against slice max count
-    protected boolean testSliceMax(PredicateContext ctx) {
-        if (ctx.layerCache() == null) return true;
-        ctx.layerCache().mergeInt(this, 1, Integer::sum);
-        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
-        int count = ctx.layerCache().getInt(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
-        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+    public boolean testSliceMax(int count) {
+        return maxSliceCount == -1 || count <= maxSliceCount;
     }
 
     /// test against global max count
-    public boolean testGlobalMin(PredicateContext ctx) {
-        if ((minCount == -1 && maxCount == -1) || ctx.layerCache() == null) return true;
-        int count = ctx.globalCache().getInt(this);
-        if (minCount == -1 || count >= minCount) return true;
-        return ctx.error(SinglePredicateError.minCount(this, count));
+    public boolean testGlobalMin(int count) {
+        return minCount == -1 || count >= minCount;
     }
 
     /// test against slice max count
-    public boolean testSliceMin(PredicateContext ctx) {
-        if (ctx.layerCache() == null) return true;
-        if ((minSliceCount == -1 && maxSliceCount == -1)) return true;
-        int count = ctx.layerCache().getInt(this);
-        if (minSliceCount == -1 || count >= minSliceCount) return true;
-        return ctx.error(SinglePredicateError.minLayerCount(this, count));
+    public boolean testSliceMin(int count) {
+        return minSliceCount == -1 || count >= minSliceCount;
+    }
+
+    public boolean skipGlobalTest() {
+        return minCount == -1 && maxCount == -1;
+    }
+
+    public boolean skipSliceTest() {
+        return minSliceCount == -1 && maxSliceCount == -1;
     }
 
     /// computes the candidates for this predicate
@@ -284,7 +276,7 @@ public abstract class BasePredicate {
 
             @Override
             public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+                return predicate.test(ctx);
             }
 
             @Override
