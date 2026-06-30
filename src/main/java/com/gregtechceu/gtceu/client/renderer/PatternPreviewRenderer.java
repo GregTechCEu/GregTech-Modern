@@ -37,6 +37,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 import java.util.*;
 import java.util.concurrent.CancellationException;
@@ -115,7 +116,7 @@ public class PatternPreviewRenderer {
     }
 
     public void draw(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, Camera camera,
-                     RenderLevelStageEvent.Stage stage, float partialTick) {
+                     RenderLevelStageEvent.Stage stage, float partialTick, Matrix4f modelViewMatrix) {
         if (timeout.get() <= 0) return;
         if (this.schema == null || this.controllerPos == null) return;
         if (!camera.isInitialized()) return;
@@ -129,7 +130,7 @@ public class PatternPreviewRenderer {
         Vec3 cameraPos = camera.getPosition();
         if (renderType != null) {
             // render the appropriate chunk layer if renderType is a chunk render layer
-            renderBlocks(renderType, poseStack, cameraPos);
+            renderBlocks(renderType, cameraPos, modelViewMatrix);
         } else {
             // render block entities if renderType==null
             renderBlockEntities(poseStack, bufferSource, partialTick, cameraPos);
@@ -219,7 +220,7 @@ public class PatternPreviewRenderer {
         return results;
     }
 
-    protected void renderBlocks(RenderType renderType, PoseStack poseStack, Vec3 cameraPos) {
+    protected void renderBlocks(RenderType renderType, Vec3 cameraPos, Matrix4f modelViewMatrix) {
         RenderCompileResults compileResults = checkRecompile(cameraPos);
         if (compileResults == null) return;
 
@@ -236,7 +237,10 @@ public class PatternPreviewRenderer {
         }
 
         if (shader.MODEL_VIEW_MATRIX != null) {
-            shader.MODEL_VIEW_MATRIX.set(poseStack.last().pose());
+            shader.MODEL_VIEW_MATRIX.set(new Matrix4f(modelViewMatrix)
+                    .translate((float) (controllerPos.getX() - cameraPos.x),
+                            (float) (controllerPos.getY() - cameraPos.y),
+                            (float) (controllerPos.getZ() - cameraPos.z)));
         }
         if (shader.PROJECTION_MATRIX != null) {
             shader.PROJECTION_MATRIX.set(RenderSystem.getProjectionMatrix());
@@ -267,7 +271,7 @@ public class PatternPreviewRenderer {
         }
 
         if (shader.CHUNK_OFFSET != null) {
-            shader.CHUNK_OFFSET.set((float) -cameraPos.x, (float) -cameraPos.y, (float) -cameraPos.z);
+            shader.CHUNK_OFFSET.set(0.0F, 0.0F, 0.0F);
         }
 
         RenderSystem.setupShaderLights(shader);
@@ -432,8 +436,13 @@ public class PatternPreviewRenderer {
 
                 if (meshData != null) {
                     if (renderType == RenderType.translucent()) {
-                        meshData.sortQuads(sectionBufferBuilders.buffer(RenderType.translucent()),
-                                VertexSorting.byDistance(camera.pos()));
+                        BlockPos sortAnchor = PatternPreviewRenderer.this.controllerPos;
+                        VertexSorting sorting = sortAnchor == null ? VertexSorting.byDistance(camera.pos()) :
+                                VertexSorting.byDistance(
+                                        (float) (cameraPos.x - sortAnchor.getX()),
+                                        (float) (cameraPos.y - sortAnchor.getY()),
+                                        (float) (cameraPos.z - sortAnchor.getZ()));
+                        meshData.sortQuads(sectionBufferBuilders.buffer(RenderType.translucent()), sorting);
                     }
                     compileResults.renderedLayers.put(renderType, meshData);
                 }

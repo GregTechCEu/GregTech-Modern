@@ -903,7 +903,7 @@ public class ConfigHolder {
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
             // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 4.x
-            public BloomType type = BloomType.UNREAL;
+            public BloomType type = BloomType.DISABLED;
 
             @Configurable
             @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
