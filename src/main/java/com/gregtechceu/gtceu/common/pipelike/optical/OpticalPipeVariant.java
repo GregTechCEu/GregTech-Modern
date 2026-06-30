@@ -27,7 +27,7 @@ public enum OpticalPipeVariant implements IPipeVariant<OpticalPipeSegmentPropert
 
     @Override
     public OpticalPipeSegmentProperties createSegmentProperties(PipeBlock block) {
-        return OpticalPipeSegmentProperties.INSTANCE;
+        return new OpticalPipeSegmentProperties();
     }
 
     @Override

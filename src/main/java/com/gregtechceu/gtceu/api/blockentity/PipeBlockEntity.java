@@ -168,7 +168,6 @@ public abstract class PipeBlockEntity<NodeDataType extends PipeSegmentProperties
         return frameMaterial;
     }
 
-    @SuppressWarnings("unchecked")
     public PipeBlock getPipeBlock() {
         return (PipeBlock) getBlockState().getBlock();
     }

@@ -5,6 +5,4 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class LaserPipeSegmentProperties extends PipeSegmentProperties {
-
-    public static final LaserPipeSegmentProperties INSTANCE = new LaserPipeSegmentProperties();
 }

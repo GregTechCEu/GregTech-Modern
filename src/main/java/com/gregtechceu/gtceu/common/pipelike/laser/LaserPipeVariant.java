@@ -24,7 +24,7 @@ public enum LaserPipeVariant implements IPipeVariant<LaserPipeSegmentProperties>
 
     @Override
     public LaserPipeSegmentProperties createSegmentProperties(PipeBlock block) {
-        return LaserPipeSegmentProperties.INSTANCE;
+        return new LaserPipeSegmentProperties();
     }
 
     @Override
