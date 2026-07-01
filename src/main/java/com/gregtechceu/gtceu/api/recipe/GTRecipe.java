@@ -235,35 +235,33 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        var rangedContents = getFullContents()
-                .filter(i -> i.content() instanceof IRangedIngredient)
-                .toList();
+        var rangedContents = getFullContents();
         for (var item : rangedContents) {
-            ((IRangedIngredient) item.content()).rollSampledCount();
+            if (item.content() instanceof IRangedIngredient ranged)
+                ranged.rollSampledCount();
         }
     }
 
     public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        var rangedContents = getFullTickContents()
-                .filter(i -> i.content() instanceof IRangedIngredient)
-                .toList();
+        var rangedContents = getFullTickContents();
         for (var item : rangedContents) {
-            ((IRangedIngredient) item.content()).rollSampledCount();
+            if (item.content() instanceof IRangedIngredient ranged)
+                ranged.rollSampledCount();
         }
     }
 
-    public Stream<Content> getFullContents() {
-        return Stream.concat(
-                inputs.values().stream(),
-                outputs.values().stream())
-                .flatMap(List::stream);
+    public List<Content> getFullContents() {
+        return Stream
+                .concat(inputs.values().stream(), outputs.values().stream())
+                .flatMap(List::stream)
+                .toList();
     }
 
-    public Stream<Content> getFullTickContents() {
-        return Stream.concat(
-                tickInputs.values().stream(),
-                tickOutputs.values().stream())
-                .flatMap(List::stream);
+    public List<Content> getFullTickContents() {
+        return Stream
+                .concat(tickInputs.values().stream(), tickOutputs.values().stream())
+                .flatMap(List::stream)
+                .toList();
     }
 
     public int getTotalRuns() {
