@@ -112,6 +112,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
             if (!isRolled()) {
                 setAmount(rollSampledCount());
                 if (getAmount() == 0) {
+                    itemStacks = EMPTY_STACK_ARRAY;
                     return EMPTY_STACK_ARRAY;
                 }
             }

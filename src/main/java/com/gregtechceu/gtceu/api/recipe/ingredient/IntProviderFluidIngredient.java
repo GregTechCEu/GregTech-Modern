@@ -89,6 +89,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
             if (!isRolled()) {
                 setAmount(rollSampledCount());
                 if (getAmount() == 0) {
+                    fluidStacks = EMPTY_STACK_ARRAY;
                     return EMPTY_STACK_ARRAY;
                 }
             }
