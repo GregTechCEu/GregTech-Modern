@@ -19,8 +19,8 @@ jobs:
     steps:
       - name: Create an issue on the project board for this push
         env:
-          GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
-          PROJECT_BOARD_URL: ${{ secrets.PROJECT_BOARD_URL }}
+          GH_TOKEN: ${{ secrets.VERSION_SYNC_PROJECT_TOKEN }}
+          PROJECT_BOARD_URL: ${{ secrets.VERSION_SYNC_PROJECT_BOARD_URL }}
           BRANCH: ${{ github.ref_name }}
           REPO: ${{ github.repository }}
           AFTER: ${{ github.event.after }}
