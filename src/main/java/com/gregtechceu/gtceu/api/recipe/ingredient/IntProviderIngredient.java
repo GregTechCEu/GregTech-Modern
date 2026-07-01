@@ -44,7 +44,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      * The last result of {@link IntProviderIngredient#rollSampledCount(RandomSource)}. -1 if not rolled.
      */
     @Getter
-    @Setter
     protected int sampledCount = -1;
     /**
      * The {@link Ingredient} to have a ranged amount.
@@ -53,18 +52,27 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     protected final Ingredient inner;
     @Setter
     protected ItemStack[] itemStacks = null;
+    @Getter
+    private int amount;
+    private boolean changed = true;
 
     protected IntProviderIngredient(Ingredient inner, IntProvider countProvider) {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
+        this.amount = getMaxRoll();
     }
 
-    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider, int sampledCount) {
+    protected IntProviderIngredient(Ingredient inner, IntProvider countProvider, int sampledCount, int amount) {
         super(Stream.empty());
         this.inner = inner;
         this.countProvider = countProvider;
         this.sampledCount = sampledCount;
+        this.amount = amount;
+    }
+
+    public IntProviderIngredient copy(){
+        return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount, this.amount);
     }
 
     /**
@@ -99,23 +107,26 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (itemStacks == null) {
-            int cachedCount = rollSampledCount();
-            if (cachedCount == 0) {
-                return EMPTY_STACK_ARRAY;
+        if (changed || itemStacks == null) {
+            changed = false;
+            if (!isRolled()) {
+                setAmount(rollSampledCount());
+                if (getAmount() == 0) {
+                    return EMPTY_STACK_ARRAY;
+                }
             }
             var innerStacks = inner.getItems();
             this.itemStacks = new ItemStack[innerStacks.length];
             for (int i = 0; i < itemStacks.length; i++) {
-                itemStacks[i] = innerStacks[i].copyWithCount(cachedCount);
+                itemStacks[i] = innerStacks[i].copyWithCount(getAmount());
             }
         }
         return itemStacks;
     }
 
-    public int getAmount() {
-        if (!isRolled()) return getMaxRoll();
-        else return (getItems().length != 0 ? getItems()[0].getCount() : 0);
+    public void setAmount(int amount){
+        this.amount = amount;
+        this.changed = true;
     }
 
     /**
@@ -139,10 +150,19 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      * @return the count rolled
      */
     public int rollSampledCount(@NotNull RandomSource random) {
-        if (sampledCount == -1) {
+        if (!isRolled()) {
             sampledCount = countProvider.sample(random);
+            this.setAmount(sampledCount);
         }
         return sampledCount;
+    }
+
+    /**
+     * Also sets the Amount of this ingredient
+     */
+    public void setSampledCount(int count) {
+        this.sampledCount = count;
+        this.setAmount(count);
     }
 
     /**
@@ -150,6 +170,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     public void reset() {
         sampledCount = -1;
+        setAmount(getMaxRoll());
         itemStacks = null;
     }
 
@@ -160,7 +181,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
 
     @Override
     public boolean isEmpty() {
-        return inner.isEmpty();
+        return this.getAmount() == 0 || inner.isEmpty();
     }
 
     @Override
@@ -197,6 +218,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("ingredient", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
+        json.addProperty("amount",amount);
         return json;
     }
 
@@ -208,7 +230,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
             IntProvider provider = IntProvider.CODEC.parse(NbtOps.INSTANCE, nbt.get("provider"))
                     .getOrThrow(false, GTCEu.LOGGER::error);
             int sampledCount = nbt.getInt("sampledCount");
-            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount);
+            int amount = nbt.getInt("amount");
+            return new IntProviderIngredient(Ingredient.fromNetwork(buffer), provider, sampledCount, amount);
         }
 
         @Override
@@ -217,7 +240,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
                     .getOrThrow(false, GTCEu.LOGGER::error);
             Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
             int sampledCount = json.getAsJsonPrimitive("sampledCount").getAsInt();
-            return new IntProviderIngredient(inner, provider, sampledCount);
+            int amount = json.getAsJsonPrimitive("amount").getAsInt();
+            return new IntProviderIngredient(inner, provider, sampledCount, amount);
         }
 
         @Override
@@ -226,6 +250,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
             wrapper.put("provider", IntProvider.CODEC.encodeStart(NbtOps.INSTANCE, ingredient.countProvider)
                     .getOrThrow(false, GTCEu.LOGGER::error));
             wrapper.putInt("sampledCount", ingredient.sampledCount);
+            wrapper.putInt("amount", ingredient.amount);
             buffer.writeNbt(wrapper);
             ingredient.inner.toNetwork(buffer);
         }

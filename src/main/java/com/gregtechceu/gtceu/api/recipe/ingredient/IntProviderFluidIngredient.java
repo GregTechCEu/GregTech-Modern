@@ -71,18 +71,9 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
         return ipfi;
     }
 
-    /**
-     * this override only exists for debugging and will be removed.
-     */
-    @Deprecated
-    @Override
-    public int getAmount() {
-        return super.getAmount();
-    }
-
     @Override
     public boolean isEmpty() {
-        return (this.getAmount() == 0);
+        return this.getAmount() == 0 || super.isEmpty();
     }
 
     /**
@@ -94,18 +85,19 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     @Override
     public FluidStack[] getStacks() {
         if (changed || fluidStacks == null) {
-            int cachedAmount = rollSampledCount(GTValues.RNG);
-            if (cachedAmount == 0) {
-                return EMPTY_STACK_ARRAY;
+            changed = false;
+            if (!isRolled()) {
+                setAmount(rollSampledCount());
+                if (getAmount() == 0) {
+                    return EMPTY_STACK_ARRAY;
+                }
             }
             var innerStacks = inner.getStacks();
             this.fluidStacks = new FluidStack[innerStacks.length];
             for (int i = 0; i < fluidStacks.length; i++) {
                 fluidStacks[i] = innerStacks[i].copy();
-                fluidStacks[i].setAmount(cachedAmount);
-            }
-            changed = false;
-        }
+                fluidStacks[i].setAmount(getAmount());
+            }}
         return fluidStacks;
     }
 

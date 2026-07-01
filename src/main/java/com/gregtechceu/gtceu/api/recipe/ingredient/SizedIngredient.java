@@ -83,20 +83,11 @@ public class SizedIngredient extends Ingredient {
             if (sizedIngredient.inner instanceof IntProviderIngredient intProviderIngredient) {
                 return copy(intProviderIngredient);
             }
-
             return SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
         } else if (ingredient instanceof IntCircuitIngredient circuit) {
             return circuit;
-        } else if (ingredient instanceof IntProviderIngredient intProviderIngredient) {
-            var copied = IntProviderIngredient.of(intProviderIngredient.inner, intProviderIngredient.countProvider);
-            if (intProviderIngredient.itemStacks != null) {
-                copied.itemStacks = Arrays.stream(intProviderIngredient.itemStacks).map(ItemStack::copy)
-                        .toArray(ItemStack[]::new);
-            }
-            if (intProviderIngredient.sampledCount != -1) {
-                copied.sampledCount = intProviderIngredient.sampledCount;
-            }
-            return copied;
+        } else if (ingredient instanceof IntProviderIngredient provider) {
+            return provider.copy();
         }
         return SizedIngredient.create(ingredient, ingredient.getItems()[0].getCount());
     }
