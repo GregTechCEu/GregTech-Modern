@@ -38,35 +38,41 @@ public class GTRenderTypes extends RenderType {
     protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
             BloomShaderManager::getRendertypeEntityBloomShader);
 
-    private static final RenderType LIGHT_RING = RenderType.create("light_ring", DefaultVertexFormat.POSITION_COLOR,
-            VertexFormat.Mode.TRIANGLE_STRIP, RenderType.SMALL_BUFFER_SIZE, false, false,
+    private static final RenderType LIGHT_RING = RenderType.create("light_ring",
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
+            RenderType.SMALL_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(NO_CULL)
                     .setShaderState(POSITION_COLOR_SHADER)
                     .createCompositeState(false));
 
-    private static final RenderType BLOOM = RenderType.create("gtceu:bloom", DefaultVertexFormat.BLOCK,
-            VertexFormat.Mode.QUADS, RenderType.BIG_BUFFER_SIZE, true, false,
+    private static final RenderType BLOOM = RenderType.create("gtceu:bloom",
+            DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS,
+            RenderType.BIG_BUFFER_SIZE, true, false,
             RenderType.CompositeState.builder()
                     .setShaderState(RENDERTYPE_BLOOM_SHADER)
                     .setOutputState(BLOOM_TARGET)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setLayeringState(POLYGON_OFFSET_LAYERING)
                     .createCompositeState(true));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
-        return create("gtceu:entity_bloom", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
+        return create("gtceu:entity_bloom",
+                DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS,
                 RenderType.TRANSIENT_BUFFER_SIZE, true, false,
                 RenderType.CompositeState.builder()
                         .setShaderState(RENDERTYPE_ENTITY_BLOOM_SHADER)
                         .setOutputState(BLOOM_TARGET)
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
-                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, true))
+                        .setLayeringState(POLYGON_OFFSET_LAYERING)
                         .createCompositeState(true));
     });
 
     private static final RenderType MONITOR = RenderType.create("central_monitor",
-            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, RenderType.TRANSIENT_BUFFER_SIZE, false, false,
+            DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS,
+            RenderType.TRANSIENT_BUFFER_SIZE, false, false,
             RenderType.CompositeState.builder()
                     .setCullState(NO_CULL)
                     .setShaderState(POSITION_COLOR_SHADER)

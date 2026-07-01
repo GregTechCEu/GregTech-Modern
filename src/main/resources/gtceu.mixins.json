@@ -33,7 +33,6 @@
         "client.bloom.LevelRendererMixin",
         "client.bloom.LightPipelineAwareModelBlockRendererMixin",
         "client.bloom.ModelBlockRendererMixin",
-        "client.bloom.PostChainAccessor",
         "client.bloom.QuadLighterMixin",
         "client.bloom.SectionCompilerMixin",
         "client.bloom.normal.RenderTypeMixin",

@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.core.config.GTEarlyConfig;
 import com.gregtechceu.gtceu.core.mixins.GTMixinPlugin;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.BufferBuilderAccessor;
 import com.gregtechceu.gtceu.core.mixins.client.bloom.LevelRendererAccessor;
-import com.gregtechceu.gtceu.core.mixins.client.bloom.PostChainAccessor;
 import com.gregtechceu.gtceu.utils.ScopedValue;
-import com.gregtechceu.gtceu.utils.function.IntObjectConsumer;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
@@ -38,7 +36,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -60,20 +57,18 @@ public class BloomRenderer {
     @Accessors(fluent = true)
     @Getter
     @ApiStatus.Internal
-    static final ThreadLocal<ScopedValue.Object<Supplier<VertexConsumer>>> bloomChunkContext = ThreadLocal
+    private static final ThreadLocal<ScopedValue.Object<Supplier<VertexConsumer>>> bloomChunkContext = ThreadLocal
             .withInitial(ScopedValue.Object::new);
 
-    @ApiStatus.Internal
-    static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum, Matrix4f frustumMatrix,
-                            Matrix4f projectionMatrix,
-                            float partialTicks, LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
+    static void renderBloom(Camera camera, PoseStack poseStack, Frustum frustum,
+                            Matrix4f frustumMatrix, Matrix4f projectionMatrix, float partialTicks,
+                            LevelRenderer levelRenderer, ProfilerFiller profilerFiller) {
         if (!BloomShaderManager.isBloomActive()) return;
 
         Vec3 camPos = camera.getPosition();
 
         profilerFiller.popPush("gtceu:bloom");
         setupBloomShaderUniforms();
-
         GTRenderTypes.bloom().setupRenderState();
 
         renderSpecialBloom(camera, poseStack, frustum, partialTicks, profilerFiller);
@@ -100,7 +95,7 @@ public class BloomRenderer {
         // profiler section is popped by popPush() in the calling function; don't pop it here
     }
 
-    static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
+    private static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
                                    ProfilerFiller profilerFiller) {
         profilerFiller.push("special");
 
@@ -135,7 +130,7 @@ public class BloomRenderer {
         profilerFiller.pop();
     }
 
-    static void processPostEffect(float partialTicks, ProfilerFiller profilerFiller) {
+    private static void processPostEffect(float partialTicks, ProfilerFiller profilerFiller) {
         Minecraft minecraft = Minecraft.getInstance();
         RenderTarget mainTarget = minecraft.getMainRenderTarget();
 
@@ -148,7 +143,7 @@ public class BloomRenderer {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
-        BLOOM_TARGET.blitToScreen(mainTarget.viewWidth, mainTarget.viewHeight, false);
+        BLOOM_TARGET.blitToScreen(mainTarget.width, mainTarget.height, false);
         BLOOM_TARGET.unbindRead();
 
         RenderSystem.disableBlend();
@@ -157,38 +152,19 @@ public class BloomRenderer {
         profilerFiller.pop();
     }
 
-    @ApiStatus.Internal
-    static void setupBloomShaderUniforms() {
+    private static void setupBloomShaderUniforms() {
         final var config = ConfigHolder.INSTANCE.client.bloom;
 
         // Forcefully insert config values to shader
-        modifyBloomPostShaders((index, shader) -> {
-            shader.safeGetUniform("DepthNear").set(GameRenderer.PROJECTION_Z_NEAR);
-            shader.safeGetUniform("DepthFar").set(Minecraft.getInstance().gameRenderer.getDepthFar());
+        BloomShaderManager.BLOOM_CHAIN.setUniform("DepthNear", GameRenderer.PROJECTION_Z_NEAR);
+        BloomShaderManager.BLOOM_CHAIN.setUniform("DepthFar", Minecraft.getInstance().gameRenderer.getDepthFar());
 
-            // look for blur steps & change their blur strength to match the config
-            if (shader.getName().contains("blur")) {
-                if (index % 2 == 0) {
-                    shader.safeGetUniform("BlurDir").set(0.0f, config.step);
-                } else {
-                    shader.safeGetUniform("BlurDir").set(config.step, 0.0f);
-                }
-            }
+        BloomShaderManager.BLOOM_CHAIN.setUniform("RadiusMultiplier", config.step);
 
-            shader.safeGetUniform("BloomStrength").set(config.strength);
-            shader.safeGetUniform("BaseBrightness").set(config.baseBrightness);
-            shader.safeGetUniform("MinBrightness").set(config.minBrightness);
-            shader.safeGetUniform("MaxBrightness").set(config.maxBrightness);
-        });
-    }
-
-    static void modifyBloomPostShaders(IntObjectConsumer<EffectInstance> consumer) {
-        // Forcefully insert config values to shader
-        List<PostPass> passes = ((PostChainAccessor) BloomShaderManager.BLOOM_CHAIN).getPasses();
-        for (int i = 0; i < passes.size(); i++) {
-            PostPass pass = passes.get(i);
-            consumer.accept(i, pass.getEffect());
-        }
+        BloomShaderManager.BLOOM_CHAIN.setUniform("BloomStrength", config.strength);
+        BloomShaderManager.BLOOM_CHAIN.setUniform("BaseBrightness", config.baseBrightness);
+        BloomShaderManager.BLOOM_CHAIN.setUniform("MinBrightness", config.minBrightness);
+        BloomShaderManager.BLOOM_CHAIN.setUniform("MaxBrightness", config.maxBrightness);
     }
 
     /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
@@ -296,7 +272,7 @@ public class BloomRenderer {
                     poseStack, frustumMatrix, projectionMatrix, levelRenderer.getTicks(), camera, frustum);
         }
 
-        public static void finishBloomBuffer(SectionPos sectionPos, MeshData mesh, BufferBuilder builder,
+        private static void finishBloomBuffer(SectionPos sectionPos, MeshData mesh, BufferBuilder builder,
                                              VertexSorting vertexSorting) {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
@@ -324,7 +300,7 @@ public class BloomRenderer {
             }
         }
 
-        public static void uploadBloomBuffer(MeshData mesh, VertexBuffer buffer) {
+        private static void uploadBloomBuffer(MeshData mesh, VertexBuffer buffer) {
             if (!buffer.isInvalid()) {
                 buffer.bind();
                 buffer.upload(mesh);
@@ -377,7 +353,7 @@ public class BloomRenderer {
             }
         }
 
-        public static void invalidateSectionData(SectionPos sectionPos) {
+        static void invalidateSectionData(SectionPos sectionPos) {
             BLOOM_RENDER_LOCK.writeLock().lock();
 
             try {
