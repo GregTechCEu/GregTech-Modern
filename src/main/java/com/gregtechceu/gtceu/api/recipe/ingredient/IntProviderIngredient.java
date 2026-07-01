@@ -71,7 +71,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         this.amount = amount;
     }
 
-    public IntProviderIngredient copy(){
+    public IntProviderIngredient copy() {
         return new IntProviderIngredient(this.inner, this.countProvider, this.sampledCount, this.amount);
     }
 
@@ -124,7 +124,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         return itemStacks;
     }
 
-    public void setAmount(int amount){
+    public void setAmount(int amount) {
         this.amount = amount;
         this.changed = true;
     }
@@ -218,7 +218,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
                 .getOrThrow(false, GTCEu.LOGGER::error));
         json.add("ingredient", inner.toJson());
         json.addProperty("sampledCount", sampledCount);
-        json.addProperty("amount",amount);
+        json.addProperty("amount", amount);
         return json;
     }
 

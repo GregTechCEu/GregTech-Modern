@@ -97,7 +97,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
             for (int i = 0; i < fluidStacks.length; i++) {
                 fluidStacks[i] = innerStacks[i].copy();
                 fluidStacks[i].setAmount(getAmount());
-            }}
+            }
+        }
         return fluidStacks;
     }
 
