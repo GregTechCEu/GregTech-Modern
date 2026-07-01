@@ -9,6 +9,7 @@ on:
 permissions:
   issues: write
   contents: read
+  pull-requests: read
 
 concurrency:
   group: log-commits-to-issue
@@ -35,15 +36,31 @@ jobs:
               return;
             }
 
-            // Build a markdown list item for each commit in this push
-            const lines = context.payload.commits.map((c) => {
+            // Build a markdown list item for each commit in this push, skipping
+            // any commit whose associated PR carries the "Ignore Version Sync" label
+            const lines = [];
+            for (const c of context.payload.commits) {
+              const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: c.id,
+              });
+
+              const ignored = prs.some((pr) =>
+                (pr.labels || []).some((l) => l.name === 'Ignore Version Sync')
+              );
+              if (ignored) {
+                core.info(`Commit ${c.id.substring(0, 7)} belongs to a PR labeled 'Ignore Version Sync', skipping.`);
+                continue;
+              }
+
               const shortSha = c.id.substring(0, 7);
               const title = c.message.split('\n')[0];
-              return `- [\`${shortSha}\`](${c.url}) ${title}`;
-            });
+              lines.push(`- [\`${shortSha}\`](${c.url}) ${title}`);
+            }
 
             if (lines.length === 0) {
-              core.info('No commits in this push, nothing to append.');
+              core.info('No commits to append.');
               return;
             }
 
