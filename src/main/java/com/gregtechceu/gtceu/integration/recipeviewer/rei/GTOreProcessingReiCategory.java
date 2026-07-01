@@ -47,7 +47,7 @@ public class GTOreProcessingReiCategory extends
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (Material mat : GTRegistries.MATERIALS.values()) {
+        for (Material mat : GTRegistries.MATERIALS) {
             if (mat.hasProperty(ORE) && !mat.hasFlag(MaterialFlags.NO_ORE_PROCESSING_TAB)) {
                 registry.add(new GTOreProcessingDisplay(mat));
             }

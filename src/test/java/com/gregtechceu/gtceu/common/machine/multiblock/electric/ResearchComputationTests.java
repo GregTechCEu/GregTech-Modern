@@ -205,6 +205,7 @@ public class ResearchComputationTests {
         HPCAMachine hpca = (HPCAMachine) helper.getBlockEntity(new BlockPos(5, 1, 1));
         helper.assertTrue(hpca != null, "HPCA controller not found");
         TestUtils.formMultiblock(helper, hpca);
+        helper.assertTrue(!hpca.getParts().isEmpty(), "no parts were found");
 
         // Only succeed once we have actually seen the full 36 CWU/t (confirming the swap took effect and the HPCA
         // powered on), and then watched overheating damage drop it below 36 - so the test can't pass vacuously.

@@ -189,6 +189,11 @@ public class BlockHighlightRenderer {
         Direction right = RelativeDirection.RIGHT.applyDirection(front);
         Direction top = RelativeDirection.UP.applyDirection(front);
         Direction bottom = RelativeDirection.DOWN.applyDirection(front);
+        if (front.getAxis() == Direction.Axis.Y) {
+            Direction tmp = left;
+            left = right;
+            right = tmp;
+        }
 
         Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);

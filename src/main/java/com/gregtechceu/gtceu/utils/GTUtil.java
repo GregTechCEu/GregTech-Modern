@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.common.item.TieredBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
@@ -34,7 +35,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -59,6 +59,9 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.emi.api.EmiApi;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -614,19 +617,19 @@ public class GTUtil {
         }
     }
 
-    public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+    public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
+            case 0 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WRENCH),
                     Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
+            case 1 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
                     Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
+            case 2 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
                     Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
+            case 3 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
                     Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
+            case 4 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
                     Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
+            default -> Pair.of(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
     }
@@ -779,7 +782,13 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+                    .toList();
+            Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
+            for (var cat : categories) {
+                recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
+            }
+            EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
         }
     }
 

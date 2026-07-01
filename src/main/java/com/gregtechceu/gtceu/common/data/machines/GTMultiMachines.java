@@ -38,7 +38,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 
@@ -781,18 +780,7 @@ public class GTMultiMachines {
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.1"),
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.2"),
                     Component.translatable("gtceu.machine.charcoal_pile.tooltip.3"))
-            .pattern((def) -> MultiblockPatternBuilder.start()
-                    .slice("     ", " XXX ", " XXX ", " XXX ", "     ")
-                    .slice(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")
-                    .slice(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DSD ")
-                    .slice(" BBB ", "XCCCX", "XCCCX", "XCCCX", " DDD ")
-                    .slice("     ", " XXX ", " XXX ", " XXX ", "     ")
-                    .where('S', controller(blocks(def.getBlock())))
-                    .where('B', blocks(Blocks.BRICKS))
-                    .where('X', blocks(Blocks.DIRT))
-                    .where('D', blocks(Blocks.DIRT))
-                    .where('C', blocks(Blocks.OAK_LOG))
-                    .build())
+            .pattern(CharcoalPileIgniterMachine.getPattern())
             .allowFlip(false)
             .allowExtendedFacing(false)
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"),
