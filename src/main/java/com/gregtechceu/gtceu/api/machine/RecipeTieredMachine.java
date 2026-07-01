@@ -68,7 +68,7 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
     public RecipeTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
                                Object... args) {
         super(holder, tier, args);
-        this.overclockTier = getMaxOverclockTier();
+        this.overclockTier = tier;
         this.recipeLogic = (RecipeLogic) this.workLogic;
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -153,18 +153,8 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
     }
 
     @Override
-    public int getMaxOverclockTier() {
-        return GTUtil.getTierByVoltage(Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
-    }
-
-    @Override
-    public int getMinOverclockTier() {
-        return 0;
-    }
-
-    @Override
     public void setOverclockTier(int tier) {
-        if (!isRemote() && tier >= getMinOverclockTier() && tier <= getMaxOverclockTier()) {
+        if (!isRemote() && tier >= 0 && tier <= getTier()) {
             this.overclockTier = tier;
             this.recipeLogic.markLastRecipeDirty();
         }

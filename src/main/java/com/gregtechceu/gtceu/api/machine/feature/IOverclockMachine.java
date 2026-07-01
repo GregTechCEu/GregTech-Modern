@@ -8,10 +8,6 @@ public interface IOverclockMachine extends IMachineFeature {
 
     void setOverclockTier(int tier);
 
-    int getMaxOverclockTier();
-
-    int getMinOverclockTier();
-
     default long getOverclockVoltage() {
         return GTValues.V[getOverclockTier()];
     }

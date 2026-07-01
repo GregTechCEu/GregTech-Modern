@@ -31,11 +31,6 @@ public interface ITurbineMachine {
     long getCurrentProduction();
 
     /**
-     * @return the maximum energy production
-     */
-    long getOverclockVoltage();
-
-    /**
      * @return the rotor durability in % or -1 when no rotor is installed
      */
     int getRotorDurabilityPercent();

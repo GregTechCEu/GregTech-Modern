@@ -148,8 +148,8 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
         // don't null out energyBank since it holds the stored energy, which
         // we need to hold on to across rebuilds to not void all energy if a
         // multiblock part or block other than the controller is broken.
-        inputHatches = null;
-        outputHatches = null;
+        inputHatches = EnergyContainerList.EMPTY;
+        outputHatches = EnergyContainerList.EMPTY;
         passiveDrain = 0;
         netInLastSec = 0;
         inputPerSec = 0;

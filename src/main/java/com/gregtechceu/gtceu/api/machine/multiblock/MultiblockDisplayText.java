@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -104,15 +105,14 @@ public class MultiblockDisplayText {
          * <br>
          * Added if the structure is formed and if the passed energy container has greater than zero capacity.
          */
-        public Builder addEnergyUsageLine(IEnergyContainer energyContainer) {
+        public Builder addEnergyUsageLine(EnergyContainerList energyContainer) {
             if (!isStructureFormed)
                 return this;
             if (energyContainer != null && energyContainer.getEnergyCapacity() > 0) {
-                long maxVoltage = Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage());
-
-                String energyFormatted = FormattingUtil.formatNumbers(maxVoltage);
+                long totalEUt = energyContainer.getTotalEUt();
+                String energyFormatted = FormattingUtil.formatNumbers(totalEUt);
                 // wrap in text component to keep it from being formatted
-                byte voltageTier = GTUtil.getFloorTierByVoltage(maxVoltage);
+                byte voltageTier = GTUtil.getFloorTierByVoltage(totalEUt);
                 Component voltageName = Component.literal(
                         GTValues.VNF[voltageTier]);
 

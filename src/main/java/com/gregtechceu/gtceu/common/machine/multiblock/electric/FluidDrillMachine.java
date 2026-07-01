@@ -2,21 +2,15 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -28,7 +22,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -36,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidDrillMachine extends RecipeElectricMultiblockMachine implements ITieredMachine {
+public class FluidDrillMachine extends RecipeElectricMultiblockMachine {
 
     @Getter
     private final int tier;
@@ -51,27 +44,16 @@ public class FluidDrillMachine extends RecipeElectricMultiblockMachine implement
         return new FluidDrillLogic(this);
     }
 
-    @NotNull
     @Override
     public FluidDrillLogic getRecipeLogic() {
         return (FluidDrillLogic) super.getRecipeLogic();
     }
 
-    public int getEnergyTier() {
-        var energyContainer = this.getCapabilitiesFlat(IO.IN, EURecipeCapability.CAP);
-        if (energyContainer == null) return this.tier;
-        var energyCont = new EnergyContainerList(energyContainer.stream().filter(IEnergyContainer.class::isInstance)
-                .map(IEnergyContainer.class::cast).toList());
-
-        return Math.min(this.tier + 1, Math.max(this.tier, GTUtil.getFloorTierByVoltage(energyCont.getInputVoltage())));
-    }
-
     @Override
     public void addDisplayText(List<Component> textList) {
         if (isFormed()) {
-            int energyContainer = getEnergyTier();
-            long maxVoltage = GTValues.V[energyContainer];
-            String voltageName = GTValues.VNF[energyContainer];
+            long maxVoltage = GTValues.V[tier];
+            String voltageName = GTValues.VNF[tier];
             textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
 
             if (getRecipeLogic().getVeinFluid() != null) {

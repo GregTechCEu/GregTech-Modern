@@ -43,7 +43,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachine implements ITieredMachine {
+public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachine {
 
     private static final FluidStack OXYGEN_STACK = GTMaterials.Oxygen.getFluid(1);
     private static final FluidStack LIQUID_OXYGEN_STACK = GTMaterials.Oxygen.getFluid(FluidStorageKeys.LIQUID, 4);
@@ -81,7 +81,7 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
     }
 
     public boolean isBoostAllowed() {
-        return getMaxVoltage() >= GTValues.V[getTier() + 1];
+        return energyContainer.getTotalEUt() >= GTValues.V[getTier() + 1];
     }
 
     //////////////////////////////////////

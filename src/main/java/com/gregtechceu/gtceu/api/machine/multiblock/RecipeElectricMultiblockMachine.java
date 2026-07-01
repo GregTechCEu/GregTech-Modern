@@ -28,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine implements IFancyUIMachine,
                                           IDisplayUIMachine, ITieredMachine, IOverclockMachine {
 
-    // runtime
+    @NotNull
     protected EnergyContainerList energyContainer;
     @Getter
     protected int tier;
@@ -59,7 +60,7 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     @Override
     public void onStructureInvalid() {
         super.onStructureInvalid();
-        this.energyContainer = null;
+        this.energyContainer = EnergyContainerList.EMPTY;
         this.tier = 0;
     }
 
@@ -67,13 +68,13 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     public void onStructureFormed() {
         super.onStructureFormed();
         this.energyContainer = getEnergyContainer();
-        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
+        this.tier = energyContainer.getTier();
     }
 
     @Override
     public void onPartUnload() {
         super.onPartUnload();
-        this.energyContainer = null;
+        this.energyContainer = EnergyContainerList.EMPTY;
         this.tier = 0;
     }
 
@@ -180,43 +181,11 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     }
 
     @Override
-    public int getMaxOverclockTier() {
-        return getTier();
-    }
-
-    @Override
-    public int getMinOverclockTier() {
-        return getTier();
-    }
-
-    @Override
     public void setOverclockTier(int tier) {}
 
     @Override
     public long getOverclockVoltage() {
-        if (this.energyContainer == null) {
-            this.energyContainer = getEnergyContainer();
-        }
-        long voltage;
-        long amperage;
-        if (energyContainer.getInputVoltage() > energyContainer.getOutputVoltage()) {
-            voltage = energyContainer.getInputVoltage();
-            amperage = energyContainer.getInputAmperage();
-        } else {
-            voltage = energyContainer.getOutputVoltage();
-            amperage = energyContainer.getOutputAmperage();
-        }
-
-        if (amperage == 1) {
-            // amperage is 1 when the energy is not exactly on a tier
-            // the voltage for recipe search is always on tier, so take the closest lower tier
-            return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
-        } else {
-            // amperage != 1 means the voltage is exactly on a tier
-            // ignore amperage, since only the voltage is relevant for recipe search
-            // amps are never > 3 in an EnergyContainerList
-            return voltage;
-        }
+        return energyContainer.getEffectiveVoltage();
     }
 
     //////////////////////////////////////
@@ -236,40 +205,8 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     }
 
     @Override
-    public long getMaxVoltage() {
-        if (this.energyContainer == null) {
-            this.energyContainer = getEnergyContainer();
-        }
-        if (this.isGenerator()) {
-            // Generators
-            long voltage = energyContainer.getOutputVoltage();
-            long amperage = energyContainer.getOutputAmperage();
-            if (amperage == 1) {
-                // Amperage is 1 when the energy is not exactly on a tier.
-                // The voltage for recipe search is always on tier, so take the closest lower tier.
-                // List check is done because single hatches will always be a "clean voltage," no need
-                // for any additional checks.
-                return GTValues.VEX[GTUtil.getFloorTierByVoltage(voltage)];
-            } else {
-                return voltage;
-            }
-        } else {
-            // Machines
-            long highestVoltage = energyContainer.getHighestInputVoltage();
-            if (energyContainer.getNumHighestInputContainers() > 1) {
-                // allow tier + 1 if there are multiple hatches present at the highest tier
-                int tier = GTUtil.getTierByVoltage(highestVoltage);
-                return GTValues.V[Math.min(tier + 1, GTValues.MAX)];
-            } else {
-                return highestVoltage;
-            }
-        }
-    }
-
-    @Override
     public long getDisplayRecipeVoltage() {
-        return Math.max(this.getEnergyContainer().getHighestInputVoltage(),
-                this.getEnergyContainer().getOutputVoltage());
+        return energyContainer.getHighestVoltage();
     }
 
     /**

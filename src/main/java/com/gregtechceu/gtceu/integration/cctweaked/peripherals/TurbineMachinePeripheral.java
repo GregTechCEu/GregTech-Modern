@@ -38,11 +38,6 @@ public class TurbineMachinePeripheral implements GenericPeripheral {
     }
 
     @LuaFunction
-    public static MethodResult getOverclockVoltage(ITurbineMachine turbine) {
-        return MethodResult.of(turbine.getOverclockVoltage());
-    }
-
-    @LuaFunction
     public static MethodResult getRotorDurabilityPercent(ITurbineMachine turbine) {
         return MethodResult.of(turbine.getRotorDurabilityPercent());
     }

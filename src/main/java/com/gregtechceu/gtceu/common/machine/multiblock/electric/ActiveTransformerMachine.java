@@ -43,8 +43,8 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                                       implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
 
-    private IEnergyContainer powerOutput;
-    private IEnergyContainer powerInput;
+    private EnergyContainerList powerOutput;
+    private EnergyContainerList powerInput;
     protected ConditionalSubscriptionHandler converterSubscription;
 
     public ActiveTransformerMachine(IMachineBlockEntity holder) {
@@ -147,8 +147,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();
-        this.powerOutput = new EnergyContainerList(new ArrayList<>());
-        this.powerInput = new EnergyContainerList(new ArrayList<>());
+        this.powerOutput = EnergyContainerList.EMPTY;
+        this.powerInput = EnergyContainerList.EMPTY;
         getWorkLogic().setStatus(WorkLogic.Status.SUSPEND);
         converterSubscription.unsubscribe();
     }
@@ -174,12 +174,10 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                 textList.add(Component.translatable("gtceu.multiblock.running"));
                 textList.add(Component
                         .translatable("gtceu.multiblock.active_transformer.max_input",
-                                FormattingUtil.formatNumbers(
-                                        Math.abs(powerInput.getInputVoltage() * powerInput.getInputAmperage()))));
+                                FormattingUtil.formatNumbers(powerInput.getTotalEUt())));
                 textList.add(Component
                         .translatable("gtceu.multiblock.active_transformer.max_output",
-                                FormattingUtil.formatNumbers(
-                                        Math.abs(powerOutput.getOutputVoltage() * powerOutput.getOutputAmperage()))));
+                                FormattingUtil.formatNumbers(powerOutput.getTotalEUt())));
                 textList.add(Component
                         .translatable("gtceu.multiblock.active_transformer.average_in",
                                 FormattingUtil.formatNumbers(Math.abs(powerInput.getInputPerSec() / 20))));

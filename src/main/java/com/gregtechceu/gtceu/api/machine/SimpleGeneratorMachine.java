@@ -74,6 +74,11 @@ public class SimpleGeneratorMachine extends RecipeTieredMachine
     // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
+    @Override
+    public boolean alwaysTryModifyRecipe() {
+        return true;
+    }
+
     /**
      * Recipe Modifier for <b>Simple Generator Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>

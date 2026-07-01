@@ -38,6 +38,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -449,10 +450,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     @Override
     public void addDisplayText(List<Component> textList) {
         if (isFormed()) {
-            var maxVoltage = getMaxVoltage();
-            if (maxVoltage > 0) {
-                String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(maxVoltage)];
-                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+            long totalEUt = energyContainer.getTotalEUt();
+            if (totalEUt > 0) {
+                String energyFormatted = FormattingUtil.formatNumbers(totalEUt);
+                String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(totalEUt)];
+                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick",energyFormatted, voltageName));
             }
 
             if (cleanroomType != null) {

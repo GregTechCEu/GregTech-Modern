@@ -59,7 +59,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     public void onStructureFormed() {
         super.onStructureFormed();
         this.energyContainer = getEnergyContainer();
-        this.tier = GTUtil.getFloorTierByVoltage(getMaxVoltage());
+        this.tier = energyContainer.getTier();
     }
 
     @Override
@@ -85,10 +85,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getMaxVoltage() {
-        if (this.energyContainer == null) {
-            this.energyContainer = getEnergyContainer();
-        }
-        return Math.max(energyContainer.getHighestInputVoltage(), energyContainer.getOutputVoltage());
+        return energyContainer.getEffectiveVoltage();
     }
 
     @Override

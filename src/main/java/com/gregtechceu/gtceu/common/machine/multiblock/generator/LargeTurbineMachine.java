@@ -31,7 +31,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LargeTurbineMachine extends RecipeElectricMultiblockMachine implements ITieredMachine, ITurbineMachine {
+public class LargeTurbineMachine extends RecipeElectricMultiblockMachine implements ITurbineMachine {
 
     public static final int MIN_DURABILITY_TO_WARN = 10;
 

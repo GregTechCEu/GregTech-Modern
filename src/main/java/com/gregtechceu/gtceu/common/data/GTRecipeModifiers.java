@@ -42,7 +42,7 @@ public class GTRecipeModifiers {
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
             .memoize(logic -> (machine, group, recipe) -> {
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return null;
-                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getMaxOverclockTier()) {
+                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getOverclockTier()) {
                     return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
                 }
                 return logic.getModifier(machine, group, recipe, overclockMachine.getOverclockVoltage());

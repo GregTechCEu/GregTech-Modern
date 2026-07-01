@@ -55,7 +55,7 @@ import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FusionReactorMachine extends RecipeElectricMultiblockMachine implements ITieredMachine {
+public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
 
     // Standard OC used for Fusion
     public static final OverclockingLogic FUSION_OC = OverclockingLogic.create(PERFECT_HALF_DURATION_FACTOR,
@@ -185,7 +185,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine implem
 
         // if the stored heat is >= required energy, recipe is okay to run
         if (heatDiff <= 0) {
-            return FUSION_OC.getModifier(machine, group, recipe, fusionReactorMachine.getMaxVoltage(), false);
+            return FUSION_OC.getModifier(machine, group, recipe, GTValues.V[fusionReactorMachine.tier], false);
         }
         // if the remaining energy needed is more than stored, do not run
         if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
@@ -196,7 +196,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine implem
         // increase the stored heat
         fusionReactorMachine.heat += heatDiff;
         fusionReactorMachine.updatePreHeatSubscription();
-        return FUSION_OC.getModifier(machine, group, recipe, fusionReactorMachine.getMaxVoltage(), false);
+        return FUSION_OC.getModifier(machine, group, recipe,GTValues.V[fusionReactorMachine.tier], false);
     }
 
     @Override
@@ -260,11 +260,6 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine implem
     public void afterWorking() {
         super.afterWorking();
         color = -1;
-    }
-
-    @Override
-    public long getMaxVoltage() {
-        return Math.min(GTValues.V[tier], super.getMaxVoltage());
     }
 
     //////////////////////////////////////
