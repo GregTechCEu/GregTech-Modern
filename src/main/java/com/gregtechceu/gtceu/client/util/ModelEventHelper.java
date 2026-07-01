@@ -170,10 +170,6 @@ public class ModelEventHelper {
                 // Nothing we can add to builtin models
                 return baked;
             }
-            // do not register automatic CTM for machine models, they handle it themselves
-            if (baked instanceof MachineModel) {
-                return baked;
-            }
 
             if (rootModel == null || baked instanceof CTMBakedModel<?>) {
                 return baked;

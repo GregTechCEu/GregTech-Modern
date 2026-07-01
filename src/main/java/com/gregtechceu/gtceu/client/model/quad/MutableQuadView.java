@@ -28,6 +28,7 @@ import net.neoforged.neoforge.client.model.QuadTransformers;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import static com.gregtechceu.gtceu.client.model.quad.EncodingFormat.*;
 
@@ -49,25 +50,25 @@ public abstract class MutableQuadView extends QuadView {
      * Causes texture to appear with no rotation.
      * Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
      */
-    public static final int BAKE_ROTATE_NONE = 0b000000;
+    public static final int BAKE_ROTATE_NONE = 0b0000000;
 
     /**
      * Causes texture to appear rotated 90 deg. clockwise relative to nominal face. Pass in bakeFlags parameter to
      * {@link #spriteBake(TextureAtlasSprite, int)}.
      */
-    public static final int BAKE_ROTATE_90 = 0b000001;
+    public static final int BAKE_ROTATE_90 = 0b0000001;
 
     /**
      * Causes texture to appear rotated 180 deg. relative to nominal face. Pass in bakeFlags parameter to
      * {@link #spriteBake(TextureAtlasSprite, int)}.
      */
-    public static final int BAKE_ROTATE_180 = 0b000010;
+    public static final int BAKE_ROTATE_180 = 0b0000010;
 
     /**
      * Causes texture to appear rotated 270 deg. clockwise relative to nominal face. Pass in bakeFlags parameter to
      * {@link #spriteBake(TextureAtlasSprite, int)}.
      */
-    public static final int BAKE_ROTATE_270 = 0b000011;
+    public static final int BAKE_ROTATE_270 = 0b0000011;
 
     /**
      * When enabled, texture coordinates are assigned based on vertex position.
@@ -79,25 +80,31 @@ public abstract class MutableQuadView extends QuadView {
      * with that face. The result is the same as if the quad were projected onto the nominal face, which is usually the
      * desired result.
      */
-    public static final int BAKE_LOCK_UV = 0b000100;
-
-    /**
-     * When enabled, texture coordinates are cycled so that vertex 0's UVs are the smallest.
-     * Pass in bakeFlags parameter to {@link TextureHelper#unbakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
-     */
-    public static final int BAKE_DEROTATE_UV = 0b000100;
+    public static final int BAKE_LOCK_UV = 0b0000100;
 
     /**
      * When set, U texture coordinates for the given sprite are flipped as part of baking. Can be useful for some
      * randomization and texture mapping scenarios. Results are different from what can be obtained via rotation and
      * both can be applied. Pass in bakeFlags parameter to {@link #spriteBake(TextureAtlasSprite, int)}.
      */
-    public static final int BAKE_FLIP_U = 0b001000;
+    public static final int BAKE_FLIP_U = 0b0001000;
 
     /**
      * Same as {@link #BAKE_FLIP_U} but for V coordinate.
      */
-    public static final int BAKE_FLIP_V = 0b010000;
+    public static final int BAKE_FLIP_V = 0b0010000;
+
+    /**
+     * When enabled, texture coordinates are cycled so that vertex 0's UVs are the smallest.
+     * Pass in bakeFlags parameter to {@link TextureHelper#unbakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
+     */
+    public static final int UNBAKE_DEROTATE_UV = 0b0000100;
+
+    /**
+     * When enabled, vertex coordinates are cycled so that vertex 0 is always at the same position.
+     * Pass in bakeFlags parameter to {@link TextureHelper#unbakeSprite(MutableQuadView, TextureAtlasSprite, int)}.
+     */
+    public static final int UNBAKE_CANONICALIZE_WINDING = 0b1000000;
 
     public static MutableQuadView getInstance() {
         return MutableQuadView.THREAD_LOCAL.get();
@@ -146,8 +153,12 @@ public abstract class MutableQuadView extends QuadView {
 
     /**
      * Same as {@link #pos(int, float, float, float)} but accepts a vector type.
+     *
+     * <p>
+     * Only use this function if you already have a {@link Vector3fc}.
+     * Otherwise, see {@link MutableQuadView#pos(int, float, float, float)}.
      */
-    public MutableQuadView pos(int vertexIndex, Vector3f pos) {
+    public MutableQuadView pos(int vertexIndex, Vector3fc pos) {
         return pos(vertexIndex, pos.x(), pos.y(), pos.z());
     }
 

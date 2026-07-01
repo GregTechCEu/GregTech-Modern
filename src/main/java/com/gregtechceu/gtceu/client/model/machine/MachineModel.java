@@ -317,8 +317,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads = replacePartBaseModel(quads, part, machine.getFrontFacing(), side, rand, modelData, renderType);
         }
 
-        // we have to recalculate CTM ourselves.
-        // this is the slowest part by a long shot because the LDLib quad logic isn't very optimized.
+        // we have to recalculate CTM ourselves
         if (level != null && pos != null && blockState != null && side != null) {
             return CTMMeshBuilder.buildCTMQuads(level, pos, blockState, quads, side);
         }

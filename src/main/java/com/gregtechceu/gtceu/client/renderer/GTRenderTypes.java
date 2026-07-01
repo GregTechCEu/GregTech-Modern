@@ -54,7 +54,6 @@ public class GTRenderTypes extends RenderType {
                     .setOutputState(BLOOM_TARGET)
                     .setLightmapState(LIGHTMAP)
                     .setTextureState(BLOCK_SHEET_MIPPED)
-                    .setLayeringState(POLYGON_OFFSET_LAYERING)
                     .createCompositeState(true));
     private static final Function<ResourceLocation, RenderType> ENTITY_BLOOM = Util.memoize((texture) -> {
         return create("gtceu:entity_bloom",
@@ -66,7 +65,6 @@ public class GTRenderTypes extends RenderType {
                         .setLightmapState(LIGHTMAP)
                         .setOverlayState(OVERLAY)
                         .setTextureState(new RenderStateShard.TextureStateShard(texture, false, true))
-                        .setLayeringState(POLYGON_OFFSET_LAYERING)
                         .createCompositeState(true));
     });
 
