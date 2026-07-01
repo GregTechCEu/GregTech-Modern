@@ -126,9 +126,6 @@ public class SizedIngredient extends Ingredient {
 
     @Override
     public ItemStack @NotNull [] getItems() {
-        if (getInner() instanceof IntProviderIngredient intProviderIngredient) {
-            return intProviderIngredient.getItems();
-        }
         if (changed || itemStacks == null) {
             var innerStacks = inner.getItems();
             this.itemStacks = new ItemStack[innerStacks.length];

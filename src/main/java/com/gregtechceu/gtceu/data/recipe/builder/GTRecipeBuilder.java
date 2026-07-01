@@ -1704,7 +1704,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.isEmpty()) {
                 ItemStack[] items = currOutput.getItems();
@@ -1755,7 +1755,7 @@ public class GTRecipeBuilder {
                 if (items.length > 0) {
                     out = items[0].getItem();
                     // use the max amount of items for decomp info so dupes can't happen
-                    outputCount = intProvider.getCountProvider().getMaxValue();
+                    outputCount = intProvider.getMaxRoll();
                 }
             } else if (!currOutput.isEmpty()) {
                 ItemStack[] items = currOutput.getItems();

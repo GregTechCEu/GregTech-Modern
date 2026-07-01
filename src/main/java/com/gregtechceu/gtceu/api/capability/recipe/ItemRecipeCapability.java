@@ -88,9 +88,6 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else if (ingredient instanceof SizedIngredient sized &&
                         sized.getInner() instanceof IntCircuitIngredient) {
                     list.add(0, ingredient);
-                } else if (ingredient instanceof IntProviderIngredient intProvider &&
-                        intProvider.getInner() instanceof IntCircuitIngredient) {
-                    list.add(0, ingredient);
                 } else {
                     list.add(ingredient);
                 }
@@ -152,7 +149,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             int count;
             if (ing instanceof SizedIngredient sized) count = sized.getAmount();
-            else if (ing instanceof IntProviderIngredient provider) count = provider.getCountProvider().getMaxValue();
+            else if (ing instanceof IntProviderIngredient provider) count = provider.getMaxRoll();
             else count = 1;
 
             maxCount = Math.max(maxCount, count);
