@@ -1,26 +1,26 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -41,7 +41,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                                       implements FluidRecipeCapability.ICustomParallel {
 
     @Getter
-    private List<IFluidHandler> fluidOutputs;
+    private @Nullable List<IFluidHandler> fluidOutputs;
     @Getter
     @Nullable
     private IFluidHandler firstValid = null;
@@ -54,11 +54,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     /**
      * Construct DT Machine
      * 
-     * @param holder  BlockEntity holder
      * @param yOffset The Y difference between the controller and the first fluid output
      */
     public DistillationTowerMachine(BlockEntityCreationInfo info, int yOffset) {
-        super(info, DistillationTowerLogic::new);
+        super(info, new DistillationTowerLogic());
         this.yOffset = yOffset;
     }
 
@@ -68,8 +67,9 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
+        var pState = patternStates.get(substructureName);
         final int startY = getBlockPos().getY() + yOffset;
         List<IMultiPart> parts = getParts().stream()
                 .filter(part -> PartAbility.EXPORT_FLUIDS.isApplicable(part.self().getBlockState().getBlock()))
@@ -100,14 +100,21 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 } else if (part.self().getBlockPos().getY() > y) {
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                 } else {
-                    GTCEu.LOGGER.error(
-                            "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
-                            getBlockPos());
-                    onStructureInvalid();
+                    BlockPos p = part.self().getBlockPos();
+                    pState.setError(new PatternStringError(Component.translatable(
+                            "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
+                    // GTCEu.LOGGER.error(
+                    // "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
+                    // getBlockPos());
+                    invalidateStructure(substructureName);
                     return;
                 }
             }
-        } else onStructureInvalid();
+        } else {
+            pState.setError(
+                    new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.missing_outputs")));
+            invalidateStructure(substructureName);
+        }
     }
 
     private void addOutput(IFluidHandler handler) {
@@ -116,10 +123,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
     }
 
     @Override
-    public void onStructureInvalid() {
+    public void invalidateStructure(String name) {
         fluidOutputs = null;
         firstValid = null;
-        super.onStructureInvalid();
+        super.invalidateStructure(name);
     }
 
     @Override
@@ -131,10 +138,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         if (contents == null || contents.isEmpty()) return multiplier;
 
         int maxAmount = contents.stream()
-                .map(Content::getContent)
+                .map(Content::content)
                 .map(FluidRecipeCapability.CAP::of)
                 .filter(i -> !i.isEmpty())
-                .mapToInt(FluidIngredient::getAmount)
+                .mapToInt((i -> i instanceof IRangedIngredient ? ((IRangedIngredient) i).getMaxRoll() : i.getAmount()))
                 .max()
                 .orElse(0);
 
@@ -170,11 +177,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         @SyncToClient
         GTRecipe workingRecipe = null;
 
-        public DistillationTowerLogic(IRecipeLogicMachine machine) {
-            super(machine);
+        public DistillationTowerLogic() {
+            super();
         }
 
-        @NotNull
         @Override
         public DistillationTowerMachine getMachine() {
             return (DistillationTowerMachine) super.getMachine();
@@ -191,7 +197,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var match = matchDTRecipe(recipe);
             if (!match.isSuccess()) return match;
 
-            return RecipeHelper.matchTickRecipe(this.machine, recipe);
+            return RecipeHelper.matchTickRecipe(getMachine(), recipe);
         }
 
         @Override
@@ -201,18 +207,19 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         }
 
         private ActionResult matchDTRecipe(GTRecipe recipe) {
-            var result = RecipeHelper.handleRecipe(machine, recipe, IO.IN, recipe.inputs,
+            var result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.IN, recipe.inputs,
                     Collections.emptyMap(), false, true);
             if (!result.isSuccess()) return result;
 
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                result = RecipeHelper.handleRecipe(machine, recipe, IO.OUT, out, Collections.emptyMap(), false, true);
+                result = RecipeHelper.handleRecipe(getMachine(), recipe, IO.OUT, out, Collections.emptyMap(), false,
+                        true);
                 if (!result.isSuccess()) return result;
             }
 
-            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, machine.getVoidingMode())) {
+            if (!applyFluidOutputs(recipe, FluidAction.SIMULATE, getMachine().getVoidingMode())) {
                 return ActionResult.fail(Component.translatable("gtceu.recipe_logic.insufficient_out")
                         .append(": ")
                         .append(FluidRecipeCapability.CAP.getName()), FluidRecipeCapability.CAP, IO.OUT);
@@ -254,10 +261,10 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
             var items = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!items.isEmpty()) {
                 Map<RecipeCapability<?>, List<Content>> out = Map.of(ItemRecipeCapability.CAP, items);
-                RecipeHelper.handleRecipe(this.machine, recipe, io, out, chanceCaches, false, false);
+                RecipeHelper.handleRecipe(getMachine(), recipe, io, out, chanceCaches, false, false);
             }
 
-            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, this.machine.getVoidingMode())) {
+            if (applyFluidOutputs(recipe, FluidAction.EXECUTE, getMachine().getVoidingMode())) {
                 workingRecipe = null;
                 return ActionResult.SUCCESS;
             }
@@ -270,7 +277,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
         private boolean applyFluidOutputs(GTRecipe recipe, FluidAction action, VoidingMode voidMode) {
             var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP)
                     .stream()
-                    .map(Content::getContent)
+                    .map(Content::content)
                     .map(FluidRecipeCapability.CAP::of)
                     .toList();
 

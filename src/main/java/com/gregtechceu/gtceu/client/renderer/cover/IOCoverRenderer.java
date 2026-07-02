@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IIOCover;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.model.quad.StaticFaceBakery;
+import com.gregtechceu.gtceu.client.util.ModelEventHelper;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -46,7 +46,7 @@ public class IOCoverRenderer implements ICoverRenderer {
                            @Nullable ResourceLocation invertedOverlay,
                            @Nullable ResourceLocation emissiveOverlay,
                            @Nullable ResourceLocation invertedEmissiveOverlay) {
-        ModelUtils.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
+        ModelEventHelper.registerAtlasStitchedEventListener(false, InventoryMenu.BLOCK_ATLAS, event -> {
             var atlas = event.getAtlas();
 
             if (overlay != null) {

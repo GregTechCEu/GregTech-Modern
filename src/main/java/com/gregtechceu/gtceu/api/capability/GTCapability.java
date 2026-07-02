@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -32,7 +33,7 @@ public class GTCapability {
     public static final Capability<IMonitorComponent> CAPABILITY_MONITOR_COMPONENT = CapabilityManager
             .get(new CapabilityToken<>() {});
 
-    public static final Capability<IMedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
+    public static final Capability<MedicalConditionTracker> CAPABILITY_MEDICAL_CONDITION_TRACKER = CapabilityManager
             .get(new CapabilityToken<>() {});
 
     public static void register(RegisterCapabilitiesEvent event) {
@@ -46,7 +47,7 @@ public class GTCapability {
         event.register(ILaserContainer.class);
         event.register(IOpticalComputationProvider.class);
         event.register(IDataAccessHatch.class);
-        event.register(IMedicalConditionTracker.class);
+        event.register(MedicalConditionTracker.class);
         event.register(IHazardParticleContainer.class);
         event.register(IMonitorComponent.class);
     }

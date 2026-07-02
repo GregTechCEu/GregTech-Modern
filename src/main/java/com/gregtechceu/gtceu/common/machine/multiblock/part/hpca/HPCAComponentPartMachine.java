@@ -1,22 +1,18 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.api.drawable.IDrawable;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,19 +24,14 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     protected final HPCAComponentTrait hpcaComponentTrait;
 
     public HPCAComponentPartMachine(BlockEntityCreationInfo info,
-                                    Function<HPCAComponentPartMachine, HPCAComponentTrait> hpcaTraitSupplier) {
+                                    HPCAComponentTrait hpcaTrait) {
         super(info);
-        this.hpcaComponentTrait = hpcaTraitSupplier.apply(this);
+        this.hpcaComponentTrait = attachTrait(hpcaTrait);
     }
 
     public abstract boolean isAdvanced();
 
-    public abstract ResourceTexture getComponentIcon();
-
-    @Override
-    public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {
-        return false;
-    }
+    public abstract IDrawable getComponentIcon();
 
     @Override
     public int getDefaultPaintingColor() {
@@ -48,7 +39,7 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine {
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
