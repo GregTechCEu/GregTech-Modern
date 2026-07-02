@@ -16,12 +16,10 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ItemBusPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.gametest.util.TestUtils;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.BeforeBatch;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
@@ -214,14 +212,14 @@ public class IntProviderIngredientTest {
     @GameTest(template = "empty", batch = "RangedIngredients")
     public static void rangedIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
-        try{
+        try {
             ingredient.getItems();
             helper.fail("A ranged ingredient should not return items!");
-        }catch (IllegalCallerException ignored){}
-        try{
+        } catch (IllegalCallerException ignored) {}
+        try {
             ingredient.replace().getItems();
             helper.fail("A ranged ingredient cannot be replaced without being rolled!");
-        }catch (IllegalCallerException ignored){}
+        } catch (IllegalCallerException ignored) {}
         ingredient.rollSampledCount();
         var stacks = ingredient.replace().getItems();
         helper.assertTrue(stacks.length == 1, "Replaced IntProviderIngredient should only " +

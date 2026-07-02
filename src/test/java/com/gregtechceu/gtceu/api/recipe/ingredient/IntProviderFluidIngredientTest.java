@@ -217,14 +217,14 @@ public class IntProviderFluidIngredientTest {
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
     public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
-        try{
+        try {
             ingredient.getStacks();
             helper.fail("A ranged fluid ingredient should not return fluids!");
-        }catch (IllegalCallerException ignored){}
-        try{
+        } catch (IllegalCallerException ignored) {}
+        try {
             ingredient.replace().getStacks();
             helper.fail("A ranged fluid ingredient cannot be replaced without being rolled!");
-        }catch (IllegalCallerException ignored){}
+        } catch (IllegalCallerException ignored) {}
         ingredient.rollSampledCount();
         var stacks = ingredient.replace().getStacks();
         helper.assertTrue(stacks.length == 1, "Replaced IntProviderFluidIngredient should only " +

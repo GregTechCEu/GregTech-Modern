@@ -104,7 +104,6 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
         throw new IllegalCallerException("can't Get Items of a ranged ingredient");
     }
 
-
     /**
      * Gets a {@link ItemStack} containing the maximum possible output from this {@link IntProviderIngredient}.
      * Mainly used for things like Recipe provider simulations to see if there is enough inventory space to handle
