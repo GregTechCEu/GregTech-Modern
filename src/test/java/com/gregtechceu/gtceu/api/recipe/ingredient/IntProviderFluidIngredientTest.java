@@ -217,47 +217,20 @@ public class IntProviderFluidIngredientTest {
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
     public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
-        var stacks = ingredient.getStacks();
-        helper.assertTrue(stacks.length == 1,
-                "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid");
+        try{
+            ingredient.getStacks();
+            helper.fail("A ranged fluid ingredient should not return fluids!");
+        }catch (IllegalCallerException ignored){}
+        try{
+            ingredient.replace().getStacks();
+            helper.fail("A ranged fluid ingredient cannot be replaced without being rolled!");
+        }catch (IllegalCallerException ignored){}
+        ingredient.rollSampledCount();
+        var stacks = ingredient.replace().getStacks();
+        helper.assertTrue(stacks.length == 1, "Replaced IntProviderFluidIngredient should only " +
+                "return 1 fluid when made with 1 fluid");
         helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
-                "IntProviderFluidIngredient should have fluid equal to what it was made with");
-        helper.assertTrue(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
-                "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls");
-        ingredient.reset();
-        helper.assertFalse(stacks[0].isFluidStackIdentical(ingredient.getStacks()[0]),
-                "IntProviderFluidIngredient.getStacks should have changed after rerolling");
-        helper.succeed();
-    }
-
-    // test for IntProviderFluidIngredient.toJson()
-    @GameTest(template = "empty", batch = "RangedFluidIngredients")
-    public static void rangedIngredientJsonTest(GameTestHelper helper) {
-        var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
-
-        // serialize/deserialize before rolling count
-        var jsonPreRoll = ingredient.toJson();
-        var ingredientDeserializedPreRoll = IntProviderFluidIngredient.fromJson(jsonPreRoll);
-
-        var stacks = ingredient.getStacks();
-        var stacksDeserializedPreRoll = ingredientDeserializedPreRoll.getStacks();
-
-        // serialize/deserialize after rolling count
-        var jsonPostRoll = ingredient.toJson();
-        var ingredientDeserializedPostRoll = IntProviderFluidIngredient.fromJson(jsonPostRoll);
-        var stacksDeserializedPostRoll = ingredientDeserializedPostRoll.getStacks();
-
-        helper.assertTrue(
-                stacks.length == stacksDeserializedPreRoll.length && stacks.length == stacksDeserializedPostRoll.length,
-                "IntProviderFluidIngredient should only return 1 fluid when made with 1 fluid, even after serializing");
-        helper.assertTrue(stacksDeserializedPreRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
-                "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-        helper.assertTrue(stacksDeserializedPostRoll[0].isFluidEqual(GTMaterials.Water.getFluid(1)),
-                "IntProviderFluidIngredient should have fluid equal to what it was made with after serializing");
-        helper.assertFalse(TestUtils.areFluidStacksEqual(stacksDeserializedPreRoll, ingredient.getStacks()),
-                "IntProviderFluidIngredient.getStacks should be different if it wasn't rolled before serializing");
-        helper.assertTrue(TestUtils.areFluidStacksEqual(stacksDeserializedPostRoll, ingredient.getStacks()),
-                "IntProviderFluidIngredient.getStacks shouldn't change between getStacks calls if it was rolled before serializing");
+                "Replaced IntProviderFluidIngredient should have fluid equal to what it was made with");
         helper.succeed();
     }
 
