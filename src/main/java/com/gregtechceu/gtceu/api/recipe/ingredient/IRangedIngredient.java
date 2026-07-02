@@ -7,13 +7,15 @@ import net.minecraft.util.valueproviders.IntProvider;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface IRangedIngredient {
+public interface IRangedIngredient<T> {
 
     IntProvider getCountProvider();
 
     int getSampledCount();
 
     void setSampledCount(int count);
+
+    T replace();
 
     /**
      * If this ingredient has not yet had its count rolled, rolls it and returns the roll.

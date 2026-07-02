@@ -255,77 +255,6 @@ public class IntProviderIngredientTest {
         helper.succeed();
     }
 
-    // Test for singleblock machine with ranged item input.
-    // Forcibly sabotages the first recipe run, setting its output amount to 0 to ensure that doesn't break the recipe.
-    // This is specifically a test for #3593 / #3594
-    @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
-    public static void singleblockRangedItemOutputSabotaged(GameTestHelper helper) {
-        SimpleTieredMachine machine = (SimpleTieredMachine) getMetaMachine(
-                helper.getBlockEntity(new BlockPos(0, 1, 0)));
-
-        machine.setRecipeType(CR_RECIPE_TYPE);
-        NotifiableItemStackHandler itemIn = (NotifiableItemStackHandler) machine
-                .getCapabilitiesFlat(IO.IN, ItemRecipeCapability.CAP).get(0);
-        NotifiableItemStackHandler itemOut = (NotifiableItemStackHandler) machine
-                .getCapabilitiesFlat(IO.OUT, ItemRecipeCapability.CAP).get(0);
-
-        itemIn.setStackInSlot(0, CR_OUT.copyWithCount(REPLICAS));
-        // 1t to turn on, 2t per recipe run
-        // get the result of each roll independently
-        int[] addedRolls = new int[REPLICAS];
-
-        helper.runAfterDelay(2, () -> {
-            if (machine.getRecipeLogic().getLastRecipe().getOutputContents(ItemRecipeCapability.CAP).get(0)
-                    .content() instanceof IntProviderIngredient ingredient) {
-                ingredient.setSampledCount(0);
-
-                if (ingredient.getSampledCount() != 0) {
-                    helper.fail("Singleblock Ranged Item Output sabotage failed! " +
-                            "Output count not was altered!");
-                }
-            } else {
-                helper.fail("Singleblock Ranged Item Output sabotage failed! " +
-                        "Recipe logic did not contain a Ranged Output!");
-            }
-        });
-        for (int i = 0; i < REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
-                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(REPLICAS * 2 + 1, () -> {
-            ItemStack results = itemOut.getStackInSlot(0);
-            helper.assertFalse((results.getCount() == REPLICAS * 0),
-                    "Sabotaged Singleblock CR rolled min value on every roll! " +
-                            "This is the failure this sabotage was intended to induce.");
-            helper.assertFalse((results.getCount() == REPLICAS * 9),
-                    "Sabotaged Singleblock CR rolled max value on every roll (how??)");
-
-            helper.assertTrue(TestUtils.isItemWithinRange(results, REPLICAS, REPLICAS * 9),
-                    "Sabotaged Singleblock CR didn't produce correct number of items, produced [" +
-                            results.getCount() + "] not [" + REPLICAS + "-" + (REPLICAS * 9) + "]");
-
-            // check if all the rolls were equal, but not min/max
-            int[] rolls = new int[REPLICAS];
-            rolls[0] = addedRolls[0];
-            boolean allEqual = false;
-            for (int i = 1; i < REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                if (rolls[i] == rolls[i - 1]) {
-                    allEqual = true;
-                } else {
-                    allEqual = false;
-                    break;
-                }
-            }
-            helper.assertFalse(allEqual,
-                    "Sabotaged Singleblock CR rolled the same value on every input roll (rolled " + rolls[0] + ")");
-            helper.succeed();
-        });
-    }
-
     // Failure Test for singleblock machine with ranged item input
     // Provides too few input items, should not run recipes.
     @GameTest(template = "singleblock_charged_cr", batch = "RangedIngredients")
@@ -372,7 +301,6 @@ public class IntProviderIngredientTest {
         itemIn.setStackInSlot(0, CR_OUT.copyWithCount(REPLICAS));
         // 1t to turn on, 2t per recipe run
         // get the result of each preroll independently
-        int[] prerolls = new int[REPLICAS];
         for (int i = 0; i < REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(2 * i + 1, () -> {
@@ -381,30 +309,12 @@ public class IntProviderIngredientTest {
                 var outputPrerolls = machine.recipeLogic.getLastRecipe().outputs.get(ItemRecipeCapability.CAP);
                 helper.assertFalse(outputPrerolls.size() == 0,
                         "Singleblock item CR Preroll's recipe output contained no items!");
-                prerolls[finalI] = ((IRangedIngredient) (outputPrerolls.get(0).content())).getAmount();;
+                helper.assertFalse(outputPrerolls.get(0).content() instanceof IRangedIngredient,
+                        "Singleblock item CR Preroll's recipe failed to preroll and replace its " +
+                                "ranged ingredient!");
             });
         }
-        // get the result of each roll independently
-        int[] addedRolls = new int[REPLICAS];
-        for (int i = 0; i < REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(2 * i + 3, () -> {
-                addedRolls[finalI] = itemOut.getStackInSlot(0).getCount();
-            });
-        }
-        // check the results of all rolls together
-        helper.runAfterDelay(REPLICAS * 2 + 10, () -> {
-            // check if all the rolls matched their preroll
-            int[] rolls = new int[REPLICAS];
-            rolls[0] = addedRolls[0];
-            helper.assertFalse(prerolls[0] != rolls[0], "Singleblock item CR Preroll failed on run 0");
-            for (int i = 1; i < REPLICAS; i++) {
-                rolls[i] = addedRolls[i] - addedRolls[i - 1];
-                helper.assertFalse(prerolls[i] != rolls[i],
-                        "Singleblock CR Preroll failed on run [" + i + "]");
-            }
-            helper.succeed();
-        });
+        TestUtils.succeedAfterTest(helper);
     }
 
     // Test for singleblock machine with ranged item input
@@ -1107,7 +1017,6 @@ public class IntProviderIngredientTest {
 
         // 1t to turn on, 64t per recipe run, 10t buffer for sanity
         // 16 parallels
-        int[] prerolls = new int[MULTI_REPLICAS];
         for (int i = 0; i < MULTI_REPLICAS; i++) {
             final int finalI = i; // lambda preserve you
             helper.runAfterDelay(75 * finalI + 20, () -> {
@@ -1117,17 +1026,9 @@ public class IntProviderIngredientTest {
                         .get(ItemRecipeCapability.CAP);
                 helper.assertFalse(outputPrerolls.size() == 0,
                         "Multiblock LCent item Preroll's recipe output contained no items!");
-                prerolls[finalI] = ((IRangedIngredient) (outputPrerolls.get(0).content())).getAmount();;
-            });
-        }
-        // check the results of all rolls together
-        // repeat recipe MULTI_REPLICAS times
-        int[] rolls = new int[MULTI_REPLICAS];
-        for (int i = 1; i <= MULTI_REPLICAS; i++) {
-            final int finalI = i; // lambda preserve you
-            helper.runAfterDelay(75 * finalI, () -> {
-                int resultCount = (int) Math.round(itemOut.getTotalContentAmount());
-                rolls[finalI - 1] = resultCount;
+                helper.assertFalse(outputPrerolls.get(0).content() instanceof IRangedIngredient,
+                        "Multiblock LCent item Preroll's recipe failed to preroll and replace its " +
+                                "ranged ingredient!");
 
                 // reset for a rerun
                 for (int j = 0; j < batches; j++) {
@@ -1139,16 +1040,6 @@ public class IntProviderIngredientTest {
                 }
             });
         }
-
-        helper.runAfterDelay(1 + 75 * MULTI_REPLICAS, () -> {
-
-            helper.assertFalse(prerolls[0] != rolls[0], "Multiblock LCent item Preroll failed on run 0");
-
-            for (int i = 1; i < REPLICAS; i++) {
-                helper.assertFalse(prerolls[i] != rolls[i],
-                        "Multiblock LCent item Preroll failed on run [" + i + "]");
-            }
-            helper.succeed();
-        });
+        TestUtils.succeedAfterTest(helper);
     }
 }

@@ -235,10 +235,23 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        var rangedContents = getFullContents();
-        for (Content item : rangedContents) {
-            if (item.content() instanceof IRangedIngredient ranged)
-                ranged.rollSampledCount();
+        for (var handler : inputs.values()) {
+            for (var iterator = handler.listIterator(); iterator.hasNext();) {
+                var content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    iterator.set(new Content(ranged.replace(), content.chance(), content.maxChance()));
+                }
+            }
+        }
+        for (var handler : outputs.values()) {
+            for (var iterator = handler.listIterator(); iterator.hasNext();) {
+                var content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    iterator.set(new Content(ranged.replace(), content.chance(), content.maxChance()));
+                }
+            }
         }
     }
 

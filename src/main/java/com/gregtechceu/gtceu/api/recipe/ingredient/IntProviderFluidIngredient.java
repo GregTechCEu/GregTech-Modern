@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * and either an {@link IntProvider} or {@code int, int} range bounds (inclusive).
  * Functions similarly to {@link IntProviderIngredient}.
  */
-public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient {
+public class IntProviderFluidIngredient extends FluidIngredient implements IRangedIngredient<FluidIngredient> {
 
     public static final Codec<IntProviderFluidIngredient> CODEC = ExtraCodecs.JSON
             .xmap(IntProviderFluidIngredient::fromJson, IntProviderFluidIngredient::toJson);
@@ -154,6 +154,11 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     public void setSampledCount(int count) {
         this.sampledCount = count;
         super.setAmount(count);
+    }
+
+    @Override
+    public FluidIngredient replace() {
+        return new FluidIngredient(inner.values, getAmount(), inner.nbt);
     }
 
     /**
