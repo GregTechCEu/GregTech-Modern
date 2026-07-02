@@ -213,7 +213,7 @@ public class IntProviderIngredientTest {
     public static void rangedIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderIngredient.of(new ItemStack(Items.BRICK, 1), UniformInt.of(1, 5000));
         // This will print a "Cannot get items" warning to the log. Ignore it.
-        helper.assertFalse(ingredient.getItems().length == 0, "A ranged ingredient " +
+        helper.assertTrue(ingredient.getItems().length == 0, "A ranged ingredient " +
                 "should not return items!");
         ingredient.rollSampledCount();
         var stacks = ingredient.replace().getItems();

@@ -218,7 +218,7 @@ public class IntProviderFluidIngredientTest {
     public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
         // This will print a "Cannot get stacks" warning to the log. Ignore it.
-        helper.assertFalse(ingredient.getStacks().length == 0, "A ranged fluid ingredient " +
+        helper.assertTrue(ingredient.getStacks().length == 0, "A ranged fluid ingredient " +
                 "should not return items!");
         ingredient.rollSampledCount();
         var stacks = ingredient.replace().getStacks();
