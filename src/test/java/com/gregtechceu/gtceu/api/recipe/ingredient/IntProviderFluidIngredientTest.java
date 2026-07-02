@@ -217,14 +217,9 @@ public class IntProviderFluidIngredientTest {
     @GameTest(template = "empty", batch = "RangedFluidIngredients")
     public static void rangedFluidIngredientGetStacksTest(GameTestHelper helper) {
         var ingredient = IntProviderFluidIngredient.of(GTMaterials.Water.getFluid(1), 1, 500000);
-        try {
-            ingredient.getStacks();
-            helper.fail("A ranged fluid ingredient should not return fluids!");
-        } catch (IllegalCallerException ignored) {}
-        try {
-            ingredient.replace().getStacks();
-            helper.fail("A ranged fluid ingredient cannot be replaced without being rolled!");
-        } catch (IllegalCallerException ignored) {}
+        // This will print a "Cannot get stacks" warning to the log. Ignore it.
+        helper.assertFalse(ingredient.getStacks().length == 0, "A ranged fluid ingredient " +
+                "should not return items!");
         ingredient.rollSampledCount();
         var stacks = ingredient.replace().getStacks();
         helper.assertTrue(stacks.length == 1, "Replaced IntProviderFluidIngredient should only " +

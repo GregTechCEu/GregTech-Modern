@@ -80,7 +80,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
      */
     @Override
     public FluidStack[] getStacks() {
-        throw new IllegalCallerException("can't Get Fluids of a ranged ingredient");
+        GTCEu.LOGGER.warn("Cannot get stacks of a Ranged Fluid Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     /**
@@ -128,8 +129,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     @Override
     public FluidIngredient replace() {
         if (!isRolled())
-            throw new IllegalCallerException("Ranged Ingredient was replaced without being rolled!");
-        return new FluidIngredient(inner.values, getSampledCount(), inner.nbt);
+            GTCEu.LOGGER.warn("Ranged fluid ingredient was replaced without being rolled!");
+        return new FluidIngredient(inner.values, rollSampledCount(), inner.nbt);
     }
 
     /**

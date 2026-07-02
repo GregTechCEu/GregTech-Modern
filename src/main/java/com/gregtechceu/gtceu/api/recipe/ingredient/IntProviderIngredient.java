@@ -101,7 +101,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
      */
     @Override
     public ItemStack @NotNull [] getItems() {
-        throw new IllegalCallerException("can't Get Items of a ranged ingredient");
+        GTCEu.LOGGER.warn("Cannot get items of a Ranged Ingredient!");
+        return EMPTY_STACK_ARRAY;
     }
 
     /**
@@ -134,8 +135,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     @Override
     public SizedIngredient replace() {
         if (!isRolled())
-            throw new IllegalCallerException("Ranged Ingredient was replaced without being rolled!");
-        return SizedIngredient.create(inner, getSampledCount());
+            GTCEu.LOGGER.warn("Ranged ingredient was replaced without being rolled!");
+        return SizedIngredient.create(inner, rollSampledCount());
     }
 
     /**
