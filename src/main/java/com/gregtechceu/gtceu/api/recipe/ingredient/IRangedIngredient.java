@@ -30,8 +30,6 @@ public interface IRangedIngredient<T> {
 
     int rollSampledCount(@NotNull RandomSource random);
 
-    int getAmount();
-
     /**
      * @return the average roll of this ranged amount
      */

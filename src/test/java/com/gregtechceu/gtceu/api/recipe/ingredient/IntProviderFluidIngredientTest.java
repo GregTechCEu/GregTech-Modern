@@ -32,8 +32,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.gametest.PrefixGameTestTemplate;
 
-import appeng.server.testworld.Test;
-
 /**
  * Test cases:
  * Do many passes of most tests as a safeguard against bad rolls
