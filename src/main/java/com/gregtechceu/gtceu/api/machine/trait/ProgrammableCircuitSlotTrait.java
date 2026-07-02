@@ -44,7 +44,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<ProgrammableCircuitSlotTrait> getTraitType() {
         return TYPE;
     }
 

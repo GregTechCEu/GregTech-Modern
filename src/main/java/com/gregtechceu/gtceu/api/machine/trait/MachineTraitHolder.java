@@ -84,6 +84,38 @@ public final class MachineTraitHolder {
     /**
      * Registers a trait with data to be saved or synced to the client.
      * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
+     *
+     * @param traitName Unique identifier for this trait.
+     * @param trait     The trait to register
+     */
+    public void attachPersistentTrait(String traitName, MachineTrait trait) {
+        attachTrait(trait);
+        registerPersistentTrait(traitName, trait);
+    }
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
+     *
+     * @param traitName        Unique identifier for this trait.
+     * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
+     *                         first, which may prevent traits with a lower priority from handling some events.
+     * @param trait            The trait to register
+     */
+    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait, int callbackPriority) {
+        attachTrait(trait, callbackPriority);
+        registerPersistentTrait(traitName, trait);
+        return trait;
+    }
+
+
+    /**
+     * Registers a trait with data to be saved or synced to the client.
+     * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
      * data will be duplicated. Use only one sync method.
      *
      * @param traitName Unique identifier for this trait.

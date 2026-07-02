@@ -349,21 +349,22 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Registers a trait with data to be saved or synced to the client.
      * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
-     * data will be duplicated. Use only one sync method.
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
      *
      * @param traitName Unique identifier for this trait.
      * @param trait     The trait to register
      */
     public MetaMachine attachPersistentTrait(String traitName, MachineTrait trait) {
-        traitHolder.attachTrait(trait);
-        traitHolder.registerPersistentTrait(traitName, trait);
+        traitHolder.attachPersistentTrait(traitName, trait);
         return this;
     }
 
     /**
      * Registers a trait with data to be saved or synced to the client.
      * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait
-     * data will be duplicated. Use only one sync method.
+     * data will be duplicated. Use only one sync method.<br>
+     * Note: Persistent traits must be attached before data load, or they will not be loaded correctly.
      *
      * @param traitName        Unique identifier for this trait.
      * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
@@ -371,9 +372,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @param trait            The trait to register
      */
     public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait, int callbackPriority) {
-        traitHolder.attachTrait(trait, callbackPriority);
-        traitHolder.registerPersistentTrait(traitName, trait);
-        return trait;
+        return traitHolder.attachPersistentTrait(traitName, trait, callbackPriority);
     }
 
     /**
@@ -422,6 +421,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Get all traits with the specified type.
      *
+     * @param type The trait type to get
      * @return An unmodifiable list containing all traits of the specified type.
      */
     public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
