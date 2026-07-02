@@ -29,6 +29,8 @@ import brachy.modularui.drawable.Icon;
 import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.SchemaRenderer;
 import brachy.modularui.drawable.schema.BlockHighlight;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
 import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.value.BoolValue;
@@ -85,7 +87,8 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     @Setter
     private @Nullable Runnable onSchemaRefresh;
 
-    public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo) {
+    public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
+                                   int height) {
         this.multiblockDefinition = definition;
         this.frontFacing = definition.getRotationState().defaultDirection;
         this.upFacing = switch (definition.getRotationState()) {
@@ -116,11 +119,15 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                 // NOTE wrapped flows require a fixed size in their axis, relative/coverChildren does not work
                 .wrap()
                 .coverChildrenWidth(20)
-                .height(200)
+                .height(height)
                 .children(this.multiblockSchemaInfo.getBlockCounts().reference2IntEntrySet(), e -> {
                     ItemStack stack = new ItemStack(e.getKey(), e.getIntValue());
-                    return new ItemDrawable(stack)
-                            .asWidget().size(18).margin(1)
+                    return RecipeViewerSlotWidget.create()
+                            .recipeSlotRole(RecipeSlotRole.OUTPUT)
+                            .value(stack)
+                            .background(IDrawable.EMPTY)
+                            .size(16)
+                            .margin(1)
                             .tooltip(r -> r.addFromItem(stack));
                 }));
 
@@ -148,7 +155,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         List<Map.Entry<String, IBlockPattern>> patterns = multiblockDefinition.getStructurePatterns()
                 .entrySet().stream().map(e -> Map.entry(e.getKey(), e.getValue().get())).toList();
 
-        this.multiblockSchemaInfo.setMultiSchema(this.multiblockSchemaInfo.getRenderer().asWidget()
+        this.multiblockSchemaInfo.getRenderer().camera().setPosAndLookAt(0, 0, -10,
+                this.multiblockSchemaInfo.getMapSchema().getCenter());
+        SchemaWidget schema = this.multiblockSchemaInfo.getRenderer().asWidget()
                 .listenGuiAction(setBlockOnClick)
                 .tooltipDynamic(text -> {
                     BlockHitResult hit = this.multiblockSchemaInfo.getRenderer().lastRayTrace();
@@ -161,7 +170,9 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         text.addFromItem(pickedItem);
                     }
                 }).tooltipAutoUpdate(true)
-                .size(200));
+                .size(width, height);
+
+        this.multiblockSchemaInfo.setMultiSchema(schema);
         this.multiblockSchemaInfo.getMultiSchema().getSchemaRenderer().updateRenderFilter((pos, state) -> {
             if (yLevel == -1) {
                 return true;

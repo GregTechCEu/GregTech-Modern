@@ -2,10 +2,17 @@ package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
+import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,11 +21,19 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
-import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
 public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
@@ -45,22 +60,49 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {
 
         private final MultiblockMachineDefinition definition;
-        private SlotWidget slotWidget;
+        private final List<EmiStack> outputBlocks = new ArrayList<>();
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
-            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null));
+            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180));
             this.definition = definition;
+
+            initializeOutputBlocks();
+        }
+
+        private void initializeOutputBlocks() {
+            Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
+            IBlockPattern pattern = definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
+            AbstractStructureHelper structureHelper = null;
+            if (pattern instanceof BlockPattern blockPattern) {
+                var sliceRepeats = new Int2IntArrayMap();
+                for (int i = 0; i < blockPattern.getSlices().length; i++) {
+                    sliceRepeats.put(i, blockPattern.getSlices()[i].getMinRepeats());
+                }
+                structureHelper = AbstractStructureHelper.blockPattern(sliceRepeats);
+            } else if (pattern instanceof ExpandablePattern expandablePattern) {
+                var userDimensions = new IntArrayList();
+                expandablePattern.getBoundsConstraints().apply().stream()
+                        .mapToInt(Pair::left)
+                        .forEach(userDimensions::add);
+                structureHelper = AbstractStructureHelper.expandable(userDimensions);
+            }
+            if (structureHelper != null) {
+                structureHelper.populate(resultStructure, pattern, null,
+                        definition.getRotationState().defaultDirection, switch (definition.getRotationState()) {
+                            case Y_AXIS -> Direction.NORTH;
+                            case ALL, NON_Y_AXIS, NONE -> Direction.UP;
+                        }, false);
+
+                resultStructure.values().stream()
+                        .map(BlockInfo::getBlockState)
+                        .collect(Collectors.toSet())
+                        .forEach(block -> outputBlocks.add(EmiStack.of(block.getBlock())));
+            }
         }
 
         @Override
         public void addWidgets(WidgetHolder widgets) {
             super.addWidgets(widgets);
-            // numbers gotten from the size of the widget
-            slotWidget = new SlotWidget(EmiStack.of(definition.getItem().asItem()), 138, 12)
-                    .recipeContext(this)
-                    .drawBack(false);
-
-            widgets.add(slotWidget);
         }
 
         @Override
@@ -80,7 +122,7 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiStack> getOutputs() {
-            return List.of(EmiStack.of(definition.getItem()));
+            return outputBlocks;
         }
     }
 }

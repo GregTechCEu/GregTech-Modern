@@ -63,7 +63,7 @@ public class MultiblockInfoReiCategory extends
     public static class MultiblockInfoDisplay extends ModularUIREIDisplay {
 
         public MultiblockInfoDisplay(MultiblockMachineDefinition definition) {
-            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null), CATEGORY);
+            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180), CATEGORY);
         }
     }
 }
