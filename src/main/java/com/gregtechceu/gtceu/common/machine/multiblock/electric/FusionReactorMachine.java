@@ -175,7 +175,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
+        if (recipe.tier > fusionReactorMachine.getTier() ||
                 !recipe.data.contains("eu_to_start") ||
                 recipe.data.getLong("eu_to_start") > fusionReactorMachine.energyContainer.getEnergyCapacity()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_eu_to_start_fusion");
@@ -278,7 +278,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
     public static void addEUToStartLabel(GTRecipeDefinition recipe, WidgetGroup group) {
         long euToStart = recipe.data.getLong("eu_to_start");
         if (euToStart <= 0) return;
-        int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+        int recipeTier = recipe.tier;
         int fusionTier = findCeilingTier(euToStart);
         int tier = Math.max(MINIMUM_TIER, Math.max(recipeTier, fusionTier));
         group.addWidget(new LabelWidget(-8, group.getSizeHeight() - 10,

@@ -6,14 +6,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
-import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
@@ -36,15 +34,24 @@ import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.doTrim;
 
 public class GTRecipeModifiers {
 
+    public static final RecipeModifier TIER_CHECK = (machine, group, recipe) -> {
+        if(machine instanceof ITieredMachine tieredMachine) {
+            if(recipe.tier > tieredMachine.getTier()) {
+                return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
+            }
+            return null;
+        }
+        return RecipeModifier.nullWrongType(ITieredMachine.class, machine);
+    };
+
     /**
      * Given an {@link OverclockingLogic}, creates a {@link RecipeModifier} designed for an {@link IOverclockMachine}
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
             .memoize(logic -> (machine, group, recipe) -> {
+                Component tierCheck = TIER_CHECK.apply(machine, group, recipe);
+                if(tierCheck != null) return tierCheck;
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return null;
-                if (RecipeHelper.getRecipeEUtTier(recipe) > overclockMachine.getOverclockTier()) {
-                    return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
-                }
                 return logic.getModifier(machine, group, recipe, overclockMachine.getOverclockVoltage());
             });
 
@@ -52,6 +59,8 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
+
+
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, group, recipe) -> {
@@ -135,7 +144,7 @@ public class GTRecipeModifiers {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
+        if (recipe.tier > coilMachine.getTier()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
 
@@ -177,7 +186,7 @@ public class GTRecipeModifiers {
             return Component.translatable("gtceu.recipe_modifier.coil_temperature_too_low");
         }
 
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
+        if (recipe.tier > coilMachine.getTier()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
 
@@ -205,7 +214,7 @@ public class GTRecipeModifiers {
         if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
             return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()){
+        if (recipe.tier > coilMachine.getTier()){
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
 
@@ -249,7 +258,7 @@ public class GTRecipeModifiers {
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
         long eut = (long) (4L * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
-        EURecipeCapability.putEUContent(recipe.tickInputs, new EnergyStack(Math.max(1, eut)));
+        EURecipeCapability.putEUContent(recipe.tickInputs, Math.max(1, eut));
         recipe.duration = Math.max(1, duration);
 
         var failReason = NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe, coilMachine.getOverclockVoltage());

@@ -52,7 +52,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super("fluid", 0xFF3C70EE, true, 1, FluidIngredient.CODEC);
+        super("fluid", 0xFF3C70EE, true, FluidIngredient.CODEC);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public IGuiTexture createXEIOverlay(FluidIngredient content, boolean perTick) {
-        if (!content.isChanced() && !(content instanceof RangedFluidIngredient) && !perTick) return null;
         return new IGuiTexture() {
 
             @Override

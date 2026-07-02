@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IEnvironmentalHazardEmitter;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -26,7 +25,6 @@ import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -89,12 +87,11 @@ public class SimpleGeneratorMachine extends RecipeTieredMachine
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
-                                                     @NotNull GTRecipe recipe) {
+    public static @Nullable Component recipeModifier(MetaMachine machine, RecipeHandlerGroup group, GTRecipe recipe) {
         if (!(machine instanceof SimpleGeneratorMachine generator)) {
             return RecipeModifier.nullWrongType(SimpleGeneratorMachine.class, machine);
         }
-        long EUt = recipe.getOutputEUt().getTotalEU();
+        long EUt = recipe.getOutputEUt();
         if (EUt <= 0) return RecipeModifier.DEFAULT_FAILURE;
 
         int maxParallel = (int) (generator.getOverclockVoltage() / EUt);

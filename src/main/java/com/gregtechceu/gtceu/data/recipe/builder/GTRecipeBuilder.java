@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicate;
@@ -87,7 +86,6 @@ public class GTRecipeBuilder {
     public ResourceLocation id;
     @Setter
     public GTRecipeType recipeType;
-
     public int tier = 0;
     public int duration = 100;
     @Setter
@@ -147,8 +145,6 @@ public class GTRecipeBuilder {
         return new GTRecipeBuilder(id, recipeType);
     }
 
-
-
     public static GTRecipeBuilder ofRaw() {
         return new GTRecipeBuilder(GTCEu.id("raw"), GTRecipeTypes.DUMMY_RECIPES);
     }
@@ -163,6 +159,7 @@ public class GTRecipeBuilder {
 
         copy.conditions.addAll(this.conditions);
         copy.data = this.data.copy();
+        copy.tier = this.tier;
         copy.duration = this.duration;
         copy.perTick = this.perTick;
         copy.recipeCategory = this.recipeCategory;
@@ -215,7 +212,7 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder tier(int tier) {
         if(tier < GTValues.ULV || tier > GTValues.MAX) {
-            GTCEu.LOGGER.error("Recipe tier out of range, id: {}", this.id);
+            throw new RuntimeException("Recipe tier out of range, id: %s".formatted(this.id));
         }
         this.tier = tier;
         return this;
@@ -226,7 +223,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputEU(long voltage, long amperage) {
-        return input(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
+        this.tier = GTUtil.getTierByVoltage(voltage);
+        return input(EURecipeCapability.CAP, voltage * amperage);
     }
 
     public GTRecipeBuilder EUt(long eu) {
@@ -258,7 +256,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder outputEU(long voltage, long amperage) {
-        return output(EURecipeCapability.CAP, new EnergyStack(voltage, amperage));
+        this.tier = GTUtil.getTierByVoltage(voltage);
+        return output(EURecipeCapability.CAP, voltage * amperage);
     }
 
     public GTRecipeBuilder inputCWU(int cwu) {
@@ -495,7 +494,7 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         if (orePrefix.isEmpty() || material.isNull()) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
@@ -1209,7 +1208,7 @@ public class GTRecipeBuilder {
      * @param researchId the researchId for the recipe
      * @return this
      */
-    public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId) {
+    public GTRecipeBuilder researchWithoutRecipe(String researchId) {
         return researchWithoutRecipe(researchId, ResearchManager.getDefaultScannerItem());
     }
 
@@ -1507,9 +1506,9 @@ public class GTRecipeBuilder {
     //////////////////////////////////////
     // ******* Quick Query *******//
     //////////////////////////////////////
-    public EnergyStack EUt() {
-        if (!tickInput.containsKey(EURecipeCapability.CAP)) return EnergyStack.EMPTY;
-        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return EnergyStack.EMPTY;
+    public long EUt() {
+        if (!tickInput.containsKey(EURecipeCapability.CAP)) return 0;
+        if (tickInput.get(EURecipeCapability.CAP).isEmpty()) return 0;
         return tickInput.get(EURecipeCapability.CAP).get(0);
     }
 
@@ -1528,12 +1527,14 @@ public class GTRecipeBuilder {
      * @param researchFluid the fluid stack to scan for research
      * @param dataStack     the stack to contain the data
      * @param duration      the duration of the recipe
+     * @param tier          the tier of the recipe
      * @param EUt           the EUt of the recipe
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
-    public record ResearchRecipeEntry(@NotNull String researchId,
-                                      @NotNull ItemStack researchItem, @NotNull FluidStack researchFluid,
-                                      @NotNull ItemStack dataStack, int duration, EnergyStack EUt, int CWUt) {
+    public record ResearchRecipeEntry(String researchId,
+                                      ItemStack researchItem, FluidStack researchFluid,
+                                      ItemStack dataStack, int duration,
+                                      int tier, long EUt, int CWUt) {
 
     }
 }

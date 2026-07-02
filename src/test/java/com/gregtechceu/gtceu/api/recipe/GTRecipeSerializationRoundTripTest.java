@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.nbtpredicate.NBTPredicates;
@@ -19,7 +18,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -157,7 +155,7 @@ public class GTRecipeSerializationRoundTripTest {
         ContentListMap map = new ContentListMap();
         map.put(ItemRecipeCapability.CAP, createItemIngredients());
         map.put(FluidRecipeCapability.CAP, createFluidIngredients());
-        map.put(EURecipeCapability.CAP, List.of(new EnergyStack(120, 2)));
+        map.put(EURecipeCapability.CAP, List.of(120L * 2));
         map.put(CWURecipeCapability.CAP, List.of(48));
         return map;
     }
@@ -173,7 +171,7 @@ public class GTRecipeSerializationRoundTripTest {
 
     private static ContentListMap createTickInputs() {
         ContentListMap map = new ContentListMap();
-        map.put(EURecipeCapability.CAP, List.of(new EnergyStack(32, 4)));
+        map.put(EURecipeCapability.CAP, List.of(32L * 4));
         map.put(CWURecipeCapability.CAP, List.of(7));
         return map;
     }
@@ -182,7 +180,7 @@ public class GTRecipeSerializationRoundTripTest {
         ContentListMap map = new ContentListMap();
         map.put(ItemRecipeCapability.CAP, List.of(ItemIngredient.ranged(Items.REDSTONE, 1, 4)));
         map.put(FluidRecipeCapability.CAP, List.of(FluidIngredient.ranged(Fluids.WATER, 25, 75)));
-        map.put(EURecipeCapability.CAP, List.of(new EnergyStack(16, 1)));
+        map.put(EURecipeCapability.CAP, List.of(16L));
         map.put(CWURecipeCapability.CAP, List.of(3));
         return map;
     }

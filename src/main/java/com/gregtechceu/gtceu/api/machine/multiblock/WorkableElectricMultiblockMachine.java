@@ -84,7 +84,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public long getMaxVoltage() {
+    public long getTierVoltage() {
         return energyContainer.getEffectiveVoltage();
     }
 

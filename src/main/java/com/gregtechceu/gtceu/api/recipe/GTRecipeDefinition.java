@@ -90,7 +90,7 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
                 inputs.copy(), outputs.copy(),
                 tickInputs.copy(), tickOutputs.copy(),
                 new ArrayList<>(conditions), data.copy(),
-                duration, category);
+                tier, duration, category);
     }
 
     public GTRecipeDefinition withId(ResourceLocation id) {

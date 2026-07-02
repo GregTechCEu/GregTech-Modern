@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
+import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
@@ -18,7 +19,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super("cwu", 0xFFEEEE00, false, 3, Codec.INT);
+        super("cwu", 0xFFEEEE00, false, Codec.INT);
     }
 
     @Override
@@ -38,16 +39,17 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
 
     @Override
     public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<Integer> contents,
-                           boolean perTick, boolean isInput, MutableInt yOffset) {
+                           int duration, boolean perTick, boolean isInput, MutableInt yOffset) {
         if (perTick) {
             int cwu = contents.stream().mapToInt(Integer::intValue).sum();
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
+            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT),
                     LocalizationUtils.format("gtceu.recipe.computation_per_tick", FormattingUtil.formatNumbers(cwu))));
         }
         if (recipe.data.getBoolean("duration_is_total_cwu")) {
-            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(10),
+            group.addWidget(new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT),
                     LocalizationUtils.format("gtceu.recipe.total_computation",
                             FormattingUtil.formatNumbers(recipe.duration))));
+
         }
     }
 

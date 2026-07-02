@@ -45,7 +45,7 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
         this.inputs = getEmiIngredients(IO.IN, recipe.inputs, recipe.tickInputs);
         this.outputs = getEmiStacks(IO.OUT, recipe.outputs, recipe.tickOutputs);
         for(var condition: recipe.conditions) {
-            if(!condition.hasXEICatalysts()) return;
+            if(!condition.hasXEICatalysts()) continue;
             this.catalysts.addAll((List<EmiIngredient>) condition.getXEICatalysts());
         }
         this.widget = () -> new GTRecipeWidget(recipe);

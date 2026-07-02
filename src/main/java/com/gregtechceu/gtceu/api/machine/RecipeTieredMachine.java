@@ -167,7 +167,7 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
 
     @Override
     public long getOverclockVoltage() {
-        return Math.min(GTValues.V[getOverclockTier()],
+        return Math.min(GTValues.V[overclockTier],
                 Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
     }
 

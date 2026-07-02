@@ -49,11 +49,16 @@ public class FluidDrillMachine extends RecipeElectricMultiblockMachine {
         return (FluidDrillLogic) super.getRecipeLogic();
     }
 
+    public boolean isOverclocked() {
+        return energyContainer.getEffectiveVoltage() >= 4 * GTValues.V[tier];
+    }
+
     @Override
     public void addDisplayText(List<Component> textList) {
         if (isFormed()) {
-            long maxVoltage = GTValues.V[tier];
-            String voltageName = GTValues.VNF[tier];
+            int overClockTier = isOverclocked() ? tier+1 : tier;
+            long maxVoltage = GTValues.V[overClockTier];
+            String voltageName = GTValues.VNF[overClockTier];
             textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
 
             if (getRecipeLogic().getVeinFluid() != null) {

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
@@ -64,7 +65,7 @@ public class GTResearchMachines {
             .multiblock("research_station", ResearchStationMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
-            .recipeModifier(RecipeModifier.NO_MODIFIER)
+            .recipeModifier(GTRecipeModifiers.TIER_CHECK)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
             .pattern(definition -> FactoryBlockPattern.start()

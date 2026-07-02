@@ -33,6 +33,7 @@ public abstract class RecipeCapability<T> {
 //            RecipeCapability.DIRECT_CODEC,
 //            RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
+    private static int index = 0;
 
     public final String name;
     public final int color;
@@ -40,12 +41,12 @@ public abstract class RecipeCapability<T> {
     public final int sortIndex;
     public final Codec<T> contentCodec;
 
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex,
+    protected RecipeCapability(String name, int color, boolean doRenderSlot,
                                Codec<T> contentCodec) {
         this.name = name;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
-        this.sortIndex = sortIndex;
+        this.sortIndex = index++;
         this.contentCodec = contentCodec;
     }
 
@@ -153,7 +154,7 @@ public abstract class RecipeCapability<T> {
     }
 
     public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<T> contents,
-                           boolean perTick, boolean isInput, MutableInt yOffset) {}
+                           int duration, boolean perTick, boolean isInput, MutableInt yOffset) {}
 
     @NotNull
     public List<?> createXEIContainerContents(List<T> contents, GTRecipeDefinition recipe, IO io) {

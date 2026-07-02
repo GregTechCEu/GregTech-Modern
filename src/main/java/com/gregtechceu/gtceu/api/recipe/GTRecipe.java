@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -41,18 +40,19 @@ public class GTRecipe{
     public final List<RecipeCondition<?>> conditions;
     @NotNull
     public CompoundTag data;
+    public int tier;
     public int duration;
     public int parallels = 1;
     public int subtickParallels = 1;
     public int batchParallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
-    public EnergyStack getInputEUt() {
-        return calculateEUt(tickInputs);
+    public long getInputEUt() {
+        return RecipeHelper.calculateEUt(tickInputs);
     }
 
-    public EnergyStack getOutputEUt() {
-        return calculateEUt(tickOutputs);
+    public long getOutputEUt() {
+        return RecipeHelper.calculateEUt(tickOutputs);
     }
 
     public GTRecipe(GTRecipeType recipeType,
@@ -63,9 +63,10 @@ public class GTRecipe{
                     ContentListMap tickOutputs,
 
                     List<RecipeCondition<?>> conditions,
-                    @NotNull CompoundTag data,
+                    CompoundTag data,
+                    int tier,
                     int duration,
-                    @NotNull GTRecipeCategory recipeCategory) {
+                    GTRecipeCategory recipeCategory) {
         this.recipeType = recipeType;
         this.id = id;
 
@@ -76,6 +77,7 @@ public class GTRecipe{
 
         this.conditions = conditions;
         this.data = data;
+        this.tier = tier;
         this.duration = duration;
         this.recipeCategory = (recipeCategory != GTRecipeCategory.DEFAULT) ? recipeCategory : recipeType.getCategory();
     }
@@ -92,7 +94,7 @@ public class GTRecipe{
         var copied = new GTRecipe(recipeType, id,
                 inputs.copyWithMultiplier(multiplier), outputs.copyWithMultiplier(multiplier),
                 tickInputs.copyWithMultiplier(multiplier), tickOutputs.copyWithMultiplier(multiplier),
-                new ArrayList<>(conditions), data.copy(), duration, recipeCategory);
+                new ArrayList<>(conditions), data.copy(), tier, duration, recipeCategory);
         if (modifyDuration) {
             copied.duration = duration * multiplier;
         }
@@ -111,7 +113,7 @@ public class GTRecipe{
             var copied = new GTRecipe(recipeType, id,
                     inputs.copyWithMultiplier(multiplier), outputs.copyWithMultiplier(multiplier),
                     tickInputs.copy(), tickOutputs.copy(),
-                    new ArrayList<>(conditions), data.copy(), duration, recipeCategory);
+                    new ArrayList<>(conditions), data.copy(), duration, tier, recipeCategory);
             if (modifyDuration) {
                 copied.duration = duration * multiplier;
             }
@@ -123,7 +125,7 @@ public class GTRecipe{
         }
     }
 
-    public @NotNull GTRecipeType getType() {
+    public GTRecipeType getType() {
         return recipeType;
     }
 
@@ -145,18 +147,6 @@ public class GTRecipe{
 
     public boolean hasTick() {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
-    }
-
-    // Technically should account for overflow but realistically not an issue.
-    protected EnergyStack calculateEUt(ContentListMap contents) {
-        var outputs = contents.get(EURecipeCapability.CAP);
-        if (outputs == null) return EnergyStack.EMPTY;
-        long v = 0, a = 0;
-        for (var stack : outputs) {
-            v += stack.voltage();
-            a += stack.amperage();
-        }
-        return new EnergyStack(v, a);
     }
 
     public int getTotalRuns() {
@@ -196,11 +186,12 @@ public class GTRecipe{
     }
 
     public void multiplyEUt(double multiplier) {
-        var eut = RecipeHelper.getRealEUtWithIO(this);
-        EnergyStack stack = eut.stack();
-        if (stack.isEmpty()) return;
-        EnergyStack modified = stack.withAmperage(Math.max(1, (long) (stack.amperage() * multiplier)));
-        EURecipeCapability.putEUContent(eut.isInput() ? tickInputs : tickOutputs, modified);
+        long eut = RecipeHelper.getRealEUtWithIO(this);
+        if (eut == 0) return;
+        long modified = (long) (eut * multiplier);
+        if(modified != 0) {
+            EURecipeCapability.putEUContent(modified > 0 ? tickInputs : tickOutputs, Math.abs(modified));
+        }
     }
 
     public void addOCs(int amount) {
@@ -223,7 +214,6 @@ public class GTRecipe{
     public void toNetwork(FriendlyByteBuf buf) {
         buf.writeResourceLocation(recipeType.registryName);
         buf.writeResourceLocation(id);
-        buf.writeVarInt(duration);
         inputs.toNetwork(buf);
         outputs.toNetwork(buf);
         tickInputs.toNetwork(buf);
@@ -231,6 +221,8 @@ public class GTRecipe{
         buf.writeCollection(conditions, (buffer, condition) -> condition.toNetwork(buffer));
         buf.writeNbt(data);
         buf.writeResourceLocation(recipeCategory.registryKey);
+        buf.writeVarInt(tier);
+        buf.writeVarInt(duration);
         buf.writeVarInt(parallels);
         buf.writeVarInt(subtickParallels);
         buf.writeVarInt(batchParallels);
@@ -240,7 +232,6 @@ public class GTRecipe{
     public static GTRecipe fromNetwork(FriendlyByteBuf buf) {
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(buf.readResourceLocation());
         ResourceLocation id = buf.readResourceLocation();
-        int duration = buf.readVarInt();
         ContentListMap inputs = ContentListMap.fromNetwork(buf);
         ContentListMap outputs = ContentListMap.fromNetwork(buf);
         ContentListMap tickInputs = ContentListMap.fromNetwork(buf);
@@ -251,12 +242,14 @@ public class GTRecipe{
             data = new CompoundTag();
         }
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(buf.readResourceLocation());
+        int tier = buf.readVarInt();
+        int duration = buf.readVarInt();
         int parallels = buf.readVarInt();
         int subtickParallels = buf.readVarInt();
         int batchParallels = buf.readVarInt();
         int ocLevel = buf.readVarInt();
 
-        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, category);
+        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier, duration, category);
         recipe.parallels = parallels;
         recipe.subtickParallels = subtickParallels;
         recipe.batchParallels = batchParallels;
@@ -269,6 +262,7 @@ public class GTRecipe{
         var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         tag.putString("recipeType", recipeType.registryName.toString());
         tag.putString("id", id.toString());
+        tag.putInt("tier", tier);
         tag.putInt("duration", duration);
         tag.put("inputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, inputs).getOrThrow(false, GTCEu.LOGGER::error));
         tag.put("outputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, outputs).getOrThrow(false, GTCEu.LOGGER::error));
@@ -288,6 +282,7 @@ public class GTRecipe{
         var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
         GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(tag.getString("recipeType")));
         ResourceLocation id = new ResourceLocation(tag.getString("id"));
+        int tier = tag.getInt("tier");
         int duration = tag.getInt("duration");
         ContentListMap inputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("inputs")).getOrThrow(false, GTCEu.LOGGER::error);
         ContentListMap outputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("outputs")).getOrThrow(false, GTCEu.LOGGER::error);
@@ -301,7 +296,7 @@ public class GTRecipe{
         int batchParallels = tag.getInt("batchParallels");
         int ocLevel = tag.getInt("ocLevel");
 
-        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, category);
+        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier, duration, category);
         recipe.parallels = parallels;
         recipe.subtickParallels = subtickParallels;
         recipe.batchParallels = batchParallels;

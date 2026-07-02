@@ -56,7 +56,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
             data.putBoolean("Working", true);
             var recipe = recipeLogic.getLastRecipe();
             if (recipe != null) {
-                int recipeTier = RecipeHelper.getPreOCRecipeEuTier(recipe);
+                int recipeTier = recipe.tier;
                 int chanceTier = recipeTier + recipe.ocLevel;
                 var function = recipe.getType().getChanceFunction();
                 var itemContents = recipe.getOutputContents(ItemRecipeCapability.CAP);

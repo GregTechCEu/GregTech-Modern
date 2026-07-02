@@ -107,13 +107,13 @@ public class SteamParallelMultiblockMachine extends RecipeMultiblockMachine impl
         if (!(machine instanceof SteamParallelMultiblockMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SteamParallelMultiblockMachine.class, machine);
         }
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
+        if (recipe.tier > GTValues.LV) {
             return Component.translatable("gtceu.recipe_modifier.steam_machine_voltage_too_high");
         }
 
         // Duration = 1.5x base duration
         // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
-        long eut = recipe.getInputEUt().getTotalEU();
+        long eut = recipe.getInputEUt();
         int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels, false);
         if(parallelAmount <= 1) {
             return null;

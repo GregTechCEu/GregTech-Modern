@@ -63,9 +63,11 @@ public class FluidDrillLogic extends RecipeLogic {
     private GTRecipe getFluidDrillRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
+            long EUt = GTValues.VA[getMachine().getTier()];
+            if(getMachine().isOverclocked()) EUt *= 4;
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
-                    .EUt(GTValues.VA[getMachine().getTier()])
+                    .EUt(EUt)
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .buildRawRecipe()
@@ -97,7 +99,7 @@ public class FluidDrillLogic extends RecipeLogic {
             produced *= FluidDrillMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more fluid
-            if (isOverclocked()) {
+            if (getMachine().isOverclocked()) {
                 produced = produced * 3 / 2;
             }
             return produced;
@@ -139,10 +141,6 @@ public class FluidDrillLogic extends RecipeLogic {
                 data.depleteVein(getChunkX(), getChunkZ(), 0, false);
             }
         }
-    }
-
-    protected boolean isOverclocked() {
-        return getMachine().getTier() > getMachine().getTier();
     }
 
     private int getChunkX() {

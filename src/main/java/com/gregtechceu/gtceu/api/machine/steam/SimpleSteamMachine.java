@@ -188,7 +188,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         }
         recipe.conditions.add(VentCondition.INSTANCE);
 
-        if (RecipeHelper.getRecipeEUtTier(recipe) > GTValues.LV) {
+        if (recipe.tier > GTValues.LV) {
             return Component.translatable("gtceu.recipe_modifier.steam_machine_voltage_too_high");
         }
         RecipeHelper.replaceEUwithSteam(recipe, steamMachine.getConversionRate());

@@ -8,15 +8,12 @@ import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -25,7 +22,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -127,9 +123,9 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
-        EnergyStack EUt = recipe.getOutputEUt();
+        long EUt = recipe.getOutputEUt();
         // has lubricant
-        if (EUt.isEmpty()) return RecipeModifier.DEFAULT_FAILURE;
+        if (EUt <= 0) return RecipeModifier.DEFAULT_FAILURE;
         if (engineMachine.isIntakesObstructed()) {
             return Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed");
         }
@@ -137,7 +133,7 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
             return Component.translatable("gtceu.recipe_modifier.missing_lubricant");
         }
 
-        int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt.getTotalEU()); // get maximum parallel
+        int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
         int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
 
         if(actualParallel <= 1) return null;
@@ -190,7 +186,7 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
 
         long lastEUt = recipeLogic.getLastRecipe() != null ?
-                recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
+                recipeLogic.getLastRecipe().getOutputEUt() : 0;
         if (isExtreme()) {
             builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
         } else {
@@ -221,7 +217,7 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
         }
         FluidStack requiredFluidInput = RecipeHelper.getInputFluids(recipe, false).get(0);
 
-        long ocAmount = getOverclockVoltage() / recipe.getOutputEUt().getTotalEU();
+        long ocAmount = getOverclockVoltage() / recipe.getOutputEUt();
         int neededAmount = GTMath.saturatedCast(ocAmount * requiredFluidInput.getAmount());
         return ChatFormatting.RED + FormattingUtil.formatNumbers(neededAmount) + "mB";
     }

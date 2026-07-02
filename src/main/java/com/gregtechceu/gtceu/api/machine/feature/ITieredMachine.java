@@ -13,7 +13,7 @@ public interface ITieredMachine extends IMachineFeature {
         return self().getDefinition().getTier();
     }
 
-    default long getMaxVoltage() {
+    default long getTierVoltage() {
         return GTValues.V[getTier()];
     }
 }

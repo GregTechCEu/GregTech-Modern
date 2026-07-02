@@ -52,6 +52,7 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
 
     public RecipeElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
+        energyContainer = EnergyContainerList.EMPTY;
     }
 
     //////////////////////////////////////
@@ -175,10 +176,6 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     //////////////////////////////////////
     // ******** OVERCLOCK *********//
     //////////////////////////////////////
-    @Override
-    public int getOverclockTier() {
-        return getTier();
-    }
 
     @Override
     public void setOverclockTier(int tier) {}

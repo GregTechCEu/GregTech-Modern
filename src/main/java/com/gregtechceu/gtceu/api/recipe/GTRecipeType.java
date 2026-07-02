@@ -88,10 +88,7 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
     private final RecipeAdditionHandler additionHandler = new RecipeAdditionHandler(db);
     @Setter
     @Getter
-    private boolean offsetVoltageText = false;
-    @Setter
-    @Getter
-    private int voltageTextOffset = 20;
+    private boolean overclockable = true;
     private final Map<String, Collection<GTRecipeDefinition>> researchEntries = new Object2ObjectOpenHashMap<>();
     @Getter
     private final List<ICustomRecipeLogic> customRecipeLogicRunners = new ArrayList<>();

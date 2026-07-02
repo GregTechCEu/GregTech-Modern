@@ -212,13 +212,13 @@ public class GTRecipeTypes {
                                 .isEmpty()) {
                     recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_water"))
                             .inputFluids(GTMaterials.Water.getFluid((int) GTMath.clamp(
-                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 320, 4, 1000)))
+                                    recipeBuilder.duration * recipeBuilder.EUt() / 320, 4, 1000)))
                             .duration(recipeBuilder.duration * 2)
                             .save(provider);
 
                     recipeBuilder.copy(new ResourceLocation(recipeBuilder.id.toString() + "_distilled_water"))
                             .inputFluids(GTMaterials.DistilledWater.getFluid((int) GTMath.clamp(
-                                    recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 426, 3, 750)))
+                                    recipeBuilder.duration * recipeBuilder.EUt() / 426, 3, 750)))
                             .duration((int) (recipeBuilder.duration * 1.5))
                             .save(provider);
 
@@ -226,7 +226,7 @@ public class GTRecipeTypes {
                     // buildAndRegister call.
                     // Adding a second call will result in duplicate recipe generation attempts
                     recipeBuilder.inputFluids(GTMaterials.Lubricant.getFluid((int) GTMath.clamp(
-                            recipeBuilder.duration * recipeBuilder.EUt().getTotalEU() / 1280, 1, 250)));
+                            recipeBuilder.duration * recipeBuilder.EUt() / 1280, 1, 250)));
                 }
             });
 
@@ -390,7 +390,6 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.INT_CIRCUIT_OVERLAY)
             .setSlotOverlay(true, true, GuiTextures.CENTRIFUGE_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_GAS_COLLECTOR, LEFT_TO_RIGHT)
-            .setOffsetVoltageText(true)
             .setSound(GTSoundEntries.COOLING);
 
     public final static GTRecipeType AIR_SCRUBBER_RECIPES = register("air_scrubber", ELECTRIC)
@@ -404,6 +403,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
             .setScanner(true)
+            .setOverclockable(false)
             .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
 
@@ -549,7 +549,8 @@ public class GTRecipeTypes {
                         GTRecipeBuilder builder = DISTILLERY_RECIPES
                                 .recipeBuilder(recipeBuilder.id.getPath() + "_to_" +
                                         BuiltInRegistries.FLUID.getKey(outputStack.getFluid()).getPath())
-                                .EUt(Math.max(1, recipeBuilder.EUt().voltage() / 4), recipeBuilder.EUt().amperage())
+                                .EUt(recipeBuilder.EUt())
+                                .tier(recipeBuilder.tier)
                                 .circuitMeta(i + 1);
 
                         int ratio = RecipeHelper.getRatioForDistillery(input, output, outputItem);
@@ -644,7 +645,6 @@ public class GTRecipeTypes {
             .setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_FUSION, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ARC)
-            .setOffsetVoltageText(true)
             .setMaxTooltips(4)
             .setUiBuilder(FusionReactorMachine::addEUToStartLabel);
 

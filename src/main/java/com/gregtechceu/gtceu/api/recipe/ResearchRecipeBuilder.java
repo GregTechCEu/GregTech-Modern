@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +22,8 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
     protected FluidStack fluidResearchStack = FluidStack.EMPTY;
     protected ItemStack dataStack;
     protected String researchId;
-    protected EnergyStack eut;
+    protected long eut;
+    protected int tier;
 
     public T researchStack(@NotNull ItemStack researchStack) {
         if (!researchStack.isEmpty()) {
@@ -54,8 +55,9 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         return EUt(eut, 1);
     }
 
-    public T EUt(long eut, long amperage) {
-        this.eut = new EnergyStack(eut, amperage);
+    public T EUt(long voltage, long amperage) {
+        this.tier = GTUtil.getTierByVoltage(voltage);
+        this.eut = voltage * amperage;
         return (T) this;
     }
 
@@ -116,9 +118,9 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         public GTRecipeBuilder.ResearchRecipeEntry build(ResourceLocation recipeId) {
             validateResearchItem(recipeId);
             if (duration <= 0) duration = DEFAULT_SCANNER_DURATION;
-            if (eut == null || eut.voltage() <= 0) eut = new EnergyStack(DEFAULT_SCANNER_EUT, 1);
+            if (eut <= 0) eut = DEFAULT_SCANNER_EUT;
             return new GTRecipeBuilder.ResearchRecipeEntry(researchId, itemResearchStack, fluidResearchStack, dataStack,
-                    duration, eut, 0);
+                    duration, tier, eut, 0);
         }
     }
 
@@ -163,10 +165,14 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
             // "duration" is the total CWU/t.
             // Not called duration in API because logic does not treat it like normal duration.
             int duration = totalCWU;
-            if (eut == null || eut.voltage() <= 0) eut = new EnergyStack(DEFAULT_STATION_EUT, 1);
+
+            if (eut <= 0) {
+                tier = GTValues.LuV;
+                eut = DEFAULT_STATION_EUT;
+            }
 
             return new GTRecipeBuilder.ResearchRecipeEntry(researchId, itemResearchStack, fluidResearchStack, dataStack,
-                    duration, eut, cwut);
+                    duration, tier, eut, cwut);
         }
     }
 }

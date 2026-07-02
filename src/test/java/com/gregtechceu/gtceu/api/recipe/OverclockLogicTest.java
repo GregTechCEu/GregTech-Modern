@@ -175,14 +175,14 @@ public class OverclockLogicTest {
                 .toRuntime();
 
         int originalDuration = recipeBeforeModifiers.duration;
-        long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
+        long originalEUt = recipeBeforeModifiers.getInputEUt();
         var failReason = OC_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.duration == (originalDuration / PERFECT_DURATION_FACTOR_INV),
                 "Perfect perfect overclock didn't cut recipe time by 4");
         helper.assertTrue(
-                recipeBeforeModifiers.getInputEUt().getTotalEU() ==
+                recipeBeforeModifiers.getInputEUt() ==
                         (originalEUt * STD_VOLTAGE_FACTOR),
                 "Non perfect overclock didn't multiply EU by 4");
         helper.succeed();
@@ -205,14 +205,14 @@ public class OverclockLogicTest {
                 .toRuntime();
 
         int originalDuration = recipeBeforeModifiers.duration;
-        long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
+        long originalEUt = recipeBeforeModifiers.getInputEUt();
         var failReason = OC_NON_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.duration == (originalDuration / STD_DURATION_FACTOR_INV),
                 "Non perfect overclock didn't cut recipe time by 2");
         helper.assertTrue(
-                recipeBeforeModifiers.getInputEUt().getTotalEU() ==
+                recipeBeforeModifiers.getInputEUt() ==
                         (originalEUt * STD_VOLTAGE_FACTOR),
                 "Non perfect overclock didn't multiply EU by 4");
         helper.succeed();
@@ -235,14 +235,14 @@ public class OverclockLogicTest {
                 .toRuntime();
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
-        long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
+        long originalEUt = recipeBeforeModifiers.getInputEUt();
         var failReason = OC_PERFECT_SUBTICK.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
 
         helper.assertTrue(failReason == null, "Could not apply overclock to recipe: " + failReason);
         helper.assertTrue(recipeBeforeModifiers.subtickParallels == PERFECT_DURATION_FACTOR_INV,
                 "Perfect subtick overclock didn't multiply parallels by 4");
-        helper.assertTrue(recipeBeforeModifiers.getInputEUt().getTotalEU() == (originalEUt * STD_VOLTAGE_FACTOR),
+        helper.assertTrue(recipeBeforeModifiers.getInputEUt() == (originalEUt * STD_VOLTAGE_FACTOR),
                 "Perfect subtick overclock didn't multiply EU by 4");
         helper.succeed();
     }
@@ -264,7 +264,7 @@ public class OverclockLogicTest {
                 .toRuntime();
         busHolder.inputBus1.getInventory().setStackInSlot(0, new ItemStack(Blocks.COBBLESTONE, 64));
 
-        long originalEUt = recipeBeforeModifiers.getInputEUt().getTotalEU();
+        long originalEUt = recipeBeforeModifiers.getInputEUt();
         var failReason = OC_NON_PERFECT.apply(busHolder.controller, firstGroup(busHolder.controller),
                 recipeBeforeModifiers);
 
@@ -272,7 +272,7 @@ public class OverclockLogicTest {
         helper.assertTrue(recipeBeforeModifiers.subtickParallels == 1,
                 "Non-Perfect Non-subtick overclock overclocked when it shouldn't have");
         helper.assertTrue(
-                recipeBeforeModifiers.getInputEUt().getTotalEU() == originalEUt,
+                recipeBeforeModifiers.getInputEUt() == originalEUt,
                 "Non-Perfect Non-subtick overclock at 1t changed EU");
         helper.succeed();
     }

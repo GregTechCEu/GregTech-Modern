@@ -45,7 +45,6 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
@@ -53,7 +52,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
 
     protected ItemRecipeCapability() {
-        super("item", 0xFFD96106, true, 0, ItemIngredient.CODEC);
+        super("item", 0xFFD96106, true, ItemIngredient.CODEC);
     }
 
     @Override
@@ -78,7 +77,6 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
 
     @Override
     public IGuiTexture createXEIOverlay(ItemIngredient content, boolean perTick) {
-        if (!content.isChanced() && !(content instanceof RangedItemIngredient) && !perTick) return null;
         return new IGuiTexture() {
 
             @Override
@@ -273,7 +271,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                         .getDataStickEntry(researchData.researchId());
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
-                    for (GTRecipeDefinition r : possibleRecipes) {
+                    for (GTRecipeDefinition             r : possibleRecipes) {
                         var outputs = r.getOutputContents(this);
                         if (outputs.isEmpty()) continue;
 
