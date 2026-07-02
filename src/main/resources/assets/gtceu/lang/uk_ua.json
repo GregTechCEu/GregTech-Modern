@@ -3688,7 +3688,7 @@
   "gtceu.placeholder_info.ender.3": "  {ender item <channel> [player_data_item_slot]} -> кількість предметів",
   "gtceu.placeholder_info.ender.4": "  {ender itemPull <channel> [player_data_item_slot]} -> витягнути 1 предмет з буфера зв’язку Енду",
   "gtceu.placeholder_info.ender.5": "  {ender itemPush <channel> [player_data_item_slot]} -> надіслати 1 предмет до буфера зв’язку Енду",
-  "gtceu.placeholder_info.ender.6": "  {ender itemId <channel> [player_data_item_slot]} -> ID предмета у буфері зв’язку Ендузв’язку Енду (у вигляді \"26 minecraft:dirt\")",
+  "gtceu.placeholder_info.ender.6": "  {ender itemId <channel> [player_data_item_slot]} -> ID предмета у буфері Ендузв’язку (наприклад "26 minecraft:dirt")",
   "gtceu.placeholder_info.ender.7": "  {ender fluid <channel> [player_data_item_slot]} -> обсяг рідини",
   "gtceu.placeholder_info.ender.8": "  {ender redstone <channel> [player_data_item_slot] -> рівень редстоунового сигналу",
   "gtceu.placeholder_info.ender.9": "  {ender redstone <channel> <player_data_item_slot> <signal> -> надсилає визначений рівень редстоунового сигналу до редстоунового зв’язку Енду, повертає порожній рядок",
