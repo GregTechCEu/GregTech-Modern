@@ -6,13 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -33,10 +30,11 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.IV];
 
-    private final MultipleComputationHandler computationHandler = new MultipleComputationHandler(this);
+    private final MultipleComputationHandler computationHandler;
 
     public NetworkSwitchMachine(BlockEntityCreationInfo info) {
         super(info);
+        computationHandler = attachTrait(new MultipleComputationHandler());
     }
 
     @Override
@@ -56,8 +54,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         List<IOpticalComputationHatch> receivers = new ArrayList<>();
         List<IOpticalComputationHatch> transmitters = new ArrayList<>();
         for (var part : this.getParts()) {
@@ -87,8 +85,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         computationHandler.reset();
     }
 
@@ -98,36 +96,36 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     }
 
     @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+    public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return isActive() && !getRecipeLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
     }
 
     @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return isFormed() ? computationHandler.getMaxCWUt(seen) : 0;
     }
 
     // allows chaining Network Switches together
     @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+    public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         return true;
     }
 
-    @Override
-    public void addDisplayText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-                .setWorkingStatusKeys(
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.idling",
-                        "gtceu.multiblock.data_bank.providing")
-                .addEnergyUsageExactLine(getEnergyUsage())
-                .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
-                .addWorkingStatusLine();
-    }
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // MultiblockDisplayText.builder(textList, getDefaultPatternState())
+    // .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+    // .setWorkingStatusKeys(
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.idling",
+    // "gtceu.multiblock.data_bank.providing")
+    // .addEnergyUsageExactLine(getEnergyUsage())
+    // .addComputationUsageLine(computationHandler.getMaxCWUtForDisplay())
+    // .addWorkingStatusLine();
+    // }
 
     /*
      * @Override
@@ -155,8 +153,8 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         private boolean tickSaturated;
         private long timerCWUt = -1;
 
-        public MultipleComputationHandler(MetaMachine machine) {
-            super(machine, IO.IN, false);
+        public MultipleComputationHandler() {
+            super(IO.IN, false);
         }
 
         private void onStructureForm(Collection<IOpticalComputationHatch> providers,
@@ -174,7 +172,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
+        public int requestCWUt(int cwut, boolean simulate, Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
@@ -224,7 +222,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
             return maximumCWUt;
         }
 
-        public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public int getMaxCWUt(Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return 0;
             // The max CWU/t that this Network Switch can provide, combining all its inputs.
             seen.add(this);
@@ -238,7 +236,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
         }
 
         @Override
-        public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+        public boolean canBridge(Collection<IOpticalComputationProvider> seen) {
             if (seen.contains(this)) return false;
             seen.add(this);
             for (var provider : providers) {

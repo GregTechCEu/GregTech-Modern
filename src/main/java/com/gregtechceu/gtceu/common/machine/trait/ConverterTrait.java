@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.trait;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.compat.FeCompat;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
@@ -16,7 +15,8 @@ import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class ConverterTrait extends NotifiableEnergyContainer {
 
@@ -36,14 +36,24 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     @Getter
     private final FEContainer feContainer;
 
-    public ConverterTrait(@NotNull ConverterMachine machine, int amps) {
-        super(machine, GTValues.V[machine.getTier()] * 16 * amps, GTValues.V[machine.getTier()], amps,
-                GTValues.V[machine.getTier()], amps);
+    public ConverterTrait(ConverterMachine machine, int tier, int amps) {
+        super(GTValues.V[tier] * 16 * amps, GTValues.V[tier], amps,
+                GTValues.V[tier], amps);
         this.amps = amps;
-        this.voltage = GTValues.V[machine.getTier()];
-        setSideInputCondition(side -> !this.feToEu && side != this.getMachine().getFrontFacing());
-        setSideOutputCondition(side -> this.feToEu && side == this.getMachine().getFrontFacing());
-        this.feContainer = new FEContainer(machine);
+        this.voltage = GTValues.V[tier];
+        setSideInputCondition(side -> !feToEu && side != getMachine().getFrontFacing());
+        setSideOutputCondition(side -> feToEu && side == getMachine().getFrontFacing());
+        this.feContainer = machine.attachTrait(new FEContainer());
+    }
+
+    @Override
+    public ConverterMachine getMachine() {
+        return (ConverterMachine) super.getMachine();
+    }
+
+    @Override
+    protected List<Class<?>> validMachineClasses() {
+        return List.of(ConverterMachine.class);
     }
 
     ////////////////////////////////
@@ -54,7 +64,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         this.feToEu = feToEu;
         setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_FE_TO_EU, feToEu));
         syncDataHolder.markClientSyncFieldDirty("feToEu");
-        machine.notifyBlockUpdate();
+        getMachine().notifyBlockUpdate();
     }
 
     //////////////////////////////
@@ -69,9 +79,9 @@ public class ConverterTrait extends NotifiableEnergyContainer {
         if (feToEu) { // output eu
             super.serverTick();
         } else { // output fe
-            var fontFacing = machine.getFrontFacing();
-            var energyContainer = GTCapabilityHelper.getForgeEnergy(machine.getLevel(),
-                    machine.getBlockPos().relative(fontFacing), fontFacing.getOpposite());
+            var fontFacing = getMachine().getFrontFacing();
+            var energyContainer = GTCapabilityHelper.getForgeEnergy(getLevel(),
+                    getBlockPos().relative(fontFacing), fontFacing.getOpposite());
             if (energyContainer != null && energyContainer.canReceive()) {
                 var energyUsed = FeCompat.insertEu(energyContainer,
                         Math.min(getEnergyStored(), voltage * amps), false);
@@ -86,7 +96,7 @@ public class ConverterTrait extends NotifiableEnergyContainer {
     // ***** Forge Energy ******//
     //////////////////////////////
 
-    private class FEContainer extends MachineTrait implements IEnergyStorage {
+    public class FEContainer extends MachineTrait implements IEnergyStorage {
 
         public static final MachineTraitType<FEContainer> TYPE = new MachineTraitType<>(FEContainer.class);
 
@@ -95,8 +105,8 @@ public class ConverterTrait extends NotifiableEnergyContainer {
             return TYPE;
         }
 
-        public FEContainer(MetaMachine machine) {
-            super(machine);
+        public FEContainer() {
+            super();
         }
 
         @Override

@@ -6,28 +6,57 @@ title: "Usage"
 
 ### Registering classes with the sync system
 
-At the core of the system is the interface `ISyncManaged`, which represents a class that to be synchronised with the client or saved.
-All block entities which should be synchronised or saved must extend the abstract class `ManagedSyncBlockEntity`.
+At the core of the system is the `ISyncManaged` interface, which allows for fields to have sync annotations.
 
-!!! warning 
-  Block entities that inherit `ManagedSyncBlockEntity` must call `ManagedSyncBlockEntity::updateTick`***every tick*** within their ticker, or they will not be saved.
+All `ISyncManaged` objects must belong to a root managed sync object. There are two default types of root sync objects:
 
+- `ManagedSyncBlockEntity` is a block entity storing its data through the system. The `Block` class using this `BlockEntity` must implement `ManagedSyncEntityBlock`.
+- `ManagedSavedData` is a `SavedData` object that stores data through the system.
+
+#### Example of `ISyncManaged` usage
 ```java
 class MySyncObject implements ISyncManaged {
-    // Any class that directly implements ISyncManaged must have the following:
+    
+    // Any class that directly implements ISyncManaged must have a SyncDataHolder:
      @Getter
      protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
+     
+    // ISyncManaged objects should be attached to a parent sync managed object,
+    // unless the sync managed object is a blockentity
+    // ISyncManaged classes must implement a getter for their parent sync object
+    @Getter
+    private final MetaMachine parentSyncObject; 
     
+    @SaveField
+    @SyncToClient
+    private BlockPos syncPos = BlockPos.ZERO;
     
-    /**
-     * Function called when the SyncDataHolder requests a rerender
-     */
-    void scheduleRenderUpdate();
-
-    /**
-     * Function called to notify the server that this object has been updated and must be synced to clients
-     */
-    void markAsChanged();
+    @Getter
+    private String syncString = "";
+     
+    public MySyncObject(MetaMachine machine) {
+        this.parentSyncObject = machine;
+    }
+    
+    public void doChanges() {
+      syncPos = new BlockPos(100, 50, 100);
+      // Client sync fields do not update automatically.
+      getSyncDataHolder().markClientSyncFieldDirty("syncPos");
+      
+      setSyncString("abcd");
+    }
+    
+    // It is often good practice to wrap client sync fields in getters/setters, and have the setter update the sync status.
+    public void setSyncString(String syncString) {
+        this.syncString = syncString;
+        getSyncDataHolder().markClientSyncFieldDirty("syncString");
+    }
+    
+    // Called on the client side when the given sync field is updated.
+    @ClientFieldChangeListener(fieldName="syncString")
+    private void onSyncStringChanged() {
+        
+    }
 }
 ```
 
@@ -60,7 +89,7 @@ The following field types are supported by default:
 
 The `ValueTransformer<T>` abstract class defines how a value of type `T` should be serialized.
 
-To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
+To add support for an additional type, call `ValueTransformers.registerTransformer(Class<T> cls, ValueTransformer<T> transformer)` or `ValueTransformers.registerGenericTransformerSupplier(Class<T> cls, Supplier<ValueTransformer<T>> func)`
 
 Additionally, fields can be explicitly directed to use a specific value transformer:
 ```java

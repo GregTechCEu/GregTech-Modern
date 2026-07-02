@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -19,6 +18,7 @@ import net.minecraftforge.fluids.FluidType;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -43,7 +43,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
                                        // while creating tanks.
-    private Boolean isEmpty;
+    private @Nullable Boolean isEmpty;
 
     @SaveField
     @SyncToClient
@@ -52,8 +52,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     protected Predicate<FluidStack> filter = f -> true;
 
-    public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io, IO capabilityIO) {
-        super(machine);
+    public NotifiableFluidTank(int slots, int capacity, IO io, IO capabilityIO) {
+        super();
         this.handlerIO = io;
         this.storages = new CustomFluidTank[slots];
         this.capabilityIO = capabilityIO;
@@ -63,8 +63,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public NotifiableFluidTank(MetaMachine machine, List<CustomFluidTank> storages, IO io, IO capabilityIO) {
-        super(machine);
+    public NotifiableFluidTank(List<CustomFluidTank> storages, IO io, IO capabilityIO) {
+        super();
         this.handlerIO = io;
         this.storages = storages.toArray(CustomFluidTank[]::new);
         this.capabilityIO = capabilityIO;
@@ -76,12 +76,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public NotifiableFluidTank(MetaMachine machine, int slots, int capacity, IO io) {
-        this(machine, slots, capacity, io, io);
+    public NotifiableFluidTank(int slots, int capacity, IO io) {
+        this(slots, capacity, io, io);
     }
 
-    public NotifiableFluidTank(MetaMachine machine, List<CustomFluidTank> storages, IO io) {
-        this(machine, storages, io, io);
+    public NotifiableFluidTank(List<CustomFluidTank> storages, IO io) {
+        this(storages, io, io);
     }
 
     public void onContentsChanged() {
@@ -91,10 +91,10 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                   boolean simulate) {
+    public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                            boolean simulate) {
         if (io != handlerIO) return left;
-        if (io != IO.IN && io != IO.OUT) return left.isEmpty() ? null : left;
+        if (io != IO.IN && io != IO.OUT) return left;
 
         // Temporarily remove listeners so that we can broadcast the entire set of transactions once
         Runnable[] listeners = new Runnable[storages.length];
@@ -218,7 +218,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             if (changed && action.execute()) listeners[i].run();
         }
 
-        return left.isEmpty() ? null : left;
+        return left;
     }
 
     @Override
@@ -276,7 +276,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public @NotNull List<Object> getContents() {
+    public List<Object> getContents() {
         List<FluidStack> ingredients = new ArrayList<>();
         for (int i = 0; i < getTanks(); ++i) {
             FluidStack stack = getFluidInTank(i);
@@ -312,7 +312,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return isEmpty;
     }
 
-    public void exportToNearby(@NotNull Direction... facings) {
+    public void exportToNearby(Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
@@ -323,7 +323,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public void importFromNearby(@NotNull Direction... facings) {
+    public void importFromNearby(Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getBlockPos();
         for (Direction facing : facings) {
@@ -336,13 +336,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     //////////////////////////////////////
     // ******* Capability ********//
     //////////////////////////////////////
-    @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
         return storages[tank].getFluid();
     }
 
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
         storages[tank].setFluid(fluidStack);
     }
 
@@ -352,7 +351,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         return storages[tank].isFluidValid(stack);
     }
 
@@ -391,7 +390,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return resource.getAmount() - copied.getAmount();
     }
 
-    @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         if (canCapOutput()) {
@@ -413,7 +411,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return copied;
     }
 
-    @NotNull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         if (canCapOutput()) {

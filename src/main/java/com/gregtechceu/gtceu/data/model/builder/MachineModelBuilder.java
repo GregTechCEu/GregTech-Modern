@@ -302,7 +302,12 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
     }
 
     public MachineModelBuilder<T> forAllStatesModels(Function<MachineRenderState, ModelFile> mapper) {
-        return forAllStates(mapper.andThen(m -> ConfiguredModel.builder().modelFile(m).build()));
+        return forAllStatesModelsExcept(mapper);
+    }
+
+    public MachineModelBuilder<T> forAllStatesModelsExcept(Function<MachineRenderState, ModelFile> mapper,
+                                                           Property<?>... ignored) {
+        return forAllStatesExcept(mapper.andThen(m -> ConfiguredModel.builder().modelFile(m).build()), ignored);
     }
 
     public MachineModelBuilder<T> forAllStates(Function<MachineRenderState, ConfiguredModel[]> mapper) {
@@ -357,15 +362,14 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
         private final MachineDefinition owner;
         @Getter
         private final SortedMap<Property<?>, Comparable<?>> setStates;
-        @Nullable
         private final MachineModelBuilder<B> outerBuilder;
 
-        private PartialState(MachineDefinition owner, @Nullable MachineModelBuilder<B> outerBuilder) {
+        private PartialState(MachineDefinition owner, MachineModelBuilder<B> outerBuilder) {
             this(owner, ImmutableMap.of(), outerBuilder);
         }
 
         private PartialState(MachineDefinition owner, Map<Property<?>, Comparable<?>> setStates,
-                             @Nullable MachineModelBuilder<B> outerBuilder) {
+                             MachineModelBuilder<B> outerBuilder) {
             this.owner = owner;
             this.outerBuilder = outerBuilder;
             for (Map.Entry<Property<?>, Comparable<?>> entry : setStates.entrySet()) {
@@ -688,7 +692,7 @@ public class MachineModelBuilder<T extends ModelBuilder<T>> extends CustomLoader
                     .arrayListValues()
                     .build();
             public final List<ConditionGroup> nestedConditionGroups = new ArrayList<>();
-            private ConditionGroup parent = null;
+            private @Nullable ConditionGroup parent = null;
             public boolean useOr;
 
             /**

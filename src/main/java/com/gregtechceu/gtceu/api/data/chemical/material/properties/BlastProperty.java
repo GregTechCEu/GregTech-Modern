@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
@@ -140,6 +142,10 @@ public class BlastProperty implements IMaterialProperty {
 
         public FluidIngredient getFluid() {
             return fluid.get().copy();
+        }
+
+        public FluidIngredient getFluid(int outputAmount) {
+            return FluidRecipeCapability.CAP.copyWithModifier(fluid.get(), ContentModifier.multiplier(outputAmount));
         }
     }
 

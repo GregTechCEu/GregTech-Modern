@@ -6,23 +6,33 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.gregtechceu.gtceu.integration.ae2.gui.widget.list.AEListGridWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEKeyStorageSyncHandler;
+import com.gregtechceu.gtceu.integration.ae2.gui.AEStackDisplayWidget;
+import com.gregtechceu.gtceu.integration.ae2.gui.ScrollPreservingGrid;
 import com.gregtechceu.gtceu.integration.ae2.utils.KeyStorage;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.DynamicLinkedSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.scroll.VerticalScrollData;
+import brachy.modularui.widgets.DynamicSyncedWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.layout.Flow;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -88,17 +98,40 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     ///////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        WidgetGroup group = new WidgetGroup(0, 0, 170, 65);
-        // ME Network status
-        group.addWidget(new LabelWidget(5, 0, () -> this.isOnline ?
-                "gtceu.gui.me_network.online" :
-                "gtceu.gui.me_network.offline"));
-        group.addWidget(new LabelWidget(5, 10, "gtceu.gui.waiting_list"));
-        // display list
-        group.addWidget(new AEListGridWidget.Fluid(5, 20, 3, this.internalBuffer));
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        BooleanSyncValue isOnlineValue = new BooleanSyncValue(this::isOnline, this::setOnline);
+        syncManager.syncValue("is_online", isOnlineValue);
 
-        return group;
+        var flow = Flow.col().coverChildren();
+
+        flow.child(Text.dynamic(() -> isOnlineValue.getBoolValue() ?
+                Component.translatable("gtceu.gui.me_network.online") :
+                Component.translatable("gtceu.gui.me_network.offline"))
+                .asWidget().marginTop(2).marginBottom(4));
+
+        var storageSyncHandler = new AEKeyStorageSyncHandler(internalBuffer);
+        syncManager.syncValue("ae_output_display", storageSyncHandler);
+
+        int[] savedScroll = { 0 };
+        var dynamicHandler = new DynamicLinkedSyncHandler<>(storageSyncHandler)
+                .widgetProvider((sm, value) -> {
+                    var col = Flow.col().leftRel(0.5f).coverChildrenHeight();
+                    var list = value.getValue();
+                    if (list.isEmpty()) return col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list_empty")));
+                    col.child(new TextWidget<>(Text.lang("gtceu.gui.waiting_list")).margin(0, 2));
+                    col.child(new ScrollPreservingGrid(savedScroll)
+                            .size(167, 80)
+                            .scrollable(new VerticalScrollData())
+                            .gridOfSizeWidth(9, 1, (x, y, index) -> new AEStackDisplayWidget(list, index)));
+                    return col;
+                });
+
+        flow.child(new DynamicSyncedWidget<>()
+                .syncHandler(dynamicHandler)
+                .size(167, 80));
+
+        mainWidget.child(flow);
     }
 
     private class InaccessibleInfiniteTank extends NotifiableFluidTank {
@@ -106,7 +139,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         FluidStorageDelegate storage;
 
         public InaccessibleInfiniteTank(MetaMachine holder) {
-            super(holder, List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
+            super(List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
             allowSameFluids = true;
@@ -118,7 +151,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return Collections.emptyList();
         }
 
@@ -133,12 +166,12 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        public @NotNull FluidStack getFluidInTank(int tank) {
+        public FluidStack getFluidInTank(int tank) {
             return FluidStack.EMPTY;
         }
 
         @Override
-        public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {}
+        public void setFluidInTank(int tank, FluidStack fluidStack) {}
 
         @Override
         public int getTankCapacity(int tank) {
@@ -146,14 +179,13 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        public boolean isFluidValid(int tank, FluidStack stack) {
             return true;
         }
 
         @Override
-        @Nullable
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (io != IO.OUT) return left;
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.iterator(); it.hasNext();) {
@@ -163,17 +195,30 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
                     continue;
                 }
 
-                var fluids = ingredient.getStacks();
+                FluidStack[] fluids;
+                if (ingredient instanceof IntProviderFluidIngredient provider) {
+                    provider.setFluidStacks(null);
+                    provider.setSampledCount(-1);
+
+                    if (simulate) {
+                        fluids = new FluidStack[] { provider.getMaxSizeStack() };
+                    } else {
+                        fluids = provider.getStacks();
+                    }
+                } else {
+                    fluids = ingredient.getStacks();
+                }
                 if (fluids.length == 0 || fluids[0].isEmpty()) {
                     it.remove();
                     continue;
                 }
 
                 FluidStack output = fluids[0];
-                ingredient.shrink(storage.fill(output, action));
-                if (ingredient.getAmount() <= 0) it.remove();
+                int filled = storage.fill(output, action);
+                ingredient.shrink(filled);
+                if (filled <= 0) it.remove();
             }
-            return left.isEmpty() ? null : left;
+            return left;
         }
     }
 

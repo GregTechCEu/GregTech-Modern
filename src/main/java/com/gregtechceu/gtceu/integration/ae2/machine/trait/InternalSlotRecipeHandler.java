@@ -41,8 +41,8 @@ public final class InternalSlotRecipeHandler {
 
         public SlotRHL(MEPatternBufferPartMachine buffer, InternalSlot slot, int idx) {
             super(IO.IN);
-            itemRecipeHandler = new SlotItemRecipeHandler(buffer, slot, idx);
-            fluidRecipeHandler = new SlotFluidRecipeHandler(buffer, slot, idx);
+            itemRecipeHandler = buffer.attachTrait(new SlotItemRecipeHandler(slot, idx));
+            fluidRecipeHandler = buffer.attachTrait(new SlotFluidRecipeHandler(slot, idx));
             addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
                     itemRecipeHandler, fluidRecipeHandler);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
@@ -76,21 +76,22 @@ public final class InternalSlotRecipeHandler {
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
-        private SlotItemRecipeHandler(MEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
-            super(buffer);
+        private SlotItemRecipeHandler(InternalSlot slot, int index) {
+            super();
             this.slot = slot;
             this.priority = IFilteredHandler.HIGH + index + 1;
             slot.setOnContentsChanged(this::notifyListeners);
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @NotNull List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                           boolean simulate) {
             if (io != IO.IN || slot.isItemEmpty()) return left;
             return slot.handleItemInternal(left, simulate);
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return new ArrayList<>(slot.getItems());
         }
 
@@ -119,22 +120,22 @@ public final class InternalSlotRecipeHandler {
         private final IO handlerIO = IO.IN;
         private final boolean isDistinct = true;
 
-        private SlotFluidRecipeHandler(MEPatternBufferPartMachine buffer, InternalSlot slot, int index) {
-            super(buffer);
+        private SlotFluidRecipeHandler(InternalSlot slot, int index) {
+            super();
             this.slot = slot;
             this.priority = IFilteredHandler.HIGH + index + 1;
             slot.setOnContentsChanged(this::notifyListeners);
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (io != IO.IN || slot.isFluidEmpty()) return left;
             return slot.handleFluidInternal(left, simulate);
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             return new ArrayList<>(slot.getFluids());
         }
 
