@@ -44,7 +44,8 @@ public class TagFilter<T, S> extends Filter<T> {
 
         var tag = stack.getOrCreateTag();
 
-        filterString = tag.getString("oreDict");
+        // oreDict is backwards compat
+        filterString = tag.contains("filter_string") ? tag.getString("filter_string") : tag.getString("oreDict");
         matchExpr = TagExprFilter.parseExpression(filterString);
     }
 
@@ -53,7 +54,7 @@ public class TagFilter<T, S> extends Filter<T> {
             return null;
         }
         var tag = new CompoundTag();
-        tag.putString("oreDict", filterString);
+        tag.putString("filter_string", filterString);
         return tag;
     }
 
@@ -73,11 +74,6 @@ public class TagFilter<T, S> extends Filter<T> {
                 .coverChildren()
                 .child(new TextFieldWidget().width(140).value(filterString))
                 .child(GTGuiTextures.INFO.asWidget().tooltip(infoTooltip));
-    }
-
-    @Override
-    public boolean supportsAmounts() {
-        return false;
     }
 
     private boolean testTagExpr(T t) {

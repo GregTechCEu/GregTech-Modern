@@ -156,10 +156,13 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 if (ctx.pos() == null) throw new NoTargetException();
                 IItemHandler itemHandler = GTCapabilityHelper.getItemHandler(ctx.level(), ctx.pos(), ctx.side());
-                if (args.isEmpty())
+                if (args.isEmpty()) {
                     return MultiLineComponent.literal(countItems((Filter<ItemStack>) null, itemHandler));
-                if (args.size() == 1) return MultiLineComponent
-                        .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                }
+                if (args.size() == 1) {
+                    return MultiLineComponent
+                            .literal(countItems(GTStringUtils.componentsToString(args.get(0)), itemHandler));
+                }
                 if (GTStringUtils.equals(args.get(0), "filter")) {
                     int slot = PlaceholderUtils.toInt(args.get(1));
                     if (ctx.itemStackHandler() == null)

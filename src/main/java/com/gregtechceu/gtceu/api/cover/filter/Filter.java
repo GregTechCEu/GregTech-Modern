@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,6 +20,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -38,10 +39,10 @@ public abstract class Filter<T> implements Predicate<T> {
     /**
      * @return Filter panel when opened by itself (including the player inventory)
      */
-    @SuppressWarnings("deprecation")
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
                                     boolean displayPlayerInventory) {
-        return new Dialog<>(BuiltInRegistries.ITEM.getKey(filterItemStack.getItem()).toString())
+        return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
+                .getKey(filterItemStack.getItem())).toString())
                 .disablePanelsBelow(false)
                 .draggable(true)
                 .closeOnOutOfBoundsClick(false)
@@ -81,7 +82,9 @@ public abstract class Filter<T> implements Predicate<T> {
     /**
      * @return Whether this filter supports querying for exact content amounts.
      */
-    public abstract boolean supportsAmounts();
+    public boolean supportsAmounts() {
+        return false;
+    }
 
     /**
      * Tests if the given stack matches this filter.

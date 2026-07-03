@@ -126,7 +126,7 @@ public class SimpleFluidFilter extends Filter<FluidStack> {
 
     @Override
     public boolean test(FluidStack other) {
-        return testAmount(other) > 0L;
+        return testAmount(other) > 0;
     }
 
     @Override

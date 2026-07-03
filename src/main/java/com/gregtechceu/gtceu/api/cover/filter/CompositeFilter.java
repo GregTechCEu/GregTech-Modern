@@ -42,7 +42,7 @@ public class CompositeFilter<T> extends Filter<T> {
     public CompositeFilter(ItemStack stack, Class<T> filterableType) {
         super(stack);
 
-        var tag = stack.getOrCreateTag();
+        CompoundTag tag = stack.getOrCreateTag();
         this.filterableType = filterableType;
         this.itemStacks.setFilter(s -> Filters.isValidFilter(filterableType, s.getItem()));
 
@@ -50,7 +50,7 @@ public class CompositeFilter<T> extends Filter<T> {
         itemStacks.deserializeNBT(tag.getCompound("filters"));
 
         for (int i = 0; i < 9; i++) {
-            var item = itemStacks.getStackInSlot(i);
+            ItemStack item = itemStacks.getStackInSlot(i);
             if (item.isEmpty()) continue;
             filters[i] = Filters.loadFilter(filterableType, item);
             Objects.requireNonNull(filters[i]).setOnUpdated($ -> updateAndSaveFilter());
@@ -59,15 +59,14 @@ public class CompositeFilter<T> extends Filter<T> {
 
     @Override
     protected @Nullable CompoundTag writeFilterNBT() {
-        if (itemStacks.toList().stream().allMatch(i -> i == ItemStack.EMPTY)) return null;
-
+        if (itemStacks.toList().stream().allMatch(ItemStack::isEmpty)) return null;
         var tag = new CompoundTag();
         tag.put("filters", itemStacks.serializeNBT());
         return tag;
     }
 
     private void onFilterItemChanged(int slot) {
-        var newItem = itemStacks.getStackInSlot(slot);
+        ItemStack newItem = itemStacks.getStackInSlot(slot);
         filters[slot] = null;
         if (!newItem.isEmpty()) {
             filters[slot] = Filters.loadFilter(filterableType, newItem);
@@ -75,11 +74,6 @@ public class CompositeFilter<T> extends Filter<T> {
         }
 
         updateAndSaveFilter();
-    }
-
-    @Override
-    public boolean supportsAmounts() {
-        return false;
     }
 
     @Override

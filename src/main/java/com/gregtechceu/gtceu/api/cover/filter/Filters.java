@@ -28,7 +28,7 @@ public class Filters {
     @SuppressWarnings({ "unchecked", "DataFlowIssue" })
     public static <T> Filter<T> loadFilter(Class<T> filterableType, ItemStack stack) {
         var entry = FILTERS.get(stack.getItem());
-        if (entry.filterable != filterableType) return null;
+        if (entry.filterableType != filterableType) return null;
         return (Filter<T>) entry.filterFactory.apply(stack);
     }
 
@@ -42,7 +42,7 @@ public class Filters {
 
     public static boolean isValidFilter(Class<?> filterableType, Item item) {
         if (!FILTERS.containsKey(item)) return false;
-        return FILTERS.get(item).filterable == filterableType;
+        return FILTERS.get(item).filterableType == filterableType;
     }
 
     public static <T> Filter<T> getEmptyFilter() {
@@ -76,7 +76,7 @@ public class Filters {
     }
 
     /**
-     * @param filterable The object/stack type that this filter supports.
+     * @param filterableType The object/stack type that this filter supports.
      */
-    private record FilterEntry<T>(Class<T> filterable, Function<ItemStack, Filter<T>> filterFactory) {}
+    private record FilterEntry<T>(Class<T> filterableType, Function<ItemStack, Filter<T>> filterFactory) {}
 }

@@ -89,7 +89,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()
-                        .tooltip(r -> r.add(Text.str("Set Machine Recipe Type")))
+                        .tooltip(r -> r.add(Text.lang("cover.item_smart_filter.filtering_mode.description")))
                         .openRightDown()
                         .overlay(new DynamicDrawable(() -> SmartFilteringMode.getTextures()[mode.getIntValue()]))
                         .menu(new Menu<>()
@@ -111,7 +111,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
                                                     .tooltip(r -> r.add(Text.comp(Component
                                                             .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));
                                         }))))
-                .child(Text.str("Recipe Type").asWidget().verticalCenter().rightRel(0.f));
+                .child(Text.lang("cover.item_smart_filter.recipe_type").asWidget().verticalCenter().rightRel(0.f));
     }
 
     @Override
