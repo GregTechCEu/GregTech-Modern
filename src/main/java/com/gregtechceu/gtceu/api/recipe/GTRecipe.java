@@ -269,7 +269,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     content = new Content(ranged.replace(), content.chance(), content.maxChance());
-                    iterator.set(content);
                 }
                 tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }
@@ -281,7 +280,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     content = new Content(ranged.replace(), content.chance(), content.maxChance());
-                    iterator.set(content);
                 }
                 tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }
