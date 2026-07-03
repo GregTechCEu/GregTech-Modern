@@ -12,10 +12,10 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/luv/bottom",
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
           "overlay": "gtceu:block/overlay/appeng/me_input_bus",
-          "side": "gtceu:block/casings/voltage/luv/side",
-          "top": "gtceu:block/casings/voltage/luv/top"
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
         }
       }
     },
@@ -23,10 +23,10 @@
       "model": {
         "parent": "gtceu:block/machine/template/part/hatch_machine_color_ring",
         "textures": {
-          "bottom": "gtceu:block/casings/voltage/luv/bottom",
+          "bottom": "gtceu:block/casings/voltage/iv/bottom",
           "overlay": "gtceu:block/overlay/appeng/me_input_bus",
-          "side": "gtceu:block/casings/voltage/luv/side",
-          "top": "gtceu:block/casings/voltage/luv/top"
+          "side": "gtceu:block/casings/voltage/iv/side",
+          "top": "gtceu:block/casings/voltage/iv/top"
         }
       }
     }

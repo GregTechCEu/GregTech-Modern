@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnclosedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnexpectedBracketException;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.UnknownPlaceholderException;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.monitor.IMonitorRenderer;
-import com.gregtechceu.gtceu.common.mui.drawable.BorderDrawable;
 import com.gregtechceu.gtceu.common.mui.widgets.textfield.CodeEditorWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -23,26 +23,23 @@ import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.value.IBoolValue;
-import brachy.modularui.api.value.IIntValue;
 import brachy.modularui.api.value.IStringValue;
+import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.screen.ModularPanel;
 import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.viewport.GuiContext;
 import brachy.modularui.value.StringValue;
 import brachy.modularui.value.sync.*;
-import brachy.modularui.widgets.ButtonWidget;
-import brachy.modularui.widgets.SortableListWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
@@ -58,8 +55,6 @@ public class PlaceholderHandler {
     private static final char NEWLINE = '\n';
     private static final char ESCAPED_NEWLINE = 'n';
 
-    private static final Map<String, Placeholder> placeholders = new HashMap<>();
-
     public static final CodeEditorWidget.LanguageDefinition<PlaceholderContext> LANG_DEFINITION = new CodeEditorWidget.LanguageDefinition<>(
             List.of("\\\\.", "\\{", "\\}", " ", "\"", "\\['", "'\\]"),
             TokenFormatter::new);
@@ -71,15 +66,15 @@ public class PlaceholderHandler {
     }
 
     public static void addPlaceholder(Placeholder placeholder) {
-        if (placeholders.containsKey(placeholder.getName())) {
-            if (placeholders.get(placeholder.getName()).getPriority() <= placeholder.getPriority()) {
-                placeholders.put(placeholder.getName(), placeholder);
-            }
-        } else placeholders.put(placeholder.getName(), placeholder);
+        GTRegistries.PLACEHOLDERS.register(placeholder.getId(), placeholder);
     }
 
-    public static boolean placeholderExists(MultiLineComponent placeholder) {
-        return placeholders.containsKey(placeholder.toString());
+    public static void addOrOverridePlaceholder(Placeholder placeholder) {
+        GTRegistries.PLACEHOLDERS.registerOrOverride(placeholder.getId(), placeholder);
+    }
+
+    public static @Nullable Placeholder getPlaceholder(String str) {
+        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(str));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -105,12 +100,12 @@ public class PlaceholderHandler {
 
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         @Nullable PlaceholderContext context) throws PlaceholderException {
-        if (!placeholderExists(placeholder.get(0)))
+        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.get(0).toString())))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context != null && context.level().isClientSide &&
-                !placeholders.get(placeholder.get(0).toString()).isView())
+                !GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).isView())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
-        return placeholders.get(placeholder.get(0).toString()).apply(context,
+        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -238,26 +233,34 @@ public class PlaceholderHandler {
         return out.withStyle(ChatFormatting.DARK_RED);
     }
 
-    public static Set<String> getAllPlaceholderNames() {
-        return placeholders.keySet();
-    }
-
     public static IPanelHandler createPlaceholderEditor(String name, PanelSyncManager syncManager,
                                                         PlaceholderContext ctx,
                                                         IStringValue<?> code,
                                                         @Nullable DoubleSyncValue scaleDouble,
-                                                        @Nullable IIntValue<?> updateInterval,
+                                                        @Nullable IStringValue<?> updateInterval,
                                                         @Nullable IBoolValue<?> pause,
                                                         @Nullable Runnable updateText) {
         IPanelHandler helpPanel = syncManager.syncedPanel("placeholder_language_help",
                 true,
                 (syncManager1, panelHandler1) -> createHelpPanel());
-        InteractionSyncHandler runCodeOnce = new InteractionSyncHandler();
-        if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> updateText.run());
-        syncManager.syncValue("run_code_sync_handler", runCodeOnce);
-        // because the args are nullable, intellij complains about everything, even though childIf is used
-        // noinspection DataFlowIssue
-        return syncManager.syncedPanel(name, true, (psm, handler) -> new ModularPanel<>(name)
+        InteractionSyncHandler runCodeOnce = updateText == null ? null : new InteractionSyncHandler();
+        if (updateText != null) runCodeOnce.setOnMousePressed(mouseData -> {
+            if (!mouseData.isClient())
+                updateText.run();
+        });
+        return syncManager.syncedPanel(name, true, (psm, handler) -> createPlaceholderEditorPanel(
+                name, ctx, code, scaleDouble, updateInterval, pause, helpPanel, runCodeOnce));
+    }
+
+    public static ModularPanel<?> createPlaceholderEditorPanel(String name,
+                                                               PlaceholderContext ctx,
+                                                               IStringValue<?> code,
+                                                               @Nullable DoubleSyncValue scaleDouble,
+                                                               @Nullable IStringValue<?> updateInterval,
+                                                               @Nullable IBoolValue<?> pause,
+                                                               IPanelHandler helpPanel,
+                                                               @Nullable InteractionSyncHandler runCodeOnce) {
+        return new ModularPanel<>(name)
                 .size(400, 250)
                 .resizeableOnDrag(true)
                 .excludeAreaInRecipeViewer()
@@ -272,7 +275,7 @@ public class PlaceholderHandler {
                                                 .addTooltipLine(
                                                         Text.lang("gtceu.gui.computer_monitor_cover.slot_tooltip", i))))
                         .child(Flow.column()
-                                .widthRel(.8f)
+                                .widthRel(.7f)
                                 .padding(5)
                                 .child(Flow.row()
                                         .height(20)
@@ -290,56 +293,58 @@ public class PlaceholderHandler {
                                         .childIf(updateInterval != null, () -> new TextFieldWidget()
                                                 .setNumbers(1, 1000)
                                                 .setDefaultNumber(1)
-                                                .value(SyncHandlers.string(
-                                                        () -> String.valueOf(updateInterval.getIntValue()),
-                                                        s -> updateInterval.setIntValue(Integer.parseInt(s))))
+                                                .value(updateInterval)
                                                 .marginLeft(4))
                                         .childIf(pause != null, () -> new ToggleButton()
                                                 .value(pause)
-                                                .background(false, GuiTextures.PAUSE)
-                                                .background(true, GuiTextures.PLAY)
+                                                .marginLeft(10)
+                                                .marginRight(10)
+                                                .background(true, GuiTextures.MC_BUTTON)
+                                                .hoverBackground(true, GuiTextures.MC_BUTTON_HOVERED)
+                                                .background(false, GuiTextures.MC_BUTTON)
+                                                .hoverBackground(false, GuiTextures.MC_BUTTON_HOVERED)
+                                                .overlay(false, GuiTextures.PAUSE)
+                                                .overlay(true, GuiTextures.PLAY)
                                                 .addTooltip(false, Text.lang("gtceu.gui.central_monitor.pause"))
-                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume"))
-                                                .margin(4))
-                                        .childIf(updateText != null, () -> new ButtonWidget<>()
-                                                .background(GuiTextures.RIGHTLOAD)
-                                                .hoverBackground(GuiTextures.RIGHTLOAD, new BorderDrawable())
+                                                .addTooltip(true, Text.lang("gtceu.gui.central_monitor.resume")))
+                                        .childIf(runCodeOnce != null, () -> new ButtonWidget<>()
+                                                .overlay(GuiTextures.RIGHTLOAD)
                                                 .addTooltipLine(Text.lang("gtceu.gui.central_monitor.update_once"))
-                                                .syncHandler("run_code_sync_handler"))
+                                                .syncHandler(runCodeOnce))
                                         .child(new ButtonWidget<>()
-                                                .background(GuiTextures.HELP)
-                                                .hoverBackground(GuiTextures.HELP, new BorderDrawable())
-                                                .margin(4)
+                                                .right(0)
+                                                .overlay(GuiTextures.HELP)
                                                 .onMousePressed((GuiContext context, int button) -> {
                                                     helpPanel.openPanel();
                                                     return true;
                                                 })))
-                                .child(new CodeEditorWidget<>(PlaceholderHandler.LANG_DEFINITION)
+                                .child(new CodeEditorWidget<>(LANG_DEFINITION)
                                         .value(code)
                                         .langContext(ctx)
-                                        .widthRel(.95f)
+                                        .fullWidth()
                                         .heightRelOffset(1, -25)))
-                        .child(new SortableListWidget<String>()
-                                .widthRel(.2f)
+                        .child(new ListWidget<>()
+                                .widthRel(.25f)
+                                .right(0)
                                 .paddingBottom(5)
                                 .excludeAreaInRecipeViewer()
-                                .children(PlaceholderHandler.getAllPlaceholderNames()
+                                .fullHeight()
+                                .children(GTRegistries.PLACEHOLDERS.keys()
                                         .stream()
                                         .sorted()
-                                        .map(SortableListWidget.Item::new)
-                                        .map(w -> w
-                                                .child(new TextWidget<>(w.getWidgetValue())
-                                                        .sizeRel(1)
+                                        .map(s -> (IWidget) Flow.row()
+                                                .coverChildren()
+                                                .child(new TextWidget<>(s.toString().replaceAll("gtceu:", ""))
                                                         .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
                                                                 .getSingleOrMultiLang(
-                                                                        "gtceu.placeholder_info." + w.getWidgetValue())
+                                                                        "gtceu.placeholder_info." + s)
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
                                                                 .toList())))
-                                        .toList()))));
+                                        .toList())));
     }
 
     public static ModularPanel<?> createHelpPanel() {
@@ -377,7 +382,6 @@ public class PlaceholderHandler {
         private final Stack<Integer> viewStarts = new Stack<>();
         private final Stack<String> openPlaceholders = new Stack<>();
         private int ifDepth = 0;
-        private Component endOfLineValue = null;
 
         @Override
         public Component apply(String s, @Nullable PlaceholderContext ctx) {
@@ -469,52 +473,37 @@ public class PlaceholderHandler {
                         openPlaceholders.pop();
                     }
                     if (!pureStarts.empty()) {
-                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx).toString();
-                        result = result.replaceAll("\\n", "\\\\n");
+                        String result = processPlaceholders(everything.substring(pureStarts.peek()), ctx)
+                                .toString()
+                                .replaceAll("\\n", "\\\\n");
                         int popped = pureStarts.peek();
                         pureStarts.pop();
                         viewStarts.pop();
                         if (!everything.substring(popped).contains(" ")) return Component.literal(s);
-                        if (result.length() > 10) {
-                            result = result.substring(0, 10) + "…";
-                        }
-                        endOfLineValue = null;
                         return Component.literal(s)
-                                .append(Component.literal("='%s'".formatted(result))
-                                        .withStyle(ChatFormatting.GRAY, ChatFormatting.UNDERLINE)
-                                        .withStyle(style -> style.withHoverEvent(new HoverEvent(
-                                                HoverEvent.Action.SHOW_TEXT,
-                                                Component.translatable("gtceu.placeholder_editor.constant_value")))
-                                                .withInsertion("")));
+                                .withStyle(style -> style.withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Component.translatable("gtceu.placeholder_editor.constant_value", result)))
+                                        .withInsertion(""));
                     }
-                    if (!viewStarts.empty() && ctx != null && !ctx.level().isClientSide()) {
-                        String result = processPlaceholders(everything.substring(viewStarts.peek()), ctx).toString();
-                        result = result.replaceAll("\\n", "\\\\n");
-                        if (result.length() > 10) {
-                            result = result.substring(0, 10) + "…";
-                        }
-                        viewStarts.pop();
-                        endOfLineValue = Component.literal("='%s'".formatted(result))
-                                .withStyle(ChatFormatting.DARK_GRAY)
-                                .withStyle(style -> style.withInsertion(""));
-                        return Component.literal(s);
-                    } else if (!viewStarts.empty()) viewStarts.pop();
+                    if (!viewStarts.empty()) viewStarts.pop();
                     return Component.literal(s);
                 }
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
-                if (getAllPlaceholderNames().contains(s)) {
-                    if (placeholders.get(s).isPure()) {
+                var id = GTCEu.id(s);
+                if (GTRegistries.PLACEHOLDERS.containsKey(id)) {
+                    if (GTRegistries.PLACEHOLDERS.get(id).isPure()) {
                         pureStarts.push(everything.length() - 1);
                     } else pureStarts.clear();
-                    if (placeholders.get(s).isView()) {
+                    if (GTRegistries.PLACEHOLDERS.get(id).isView()) {
                         viewStarts.push(everything.length() - 1);
                     } else viewStarts.clear();
                     everything.append(s);
                     openPlaceholders.push(s);
                     if (s.equals("if")) ifDepth++;
-                    else if (ifDepth > 0 && !placeholders.get(s).isView()) {
+                    else if (ifDepth > 0 && !GTRegistries.PLACEHOLDERS.get(id).isView()) {
                         return Component.literal(s)
                                 .withStyle(ChatFormatting.BLUE, ChatFormatting.UNDERLINE)
                                 .withStyle(style -> style.withHoverEvent(new HoverEvent(
@@ -533,13 +522,6 @@ public class PlaceholderHandler {
                 }
             }
             everything.append(s);
-            if (s.contains("\n") && endOfLineValue != null) {
-                String start = s.substring(0, s.indexOf('\n'));
-                String end = s.substring(s.indexOf('\n'));
-                Component ret = Component.literal(start).append(endOfLineValue).append(end);
-                endOfLineValue = null;
-                return ret;
-            }
             return Component.literal(s);
         }
 
@@ -547,7 +529,6 @@ public class PlaceholderHandler {
             viewStarts.clear();
             pureStarts.clear();
             openPlaceholders.clear();
-            endOfLineValue = null;
             ifDepth = 0;
             unclosedSingleEscapes = 0;
         }

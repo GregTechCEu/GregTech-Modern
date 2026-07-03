@@ -40,15 +40,17 @@ public abstract class Filter<T> implements Predicate<T> {
      * @return Filter panel when opened by itself (including the player inventory)
      */
     public ModularPanel<?> getPanel(GuiData data, PanelSyncManager syncManager, UISettings settings,
-                                    boolean displayPlayerInventory) {
+                                    boolean showPlayerInventory) {
         return new Dialog<>(Objects.requireNonNull(data.getLevel().registryAccess().registryOrThrow(Registries.ITEM)
                 .getKey(filterItemStack.getItem())).toString())
                 .disablePanelsBelow(false)
                 .draggable(true)
-                .closeOnOutOfBoundsClick(false)
-                .child(GTMuiWidgets.createTitleBar(() -> filterItemStack, 176, GTGuiTextures.BACKGROUND))
-                .child(getFilterUI(data, syncManager, settings).top(10))
-                .childIf(displayPlayerInventory, () -> SlotGroupWidget.playerInventory(false).left(7).bottom(7));
+                .coverChildrenHeight()
+                .child(GTMuiWidgets.createTitleBar(this::getFilterItemStack, 176, GTGuiTextures.BACKGROUND))
+                .child(Flow.col().coverChildrenHeight()
+                        .child(getFilterUI(data, syncManager, settings).marginTop(10).marginBottom(10))
+                        .childIf(showPlayerInventory,
+                                () -> SlotGroupWidget.playerInventory(false).marginLeft(7).marginBottom(7)));
     }
 
     /**
@@ -61,7 +63,7 @@ public abstract class Filter<T> implements Predicate<T> {
 
     /**
      * Called when a filter is loaded by a filter handler.
-     * 
+     *
      * @param handler The filter handler
      */
     public void onFilterLoaded(FilterHandler<T> handler) {}
@@ -73,7 +75,7 @@ public abstract class Filter<T> implements Predicate<T> {
 
     /**
      * Writes this filter's data to a tag
-     * 
+     *
      * @return The data tag.
      */
     @Nullable
@@ -88,7 +90,7 @@ public abstract class Filter<T> implements Predicate<T> {
 
     /**
      * Tests if the given stack matches this filter.
-     * 
+     *
      * @return If the given stack matches this filter.
      */
     @Override

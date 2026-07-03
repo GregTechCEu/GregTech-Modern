@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
@@ -83,15 +84,16 @@ public class GTMuiWidgets {
         int borderRadius = 5;
         int iconSize = 16;
         int minPanelWidth = (int) (panelWidth * 0.9f) - (iconSize + (borderRadius * 3));
-        int textTitleWidth = TextRenderer.getFont().width(text);
+        int textTitleWidth = GTCEu.isClientThread() ? TextRenderer.getFont().width(text) : 1;
 
         int textRows = (int) Math.ceil((double) textTitleWidth / minPanelWidth);
-        int textHeightPerRow = (int) (Text.renderer.getFontHeight());
+        int textHeightPerRow = GTCEu.isClientThread() ? (int) (Text.renderer.getFontHeight()) : 9;
         int textHeight = textHeightPerRow * textRows + borderRadius;
 
         int rowWidth = Math.min((int) (0.9 * panelWidth), (iconSize + (borderRadius * 4) + textTitleWidth));
 
         return Flow.row()
+                .decoration()
                 .coverChildrenHeight()
                 .mainAxisAlignment(Alignment.MainAxis.CENTER)
                 .crossAxisAlignment(Alignment.CrossAxis.CENTER)
@@ -124,7 +126,7 @@ public class GTMuiWidgets {
         var value = new BooleanSyncValue(getter, setter).allowC2S();
         return new ToggleButton()
                 .value(value)
-                .selectedBackground(selectedBackground)
+                .background(true, selectedBackground)
                 .background(background)
                 .tooltipAutoUpdate(true)
                 .tooltipBuilder(
@@ -215,7 +217,7 @@ public class GTMuiWidgets {
                 .gridOfSizeWidth(32, 8, (x, y, i) -> new ToggleButton()
                         .size(18)
                         .padding(1)
-                        .overlay(new ItemDrawable().setItem(IntCircuitBehaviour.stack(i + 1)))
+                        .overlay(new ItemDrawable().item(IntCircuitBehaviour.stack(i + 1)))
                         .value(new BoolValue.Dynamic(() -> (i + 1) == circuitSyncValue.getIntValue(),
                                 (v) -> {
                                     if (v) circuitSyncValue.setValue(i + 1);
@@ -379,9 +381,12 @@ public class GTMuiWidgets {
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
                 (sm, sh) -> Filters.loadFilter(filterHandler.getFilterableType(), filterSlotHandler.getSlot().getItem())
-                        .getPanel(data, sm,
-                                settings, false));
+                        .getPanel(data, sm, settings, false));
 
+        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+            panelHandler.closePanel();
+            panelHandler.deleteCachedPanel();
+        });
         return existingRow
                 .child(new ItemSlot().syncHandler(filterSlotHandler))
                 .child(new ButtonWidget<>()
@@ -602,6 +607,25 @@ public class GTMuiWidgets {
                         .stateOverlay(1, BucketMode.MILLI_BUCKET.icon.asIcon().size(16)));
     }
 
+    public static SlotGroupWidget verticalPlayerInventory(SlotGroupWidget.SlotConsumer slotConsumer) {
+        SlotGroupWidget slotGroupWidget = new SlotGroupWidget();
+        slotGroupWidget.coverChildren();
+        slotGroupWidget.name("player_inventory");
+        String key = "player";
+
+        for (int i = 0; i < 9; ++i) {
+            slotGroupWidget
+                    .child(slotConsumer.apply(i, new ItemSlot()).syncHandler(key, i).pos(0, i * 18).name("slot_" + i));
+        }
+
+        for (int i = 0; i < 27; ++i) {
+            slotGroupWidget.child(slotConsumer.apply(i + 9, new ItemSlot()).syncHandler(key, i + 9)
+                    .pos(22 + i / 9 * 18, i % 9 * 18).name("slot_" + (i + 9)));
+        }
+
+        return slotGroupWidget;
+    }
+
     public static class EnumRowBuilder<T extends Enum<T>> {
 
         private @Nullable EnumSyncValue<T> syncValue;
@@ -687,15 +711,15 @@ public class GTMuiWidgets {
                         button.background(GuiTextures.MC_BUTTON);
 
                     if (this.selectedBackground != null)
-                        button.selectedBackground(this.selectedBackground);
+                        button.background(true, this.selectedBackground);
                     else
-                        button.selectedBackground(GuiTextures.MC_BUTTON_DISABLED);
+                        button.background(true, GuiTextures.MC_BUTTON_DISABLED);
 
                     if (this.overlay != null)
                         button.overlay(this.overlay[enumVal.ordinal()]);
 
                     if (this.buttonTooltipSupplier != null) {
-                        button.addTooltipLine(Text.lang(buttonTooltipSupplier.apply(enumVal).get().getString()));
+                        button.addTooltipLine(Text.comp(buttonTooltipSupplier.apply(enumVal).get()));
                     } else if (enumVal instanceof StringRepresentable serializable) {
                         button.addTooltipLine(Text.lang(serializable.getSerializedName()));
                     }

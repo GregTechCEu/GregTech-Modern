@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -56,7 +56,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     //////////////////////////////////////
 
     protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH);
     }
 
     protected NotifiableItemStackHandler createExportItemHandler() {
@@ -94,8 +94,8 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         var oldFacing = getOutputFacing();
         super.setOutputFacing(outputFacing);
         if (getOutputFacing() != oldFacing) {
-            updateModelVentDirection();
             exhaustVentTrait.setVentingDirection(outputFacing);
+            updateModelVentDirection();
         }
     }
 

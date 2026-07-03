@@ -244,7 +244,7 @@ public class QuantumTankMachine extends TieredMachine implements IControllable,
         return new FluidSlot().syncHandler("fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);
     }
 
-    private IWidget createPhantomLockedFluidSlot(PanelSyncManager syncManager) {
+    protected IWidget createPhantomLockedFluidSlot(PanelSyncManager syncManager) {
         syncManager.syncValue("locked_fluid_slot",
                 new FluidSlotSyncHandler(lockedFluid).controlsAmount(false).phantom(true));
         return new FluidSlot().syncHandler("locked_fluid_slot", 0).background(GTGuiTextures.FLUID_SLOT);

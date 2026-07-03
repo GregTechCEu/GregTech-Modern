@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -23,7 +24,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public final static EURecipeCapability CAP = new EURecipeCapability();
 
     protected EURecipeCapability() {
-        super("eu", 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
+        super(GTCEu.id("eu"), 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
     }
 
     @Override
@@ -73,9 +74,9 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
                 for (var handler : handlers) {
                     // noinspection unchecked
                     eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                    if (eu == null) break;
+                    if (eu.isEmpty()) break;
                 }
-                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+                int[] bin = ParallelLogic.adjustMultiplier(eu.isEmpty(), minMultiplier, multiplier, maxMultiplier);
                 minMultiplier = bin[0];
                 multiplier = bin[1];
                 maxMultiplier = bin[2];
@@ -146,7 +147,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
      */
     public static List<Content> makeEUContent(EnergyStack eu) {
         return List.of(
-                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0));
+                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue()));
     }
 
     /**

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.mixins.emi.EmiApiAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
 import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
@@ -31,7 +32,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
@@ -55,6 +55,9 @@ import net.minecraftforge.fluids.FluidType;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import dev.emi.emi.api.EmiApi;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -74,6 +77,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final Direction[] HORIZONTALS = { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     @SuppressWarnings("UnstableApiUsage")
@@ -609,19 +613,19 @@ public class GTUtil {
         }
     }
 
-    public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
+    public static Pair<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
         return switch (flag) {
-            case 0 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WRENCH),
+            case 0 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WRENCH),
                     Component.translatable("gtceu.top.maintenance.wrench"));
-            case 1 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
+            case 1 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SCREWDRIVER),
                     Component.translatable("gtceu.top.maintenance.screwdriver"));
-            case 2 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
+            case 2 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.SOFT_MALLET),
                     Component.translatable("gtceu.top.maintenance.soft_mallet"));
-            case 3 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
+            case 3 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.HARD_HAMMER),
                     Component.translatable("gtceu.top.maintenance.hard_hammer"));
-            case 4 -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
+            case 4 -> Pair.of(ToolItemHelper.getToolItem(GTToolType.WIRE_CUTTER),
                     Component.translatable("gtceu.top.maintenance.wire_cutter"));
-            default -> new Tuple<>(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
+            default -> Pair.of(ToolItemHelper.getToolItem(GTToolType.CROWBAR),
                     Component.translatable("gtceu.top.maintenance.crowbar"));
         };
     }
@@ -655,6 +659,15 @@ public class GTUtil {
 
     public static <T> ArrayList<T> list(T obj) {
         return new ArrayList<>(List.of(obj));
+    }
+
+    public static Direction cross(Direction a, Direction b) {
+        if (a.getAxis() == b.getAxis()) return null;
+
+        return Direction.getNearest(
+                a.getStepY() * b.getStepZ() - a.getStepZ() * b.getStepY(),
+                a.getStepZ() * b.getStepX() - a.getStepX() * b.getStepZ(),
+                a.getStepX() * b.getStepY() - a.getStepY() * b.getStepX());
     }
 
     public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
@@ -755,7 +768,13 @@ public class GTUtil {
     private static class EmiCallWrapper {
 
         public static void openRecipeCategory(GTRecipeCategory category) {
-            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+                    .toList();
+            Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
+            for (var cat : categories) {
+                recipes.put(cat, EmiApi.getRecipeManager().getRecipes(cat));
+            }
+            EmiApiAccessor.gtceu$setPages(recipes, EmiStack.EMPTY);
         }
     }
 

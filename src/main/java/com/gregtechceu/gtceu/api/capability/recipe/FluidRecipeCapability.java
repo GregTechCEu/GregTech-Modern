@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -7,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
@@ -33,7 +35,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super("fluid", 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
+        super(GTCEu.id("fluid"), 0xFF3C70EE, true, 1, SerializerFluidIngredient.INSTANCE);
     }
 
     @Override
@@ -129,7 +131,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (var content : outputContents) {
             var ing = this.of(content.content());
             int amount;
-            if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
+            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
             else amount = ing.getAmount();
             maxAmount = Math.max(maxAmount, amount);
             ingredients.add(ing);
@@ -148,9 +150,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             for (var handler : handlers) {
                 // noinspection unchecked
                 copied = (List<FluidIngredient>) handler.handleRecipe(IO.OUT, recipe, copied, true);
-                if (copied == null) break;
+                if (copied.isEmpty()) break;
             }
-            int[] bin = ParallelLogic.adjustMultiplier(copied == null, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(copied.isEmpty(), minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];
@@ -178,7 +180,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             FluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
+            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
             else amount = ing.getAmount();
 
             if (content.chance() == 0) {
@@ -313,8 +315,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapIngredientToEntryList(FluidIngredient ingredient) {
         int amount;
-        if (ingredient instanceof IntProviderFluidIngredient) {
-            amount = 1;
+        if (ingredient instanceof IRangedIngredient provider) {
+            amount = provider.getMaxRoll();
         } else {
             amount = ingredient.getAmount();
         }

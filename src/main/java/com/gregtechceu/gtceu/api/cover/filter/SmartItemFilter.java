@@ -85,7 +85,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
 
         syncManager.syncValue("mode", mode);
 
-        return Flow.row()
+        return Flow.row().coverChildrenHeight().width(162)
                 .child(new ContextMenuButton<>("smart_filter")
                         .size(18)
                         .requiresClick()
@@ -106,7 +106,7 @@ public class SmartItemFilter extends Filter<ItemStack> {
                                             return new ToggleButton()
                                                     .overlay(SmartFilteringMode.getTextures()[w])
                                                     .background(GuiTextures.MC_BUTTON)
-                                                    .selectedBackground(GuiTextures.MC_BUTTON)
+                                                    .background(true, GuiTextures.MC_BUTTON)
                                                     .value(bsv)
                                                     .tooltip(r -> r.add(Text.comp(Component
                                                             .translatable(SmartFilteringMode.VALUES[w].getTooltip()))));

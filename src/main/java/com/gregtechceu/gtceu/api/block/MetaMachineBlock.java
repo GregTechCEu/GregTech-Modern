@@ -6,12 +6,11 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -70,7 +69,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);
             if (definition.isAllowExtendedFacing()) {
-                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.NORTH);
+                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.UP);
             }
             registerDefaultState(defaultState);
         }
@@ -145,29 +144,40 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         var player = context.getPlayer();
         var blockPos = context.getClickedPos();
         var state = defaultBlockState();
+        var machine = MetaMachine.getMachine(context.getLevel(), blockPos);
         if (player != null && rotationState != RotationState.NONE) {
+            Direction newFrontDir;
+            Direction newUpFacing;
             if (rotationState == RotationState.Y_AXIS) {
-                state = state.setValue(rotationState.property, Direction.UP);
+                newFrontDir = Direction.UP;
             } else {
-                state = state.setValue(rotationState.property, player.getDirection().getOpposite());
+                newFrontDir = player.getDirection().getOpposite();
             }
+
             Vec3 pos = player.position();
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
                 if (d0 - (double) blockPos.getY() > 2.0D && rotationState.test(Direction.UP)) {
-                    state = state.setValue(rotationState.property, Direction.UP);
+                    newFrontDir = Direction.UP;
                 }
                 if ((double) blockPos.getY() - d0 > 0.0D && rotationState.test(Direction.DOWN)) {
-                    state = state.setValue(rotationState.property, Direction.DOWN);
+                    newFrontDir = Direction.DOWN;
                 }
+            }
+
+            state = state.setValue(rotationState.property, newFrontDir);
+            if (machine != null) {
+                machine.setFrontFacing(newFrontDir);
             }
             if (getDefinition().isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
-                if (frontFacing == Direction.UP) {
+                if (frontFacing.getAxis() == Direction.Axis.Y) {
+                    newUpFacing = player.getDirection();
                     state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection());
-                } else if (frontFacing == Direction.DOWN) {
-                    state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection().getOpposite());
+                    if (machine instanceof MultiblockControllerMachine controller) {
+                        controller.setUpwardsFacing(newUpFacing);
+                    }
                 }
             }
         }
@@ -190,17 +200,19 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
-        if (GTUtil.isShiftDown()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                var pattern = multiblockDefinition.getPatternFactory().get();
-                if (pattern != null) {
-                    var aisleDims = pattern.getDimensions();
-                    assert aisleDims.length == 3;
-                    tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
-                            aisleDims[2]));
-                }
-            }
-        }
+        /*
+         * if (GTUtil.isShiftDown()) {
+         * if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
+         * var pattern = multiblockDefinition.getPatternFactory().get();
+         * if (pattern != null) {
+         * var aisleDims = pattern.getDimensions();
+         * assert aisleDims.length == 3;
+         * tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
+         * aisleDims[2]));
+         * }
+         * }
+         * }
+         */
         if (Language.getInstance().has(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));
         }

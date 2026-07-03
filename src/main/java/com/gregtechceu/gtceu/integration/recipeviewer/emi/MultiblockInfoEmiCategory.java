@@ -1,19 +1,18 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
-
-import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.WidgetHolder;
@@ -43,13 +42,13 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         return Component.translatable("gtceu.jei.multiblock_info");
     }
 
-    public static class MultiblockInfoEmiWrapper extends ModularEmiRecipe<WidgetGroup> {
+    public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {
 
         private final MultiblockMachineDefinition definition;
         private SlotWidget slotWidget;
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
-            super(() -> PatternPreviewWidget.getPatternWidget(definition));
+            super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null));
             this.definition = definition;
         }
 
@@ -72,6 +71,11 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
         @Override
         public @Nullable ResourceLocation getId() {
             return definition.getId().withPrefix("/multi_info/");
+        }
+
+        @Override
+        public List<EmiIngredient> getInputs() {
+            return List.of();
         }
 
         @Override

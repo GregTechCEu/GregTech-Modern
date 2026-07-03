@@ -96,8 +96,7 @@ public class ItemFilterCover extends CoverBehavior implements IMuiCover {
         syncManager.syncValue("filterMode", filterMode);
         syncManager.syncValue("ioMode", ioMode);
 
-        column.coverChildrenHeight();
-        column.child(getItemFilter().getFilterUI(data, syncManager, settings).marginBottom(2));
+        column.child(getItemFilter().getFilterUI(data, syncManager, settings));
 
         GTMuiCoverUtil.addFilterModeRow(column, filterMode);
         GTMuiCoverUtil.addManualIORow(column, ioMode);

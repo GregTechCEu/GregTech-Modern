@@ -23,12 +23,13 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
@@ -56,16 +57,12 @@ import com.gregtechceu.gtceu.common.mui.GTSingleblockMachinePanels;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -89,7 +86,8 @@ import java.util.stream.IntStream;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.capability.recipe.IO.*;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
+import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
@@ -657,23 +655,14 @@ public class GTMachineUtils {
                                 FormattingUtil.formatTemperature(filter.getMaxFluidTemperature())) : null)
                 .rotationState(RotationState.ALL)
                 .recipeType(DUMMY_RECIPES)
-                .pattern(definition -> FactoryBlockPattern.start()
-                        .aisle("CCC", "CCC", "CCC")
-                        .aisle("CCC", "C#C", "CCC")
-                        .aisle("CCC", "CSC", "CCC")
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        .slice("CCC", "CCC", "CCC")
+                        .slice("CCC", "C#C", "CCC")
+                        .slice("CCC", "CSC", "CCC")
                         .where('S', controller(blocks(definition.get())))
                         .where('C', blocks(casing.get())
                                 .or(blocks(valve.get()).setMaxGlobalLimited(2, 0)))
                         .where('#', air())
-                        .build())
-                .shapeInfo(definition -> MultiblockShapeInfo.builder()
-                        .aisle("CCC", "CSC", "CCC")
-                        .aisle("CCC", "C#C", "CVC")
-                        .aisle("CCC", "CCC", "CCC")
-                        .where('S', definition.get(), Direction.NORTH)
-                        .where('C', casing.get().defaultBlockState())
-                        .where('V', (MetaMachineBlock) valve.get(), Direction.UP)
-                        .where('#', Blocks.AIR.defaultBlockState())
                         .build())
                 .appearanceBlock(casing);
         rendererSetup.accept(builder, GTCEu.id("block/multiblock/multiblock_tank"));
@@ -749,7 +738,7 @@ public class GTMachineUtils {
                         controller.self().getBlockPos().below().getY() == part.self().getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    TraceabilityPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
+                    PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
                                     .setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
@@ -760,10 +749,10 @@ public class GTMachineUtils {
                         fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
                     }
 
-                    return FactoryBlockPattern.start()
-                            .aisle("XXX", "CCC", "CCC", "CCC")
-                            .aisle("XXX", "CPC", "CPC", "CCC")
-                            .aisle("XXX", "CSC", "CCC", "CCC")
+                    return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                            .slice("XXX", "CCC", "CCC", "CCC")
+                            .slice("XXX", "CPC", "CPC", "CCC")
+                            .slice("XXX", "CSC", "CCC", "CCC")
                             .where('S', Predicates.controller(blocks(definition.getBlock())))
                             .where('P', blocks(pipe.get()))
                             .where('X', fireboxPred)
@@ -812,11 +801,11 @@ public class GTMachineUtils {
                 .generator(true)
                 .recipeModifier(LargeCombustionEngineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .pattern(definition -> FactoryBlockPattern.start()
-                        .aisle("XXX", "XDX", "XXX")
-                        .aisle("XCX", "CGC", "XCX")
-                        .aisle("XCX", "CGC", "XCX")
-                        .aisle("AAA", "AYA", "AAA")
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        .slice("XXX", "XDX", "XXX")
+                        .slice("XCX", "CGC", "XCX")
+                        .slice("XCX", "CGC", "XCX")
+                        .slice("AAA", "AYA", "AAA")
                         .where('X', blocks(casing.get()))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()).setMinGlobalLimited(3)
@@ -891,29 +880,15 @@ public class GTMachineUtils {
                 .generator(true)
                 .recipeModifier(LargeTurbineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
-                .pattern(definition -> FactoryBlockPattern.start()
-                        .aisle("CCCC", "CHHC", "CCCC")
-                        .aisle("CHHC", "RGGR", "CHHC")
-                        .aisle("CCCC", "CSHC", "CCCC")
+                .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                        .slice("CCCC", "CHHC", "CCCC")
+                        .slice("CHHC", "RGGR", "CHHC")
+                        .slice("CCCC", "CSHC", "CCCC")
                         .where('S', controller(blocks(definition.getBlock())))
                         .where('G', blocks(gear.get()))
                         .where('C', blocks(casing.get()))
-                        .where('R',
-                                new TraceabilityPredicate(
-                                        new SimplePredicate(
-                                                state -> MetaMachine.getMachine(state.getWorld(),
-                                                        state.getPos()) instanceof RotorHolderPartMachine rotorHolder &&
-                                                        state.getWorld()
-                                                                .getBlockState(state.getPos()
-                                                                        .relative(rotorHolder.self().getFrontFacing()))
-                                                                .isAir(),
-                                                () -> PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
-                                                        .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)))
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
-                                        .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
-                                                VN[tier]))
-                                        .setExactLimit(1)
-                                        .or(abilities(PartAbility.OUTPUT_ENERGY)).setExactLimit(1))
+                        .where('R', rotorHolder(tier).setExactLimit(1)
+                                .or(abilities(PartAbility.OUTPUT_ENERGY).setExactLimit(1)))
                         .where('H', blocks(casing.get())
                                 .or(autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
                                 .or(autoAbilities(true, needsMuffler, false)))
@@ -926,6 +901,25 @@ public class GTMachineUtils {
                         Component.translatable("gtceu.universal.tooltip.base_production_eut", V[tier] * 2),
                         Component.translatable("gtceu.multiblock.turbine.efficiency_tooltip", VNF[tier]))
                 .register();
+    }
+
+    private static PatternPredicate rotorHolder(int tier) {
+        return new PatternPredicate(new BasePredicate((worldState) -> {
+            if (MetaMachine.getMachine(worldState.getLevel(),
+                    worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
+                    worldState.getLevel()
+                            .getBlockState(worldState.getPos().immutable()
+                                    .relative(rotorHolder.self().getFrontFacing()))
+                            .isAir()) {
+                return null;
+            }
+            return new PartAbilityError(worldState.getBlockPos(), PartAbility.ROTOR_HOLDER);
+        }, PartAbility.ROTOR_HOLDER.getAllBlocks().stream()
+                .map(BlockInfo::fromBlock)
+                .toList()))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.clear_amount_3"))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.limited.1",
+                        VN[tier]));
     }
 
     // Tooltips

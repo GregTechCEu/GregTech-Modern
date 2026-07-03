@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
@@ -38,7 +42,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
 
     protected ItemRecipeCapability() {
-        super("item", 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
+        super(GTCEu.id("item"), 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
     }
 
     @Override
@@ -168,9 +172,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             for (var handler : handlers) {
                 // noinspection unchecked
                 copied = (List<Ingredient>) handler.handleRecipe(IO.OUT, recipe, copied, true);
-                if (copied == null) break;
+                if (copied.isEmpty()) break;
             }
-            int[] bin = ParallelLogic.adjustMultiplier(copied == null, minMultiplier, multiplier, maxMultiplier);
+            int[] bin = ParallelLogic.adjustMultiplier(copied.isEmpty(), minMultiplier, multiplier, maxMultiplier);
             minMultiplier = bin[0];
             multiplier = bin[1];
             maxMultiplier = bin[2];

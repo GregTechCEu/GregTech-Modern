@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
 import com.gregtechceu.gtceu.common.machine.trait.miner.SteamMinerLogic;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
@@ -27,14 +26,16 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import brachy.modularui.api.drawable.IIcon;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.Color;
+import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.ListWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -75,6 +77,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
+        getRecipeLogic().resetRecipeLogic();
     }
 
     @Override
@@ -148,57 +151,73 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.width(200)
-                .child(Flow.row()
-                        .coverChildrenHeight()
-                        .margin(5)
-                        .childPadding(5)
-                        .width(200)
-                        .child(Flow.column()
-                                .crossAxisAlignment(Alignment.CrossAxis.START)
-                                .padding(5)
-                                .background(GTGuiTextures.DISPLAY)
-                                .widthRel(.6f)
-                                .coverChildrenHeight()
-                                .child(new TextWidget<>(Text.dynamic(() -> {
-                                    List<Component> text = new ArrayList<>();
-                                    addDisplayText(text);
-                                    return text.stream()
-                                            .map(Component::copy)
-                                            .reduce((a, b) -> a.append("\n").append(b))
-                                            .orElse(Component.empty());
-                                })).color(Color.WHITE.main)))
-                        .child(GTMuiMachineUtil.createSquareSlotGroupFromInventory(exportItems, "export_inv",
-                                syncManager).posRel(0.875f, 0.5f)));
-    }
+        IntSyncValue startX = new IntSyncValue(() -> getRecipeLogic().getStartX()).allowC2S();
+        IntSyncValue startY = new IntSyncValue(() -> getRecipeLogic().getStartY()).allowC2S();
+        IntSyncValue startZ = new IntSyncValue(() -> getRecipeLogic().getStartZ()).allowC2S();
+        IntSyncValue mineX = new IntSyncValue(() -> getRecipeLogic().getMineX()).allowC2S();
+        IntSyncValue mineY = new IntSyncValue(() -> getRecipeLogic().getMineY()).allowC2S();
+        IntSyncValue mineZ = new IntSyncValue(() -> getRecipeLogic().getMineZ()).allowC2S();
+        IntSyncValue workingArea = new IntSyncValue(() -> IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius()))
+                .allowC2S();
 
-    private void addDisplayText(List<Component> textList) {
-        int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
-        textList.add(recipeLogic.getCustomProgressLine());
-        textList.add(
-                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getX(), getRecipeLogic().getMineX()));
-        textList.add(
-                Component.translatable("gtceu.machine.miner.y", getRecipeLogic().getY(), getRecipeLogic().getMineY()));
-        textList.add(
-                Component.translatable("gtceu.machine.miner.x", getRecipeLogic().getZ(), getRecipeLogic().getMineZ()));
-        textList.add(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
-        if (getRecipeLogic().isDone())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.done")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN)));
-        else if (getRecipeLogic().isWorking())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.working")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
-        else if (!this.isWorkingEnabled())
-            textList.add(Component.translatable("gtceu.multiblock.work_paused"));
-        if (getRecipeLogic().isInventoryFull())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.invfull")
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
-        if (exhaustVentTrait.isVentingBlocked())
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.vent")
-                    .withStyle(ChatFormatting.RED));
-        else if (!drainInput(true))
-            textList.add(Component.translatable("gtceu.multiblock.large_miner.steam")
-                    .withStyle(ChatFormatting.RED));
+        ListWidget<?, ?> textList = new ListWidget<>()
+                .heightRel(1.0f)
+                .collapseDisabledChildren()
+                .coverChildrenWidth()
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .childSeparator(IIcon.EMPTY_2PX)
+                .child(Text
+                        .dynamic(() -> Objects.requireNonNull(
+                                getRecipeLogic().getCustomProgressLine().copy().withStyle(ChatFormatting.WHITE)))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.x", startX.getIntValue(), mineX.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.y", startY.getIntValue(), mineY.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(
+                        () -> Component.translatable("gtceu.machine.miner.z", startZ.getIntValue(), mineZ.getIntValue())
+                                .withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text
+                        .dynamic(() -> Component.translatable("gtceu.universal.tooltip.working_area",
+                                workingArea.getIntValue(), workingArea.getIntValue()).withStyle(ChatFormatting.WHITE))
+                        .asWidget())
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.done")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GREEN))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isDone()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.working")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isWorking()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.work_paused")).asWidget()
+                        .setEnabledIf(w -> !isWorkingEnabled()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.invfull")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
+                        .setEnabledIf(w -> getRecipeLogic().isInventoryFull()))
+                .child(Text.dynamic(() -> Component.translatable("gtceu.multiblock.large_miner.needspower")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))).asWidget()
+                        .setEnabledIf(w -> !drainInput(true)));
+
+        mainWidget
+                .name("content")
+                .coverChildrenWidth(170)
+                .child(Flow.row()
+                        .name("mainRow")
+                        .coverChildrenWidth(170)
+                        .childPadding(4)
+                        .child(new ParentWidget<>()
+                                .name("displayScreen")
+                                .heightRel(1.0f)
+                                .coverChildrenWidth()
+                                .background(GuiTextures.DISPLAY)
+                                .child(textList.heightRel(1.0f).padding(3)))
+                        .child(GTMuiMachineUtil
+                                .createSquareSlotGroupFromInventory(exportItems, "export_inv", syncManager)
+                                .verticalCenter())
+                        .padding(4, 0));
     }
 
     @Override

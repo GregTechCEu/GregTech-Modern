@@ -78,7 +78,7 @@ public class CompositeFilter<T> extends Filter<T> {
 
     @Override
     public boolean test(T t) {
-        for (int i=0; i<9; i++) {
+        for (int i = 0; i < 9; i++) {
             Filter<T> filter = filters[i];
             if (filter != null && filter.test(t)) return true;
         }

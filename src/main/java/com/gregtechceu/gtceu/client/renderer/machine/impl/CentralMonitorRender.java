@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.electric.monitor.MonitorG
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -40,7 +41,7 @@ public class CentralMonitorRender extends DynamicRender<CentralMonitorMachine, C
                        int packedLight, int packedOverlay) {
         poseStack.pushPose();
         RenderUtil.moveToFace(poseStack, 0.5f, 0.5f, 0.5f, machine.getFrontFacing());
-        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), machine.getUpwardsFacing());
+        RenderUtil.rotateToFace(poseStack, machine.getFrontFacing(), Direction.NORTH);
         poseStack.translate(-machine.getRightDist() - 0.5f, -machine.getUpDist() - 0.5f, SCREEN_OFFSET_Z);
 
         if (machine.getRecipeLogic().isWorking()) {

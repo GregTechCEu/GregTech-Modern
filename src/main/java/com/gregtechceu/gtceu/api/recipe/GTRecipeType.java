@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
-import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
@@ -44,9 +43,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             RecipeCapability.COMPARATOR);
     @Setter
     private GTRecipeBuilder recipeBuilder;
-    @Getter
-    @Setter
-    private ChanceBoostFunction chanceFunction = ChanceBoostFunction.NONE;
     @Setter
     @Getter
     private GTRecipeType smallRecipeMap;
@@ -90,6 +86,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private int minRecipeConditions = 0;
 
     @Getter
+    @Setter
     private GTRecipeTypeUILayout uiLayout;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
@@ -105,10 +102,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         this.proxyRecipes = map;
     }
 
-    public GTRecipeType setMaxIOSize(int maxInputs, int maxOutputs, int maxFluidInputs, int maxFluidOutputs) {
-        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxInputs)
+    public GTRecipeType setMaxIOSize(int maxItemInputs, int maxItemOutputs, int maxFluidInputs, int maxFluidOutputs) {
+        return setMaxSize(IO.IN, ItemRecipeCapability.CAP, maxItemInputs)
                 .setMaxSize(IO.IN, FluidRecipeCapability.CAP, maxFluidInputs)
-                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxOutputs)
+                .setMaxSize(IO.OUT, ItemRecipeCapability.CAP, maxItemOutputs)
                 .setMaxSize(IO.OUT, FluidRecipeCapability.CAP, maxFluidOutputs);
     }
 

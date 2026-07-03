@@ -3,17 +3,17 @@ package com.gregtechceu.gtceu.common.mui.widgets;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.utils.Alignment;
+import brachy.modularui.value.sync.InteractionSyncHandler;
 import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.Dialog;
 import brachy.modularui.widgets.TextWidget;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T, SimpleDialog<T, W>> {
 
-    public SimpleDialog(String name, Consumer<T> valueConsumer, W widget, Function<W, T> valueGetter, Text title) {
+    public SimpleDialog(String name, W widget, Function<W, T> valueGetter, Text title) {
         super(name);
         child(new TextWidget<>(title.get()).leftRel(0.5f).marginTop(4));
         child(widget.center());
@@ -29,9 +29,15 @@ public class SimpleDialog<T, W extends Widget<W>> extends Dialog<T, SimpleDialog
                 .background(GuiTextures.RIGHTLOAD)
                 .hoverBackground(GuiTextures.RIGHTLOAD)
                 .posRel(Alignment.TopCenter)
-                .onMousePressed((context, button) -> {
-                    closeWith(valueGetter.apply(widget));
-                    return true;
-                }));
+                .syncHandler(new InteractionSyncHandler()
+                        .setOnMousePressed(mouseData -> {
+                            try {
+                                T value = valueGetter.apply(widget);
+                                closeWith(value);
+                                // since valueGetter is most likely a parser, and those
+                                // throw a subclass of IllegalArgumentException if the input is invalid
+                                // we can just catch it here
+                            } catch (IllegalArgumentException ignored) {}
+                        })));
     }
 }

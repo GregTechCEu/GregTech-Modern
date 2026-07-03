@@ -128,7 +128,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     }
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
+    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
         if (!controller.allowCircuitSlots()) {
             if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
                 circuitInventory.dropInventoryInWorld();
@@ -137,7 +137,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
             }
             setCircuitSlotEnabled(false);
         }
-        super.addedToController(controller);
+        super.addedToController(controller, substructureName);
     }
 
     @Override
@@ -307,7 +307,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                                 .overlay(false, GTGuiTextures.BUTTON_LOCK)
                                 .overlay(true, GTGuiTextures.BUTTON_LOCK)
                                 .background(GuiTextures.MC_BUTTON)
-                                .selectedBackground(GuiTextures.MC_BUTTON_PRESSED)
+                                .background(true, GuiTextures.MC_BUTTON_PRESSED)
 
                         )
                         .child(new FluidSlot()

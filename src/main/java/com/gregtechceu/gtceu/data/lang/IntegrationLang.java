@@ -86,6 +86,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.top.cable_overloaded", "§4OVERHEATING: %s%%§r");
         provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
@@ -110,6 +111,7 @@ public class IntegrationLang {
         provider.add("gtceu.jade.hours", "%s hours");
         provider.add("gtceu.jade.days", "%s days");
         provider.add("gtceu.jade.years", "%s years");
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");

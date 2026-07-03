@@ -140,6 +140,27 @@ public class GTMatrixUtils {
         } * Mth.HALF_PI;
     }
 
+    /**
+     * Computes the roll angle around the {@code frontFacing} axis needed to orient a model - whose top points along
+     * {@code referenceUp} when no roll is applied - so that its top points toward the (global) {@code upwardsFacing}.
+     * <p>
+     * Unlike {@link #upwardFacingAngle(Direction)}, this works directly with the global upwards facing and therefore
+     * accepts any of the six directions (including {@link Direction#UP UP}/{@link Direction#DOWN DOWN}).
+     *
+     * @param frontFacing   the front facing of the machine
+     * @param upwardsFacing the global upwards facing of the machine
+     * @param referenceUp   the direction the model's top points in when no roll is applied
+     * @return the roll angle in radians around the front-facing axis
+     */
+    public static float frontAxisRollAngle(Direction frontFacing, Direction upwardsFacing, Direction referenceUp) {
+        Vector3fc frontAxis = getDirectionAxis(frontFacing);
+        Vector3f actualUp = upwardsFacing.step();
+        Vector3f reference = referenceUp.step();
+        float sin = reference.cross(actualUp, new Vector3f()).dot(frontAxis);
+        float cos = reference.dot(actualUp);
+        return (float) Math.atan2(sin, cos);
+    }
+
     public static Vector3f rotateMatrixToFront(Matrix4f matrix, Direction frontFace) {
         // rotate frontFacing to correct cardinal direction
         Vector3f front = frontFace.step();
@@ -161,7 +182,7 @@ public class GTMatrixUtils {
         var matrix = new Matrix4f();
         var front = rotateMatrixToFront(matrix, frontFace);
         front.absolute();
-        rotateMatrixToUp(matrix, front, upwardFace);
+        rotateMatrixToUp(matrix, front, adjustUpwardsToLocal(frontFace, upwardFace.getOpposite()));
         rotations.put(frontFace, upwardFace, matrix);
         return matrix;
     }
@@ -289,5 +310,29 @@ public class GTMatrixUtils {
         }
 
         return transform.unproject(x, y, depth, viewport, new Vector3f());
+    }
+
+    public static Direction adjustUpwardsToLocal(Direction frontFacing, Direction upwardFacing) {
+        if (frontFacing.getAxis() == Direction.Axis.Y) {
+            return frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                    upwardFacing : upwardFacing.getOpposite();
+        } else if (frontFacing.getAxis() == Direction.Axis.Z) {
+            if (upwardFacing.getAxis() == Direction.Axis.Y) {
+                return Direction.fromAxisAndDirection(Direction.Axis.Z, upwardFacing.getAxisDirection());
+            } else if (upwardFacing.getAxis() == Direction.Axis.X) {
+                Direction.AxisDirection dir = frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                        upwardFacing.getAxisDirection().opposite() : upwardFacing.getAxisDirection();
+                return Direction.fromAxisAndDirection(Direction.Axis.X, dir);
+            }
+        } else if (frontFacing.getAxis() == Direction.Axis.X) {
+            if (upwardFacing.getAxis() == Direction.Axis.Y) {
+                return Direction.fromAxisAndDirection(Direction.Axis.Z, upwardFacing.getAxisDirection());
+            } else if (upwardFacing.getAxis() == Direction.Axis.Z) {
+                Direction.AxisDirection dir = frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ?
+                        upwardFacing.getAxisDirection().opposite() : upwardFacing.getAxisDirection();
+                return Direction.fromAxisAndDirection(Direction.Axis.X, dir);
+            }
+        }
+        return Direction.NORTH;
     }
 }
