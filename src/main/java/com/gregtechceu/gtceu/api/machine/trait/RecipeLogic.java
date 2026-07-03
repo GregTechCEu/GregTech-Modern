@@ -400,7 +400,13 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         var result = RecipeHelper.matchTickRecipe(getRLMachine(), recipe);
         if (!result.isSuccess()) return result;
 
-        recipe.doTickPrerolls(this.chanceCaches);
+        if (lastDisplayedRecipe == null) {
+            GTCEu.LOGGER.warn("Last Displayed Recipe is null! Ingredients may roll incorrectly.");
+            this.lastDisplayedRecipe = lastRecipe.copy();
+            syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
+            markLastRecipeDirty();
+        }
+        recipe.doTickPrerolls(this.chanceCaches, this.lastDisplayedRecipe);
 
         result = handleTickRecipeIO(recipe, IO.IN);
         if (!result.isSuccess()) return result;

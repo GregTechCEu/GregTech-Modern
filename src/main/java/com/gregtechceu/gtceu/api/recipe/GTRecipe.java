@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -255,11 +256,35 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
     }
 
-    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        var rangedContents = getFullTickContents();
-        for (Content item : rangedContents) {
-            if (item.content() instanceof IRangedIngredient ranged)
-                ranged.rollSampledCount();
+    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches, GTRecipe lastDisplayedRecipe) {
+        if (!this.hasTick()) return;
+
+        this.tickInputs.clear();
+        this.tickOutputs.clear();
+
+        for (var capability : lastDisplayedRecipe.tickInputs.keySet()) {
+            var handler = lastDisplayedRecipe.tickInputs.get(capability);
+            for (var iterator = handler.listIterator(); iterator.hasNext();) {
+                var content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    content = new Content(ranged.replace(), content.chance(), content.maxChance());
+                    iterator.set(content);
+                }
+                tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        for (var capability : lastDisplayedRecipe.tickOutputs.keySet()) {
+            var handler = lastDisplayedRecipe.tickOutputs.get(capability);
+            for (var iterator = handler.listIterator(); iterator.hasNext();) {
+                var content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    content = new Content(ranged.replace(), content.chance(), content.maxChance());
+                    iterator.set(content);
+                }
+                tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
         }
     }
 
