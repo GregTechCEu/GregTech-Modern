@@ -44,11 +44,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogic
         return getRecipeLogic();
     }
 
-//    default GTRecipe fullModifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
-//        TODO: fix trimRecipeOutputs
-//        return modifyRecipe(RecipeHelper.trimRecipeOutputs(recipe, this.getOutputLimits()), group);
-//    }
-
     /**
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
      *

@@ -210,7 +210,7 @@ public class BlockPattern {
                 return false;
             }
         }
-
+        worldState.getMatchContext().getOrPut("formedRepetitionCount", formedRepetitionCount);
         worldState.setError(null);
         worldState.setNeededFlip(isFlipped);
         return true;

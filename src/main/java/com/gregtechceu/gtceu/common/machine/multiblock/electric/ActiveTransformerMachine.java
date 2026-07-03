@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
@@ -40,43 +41,32 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
 
-public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-                                      implements IControllable, IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
+public class ActiveTransformerMachine extends WorkableMultiblockMachine
+                                      implements IExplosionMachine, IFancyUIMachine, IDisplayUIMachine {
 
     private EnergyContainerList powerOutput;
     private EnergyContainerList powerInput;
-    protected ConditionalSubscriptionHandler converterSubscription;
 
     public ActiveTransformerMachine(IMachineBlockEntity holder) {
         super(holder);
-        this.powerOutput = new EnergyContainerList(new ArrayList<>());
-        this.powerInput = new EnergyContainerList(new ArrayList<>());
-
-        this.converterSubscription = new ConditionalSubscriptionHandler(this, this::convertEnergyTick,
-                this::isSubscriptionActive);
+        this.powerOutput = EnergyContainerList.EMPTY;
+        this.powerInput = EnergyContainerList.EMPTY;
     }
 
-    public void convertEnergyTick() {
-        if (isWorkingEnabled()) {
-            getWorkLogic()
-                    .setStatus(isSubscriptionActive() ? WorkLogic.Status.WORKING : WorkLogic.Status.SUSPEND);
-        }
-        if (isWorkingEnabled()) {
-            long canDrain = powerInput.getEnergyStored();
-            long totalDrained = powerOutput.changeEnergy(canDrain);
-            powerInput.removeEnergy(totalDrained);
-        }
-        converterSubscription.updateSubscription();
+    @Override
+    public void serverRunningTick() {
+        long canDrain = powerInput.getEnergyStored();
+        long totalDrained = powerOutput.changeEnergy(canDrain);
+        powerInput.removeEnergy(totalDrained);
     }
 
     @SuppressWarnings("RedundantIfStatement") // It is cleaner to have the final return true separate.
-    protected boolean isSubscriptionActive() {
-        if (!isFormed()) return false;
-
+    @Override
+    public boolean isWorkLogicAvailable() {
+        if(!super.isWorkLogicAvailable()) return false;
         if (powerInput == null || powerInput.getEnergyStored() <= 0) return false;
         if (powerOutput == null) return false;
         if (powerOutput.getEnergyStored() >= powerOutput.getEnergyCapacity()) return false;
-
         return true;
     }
 
@@ -100,7 +90,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
                             }
                         });
                 traitSubscriptions
-                        .add(handlerList.subscribe(converterSubscription::updateSubscription, EURecipeCapability.CAP));
+                        .add(handlerList.subscribe(getWorkLogic()::updateTickSubscription, EURecipeCapability.CAP));
             }
         }
 
@@ -111,8 +101,6 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
 
         this.powerOutput = new EnergyContainerList(powerOutput);
         this.powerInput = new EnergyContainerList(powerInput);
-
-        converterSubscription.updateSubscription();
     }
 
     @NotNull
@@ -139,13 +127,12 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     public void onStructureInvalid() {
         if ((isWorkingEnabled() && workLogic.getStatus() == WorkLogic.Status.WORKING) &&
                 !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers) {
-            doExplosion(6f + getTier());
+            doExplosion(6f + Math.max(powerInput.getTier(), powerOutput.getTier()));
         }
         super.onStructureInvalid();
         this.powerOutput = EnergyContainerList.EMPTY;
         this.powerInput = EnergyContainerList.EMPTY;
         getWorkLogic().setStatus(WorkLogic.Status.SUSPEND);
-        converterSubscription.unsubscribe();
     }
 
     public static TraceabilityPredicate getHatchPredicates() {

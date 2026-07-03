@@ -59,7 +59,7 @@ public class GTRecipeWidget extends WidgetGroup {
         this.xOffset = getXOffset(definition);
         this.minTier = definition.tier;
         this.tier = definition.tier;
-        initializeButtons();
+        initialize();
         setRecipeWidget();
     }
 
@@ -154,7 +154,7 @@ public class GTRecipeWidget extends WidgetGroup {
         });
     }
 
-    private void initializeButtons() {
+    private void initialize() {
 
         var EUt = RecipeHelper.getRealEUtWithIO(recipe);
         if(tier != 0 || EUt != 0) {
@@ -171,6 +171,7 @@ public class GTRecipeWidget extends WidgetGroup {
                         .setHoverTooltips(LangHandler.getMultiLang("gtceu.oc.tooltip", GTValues.VNF[minTier])
                                 .toArray(Component[]::new)));
             }
+            addWidget(new VoltageBorderWidget(-xOffset, 0, getSizeWidth(), getSizeHeight(), VCM[tier]));
         }
         int x = getSize().width - xOffset - 18;
         int y = getSize().height - 30;
