@@ -112,8 +112,6 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
         super.onStructureFormed();
         // capture all energy containers
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
 
         for (IMultiPart part : getParts()) {
 

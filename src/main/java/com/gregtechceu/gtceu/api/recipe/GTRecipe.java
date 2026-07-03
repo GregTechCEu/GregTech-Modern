@@ -113,7 +113,7 @@ public class GTRecipe{
             var copied = new GTRecipe(recipeType, id,
                     inputs.copyWithMultiplier(multiplier), outputs.copyWithMultiplier(multiplier),
                     tickInputs.copy(), tickOutputs.copy(),
-                    new ArrayList<>(conditions), data.copy(), duration, tier, recipeCategory);
+                    new ArrayList<>(conditions), data.copy(), tier, duration, recipeCategory);
             if (modifyDuration) {
                 copied.duration = duration * multiplier;
             }

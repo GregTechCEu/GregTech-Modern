@@ -31,25 +31,6 @@ public class ActiveBlock extends Block {
         builder.add(ACTIVE);
     }
 
-    /**
-     * Use {@link BlockState#setValue(Property, Comparable)}
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public BlockState changeActive(BlockState state, boolean active) {
-        if (state.is(this)) {
-            return state.setValue(ACTIVE, active);
-        }
-        return state;
-    }
-
-    /**
-     * Use {@link BlockState#getValue(Property)}
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    public boolean isActive(BlockState state) {
-        return state.getValue(ACTIVE);
-    }
-
     @Override
     public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
                                     @Nullable BlockState sourceState, @Nullable BlockPos sourcePos) {
