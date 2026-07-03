@@ -231,7 +231,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public int getPriority() {
-        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() : IFilteredHandler.HIGH - getTanks();
+        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() :
+                IFilteredHandler.HIGH - getTanks();
     }
 
     public boolean isLocked() {

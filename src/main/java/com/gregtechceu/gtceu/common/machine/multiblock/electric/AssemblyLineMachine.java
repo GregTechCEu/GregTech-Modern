@@ -301,7 +301,6 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
             var config = ConfigHolder.INSTANCE.machines;
 
-
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
             if (!getMachine().checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
             if (!getMachine().checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;

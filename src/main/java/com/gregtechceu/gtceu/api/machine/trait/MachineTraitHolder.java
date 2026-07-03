@@ -112,7 +112,6 @@ public final class MachineTraitHolder {
         return trait;
     }
 
-
     /**
      * Registers a trait with data to be saved or synced to the client.
      * Do not register a persistent trait and also store that trait as a syncable machine field, otherwise the trait

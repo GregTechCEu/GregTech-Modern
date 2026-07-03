@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMac
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
@@ -43,6 +42,7 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,7 +53,7 @@ import java.util.function.Predicate;
 /**
  * The base class for all multiblock controllers.
  */
-@SuppressWarnings({"UnusedReturnValue"})
+@SuppressWarnings({ "UnusedReturnValue" })
 public class MultiblockControllerMachine extends MetaMachine {
 
     public static final String DEFAULT_STRUCTURE = "main";
@@ -130,9 +130,10 @@ public class MultiblockControllerMachine extends MetaMachine {
      */
     public <T extends MachineTrait> @Nullable T getTraitFromParts(MachineTraitType<T> type) {
         T trait = null;
-        for (var part: getParts()) {
+        for (var part : getParts()) {
             T partTrait = part.getTrait(type);
-            if (partTrait != null && (trait == null || partTrait.getTraitPriority() > trait.getTraitPriority())) trait = partTrait;
+            if (partTrait != null && (trait == null || partTrait.getTraitPriority() > trait.getTraitPriority()))
+                trait = partTrait;
         }
         return trait;
     }
@@ -145,7 +146,7 @@ public class MultiblockControllerMachine extends MetaMachine {
      */
     public <T extends MachineTrait> List<T> getTraitsFromParts(MachineTraitType<T> type) {
         List<T> traits = new ObjectArrayList<>();
-        for (var part: getParts()) {
+        for (var part : getParts()) {
             traits.addAll(part.getTraits(type));
         }
         return Collections.unmodifiableList(traits);
@@ -329,8 +330,8 @@ public class MultiblockControllerMachine extends MetaMachine {
             return;
         }
 
-        boolean valid = forEachMultiPart(substructureName, part ->
-                !part.hasController(getBlockPos()) || part.canShared(this, substructureName));
+        boolean valid = forEachMultiPart(substructureName,
+                part -> !part.hasController(getBlockPos()) || part.canShared(this, substructureName));
 
         if (!valid) return;
 
