@@ -16,7 +16,7 @@ public interface IRangedIngredient<T> {
 
     void setSampledCount(int count);
 
-    default T replace(){
+    default T replace() {
         if (!isRolled())
             GTCEu.LOGGER.warn("Ranged ingredient was replaced without being rolled!");
         return null;

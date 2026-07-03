@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
@@ -256,7 +255,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }
     }
 
-    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches, GTRecipe lastDisplayedRecipe) {
+    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                               GTRecipe lastDisplayedRecipe) {
         if (!this.hasTick()) return;
 
         this.tickInputs.clear();
