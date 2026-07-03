@@ -53,6 +53,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The base class for steam boilers
+ */
 public abstract class SteamBoilerMachine extends SteamWorkableMachine
                                          implements IMuiMachine, IDataInfoProvider {
 

@@ -51,6 +51,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         super(info, isHighPressure, recipeLogic);
         this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
     }
 
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
