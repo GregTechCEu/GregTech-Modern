@@ -128,8 +128,7 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
 
     @Override
     public FluidIngredient replace() {
-        if (!isRolled())
-            GTCEu.LOGGER.warn("Ranged fluid ingredient was replaced without being rolled!");
+        IRangedIngredient.super.replace();
         return new FluidIngredient(inner.values, rollSampledCount(), inner.nbt);
     }
 

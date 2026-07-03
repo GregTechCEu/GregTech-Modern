@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 
 import net.minecraft.util.RandomSource;
@@ -15,7 +16,11 @@ public interface IRangedIngredient<T> {
 
     void setSampledCount(int count);
 
-    T replace();
+    default T replace(){
+        if (!isRolled())
+            GTCEu.LOGGER.warn("Ranged ingredient was replaced without being rolled!");
+        return null;
+    }
 
     /**
      * If this ingredient has not yet had its count rolled, rolls it and returns the roll.

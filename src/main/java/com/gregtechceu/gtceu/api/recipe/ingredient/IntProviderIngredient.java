@@ -134,8 +134,7 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
 
     @Override
     public SizedIngredient replace() {
-        if (!isRolled())
-            GTCEu.LOGGER.warn("Ranged ingredient was replaced without being rolled!");
+        IRangedIngredient.super.replace();
         return SizedIngredient.create(inner, rollSampledCount());
     }
 
