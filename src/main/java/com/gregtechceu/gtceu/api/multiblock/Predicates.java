@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -52,19 +53,20 @@ public class Predicates {
      */
     public static final PlaceholderError PLACEHOLDER = new PlaceholderError(BlockPos.ZERO, Collections.emptyList());
 
-    public static BasePredicate controller(MultiblockMachineDefinition def) {
-        return controller(blocks(def.getBlock()));
+    public static MultiPredicate controller(MultiblockMachineDefinition def) {
+        return blocks(def.getBlock()).setController(true);
     }
 
-    public static BasePredicate controller(BasePredicate predicate) {
+    @Deprecated
+    public static MultiPredicate controller(MultiPredicate predicate) {
         return predicate.setController(true);
     }
 
-    public static BasePredicate states(BlockState... allowedStates) {
+    public static MultiPredicate states(BlockState... allowedStates) {
         return states("States", allowedStates);
     }
 
-    public static BasePredicate states(@Nullable String debugName, BlockState... allowedStates) {
+    public static MultiPredicate states(@Nullable String debugName, BlockState... allowedStates) {
         List<BlockState> states = new ArrayList<>();
         for (BlockState state : allowedStates) {
             states.add(state);
@@ -82,30 +84,30 @@ public class Predicates {
                 });
     }
 
-    public static BasePredicate blocks(Block block) {
+    public static MultiPredicate blocks(Block block) {
         return customPredicate("Block",
                 ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
                 Stream.of(BlockInfo.fromBlock(block)),
                 builder -> builder.append(blockToString(block)));
     }
 
-    public static BasePredicate blocks(Block... blocks) {
+    public static MultiPredicate blocks(Block... blocks) {
         return blocks("Blocks", blocks);
     }
 
-    public static BasePredicate blocks(@Nullable String debugName, Block... blocks) {
+    public static MultiPredicate blocks(@Nullable String debugName, Block... blocks) {
         return blocks(debugName, Arrays.stream(blocks));
     }
 
-    public static BasePredicate blocks(@Nullable String debugName,
-                                       Stream<Block> blocks) {
+    public static MultiPredicate blocks(@Nullable String debugName,
+                                        Stream<Block> blocks) {
         List<Block> blockList = blocks.toList();
         return blocks(debugName, blockList, blockList.stream());
     }
 
-    public static BasePredicate blocks(@Nullable String debugName,
-                                       List<Block> blocks,
-                                       Stream<Block> candidates) {
+    public static MultiPredicate blocks(@Nullable String debugName,
+                                        List<Block> blocks,
+                                        Stream<Block> candidates) {
         return customPredicate(debugName, ctx -> {
             for (var block : blocks) {
                 if (ctx.state().is(block)) return true;
@@ -128,12 +130,12 @@ public class Predicates {
                 .orElse("unknown block");
     }
 
-    public static BasePredicate machines(MachineDefinition... definitions) {
+    public static MultiPredicate machines(MachineDefinition... definitions) {
         Validate.noNullElements(definitions, "MachineDefinition array has null element at index %s");
         return blocks(Arrays.stream(definitions).map(MachineDefinition::get).toArray(MetaMachineBlock[]::new));
     }
 
-    public static BasePredicate blockTag(TagKey<Block> tag) {
+    public static MultiPredicate blockTag(TagKey<Block> tag) {
         return customPredicate("BlockTag",
                 ctx -> ctx.state().is(tag),
                 Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
@@ -142,7 +144,7 @@ public class Predicates {
                 builder -> builder.append(tag.location()));
     }
 
-    public static BasePredicate fluids(Fluid... fluids) {
+    public static MultiPredicate fluids(Fluid... fluids) {
         return customPredicate("Fluids",
                 ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
                 Arrays.stream(fluids).map(BlockInfo::fromFluid),
@@ -157,7 +159,7 @@ public class Predicates {
                 });
     }
 
-    public static BasePredicate fluidTag(TagKey<Fluid> tag) {
+    public static MultiPredicate fluidTag(TagKey<Fluid> tag) {
         return customPredicate("FluidTag",
                 ctx -> ctx.fluidState().is(tag),
                 Objects.requireNonNull(ForgeRegistries.FLUIDS.tags())
@@ -166,41 +168,42 @@ public class Predicates {
                 builder -> builder.append(tag.location()));
     }
 
-    public static BasePredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
-                                               @Nullable List<BlockInfo> candidates) {
+    @Deprecated
+    public static MultiPredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
+                                                @Nullable List<BlockInfo> candidates) {
         return customPredicate(ctx -> {
-            PatternError error = predicate.apply(ctx.blockInfo());
+            PatternError error = predicate.apply(ctx.getBlockInfo());
             return error == null || ctx.error(error);
         }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
     }
 
-    public static BasePredicate customPredicate(Predicate<PredicateContext> predicate,
-                                                Stream<BlockInfo> candidates) {
+    public static MultiPredicate customPredicate(Predicate<PredicateContext> predicate,
+                                                 Stream<BlockInfo> candidates) {
         return customPredicate(null, predicate, candidates);
     }
 
-    public static BasePredicate customPredicate(@Nullable String debugName,
-                                                Predicate<PredicateContext> predicate,
-                                                Stream<BlockInfo> candidates) {
+    public static MultiPredicate customPredicate(@Nullable String debugName,
+                                                 Predicate<PredicateContext> predicate,
+                                                 Stream<BlockInfo> candidates) {
         return customPredicate(debugName, predicate, candidates, null);
     }
 
-    public static BasePredicate customPredicate(@Nullable String debugName,
-                                                Predicate<PredicateContext> predicate,
-                                                Stream<BlockInfo> candidates,
-                                                @Nullable Consumer<StringBuilder> contents) {
+    public static MultiPredicate customPredicate(@Nullable String debugName,
+                                                 Predicate<PredicateContext> predicate,
+                                                 Stream<BlockInfo> candidates,
+                                                 @Nullable Consumer<StringBuilder> contents) {
         return BasePredicate.create(debugName, predicate, candidates, contents);
     }
 
-    public static BasePredicate any() {
+    public static MultiPredicate any() {
         return BasePredicate.ANY;
     }
 
-    public static BasePredicate air() {
+    public static MultiPredicate air() {
         return BasePredicate.AIR;
     }
 
-    public static BasePredicate abilities(PartAbility ability) {
+    public static MultiPredicate abilities(PartAbility ability) {
         return customPredicate("Ability",
                 ctx -> ability.isApplicable(ctx.state().getBlock()) ||
                         ctx.error(new PartAbilityError(ctx.pos(), ability)),
@@ -208,7 +211,7 @@ public class Predicates {
                 builder -> builder.append(ability.getName()));
     }
 
-    public static BasePredicate abilities(PartAbility... abilities) {
+    public static MultiPredicate abilities(PartAbility... abilities) {
         return customPredicate("Abilities",
                 ctx -> {
                     for (PartAbility ability : abilities) {
@@ -231,7 +234,7 @@ public class Predicates {
                 });
     }
 
-    public static BasePredicate ability(PartAbility ability, int... tiers) {
+    public static MultiPredicate ability(PartAbility ability, int... tiers) {
         StringJoiner sb = new StringJoiner("-");
         for (int tier : tiers) {
             sb.add(GTValues.VN[tier]);
@@ -242,20 +245,19 @@ public class Predicates {
                 ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
-    public static BasePredicate autoAbilities(GTRecipeType... recipeType) {
+    public static MultiPredicate autoAbilities(GTRecipeType... recipeType) {
         return autoAbilities(recipeType, true, true, true, true, true, true);
     }
 
-    public static BasePredicate autoAbilities(GTRecipeType[] recipeType,
-                                              boolean checkEnergyIn, boolean checkEnergyOut,
-                                              boolean checkItemIn, boolean checkItemOut,
-                                              boolean checkFluidIn, boolean checkFluidOut) {
-        List<BasePredicate> predicates = new ArrayList<>();
-
+    public static MultiPredicate autoAbilities(GTRecipeType[] recipeType,
+                                               boolean checkEnergyIn, boolean checkEnergyOut,
+                                               boolean checkItemIn, boolean checkItemOut,
+                                               boolean checkFluidIn, boolean checkFluidOut) {
+        MultiPredicate predicate = new MultiPredicate();
         if (checkEnergyIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.INPUT_ENERGY)
+                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY)
                             .setMinCount(1).setMaxCount(2)
                             .setPreviewCount(1).setPriority(1));
                     break;
@@ -265,7 +267,7 @@ public class Predicates {
         if (checkEnergyOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.OUTPUT_ENERGY)
+                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY)
                             .setMinCount(1).setMaxCount(2)
                             .setPreviewCount(1).setPriority(1));
                     break;
@@ -275,7 +277,7 @@ public class Predicates {
         if (checkItemIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(ItemRecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.IMPORT_ITEMS)
+                    predicate = predicate.or(abilities(PartAbility.IMPORT_ITEMS)
                             .setPreviewCount(1).setPriority(2));
                     break;
                 }
@@ -284,7 +286,7 @@ public class Predicates {
         if (checkItemOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(ItemRecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.EXPORT_ITEMS)
+                    predicate = predicate.or(abilities(PartAbility.EXPORT_ITEMS)
                             .setPreviewCount(1).setPriority(2));
                     break;
                 }
@@ -293,7 +295,7 @@ public class Predicates {
         if (checkFluidIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(FluidRecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.IMPORT_FLUIDS)
+                    predicate = predicate.or(abilities(PartAbility.IMPORT_FLUIDS)
                             .setPreviewCount(1).setPriority(3));
                     break;
                 }
@@ -302,46 +304,46 @@ public class Predicates {
         if (checkFluidOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(FluidRecipeCapability.CAP) > 0) {
-                    predicates.add(abilities(PartAbility.EXPORT_FLUIDS)
+                    predicate = predicate.or(abilities(PartAbility.EXPORT_FLUIDS)
                             .setPreviewCount(1).setPriority(3));
                     break;
                 }
             }
         }
-        return BasePredicate.or("AutoAbilities", predicates);
+        return predicate;
     }
 
-    public static BasePredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
-                                              boolean checkParallel) {
-        List<BasePredicate> predicates = new ArrayList<>();
+    public static MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+                                               boolean checkParallel) {
+        MultiPredicate predicate = new MultiPredicate();
         if (checkMaintenance) {
-            predicates.add(abilities(PartAbility.MAINTENANCE)
+            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
                     .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
                     .setMaxCount(1)
                     .setPriority(1));
         }
         if (checkMuffler) {
-            predicates.add(abilities(PartAbility.MUFFLER)
+            predicate = predicate.or(abilities(PartAbility.MUFFLER)
                     .setExactLimit(1)
                     .setPriority(2));
         }
         if (checkParallel) {
-            predicates.add(abilities(PartAbility.PARALLEL_HATCH)
+            predicate = predicate.or(abilities(PartAbility.PARALLEL_HATCH)
                     .setMaxCount(1)
                     .setPreviewCount(1)
                     .setPriority(3));
         }
-        return BasePredicate.or("AutoAbilities", predicates);
+        return predicate;
     }
 
-    public static BasePredicate heatingCoils() {
+    public static MultiPredicate heatingCoils() {
         return blocks("HeatingCoils",
                 GTCEuAPI.HEATING_COILS.values().stream().map(Supplier::get))
                 // .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.coils"))
                 .setPriority(0);
     }
 
-    public static BasePredicate cleanroomFilters() {
+    public static MultiPredicate cleanroomFilters() {
         return blocks("CleanroomFilters",
                 GTCEuAPI.CLEANROOM_FILTERS.values()
                         .stream().map(Supplier::get).toList(),
@@ -353,7 +355,7 @@ public class Predicates {
         ;
     }
 
-    public static BasePredicate powerSubstationBatteries() {
+    public static MultiPredicate powerSubstationBatteries() {
         return blocks("PSS-Batteries",
                 GTCEuAPI.PSS_BATTERIES.values()
                         .stream().map(Supplier::get).map(Block.class::cast).toList(),
@@ -365,13 +367,17 @@ public class Predicates {
         ;
     }
 
-    public static @Nullable BasePredicate dataHatchPredicate() {
+    public static @Nullable MultiPredicate dataHatchPredicate() {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
             // TODO xor predicate matching :)
-            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+            return abilities(PartAbility.DATA_ACCESS)
+                    .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
                     .setExactLimit(1)
                     .setPriority(1);
+            // return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+            // .setExactLimit(1)
+            // .setPriority(1);
         }
         // this really should not be null
         return null;
@@ -380,7 +386,7 @@ public class Predicates {
     /**
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */
-    public static BasePredicate frames(Material... frameMaterials) {
+    public static MultiPredicate frames(Material... frameMaterials) {
         var frameBlocks = Arrays.stream(frameMaterials)
                 .map(m -> GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
                 .filter(obj -> Objects.nonNull(obj) && obj.isPresent())
@@ -390,7 +396,7 @@ public class Predicates {
                 .or(framedPipes(frameMaterials, frameBlocks));
     }
 
-    public static BasePredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
+    public static MultiPredicate framedPipes(Material[] frameMaterials, Block[] frameBlocks) {
         return customPredicate("FramedPipes", ctx -> {
             BlockEntity tileEntity = ctx.blockEntity();
             if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {

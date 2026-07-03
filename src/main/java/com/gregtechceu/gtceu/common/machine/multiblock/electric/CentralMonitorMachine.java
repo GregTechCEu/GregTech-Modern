@@ -71,7 +71,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         super(info, new CentralMonitorLogic());
     }
 
-    public static BasePredicate getMultiPredicate() {
+    public static MultiPredicate getMultiPredicate() {
         if (MULTI_PREDICATE == null) {
             MULTI_PREDICATE = Predicates.machines(GTMachines.MONITOR)
                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY)

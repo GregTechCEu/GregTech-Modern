@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternB
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -314,17 +315,17 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            BasePredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
-            BasePredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
+            MultiPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
+            MultiPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
-            BasePredicate edgePredicate = wallPredicate.or(energyPredicate);
-            BasePredicate facePredicate = wallPredicate.or(energyPredicate)
+            MultiPredicate edgePredicate = wallPredicate.or(energyPredicate);
+            MultiPredicate facePredicate = wallPredicate.or(energyPredicate)
                     .or(doorPredicate().setMaxGlobalLimited(8))
                     .or(abilities(PartAbility.PASSTHROUGH_HATCH).setMaxGlobalLimited(30));
-            BasePredicate filterPredicate = cleanroomFilters();
-            BasePredicate innerPredicate = innerPredicate();
-            BasePredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
+            MultiPredicate filterPredicate = cleanroomFilters();
+            MultiPredicate innerPredicate = innerPredicate();
+            MultiPredicate verticalEdgePredicate = edgePredicate.or(blocks(getGlassState().getBlock()));
 
             return ExpandableMultiblockPatternBuilder
                     .start(RelativeDirection.UP, RelativeDirection.RIGHT, RelativeDirection.FRONT)
@@ -469,7 +470,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    protected static BasePredicate doorPredicate() {
+    protected static MultiPredicate doorPredicate() {
         return Predicates.customPredicate(
                 ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
                 Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
@@ -477,11 +478,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                                 .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
     }
 
-    private static BasePredicate getValidFloorBlocks() {
+    private static MultiPredicate getValidFloorBlocks() {
         return Predicates.blockTag(CustomTags.CLEANROOM_FLOORS);
     }
 
-    protected static BasePredicate innerPredicate() {
+    protected static MultiPredicate innerPredicate() {
         return BasePredicate.create("InnerPredicate", ctx -> {
             // all non-GTMachines are allowed inside by default
             BlockEntity blockEntity = ctx.blockEntity();

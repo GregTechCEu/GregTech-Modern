@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -21,12 +20,11 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-@Accessors(chain = true)
 public abstract class BasePredicate {
 
-    public static final BasePredicate AIR = create("Air", ctx -> ctx.state().is(Blocks.AIR));
+    public static final MultiPredicate AIR = create("Air", ctx -> ctx.state().is(Blocks.AIR));
 
-    public static final BasePredicate ANY = create("Any", ctx -> true);
+    public static final MultiPredicate ANY = create("Any", ctx -> true);
 
     protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
             .comparingInt(BasePredicate::getPriority);
@@ -62,18 +60,43 @@ public abstract class BasePredicate {
     private @Nullable String nbtParser; // unsure what this does
 
     /// the main testing method
-    public boolean test(PredicateContext ctx) {
-        return true;
+    public abstract boolean test(PredicateContext ctx);
+
+    /// test with internal function and global/slice max
+    public boolean testLimited(PredicateContext ctx) {
+        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count
-    public boolean testGlobalMax(int count) {
-        return maxCount == -1 || count <= maxCount;
+    public boolean testGlobalMax(PredicateContext ctx) {
+        if (skipGlobalTest()) return true;
+        int count = ctx.incrementGlobalCount(this);
+        if (maxCount == -1 || count <= maxCount) return true;
+        return ctx.error(SinglePredicateError.maxCount(this, count));
     }
 
     /// test against slice max count
-    public boolean testSliceMax(int count) {
-        return maxSliceCount == -1 || count <= maxSliceCount;
+    public boolean testSliceMax(PredicateContext ctx) {
+        if (skipSliceTest() || ctx.layerCache() == null) return true;
+        int count = ctx.incrementSliceCount(this);
+        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+    }
+
+    /// test against global max count
+    public boolean testGlobalMin(PredicateContext ctx) {
+        if (skipGlobalTest()) return true;
+        int count = ctx.globalCache().getInt(this);
+        if (maxCount == -1 || count <= maxCount) return true;
+        return ctx.error(SinglePredicateError.minCount(this, count));
+    }
+
+    /// test against slice max count
+    public boolean testSliceMin(PredicateContext ctx) {
+        if (skipSliceTest() || ctx.layerCache() == null) return true;
+        int count = ctx.layerCache().getInt(this);
+        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        return ctx.error(SinglePredicateError.minLayerCount(this, count));
     }
 
     /// test against global max count
@@ -95,9 +118,7 @@ public abstract class BasePredicate {
     }
 
     /// computes the candidates for this predicate
-    public List<BlockInfo> computeCandidates() {
-        return Collections.emptyList();
-    }
+    public abstract List<BlockInfo> computeCandidates();
 
     /// @return the candidate blocks for this predicate, may be empty, lazily initialized
     public List<BlockInfo> getCandidates() {
@@ -105,11 +126,6 @@ public abstract class BasePredicate {
             candidates = computeCandidates();
         }
         return candidates;
-    }
-
-    /// @return a list of candidates from a predicate at {@code index}
-    public List<BlockInfo> getCandidates(int index) {
-        return getCandidates();
     }
 
     public List<ItemStack> getCandidateStacks() {
@@ -132,97 +148,6 @@ public abstract class BasePredicate {
                 .map(c -> c.get(0));
     }
 
-    public boolean isAir() {
-        return this == AIR;
-    }
-
-    public boolean isAny() {
-        return this == ANY;
-    }
-
-    /// used for tooltips
-    ///
-    /// @return true if this or any sub predicates is air
-    public boolean hasAir() {
-        return isAir();
-    }
-
-    /// used for tooltips
-    public boolean isSingle() {
-        return true;
-    }
-
-    public BasePredicate setMinGlobalLimited(int min) {
-        return this.setMinCount(min);
-    }
-
-    public BasePredicate setMinGlobalLimited(int min, int previewCount) {
-        return this.setMinCount(min).setPreviewCount(previewCount);
-    }
-
-    public BasePredicate setMaxGlobalLimited(int max) {
-        return this.setMaxCount(max);
-    }
-
-    public BasePredicate setMaxGlobalLimited(int max, int previewCount) {
-        return this.setMaxCount(max).setPreviewCount(previewCount);
-    }
-
-    public BasePredicate setGlobalMinMax(int min, int max) {
-        return this.setMinCount(min).setMaxCount(max);
-    }
-
-    public BasePredicate setMinLayerLimited(int min) {
-        return this.setMinSliceCount(min);
-    }
-
-    public BasePredicate setMinLayerLimited(int min, int previewCount) {
-        return this.setMinSliceCount(min).setPreviewCount(previewCount);
-    }
-
-    public BasePredicate setMaxLayerLimited(int max) {
-        return this.setMaxSliceCount(max);
-    }
-
-    public BasePredicate setMaxLayerLimited(int max, int previewCount) {
-        return this.setMaxSliceCount(max).setPreviewCount(previewCount);
-    }
-
-    public BasePredicate setLayerMinMax(int min, int max) {
-        return this.setMinSliceCount(min).setMaxSliceCount(max);
-    }
-
-    /**
-     * Sets the Minimum and Maximum limit to the passed value
-     *
-     * @param limit The Maximum and Minimum limit
-     */
-    public BasePredicate setExactLimit(int limit) {
-        return this.setMinCount(limit).setMaxCount(limit);
-    }
-
-    public BasePredicate disabledRenderFormed() {
-        return setDisableRenderFormed(true);
-    }
-
-    /// @return a non-flattened list of predicates
-    public List<BasePredicate> getInnerPredicates() {
-        return List.of(this);
-    }
-
-    /// visits every predicate
-    public void visit(Consumer<BasePredicate> visitor) {
-        visitor.accept(this);
-    }
-
-    /// @return a flat list of all predicates
-    public final List<BasePredicate> expand() {
-        List<BasePredicate> result = new ArrayList<>();
-        visit(result::add);
-        if (result.size() > 1) result.sort(PREDICATE_COMPARATOR);
-        return Collections.unmodifiableList(result);
-    }
-
     /// the type of this predicate
     public abstract String getTypeName();
 
@@ -232,47 +157,20 @@ public abstract class BasePredicate {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(getTypeName());
-        if (isController()) builder.append("[Controller]");
         builder.append('{');
         appendContents(builder);
         builder.append('}');
         return builder.toString();
     }
 
-    // === instance methods ===
-    public BasePredicate or(BasePredicate other) {
-        return or(null, List.of(this, other));
-    }
-
-    public BasePredicate and(BasePredicate other) {
-        return and(null, List.of(this, other));
-    }
-
-    public BasePredicate xor(BasePredicate other) {
-        return xor(null, List.of(this, other));
-    }
-
-    // === public static helpers ===
-    public static BasePredicate or(@Nullable String debugName, Iterable<BasePredicate> predicates) {
-        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.OR);
-    }
-
-    public static BasePredicate and(@Nullable String debugName, Iterable<BasePredicate> predicates) {
-        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.AND);
-    }
-
-    public static BasePredicate xor(@Nullable String debugName, Iterable<BasePredicate> predicates) {
-        return new MultiPredicate(debugName, predicates, MultiPredicate.Logic.XOR);
-    }
-
-    public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate) {
+    public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate) {
         return create(debugName, predicate, Stream.empty(), null);
     }
 
     // this uses stream for lazy initialization
-    public static BasePredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
-                                       Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        return new BasePredicate() {
+    public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
+                                        Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
+        BasePredicate basePredicate = new BasePredicate() {
 
             @Override
             public boolean test(PredicateContext ctx) {
@@ -296,5 +194,6 @@ public abstract class BasePredicate {
                 }
             }
         };
+        return new MultiPredicate(basePredicate);
     }
 }

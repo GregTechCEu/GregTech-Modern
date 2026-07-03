@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
@@ -354,12 +354,12 @@ public class GTMultiMachines {
             .recipeModifiers(OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_STAINLESS_CLEAN)
             .pattern(definition -> {
-                BasePredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded()) {
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 }
                 exportPredicate.setMaxLayerLimited(1);
-                BasePredicate maint = autoAbilities(true, false, false)
+                MultiPredicate maint = autoAbilities(true, false, false)
                         .setMaxGlobalLimited(1);
                 return MultiblockPatternBuilder.start(UP, BACK, RIGHT)
                         .slice("YSY", "YYY", "YYY")
@@ -425,7 +425,7 @@ public class GTMultiMachines {
                                     Predicates.abilities(PartAbility.IMPORT_FLUIDS_1X).setMaxGlobalLimited(4)))
                     .where('O',
                             Predicates.abilities(PartAbility.EXPORT_ITEMS)
-//                                    .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end"))
+                    // .addTooltips(Component.translatable("gtceu.multiblock.pattern.location_end"))
                     )
                     .where('Y',
                             blocks(CASING_STEEL_SOLID.get()).or(Predicates.abilities(PartAbility.INPUT_ENERGY)
@@ -435,7 +435,7 @@ public class GTMultiMachines {
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
-                    .where('D', blocks(CASING_GRATE.get()).or(dataHatchPredicate()))
+                    .where('D', blocks(CASING_GRATE.get()).and(dataHatchPredicate()))
                     .where('#', Predicates.any())
                     .build())
             .partSorter(AssemblyLineMachine::partSorter)

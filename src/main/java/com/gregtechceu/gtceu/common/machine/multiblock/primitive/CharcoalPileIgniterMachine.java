@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandableMultiblockPatternB
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.LighterBehavior;
@@ -150,7 +151,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         };
     }
 
-    private static BasePredicate wallPredicate() {
+    private static MultiPredicate wallPredicate() {
         return Predicates.customFunction(multiblockState -> {
             BlockPos p = multiblockState.getBlockPos();
             return multiblockState.retrieveCurrentBlockState().is(CustomTags.CHARCOAL_PILE_IGNITER_WALLS) ?
@@ -159,7 +160,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         }, null);
     }
 
-    private static BasePredicate logPredicate() {
+    private static MultiPredicate logPredicate() {
         return Predicates.customFunction(multiblockState -> {
             boolean match = multiblockState.retrieveCurrentBlockState().is(BlockTags.LOGS_THAT_BURN);
             return match ? null : new PatternStringError(Component.translatable("gtceu.predicate_error.charcoal.logs"));

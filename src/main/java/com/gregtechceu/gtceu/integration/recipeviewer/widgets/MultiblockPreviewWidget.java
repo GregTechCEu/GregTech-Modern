@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.renderer.PatternPreviewRenderer;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
@@ -139,13 +140,13 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
             IBlockPattern pattern = multiblockDefinition.getStructurePatterns().get("main").get();
             if (pattern instanceof BlockPattern blockPattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                BasePredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
+                MultiPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                         blockPattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);
             } else if (pattern instanceof ExpandablePattern expandablePattern) {
                 @SuppressWarnings("DataFlowIssue") // realistically it can't be null here
-                BasePredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
+                MultiPredicate predicate = this.multiblockSchemaInfo.getStructureHelper().getPredicateFromPos(
                         expandablePattern, this.selectionInfo.pos(), frontFacing, upFacing, isFlipped);
 
                 return createSelectedBlockMenu(predicate);
@@ -239,7 +240,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                                         .clientOnlyHandler(partsHandler))));
     }
 
-    private ContextMenuButton<?> createSelectedBlockMenu(BasePredicate predicate) {
+    private ContextMenuButton<?> createSelectedBlockMenu(MultiPredicate predicate) {
         // TODO this can throw invalid state exception when
         // opening after clicking on a block twice
         return new ContextMenuButton<>(this.selectionInfo.pos().toString())
@@ -252,7 +253,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                         .coverChildrenWidth()
                         .collapseDisabledChildren()
                         .childSeparator(Icon.EMPTY_2PX)
-                        .children(predicate.expand(), basePredicate -> {
+                        .children(predicate, basePredicate -> {
                             List<BlockInfo> candidates = basePredicate.getCandidates();
                             if (candidates.isEmpty())
                                 return new EmptyWidget();
@@ -298,7 +299,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
 
     private void createPredicateMenus(Flow predicatesRow, BlockPattern blockPattern) {
         for (var entry : blockPattern.getPredicates().char2ObjectEntrySet()) {
-            BasePredicate predicate = entry.getValue();
+            MultiPredicate predicate = entry.getValue();
             // todo figure out sliders needed for predicate min/max depending on base predicates in the
             // main predicate
             if (predicate.isAny() || predicate.isAir()) {
@@ -327,7 +328,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
                             .coverChildrenWidth()
                             .collapseDisabledChildren()
                             .childSeparator(Icon.EMPTY_2PX)
-                            .children(predicate.expand(), basePredicate -> {
+                            .children(predicate, basePredicate -> {
                                 List<BlockInfo> candidates = basePredicate.getCandidates();
                                 if (candidates.isEmpty()) {
                                     return new EmptyWidget();
@@ -350,7 +351,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
         }
     }
 
-    private ContextMenuButton<?> createInnerPredicateMenu(BasePredicate predicate, BasePredicate basePredicate,
+    private ContextMenuButton<?> createInnerPredicateMenu(MultiPredicate predicate, BasePredicate basePredicate,
                                                           List<BlockInfo> candidates) {
         return new ContextMenuButton<>(basePredicate.toString())
                 .size(16)
@@ -397,7 +398,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     }
 
     /// ==== User Preference UI ======
-    private void setPredicateDefaultBlock(BasePredicate predicate, BasePredicate basePredicate,
+    private void setPredicateDefaultBlock(MultiPredicate predicate, BasePredicate basePredicate,
                                           BlockInfo blockInfo) {
         this.multiblockSchemaInfo.putPredicatePreference(predicate, basePredicate, blockInfo);
         refreshSchema();

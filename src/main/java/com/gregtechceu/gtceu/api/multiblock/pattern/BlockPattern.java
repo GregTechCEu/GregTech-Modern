@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -14,7 +13,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,12 +35,12 @@ public class BlockPattern implements IBlockPattern {
     @Getter
     protected final SliceStrategy sliceStrategy;
     @Getter
-    protected final Char2ObjectMap<BasePredicate> predicates;
+    protected final Char2ObjectMap<MultiPredicate> predicates;
 
     public BlockPattern(PatternSlice[] slices, SliceStrategy sliceStrategy,
                         int[] dimensions, RelativeDirection[] directions,
                         @Nullable OriginOffset offset, @Nullable OriginOffset anchorOffset,
-                        Char2ObjectMap<BasePredicate> predicates,
+                        Char2ObjectMap<MultiPredicate> predicates,
                         char centerChar) {
         this.slices = slices;
         this.sliceStrategy = sliceStrategy;
@@ -145,14 +143,6 @@ public class BlockPattern implements IBlockPattern {
 
         patternState.globalCount.clear();
         patternState.layerCount.clear();
-        // Make sure every prerdicate with a minvalue is checked
-        for (BasePredicate predicate : predicates.values()) {
-            for (BasePredicate basePredicate : predicate.expand()) {
-                if (basePredicate.getMinCount() > 0) {
-                    patternState.globalCount.putIfAbsent(basePredicate, 0);
-                }
-            }
-        }
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {
@@ -170,18 +160,12 @@ public class BlockPattern implements IBlockPattern {
 
         // global min check
         PredicateContext ctx = patternState.toContext();
-        for (BasePredicate predicate : predicates.values()) {
-            if (ctx.testGlobalMin(predicate)) {
+        for (MultiPredicate predicate : predicates.values()) {
+            if (!predicate.testGlobalMin(ctx)) {
                 patternState.setErrors(ctx.getErrors());
                 return false;
             }
         }
-//        for (Object2IntMap.Entry<BasePredicate> entry : patternState.globalCount.object2IntEntrySet()) {
-//            if (!entry.getKey().testGlobalMin(ctx)) {
-//                patternState.setErrors(ctx.getErrors());
-//                return false;
-//            }
-//        }
 
         patternState.setError(null);
         return true;
@@ -221,7 +205,7 @@ public class BlockPattern implements IBlockPattern {
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
                 patternState.currentBlockInfo.setCurrentPos(charPos);
-                BasePredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
+                MultiPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
                 if (!pred.isAny()) {
                     BlockEntity blockEntity = ctx.blockEntity();
@@ -230,7 +214,7 @@ public class BlockPattern implements IBlockPattern {
                 }
 
                 // internal predicate check, global/slice max checks
-                if (pred.test(ctx) && ctx.testGlobalMax(pred) && ctx.testSliceMax(pred)) {
+                if (pred.test(ctx)) {
                     charPos.move(absoluteChar);
                     // continue...
                 } else {
@@ -244,17 +228,11 @@ public class BlockPattern implements IBlockPattern {
         }
 
         // slice min check
-        for (BasePredicate predicate : predicates.values()) {
-            if (ctx.testSliceMin(predicate)) {
+        for (MultiPredicate predicate : predicates.values()) {
+            if (!predicate.testSliceMin(ctx)) {
                 patternState.setErrors(ctx.getErrors());
             }
         }
-//        for (Object2IntMap.Entry<BasePredicate> entry : patternState.layerCount.object2IntEntrySet()) {
-//            if (!entry.getKey().testSliceMin(ctx)) {
-//                patternState.setErrors(ctx.getErrors());
-//                return false;
-//            }
-//        }
 
         return true;
     }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import com.google.common.base.Joiner;
@@ -51,7 +52,7 @@ public class MultiblockPatternBuilder {
 
     private final List<PatternSlice> slices = new ArrayList<>();
 
-    private final Char2ObjectMap<@Nullable BasePredicate> symbolMap = new Char2ObjectOpenHashMap<>();
+    private final Char2ObjectMap<@Nullable MultiPredicate> symbolMap = new Char2ObjectOpenHashMap<>();
 
     private final RelativeDirection[] directions = new RelativeDirection[3];
 
@@ -124,7 +125,7 @@ public class MultiblockPatternBuilder {
         return new MultiblockPatternBuilder(sliceDir, stringDir, charDir);
     }
 
-    public MultiblockPatternBuilder where(char symbol, BasePredicate predicate) {
+    public MultiblockPatternBuilder where(char symbol, MultiPredicate predicate) {
         this.symbolMap.put(symbol, predicate);
         if (predicate.isController()) centerChar = symbol;
         return this;
@@ -172,10 +173,10 @@ public class MultiblockPatternBuilder {
 
         for (var entry : symbolMap.char2ObjectEntrySet()) {
             char symbol = entry.getCharKey();
-            BasePredicate predicate = entry.getValue();
+            MultiPredicate predicate = entry.getValue();
             if (predicate == null) throw new IllegalArgumentException("Predicate for symbol " + symbol + " was null.");
             int maxCount = -1;
-            for (var basePredicate : predicate.expand()) {
+            for (var basePredicate : predicate) {
                 if (basePredicate.getMaxCount() == -1) {
                     maxCount = -1;
                     break;

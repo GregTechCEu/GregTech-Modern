@@ -24,7 +24,7 @@ import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -601,7 +601,7 @@ public class GTMachineUtils {
                         controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
+                    MultiPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
                                     .setPreviewCount(1))
                             .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
@@ -741,7 +741,7 @@ public class GTMachineUtils {
                 .register();
     }
 
-    private static BasePredicate rotorHolder(int tier) {
+    private static MultiPredicate rotorHolder(int tier) {
         return Predicates.customPredicate("RotorHolder", ctx -> {
             if (MetaMachine.getMachine(ctx.level(),
                     ctx.pos()) instanceof RotorHolderPartMachine rotorHolder &&

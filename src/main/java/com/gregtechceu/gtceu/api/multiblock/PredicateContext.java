@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
@@ -13,6 +12,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Objects;
 
 public final class PredicateContext {
+
+    @Getter
     private final CurrentBlockInfo blockInfo;
     private final List<PatternError> errors = new ArrayList<>();
     private final Object2IntMap<BasePredicate> globalCache;
@@ -89,45 +91,13 @@ public final class PredicateContext {
         return layerCache;
     }
 
-    /// test against global max count
-    public boolean testGlobalMax(BasePredicate predicate) {
-        if (predicate.skipGlobalTest() || layerCache() == null) return true;
-        int count = incrementGlobalCount(predicate);
-        if (predicate.testGlobalMax(count)) return true;
-        return error(SinglePredicateError.maxCount(predicate, count));
-    }
-
-    /// test against slice max count
-    public boolean testSliceMax(BasePredicate predicate) {
-        if (predicate.skipSliceTest() || layerCache() == null) return true;
-        int count = incrementSliceCount(predicate);
-        if (predicate.testSliceMax(count)) return true;
-        return error(SinglePredicateError.maxLayerCount(predicate, count));
-    }
-
-    private int incrementGlobalCount(BasePredicate predicate) {
+    public int incrementGlobalCount(BasePredicate predicate) {
         globalCache().mergeInt(predicate, 1, Integer::sum);
         return globalCache().getInt(predicate);
     }
 
-    private int incrementSliceCount(BasePredicate predicate) {
+    public int incrementSliceCount(BasePredicate predicate) {
         Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
         return layerCache().getInt(predicate);
-    }
-
-    /// test against global min count
-    public boolean testGlobalMin(BasePredicate predicate) {
-        if (predicate.skipGlobalTest() || layerCache() == null) return true;
-        int count = globalCache().getInt(predicate);
-        if (predicate.testGlobalMin(count)) return true;
-        return error(SinglePredicateError.minCount(predicate, count));
-    }
-
-    /// test against slice min count
-    public boolean testSliceMin(BasePredicate predicate) {
-        if (predicate.skipSliceTest() || layerCache() == null) return true;
-        int count = layerCache().getInt(predicate);
-        if (predicate.testSliceMin(count)) return true;
-        return error(SinglePredicateError.minLayerCount(predicate, count));
     }
 }

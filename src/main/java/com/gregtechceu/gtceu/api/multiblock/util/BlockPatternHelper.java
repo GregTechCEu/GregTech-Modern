@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,8 +25,8 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         this.sliceRepeats = sliceRepeats;
     }
 
-    public BasePredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
-                                             Direction frontFacing, Direction upFacing, boolean isFlipped) {
+    public MultiPredicate getPredicateFromPos(IBlockPattern pattern, BlockPos pos,
+                                              Direction frontFacing, Direction upFacing, boolean isFlipped) {
         BlockPattern blockPattern = (BlockPattern) pattern;
         char[][][] flattenedBlockPattern = flattenBlockPattern(blockPattern);
         char[][][] adjustedBlockPattern = rotateAndFlipPattern(flattenedBlockPattern, blockPattern.getDirections(),
@@ -66,7 +67,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                                 dimensions.getX() + "," + dimensions.getY() + "," + dimensions.getZ());
             }
             char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-            BasePredicate predicate = blockPattern.getPredicates().get(c);
+            MultiPredicate predicate = blockPattern.getPredicates().get(c);
             if (!isValidCandidate(resultStructure, predicate, pos, blockInfo, sliceDir)) {
                 throw new IllegalStateException("Invalid preference " + blockInfo.getBlockState().getBlock().getName() +
                         " for position " + pos);
@@ -108,7 +109,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
                     if (resultStructure.containsKey(pos)) continue;
 
                     char c = this.flattenedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
-                    BasePredicate predicate = blockPattern.getPredicates().get(c);
+                    MultiPredicate predicate = blockPattern.getPredicates().get(c);
 
                     if (predicate.isAir() || predicate.isAny()) {
                         continue;
@@ -126,9 +127,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         }
     }
 
-    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, BasePredicate predicate,
+    private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate) {
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
@@ -155,9 +156,9 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         return false;
     }
 
-    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, BasePredicate predicate,
+    private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate) {
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
@@ -184,14 +185,14 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         return false;
     }
 
-    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, BasePredicate predicate,
+    private boolean isValidCandidate(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                      BlockPos pos, BlockInfo newInfo, Direction sliceDir) {
         // The slice (layer) this position belongs to.
         int sliceCoord = getCoordFromDir(pos, sliceDir);
 
         // newInfo is valid if there's a basePredicate it qualifies for whose maxCount (global) and maxSliceCount
         // (this slice) wouldn't be exceeded by placing it here.
-        for (BasePredicate basePredicate : predicate.expand()) {
+        for (BasePredicate basePredicate : predicate) {
             if (!basePredicate.getCandidates().contains(newInfo)) continue;
 
             int maxCount = getMaxCount(predicate, basePredicate);

@@ -2,9 +2,8 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -21,7 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -47,7 +45,7 @@ public class ExpandablePattern implements IBlockPattern {
     @Setter
     protected @Nullable BoundsConstraintProvider boundsConstraints = null;
     @Getter
-    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, BasePredicate> predicateProvider;
+    protected final BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider;
     @Getter
     protected final OriginOffset offset = new OriginOffset();
 
@@ -55,7 +53,7 @@ public class ExpandablePattern implements IBlockPattern {
     protected final RelativeDirection[] directions;
 
     public ExpandablePattern(BoundsProvider boundsProvider,
-                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, BasePredicate> predicateProvider,
+                             BiFunction<BlockPos.MutableBlockPos, List<Integer>, MultiPredicate> predicateProvider,
                              RelativeDirection[] directions) {
         this.boundsProvider = boundsProvider;
         this.predicateProvider = predicateProvider;
@@ -156,7 +154,7 @@ public class ExpandablePattern implements IBlockPattern {
         // aisle count, y is str count, and z is char count.
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
-            BasePredicate pred = predicateProvider.apply(mPos, bounds);
+            MultiPredicate pred = predicateProvider.apply(mPos, bounds);
 
             // this basically reshuffles the coordinates into absolute form from relative form
             mPos.set(BlockPos.ZERO).move(absolutes[0], pos.getX()).move(absolutes[1], pos.getY()).move(absolutes[2],

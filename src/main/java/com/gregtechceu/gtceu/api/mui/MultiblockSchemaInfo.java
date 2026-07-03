@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.AbstractStructureHelper;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.client.mui.schema.MutableSchema;
@@ -119,7 +120,7 @@ public class MultiblockSchemaInfo {
         this.userDimensions.clear();
     }
 
-    public void putPredicatePreference(BasePredicate predicate, BasePredicate basePredicate, BlockInfo info) {
+    public void putPredicatePreference(MultiPredicate predicate, BasePredicate basePredicate, BlockInfo info) {
         this.structureHelper.getBlockPreferences().put(predicate, basePredicate, info);
     }
 }

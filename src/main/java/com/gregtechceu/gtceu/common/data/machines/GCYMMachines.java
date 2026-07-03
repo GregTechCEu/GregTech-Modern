@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
@@ -605,8 +605,8 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, OC_NON_PERFECT_SUBTICK, BATCH_MODE)
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
-                BasePredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
-                BasePredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
+                MultiPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
+                MultiPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded())
                     exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
                 exportPredicate.setMaxLayerLimited(1);
@@ -756,7 +756,7 @@ public class GCYMMachines {
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock, BATCH_MODE)
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> {
-                BasePredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
+                MultiPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                         // spotless:off
                         .slice("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
