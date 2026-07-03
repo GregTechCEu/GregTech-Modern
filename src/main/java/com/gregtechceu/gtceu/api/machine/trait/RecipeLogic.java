@@ -84,11 +84,10 @@ public class RecipeLogic extends WorkLogic {
         lastRecipe = null;
         lastOriginRecipe = null;
         lastGroup = null;
-        lastGroupColor= UNDYED;
+        lastGroupColor = UNDYED;
         progress = 0;
         duration = 0;
         failureReasonsMap.clear();
-
     }
 
     public double getProgressPercent() {
@@ -147,8 +146,7 @@ public class RecipeLogic extends WorkLogic {
                 lastOriginRecipe = match;
                 return true;
             }
-        }
-        else {
+        } else {
             failureReasonsMap.put(match.id, failReason);
         }
         return false;
@@ -188,10 +186,10 @@ public class RecipeLogic extends WorkLogic {
         recipeDirty = false;
         lastRecipe = null;
         lastOriginRecipe = null;
-        for(var group: machine.getRecipeHandlerGroups()) {
-            if(machine.getRecipeType().findRecipe(group, this::checkMatchedRecipeAvailable) != null) {
+        for (var group : machine.getRecipeHandlerGroups()) {
+            if (machine.getRecipeType().findRecipe(group, this::checkMatchedRecipeAvailable) != null) {
                 lastGroup = group;
-                if(group.getColor() != UNDYED) lastGroupColor = group.getColor();
+                if (group.getColor() != UNDYED) lastGroupColor = group.getColor();
                 break;
             }
         }
@@ -202,7 +200,7 @@ public class RecipeLogic extends WorkLogic {
     }
 
     public RecipeHandlerGroup getLastGroup() {
-        if(lastGroup == null) {
+        if (lastGroup == null) {
             var groups = machine.getRecipeHandlerGroups();
             lastGroup = groups.stream()
                     .filter(group -> group.getColor() == lastGroupColor)
@@ -290,13 +288,12 @@ public class RecipeLogic extends WorkLogic {
             if (suspendAfterFinish) {
                 setStatus(Status.SUSPEND);
                 suspendAfterFinish = false;
-            }
-            else {
-                if(!recipeDirty) {
+            } else {
+                if (!recipeDirty) {
                     if (lastOriginRecipe != null && machine.alwaysTryModifyRecipe()) {
                         lastRecipe = lastOriginRecipe.toRuntime();
                         var failReason = machine.modifyRecipe(lastRecipe, getLastGroup());
-                        if(failReason != null) {
+                        if (failReason != null) {
                             failureReasonsMap.put(lastOriginRecipe.id, failReason);
                             lastRecipe = null;
                         }
@@ -312,7 +309,6 @@ public class RecipeLogic extends WorkLogic {
         progress = 0;
         duration = 0;
         lastRecipe = null;
-
     }
 
     protected ActionResult handleRecipeIO(GTRecipe recipe, IO io) {
@@ -377,7 +373,6 @@ public class RecipeLogic extends WorkLogic {
         return Collections.emptyList();
     }
 
-
     public boolean hasCustomProgressLine() {
         return false;
     }
@@ -390,6 +385,4 @@ public class RecipeLogic extends WorkLogic {
     public boolean showFancyTooltip() {
         return waitingReason != null || !failureReasonsMap.isEmpty();
     }
-
-
 }

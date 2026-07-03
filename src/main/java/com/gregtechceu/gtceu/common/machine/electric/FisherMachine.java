@@ -221,7 +221,8 @@ public class FisherMachine extends WorkableTieredMachine
     public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
         super.notifyWorkStatusChanged(oldStatus, newStatus);
         if (getRenderState().hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE,
+                    newStatus == WorkLogic.Status.WORKING));
         }
     }
 
@@ -232,19 +233,20 @@ public class FisherMachine extends WorkableTieredMachine
             setStatus(WorkLogic.Status.IDLE);
         } else if (energyContainer.getEnergyStored() < energyPerTick ||
                 energyContainer.removeEnergy(energyPerTick) < energyPerTick) {
-            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
-                    .append(EURecipeCapability.CAP.getName()));
-        } else {
-            setStatus(WorkLogic.Status.WORKING);
-            fishingUpdate();
-        }
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                            .append(EURecipeCapability.CAP.getName()));
+                } else {
+                    setStatus(WorkLogic.Status.WORKING);
+                    fishingUpdate();
+                }
     }
 
     public void fishingUpdate() {
         if (this.getOffsetTimer() % maxProgress == 0L) {
             for (int x = 0; x < WATER_CHECK_SIZE; x++)
                 for (int z = 0; z < WATER_CHECK_SIZE; z++) {
-                    BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+                    BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0,
+                            z - WATER_CHECK_SIZE / 2);
                     if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
                         hasWater = false;
                         return;

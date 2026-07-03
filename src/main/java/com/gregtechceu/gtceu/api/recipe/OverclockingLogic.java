@@ -7,8 +7,9 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.google.common.math.IntMath;
 import net.minecraft.network.chat.Component;
+
+import com.google.common.math.IntMath;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,6 +45,7 @@ public interface OverclockingLogic {
     OverclockingLogic NON_PERFECT_OVERCLOCK = create(STD_DURATION_FACTOR, STD_VOLTAGE_FACTOR, false);
 
     OverclockingLogic PERFECT_OVERCLOCK_SUBTICK = create(PERFECT_DURATION_FACTOR, STD_VOLTAGE_FACTOR, true);
+
     /**
      * Create a standard OverclockingLogic using either {@link #standardOC} or {@link #subTickParallelOC}
      * 
@@ -241,7 +243,7 @@ public interface OverclockingLogic {
             } else {
                 duration *= durationFactor;
                 durationMultiplier *= durationFactor;
-                nonSubtickOCs ++;
+                nonSubtickOCs++;
             }
 
             // Only set EUt after checking parallels - no need to OC if parallels would be too high

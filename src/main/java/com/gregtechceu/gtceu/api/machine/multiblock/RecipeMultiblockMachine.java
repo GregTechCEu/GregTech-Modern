@@ -34,7 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine
-                                            implements IRecipeLogicMachine {
+                                              implements IRecipeLogicMachine {
 
     @Nullable
     @Getter
@@ -86,7 +86,6 @@ public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine
         super.onStructureFormed();
         recipeHandlerLists.clear();
         recipeLogic.resetLastGroup();
-
 
         for (IMultiPart part : getParts()) {
             var handlerLists = part.getRecipeHandlers();

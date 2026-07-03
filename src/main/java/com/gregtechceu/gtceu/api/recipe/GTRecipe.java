@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTRecipe{
+public class GTRecipe {
 
     public final GTRecipeType recipeType;
     @Getter
@@ -47,6 +47,7 @@ public class GTRecipe{
     public int batchParallels = 1;
     public int ocLevel = 0;
     public final GTRecipeCategory recipeCategory;
+
     public long getInputEUt() {
         return RecipeHelper.calculateEUt(tickInputs);
     }
@@ -106,10 +107,9 @@ public class GTRecipe{
     }
 
     public GTRecipe copy(int multiplier, boolean modifyTick, boolean modifyDuration) {
-        if(modifyTick) {
+        if (modifyTick) {
             return copy(multiplier, modifyDuration);
-        }
-        else {
+        } else {
             var copied = new GTRecipe(recipeType, id,
                     inputs.copyWithMultiplier(multiplier), outputs.copyWithMultiplier(multiplier),
                     tickInputs.copy(), tickOutputs.copy(),
@@ -189,7 +189,7 @@ public class GTRecipe{
         long eut = RecipeHelper.getRealEUtWithIO(this);
         if (eut == 0) return;
         long modified = (long) (eut * multiplier);
-        if(modified != 0) {
+        if (modified != 0) {
             EURecipeCapability.putEUContent(modified > 0 ? tickInputs : tickOutputs, Math.abs(modified));
         }
     }
@@ -249,7 +249,8 @@ public class GTRecipe{
         int batchParallels = buf.readVarInt();
         int ocLevel = buf.readVarInt();
 
-        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier, duration, category);
+        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier,
+                duration, category);
         recipe.parallels = parallels;
         recipe.subtickParallels = subtickParallels;
         recipe.batchParallels = batchParallels;
@@ -264,11 +265,16 @@ public class GTRecipe{
         tag.putString("id", id.toString());
         tag.putInt("tier", tier);
         tag.putInt("duration", duration);
-        tag.put("inputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, inputs).getOrThrow(false, GTCEu.LOGGER::error));
-        tag.put("outputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, outputs).getOrThrow(false, GTCEu.LOGGER::error));
-        tag.put("tickInputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickInputs).getOrThrow(false, GTCEu.LOGGER::error));
-        tag.put("tickOutputs", ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickOutputs).getOrThrow(false, GTCEu.LOGGER::error));
-        tag.put("conditions", Codec.list(RecipeCondition.CODEC).encodeStart(ops, conditions).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("inputs",
+                ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, inputs).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("outputs",
+                ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, outputs).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("tickInputs",
+                ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickInputs).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("tickOutputs",
+                ContentListMap.CODEC.encodeStart(NbtOps.INSTANCE, tickOutputs).getOrThrow(false, GTCEu.LOGGER::error));
+        tag.put("conditions",
+                Codec.list(RecipeCondition.CODEC).encodeStart(ops, conditions).getOrThrow(false, GTCEu.LOGGER::error));
         tag.put("data", data);
         tag.putString("category", recipeCategory.registryKey.toString());
         tag.putInt("parallels", parallels);
@@ -280,15 +286,21 @@ public class GTRecipe{
 
     public static GTRecipe fromNBT(CompoundTag tag) {
         var ops = RegistryOps.create(NbtOps.INSTANCE, GTRegistries.builtinRegistry());
-        GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(tag.getString("recipeType")));
+        GTRecipeType recipeType = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE
+                .get(new ResourceLocation(tag.getString("recipeType")));
         ResourceLocation id = new ResourceLocation(tag.getString("id"));
         int tier = tag.getInt("tier");
         int duration = tag.getInt("duration");
-        ContentListMap inputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("inputs")).getOrThrow(false, GTCEu.LOGGER::error);
-        ContentListMap outputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("outputs")).getOrThrow(false, GTCEu.LOGGER::error);
-        ContentListMap tickInputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickInputs")).getOrThrow(false, GTCEu.LOGGER::error);
-        ContentListMap tickOutputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickOutputs")).getOrThrow(false, GTCEu.LOGGER::error);
-        List<RecipeCondition<?>> conditions = Codec.list(RecipeCondition.CODEC).parse(ops, tag.get("conditions")).getOrThrow(false, GTCEu.LOGGER::error);
+        ContentListMap inputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("inputs")).getOrThrow(false,
+                GTCEu.LOGGER::error);
+        ContentListMap outputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("outputs")).getOrThrow(false,
+                GTCEu.LOGGER::error);
+        ContentListMap tickInputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickInputs")).getOrThrow(false,
+                GTCEu.LOGGER::error);
+        ContentListMap tickOutputs = ContentListMap.CODEC.parse(NbtOps.INSTANCE, tag.get("tickOutputs"))
+                .getOrThrow(false, GTCEu.LOGGER::error);
+        List<RecipeCondition<?>> conditions = Codec.list(RecipeCondition.CODEC).parse(ops, tag.get("conditions"))
+                .getOrThrow(false, GTCEu.LOGGER::error);
         CompoundTag data = tag.getCompound("data");
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(new ResourceLocation(tag.getString("category")));
         int parallels = tag.getInt("parallels");
@@ -296,7 +308,8 @@ public class GTRecipe{
         int batchParallels = tag.getInt("batchParallels");
         int ocLevel = tag.getInt("ocLevel");
 
-        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier, duration, category);
+        GTRecipe recipe = new GTRecipe(recipeType, id, inputs, outputs, tickInputs, tickOutputs, conditions, data, tier,
+                duration, category);
         recipe.parallels = parallels;
         recipe.subtickParallels = subtickParallels;
         recipe.batchParallels = batchParallels;

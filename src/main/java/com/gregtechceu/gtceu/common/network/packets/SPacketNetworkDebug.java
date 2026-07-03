@@ -81,8 +81,8 @@ public class SPacketNetworkDebug implements GTNetwork.INetPacket {
         NetworkDebugRenderer.setNetworks(networks.stream()
                 .map(network -> new NetworkDebugData(NetworkDebugData.Type.valueOf(network.type().name()),
                         network.nodes(), network.edges().stream()
-                        .map(edge -> new NetworkDebugData.Edge(edge.first(), edge.second()))
-                        .toList()))
+                                .map(edge -> new NetworkDebugData.Edge(edge.first(), edge.second()))
+                                .toList()))
                 .toList());
     }
 
@@ -116,13 +116,12 @@ public class SPacketNetworkDebug implements GTNetwork.INetPacket {
         }
     }
 
-    public record DebugNetwork(NetworkType type, List<BlockPos> nodes, List<DebugEdge> edges) {
-    }
+    public record DebugNetwork(NetworkType type, List<BlockPos> nodes, List<DebugEdge> edges) {}
 
-    public record DebugEdge(BlockPos first, BlockPos second) {
-    }
+    public record DebugEdge(BlockPos first, BlockPos second) {}
 
     public enum NetworkType {
+
         ENERGY(0xFF3A3A),
         FLUID(0x34B9FF),
         ITEM(0xFFB13B),

@@ -4,22 +4,20 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.NBTPredicateIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CustomMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.IntersectionMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemTagMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.PartialNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.StrictNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class VanillaIngredient extends ItemIngredient{
+public class VanillaIngredient extends ItemIngredient {
 
     private final Ingredient inner;
     protected ItemStack[] items;
@@ -40,7 +38,7 @@ public class VanillaIngredient extends ItemIngredient{
 
     @Override
     public ItemStack[] getItems() {
-        if(items == null) {
+        if (items == null) {
             var innerStacks = inner.getItems();
             this.items = new ItemStack[innerStacks.length];
             for (int i = 0; i < items.length; i++) {

@@ -17,10 +17,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -37,7 +35,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -51,13 +48,12 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -150,7 +146,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void onPaintingColorChanged(int color) {
         getControllers().forEach(controller -> {
-            if(controller instanceof IRecipeLogicMachine rlm) {
+            if (controller instanceof IRecipeLogicMachine rlm) {
                 rlm.getRecipeLogic().resetLastGroup();
             }
         });
@@ -160,7 +156,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public void setDistinct(boolean distinct) {
         isDistinct = (io != IO.OUT && distinct);
         getControllers().forEach(controller -> {
-            if(controller instanceof IRecipeLogicMachine rlm) {
+            if (controller instanceof IRecipeLogicMachine rlm) {
                 rlm.getRecipeLogic().resetLastGroup();
             }
         });
@@ -192,7 +188,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         }
         return handlerList;
     }
-
 
     //////////////////////////////////////
     // ******** Auto IO *********//

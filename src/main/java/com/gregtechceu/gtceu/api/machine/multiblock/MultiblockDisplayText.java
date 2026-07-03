@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.RangedItemIngredient;
@@ -327,7 +325,8 @@ public class MultiblockDisplayText {
         }
 
         public Builder addProgressLine(double currentDuration, double maxDuration) {
-            return maxDuration == 0 ? this : addProgressLine(currentDuration, maxDuration, currentDuration/maxDuration);
+            return maxDuration == 0 ? this :
+                    addProgressLine(currentDuration, maxDuration, currentDuration / maxDuration);
         }
 
         /**
@@ -444,7 +443,8 @@ public class MultiblockDisplayText {
                         displaycount = Component.translatable("gtceu.gui.content.range",
                                 ranged.getMinCount(), ranged.getCount());
                         if (item.isChanced()) {
-                            countD = countD * runs * function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
+                            countD = countD * runs *
+                                    function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
                                     IChancedIngredient.MAX_CHANCE;
                         }
                         countD = countD * ((ranged.getMinCount() + ranged.getCount()) / 2.0);
@@ -456,7 +456,8 @@ public class MultiblockDisplayText {
                         countD *= count;
                         if (item.isChanced()) {
                             rounded = true;
-                            countD = countD * runs * function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
+                            countD = countD * runs *
+                                    function.getBoostedChance(item.getChance(), recipeTier, chanceTier) /
                                     IChancedIngredient.MAX_CHANCE;
                         }
                         count = Math.max(1, (int) Math.round(countD));
@@ -490,7 +491,8 @@ public class MultiblockDisplayText {
                         displaycount = Component.translatable("gtceu.gui.content.range",
                                 ranged.getMinAmount(), ranged.getAmount());
                         if (fluid.isChanced()) {
-                            amountD = amountD * runs * function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
+                            amountD = amountD * runs *
+                                    function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
                                     IChancedIngredient.MAX_CHANCE;
                         }
                         amountD = amountD * ((ranged.getMinAmount() + ranged.getAmount()) / 2.0);
@@ -502,7 +504,8 @@ public class MultiblockDisplayText {
                         amountD *= amount;
                         if (fluid.isChanced()) {
                             rounded = true;
-                            amountD = amountD * runs * function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
+                            amountD = amountD * runs *
+                                    function.getBoostedChance(fluid.getChance(), recipeTier, chanceTier) /
                                     IChancedIngredient.MAX_CHANCE;
                         }
                         amount = Math.max(1, (int) Math.round(amountD));

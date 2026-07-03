@@ -66,7 +66,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class QuantumChestMachine extends MetaMachine implements ITieredMachine, IAutoOutputItem, IInteractedMachine,
-                                  IControllable, IDropSaveMachine, IFancyUIMachine {
+                                 IControllable, IDropSaveMachine, IFancyUIMachine {
 
     /**
      * Sourced from FunctionalStorage's

@@ -4,22 +4,22 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.codec.DispatchedMapCodec;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import net.minecraft.network.FriendlyByteBuf;
 
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
-public class ContentListMap{
+public class ContentListMap {
 
-    public static final Codec<ContentListMap> CODEC = new DispatchedMapCodec<RecipeCapability<?>, List<?>>(RecipeCapability.DIRECT_CODEC,
+    public static final Codec<ContentListMap> CODEC = new DispatchedMapCodec<RecipeCapability<?>, List<?>>(
+            RecipeCapability.DIRECT_CODEC,
             ContentListMap::contentListCodec)
             .xmap(ContentListMap::new, ContentListMap::asMap);
 
@@ -45,7 +45,8 @@ public class ContentListMap{
         contentsMap.putAll(other.contentsMap);
     }
 
-    public <T> List<T> computeIfAbsent(RecipeCapability<T> capability, Function<RecipeCapability<T>, List<T>> function) {
+    public <T> List<T> computeIfAbsent(RecipeCapability<T> capability,
+                                       Function<RecipeCapability<T>, List<T>> function) {
         return (List<T>) contentsMap.computeIfAbsent(capability, cap -> function.apply((RecipeCapability<T>) cap));
     }
 
@@ -89,10 +90,9 @@ public class ContentListMap{
 
     public <T> T getFirst(RecipeCapability<T> capability) {
         List<T> list = (List<T>) contentsMap.get(capability);
-        if(list != null) {
+        if (list != null) {
             return list.get(0);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -111,13 +111,11 @@ public class ContentListMap{
     }
 
     public ObjectIterator<Reference2ObjectMap.Entry<RecipeCapability<?>, List<?>>> fastIterator() {
-        if(contentsMap instanceof Reference2ObjectArrayMap<RecipeCapability<?>, List<?>> r) {
+        if (contentsMap instanceof Reference2ObjectArrayMap<RecipeCapability<?>, List<?>> r) {
             return r.reference2ObjectEntrySet().fastIterator();
         }
         throw new RuntimeException();
     }
-
-
 
     public Map<RecipeCapability<?>, List<?>> asMap() {
         return contentsMap;
@@ -160,7 +158,7 @@ public class ContentListMap{
 
     public ContentListMap copy() {
         Map<RecipeCapability<?>, List<?>> newMap = new Reference2ObjectArrayMap<>();
-        contentsMap.forEach((k ,v) -> newMap.put(k, new ArrayList<>(v)));
+        contentsMap.forEach((k, v) -> newMap.put(k, new ArrayList<>(v)));
         return new ContentListMap(newMap);
     }
 
@@ -172,6 +170,7 @@ public class ContentListMap{
 
     public void appendAll(ContentListMap other) {
         other.forEachEntry(new EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
                 List<T> list = get(capability);
@@ -187,10 +186,11 @@ public class ContentListMap{
     public ContentListMap copyWithMultiplier(int multiplier) {
         Map<RecipeCapability<?>, List<?>> newMap = new Reference2ObjectArrayMap<>();
         forEachEntry(new EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> cap, List<T> list) {
                 var newList = new ArrayList<>();
-                for(var content: list) {
+                for (var content : list) {
                     newList.add(cap.copyWithMultiplier(content, multiplier));
                 }
                 newMap.put(cap, newList);
@@ -209,6 +209,7 @@ public class ContentListMap{
 
     private <N extends Number> void replaceContents(N multiplier) {
         forEachEntry(new EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> cap, List<T> list) {
                 list.replaceAll(content -> cap.copyWithMultiplier(content, multiplier.intValue()));
@@ -217,35 +218,33 @@ public class ContentListMap{
     }
 
     public void forEachEntry(EntryConsumer consumer) {
-        contentsMap.forEach((capability, contents) ->
-                acceptCaptured(consumer, capability, contents)
-        );
+        contentsMap.forEach((capability, contents) -> acceptCaptured(consumer, capability, contents));
     }
 
     private static <T> void acceptCaptured(
-            EntryConsumer consumer,
-            RecipeCapability<?> capability,
-            List<?> contents
-    ) {
+                                           EntryConsumer consumer,
+                                           RecipeCapability<?> capability,
+                                           List<?> contents) {
         consumer.accept(
                 (RecipeCapability<T>) capability,
-                (List<T>) contents
-        );
+                (List<T>) contents);
     }
 
     public interface EntryConsumer {
+
         <T> void accept(RecipeCapability<T> capability, List<T> contents);
     }
 
     public interface TypedEntry {
+
         <T> void accept(EntryConsumer consumer);
     }
 
     public Iterator<TypedEntry> iterator() {
-        Iterator<Map.Entry<RecipeCapability<?>, List<?>>> it =
-                contentsMap.entrySet().iterator();
+        Iterator<Map.Entry<RecipeCapability<?>, List<?>>> it = contentsMap.entrySet().iterator();
 
         return new Iterator<>() {
+
             @Override
             public boolean hasNext() {
                 return it.hasNext();
@@ -256,6 +255,7 @@ public class ContentListMap{
                 Map.Entry<RecipeCapability<?>, List<?>> entry = it.next();
 
                 return new TypedEntry() {
+
                     @Override
                     public void accept(EntryConsumer consumer) {
                         acceptCaptured(consumer, entry.getKey(), entry.getValue());

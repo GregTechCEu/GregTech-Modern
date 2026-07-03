@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -28,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class RecipeTieredMachine extends WorkableTieredMachine implements IRecipeLogicMachine,
-                                        IMachineLife, IMufflableMachine, IOverclockMachine {
+                                          IMachineLife, IMufflableMachine, IOverclockMachine {
 
     @Getter
     public final RecipeLogic recipeLogic;

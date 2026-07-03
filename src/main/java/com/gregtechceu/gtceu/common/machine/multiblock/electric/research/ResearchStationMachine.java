@@ -2,18 +2,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.computation.ComputationConsumer;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NetworkedComputationContainer;
-import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
-
-
 import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -52,13 +48,13 @@ public class ResearchStationMachine extends RecipeElectricMultiblockMachine {
     }
 
     private int getMaxComputation() {
-       for(var part: getParts()) {
-           if(part instanceof OpticalComputationHatchMachine opticalMachine) {
-               return ComputationNetworkManager.get((ServerLevel) getLevel())
-                       .getNetWorkAvailableCWUt(opticalMachine.getComputationPort());
-           }
-       }
-       return 0;
+        for (var part : getParts()) {
+            if (part instanceof OpticalComputationHatchMachine opticalMachine) {
+                return ComputationNetworkManager.get((ServerLevel) getLevel())
+                        .getNetWorkAvailableCWUt(opticalMachine.getComputationPort());
+            }
+        }
+        return 0;
     }
 
     @Override

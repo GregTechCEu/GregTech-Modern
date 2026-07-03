@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
@@ -17,7 +16,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
@@ -38,8 +36,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2IntAVLTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2IntSortedMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -123,7 +119,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
                         .map(IEnergyContainer.class::cast)
                         .forEach(energyContainers::add);
 
-                 traitSubscriptions.add(handlerList.subscribe(this::updatePreHeatSubscription, EURecipeCapability.CAP));
+                traitSubscriptions.add(handlerList.subscribe(this::updatePreHeatSubscription, EURecipeCapability.CAP));
             }
         }
         this.inputEnergyContainers = new EnergyContainerList(energyContainers);
@@ -168,7 +164,8 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @org.jetbrains.annotations.Nullable Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+    public static @org.jetbrains.annotations.Nullable Component recipeModifier(@NotNull MetaMachine machine,
+                                                                               RecipeHandlerGroup group,
                                                                                @NotNull GTRecipe recipe) {
         if (!(machine instanceof FusionReactorMachine fusionReactorMachine)) {
             return RecipeModifier.nullWrongType(FusionReactorMachine.class, machine);
@@ -194,7 +191,7 @@ public class FusionReactorMachine extends RecipeElectricMultiblockMachine {
         // increase the stored heat
         fusionReactorMachine.heat += heatDiff;
         fusionReactorMachine.updatePreHeatSubscription();
-        return FUSION_OC.getModifier(machine, group, recipe,GTValues.V[fusionReactorMachine.tier], false);
+        return FUSION_OC.getModifier(machine, group, recipe, GTValues.V[fusionReactorMachine.tier], false);
     }
 
     @Override

@@ -56,7 +56,6 @@ public class AssemblyLineMachine extends RecipeElectricMultiblockMachine {
         fluidHandlers = getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP).stream()
                 .filter(IRecipeHandler::shouldSearchContent)
                 .toList();
-
     }
 
     @Override
@@ -201,13 +200,13 @@ public class AssemblyLineMachine extends RecipeElectricMultiblockMachine {
             if (!result.isSuccess()) return result;
             result = consumeFluidContents(recipe, isTick);
             if (!result.isSuccess()) return result;
-            var copyWithoutItemsFluids = ((AsslineRecipeLogic)getRecipeLogic()).getCachedCopy(recipe);
+            var copyWithoutItemsFluids = ((AsslineRecipeLogic) getRecipeLogic()).getCachedCopy(recipe);
             return isTick ?
                     RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN) :
                     RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), copyWithoutItemsFluids, IO.IN);
 
         } else {
-           return isTick ?
+            return isTick ?
                     RecipeHelper.handleTickRecipeIO(recipeLogic.getLastGroup(), recipe, IO.IN) :
                     RecipeHelper.handleRecipeIO(recipeLogic.getLastGroup(), recipe, IO.IN);
         }
@@ -257,18 +256,20 @@ public class AssemblyLineMachine extends RecipeElectricMultiblockMachine {
             var config = ConfigHolder.INSTANCE.machines;
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
             if (!checkItemInputs(recipe, false)) return ActionResult.fail(
-                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"), ItemRecipeCapability.CAP, IO.IN);
+                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"),
+                    ItemRecipeCapability.CAP, IO.IN);
             if (!checkItemInputs(recipe, true)) return ActionResult.fail(
-                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"), ItemRecipeCapability.CAP, IO.IN);
+                    Component.translatable("gtceu.recipe_logic.assembly_line_item_inputs_out_of_order"),
+                    ItemRecipeCapability.CAP, IO.IN);
 
             if (!config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
             if (!checkFluidInputs(recipe, false)) return ActionResult.fail(
-                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"), FluidRecipeCapability.CAP, IO.IN);
+                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"),
+                    FluidRecipeCapability.CAP, IO.IN);
             if (!checkFluidInputs(recipe, true)) return ActionResult.fail(
-                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"), FluidRecipeCapability.CAP, IO.IN);
+                    Component.translatable("gtceu.recipe_logic.assembly_line_fluid_inputs_out_of_order"),
+                    FluidRecipeCapability.CAP, IO.IN);
             return ActionResult.SUCCESS;
         }
-
-
     }
 }

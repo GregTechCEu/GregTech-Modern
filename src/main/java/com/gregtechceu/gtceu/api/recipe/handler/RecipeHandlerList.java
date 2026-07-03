@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.recipe.handler;
 
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -36,7 +36,8 @@ public class RecipeHandlerList {
     @Getter
     private final Supplier<Boolean> distinctSupplier;
 
-    protected RecipeHandlerList(Supplier<Integer> colorSupplier, Supplier<Boolean> distinctSupplier, Iterable<IRecipeHandler<?>> handlers) {
+    protected RecipeHandlerList(Supplier<Integer> colorSupplier, Supplier<Boolean> distinctSupplier,
+                                Iterable<IRecipeHandler<?>> handlers) {
         this.colorSupplier = colorSupplier;
         this.distinctSupplier = distinctSupplier;
         addHandlers(handlers);
@@ -66,8 +67,8 @@ public class RecipeHandlerList {
 
     public List<IRecipeHandler<?>> getCapability(RecipeCapability<?> cap) {
         var list = new ArrayList<IRecipeHandler<?>>();
-        for(var handler: getAllHandlers()) {
-            if(handler.getCapability() == cap) list.add(handler);
+        for (var handler : getAllHandlers()) {
+            if (handler.getCapability() == cap) list.add(handler);
         }
         return list;
     }
@@ -80,14 +81,15 @@ public class RecipeHandlerList {
         return new RecipeHandlerList(color, () -> false, handlers);
     }
 
-    public static RecipeHandlerList of(Supplier<Integer> color, Supplier<Boolean> isDistinct, Iterable<IRecipeHandler<?>> handlers) {
+    public static RecipeHandlerList of(Supplier<Integer> color, Supplier<Boolean> isDistinct,
+                                       Iterable<IRecipeHandler<?>> handlers) {
         return new RecipeHandlerList(color, isDistinct, handlers);
     }
 
     public ISubscription subscribe(Runnable listener) {
         List<ISubscription> subs = new ArrayList<>(allHandlers.size());
-        for(var handler : allHandlers) {
-            if(handler instanceof NotifiableRecipeHandlerTrait<?> trait) {
+        for (var handler : allHandlers) {
+            if (handler instanceof NotifiableRecipeHandlerTrait<?> trait) {
                 subs.add(trait.addChangedListener(listener));
             }
         }

@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.RangedItemIngredient;
@@ -71,7 +70,8 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (item instanceof RangedItemIngredient ranged1) {
                         ranged = ranged1;
                     } else {
-                        ranged = item.isChanced() && item.getInner() instanceof RangedItemIngredient ranged1 ? ranged1 : null;
+                        ranged = item.isChanced() && item.getInner() instanceof RangedItemIngredient ranged1 ? ranged1 :
+                                null;
                     }
                     if (ranged != null) {
                         stack = copyFirst(ranged.getInner().getItems());
@@ -104,7 +104,8 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     if (fluid instanceof RangedFluidIngredient ranged1) {
                         ranged = ranged1;
                     } else {
-                        ranged = fluid.isChanced() && fluid.getInner() instanceof RangedFluidIngredient ranged1 ? ranged1 : null;
+                        ranged = fluid.isChanced() && fluid.getInner() instanceof RangedFluidIngredient ranged1 ?
+                                ranged1 : null;
                     }
                     if (ranged != null) {
                         stack = copyFirst(ranged.getInner().getFluids());
@@ -179,7 +180,7 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                 }
                 item.setCount(1);
                 text.append(Component.translatable("gtceu.gui.content.times_item",
-                                item.getDisplayName().copy().withStyle(ChatFormatting.WHITE))
+                        item.getDisplayName().copy().withStyle(ChatFormatting.WHITE))
                         .withStyle(ChatFormatting.WHITE));
 
                 iTooltip.add(helper.smallItem(item));
@@ -202,10 +203,12 @@ public class RecipeOutputProvider extends CapabilityBlockProvider<RecipeLogic> {
                     text.append(FluidTextHelper.getUnicodeMillibuckets(stack.getAmount(), true));
                 }
                 text.append(CommonComponents.space())
-                        .append(ComponentUtils.wrapInSquareBrackets(stack.getDisplayName()).withStyle(ChatFormatting.WHITE))
+                        .append(ComponentUtils.wrapInSquareBrackets(stack.getDisplayName())
+                                .withStyle(ChatFormatting.WHITE))
                         .withStyle(ChatFormatting.WHITE);
 
-                iTooltip.add(GTElementHelper.smallFluid(JadeFluidObject.of(stack.getFluid(), stack.getAmount(), stack.getTag())));
+                iTooltip.add(GTElementHelper
+                        .smallFluid(JadeFluidObject.of(stack.getFluid(), stack.getAmount(), stack.getTag())));
                 iTooltip.append(text);
             }
         }

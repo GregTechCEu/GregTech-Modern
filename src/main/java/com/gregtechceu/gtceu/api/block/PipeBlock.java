@@ -176,7 +176,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     pipeTile.setConnection(facing, false, false);
                 updateActiveNodeStatus(pipeTile.getPipeLevel(), pos, pipeTile);
             }
-            if(pipeTile.isConnected(facing)) {
+            if (pipeTile.isConnected(facing)) {
                 PipeNet<NodeDataType> net = pipeTile.getPipeNet();
                 if (net != null) {
                     pipeTile.getPipeNet().onNeighbourUpdate(neighbor);

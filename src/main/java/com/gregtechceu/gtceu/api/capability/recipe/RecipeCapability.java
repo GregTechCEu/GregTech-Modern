@@ -29,9 +29,9 @@ import java.util.*;
 public abstract class RecipeCapability<T> {
 
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
-//    public static final Codec<Map<RecipeCapability<?>, List<?>>> CODEC = new DispatchedMapCodec<>(
-//            RecipeCapability.DIRECT_CODEC,
-//            RecipeCapability::contentCodec);
+    // public static final Codec<Map<RecipeCapability<?>, List<?>>> CODEC = new DispatchedMapCodec<>(
+    // RecipeCapability.DIRECT_CODEC,
+    // RecipeCapability::contentCodec);
     public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
     private static int index = 0;
 
@@ -56,7 +56,7 @@ public abstract class RecipeCapability<T> {
 
     public abstract T fromNetwork(FriendlyByteBuf friendlyByteBuf);
 
-    public abstract void toNetwork(T ingredient,  FriendlyByteBuf friendlyByteBuf);
+    public abstract void toNetwork(T ingredient, FriendlyByteBuf friendlyByteBuf);
 
     public T copyInner(T content) {
         return copyInner(content, 1);

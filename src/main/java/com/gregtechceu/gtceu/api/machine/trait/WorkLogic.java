@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -158,7 +157,7 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
 
     @OnlyIn(Dist.CLIENT)
     public void updateSound() {
-        //TODO : add sound for non-recipe machine
+        // TODO : add sound for non-recipe machine
     }
 
     @Override
@@ -181,5 +180,4 @@ public class WorkLogic extends MachineTrait implements IFancyTooltip {
     public boolean showFancyTooltip() {
         return waitingReason != null;
     }
-
 }

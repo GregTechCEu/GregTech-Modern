@@ -11,9 +11,10 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
@@ -22,15 +23,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
-import java.util.function.Supplier;
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class ItemIngredient {
 
@@ -56,7 +57,7 @@ public abstract class ItemIngredient {
 
     @Override
     public final int hashCode() {
-        if(hashCode == 0) {
+        if (hashCode == 0) {
             hashCode = hash();
         }
         return hashCode;
@@ -146,14 +147,13 @@ public abstract class ItemIngredient {
     }
 
     public static ItemIngredient of(Ingredient ingredient, int count) {
-        if(ingredient.getClass() == Ingredient.class) {
-            var values = ((IngredientAccessor)ingredient).getValues();
-            if(values.length == 1) {
+        if (ingredient.getClass() == Ingredient.class) {
+            var values = ((IngredientAccessor) ingredient).getValues();
+            if (values.length == 1) {
                 var value = values[0];
-                if(value instanceof ItemValueAccessor itemValue) {
+                if (value instanceof ItemValueAccessor itemValue) {
                     return new SimpleItemIngredient(itemValue.getItem().getItem(), count);
-                }
-                else if (value instanceof TagValueAccessor tagValue) {
+                } else if (value instanceof TagValueAccessor tagValue) {
                     return new SimpleTagIngredient(tagValue.getTag(), 1);
                 }
             }
@@ -346,6 +346,4 @@ public abstract class ItemIngredient {
 
         return json;
     }
-
-
 }

@@ -26,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DataBankMachine extends WorkableElectricMultiblockMachine implements IDataAccessMachine{
+public class DataBankMachine extends WorkableElectricMultiblockMachine implements IDataAccessMachine {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
@@ -55,13 +55,17 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
             if (part instanceof IDataAccessMachine hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                 dataAccesses.add(hatch);
 
-            } else if (part instanceof IDataAccessMachine hatch && PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
-                receivers.add(hatch);
-            } else if (part instanceof IDataAccessMachine hatch && PartAbility.OPTICAL_DATA_TRANSMISSION.isApplicable(block)) {
-                transmitters.add(hatch);
-            } else if (part instanceof IMaintenanceMachine maintenanceMachine) {
-                maintenance = maintenanceMachine;
-            }
+            } else if (part instanceof IDataAccessMachine hatch &&
+                    PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
+                        receivers.add(hatch);
+                    } else
+                if (part instanceof IDataAccessMachine hatch &&
+                        PartAbility.OPTICAL_DATA_TRANSMISSION.isApplicable(block)) {
+                            transmitters.add(hatch);
+                        } else
+                    if (part instanceof IMaintenanceMachine maintenanceMachine) {
+                        maintenance = maintenanceMachine;
+                    }
         }
         energyUsage = calculateEnergyUsage();
 
@@ -105,7 +109,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
 
     @Override
     public boolean isRecipeAvailable(GTRecipe recipe) {
-        if(isQuerying) return false;
+        if (isQuerying) return false;
         isQuerying = true;
         boolean result = queryRecipe(recipe);
         isQuerying = false;
@@ -113,7 +117,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
     }
 
     protected boolean queryRecipe(GTRecipe recipe) {
-        if(!getWorkLogic().isWorking()) {
+        if (!getWorkLogic().isWorking()) {
             return false;
         }
         for (IDataAccessMachine hatch : dataAccesses) {
@@ -131,7 +135,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
 
     @Override
     public void notifyListeners() {
-        if(isQuerying) return;
+        if (isQuerying) return;
         isQuerying = true;
         for (IDataAccessMachine hatch : transmitters) {
             hatch.notifyListeners();
@@ -168,5 +172,4 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
                 .addEnergyUsageExactLine(getEnergyUsage())
                 .addWorkingStatusLine();
     }
-
 }

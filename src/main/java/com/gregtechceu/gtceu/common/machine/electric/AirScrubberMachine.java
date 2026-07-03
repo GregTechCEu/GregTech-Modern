@@ -75,7 +75,7 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
         if (recipe != null) {
             // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
             var failReason = super.beforeWorking(recipe);
-            if(failReason != null) return failReason;
+            if (failReason != null) return failReason;
             this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1);
             return null;
         }

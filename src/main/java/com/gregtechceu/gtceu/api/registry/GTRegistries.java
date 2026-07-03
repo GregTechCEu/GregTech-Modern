@@ -35,7 +35,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import com.mojang.serialization.Codec;
 import org.jetbrains.annotations.ApiStatus;
 
-
 public final class GTRegistries {
 
     // GT Registry
@@ -65,6 +64,7 @@ public final class GTRegistries {
             .create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister
             .create(ForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
+
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
 

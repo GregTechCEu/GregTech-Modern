@@ -37,9 +37,8 @@ public class MultiblockComputationPortTrait extends ComputationPortTrait {
             if (controller instanceof ComputationProducer producer) {
                 return Optional.of(producer);
             }
-            for(var trait: controller.self().getTraits())
-            {
-                if(trait instanceof ComputationProducer producer) {
+            for (var trait : controller.self().getTraits()) {
+                if (trait instanceof ComputationProducer producer) {
                     return Optional.of(producer);
                 }
             }
@@ -53,9 +52,8 @@ public class MultiblockComputationPortTrait extends ComputationPortTrait {
             if (controller instanceof ComputationConsumer consumer) {
                 return Optional.of(consumer);
             }
-            for(var trait: controller.self().getTraits())
-            {
-                if(trait instanceof ComputationConsumer producer) {
+            for (var trait : controller.self().getTraits()) {
+                if (trait instanceof ComputationConsumer producer) {
                     return Optional.of(producer);
                 }
             }

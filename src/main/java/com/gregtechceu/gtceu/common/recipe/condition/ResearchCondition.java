@@ -50,11 +50,11 @@ public class ResearchCondition extends RecipeCondition<ResearchCondition> {
 
     @Override
     public boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        if(recipeLogic.getMachine() instanceof IDataAccessMachine dataAccessMachine &&
+        if (recipeLogic.getMachine() instanceof IDataAccessMachine dataAccessMachine &&
                 dataAccessMachine.isRecipeAvailable(recipe)) {
             return true;
         }
-        if(recipeLogic.getMachine() instanceof IMultiController controller) {
+        if (recipeLogic.getMachine() instanceof IMultiController controller) {
             for (var part : controller.getParts()) {
                 if (part instanceof IDataAccessMachine dataAccessHatch && dataAccessHatch.isRecipeAvailable(recipe)) {
                     return true;

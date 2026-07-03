@@ -132,7 +132,8 @@ public class LargeBoilerMachine extends RecipeMultiblockMachine implements IExpl
                 inputTanks.addAll(getCapabilitiesFlat(IO.IN, FluidRecipeCapability.CAP));
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> handler : inputTanks) {
-                    if (!(handler instanceof com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank tank)) continue;
+                    if (!(handler instanceof com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank tank))
+                        continue;
                     tank.handleRecipe(IO.IN, null, drainWater, false);
                     if (drainWater.isEmpty()) {
                         break;
@@ -145,12 +146,14 @@ public class LargeBoilerMachine extends RecipeMultiblockMachine implements IExpl
 
                 if (drained > 0) {
                     // fill steam
-                    var fillSteam = new ArrayList<>(List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated))));
+                    var fillSteam = new ArrayList<>(
+                            List.of(FluidIngredient.of(GTMaterials.Steam.getFluid(steamGenerated))));
                     List<IRecipeHandler<?>> outputTanks = new ArrayList<>();
                     outputTanks.addAll(getCapabilitiesFlat(IO.OUT, FluidRecipeCapability.CAP));
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> handler : outputTanks) {
-                        if (!(handler instanceof com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank tank)) continue;
+                        if (!(handler instanceof com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank tank))
+                            continue;
                         if (tank.handleRecipe(IO.OUT, null, fillSteam, false)) break;
                     }
                 }

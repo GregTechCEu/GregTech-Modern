@@ -3,9 +3,10 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+
 import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,7 +27,8 @@ public interface RecipeModifier {
      * @param recipe  the recipe to be modified in-place
      * @return the failure reason, or {@code null} if the modifier succeeded
      */
-    @Nullable Component apply(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe);
+    @Nullable
+    Component apply(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe);
 
     /**
      * Utility method that logs the incorrect use of a RecipeModifier

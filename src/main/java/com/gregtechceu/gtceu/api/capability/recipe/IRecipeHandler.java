@@ -71,5 +71,4 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
     default K copyContent(Object content) {
         return getCapability().copyInner((K) content);
     }
-
 }

@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -91,7 +91,8 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine {
     public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
         super.notifyWorkStatusChanged(oldStatus, newStatus);
         if (getRenderState().hasProperty(GTMachineModelProperties.IS_ACTIVE)) {
-            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
+            setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE,
+                    newStatus == WorkLogic.Status.WORKING));
         }
     }
 
@@ -100,7 +101,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine {
         long toDrain = (isRandomTickMode ? randomTickAmperage : blockEntityAmperage) * GTValues.V[tier];
 
         if (energyContainer.getEnergyStored() >= toDrain &&
-            energyContainer.removeEnergy(toDrain) >= toDrain) {
+                energyContainer.removeEnergy(toDrain) >= toDrain) {
             setStatus(WorkLogic.Status.WORKING);
             if (isRandomTickMode) {
                 BlockPos cornerPos = new BlockPos(
@@ -134,8 +135,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine {
                 }
             }
 
-        }
-        else {
+        } else {
             setStatus(WorkLogic.Status.IDLE);
         }
     }

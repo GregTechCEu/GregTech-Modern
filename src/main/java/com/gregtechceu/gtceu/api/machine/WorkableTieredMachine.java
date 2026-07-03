@@ -31,5 +31,4 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     @Override
     public void serverRunningTick() {}
-
 }

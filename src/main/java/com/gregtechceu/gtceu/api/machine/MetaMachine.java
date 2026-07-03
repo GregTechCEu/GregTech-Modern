@@ -100,7 +100,7 @@ import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IToolGridHighlight,
                          IFancyTooltip, IPaintable, IRedstoneSignalMachine, ICopyable {
 
-    static{
+    static {
         ManagedFieldHolderMap.createManagedFieldHolder(MetaMachine.class);
     }
     @Getter

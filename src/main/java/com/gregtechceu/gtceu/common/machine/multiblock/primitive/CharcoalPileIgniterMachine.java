@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.primitive;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -19,7 +18,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -44,13 +42,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
 import it.unimi.dsi.fastutil.longs.Long2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
 
-public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine{
+public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine {
 
     private static final int MIN_RADIUS = 1;
     private static final int MIN_DEPTH = 2;
@@ -346,7 +343,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine{
     }
 
     public void serverRunningTick() {
-        if(getWorkLogic().isWorking() && duration > 0 && ++progress >= duration) {
+        if (getWorkLogic().isWorking() && duration > 0 && ++progress >= duration) {
             progress = 0;
             duration = 0;
             convertLogBlocks();

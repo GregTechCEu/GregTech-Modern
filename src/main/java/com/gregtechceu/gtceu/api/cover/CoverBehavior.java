@@ -52,7 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighlight, ICopyable {
 
-    static{
+    static {
         ManagedFieldHolderMap.createManagedFieldHolder(CoverBehavior.class);
     }
 

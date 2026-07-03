@@ -2,14 +2,14 @@ package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class EnergyContainerList{
+public class EnergyContainerList {
 
     public static final EnergyContainerList EMPTY = new EnergyContainerList(List.of());
 
@@ -31,7 +31,7 @@ public class EnergyContainerList{
     private final int tier;
 
     public EnergyContainerList(List<? extends IEnergyContainer> energyContainerList) {
-        this.energyContainers = energyContainerList.toArray(new IEnergyContainer[]{});
+        this.energyContainers = energyContainerList.toArray(new IEnergyContainer[] {});
         long totalInputEUt = 0;
         long totalOutputEUt = 0;
         long highestVoltage = 0;
@@ -40,7 +40,7 @@ public class EnergyContainerList{
             long inputVoltage = container.getInputVoltage();
             long outputVoltage = container.getOutputVoltage();
 
-            if(inputVoltage != 0) {
+            if (inputVoltage != 0) {
                 totalInputEUt += inputVoltage * container.getInputAmperage();
                 if (inputVoltage > highestVoltage) {
                     highestVoltage = container.getInputVoltage();
@@ -48,9 +48,9 @@ public class EnergyContainerList{
                 } else if (inputVoltage == highestVoltage) {
                     numHighestInputContainers += 1;
                 }
-            } else if(outputVoltage != 0) {
+            } else if (outputVoltage != 0) {
                 totalOutputEUt += outputVoltage * container.getOutputAmperage();
-                if(outputVoltage > highestVoltage) {
+                if (outputVoltage > highestVoltage) {
                     highestVoltage = outputVoltage;
                 }
             }
@@ -61,8 +61,8 @@ public class EnergyContainerList{
         this.highestVoltage = highestVoltage;
         int highestTier = GTUtil.getFloorTierByVoltage(highestVoltage);
         int maxOverClockTier = GTUtil.getFloorTierByVoltage(effectiveVoltage);
-        if(!ALLOW_VOLTAGE_BOOST || highestTier >= maxOverClockTier
-                || numHighestInputContainers == 1 || highestTier >= GTValues.MAX) {
+        if (!ALLOW_VOLTAGE_BOOST || highestTier >= maxOverClockTier || numHighestInputContainers == 1 ||
+                highestTier >= GTValues.MAX) {
             this.tier = highestTier;
         } else {
             this.tier = highestTier + 1;

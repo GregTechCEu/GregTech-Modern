@@ -15,7 +15,6 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;
 
-import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
@@ -24,6 +23,7 @@ import net.minecraftforge.items.wrapper.EmptyHandler;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.TankWidget;
 import dev.emi.emi.api.widget.Widget;
@@ -44,8 +44,8 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
         this.recipe = recipe;
         this.inputs = getEmiIngredients(IO.IN, recipe.inputs, recipe.tickInputs);
         this.outputs = getEmiStacks(IO.OUT, recipe.outputs, recipe.tickOutputs);
-        for(var condition: recipe.conditions) {
-            if(!condition.hasXEICatalysts()) continue;
+        for (var condition : recipe.conditions) {
+            if (!condition.hasXEICatalysts()) continue;
             this.catalysts.addAll((List<EmiIngredient>) condition.getXEICatalysts());
         }
         this.widget = () -> new GTRecipeWidget(recipe);
@@ -123,11 +123,12 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     private List<EmiIngredient> getEmiIngredients(IO io, ContentListMap... contentListMaps) {
         List<EmiIngredient> list = new ArrayList<>();
-        for(var contentListMap : contentListMaps){
+        for (var contentListMap : contentListMaps) {
             contentListMap.forEachEntry(new ContentListMap.EntryConsumer() {
+
                 @Override
                 public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
-                    list.addAll((List<EmiIngredient>)capability.getXEIIngredients(contents, recipe, io));
+                    list.addAll((List<EmiIngredient>) capability.getXEIIngredients(contents, recipe, io));
                 }
             });
         }
@@ -136,15 +137,15 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     private List<EmiStack> getEmiStacks(IO io, ContentListMap... contentListMaps) {
         List<EmiStack> list = new ArrayList<>();
-        for(var contentListMap : contentListMaps){
+        for (var contentListMap : contentListMaps) {
             contentListMap.forEachEntry(new ContentListMap.EntryConsumer() {
+
                 @Override
                 public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
-                    ((List<EmiIngredient>)capability.getXEIIngredients(contents, recipe, io))
+                    ((List<EmiIngredient>) capability.getXEIIngredients(contents, recipe, io))
                             .stream()
                             .map(ingredient -> ingredient.getEmiStacks().get(0))
                             .forEach(list::add);
-
                 }
             });
         }

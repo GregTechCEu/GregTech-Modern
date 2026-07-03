@@ -10,12 +10,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
+
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SimpleTagIngredient extends ItemIngredient{
+public final class SimpleTagIngredient extends ItemIngredient {
 
     @Getter
     private final TagKey<Item> tag;
@@ -35,15 +36,16 @@ public final class SimpleTagIngredient extends ItemIngredient{
     @Override
     public ItemStack[] getItems() {
         // It's ok to cache items because all ingredients will be recreated when reload
-        if(items == null) {
+        if (items == null) {
             List<ItemStack> list = new ArrayList<>();
 
-            for(Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+            for (Holder<Item> holder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                 list.add(new ItemStack(holder, count));
             }
 
             if (list.isEmpty()) {
-                list.add((new ItemStack(Blocks.BARRIER)).setHoverName(Component.literal("Empty Tag: " + tag.location())));
+                list.add((new ItemStack(Blocks.BARRIER))
+                        .setHoverName(Component.literal("Empty Tag: " + tag.location())));
             }
             items = list.toArray(new ItemStack[0]);
         }

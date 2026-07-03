@@ -64,7 +64,7 @@ public class FluidDrillLogic extends RecipeLogic {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
             var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
             long EUt = GTValues.VA[getMachine().getTier()];
-            if(getMachine().isOverclocked()) EUt *= 4;
+            if (getMachine().isOverclocked()) EUt *= 4;
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(EUt)

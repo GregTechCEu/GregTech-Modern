@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
@@ -17,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -40,7 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine implements IFancyUIMachine,
-                                          IDisplayUIMachine, ITieredMachine, IOverclockMachine {
+                                             IDisplayUIMachine, ITieredMachine, IOverclockMachine {
 
     @NotNull
     protected EnergyContainerList energyContainer;
@@ -152,7 +150,8 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     @Override
     public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         IVoidable.attachConfigurators(configuratorPanel, this);
-        if (Arrays.stream(getDefinition().getRecipeModifiers()).anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
+        if (Arrays.stream(getDefinition().getRecipeModifiers())
+                .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),

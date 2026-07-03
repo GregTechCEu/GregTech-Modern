@@ -2,13 +2,15 @@ package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+
 import net.minecraft.world.item.ItemStack;
+
 import lombok.Getter;
 import org.jetbrains.annotations.Range;
 
 import java.util.List;
 
-public final class ChancedItemIngredient extends ItemIngredient implements IChancedIngredient{
+public final class ChancedItemIngredient extends ItemIngredient implements IChancedIngredient {
 
     @Getter
     private final ItemIngredient inner;
@@ -16,7 +18,8 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
     @Getter
     private final int multiplier;
 
-    protected ChancedItemIngredient(ItemIngredient ingredient, @Range(from = 0, to = 10000) int chance, int multiplier) {
+    protected ChancedItemIngredient(ItemIngredient ingredient, @Range(from = 0, to = 10000) int chance,
+                                    int multiplier) {
         super(ingredient.count * multiplier);
         this.inner = ingredient;
         this.chance = chance;
@@ -40,8 +43,8 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
     @Override
     public ItemStack toStack() {
         int count = inner.getCount() * IChancedIngredient.rollSuccesses(multiplier, chance);
-        if(count == 0) return ItemStack.EMPTY;
-        else return  inner.toStack().copyWithCount(count);
+        if (count == 0) return ItemStack.EMPTY;
+        else return inner.toStack().copyWithCount(count);
     }
 
     @Override

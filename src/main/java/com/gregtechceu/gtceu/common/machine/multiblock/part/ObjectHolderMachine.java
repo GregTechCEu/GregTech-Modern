@@ -27,16 +27,15 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraftforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -64,7 +63,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
     @Override
     public @Nullable IItemHandlerModifiable getItemHandlerCap(@Nullable Direction side, boolean useCoverCapability) {
-
         return super.getItemHandlerCap(side, useCoverCapability);
     }
 
@@ -161,11 +159,11 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
         @Override
         public boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate) {
-            if(io == IO.OUT && simulate) {
+            if (io == IO.OUT && simulate) {
                 return true;
             }
             boolean result = super.handleRecipe(io, recipe, left, simulate);
-            if(result && !simulate) {
+            if (result && !simulate) {
                 isLocked = (io == IO.IN);
             }
             return result;

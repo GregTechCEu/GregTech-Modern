@@ -196,9 +196,9 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
     }
 
     public GTRecipeDefinition findRecipe(IRecipeCapabilityHolder holder, Predicate<GTRecipeDefinition> canHandle) {
-        for(var group: holder.getRecipeHandlerGroups()) {
+        for (var group : holder.getRecipeHandlerGroups()) {
             var result = findRecipe(group, canHandle);
-            if(result != null) {
+            if (result != null) {
                 return result;
             }
         }
@@ -211,7 +211,7 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
         if (iterator == null) {
             return null;
         }
-        if(iterator.hasNext()) {
+        if (iterator.hasNext()) {
             return iterator.next();
         }
 
@@ -272,7 +272,8 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
     }
 
     public void addDataStickEntry(@NotNull String researchId, @NotNull GTRecipeDefinition recipe) {
-        Collection<GTRecipeDefinition> collection = researchEntries.computeIfAbsent(researchId, (k) -> new ObjectOpenHashSet<>());
+        Collection<GTRecipeDefinition> collection = researchEntries.computeIfAbsent(researchId,
+                (k) -> new ObjectOpenHashSet<>());
         collection.add(recipe);
     }
 

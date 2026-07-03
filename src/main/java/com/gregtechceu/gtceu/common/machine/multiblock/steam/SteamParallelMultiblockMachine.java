@@ -9,9 +9,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.RecipeMultiblockMachine;
-
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -32,10 +30,10 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,10 +113,10 @@ public class SteamParallelMultiblockMachine extends RecipeMultiblockMachine impl
         // EUt (not steam) = (4/3) * (2/3) * parallels * base EUt, up to a max of 32 EUt
         long eut = recipe.getInputEUt();
         int parallelAmount = ParallelLogic.getParallelAmount(group, recipe, steamMachine.maxParallels, false);
-        if(parallelAmount <= 1) {
+        if (parallelAmount <= 1) {
             return null;
         }
-        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ?(32.0 / (eut * parallelAmount)) :  0.8888;
+        double eutMultiplier = (eut * 0.8888 * parallelAmount <= 32) ? (32.0 / (eut * parallelAmount)) : 0.8888;
         recipe.multiplyAllContents(parallelAmount);
         recipe.multiplyDuration(1.5);
         recipe.multiplyEUt(eutMultiplier);

@@ -4,15 +4,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
-import lombok.Getter;
+
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,10 +128,11 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
     private static List<List<AbstractMapIngredient>> buildMapIngredients(ContentListMap contents) {
         List<List<AbstractMapIngredient>> ingredients = new ArrayList<>();
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
                 if (!capability.isRecipeSearchFilter()) return;
-                for(var content: contents) {
+                for (var content : contents) {
                     List<AbstractMapIngredient> mapIngredients = new ArrayList<>(capability.getMapIngredients(content));
                     if (!mapIngredients.isEmpty()) {
                         ingredients.add(mapIngredients);
@@ -140,5 +142,4 @@ public class GTRecipeDefinition implements net.minecraft.world.item.crafting.Rec
         });
         return ingredients;
     }
-
 }

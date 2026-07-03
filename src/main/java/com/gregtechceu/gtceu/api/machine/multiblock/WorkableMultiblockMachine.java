@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 
@@ -19,13 +18,12 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -88,7 +86,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public void onStructureInvalid() {
-        //reset first to ensure part work state are changed
+        // reset first to ensure part work state are changed
         workLogic.reset();
         super.onStructureInvalid();
         updateActiveBlocks(false);
@@ -110,9 +108,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
-        return isFormed() && activeBlocks != null
-                && state.getBlock() instanceof ActiveBlock
-                && activeBlocks.contains(pos.asLong());
+        return isFormed() && activeBlocks != null && state.getBlock() instanceof ActiveBlock &&
+                activeBlocks.contains(pos.asLong());
     }
 
     //////////////////////////////////////

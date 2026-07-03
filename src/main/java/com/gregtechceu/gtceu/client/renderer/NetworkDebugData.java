@@ -6,10 +6,10 @@ import java.util.List;
 
 public record NetworkDebugData(Type type, List<BlockPos> nodes, List<Edge> edges) {
 
-    public record Edge(BlockPos first, BlockPos second) {
-    }
+    public record Edge(BlockPos first, BlockPos second) {}
 
     public enum Type {
+
         ENERGY(0xFF3A3A),
         FLUID(0x34B9FF),
         ITEM(0xFFB13B),

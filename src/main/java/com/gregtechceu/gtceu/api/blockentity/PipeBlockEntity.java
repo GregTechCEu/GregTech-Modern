@@ -65,7 +65,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                                      IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighlight, IToolable,
                                      ICopyable {
 
-    static{
+    static {
         ManagedFieldHolderMap.createManagedFieldHolder(PipeBlockEntity.class);
     }
 

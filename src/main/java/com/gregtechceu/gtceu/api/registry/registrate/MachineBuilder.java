@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -26,8 +25,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -73,7 +72,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
 
-@SuppressWarnings({"unused",  "removal"})
+@SuppressWarnings({ "unused", "removal" })
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -658,10 +657,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
 
-        if(!recipeOutputLimits.isEmpty()) {
+        if (!recipeOutputLimits.isEmpty()) {
             recipeModifiers.add(0, GTRecipeModifiers.trimRecipeOutputs(recipeOutputLimits));
         }
-        definition.setRecipeModifiers(recipeModifiers.toArray(new RecipeModifier[]{}));
+        definition.setRecipeModifiers(recipeModifiers.toArray(new RecipeModifier[] {}));
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
 
         definition.setBeforeWorking(this.beforeWorking);

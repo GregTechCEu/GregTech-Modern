@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
-import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
@@ -15,9 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
@@ -31,8 +27,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -63,7 +57,7 @@ public class ActiveTransformerMachine extends WorkableMultiblockMachine
     @SuppressWarnings("RedundantIfStatement") // It is cleaner to have the final return true separate.
     @Override
     public boolean isWorkLogicAvailable() {
-        if(!super.isWorkLogicAvailable()) return false;
+        if (!super.isWorkLogicAvailable()) return false;
         if (powerInput == null || powerInput.getEnergyStored() <= 0) return false;
         if (powerOutput == null) return false;
         if (powerOutput.getEnergyStored() >= powerOutput.getEnergyCapacity()) return false;
@@ -82,7 +76,7 @@ public class ActiveTransformerMachine extends WorkableMultiblockMachine
                 handlerList.getCapability(EURecipeCapability.CAP).stream()
                         .filter(IEnergyContainer.class::isInstance)
                         .map(IEnergyContainer.class::cast)
-                        .forEach(c-> {
+                        .forEach(c -> {
                             if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.IN)) {
                                 powerInput.add(c);
                             } else if (((IRecipeHandler<?>) c).getHandlerIO().support(IO.OUT)) {

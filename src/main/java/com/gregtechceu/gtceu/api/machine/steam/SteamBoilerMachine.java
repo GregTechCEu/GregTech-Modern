@@ -56,7 +56,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -262,7 +261,8 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+    public static @Nullable net.minecraft.network.chat.Component recipeModifier(@NotNull MetaMachine machine,
+                                                                                RecipeHandlerGroup group,
                                                                                 @NotNull GTRecipe recipe) {
         if (!(machine instanceof SteamBoilerMachine boilerMachine)) {
             return RecipeModifier.nullWrongType(SteamBoilerMachine.class, machine);

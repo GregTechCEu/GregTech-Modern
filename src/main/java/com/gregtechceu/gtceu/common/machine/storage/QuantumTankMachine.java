@@ -64,7 +64,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class QuantumTankMachine extends MetaMachine implements ITieredMachine, IAutoOutputFluid, IInteractedMachine,
-                                 IControllable, IDropSaveMachine, IFancyUIMachine {
+                                IControllable, IDropSaveMachine, IFancyUIMachine {
 
     public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -116,7 +115,8 @@ public enum BreweryLogic implements GTRecipeType.ICustomRecipeLogic {
                 .buildRawRecipe();
     }
 
-    private static @NotNull GTRecipeDefinition vanillaPotionRecipe(PotionBrewing.Mix<Potion> mix, FluidStack fromFluid) {
+    private static @NotNull GTRecipeDefinition vanillaPotionRecipe(PotionBrewing.Mix<Potion> mix,
+                                                                   FluidStack fromFluid) {
         FluidStack toFluid = PotionFluidHelper.getFluidFromPotion(mix.to.get(), PotionFluidHelper.MB_PER_RECIPE);
         return GTRecipeTypes.BREWING_RECIPES.recipeBuilder("potion_vanilla_" + mix.to.get().getName(""))
                 .inputItems(mix.ingredient)

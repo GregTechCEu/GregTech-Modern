@@ -89,7 +89,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void onLoad() {
         super.onLoad();
-
     }
 
     @Override
@@ -183,7 +182,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
         if (!(machine instanceof SimpleSteamMachine steamMachine)) {
             return RecipeModifier.nullWrongType(SimpleSteamMachine.class, machine);
         }
-        if(!steamMachine.checkVenting()) {
+        if (!steamMachine.checkVenting()) {
             return Component.translatable("gtceu.multiblock.large_miner.vent");
         }
         recipe.conditions.add(VentCondition.INSTANCE);
@@ -207,7 +206,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
-        if(getPos().relative(getVentingDirection()).equals(fromPos)) {
+        if (getPos().relative(getVentingDirection()).equals(fromPos)) {
             getRecipeLogic().updateTickSubscription();
         }
     }

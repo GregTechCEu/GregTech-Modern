@@ -34,9 +34,10 @@ public interface IDisplayUIMachine extends IUIMachine, IMultiController {
     default ModularUI createUI(Player entityPlayer) {
         var screen = new DraggableScrollableWidgetGroup(7, 4, 162, 121).setBackground(getScreenTexture());
         screen.addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()));
-        screen.addWidget(new ComponentPanelWidget(4, 17, self().getLevel().isClientSide ? text -> {} : this::addDisplayText)
-                .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick));
+        screen.addWidget(
+                new ComponentPanelWidget(4, 17, self().getLevel().isClientSide ? text -> {} : this::addDisplayText)
+                        .setMaxWidthLimit(150)
+                        .clickHandler(this::handleDisplayClick));
         return new ModularUI(176, 216, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND)
                 .widget(screen)

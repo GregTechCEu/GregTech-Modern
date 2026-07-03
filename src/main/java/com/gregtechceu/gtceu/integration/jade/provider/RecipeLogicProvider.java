@@ -55,9 +55,9 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
             recipeInfo.putLong("voltage", getVoltage(capability));
             recipeInfo.putBoolean("isInput", EUt > 0);
         }
-        if(!capability.getFailureReasonsMap().isEmpty()) {
+        if (!capability.getFailureReasonsMap().isEmpty()) {
             ListTag listTag = new ListTag();
-            for(var reason: capability.getFailureReasonsMap().values()) {
+            for (var reason : capability.getFailureReasonsMap().values()) {
                 listTag.add(StringTag.valueOf(Component.Serializer.toJson(reason)));
             }
             recipeInfo.put("failureReasons", listTag);
@@ -65,8 +65,6 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
         if (!recipeInfo.isEmpty()) {
             data.put("Recipe", recipeInfo);
         }
-
-
     }
 
     public static long getVoltage(RecipeLogic capability) {
@@ -80,7 +78,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
                               BlockEntity blockEntity, IPluginConfig config) {
         var recipeInfo = capData.getCompound("Recipe");
-        if(!recipeInfo.isEmpty()) {
+        if (!recipeInfo.isEmpty()) {
             if (capData.getBoolean("Working")) {
                 var EUt = recipeInfo.getLong("EUt");
                 var isInput = recipeInfo.getBoolean("isInput");
@@ -126,8 +124,8 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                         }
                         text.append(Component.translatable("gtceu.universal.padded_parentheses",
-                                        (Component.translatable("gtceu.recipe.eu.total",
-                                                FormattingUtil.formatNumbers(EUt))))
+                                (Component.translatable("gtceu.recipe.eu.total",
+                                        FormattingUtil.formatNumbers(EUt))))
                                 .withStyle(ChatFormatting.WHITE));
                     }
 
@@ -137,17 +135,15 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                         tooltip.add(Component.translatable("gtceu.top.energy_production").append(" ").append(text));
                     }
                 }
-            }
-            else {
+            } else {
                 ListTag listTag = recipeInfo.getList("failureReasons", Tag.TAG_STRING);
-                if(!listTag.isEmpty()) {
+                if (!listTag.isEmpty()) {
                     tooltip.add(Component.translatable("gtceu.recipe_logic.setup_fail").withStyle(ChatFormatting.RED));
-                    for(var tag: listTag) {
+                    for (var tag : listTag) {
                         tooltip.add(Component.literal(" - ").append(Component.Serializer.fromJson(tag.getAsString())));
                     }
                 }
             }
         }
-
     }
 }

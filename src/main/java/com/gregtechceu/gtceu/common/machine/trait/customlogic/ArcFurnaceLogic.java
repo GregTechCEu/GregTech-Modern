@@ -1,14 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.trait.customlogic;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -68,8 +65,8 @@ public enum ArcFurnaceLogic implements GTRecipeType.ICustomRecipeLogic {
     }
 
     public @Nullable GTRecipeDefinition applyDurabilityRecipe(String id, ItemStack inputStack, @NotNull Material mat,
-                                                    float fullAmount, float durability, long voltage,
-                                                    int durationFactor) {
+                                                              float fullAmount, float durability, long voltage,
+                                                              int durationFactor) {
         if (!mat.hasProperty(PropertyKey.INGOT)) return null;
 
         var material = mat.getProperty(PropertyKey.INGOT);

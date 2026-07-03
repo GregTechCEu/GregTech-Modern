@@ -99,7 +99,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     //////////////////////////////////////
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
-        return new EnergyBatteryTrait((int) args[0], (long) args[1], (long)args[2]);
+        return new EnergyBatteryTrait((int) args[0], (long) args[1], (long) args[2]);
     }
 
     @Override
@@ -248,9 +248,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
 
         @Override
         public void checkOutputSubscription() {
-            if(getEnergyCapacity() == 0) {
+            if (getEnergyCapacity() == 0) {
                 changeState(BatteryBufferMachine.State.IDLE);
-            } else if(getEnergyCapacity() == getEnergyStored()) {
+            } else if (getEnergyCapacity() == getEnergyStored()) {
                 changeState(BatteryBufferMachine.State.FINISHED);
             }
 

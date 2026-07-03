@@ -56,7 +56,7 @@ public class FluidDrillMachine extends RecipeElectricMultiblockMachine {
     @Override
     public void addDisplayText(List<Component> textList) {
         if (isFormed()) {
-            int overClockTier = isOverclocked() ? tier+1 : tier;
+            int overClockTier = isOverclocked() ? tier + 1 : tier;
             long maxVoltage = GTValues.V[overClockTier];
             String voltageName = GTValues.VNF[overClockTier];
             textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));

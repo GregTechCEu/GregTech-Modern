@@ -190,7 +190,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             // Hardness and blast resistance
             list.add(Component.translatable("behavior.portable_scanner.block_hardness",
                     Component.translatable(
-                                    FormattingUtil.formatNumbers(block.defaultDestroyTime()))
+                            FormattingUtil.formatNumbers(block.defaultDestroyTime()))
                             .withStyle(ChatFormatting.YELLOW),
                     Component.translatable(FormattingUtil.formatNumbers(block.getExplosionResistance()))
                             .withStyle(ChatFormatting.YELLOW)));
@@ -282,7 +282,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                                GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
+                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
                                         .withStyle(ChatFormatting.RED)));
@@ -293,10 +293,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                                GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
+                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                                FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
+                                        FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                     list.add(Component.translatable("behavior.portable_scanner.energy_container_storage",
@@ -349,7 +349,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(FormattingUtil.formatNumbers(Math.abs(EUt)))
                                         .withStyle(ChatFormatting.RED),
                                 Component.translatable(
-                                                FormattingUtil.formatNumbers(Math.abs(EUt)/recipeLogic.machine.getDisplayRecipeVoltage()))
+                                        FormattingUtil.formatNumbers(
+                                                Math.abs(EUt) / recipeLogic.machine.getDisplayRecipeVoltage()))
                                         .withStyle(ChatFormatting.RED)));
                     }
                 }
@@ -415,7 +416,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 Component.translatable(stack.getTranslationKey())
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(
-                                                veinData.getFluidYield(chunkX, chunkZ)))
+                                        veinData.getFluidYield(chunkX, chunkZ)))
                                         .withStyle(ChatFormatting.GOLD),
                                 Component.translatable(String.valueOf(fluidPercent))
                                         .withStyle(ChatFormatting.YELLOW)));

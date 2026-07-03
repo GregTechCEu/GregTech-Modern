@@ -47,7 +47,7 @@ public class RecipeHelper {
     public static long getRealEUtWithIO(@NotNull GTRecipeDefinition recipe) {
         long eut = calculateEUt(recipe.tickInputs);
         if (eut != 0) return eut;
-        return - calculateEUt(recipe.tickOutputs);
+        return -calculateEUt(recipe.tickOutputs);
     }
 
     private static long getInputEUt(GTRecipeDefinition recipe) {
@@ -204,7 +204,8 @@ public class RecipeHelper {
     }
 
     @SuppressWarnings("rawtypes")
-    public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic, boolean onlyCheckPerTick) {
+    public static ActionResult checkConditions(GTRecipe recipe, @NotNull RecipeLogic recipeLogic,
+                                               boolean onlyCheckPerTick) {
         if (recipe.conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<RecipeConditionType<?>, List<RecipeCondition>> or = new Reference2ObjectArrayMap<>();
         for (RecipeCondition condition : recipe.conditions) {
@@ -245,33 +246,33 @@ public class RecipeHelper {
      */
     public static void doTrim(ContentListMap current, Reference2IntMap<RecipeCapability<?>> trimLimits) {
         current.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> cap, List<T> contents) {
                 int N = trimLimits.getOrDefault(cap, -1);
-                if(N < 0) return;
+                if (N < 0) return;
 
                 int toTrim = contents.size() - N;
-                if(toTrim <= 0) return;
+                if (toTrim <= 0) return;
 
-                //trim chanced first
+                // trim chanced first
                 var iter = contents.iterator();
                 while (iter.hasNext()) {
                     var content = iter.next();
-                    if(cap.isChanced(content)) {
+                    if (cap.isChanced(content)) {
                         iter.remove();
                         toTrim--;
                     }
-                    if(toTrim <= 0) return;
+                    if (toTrim <= 0) return;
                 }
 
                 iter = contents.iterator();
                 while (iter.hasNext()) {
                     iter.next();
-                    if(toTrim > 0) {
+                    if (toTrim > 0) {
                         iter.remove();
                         toTrim--;
-                    }
-                    else break;
+                    } else break;
                 }
             }
         });
@@ -306,9 +307,10 @@ public class RecipeHelper {
     public static void replaceEUwithSteam(GTRecipe recipe, double conversionRate) {
         long totalEU = recipe.getInputEUt();
         int totalSteam = GTMath.saturatedCast((long) Math.ceil(totalEU * conversionRate));
-        if(totalSteam > 0) {
+        if (totalSteam > 0) {
             recipe.tickInputs.remove(EURecipeCapability.CAP);
-            recipe.tickInputs.add(FluidRecipeCapability.CAP, FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam));
+            recipe.tickInputs.add(FluidRecipeCapability.CAP,
+                    FluidIngredient.of(GTMaterials.Steam.getFluidTag(), totalSteam));
         }
     }
 }

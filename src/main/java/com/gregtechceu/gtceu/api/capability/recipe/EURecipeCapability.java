@@ -10,14 +10,16 @@ import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
-
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.mojang.serialization.Codec;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
@@ -47,7 +49,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
 
     @Override
     public int limitMaxParallelByOutput(RecipeHandlerGroup holder, GTRecipe recipe, int multiplier, boolean tick) {
-        if(tick) {
+        if (tick) {
             long recipeEUt = recipe.getOutputEUt();
             if (recipeEUt == 0) return multiplier;
             long handlerEUt = holder.getOutputHandlerMap().getOrDefault(EURecipeCapability.CAP, List.of())
@@ -58,8 +60,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
                     .sum();
 
             return Math.min(multiplier, Math.abs(GTMath.saturatedCast(handlerEUt / recipeEUt)));
-        }
-        else {
+        } else {
             var outputs = recipe.getOutputContents(this);
             if (outputs.isEmpty()) return multiplier;
 
@@ -93,7 +94,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
 
     @Override
     public int getMaxParallelByInput(RecipeHandlerGroup holder, GTRecipe recipe, int limit, boolean tick) {
-        if(tick) {
+        if (tick) {
             long recipeEUt = recipe.getInputEUt();
             if (recipeEUt == 0) return limit;
             long handlerEUt = holder.getInputHandlerMap().getOrDefault(EURecipeCapability.CAP, List.of())
@@ -104,8 +105,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
                     .sum();
 
             return Math.min(limit, Math.abs(GTMath.saturatedCast(handlerEUt / recipeEUt)));
-        }
-        else {
+        } else {
             var inputs = recipe.getInputContents(this);
             if (inputs.isEmpty()) return limit;
 
@@ -130,25 +130,29 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     }
 
     @Override
-    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<Long> contents, int duration, boolean perTick, boolean isInput, MutableInt yOffset) {
+    public void addXEIInfo(WidgetGroup group, int xOffset, GTRecipeDefinition recipe, List<Long> contents, int duration,
+                           boolean perTick, boolean isInput, MutableInt yOffset) {
         long eut = 0;
-        for(long content: contents) {eut += content;}
-        if(eut > 0) {
+        for (long content : contents) {
+            eut += content;
+        }
+        if (eut > 0) {
             float amp = (float) eut / GTValues.V[recipe.tier];
             Component text1 = Component.translatable(isInput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
                     FormattingUtil.formatNumber2Places(amp), GTValues.VN[recipe.tier])
                     .withStyle(ChatFormatting.UNDERLINE);
-            var recipeVoltageText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT + 1), text1)
+            var recipeVoltageText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT + 1),
+                    text1)
                     .setTextColor(-1).setDropShadow(true);
             recipeVoltageText.setHoverTooltips(
                     Component.translatable("gtceu.recipe.eu.total", FormattingUtil.formatNumbers(eut))
                             .withStyle(ChatFormatting.UNDERLINE));
             group.addWidget(recipeVoltageText);
 
-            if(!recipe.data.contains("duration_is_total_cwu")) {
+            if (!recipe.data.contains("duration_is_total_cwu")) {
                 long euTotal = eut * duration;
                 Component text2 = Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal));
-                var totalEUText =  new LabelWidget(3 - xOffset,  yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT), text2)
+                var totalEUText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT), text2)
                         .setTextColor(-1).setDropShadow(true);
                 group.addWidget(totalEUText);
             }
@@ -164,5 +168,4 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     public static void putEUContent(ContentListMap contents, Long eu) {
         contents.put(EURecipeCapability.CAP, GTUtil.list(eu));
     }
-
 }

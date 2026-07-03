@@ -70,7 +70,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
                     boolean isDataBank = isFormed() && getControllers().first() instanceof DataBankMachine;
                     return ResearchManager.isStackDataItem(stack, isDataBank);
                 });
-        inventory.addChangedListener(() -> rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine));
+        inventory.addChangedListener(
+                () -> rebuildData(isFormed() && getControllers().first() instanceof DataBankMachine));
         return inventory;
     }
 
@@ -126,7 +127,7 @@ public class DataAccessHatchMachine extends TieredPartMachine
             }
         }
         getControllers().forEach(controller -> {
-            if(controller instanceof IDataAccessMachine dataAccessMachine) dataAccessMachine.notifyListeners();
+            if (controller instanceof IDataAccessMachine dataAccessMachine) dataAccessMachine.notifyListeners();
         });
     }
 

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
@@ -10,7 +9,6 @@ import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
 
-import it.unimi.dsi.fastutil.longs.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -18,12 +16,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -76,8 +74,7 @@ public class MultiblockState {
                 .stream()
                 .collect(Collectors.toMap(
                         l -> BlockPos.of(l.getLongKey()),
-                        Long2ObjectMap.Entry::getValue
-                ));
+                        Long2ObjectMap.Entry::getValue));
     }
 
     public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
@@ -187,9 +184,9 @@ public class MultiblockState {
                     if (controller.shouldIgnoreChange(pos, state)) {
                         return;
                     }
-                    if(controller.isFormed()){
+                    if (controller.isFormed()) {
                         var predicate = predicateMap.get(pos.asLong());
-                        if(predicate != null ) {
+                        if (predicate != null) {
                             if (!update(pos, predicate) || !predicate.test(this)) {
                                 controller.self().setFlipped(false);
                                 controller.onStructureInvalid();

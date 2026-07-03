@@ -25,7 +25,7 @@ import java.util.function.Predicate;
  */
 public abstract class MachineTrait implements IEnhancedManaged {
 
-    static{
+    static {
         ManagedFieldHolderMap.createManagedFieldHolder(MachineTrait.class);
     }
 

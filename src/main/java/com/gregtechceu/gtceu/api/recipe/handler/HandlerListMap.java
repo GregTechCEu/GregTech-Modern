@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.api.recipe.handler;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+
 import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class HandlerListMap {
+
     private final Map<RecipeCapability<?>, List<? extends IRecipeHandler<?>>> handlersMap = new Reference2ObjectArrayMap<>();
 
     public <T> List<IRecipeHandler<T>> get(RecipeCapability<T> capability) {

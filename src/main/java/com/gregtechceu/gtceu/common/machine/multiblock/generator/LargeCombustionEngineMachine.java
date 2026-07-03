@@ -129,14 +129,14 @@ public class LargeCombustionEngineMachine extends RecipeElectricMultiblockMachin
         if (engineMachine.isIntakesObstructed()) {
             return Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed");
         }
-        if(!RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
+        if (!RecipeHelper.matchRecipe(group, engineMachine.getLubricantRecipe()).isSuccess()) {
             return Component.translatable("gtceu.recipe_modifier.missing_lubricant");
         }
 
         int maxParallel = (int) (engineMachine.getOverclockVoltage() / EUt); // get maximum parallel
         int actualParallel = ParallelLogic.getParallelAmount(group, recipe, maxParallel);
 
-        if(actualParallel <= 1) return null;
+        if (actualParallel <= 1) return null;
 
         recipe.multiplyAllContents(actualParallel);
         recipe.multiplyEUt(engineMachine.getProductionBoost());

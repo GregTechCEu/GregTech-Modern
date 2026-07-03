@@ -143,14 +143,14 @@ public class LargeTurbineMachine extends RecipeElectricMultiblockMachine impleme
             return RecipeModifier.nullWrongType(LargeTurbineMachine.class, machine);
         }
 
-
-        if(turbineMachine.getTier() <= recipe.tier) return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
+        if (turbineMachine.getTier() <= recipe.tier)
+            return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
 
         var rotorHolder = turbineMachine.getRotorHolder();
         if (rotorHolder == null) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
 
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
-        if(holderEfficiency <= 0) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
+        if (holderEfficiency <= 0) return Component.translatable("gtceu.recipe_modifier.missing_valid_turbine_rotor");
 
         long EUt = recipe.getOutputEUt();
         if (EUt <= 0) return RecipeModifier.DEFAULT_FAILURE;

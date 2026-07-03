@@ -8,8 +8,9 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.network.FriendlyByteBuf;
+
+import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.List;
@@ -52,5 +53,4 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
 
         }
     }
-
 }

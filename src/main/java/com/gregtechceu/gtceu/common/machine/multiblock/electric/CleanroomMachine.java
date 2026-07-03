@@ -454,7 +454,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             if (totalEUt > 0) {
                 String energyFormatted = FormattingUtil.formatNumbers(totalEUt);
                 String voltageName = GTValues.VNF[GTUtil.getFloorTierByVoltage(totalEUt)];
-                textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick",energyFormatted, voltageName));
+                textList.add(
+                        Component.translatable("gtceu.multiblock.max_energy_per_tick", energyFormatted, voltageName));
             }
 
             if (cleanroomType != null) {
@@ -584,5 +585,4 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         }
         return new ArrayList<>();
     }
-
 }

@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -31,9 +32,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -45,14 +44,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.data.recipe.CustomTags.HPCA_COOLANTS;
 
@@ -108,7 +112,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
         }
         this.coolantHandler = new FluidHandlerList(coolantContainers);
         this.hpcaHandler.onStructureForm(componentHatches);
-
     }
 
     @Override
@@ -146,12 +149,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
             // 10% more energy per maintenance problem
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
-        if(energyContainer.getEnergyStored() >= energyToConsume &&
+        if (energyContainer.getEnergyStored() >= energyToConsume &&
                 energyContainer.removeEnergy(energyToConsume) >= energyToConsume) {
             getWorkLogic().setStatus(RecipeLogic.Status.WORKING);
             updateActive(true);
-        }
-        else {
+        } else {
             setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
                     .append(EURecipeCapability.CAP.getName()));
             updateActive(false);
@@ -172,7 +174,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
     }
 
     private void updateActive(boolean active) {
-        if(active != isActiveBefore) {
+        if (active != isActiveBefore) {
             isActiveBefore = active;
             for (var part : getParts()) {
                 if (part instanceof IHPCAComponentHatch hpcaPart) {
@@ -223,8 +225,9 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
-                .setWorkingStatus(getWorkLogic().isWorkingEnabled(), getWorkLogic().isActive()) // transform into two-state system for
-                                                                            // display
+                .setWorkingStatus(getWorkLogic().isWorkingEnabled(), getWorkLogic().isActive()) // transform into
+                                                                                                // two-state system for
+                // display
                 .setWorkingStatusKeys(
                         "gtceu.multiblock.idling",
                         "gtceu.multiblock.work_paused",
@@ -317,7 +320,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
      */
 
     // Handles the logic of this structure's specific HPCA component grid
-    public static class HPCAGridHandler{
+    public static class HPCAGridHandler {
+
         @Nullable // for testing
         private final HPCAMachine controller;
 
@@ -603,7 +607,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements Co
 
         public void addWarnings(List<Component> textList) {
             List<Component> warnings = new ArrayList<>();
-
         }
 
         public void addErrors(List<Component> textList) {

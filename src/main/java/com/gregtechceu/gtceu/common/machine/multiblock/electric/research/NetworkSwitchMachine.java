@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
 import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
-
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -87,8 +87,8 @@ public class NetworkSwitchMachine extends WorkableElectricMultiblockMachine {
     }
 
     public int getMaxCWUt() {
-        for(IMultiPart part : getParts()) {
-            if(part instanceof OpticalComputationHatchMachine opticalHatch) {
+        for (IMultiPart part : getParts()) {
+            if (part instanceof OpticalComputationHatchMachine opticalHatch) {
                 return ComputationNetworkManager.get((ServerLevel) getLevel())
                         .getNetWorkMaxCWUt(opticalHatch.getComputationPort());
             }
@@ -97,8 +97,8 @@ public class NetworkSwitchMachine extends WorkableElectricMultiblockMachine {
     }
 
     public int getUsedCWUt() {
-        for(IMultiPart part : getParts()) {
-            if(part instanceof OpticalComputationHatchMachine opticalHatch) {
+        for (IMultiPart part : getParts()) {
+            if (part instanceof OpticalComputationHatchMachine opticalHatch) {
                 return ComputationNetworkManager.get((ServerLevel) getLevel())
                         .getNetWorkUsedCWUt(opticalHatch.getComputationPort());
             }

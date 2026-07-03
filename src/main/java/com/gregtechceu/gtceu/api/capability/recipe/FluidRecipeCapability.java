@@ -4,10 +4,10 @@ import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.RangedFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
@@ -26,8 +26,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -39,6 +37,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -252,7 +252,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public @NotNull List<FluidEntryList> createXEIContainerContents(List<FluidIngredient> contents, GTRecipeDefinition recipe, IO io) {
+    public @NotNull List<FluidEntryList> createXEIContainerContents(List<FluidIngredient> contents,
+                                                                    GTRecipeDefinition recipe, IO io) {
         return contents.stream()
                 .map(FluidRecipeCapability::mapFluid)
                 .collect(Collectors.toList());
@@ -281,14 +282,14 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
     @Override
     public void applyWidgetInfo(@NotNull Widget widget,
-                                 int index,
-                                 boolean isXEI,
-                                 IO io,
-                                 GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
-                                 @NotNull GTRecipeType recipeType,
-                                 @UnknownNullability("null when content == null") GTRecipeDefinition recipe,
-                                 @Nullable FluidIngredient content,
-                                 @Nullable Object storage, int recipeTier, int chanceTier) {
+                                int index,
+                                boolean isXEI,
+                                IO io,
+                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                @NotNull GTRecipeType recipeType,
+                                @UnknownNullability("null when content == null") GTRecipeDefinition recipe,
+                                @Nullable FluidIngredient content,
+                                @Nullable Object storage, int recipeTier, int chanceTier) {
         if (widget instanceof TankWidget tank) {
             if (storage instanceof IFluidHandler fluidHandler) {
                 tank.setFluidTank(fluidHandler, index);
@@ -357,7 +358,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return list.stream()
                 .map(FluidEntryList::getStacks)
                 .map(fluidStacks -> fluidStacks.stream()
-                        .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(), fluidStack.getAmount()))
+                        .map(fluidStack -> EmiStack.of(fluidStack.getFluid(), fluidStack.getTag(),
+                                fluidStack.getAmount()))
                         .toList())
                 .map(EmiIngredient::of)
                 .toList();

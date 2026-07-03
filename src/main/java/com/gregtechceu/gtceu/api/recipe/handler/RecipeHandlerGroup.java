@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -17,10 +17,8 @@ import java.util.function.Predicate;
 
 public class RecipeHandlerGroup {
 
-    public static final Comparator<RecipeHandlerGroup> PRIORITY_COMPARATOR =
-            (g1, g2) ->
-            g1.getPriority(IO.IN) - g2.getPriority(IO.IN);
-
+    public static final Comparator<RecipeHandlerGroup> PRIORITY_COMPARATOR = (g1, g2) -> g1.getPriority(IO.IN) -
+            g2.getPriority(IO.IN);
 
     public static final RecipeHandlerGroup EMPTY = new RecipeHandlerGroup();
 
@@ -52,11 +50,11 @@ public class RecipeHandlerGroup {
     }
 
     public void addHandlers(Collection<IRecipeHandler<?>> handlers) {
-        for(var handler: handlers) {
-            if(handler.getHandlerIO().support(IO.IN)) {
+        for (var handler : handlers) {
+            if (handler.getHandlerIO().support(IO.IN)) {
                 inputHandlerMap.add(handler);
             }
-            if(handler.getHandlerIO().support(IO.OUT)) {
+            if (handler.getHandlerIO().support(IO.OUT)) {
                 outputHandlerMap.add(handler);
             }
         }
@@ -71,13 +69,14 @@ public class RecipeHandlerGroup {
             var entry = it.next();
             MutableBoolean b = new MutableBoolean(false);
             entry.accept(new ContentListMap.EntryConsumer() {
+
                 @Override
                 public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
-                    var handlerList = getCapability(io , capability);
+                    var handlerList = getCapability(io, capability);
                     if (handlerList != null) {
                         for (var handler : handlerList) {
                             boolean success = handler.handleRecipe(io, recipe, contents, simulate);
-                            if(success) {
+                            if (success) {
                                 b.setValue(true);
                                 break;
                             }
@@ -85,33 +84,29 @@ public class RecipeHandlerGroup {
                     }
                 }
             });
-            if(b.booleanValue())  {
+            if (b.booleanValue()) {
                 it.remove();
             }
         }
     }
 
     private <T> @Nullable List<IRecipeHandler<T>> getCapability(IO io, RecipeCapability<T> cap) {
-        if(io == IO.IN) {
+        if (io == IO.IN) {
             return inputHandlerMap.get(cap);
-        }
-        else if (io == IO.OUT){
+        } else if (io == IO.OUT) {
             return outputHandlerMap.get(cap);
-        }
-        else {
+        } else {
             throw new RuntimeException("Error IO Type");
         }
     }
 
     List<IRecipeHandler<?>> getCapabilitiesFalt(IO io) {
         List<IRecipeHandler<?>> list = new ArrayList<>();
-        if(io == IO.IN) {
+        if (io == IO.IN) {
             for (var handlers : inputHandlerMap.values()) list.addAll(handlers);
-        }
-        else if (io == IO.OUT){
+        } else if (io == IO.OUT) {
             for (var handlers : outputHandlerMap.values()) list.addAll(handlers);
-        }
-        else {
+        } else {
             throw new RuntimeException("Error IO Type");
         }
         return list;
@@ -119,7 +114,7 @@ public class RecipeHandlerGroup {
 
     public int getPriority(IO io) {
         int priority = 0;
-        for(var handler: getCapabilitiesFalt(io)) priority+=handler.getPriority();
+        for (var handler : getCapabilitiesFalt(io)) priority += handler.getPriority();
         return priority;
     }
 

@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.content.ContentListMap;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +54,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         CompoundTag data = readData(json);
         GTRecipeCategory category = readCategory(json, recipeType);
 
-
         return new GTRecipeDefinition(id, recipeType, category, inputs, outputs, tickInputs, tickOutputs,
                 duration, conditions, data, tier);
     }
@@ -93,7 +92,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         }
         GTRecipeCategory category = GTRegistries.RECIPE_CATEGORIES.get(buf.readResourceLocation());
 
-
         return new GTRecipeDefinition(id, recipeType, category, inputs, outputs, tickInputs, tickOutputs,
                 duration, conditions, data, tier);
     }
@@ -110,7 +108,6 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipeDefinition> 
         buf.writeCollection(recipe.conditions, (buffer, condition) -> condition.toNetwork(buffer));
         buf.writeNbt(recipe.data);
         buf.writeResourceLocation(recipe.category.registryKey);
-
     }
 
     private static ContentListMap readContentMap(JsonObject json, String key) {

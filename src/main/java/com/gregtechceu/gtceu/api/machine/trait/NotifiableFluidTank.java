@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
-                                  implements ICapabilityTrait, IFluidHandlerModifiable {
+                                 implements ICapabilityTrait, IFluidHandlerModifiable {
 
     @Getter
     public final IO handlerIO;
@@ -87,8 +87,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public boolean handleRecipe(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                  boolean simulate) {
-        if (! handlerIO.support(io)) return false;
+                                boolean simulate) {
+        if (!handlerIO.support(io)) return false;
 
         // Temporarily remove listeners so that we can broadcast the entire set of transactions once
         Runnable[] listeners = new Runnable[storages.length];
@@ -275,7 +275,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public int getTanks() {
         return storages.length;
     }
-
 
     @Override
     public @NotNull List<Object> getContents() {

@@ -195,7 +195,7 @@ public interface IRotorHolderMachine extends IMultiPart {
     //////////////////////////////////////
     @Override
     default Component modifyRecipe(GTRecipe recipe) {
-        if(!isFrontFaceFree()) {
+        if (!isFrontFaceFree()) {
             return Component.translatable("gtceu.multiblock.universal.rotor_obstructed");
         }
         if (!hasRotor()) {

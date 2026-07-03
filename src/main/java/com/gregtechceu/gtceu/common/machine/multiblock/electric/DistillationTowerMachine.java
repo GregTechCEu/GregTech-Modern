@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -165,7 +165,7 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
         var parallelResult = tower.getMaxParallel(group, recipe, maxParallel);
         if (parallelResult.failReason() != null) return parallelResult.failReason();
         int parallel = parallelResult.amount();
-        if(parallel <= 1) return null;
+        if (parallel <= 1) return null;
 
         recipe.multiplyAllContents(parallel);
         recipe.parallels *= parallel;
@@ -183,7 +183,7 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
 
             var batchResult = tower.getMaxParallel(group, recipe, parallel);
             if (batchResult.failReason() != null) return batchResult.failReason();
-            if(batchResult.amount() <= 1) return null;
+            if (batchResult.amount() <= 1) return null;
 
             recipe.multiplyInputs(batchResult.amount());
             recipe.multiplyOutputs(batchResult.amount());
@@ -275,10 +275,10 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
 
     private record
 
-    ParallelResult(int amount, @Nullable Component failReason) {
-    }
+    ParallelResult(int amount, @Nullable Component failReason) {}
 
     public static class DistillationTowerLogic extends RecipeLogic {
+
         public DistillationTowerLogic(IRecipeLogicMachine machine) {
             super(machine);
         }
@@ -312,7 +312,8 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
             var voidMode = machine.getVoidingMode();
             boolean distilleryRecipe = recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES;
             if (hasTooManyFluidOutputs(fluids, distilleryRecipe, voidMode)) {
-                return ActionResult.fail(tooManyFluidOutputsReason(fluids.size(), getMachine().getFluidOutputs().size()),
+                return ActionResult.fail(
+                        tooManyFluidOutputsReason(fluids.size(), getMachine().getFluidOutputs().size()),
                         FluidRecipeCapability.CAP, IO.OUT);
             }
             if (!applyFluidOutputs(fluids, distilleryRecipe, FluidAction.SIMULATE, voidMode)) {
@@ -340,7 +341,8 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
             var voidMode = this.machine.getVoidingMode();
             boolean distilleryRecipe = recipe.recipeType == GTRecipeTypes.DISTILLERY_RECIPES;
             if (hasTooManyFluidOutputs(fluids, distilleryRecipe, voidMode)) {
-                return ActionResult.fail(tooManyFluidOutputsReason(fluids.size(), getMachine().getFluidOutputs().size()),
+                return ActionResult.fail(
+                        tooManyFluidOutputsReason(fluids.size(), getMachine().getFluidOutputs().size()),
                         FluidRecipeCapability.CAP, IO.OUT);
             }
             if (applyFluidOutputs(fluids, distilleryRecipe, FluidAction.EXECUTE, voidMode)) {
@@ -380,7 +382,8 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
             return valid;
         }
 
-        private boolean hasTooManyFluidOutputs(List<FluidStack> fluids, boolean distilleryRecipe, VoidingMode voidMode) {
+        private boolean hasTooManyFluidOutputs(List<FluidStack> fluids, boolean distilleryRecipe,
+                                               VoidingMode voidMode) {
             return !distilleryRecipe && fluids.size() > getMachine().getFluidOutputs().size() &&
                     !voidMode.canVoid(FluidRecipeCapability.CAP);
         }

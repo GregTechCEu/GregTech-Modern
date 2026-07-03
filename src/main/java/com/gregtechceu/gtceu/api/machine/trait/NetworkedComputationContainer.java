@@ -10,8 +10,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
 
-import lombok.Getter;
 import net.minecraft.server.level.ServerLevel;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -49,7 +50,8 @@ public class NetworkedComputationContainer extends NotifiableRecipeHandlerTrait<
             return false;
         }
 
-        if (!simulate && recipe.data.getBoolean("duration_is_total_cwu") && machine instanceof IRecipeLogicMachine rlm) {
+        if (!simulate && recipe.data.getBoolean("duration_is_total_cwu") &&
+                machine instanceof IRecipeLogicMachine rlm) {
             rlm.getRecipeLogic().progress -= 1;
             rlm.getRecipeLogic().progress += receivedCWUt;
         }

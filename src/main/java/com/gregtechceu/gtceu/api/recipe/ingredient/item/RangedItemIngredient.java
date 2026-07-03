@@ -2,14 +2,16 @@ package com.gregtechceu.gtceu.api.recipe.ingredient.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
+
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
+
 import lombok.Getter;
 
 import java.util.List;
 
-public final class RangedItemIngredient extends ItemIngredient{
+public final class RangedItemIngredient extends ItemIngredient {
 
     @Getter
     private final ItemIngredient inner;

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -73,6 +74,6 @@ public class ComputationPortTrait extends MachineTrait implements ComputationPor
 
     @Override
     public int compareTo(@NotNull ComputationPortTrait o) {
-        return (int)(machine.getPos().asLong() - o.machine.getPos().asLong());
+        return (int) (machine.getPos().asLong() - o.machine.getPos().asLong());
     }
 }

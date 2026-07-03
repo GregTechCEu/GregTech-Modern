@@ -119,9 +119,9 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         for (T pipeNet : pipeNetsInChunk) {
             // to clear error nets
             if (pipeNet.containsNode(blockPos)) {
-                if(result == null) {
+                if (result == null) {
                     result = pipeNet;
-                } else if(pipeNet.getLastUpdate() > result.getLastUpdate()){
+                } else if (pipeNet.getLastUpdate() > result.getLastUpdate()) {
                     pipeNets.remove(result);
                     result = pipeNet;
                 } else {

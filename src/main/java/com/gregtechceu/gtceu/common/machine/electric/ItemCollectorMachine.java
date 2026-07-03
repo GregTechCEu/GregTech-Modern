@@ -208,7 +208,8 @@ public class ItemCollectorMachine extends WorkableTieredMachine
     @Override
     public void notifyWorkStatusChanged(WorkLogic.Status oldStatus, WorkLogic.Status newStatus) {
         super.notifyWorkStatusChanged(oldStatus, newStatus);
-        setRenderState(getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
+        setRenderState(
+                getRenderState().setValue(GTMachineModelProperties.IS_ACTIVE, newStatus == WorkLogic.Status.WORKING));
     }
 
     @Override

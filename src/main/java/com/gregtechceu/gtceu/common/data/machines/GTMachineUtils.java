@@ -374,8 +374,8 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerBatteryBuffer(GTRegistrate registrate, int batterySlotSize) {
         return registerTieredMachines(registrate, "battery_buffer_" + batterySlotSize + "x",
-                (holder, tier) ->
-                        new BatteryBufferMachine(holder, tier, batterySlotSize, AMPS_PER_BATTERY_NORMAL, batterySlotSize),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, batterySlotSize, AMPS_PER_BATTERY_NORMAL,
+                        batterySlotSize),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .model(GTMachineModels.createBatteryBufferModel(batterySlotSize))
@@ -401,8 +401,8 @@ public class GTMachineUtils {
 
     public static MachineDefinition[] registerCharger(GTRegistrate registrate, int itemSlotSize) {
         return registerTieredMachines(registrate, "charger_" + itemSlotSize + "x",
-                (holder, tier) ->
-                        new BatteryBufferMachine(holder, tier, itemSlotSize, BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0),
+                (holder, tier) -> new BatteryBufferMachine(holder, tier, itemSlotSize,
+                        BatteryBufferMachine.AMPS_PER_BATTERY_CHARGER, 0),
                 (tier, builder) -> builder
                         .rotationState(RotationState.ALL)
                         .modelProperty(GTMachineModelProperties.CHARGER_STATE, BatteryBufferMachine.State.IDLE)

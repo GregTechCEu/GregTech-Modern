@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+
 import lombok.Getter;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public final class SimpleItemIngredient extends ItemIngredient {
 
     @Override
     public ItemStack[] getItems() {
-        return new ItemStack[]{new ItemStack(item, count)};
+        return new ItemStack[] { new ItemStack(item, count) };
     }
 
     @Override

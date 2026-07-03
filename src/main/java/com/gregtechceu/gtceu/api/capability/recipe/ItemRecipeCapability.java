@@ -27,9 +27,6 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import com.mojang.serialization.Codec;
-import dev.emi.emi.api.stack.EmiIngredient;
-import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -40,6 +37,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import com.mojang.serialization.Codec;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
 import it.unimi.dsi.fastutil.objects.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -50,7 +50,8 @@ import java.util.stream.Collectors;
 
 public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
 
-    public final static ItemRecipeCapability CAP = new ItemRecipeCapability("item", 0xFFD96106, true, ItemIngredient.CODEC);
+    public final static ItemRecipeCapability CAP = new ItemRecipeCapability("item", 0xFFD96106, true,
+            ItemIngredient.CODEC);
 
     protected ItemRecipeCapability(String name, int color, boolean doRenderSlot,
                                    Codec<ItemIngredient> contentCodec) {
@@ -85,7 +86,8 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height, content.getChance());
                 if (content instanceof RangedItemIngredient ranged) {
-                    drawString(graphics, x, y, width, height, "%s-%s".formatted(ranged.getMinCount(), ranged.getCount()),
+                    drawString(graphics, x, y, width, height,
+                            "%s-%s".formatted(ranged.getMinCount(), ranged.getCount()),
                             0xFFFFFF, false);
                 }
                 if (perTick) {
@@ -252,7 +254,8 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     }
 
     @Override
-    public @NotNull List<ItemEntryList> createXEIContainerContents(List<ItemIngredient> contents, GTRecipeDefinition recipe, IO io) {
+    public @NotNull List<ItemEntryList> createXEIContainerContents(List<ItemIngredient> contents,
+                                                                   GTRecipeDefinition recipe, IO io) {
         List<ItemEntryList> entryLists = contents.stream()
                 .map(ItemRecipeCapability::mapItem)
                 .collect(Collectors.toList());
@@ -273,7 +276,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                         .getDataStickEntry(researchData.researchId());
                 Set<ItemStack> cache = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingItem());
                 if (possibleRecipes != null) {
-                    for (GTRecipeDefinition             r : possibleRecipes) {
+                    for (GTRecipeDefinition r : possibleRecipes) {
                         var outputs = r.getOutputContents(this);
                         if (outputs.isEmpty()) continue;
 

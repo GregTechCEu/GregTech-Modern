@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
@@ -427,8 +426,7 @@ public class ToolHelper {
                                 GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1),
                         new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN,
                                 (slots) -> new CustomItemStackHandler(silktouchDrop)),
-                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)
-                ));
+                        new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
 
                 be.getMetaMachine().reinitializeHandlers(group);
 

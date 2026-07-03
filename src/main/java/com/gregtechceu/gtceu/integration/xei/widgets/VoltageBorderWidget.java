@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.xei.widgets;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
 import net.minecraft.client.gui.GuiGraphics;
+
 import org.jetbrains.annotations.NotNull;
 
 public class VoltageBorderWidget extends Widget {

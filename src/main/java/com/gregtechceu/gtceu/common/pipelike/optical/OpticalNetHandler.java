@@ -36,7 +36,7 @@ public class OpticalNetHandler implements IDataAccessMachine {
     @Override
     public boolean isRecipeAvailable(@NotNull GTRecipe recipe) {
         var dataHatch = getDataHatch();
-        if(dataHatch == null || !dataHatch.isTransmitter()) return false;
+        if (dataHatch == null || !dataHatch.isTransmitter()) return false;
         boolean isAvailable = dataHatch.isRecipeAvailable(recipe);
         if (isAvailable) setPipesActive();
         return isAvailable;
@@ -45,7 +45,7 @@ public class OpticalNetHandler implements IDataAccessMachine {
     @Override
     public void notifyListeners() {
         var dataHatch = getDataHatch();
-        if(dataHatch != null && !dataHatch.isTransmitter()) dataHatch.notifyListeners();
+        if (dataHatch != null && !dataHatch.isTransmitter()) dataHatch.notifyListeners();
     }
 
     private void setPipesActive() {
@@ -68,5 +68,4 @@ public class OpticalNetHandler implements IDataAccessMachine {
 
         return inv.getDataHatch();
     }
-
 }

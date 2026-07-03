@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 
 import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * A machine can handle recipes.
  */
 public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogicMachine, ICleanroomReceiver,
-                                      IVoidable {
+                                     IVoidable {
 
     /**
      * RecipeType held
@@ -53,7 +54,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogic
      */
     @Nullable
     default Component modifyRecipe(GTRecipe recipe, RecipeHandlerGroup group) {
-        for(var modifier: self().getDefinition().getRecipeModifiers()) {
+        for (var modifier : self().getDefinition().getRecipeModifiers()) {
             var failReason = modifier.apply(self(), group, recipe);
             if (failReason != null) return failReason;
         }

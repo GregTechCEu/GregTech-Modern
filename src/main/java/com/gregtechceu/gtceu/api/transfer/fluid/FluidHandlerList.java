@@ -197,7 +197,7 @@ public class FluidHandlerList implements IFluidHandlerModifiable, INBTSerializab
 
     public long getCapacity() {
         long capacity = 0;
-        for(int i = 0; i < getTanks(); i++) {
+        for (int i = 0; i < getTanks(); i++) {
             capacity += getTankCapacity(i);
         }
         return capacity;
@@ -205,16 +205,16 @@ public class FluidHandlerList implements IFluidHandlerModifiable, INBTSerializab
 
     public long getFluidAmount(Fluid fluid) {
         long amount = 0;
-        for(int i = 0; i < getTanks(); i++) {
-            if(getFluidInTank(i).getFluid() == fluid) amount += getFluidInTank(i).getAmount();
+        for (int i = 0; i < getTanks(); i++) {
+            if (getFluidInTank(i).getFluid() == fluid) amount += getFluidInTank(i).getAmount();
         }
         return amount;
     }
 
     public long getFluidAmount(TagKey<Fluid> fluidTag) {
         long amount = 0;
-        for(int i = 0; i < getTanks(); i++) {
-            if(getFluidInTank(i).getFluid().is(fluidTag)) amount += getFluidInTank(i).getAmount();
+        for (int i = 0; i < getTanks(); i++) {
+            if (getFluidInTank(i).getFluid().is(fluidTag)) amount += getFluidInTank(i).getAmount();
         }
         return amount;
     }

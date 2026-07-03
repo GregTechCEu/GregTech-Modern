@@ -183,49 +183,50 @@ public class BlockBreakerMachine extends WorkableTieredMachine
     public void serverRunningTick() {
         if (getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir()) {
             setStatus(WorkLogic.Status.IDLE);
-        } else if(energyContainer.getEnergyStored() < energyPerTick ||
-                energyContainer.removeEnergy(energyPerTick) < energyPerTick){
-            setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
-                    .append(EURecipeCapability.CAP.getName()));
-        } else {
-            setStatus(WorkLogic.Status.WORKING);
-            if (this.blockBreakProgress > 0) {
-                --this.blockBreakProgress;
+        } else if (energyContainer.getEnergyStored() < energyPerTick ||
+                energyContainer.removeEnergy(energyPerTick) < energyPerTick) {
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                            .append(EURecipeCapability.CAP.getName()));
+                } else {
+                    setStatus(WorkLogic.Status.WORKING);
+                    if (this.blockBreakProgress > 0) {
+                        --this.blockBreakProgress;
 
-                if (blockBreakProgress == 0) {
-                    var pos = getPos().relative(getFrontFacing());
-                    var blockState = getLevel().getBlockState(pos);
-                    float hardness = blockState.getBlock().defaultDestroyTime();
-                    if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
-                        var drops = tryDestroyBlockAndGetDrops(pos);
-                        for (ItemStack drop : drops) {
-                            var remainder = tryFillCache(drop);
-                            if (!remainder.isEmpty()) {
-                                if (getOutputFacingItems() == null) {
-                                    Block.popResource(getLevel(), getPos(), remainder);
-                                } else {
-                                    Block.popResource(getLevel(), getPos().relative(getOutputFacingItems()), remainder);
+                        if (blockBreakProgress == 0) {
+                            var pos = getPos().relative(getFrontFacing());
+                            var blockState = getLevel().getBlockState(pos);
+                            float hardness = blockState.getBlock().defaultDestroyTime();
+                            if (hardness >= 0.0f && Math.abs(hardness - currentHardness) < .5f) {
+                                var drops = tryDestroyBlockAndGetDrops(pos);
+                                for (ItemStack drop : drops) {
+                                    var remainder = tryFillCache(drop);
+                                    if (!remainder.isEmpty()) {
+                                        if (getOutputFacingItems() == null) {
+                                            Block.popResource(getLevel(), getPos(), remainder);
+                                        } else {
+                                            Block.popResource(getLevel(), getPos().relative(getOutputFacingItems()),
+                                                    remainder);
+                                        }
+                                    }
                                 }
                             }
+                            this.currentHardness = 0f;
                         }
                     }
-                    this.currentHardness = 0f;
-                }
-            }
 
-            if (blockBreakProgress == 0) {
-                var pos = getPos().relative(getFrontFacing());
-                var blockState = getLevel().getBlockState(pos);
-                float hardness = blockState.getBlock().defaultDestroyTime();
-                boolean skipBlock = blockState.isAir();
-                if (hardness >= 0f && !skipBlock) {
-                    int ticksPerOneDurability = 5;
-                    int totalTicksPerBlock = (int) Math.ceil(ticksPerOneDurability * hardness);
-                    this.blockBreakProgress = (int) Math.ceil(totalTicksPerBlock * this.efficiencyMultiplier);
-                    this.currentHardness = hardness;
+                    if (blockBreakProgress == 0) {
+                        var pos = getPos().relative(getFrontFacing());
+                        var blockState = getLevel().getBlockState(pos);
+                        float hardness = blockState.getBlock().defaultDestroyTime();
+                        boolean skipBlock = blockState.isAir();
+                        if (hardness >= 0f && !skipBlock) {
+                            int ticksPerOneDurability = 5;
+                            int totalTicksPerBlock = (int) Math.ceil(ticksPerOneDurability * hardness);
+                            this.blockBreakProgress = (int) Math.ceil(totalTicksPerBlock * this.efficiencyMultiplier);
+                            this.currentHardness = hardness;
+                        }
+                    }
                 }
-            }
-        }
     }
 
     @Override

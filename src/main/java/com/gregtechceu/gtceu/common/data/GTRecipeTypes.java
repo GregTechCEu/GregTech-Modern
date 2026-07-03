@@ -538,7 +538,7 @@ public class GTRecipeTypes {
                 if (recipeBuilder.output.containsKey(FluidRecipeCapability.CAP)) {
                     FluidIngredient input = recipeBuilder.input.get(FluidRecipeCapability.CAP).get(0);
                     ItemStack[] outputs = recipeBuilder.output.containsKey(ItemRecipeCapability.CAP) ?
-                            recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getItems(): null;
+                            recipeBuilder.output.get(ItemRecipeCapability.CAP).get(0).getItems() : null;
                     ItemStack outputItem = outputs == null || outputs.length == 0 ? ItemStack.EMPTY : outputs[0];
                     if (input.getFluids().length == 0) return;
                     List<FluidIngredient> contents = recipeBuilder.output.get(FluidRecipeCapability.CAP);

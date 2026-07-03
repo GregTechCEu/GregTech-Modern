@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IWorkLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
@@ -15,16 +13,12 @@ import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -47,7 +41,8 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
         }
         if (isTransmitter()) {
             IMultiController controller = getControllers().first();
-            return controller instanceof IDataAccessMachine dataAccessMachine && dataAccessMachine.isRecipeAvailable(recipe);
+            return controller instanceof IDataAccessMachine dataAccessMachine &&
+                    dataAccessMachine.isRecipeAvailable(recipe);
 
         } else {
             var dataHatch = getDataHatch();
@@ -57,14 +52,14 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
 
     @Override
     public void notifyListeners() {
-        if(isTransmitter()) {
+        if (isTransmitter()) {
             var dataHatch = getDataHatch();
-            if(dataHatch != null) dataHatch.notifyListeners();
+            if (dataHatch != null) dataHatch.notifyListeners();
         } else {
-            for(var controller :getControllers()) {
-                if(controller instanceof IDataAccessMachine dataAccessMachine) {
+            for (var controller : getControllers()) {
+                if (controller instanceof IDataAccessMachine dataAccessMachine) {
                     dataAccessMachine.notifyListeners();
-                } else if(controller instanceof IWorkLogicMachine workLogicMachine) {
+                } else if (controller instanceof IWorkLogicMachine workLogicMachine) {
                     workLogicMachine.getWorkLogic().updateTickSubscription();
                 }
             }
@@ -86,9 +81,9 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
         if (tileEntity == null) return null;
 
         if (tileEntity instanceof OpticalPipeBlockEntity blockEntity) {
-            return blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, getFrontFacing().getOpposite()).orElse(null);
+            return blockEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS, getFrontFacing().getOpposite())
+                    .orElse(null);
         }
         return null;
     }
-
 }

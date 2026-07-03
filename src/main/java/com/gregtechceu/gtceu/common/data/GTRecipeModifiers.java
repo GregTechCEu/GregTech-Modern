@@ -17,12 +17,12 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,8 +35,8 @@ import static com.gregtechceu.gtceu.api.recipe.RecipeHelper.doTrim;
 public class GTRecipeModifiers {
 
     public static final RecipeModifier TIER_CHECK = (machine, group, recipe) -> {
-        if(machine instanceof ITieredMachine tieredMachine) {
-            if(recipe.tier > tieredMachine.getTier()) {
+        if (machine instanceof ITieredMachine tieredMachine) {
+            if (recipe.tier > tieredMachine.getTier()) {
                 return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
             }
             return null;
@@ -50,7 +50,7 @@ public class GTRecipeModifiers {
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
             .memoize(logic -> (machine, group, recipe) -> {
                 Component tierCheck = TIER_CHECK.apply(machine, group, recipe);
-                if(tierCheck != null) return tierCheck;
+                if (tierCheck != null) return tierCheck;
                 if (!(machine instanceof IOverclockMachine overclockMachine)) return null;
                 return logic.getModifier(machine, group, recipe, overclockMachine.getOverclockVoltage());
             });
@@ -59,8 +59,6 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_PERFECT = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
-
-
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, group, recipe) -> {
@@ -98,7 +96,8 @@ public class GTRecipeModifiers {
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
-    public static @Nullable Component hatchParallel(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
+    public static @Nullable Component hatchParallel(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                    @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             int parallels = controller.getParallelHatch()
                     .map(hatch -> ParallelLogic.getParallelAmount(group, recipe, hatch.getCurrentParallel()))
@@ -111,7 +110,8 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static @Nullable Component batchMode(@NotNull MetaMachine machine, RecipeHandlerGroup group, @NotNull GTRecipe recipe) {
+    public static @Nullable Component batchMode(@NotNull MetaMachine machine, RecipeHandlerGroup group,
+                                                @NotNull GTRecipe recipe) {
         if (machine instanceof IMultiController controller && controller.isFormed() && controller.isBatchEnabled()) {
             if (recipe.duration < ConfigHolder.INSTANCE.machines.batchDuration) {
                 int parallel = ConfigHolder.INSTANCE.machines.batchDuration / recipe.duration;
@@ -147,7 +147,6 @@ public class GTRecipeModifiers {
         if (recipe.tier > coilMachine.getTier()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
-
 
         var failReason = OverclockingLogic.NON_PERFECT_OVERCLOCK.getModifier(machine, group, recipe,
                 coilMachine.getOverclockVoltage());
@@ -214,7 +213,7 @@ public class GTRecipeModifiers {
         if (!(machine instanceof ICoilMachine coilMachine)) {
             return RecipeModifier.nullWrongType(ICoilMachine.class, machine);
         }
-        if (recipe.tier > coilMachine.getTier()){
+        if (recipe.tier > coilMachine.getTier()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
         }
 

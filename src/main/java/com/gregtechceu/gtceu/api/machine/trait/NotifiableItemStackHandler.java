@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.CircuitMapIngredient;
@@ -16,9 +15,9 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemTagMapIngredi
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.NBTPredicateItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.PartialNBTItemStackMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.StrictNBTItemStackMapIngredient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -89,8 +88,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
 
     // Notable caller is ItemRecipeHandler, used for MinerLogic
     public static boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate,
-                                                 IO handlerIO, CustomItemStackHandler storage) {
-        if (! handlerIO.support(io)) return false;
+                                       IO handlerIO, CustomItemStackHandler storage) {
+        if (!handlerIO.support(io)) return false;
 
         Runnable listener = storage.getOnContentsChanged();
         storage.setOnContentsChanged(() -> {});

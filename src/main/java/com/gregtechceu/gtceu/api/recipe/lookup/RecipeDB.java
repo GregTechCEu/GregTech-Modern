@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -45,7 +44,7 @@ public final class RecipeDB {
     /**
      * Find a GT Recipe
      *
-     * @param group    the holder to search
+     * @param group     the holder to search
      * @param predicate the predicate to determine recipe validity
      * @return the recipe
      */
@@ -76,7 +75,7 @@ public final class RecipeDB {
     /**
      * Create an iterator for a search space
      *
-     * @param group    the group to search
+     * @param group     the group to search
      * @param predicate the predicate to determine recipe validity
      * @return an iterator
      */
@@ -104,11 +103,11 @@ public final class RecipeDB {
         // the initial capacity is a "feel-good" value because it's faster to just grow the list
         // than to calculate an accurate value.
         List<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for(var entry: handlerMap.entrySet()){
-            if(!entry.getKey().isRecipeSearchFilter()) {
+        for (var entry : handlerMap.entrySet()) {
+            if (!entry.getKey().isRecipeSearchFilter()) {
                 continue;
             }
-            for(var handler: entry.getValue()) {
+            for (var handler : entry.getValue()) {
                 list.addAll(handler.getMapIngredients());
             }
         }
@@ -126,7 +125,8 @@ public final class RecipeDB {
      * @return the nodes to search for the ingredient
      */
     private static @NotNull Map<AbstractMapIngredient, Either<GTRecipeDefinition, Branch>> nodesForIngredient(
-            @NotNull AbstractMapIngredient ingredient, @NotNull Branch branch) {
+                                                                                                              @NotNull AbstractMapIngredient ingredient,
+                                                                                                              @NotNull Branch branch) {
         if (ingredient.isSpecialIngredient()) {
             return branch.getSpecialNodes();
         }
@@ -140,7 +140,8 @@ public final class RecipeDB {
      * @param ingredients the ingredients in optimal order, comprising the recipe
      * @return if successful
      */
-    boolean add(@NotNull GTRecipeDefinition recipe, @NotNull List<@Unmodifiable List<AbstractMapIngredient>> ingredients) {
+    boolean add(@NotNull GTRecipeDefinition recipe,
+                @NotNull List<@Unmodifiable List<AbstractMapIngredient>> ingredients) {
         if (addRecursive(recipe, ingredients, rootBranch, 0)) {
             recipe.category.addRecipe(recipe);
             return true;

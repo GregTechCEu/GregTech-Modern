@@ -64,7 +64,8 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     private static int getXOffset(GTRecipeDefinition definition) {
-        if (definition.recipeType.getRecipeUI().getOriginalWidth() != definition.recipeType.getRecipeUI().getJEISize().width) {
+        if (definition.recipeType.getRecipeUI().getOriginalWidth() !=
+                definition.recipeType.getRecipeUI().getJEISize().width) {
             return (definition.recipeType.getRecipeUI().getJEISize().width -
                     definition.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
@@ -79,7 +80,7 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         int ocs = tier - minTier;
         if (minTier == ULV) ocs--;
-        if(ocs != 0) {
+        if (ocs != 0) {
             var params = new OverclockingLogic.OCParams(RecipeHelper.getRealEUtWithIO(recipe), duration, ocs, 1);
             var ocResult = oc.runOverclockingLogic(params, V[tier]);
             duration = (int) (duration * ocResult.durationMultiplier());
@@ -95,7 +96,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
         WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages,
                 recipe.data.copy(), recipe.conditions);
-        if(voltageTextWidget != null) {
+        if (voltageTextWidget != null) {
             group.addWidget(voltageTextWidget);
         }
 
@@ -126,7 +127,8 @@ public class GTRecipeWidget extends WidgetGroup {
                         .setupDimensionMarkers(recipe.recipeType.getRecipeUI().getJEISize().width - xOffset - 44,
                                 recipe.recipeType.getRecipeUI().getJEISize().height - 32)
                         .setBackgroundTexture(IGuiTexture.EMPTY));
-            } else group.addWidget(new LabelWidget(3 - xOffset, yOff.addAndGet(LINE_HEIGHT), condition.getTooltips().getString()));
+            } else group.addWidget(
+                    new LabelWidget(3 - xOffset, yOff.addAndGet(LINE_HEIGHT), condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             group.addWidget(new LabelWidget(3 - xOffset, yOff.addAndGet(LINE_HEIGHT), dataInfo.apply(recipe.data)));
@@ -142,24 +144,24 @@ public class GTRecipeWidget extends WidgetGroup {
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
     }
 
-    private void addXEIInfo(WidgetGroup group, ContentListMap contents, int duration, boolean perTick, boolean isInput, MutableInt yOff) {
+    private void addXEIInfo(WidgetGroup group, ContentListMap contents, int duration, boolean perTick, boolean isInput,
+                            MutableInt yOff) {
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(
-                    RecipeCapability<T> capability,
-                    List<T> contents
-            ) {
+                                   RecipeCapability<T> capability,
+                                   List<T> contents) {
                 capability.addXEIInfo(group, xOffset, recipe, contents, duration, perTick, isInput, yOff);
             }
         });
     }
 
     private void initialize() {
-
         var EUt = RecipeHelper.getRealEUtWithIO(recipe);
-        if(tier != 0 || EUt != 0) {
+        if (tier != 0 || EUt != 0) {
             String tierText = GTValues.VNF[tier];
-            if(tier != minTier) {
+            if (tier != minTier) {
                 tierText = tierText.formatted(ChatFormatting.ITALIC);
             }
             voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
@@ -180,9 +182,7 @@ public class GTRecipeWidget extends WidgetGroup {
                         cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
                         () -> !FMLLoader.isProduction(), !FMLLoader.isProduction())
                         .setHoverTooltips("click to copy: " + recipe.id));
-
     }
-
 
     private int getVoltageXOffset() {
         int x = getSize().width - switch (tier) {
@@ -197,7 +197,6 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     public void setRecipeOC(int button, boolean isShiftClick) {
-
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             setTier(tier + 1);
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
@@ -210,7 +209,7 @@ public class GTRecipeWidget extends WidgetGroup {
             oc = FusionReactorMachine.FUSION_OC;
         }
         String tierText = GTValues.VNF[tier];
-        if(tier != minTier) {
+        if (tier != minTier) {
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
         voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10,
@@ -225,6 +224,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void collectStorage(Table<IO, RecipeCapability<?>, Object> storages, IO io, ContentListMap contents) {
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> list) {
                 List<?> xeiContents = capability.createXEIContainerContents(list, recipe, io);
@@ -243,6 +243,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void addSlots(WidgetGroup group, IO io, ContentListMap contents) {
         contents.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> list) {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(capability) :
@@ -263,8 +264,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
     public static WidgetGroup getPlaceHolder(GTRecipeDefinition definition) {
         return new WidgetGroup(getXOffset(definition), 0,
-                        definition.recipeType.getRecipeUI().getJEISize().width,
-                        definition.recipeType.getRecipeUI().getJEISize().height);
+                definition.recipeType.getRecipeUI().getJEISize().width,
+                definition.recipeType.getRecipeUI().getJEISize().height);
     }
-
 }

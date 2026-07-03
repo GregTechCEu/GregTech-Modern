@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 public class ComputationNetworkManager {
@@ -148,7 +147,8 @@ public class ComputationNetworkManager {
             if (!port.getComputationPortPolicy().acceptsOptical()) continue;
             ComputationPortTrait target = findOpticalRouteTarget(port);
             if (target == null || target == port || !networkNodes.contains(target) ||
-                    !target.getComputationPortPolicy().acceptsOptical()) continue;
+                    !target.getComputationPortPolicy().acceptsOptical())
+                continue;
             if (!canUseComputationRoute(port, target)) continue;
             addDebugEdge(edges, port, target);
         }
@@ -313,11 +313,9 @@ public class ComputationNetworkManager {
         }
     }
 
-    public record DebugTopology(List<BlockPos> nodes, List<DebugEdge> edges) {
-    }
+    public record DebugTopology(List<BlockPos> nodes, List<DebugEdge> edges) {}
 
-    public record DebugEdge(BlockPos first, BlockPos second) {
-    }
+    public record DebugEdge(BlockPos first, BlockPos second) {}
 
     private static class ComputationNetwork {
 

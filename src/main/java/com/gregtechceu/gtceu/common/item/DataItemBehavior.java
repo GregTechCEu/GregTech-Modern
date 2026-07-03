@@ -103,7 +103,8 @@ public class DataItemBehavior implements IInteractionItem, IAddInformation, IDat
                         Component.literal("" + posArray[2]).withStyle(ChatFormatting.LIGHT_PURPLE)));
             }
         } else {
-            Collection<GTRecipeDefinition> recipes = researchData.recipeType().getDataStickEntry(researchData.researchId());
+            Collection<GTRecipeDefinition> recipes = researchData.recipeType()
+                    .getDataStickEntry(researchData.researchId());
             if (recipes != null && !recipes.isEmpty()) {
                 tooltipComponents.add(Component.translatable("behavior.data_item.title",
                         Component.translatable(researchData.recipeType().registryName.toLanguageKey())));

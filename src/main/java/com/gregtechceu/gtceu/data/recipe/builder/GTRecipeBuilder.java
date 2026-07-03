@@ -118,7 +118,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType,
-                           ContentListMap input, ContentListMap output, ContentListMap tickInput, ContentListMap tickOutput) {
+                           ContentListMap input, ContentListMap output, ContentListMap tickInput,
+                           ContentListMap tickOutput) {
         this.id = id;
         this.recipeType = recipeType;
         this.recipeCategory = recipeType.getCategory();
@@ -211,7 +212,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder tier(int tier) {
-        if(tier < GTValues.ULV || tier > GTValues.MAX) {
+        if (tier < GTValues.ULV || tier > GTValues.MAX) {
             throw new RuntimeException("Recipe tier out of range, id: %s".formatted(this.id));
         }
         this.tier = tier;
@@ -313,7 +314,8 @@ public class GTRecipeBuilder {
                 ingredients.add(ingredient);
             }
         }
-        return input(ItemRecipeCapability.CAP, ingredients.stream().map(ItemIngredient::of).toArray(ItemIngredient[]::new));
+        return input(ItemRecipeCapability.CAP,
+                ingredients.stream().map(ItemIngredient::of).toArray(ItemIngredient[]::new));
     }
 
     public GTRecipeBuilder inputItems(Ingredient inputs, int count) {
@@ -791,7 +793,8 @@ public class GTRecipeBuilder {
     }
 
     protected GTRecipeBuilder inputFluidsRanged(FluidIngredient input, IntProvider intProvider) {
-        return inputFluidsRanged(input.copyWithMultiplier(1).isRanged() ? input : FluidIngredient.ranged(input.toStack(), intProvider.getMinValue(), intProvider.getMaxValue()));
+        return inputFluidsRanged(input.copyWithMultiplier(1).isRanged() ? input :
+                FluidIngredient.ranged(input.toStack(), intProvider.getMinValue(), intProvider.getMaxValue()));
     }
 
     public GTRecipeBuilder inputFluidsRanged(FluidStack input, IntProvider intProvider) {
@@ -820,7 +823,8 @@ public class GTRecipeBuilder {
     }
 
     protected GTRecipeBuilder outputFluidsRanged(FluidIngredient output, IntProvider intProvider) {
-        return outputFluidsRanged(FluidIngredient.ranged(output.toStack(), intProvider.getMinValue(), intProvider.getMaxValue()));
+        return outputFluidsRanged(
+                FluidIngredient.ranged(output.toStack(), intProvider.getMinValue(), intProvider.getMaxValue()));
     }
 
     public GTRecipeBuilder outputFluidsRanged(FluidStack output, IntProvider intProvider) {
@@ -1457,7 +1461,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeDefinition buildRawRecipe() {
-        return new GTRecipeDefinition(id.withPrefix(recipeType.registryName.getPath() + "/"), recipeType, recipeCategory,
+        return new GTRecipeDefinition(id.withPrefix(recipeType.registryName.getPath() + "/"), recipeType,
+                recipeCategory,
                 input, output, tickInput, tickOutput,
                 duration, conditions, data, tier);
     }
@@ -1466,18 +1471,19 @@ public class GTRecipeBuilder {
                                           ContentListMap table) {
         var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;
         table.forEachEntry(new ContentListMap.EntryConsumer() {
+
             @Override
             public <T> void accept(RecipeCapability<T> capability, List<T> contents) {
-                if(!recipeCapabilityMax.containsKey(capability)) return;
+                if (!recipeCapabilityMax.containsKey(capability)) return;
                 int max = recipeCapabilityMax.getInt(capability);
-                if(contents.size() > max) {
+                if (contents.size() > max) {
                     String io = isInput ? "inputs" : "outputs";
-                    GTCEu.LOGGER.warn("Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
+                    GTCEu.LOGGER.warn(
+                            "Recipe {} is trying to add more {} than its recipe type can support, Max {} {}: {}",
                             id, io, capability.name, io, max);
                 }
             }
         });
-
     }
 
     protected boolean missingIngredientError(int index, boolean isInput,

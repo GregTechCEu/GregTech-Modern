@@ -24,8 +24,7 @@ public final class NetworkDebugRenderer {
     private static final float LINE_WIDTH = 5.0F;
     private static List<NetworkDebugData> networks = List.of();
 
-    private NetworkDebugRenderer() {
-    }
+    private NetworkDebugRenderer() {}
 
     public static void setNetworks(List<NetworkDebugData> networks) {
         NetworkDebugRenderer.networks = List.copyOf(networks);

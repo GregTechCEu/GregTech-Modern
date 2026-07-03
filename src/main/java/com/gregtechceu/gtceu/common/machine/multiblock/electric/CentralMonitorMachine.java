@@ -130,7 +130,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
     @Override
     public void serverRunningTick() {
         long energyToConsume = GTValues.VA[tier];
-        if(energyContainer.getEnergyStored() >= energyToConsume &&
+        if (energyContainer.getEnergyStored() >= energyToConsume &&
                 energyContainer.removeEnergy(energyToConsume) >= energyToConsume) {
             setStatus(WorkLogic.Status.WORKING);
             progress = (progress + 1) % getUpdateInterval();

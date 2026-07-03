@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IWorkLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.WorkLogic;
@@ -33,7 +32,7 @@ public class WorkLogicMachineProvider extends CapabilityBlockProvider<IWorkLogic
     @Nullable
     @Override
     protected IWorkLogicMachine getCapability(Level level, BlockPos pos, @Nullable Direction side) {
-        if(level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe &&
+        if (level.getBlockEntity(pos) instanceof IMachineBlockEntity mbe &&
                 mbe.getMetaMachine() instanceof IWorkLogicMachine workLogicMachine) {
             return workLogicMachine;
         }
@@ -50,7 +49,7 @@ public class WorkLogicMachineProvider extends CapabilityBlockProvider<IWorkLogic
             data.putBoolean("Research", true);
         }
         WorkLogic workLogic = machine.getWorkLogic();
-        if(workLogic.isWaiting() && workLogic.getWaitingReason() != null) {
+        if (workLogic.isWaiting() && workLogic.getWaitingReason() != null) {
             data.putString("WaitingReason", Component.Serializer.toJson(workLogic.getWaitingReason()));
         }
     }
