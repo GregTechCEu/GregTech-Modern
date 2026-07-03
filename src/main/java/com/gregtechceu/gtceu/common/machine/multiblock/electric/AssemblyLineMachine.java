@@ -68,6 +68,7 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
 
         var itemInventory = itemHandlers.stream()
                 .filter(IRecipeHandler::shouldSearchContent)
+                .filter(f -> f instanceof NotifiableItemStackHandler)
                 .map(container -> container.getContents().stream()
                         .filter(ItemStack.class::isInstance)
                         .map(ItemStack.class::cast)
@@ -99,7 +100,9 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
         if (itemHandlers.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
 
         var itemInventory = itemHandlers.stream()
-                .filter(IRecipeHandler::shouldSearchContent).toList();
+                .filter(IRecipeHandler::shouldSearchContent)
+                .filter(f -> f instanceof NotifiableItemStackHandler)
+                .toList();
 
         if (itemInventory.size() < inputsSize) return ActionResult.FAIL_NO_REASON;
 
@@ -297,6 +300,8 @@ public class AssemblyLineMachine extends WorkableElectricMultiblockMachine {
             if (!normalMatch.isSuccess()) return normalMatch;
 
             var config = ConfigHolder.INSTANCE.machines;
+
+
             if (!config.orderedAssemblyLineItems && !config.orderedAssemblyLineFluids) return ActionResult.SUCCESS;
             if (!getMachine().checkItemInputs(recipe, false)) return ActionResult.FAIL_NO_REASON;
             if (!getMachine().checkItemInputs(recipe, true)) return ActionResult.FAIL_NO_REASON;

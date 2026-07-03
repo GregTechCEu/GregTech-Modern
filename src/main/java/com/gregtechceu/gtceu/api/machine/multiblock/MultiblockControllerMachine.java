@@ -469,10 +469,6 @@ public class MultiblockControllerMachine extends MetaMachine {
         return null;
     }
 
-    public Comparator<MultiblockPartMachine> getPartSorter() {
-        return getDefinition().getPartSorter().apply(this);
-    }
-
     @Override
     public void setUpwardsFacing(Direction upwardsFacing) {
         if (getLevel() == null) return;
