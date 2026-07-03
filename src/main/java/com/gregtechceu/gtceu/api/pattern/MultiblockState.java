@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
 
+import it.unimi.dsi.fastutil.longs.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,15 +18,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MultiblockState {
@@ -49,12 +48,13 @@ public class MultiblockState {
     @Getter
     @Setter
     private boolean neededFlip = false;
+    @Getter
     public final Level world;
     public final BlockPos controllerPos;
     public IMultiController lastController;
 
-    // persist
-    public LongOpenHashSet cache;
+    @Getter
+    private Long2ObjectOpenHashMap<TraceabilityPredicate> predicateMap;
 
     public MultiblockState(Level world, BlockPos controllerPos) {
         this.world = world;
@@ -67,7 +67,17 @@ public class MultiblockState {
         this.matchContext.reset();
         this.globalCount = new Object2IntOpenHashMap<>();
         this.layerCount = new Object2IntOpenHashMap<>();
-        cache = new LongOpenHashSet();
+
+        predicateMap = new Long2ObjectOpenHashMap<>();
+    }
+
+    public Map<BlockPos, TraceabilityPredicate> getPosPredicateMap() {
+        return predicateMap.long2ObjectEntrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        l -> BlockPos.of(l.getLongKey()),
+                        Long2ObjectMap.Entry::getValue
+                ));
     }
 
     public boolean update(BlockPos posIn, TraceabilityPredicate predicate) {
@@ -144,20 +154,16 @@ public class MultiblockState {
         return world.getBlockState(this.pos.relative(face));
     }
 
-    public Level getWorld() {
-        return world;
+    public LongSet getCache() {
+        return predicateMap.keySet();
     }
 
-    public void addPosCache(BlockPos pos) {
-        cache.add(pos.asLong());
+    public void addPosCache(BlockPos pos, TraceabilityPredicate predicate) {
+        predicateMap.put(pos.asLong(), predicate);
     }
 
     public boolean isPosInCache(BlockPos pos) {
-        return cache.contains(pos.asLong());
-    }
-
-    public Collection<BlockPos> getCache() {
-        return cache.longStream().mapToObj(BlockPos::of).collect(Collectors.toSet());
+        return predicateMap.keySet().contains(pos.asLong());
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState state) {
@@ -178,14 +184,23 @@ public class MultiblockState {
                     }
                 }
                 if (controller != null) {
-                    if (controller.isFormed() && state.getBlock() instanceof ActiveBlock) {
-                        LongSet activeBlocks = getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
-                        if (activeBlocks.contains(pos.asLong())) {
-                            // fine! it's caused by active blocks.
-                            // speed up here!
-                            return;
+                    if (controller.shouldIgnoreChange(pos, state)) {
+                        return;
+                    }
+                    if(controller.isFormed()){
+                        var predicate = predicateMap.get(pos.asLong());
+                        if(predicate != null ) {
+                            if (!update(pos, predicate) || !predicate.test(this)) {
+                                controller.self().setFlipped(false);
+                                controller.onStructureInvalid();
+                                var mwsd = MultiblockWorldSavedData.getOrCreate(serverLevel);
+                                mwsd.removeMapping(this);
+                                mwsd.addAsyncLogic(controller);
+                                return;
+                            }
                         }
                     }
+
                     if (controller.checkPatternWithLock()) {
                         // refresh structure
                         controller.self().setFlipped(this.neededFlip);

@@ -143,10 +143,7 @@ public class BlockPattern {
                             return false;
                         }
                         if (predicate.addCache()) {
-                            worldState.addPosCache(pos);
-                            if (savePredicate) {
-                                matchContext.getOrCreate("predicates", HashMap::new).put(pos, predicate);
-                            }
+                            worldState.addPosCache(pos, predicate);
                         }
                         boolean canPartShared = true;
                         if (worldState.getTileEntity() instanceof IMachineBlockEntity machineBlockEntity &&

@@ -68,11 +68,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription tankSubs;
-    @Getter
-    @Setter
-    @Persisted
-    @DescSynced
-    protected boolean circuitSlotEnabled;
+
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
@@ -84,7 +80,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
-        this.circuitSlotEnabled = true;
+
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
     }
 
@@ -141,30 +137,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
                 rlm.getRecipeLogic().resetLastGroup();
             }
         });
-    }
-
-    @Override
-    public void addedToController(IMultiController controller) {
-        if (!controller.allowCircuitSlots()) {
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
-            } else {
-                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            }
-            setCircuitSlotEnabled(false);
-        }
-        super.addedToController(controller);
-    }
-
-    @Override
-    public void removedFromController(IMultiController controller) {
-        super.removedFromController(controller);
-        for (var c : controllers) {
-            if (!c.allowCircuitSlots()) {
-                return;
-            }
-        }
-        setCircuitSlotEnabled(true);
     }
 
     @Override

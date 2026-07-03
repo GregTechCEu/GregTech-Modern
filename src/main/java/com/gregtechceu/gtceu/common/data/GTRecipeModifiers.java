@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.ICoilMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
@@ -135,14 +135,14 @@ public class GTRecipeModifiers {
      * Then, EUt is multiplied by {@code 1 - (0.1 × coilTier)}
      * </p>
      *
-     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Cracking
+     * @param machine a {@link ICoilMachine} used for Cracking
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
     public static @Nullable Component crackerOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
                                                        @NotNull GTRecipe recipe) {
-        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        if (!(machine instanceof ICoilMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(ICoilMachine.class, machine);
         }
         if (recipe.tier > coilMachine.getTier()) {
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
@@ -169,14 +169,14 @@ public class GTRecipeModifiers {
      * Then, EUt is multiplied by {@code 0.95×} for every {@code 900K} over the required temperature.
      * </p>
      *
-     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Blasting
+     * @param machine a {@link ICoilMachine} used for Blasting
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
     public static @Nullable Component ebfOverclock(@NotNull MetaMachine machine, RecipeHandlerGroup group,
                                                    @NotNull GTRecipe recipe) {
-        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        if (!(machine instanceof ICoilMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(ICoilMachine.class, machine);
         }
 
         int blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
@@ -204,15 +204,15 @@ public class GTRecipeModifiers {
      * or {@code 2 / (tier + 1)} for higher tiercoils.
      * </p>
      *
-     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for Pyrolysis
+     * @param machine a {@link ICoilMachine} used for Pyrolysis
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
     public static @Nullable Component pyrolyseOvenOverclock(@NotNull MetaMachine machine,
                                                             RecipeHandlerGroup group,
                                                             @NotNull GTRecipe recipe) {
-        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        if (!(machine instanceof ICoilMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(ICoilMachine.class, machine);
         }
         if (recipe.tier > coilMachine.getTier()){
             return Component.translatable("gtceu.recipe_modifier.insufficient_voltage");
@@ -241,15 +241,15 @@ public class GTRecipeModifiers {
      * </ol>
      * </p>
      *
-     * @param machine a {@link CoilWorkableElectricMultiblockMachine} used for parallel smelting
+     * @param machine a {@link ICoilMachine} used for parallel smelting
      * @param recipe  recipe
      * @return the failure reason, or {@code null} on success
      */
     public static @Nullable Component multiSmelterParallel(@NotNull MetaMachine machine,
                                                            RecipeHandlerGroup group,
                                                            @NotNull GTRecipe recipe) {
-        if (!(machine instanceof CoilWorkableElectricMultiblockMachine coilMachine)) {
-            return RecipeModifier.nullWrongType(CoilWorkableElectricMultiblockMachine.class, machine);
+        if (!(machine instanceof ICoilMachine coilMachine)) {
+            return RecipeModifier.nullWrongType(ICoilMachine.class, machine);
         }
 
         int maxParallel = 32 * coilMachine.getCoilType().getLevel();

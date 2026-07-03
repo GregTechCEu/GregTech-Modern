@@ -116,7 +116,6 @@ public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine
         super.onPartUnload();
         recipeHandlerLists.clear();
         recipeLogic.resetLastGroup();
-        recipeLogic.updateTickSubscription();
     }
 
     @Nullable

@@ -212,7 +212,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
         return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 
-    default boolean allowCircuitSlots() {
-        return true;
+    default boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        return false;
     }
 }

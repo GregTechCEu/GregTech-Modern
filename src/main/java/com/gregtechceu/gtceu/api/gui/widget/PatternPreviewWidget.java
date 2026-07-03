@@ -264,10 +264,9 @@ public class PatternPreviewWidget extends WidgetGroup {
 
             Map<BlockPos, TraceabilityPredicate> predicateMap = patterns[index].controllerBase
                     .getMultiblockState()
-                    .getMatchContext()
-                    .get("predicates");
+                    .getPosPredicateMap();
 
-            if (predicateMap == null) return;
+            if (predicateMap.isEmpty()) return;
 
             BufferBuilder builder = Tesselator.getInstance().getBuilder();
 
@@ -672,7 +671,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         Map<BlockPos, TraceabilityPredicate> predicateMap = new HashMap<>();
         if (controllerBase != null) {
             loadControllerFormed(predicateMap.keySet(), controllerBase);
-            predicateMap = controllerBase.getMultiblockState().getMatchContext().get("predicates");
+            predicateMap = controllerBase.getMultiblockState().getPosPredicateMap();
         }
         return controllerBase == null ? null : new MBPattern(blockMap, parts.values().stream().sorted((one, two) -> {
             if (one.isController) return -1;

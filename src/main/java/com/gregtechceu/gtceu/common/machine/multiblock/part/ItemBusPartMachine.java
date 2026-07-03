@@ -74,11 +74,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter(AccessLevel.PROTECTED)
     private boolean hasCircuitSlot = true;
     @Getter
-    @Setter
-    @Persisted
-    @DescSynced
-    protected boolean circuitSlotEnabled;
-    @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Getter
@@ -93,7 +88,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
-        this.circuitSlotEnabled = true;
         this.circuitInventory = createCircuitItemHandler(io).shouldSearchContent(false);
         filterHandler = FilterHandlers.item(this);
     }
@@ -122,7 +116,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
             hasCircuitSlot = false;
-            setCircuitSlotEnabled(false);
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
@@ -171,31 +164,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 rlm.getRecipeLogic().resetLastGroup();
             }
         });
-    }
-
-    @Override
-    public void addedToController(IMultiController controller) {
-        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                clearInventory(circuitInventory.storage);
-            } else {
-                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            }
-            setCircuitSlotEnabled(false);
-        }
-        super.addedToController(controller);
-    }
-
-    @Override
-    public void removedFromController(IMultiController controller) {
-        super.removedFromController(controller);
-        if (!hasCircuitSlot) return;
-        for (var c : controllers) {
-            if (!c.allowCircuitSlots()) {
-                return;
-            }
-        }
-        setCircuitSlotEnabled(true);
     }
 
     @Override

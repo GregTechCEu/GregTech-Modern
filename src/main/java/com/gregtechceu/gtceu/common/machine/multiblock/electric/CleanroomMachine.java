@@ -179,7 +179,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean shouldAddPartToController(IMultiPart part) {
         var cache = getMultiblockState().getCache();
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (!cache.contains(part.self().getPos().relative(side))) {
+            if (!cache.contains(part.self().getPos().relative(side).asLong())) {
                 return true;
             }
         }

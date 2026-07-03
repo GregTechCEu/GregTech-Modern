@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
@@ -23,6 +24,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,7 +88,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Override
     public void onStructureInvalid() {
-        //multi machine will not unsubscribe tick when structure invalid by default
         //reset first to ensure part work state are changed
         workLogic.reset();
         super.onStructureInvalid();
@@ -94,6 +95,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         activeBlocks = null;
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
+        workLogic.updateTickSubscription();
     }
 
     @Override
@@ -104,6 +106,13 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         workLogic.updateTickSubscription();
+    }
+
+    @Override
+    public boolean shouldIgnoreChange(BlockPos pos, BlockState state) {
+        return isFormed() && activeBlocks != null
+                && state.getBlock() instanceof ActiveBlock
+                && activeBlocks.contains(pos.asLong());
     }
 
     //////////////////////////////////////
