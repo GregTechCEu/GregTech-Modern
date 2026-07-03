@@ -1,19 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
-import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.widget.IWidget;
-import brachy.modularui.drawable.GuiTextures;
-import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
-import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
-import brachy.modularui.value.IntValue;
-import brachy.modularui.value.ObjectValue;
-import brachy.modularui.widgets.CycleButtonWidget;
-import brachy.modularui.widgets.ItemDisplayWidget;
-import brachy.modularui.widgets.TextWidget;
-import brachy.modularui.widgets.dynamic.DynamicHandler;
-import brachy.modularui.widgets.dynamic.DynamicWidget;
-import brachy.modularui.widgets.layout.Flow;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
@@ -34,6 +20,20 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
+import brachy.modularui.api.drawable.IDrawable;
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
+import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.value.IntValue;
+import brachy.modularui.value.ObjectValue;
+import brachy.modularui.widgets.CycleButtonWidget;
+import brachy.modularui.widgets.ItemDisplayWidget;
+import brachy.modularui.widgets.TextWidget;
+import brachy.modularui.widgets.dynamic.DynamicHandler;
+import brachy.modularui.widgets.dynamic.DynamicWidget;
+import brachy.modularui.widgets.layout.Flow;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -138,7 +138,8 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
                         .background(IDrawable.NONE)
                         .hoverBackground(IDrawable.NONE)
                         .value(selectedIndex)
-                        .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[getTier(modules[selectedIndex.getValue()])])))
+                        .overlay(Text.dynamic(
+                                () -> Component.literal(GTValues.VNF[getTier(modules[selectedIndex.getValue()])])))
                         .right(0));
     }
 
@@ -183,7 +184,8 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
                 .toArray(ItemStack[]::new);
     }
 
-    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem, ItemModule module) {
+    private static ItemStack getResult(EquipmentFoundryRecipe recipe, ItemStack equipment, ItemStack moduleItem,
+                                       ItemModule module) {
         ItemStack copy = equipment.copy();
         if (moduleItem == NO_ITEM) {
             IModularItem modularItem = GTCapabilityHelper.getModularItem(copy);

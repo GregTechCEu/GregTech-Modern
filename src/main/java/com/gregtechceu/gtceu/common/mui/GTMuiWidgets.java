@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import brachy.modularui.api.value.IValue;
-import brachy.modularui.value.ObjectValue;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -29,6 +27,7 @@ import net.minecraft.world.item.Items;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.value.IValue;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.SidedPosGuiData;
@@ -39,6 +38,7 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
+import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
@@ -298,8 +298,7 @@ public class GTMuiWidgets {
         final int CYCLE_TIME = 1000;
 
         IValue<ItemStack> value = new ObjectValue.Dynamic<>(ItemStack.class,
-                () -> stacks.get((int) ((Util.getMillis() % (CYCLE_TIME * stacks.size())) / CYCLE_TIME)), x -> {}
-        );
+                () -> stacks.get((int) ((Util.getMillis() % (CYCLE_TIME * stacks.size())) / CYCLE_TIME)), x -> {});
         return new ItemDisplayWidget()
                 .item(value)
                 .tooltipDynamic(tooltip -> {
