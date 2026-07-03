@@ -69,7 +69,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine
     public BlockBreakerMachine(BlockEntityCreationInfo info, int tier) {
         super(info, tier, false);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.cache = attachTrait(createCacheItemHandler());
+        this.cache = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
         this.batterySlot = attachTrait(new BatterySlotTrait(energyContainer));
         this.energyPerTick = GTValues.V[tier - 1];
         this.efficiencyMultiplier = 1.0f - getEfficiencyMultiplier(tier);
@@ -86,14 +86,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine
             efficiencyMultiplier = .1f;
         efficiencyMultiplier = 1.0f - efficiencyMultiplier;
         return efficiencyMultiplier;
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createCacheItemHandler() {
-        return new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT);
     }
 
     @Override

@@ -102,7 +102,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         super(info, tier, false);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
-        this.output = attachTrait(createOutputItemHandler());
+        this.output = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
         this.filterInventory = createFilterItemHandler();
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
         this.autoOutput = attachTrait(AutoOutputTrait.ofItems(output));
@@ -117,10 +117,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         handler.setFilter(
                 item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.TAG_FILTER.asItem()));
         return handler;
-    }
-
-    protected NotifiableItemStackHandler createOutputItemHandler() {
-        return new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT);
     }
 
     @Override

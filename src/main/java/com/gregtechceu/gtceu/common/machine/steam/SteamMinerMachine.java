@@ -72,8 +72,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
-        this.importItems = attachTrait(createImportItemHandler());
-        this.exportItems = attachTrait(createExportItemHandler());
+        this.importItems = attachTrait(new NotifiableItemStackHandler(0, IO.IN));
+        this.exportItems = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.OUT));
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
@@ -83,14 +83,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     @Override
     public SteamMinerLogic getRecipeLogic() {
         return (SteamMinerLogic) super.getRecipeLogic();
-    }
-
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(0, IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(inventorySize, IO.OUT);
     }
 
     @Override
