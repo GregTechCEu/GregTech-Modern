@@ -53,7 +53,7 @@
         "LevelMixin",
         "LootPoolAccessor",
         "MapColorAccessor",
-        "MappedRegistryMixin",
+        "MappedRegistryAccessor",
         "OreConfigurationMixin",
         "OreVeinifierMixin",
         "PotionBrewingAccessor",
