@@ -153,5 +153,9 @@ public final class PredicateContext {
         GLOBAL_MIN,
         SLICE_MAX,
         SLICE_MIN;
+
+        public boolean shouldCheckFlip() {
+            return this == INTERNAL;
+        }
     }
 }
