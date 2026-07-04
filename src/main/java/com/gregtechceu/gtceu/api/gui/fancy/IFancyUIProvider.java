@@ -36,7 +36,7 @@ public interface IFancyUIProvider {
     /**
      * Attach configurators to the left panel.
      */
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {}
+    default void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {}
 
     /**
      * Attach tooltips to the right panel

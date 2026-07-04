@@ -17,9 +17,9 @@ public interface IDistinctPart extends IMultiPart {
     void setDistinct(boolean isDistinct);
 
     @Override
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        superAttachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+    default void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        superAttachConfigurators(left, right);
+        left.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_DISTINCT_BUSES.getSubTexture(0, 0.5, 1, 0.5),
                 GuiTextures.BUTTON_DISTINCT_BUSES.getSubTexture(0, 0, 1, 0.5),
                 this::isDistinct, (clickData, pressed) -> setDistinct(pressed))
@@ -30,7 +30,7 @@ public interface IDistinctPart extends IMultiPart {
                                         "gtceu.multiblock.universal.distinct.no")))));
     }
 
-    default void superAttachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMultiPart.super.attachConfigurators(configuratorPanel);
+    default void superAttachConfigurators(ConfiguratorPanel configuratorPanel, ConfiguratorPanel rightConfiguratorPanel) {
+        IMultiPart.super.attachConfigurators(configuratorPanel, rightConfiguratorPanel);
     }
 }

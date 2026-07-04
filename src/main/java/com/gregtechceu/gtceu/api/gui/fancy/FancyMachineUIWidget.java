@@ -28,6 +28,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
     protected final WidgetGroup pageContainer;
     protected final PageSwitcher pageSwitcher;
     protected final ConfiguratorPanel configuratorPanel;
+    protected final ConfiguratorPanel rightConfiguratorPanel;
     protected final TooltipsPanel tooltipsPanel;
 
     @Nullable
@@ -68,6 +69,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
         addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::navigate, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
+        addWidget(this.rightConfiguratorPanel = new ConfiguratorPanel(width + 2, height,
+                ConfiguratorPanel.ExpandDirection.RIGHT));
         this.pageSwitcher = new PageSwitcher(this::switchPage);
 
         setBackground(GuiTextures.BACKGROUND.copy()
@@ -209,9 +212,12 @@ public class FancyMachineUIWidget extends WidgetGroup {
         page.setSelfPosition(new Position(
                 (pageContainer.getSize().width - page.getSize().width) / 2,
                 (pageContainer.getSize().height - page.getSize().height) / 2));
-        fancyUI.attachConfigurators(configuratorPanel);
+        fancyUI.attachConfigurators(configuratorPanel, rightConfiguratorPanel);
         configuratorPanel
                 .setSelfPosition(new Position(-24 - 2, getGui().getHeight() - configuratorPanel.getSize().height - 4));
+        rightConfiguratorPanel
+                .setSelfPosition(new Position(size.width + 2,
+                        getGui().getHeight() - rightConfiguratorPanel.getSize().height - 4));
         fancyUI.attachTooltips(tooltipsPanel);
 
         titleBar.setSize(new Size(this.getSize().width, titleBar.getSize().height));
@@ -232,6 +238,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
     protected void clearUI() {
         this.pageContainer.clearAllWidgets();
         this.configuratorPanel.clear();
+        this.rightConfiguratorPanel.clear();
         this.tooltipsPanel.clear();
     }
 

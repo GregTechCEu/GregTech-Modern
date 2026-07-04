@@ -34,6 +34,11 @@ import java.util.List;
 
 public class ConfiguratorPanel extends WidgetGroup {
 
+    public enum ExpandDirection {
+        LEFT,
+        RIGHT
+    }
+
     @Getter
     protected List<Tab> tabs = new ArrayList<>();
     @Getter
@@ -43,9 +48,15 @@ public class ConfiguratorPanel extends WidgetGroup {
     protected int border = 4;
     @Setter
     protected IGuiTexture texture = GuiTextures.BACKGROUND;
+    protected final ExpandDirection expandDirection;
 
     public ConfiguratorPanel(int x, int y) {
+        this(x, y, ExpandDirection.LEFT);
+    }
+
+    public ConfiguratorPanel(int x, int y, ExpandDirection expandDirection) {
         super(x, y, 24, 0);
+        this.expandDirection = expandDirection;
     }
 
     public void clear() {
@@ -228,7 +239,6 @@ public class ConfiguratorPanel extends WidgetGroup {
                                 .setType(TextTexture.TextType.LEFT_HIDE)
                                 .setWidth(widget.getSize().width - getTabSize())));
                 this.addWidget(button);
-                this.addWidget(view);
             }
         }
 
@@ -267,10 +277,10 @@ public class ConfiguratorPanel extends WidgetGroup {
             if (this.view != null && this.view == child) {
                 if (expanded == this) {
                     var size = view.getSize();
+                    clampExpandedPosition(size);
                     animation(new Animation()
                             .duration(getAnimationTime())
-                            .position(new Position(dragOffsetX + (-size.width + (tabs.size() > 1 ? -2 : getTabSize())),
-                                    dragOffsetY))
+                            .position(getExpandedPosition(size))
                             .size(size)
                             .ease(Eases.EaseQuadOut)
                             .onFinish(() -> {
@@ -303,24 +313,17 @@ public class ConfiguratorPanel extends WidgetGroup {
 
         private void expand() {
             if (view == null) return;
+            if (!widgets.contains(view)) {
+                addWidget(view);
+            }
             var size = view.getSize();
             this.dragOffsetX = 0;
             this.dragOffsetY = 0;
-            if (isRemote()) {
-                if (getParentPosition().x - size.width + (tabs.size() > 1 ? -2 : getTabSize()) < 0) {
-                    this.dragOffsetX -= (view.getParentPosition().x - size.width +
-                            (tabs.size() > 1 ? -2 : getTabSize()));
-                }
-                if (getParentPosition().y + size.height > gui.getScreenHeight()) {
-                    this.dragOffsetY -= view.getParentPosition().y + size.height - gui.getScreenHeight();
-                }
-            }
-            Position position = new Position(dragOffsetX - size.width + (tabs.size() > 1 ? -2 : getTabSize()),
-                    dragOffsetY);
+            clampExpandedPosition(size);
 
             animation(new Animation()
                     .duration(getAnimationTime())
-                    .position(position)
+                    .position(getExpandedPosition(size))
                     .size(size)
                     .ease(Eases.EaseQuadOut)
                     .onFinish(() -> {
@@ -333,12 +336,41 @@ public class ConfiguratorPanel extends WidgetGroup {
             if (view != null) {
                 view.setVisible(false);
                 view.setActive(false);
+                removeWidget(view);
             }
             animation(new Animation()
                     .duration(getAnimationTime())
                     .position(new Position(x, y))
                     .size(new Size(getTabSize(), getTabSize()))
                     .ease(Eases.EaseQuadOut));
+        }
+
+        private Position getExpandedPosition(Size size) {
+            int x = expandDirection == ExpandDirection.LEFT ?
+                    dragOffsetX - size.width + (tabs.size() > 1 ? -2 : getTabSize()) :
+                    dragOffsetX + getTabSize();
+            return new Position(x, dragOffsetY);
+        }
+
+        private void clampExpandedPosition(Size size) {
+            if (!isRemote()) return;
+
+            if (expandDirection == ExpandDirection.LEFT) {
+                int expandedX = getParentPosition().x - size.width + (tabs.size() > 1 ? -2 : getTabSize());
+                if (expandedX < 0) {
+                    this.dragOffsetX -= expandedX;
+                }
+            } else {
+                int expandedRight = getParentPosition().x + getTabSize() + size.width;
+                if (expandedRight > gui.getScreenWidth()) {
+                    this.dragOffsetX -= expandedRight - gui.getScreenWidth();
+                }
+            }
+
+            int expandedBottom = getParentPosition().y + size.height;
+            if (expandedBottom > gui.getScreenHeight()) {
+                this.dragOffsetY -= expandedBottom - gui.getScreenHeight();
+            }
         }
 
         @Override

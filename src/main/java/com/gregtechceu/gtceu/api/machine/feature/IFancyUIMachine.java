@@ -109,24 +109,24 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     }
 
     @Override
-    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+    default void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        if (this instanceof MetaMachine machine) {
+            for (var direction : Direction.values()) {
+                if (machine.getCoverContainer().hasCover(direction)) {
+                    var configurator = machine.getCoverContainer().getCoverAtSide(direction).getConfigurator();
+                    if (configurator != null)
+                        left.attachConfigurators(configurator);
+                }
+            }
+        }
         if (this instanceof IControllable controllable) {
-            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+            left.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
                     controllable::isWorkingEnabled, (clickData, pressed) -> controllable.setWorkingEnabled(pressed))
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(
                                     pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"))));
-        }
-        if (this instanceof MetaMachine machine) {
-            for (var direction : Direction.values()) {
-                if (machine.getCoverContainer().hasCover(direction)) {
-                    var configurator = machine.getCoverContainer().getCoverAtSide(direction).getConfigurator();
-                    if (configurator != null)
-                        configuratorPanel.attachConfigurators(configurator);
-                }
-            }
         }
     }
 

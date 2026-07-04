@@ -77,10 +77,10 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
     }
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IVoidable.attachConfigurators(configuratorPanel, this);
+    public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        IVoidable.attachConfigurators(left, this);
 
-        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+        left.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                 GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                 this::isBatchEnabled,
@@ -89,7 +89,7 @@ public class DistillationTowerMachine extends RecipeElectricMultiblockMachine {
                         p -> List.of(
                                 Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
 
-        configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+        left.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                 GuiTextures.BUTTON_POWER.getSubTexture(0, 0, 1, 0.5),
                 GuiTextures.BUTTON_POWER.getSubTexture(0, 0.5, 1, 0.5),
                 this::isWorkingEnabled, (clickData, pressed) -> setWorkingEnabled(pressed))

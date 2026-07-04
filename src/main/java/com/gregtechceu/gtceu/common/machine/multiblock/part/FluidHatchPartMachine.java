@@ -244,10 +244,10 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     //////////////////////////////////////
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        super.attachConfigurators(configuratorPanel);
+    public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        super.attachConfigurators(left, right);
         if (isCircuitSlotEnabled() && this.io == IO.IN) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
     }
 

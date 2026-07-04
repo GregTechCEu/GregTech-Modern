@@ -315,19 +315,20 @@ public class SimpleTieredMachine extends RecipeTieredMachine
     //////////////////////////////////////
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+    public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
 
         if (hasAutoOutputFluid()) {
-            configuratorPanel.attachConfigurators(createAutoOutputFluidConfigurator());
+            left.attachConfigurators(createAutoOutputFluidConfigurator());
         }
         if (hasAutoOutputItem()) {
-            configuratorPanel.attachConfigurators(createAutoOutputItemConfigurator());
+            left.attachConfigurators(createAutoOutputItemConfigurator());
         }
 
         if (isCircuitSlotEnabled()) {
-            configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
+
+        IFancyUIMachine.super.attachConfigurators(left, right);
     }
 
     private IFancyConfigurator createAutoOutputFluidConfigurator() {

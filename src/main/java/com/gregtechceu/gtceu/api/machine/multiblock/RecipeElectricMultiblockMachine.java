@@ -148,11 +148,11 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
     }
 
     @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IVoidable.attachConfigurators(configuratorPanel, this);
+    public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
+        IVoidable.attachConfigurators(left, this);
         if (Arrays.stream(getDefinition().getRecipeModifiers())
                 .anyMatch(modifier -> modifier == GTRecipeModifiers.BATCH_MODE)) {
-            configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
+            left.attachConfigurators(new IFancyConfiguratorButton.Toggle(
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0, 1, 0.5),
                     GuiTextures.BUTTON_BATCH.getSubTexture(0, 0.5, 1, 0.5),
                     this::isBatchEnabled,
@@ -162,7 +162,7 @@ public class RecipeElectricMultiblockMachine extends RecipeMultiblockMachine imp
                                     Component.translatable("gtceu.machine.batch_" + (p ? "enabled" : "disabled")))));
         }
 
-        IFancyUIMachine.super.attachConfigurators(configuratorPanel);
+        IFancyUIMachine.super.attachConfigurators(left, right);
     }
 
     @Override
