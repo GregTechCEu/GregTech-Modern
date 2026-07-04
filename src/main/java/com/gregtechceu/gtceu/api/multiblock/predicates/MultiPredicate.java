@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
@@ -10,51 +11,83 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class MultiPredicate implements Iterable<BasePredicate> {
 
-    private static final String UNINITIALIZED = "__UNINITIALIZED__";
+    private static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
+            .comparingInt(BasePredicate::getPriority);
+    private static final MultiPredicate EMPTY = new MultiPredicate();
+
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
-    private @Nullable final String debugName;
-    private @Nullable final Logic type;
+    @Getter(lombok.AccessLevel.PROTECTED)
+    private final Logic type;
     private final boolean hasAir;
     @Getter
     private boolean controller;
 
-    public MultiPredicate() {
-        this.debugName = UNINITIALIZED;
-        this.type = null;
-        this.hasAir = false;
+    MultiPredicate(@Nullable String debugName, Predicate<PredicateContext> predicate,
+                   Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
+        this(new BasePredicate() {
+
+            @Override
+            public boolean test(PredicateContext ctx) {
+                return predicate.test(ctx);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return candidateStream.toList();
+            }
+
+            @Override
+            public String getTypeName() {
+                return Objects.requireNonNullElse(debugName, "Predicate");
+            }
+
+            @Override
+            protected void appendContents(StringBuilder builder) {
+                if (contents != null) {
+                    contents.accept(builder);
+                }
+            }
+        });
     }
 
-    private MultiPredicate(@Nullable String debugName, Logic type, boolean hasAir) {
-        this.debugName = debugName;
+    private MultiPredicate(Logic type, boolean hasAir) {
         this.type = type;
         this.hasAir = hasAir;
     }
 
-    protected MultiPredicate(BasePredicate singleton) {
-        this.debugName = null;
-        this.type = null;
-        this.hasAir = false;
+    private MultiPredicate(BasePredicate singleton) {
+        this();
         addPredicate(singleton);
     }
 
-    @ApiStatus.Internal
-    public boolean isUninitialized() {
-        return UNINITIALIZED.equals(debugName);
+    private MultiPredicate() {
+        this.type = Logic.SINGLE;
+        this.hasAir = false;
     }
 
+    @ApiStatus.Internal
+    public boolean isEmpty() {
+        return this == EMPTY;
+    }
+
+    /// delegates to {@link #type} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
         return getType().run(ctx, this);
     }
 
-    /// test against global min count
+    /// delegates to {@link #type} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         return getType().testGlobalMin(ctx, this);
     }
 
-    /// test against slice min count
+    /// delegates to {@link #type} to test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         return getType().testSliceMin(ctx, this);
     }
@@ -91,14 +124,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.type == other.type;
     }
 
-    public boolean hasType() {
-        return this.type != null;
-    }
-
-    public boolean isValid() {
-        return isSingle() || hasType();
-    }
-
     public boolean isAny() {
         return this == BasePredicate.ANY;
     }
@@ -114,24 +139,29 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     protected BasePredicate compact() {
         return new BasePredicate() {
 
+            private MultiPredicate getParent() {
+                return MultiPredicate.this;
+            }
+
             @Override
             public boolean test(PredicateContext ctx) {
-                return getType().run(ctx, MultiPredicate.this);
+                // this also tests global/slice max, but with no respect to logic type
+                return getParent().test(ctx);
             }
 
             @Override
             public boolean testGlobalMin(PredicateContext ctx) {
-                return getType().testGlobalMin(ctx, MultiPredicate.this);
+                return getParent().testGlobalMin(ctx);
             }
 
             @Override
             public boolean testSliceMin(PredicateContext ctx) {
-                return getType().testSliceMin(ctx, MultiPredicate.this);
+                return getParent().testSliceMin(ctx);
             }
 
             @Override
             public List<BlockInfo> computeCandidates() {
-                return MultiPredicate.this.getCandidates()
+                return getParent().getCandidates()
                         .stream()
                         .flatMap(Collection::stream)
                         .toList();
@@ -139,12 +169,12 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
             @Override
             public String getTypeName() {
-                return MultiPredicate.this.getTypeName();
+                return getParent().getTypeName();
             }
 
             @Override
             protected void appendContents(StringBuilder builder) {
-                MultiPredicate.this.appendContents(builder);
+                getParent().appendContents(builder);
             }
         };
     }
@@ -220,7 +250,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
      * @param limit The Maximum and Minimum limit
      */
     public MultiPredicate setExactLimit(int limit) {
-        return this.setMinCount(limit).setMaxCount(limit);
+        return this.setGlobalMinMax(limit, limit);
     }
 
     public MultiPredicate disabledRenderFormed() {
@@ -233,7 +263,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     protected MultiPredicate sorted() {
-        this.predicateList.sort(BasePredicate.PREDICATE_COMPARATOR);
+        this.predicateList.sort(PREDICATE_COMPARATOR);
         return this;
     }
 
@@ -250,14 +280,11 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public boolean isSingle() {
-        return this.predicateList.size() == 1;
+        return getType() == Logic.SINGLE;
     }
 
     public String getTypeName() {
-        if (isSingle()) return "SINGLETON";
-        StringBuilder builder = new StringBuilder().append(this.type);
-        if (this.debugName != null) builder.append("#").append(this.debugName);
-        return builder.toString();
+        return String.valueOf(this.type);
     }
 
     protected void appendContents(StringBuilder builder) {
@@ -281,11 +308,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.predicateList.iterator();
     }
 
-    protected Logic getType() {
-        if (isSingle()) return Logic.OR;
-        return Objects.requireNonNull(this.type, "type == null");
-    }
-
     public MultiPredicate setController(boolean controller) {
         this.controller = controller;
         return this;
@@ -296,103 +318,93 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this;
     }
 
+    public static MultiPredicate empty() {
+        return EMPTY;
+    }
+
     protected enum Logic {
 
+        SINGLE,
         OR,
         AND {
 
             @Override
-            protected boolean run(PredicateContext ctx, MultiPredicate predicates) {
-                return !super.run(ctx, predicates);
-            }
-
-            @Override
             public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-                return !super.testGlobalMin(ctx, predicates);
+                for (BasePredicate predicate : predicates) {
+                    if (!predicate.testGlobalMin(ctx)) return false;
+                }
+                return true;
             }
 
             @Override
             public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-                return !super.testSliceMin(ctx, predicates);
+                for (BasePredicate predicate : predicates) {
+                    if (!predicate.testSliceMin(ctx)) return false;
+                }
+                return true;
             }
-
-            // override test slice/global min?
         },
         XOR {
 
             @Override
-            protected boolean run(PredicateContext ctx, MultiPredicate predicates) {
-                int passed = 0;
-                for (BasePredicate basePredicate : predicates) {
-                    if (basePredicate.testLimited(ctx)) {
-                        if (++passed > 1) return false;
-                    }
-                }
-                return passed == 1;
-            }
-
-            @Override
             public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-                int skipped = 0;
-                int passed = 0;
-                for (BasePredicate predicate : predicates) {
-                    if (predicate.getMinCount() == -1) {
-                        skipped++;
-                        continue;
-                    }
-                    int count = ctx.globalCache().getInt(predicate);
-                    if (predicate.testGlobalMin(count)) {
-                        if (++passed > 1) {
-                            // TODO special xor error
-                            return ctx.error(SinglePredicateError.minCount(predicate, count));
-                        }
-                    } else {
-                        return ctx.error(SinglePredicateError.minCount(predicate, count));
-                    }
-                }
-                if (skipped == predicates.predicateList.size()) return true;
-                return passed == 1;
+                return test(ctx, predicates,
+                        p -> p.getMinCount() == -1,
+                        p -> p.testGlobalMin(ctx.getGlobalCount(p)),
+                        p -> SinglePredicateError.minCount(p, ctx.getGlobalCount(p)));
             }
 
             @Override
             public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-                if (ctx.layerCache() == null) return true;
-                int skipped = 0;
-                int passed = 0;
+                return ctx.layerCache() == null || test(ctx, predicates,
+                        p -> p.getMinSliceCount() == -1,
+                        p -> p.testSliceMin(ctx.getSliceCount(p)),
+                        p -> SinglePredicateError.minLayerCount(p, ctx.getSliceCount(p)));
+            }
+
+            private boolean test(PredicateContext ctx, MultiPredicate predicates,
+                                 Predicate<BasePredicate> skip,
+                                 Predicate<BasePredicate> tester,
+                                 Function<BasePredicate, PatternError> errorFunction) {
+                int skipped = 0, passed = 0, size = predicates.predicateList.size();
                 for (BasePredicate predicate : predicates) {
-                    if (predicate.getMinCount() == -1) {
-                        skipped++;
-                        continue;
+                    if (skip.test(predicate)) {
+                        if (++skipped == size) {
+                            return true;
+                        } else {
+                            continue;
+                        }
                     }
-                    int count = ctx.layerCache().getInt(predicate);
-                    if (predicate.testGlobalMin(count)) {
+                    if (tester.test(predicate)) {
                         if (++passed > 1) {
                             // TODO special xor error
-                            return ctx.error(SinglePredicateError.minCount(predicate, count));
+                            return ctx.error(errorFunction.apply(predicate));
                         }
-                    } else {
-                        return ctx.error(SinglePredicateError.minCount(predicate, count));
                     }
                 }
-                if (skipped == predicates.predicateList.size()) return true;
-                return passed == 1;
+                if (passed == 0) {
+                    // todo special xor error
+                    predicates.forEach(p -> ctx.error(errorFunction.apply(p)));
+                    return false;
+                }
+                return true;
             }
         };
 
         /// @param a will have type set
         /// @param b may or may not be a multi predicate
-        /// @return copy of {@code a} with {@code b} added
+        /// @return copy of {@code a} combined with {@code b}
         protected MultiPredicate combine(MultiPredicate a, @Nullable MultiPredicate b) {
             if (b == null) return a; // b really should not be null in the first place
-            if (a.isUninitialized()) return b;
-            var ret = new MultiPredicate("Multi", this, a.hasAir() || b.hasAir());
+            if (a.isEmpty()) return b;
+            var ret = new MultiPredicate(this, a.hasAir() || b.hasAir());
             appendPredicate(a, ret);
             appendPredicate(b, ret);
             return ret.sorted();
         }
 
         private void appendPredicate(MultiPredicate source, MultiPredicate dest) {
-            if (source.type == null && source.isSingle()) {
+            if (source.isSingle()) {
                 dest.addPredicate(source.predicateList.get(0));
             } else if (source.type != this) {
                 dest.addPredicate(source.compact());

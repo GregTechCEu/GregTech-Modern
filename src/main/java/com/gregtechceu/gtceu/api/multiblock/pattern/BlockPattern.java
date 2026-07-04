@@ -123,6 +123,7 @@ public class BlockPattern implements IBlockPattern {
         }
 
         if (allowsFlip) {
+            // this overwrites any previous errors
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
         if (!valid) {
@@ -214,6 +215,7 @@ public class BlockPattern implements IBlockPattern {
                 }
 
                 // internal predicate check, global/slice max checks
+                // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
                 if (pred.test(ctx)) {
                     charPos.move(absoluteChar);
                     // continue...

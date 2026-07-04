@@ -253,7 +253,7 @@ public class Predicates {
                                                boolean checkEnergyIn, boolean checkEnergyOut,
                                                boolean checkItemIn, boolean checkItemOut,
                                                boolean checkFluidIn, boolean checkFluidOut) {
-        MultiPredicate predicate = new MultiPredicate();
+        MultiPredicate predicate = MultiPredicate.empty();
         if (checkEnergyIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
@@ -315,7 +315,7 @@ public class Predicates {
 
     public static MultiPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
                                                boolean checkParallel) {
-        MultiPredicate predicate = new MultiPredicate();
+        MultiPredicate predicate = MultiPredicate.empty();
         if (checkMaintenance) {
             predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
                     .setMinCount(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)

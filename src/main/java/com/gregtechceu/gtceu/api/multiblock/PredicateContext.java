@@ -13,6 +13,7 @@ import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -27,6 +28,9 @@ public final class PredicateContext {
     private final List<PatternError> errors = new ArrayList<>();
     private final Object2IntMap<BasePredicate> globalCache;
     private final @Nullable Object2IntMap<BasePredicate> layerCache;
+    @Getter
+    @Setter
+    private FailureReason failureReason;
 
     public PredicateContext(CurrentBlockInfo blockInfo,
                             Object2IntMap<BasePredicate> globalCache,
@@ -99,5 +103,21 @@ public final class PredicateContext {
     public int incrementSliceCount(BasePredicate predicate) {
         Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
         return layerCache().getInt(predicate);
+    }
+
+    public int getGlobalCount(BasePredicate predicate) {
+        return globalCache().getInt(predicate);
+    }
+
+    public int getSliceCount(BasePredicate predicate) {
+        return Objects.requireNonNull(layerCache()).getInt(predicate);
+    }
+
+    public enum FailureReason {
+        INTERNAL,
+        GLOBAL_MAX,
+        GLOBAL_MIN,
+        SLICE_MAX,
+        SLICE_MIN;
     }
 }

@@ -26,14 +26,8 @@ public abstract class BasePredicate {
 
     public static final MultiPredicate ANY = create("Any", ctx -> true);
 
-    protected static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
-            .comparingInt(BasePredicate::getPriority);
-
     private @Nullable List<BlockInfo> candidates;
 
-    @Getter
-    @Setter
-    private boolean isController = false;
     @Getter
     @Setter
     protected int priority = 0;
@@ -69,52 +63,54 @@ public abstract class BasePredicate {
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
-        if (skipGlobalTest()) return true;
+        if (getMaxCount() == -1) return true;
         int count = ctx.incrementGlobalCount(this);
-        if (maxCount == -1 || count <= maxCount) return true;
+        if (testGlobalMax(count)) return true;
         return ctx.error(SinglePredicateError.maxCount(this, count));
     }
 
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
-        if (skipSliceTest() || ctx.layerCache() == null) return true;
+        if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
         int count = ctx.incrementSliceCount(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        if (testSliceMax(count)) return true;
         return ctx.error(SinglePredicateError.maxLayerCount(this, count));
     }
 
-    /// test against global max count
+    /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
-        if (skipGlobalTest()) return true;
-        int count = ctx.globalCache().getInt(this);
-        if (maxCount == -1 || count <= maxCount) return true;
+        if (getMinCount() == -1) return true;
+        int count = ctx.getGlobalCount(this);
+        if (testGlobalMin(count)) return true;
         return ctx.error(SinglePredicateError.minCount(this, count));
     }
 
-    /// test against slice max count
+    /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        if (skipSliceTest() || ctx.layerCache() == null) return true;
-        int count = ctx.layerCache().getInt(this);
-        if (maxSliceCount == -1 || count <= maxSliceCount) return true;
+        if (getMinSliceCount() == -1 || ctx.layerCache() == null) return true;
+        int count = ctx.getSliceCount(this);
+        if (testSliceMin(count)) return true;
         return ctx.error(SinglePredicateError.minLayerCount(this, count));
     }
 
-    /// test against global max count
+    /// simple test against global min count
     public boolean testGlobalMin(int count) {
         return minCount == -1 || count >= minCount;
     }
 
-    /// test against slice max count
+    /// simple test against slice min count
     public boolean testSliceMin(int count) {
         return minSliceCount == -1 || count >= minSliceCount;
     }
 
-    public boolean skipGlobalTest() {
-        return minCount == -1 && maxCount == -1;
+    /// simple test against global max count
+    public boolean testGlobalMax(int count) {
+        return maxCount == -1 || count <= maxCount;
     }
 
-    public boolean skipSliceTest() {
-        return minSliceCount == -1 && maxSliceCount == -1;
+    /// simple test against slice max count
+    public boolean testSliceMax(int count) {
+        return maxSliceCount == -1 || count <= maxSliceCount;
     }
 
     /// computes the candidates for this predicate
@@ -170,30 +166,6 @@ public abstract class BasePredicate {
     // this uses stream for lazy initialization
     public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
                                         Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        BasePredicate basePredicate = new BasePredicate() {
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return candidateStream.toList();
-            }
-
-            @Override
-            public String getTypeName() {
-                return Objects.requireNonNullElse(debugName, "Predicate");
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                if (contents != null) {
-                    contents.accept(builder);
-                }
-            }
-        };
-        return new MultiPredicate(basePredicate);
+        return new MultiPredicate(debugName, predicate, candidateStream, contents);
     }
 }
