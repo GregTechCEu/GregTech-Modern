@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
+import com.gregtechceu.gtceu.integration.ae2.GTAE2Materials;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.world.item.Items;
@@ -132,55 +133,59 @@ public class GTMaterials {
 
         plate.setIgnored(Paper, Items.PAPER);
 
-        block.setIgnored(Iron, Blocks.IRON_BLOCK);
-        block.setIgnored(Gold, Blocks.GOLD_BLOCK);
-        block.setIgnored(Copper, Blocks.COPPER_BLOCK);
-        block.setIgnored(Netherite, Items.NETHERITE_BLOCK);
-        block.setIgnored(Lapis, Blocks.LAPIS_BLOCK);
-        block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
-        block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
-        block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
-        block.setIgnored(Coal, Blocks.COAL_BLOCK);
-        block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
-        block.setIgnored(Glass, Blocks.GLASS);
-        block.setIgnored(Glowstone, Blocks.GLOWSTONE);
+        block.setIgnoredBlock(Iron, Blocks.IRON_BLOCK);
+        block.setIgnoredBlock(Gold, Blocks.GOLD_BLOCK);
+        block.setIgnoredBlock(Copper, Blocks.COPPER_BLOCK);
+        block.setIgnoredBlock(Netherite, Blocks.NETHERITE_BLOCK);
+        block.setIgnoredBlock(Lapis, Blocks.LAPIS_BLOCK);
+        block.setIgnoredBlock(Emerald, Blocks.EMERALD_BLOCK);
+        block.setIgnoredBlock(Redstone, Blocks.REDSTONE_BLOCK);
+        block.setIgnoredBlock(Diamond, Blocks.DIAMOND_BLOCK);
+        block.setIgnoredBlock(Coal, Blocks.COAL_BLOCK);
+        block.setIgnoredBlock(Amethyst, Blocks.AMETHYST_BLOCK);
+        block.setIgnoredBlock(Glass, Blocks.GLASS);
+        block.setIgnoredBlock(Glowstone, Blocks.GLOWSTONE);
         block.setIgnored(Oilsands);
         block.setIgnored(Wood);
         block.setIgnored(TreatedWood);
         block.setIgnored(RawRubber);
-        block.setIgnored(Clay, Blocks.CLAY);
-        block.setIgnored(Brick, Blocks.BRICKS);
-        block.setIgnored(Bone, Blocks.BONE_BLOCK);
-        block.setIgnored(NetherQuartz, Blocks.QUARTZ_BLOCK);
-        block.setIgnored(Ice, Blocks.ICE);
-        block.setIgnored(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE,
+        block.setIgnoredBlock(Clay, Blocks.CLAY);
+        block.setIgnoredBlock(Brick, Blocks.BRICKS);
+        block.setIgnoredBlock(Bone, Blocks.BONE_BLOCK);
+        block.setIgnoredBlock(NetherQuartz, Blocks.QUARTZ_BLOCK);
+        block.setIgnoredBlock(Ice, Blocks.ICE);
+        block.setIgnoredBlock(Concrete, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE,
                 Blocks.LIGHT_BLUE_CONCRETE, Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE,
                 Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE,
                 Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE,
                 Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
-        block.setIgnored(Wax, Blocks.HONEYCOMB_BLOCK);
+        block.setIgnoredBlock(Wax, Blocks.HONEYCOMB_BLOCK);
 
-        rock.setIgnored(Marble, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
-        rock.setIgnored(Granite, Blocks.GRANITE);
-        rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
-        rock.setIgnored(Andesite, Blocks.ANDESITE);
-        rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
-        rock.setIgnored(Diorite, Blocks.DIORITE);
-        rock.setIgnored(Diorite, Blocks.POLISHED_DIORITE);
-        rock.setIgnored(Stone, Blocks.STONE);
-        rock.setIgnored(Calcite, Blocks.CALCITE);
-        rock.setIgnored(Netherrack, Blocks.NETHERRACK);
-        rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
-        rock.setIgnored(Endstone, Blocks.END_STONE);
-        rock.setIgnored(Deepslate, Blocks.DEEPSLATE);
-        rock.setIgnored(Basalt, Blocks.BASALT);
-        rock.setIgnored(Blackstone, Blocks.BLACKSTONE);
-        block.setIgnored(Sculk, Blocks.SCULK);
-        block.setIgnored(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
-        block.setIgnored(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
+        rock.setIgnoredBlock(Marble, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.MARBLE.get()));
+        rock.setIgnoredBlock(Granite, Blocks.GRANITE);
+        rock.setIgnoredBlock(Granite, Blocks.POLISHED_GRANITE);
+        rock.setIgnoredBlock(GraniteRed, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.RED_GRANITE.get()));
+        rock.setIgnoredBlock(Andesite, Blocks.ANDESITE);
+        rock.setIgnoredBlock(Andesite, Blocks.POLISHED_ANDESITE);
+        rock.setIgnoredBlock(Diorite, Blocks.DIORITE);
+        rock.setIgnoredBlock(Diorite, Blocks.POLISHED_DIORITE);
+        rock.setIgnoredBlock(Stone, Blocks.STONE);
+        rock.setIgnoredBlock(Calcite, Blocks.CALCITE);
+        rock.setIgnoredBlock(Netherrack, Blocks.NETHERRACK);
+        rock.setIgnoredBlock(Obsidian, Blocks.OBSIDIAN);
+        rock.setIgnoredBlock(Endstone, Blocks.END_STONE);
+        rock.setIgnoredBlock(Deepslate, Blocks.DEEPSLATE);
+        rock.setIgnoredBlock(Basalt, Blocks.BASALT);
+        rock.setIgnoredBlock(Blackstone, Blocks.BLACKSTONE);
+        block.setIgnoredBlock(Sculk, Blocks.SCULK);
+        block.setIgnoredBlock(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.DARK_CONCRETE.get()));
+        block.setIgnoredBlock(Concrete, GTMemoizer.memoizeBlockSupplier(() -> GTBlocks.LIGHT_CONCRETE.get()));
+
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAE2Materials.init();
+        }
 
         for (TagPrefix prefix : ORES.keySet()) {
             TagPrefix.OreType oreType = ORES.get(prefix);
@@ -247,9 +252,9 @@ public class GTMaterials {
         rawOre.setIgnored(Gold, Items.RAW_GOLD);
         rawOre.setIgnored(Iron, Items.RAW_IRON);
         rawOre.setIgnored(Copper, Items.RAW_COPPER);
-        rawOreBlock.setIgnored(Gold, Blocks.RAW_GOLD_BLOCK);
-        rawOreBlock.setIgnored(Iron, Blocks.RAW_IRON_BLOCK);
-        rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
+        rawOreBlock.setIgnoredBlock(Gold, Blocks.RAW_GOLD_BLOCK);
+        rawOreBlock.setIgnoredBlock(Iron, Blocks.RAW_IRON_BLOCK);
+        rawOreBlock.setIgnoredBlock(Copper, Blocks.RAW_COPPER_BLOCK);
 
         block.modifyMaterialAmount(Amethyst, 4);
         block.modifyMaterialAmount(EchoShard, 4);

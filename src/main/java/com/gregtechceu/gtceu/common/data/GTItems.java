@@ -2570,8 +2570,8 @@ public class GTItems {
             builder.onRegister(item -> {
                 Supplier<ItemLike> supplier = GTMemoizer.memoize(() -> item);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
-                GTMaterialItems.toUnify.put(entry, supplier);
-                ItemMaterialData.registerMaterialEntry(supplier, entry);
+                GTMaterialItems.toUnifyItems.put(entry, supplier);
+                ItemMaterialData.registerItemMaterialEntry(supplier, entry);
             });
             return builder;
         };

@@ -427,7 +427,7 @@ public class StoneMachineRecipes {
     public static void registerStoneMaterialInfo(@NotNull StoneTypeEntry entry) {
         if (!entry.material.isNull() && entry.stone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.stone, TagPrefix.block, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.stone, TagPrefix.block, entry.material);
             }
             if (entry.addStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stone,
@@ -437,7 +437,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.polishedStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.polishedStone, TagPrefix.block, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.polishedStone, TagPrefix.block, entry.material);
             }
             if (entry.addPolishedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.polishedStone,
@@ -447,7 +447,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.smeltStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.smeltStone, TagPrefix.block, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.smeltStone, TagPrefix.block, entry.material);
             }
             if (entry.addSmeltStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.smeltStone,
@@ -457,7 +457,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.chiselStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.chiselStone, TagPrefix.block, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.chiselStone, TagPrefix.block, entry.material);
             }
             if (entry.addChiselStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.chiselStone,
@@ -467,7 +467,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.crackedStone != null) {
             if (entry.addStoneOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.crackedStone, TagPrefix.block, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.crackedStone, TagPrefix.block, entry.material);
             }
             if (entry.addCrackedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.crackedStone,
@@ -477,7 +477,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.slab != null) {
             if (entry.addSlabOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.slab, TagPrefix.slab, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.slab, TagPrefix.slab, entry.material);
             }
             if (entry.addSlabMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
@@ -487,7 +487,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.stair != null) {
             if (entry.addStairOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.stair, TagPrefix.stairs, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.stair, TagPrefix.stairs, entry.material);
             }
             if (entry.addStairMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stair,
@@ -497,7 +497,7 @@ public class StoneMachineRecipes {
 
         if (!entry.material.isNull() && entry.wall != null) {
             if (entry.addWallOreDict) {
-                ItemMaterialData.registerMaterialEntry(entry.wall, TagPrefix.fence, entry.material);
+                ItemMaterialData.registerItemMaterialEntry(entry.wall, TagPrefix.fence, entry.material);
             }
             if (entry.addWallMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.wall,

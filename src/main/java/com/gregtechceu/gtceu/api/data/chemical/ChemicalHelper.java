@@ -267,7 +267,7 @@ public class ChemicalHelper {
                 }
             }
             if (blocks.isEmpty() && prefix.hasItemTable() && prefix.doGenerateBlock(entry.material())) {
-                var blockSupplier = ItemMaterialData.convertToBlock(prefix.getItemFromTable(entry.material()));
+                var blockSupplier = prefix.getBlockFromTable(entry.material());
                 if (blockSupplier != null) {
                     return Collections.singletonList(blockSupplier);
                 }

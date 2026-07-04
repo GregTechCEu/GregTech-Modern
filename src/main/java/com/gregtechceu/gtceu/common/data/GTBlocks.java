@@ -1373,8 +1373,8 @@ public class GTBlocks {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
                 MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
-                GTMaterialItems.toUnify.put(entry, blockSupplier);
-                ItemMaterialData.registerMaterialEntry(blockSupplier, entry);
+                GTMaterialItems.toUnifyBlocks.put(entry, blockSupplier);
+                ItemMaterialData.registerBlockMaterialEntry(blockSupplier, entry);
             });
             return builder;
         };

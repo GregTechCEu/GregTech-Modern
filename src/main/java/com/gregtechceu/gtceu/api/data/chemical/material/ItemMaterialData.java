@@ -10,9 +10,7 @@ import com.gregtechceu.gtceu.data.recipe.misc.StoneMachineRecipes;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import com.gregtechceu.gtceu.utils.memoization.MemoizedBlockSupplier;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -21,17 +19,14 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.registries.RegistryObject;
 
 import com.mojang.datafixers.util.Pair;
-import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -69,49 +64,57 @@ public class ItemMaterialData {
         ITEM_MATERIAL_INFO.remove(item.asItem());
     }
 
-    /**
-     * Register Material Entry for an item
-     *
-     * @param supplier      a supplier to the item
-     * @param materialEntry the entry to register
-     */
-    public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> supplier,
-                                             @NotNull MaterialEntry materialEntry) {
+    public static void registerItemMaterialEntry(@NotNull Supplier<? extends ItemLike> supplier,
+                                                 @NotNull MaterialEntry materialEntry) {
         registerItemEntry(supplier, materialEntry);
         ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
-        var blockSupplier = convertToBlock(supplier);
-        if (blockSupplier != null) {
-            registerBlockEntry(blockSupplier, materialEntry);
-        }
     }
 
-    /**
-     * @see #registerMaterialEntry(Supplier, MaterialEntry)
-     */
-    public static void registerMaterialEntries(@NotNull Collection<Supplier<? extends ItemLike>> items,
-                                               @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+    public static void registerItemMaterialEntries(@NotNull Collection<Supplier<? extends ItemLike>> items,
+                                                   @NotNull TagPrefix tagPrefix, @NotNull Material material) {
         if (!items.isEmpty()) {
             MaterialEntry entry = new MaterialEntry(tagPrefix, material);
             for (var supplier : items) {
-                registerMaterialEntry(supplier, entry);
+                registerItemMaterialEntry(supplier, entry);
             }
         }
     }
 
-    /**
-     * @see #registerMaterialEntry(Supplier, MaterialEntry)
-     */
-    public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> item,
-                                             @NotNull TagPrefix tagPrefix, @NotNull Material material) {
-        registerMaterialEntry(item, new MaterialEntry(tagPrefix, material));
+    public static void registerItemMaterialEntry(@NotNull Supplier<? extends ItemLike> item,
+                                                 @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+        registerItemMaterialEntry(item, new MaterialEntry(tagPrefix, material));
     }
 
-    /**
-     * @see #registerMaterialEntry(Supplier, MaterialEntry)
-     */
-    public static void registerMaterialEntry(@NotNull ItemLike item,
-                                             @NotNull TagPrefix tagPrefix, @NotNull Material material) {
-        registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
+    public static void registerItemMaterialEntry(@NotNull ItemLike item,
+                                                 @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+        registerItemMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
+    }
+
+    public static void registerBlockMaterialEntry(@NotNull Supplier<? extends Block> supplier,
+                                                  @NotNull MaterialEntry materialEntry) {
+        registerItemEntry(supplier, materialEntry);
+        ITEM_MATERIAL_ENTRY.add(Pair.of(() -> supplier.get().asItem(), materialEntry));
+        registerBlockEntry(supplier, materialEntry);
+    }
+
+    public static void registerBlockMaterialEntries(@NotNull Collection<Supplier<? extends Block>> blocks,
+                                                    @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+        if (!blocks.isEmpty()) {
+            MaterialEntry entry = new MaterialEntry(tagPrefix, material);
+            for (var supplier : blocks) {
+                registerBlockMaterialEntry(supplier, entry);
+            }
+        }
+    }
+
+    public static void registerBlockMaterialEntry(@NotNull Supplier<? extends Block> block,
+                                                  @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+        registerBlockMaterialEntry(block, new MaterialEntry(tagPrefix, material));
+    }
+
+    public static void registerBlockMaterialEntry(@NotNull Block block,
+                                                  @NotNull TagPrefix tagPrefix, @NotNull Material material) {
+        registerBlockMaterialEntry(() -> block, new MaterialEntry(tagPrefix, material));
     }
 
     private static void registerItemEntry(@NotNull Supplier<? extends ItemLike> supplier,
@@ -135,24 +138,6 @@ public class ItemMaterialData {
                 .add(supplier);
     }
 
-    @SuppressWarnings("unchecked")
-    public static @Nullable Supplier<? extends Block> convertToBlock(@NotNull Supplier<? extends ItemLike> supplier) {
-        if (supplier instanceof RegistryObject<? extends ItemLike> registryObject) {
-            var key = registryObject.getKey();
-            if (key != null && key.isFor(Registries.BLOCK)) {
-                return (Supplier<? extends Block>) registryObject;
-            }
-        } else if (supplier instanceof RegistryEntry<? extends ItemLike> entry) {
-            var key = entry.getKey();
-            if (key.isFor(Registries.BLOCK)) {
-                return (Supplier<? extends Block>) entry;
-            }
-        } else if (supplier instanceof MemoizedBlockSupplier<?> blockSupplier) {
-            return blockSupplier;
-        }
-        return null;
-    }
-
     public static void reinitializeMaterialData() {
         // Clear old data
         MATERIAL_ENTRY_ITEM_MAP.clear();
@@ -163,10 +148,15 @@ public class ItemMaterialData {
         // Load new data
         TagsHandler.initExtraUnificationEntries();
         for (TagPrefix prefix : TagPrefix.values()) {
-            prefix.getIgnored().forEach((mat, items) -> registerMaterialEntries(Arrays.asList(items), prefix, mat));
+            prefix.getIgnoredItems()
+                    .forEach((mat, items) -> registerItemMaterialEntries(Arrays.asList(items), prefix, mat));
+            prefix.getIgnoredBlocks()
+                    .forEach((mat, blocks) -> registerBlockMaterialEntries(Arrays.asList(blocks), prefix, mat));
         }
-        GTMaterialItems.toUnify
-                .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));
+        GTMaterialItems.toUnifyItems
+                .forEach((materialEntry, supplier) -> registerItemMaterialEntry(supplier, materialEntry));
+        GTMaterialItems.toUnifyBlocks
+                .forEach((materialEntry, supplier) -> registerBlockMaterialEntry(supplier, materialEntry));
         WoodMachineRecipes.registerMaterialInfo();
         StoneMachineRecipes.registerMaterialInfo();
     }

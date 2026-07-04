@@ -18,6 +18,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ImmutableTable;
@@ -44,7 +45,8 @@ public class GTMaterialItems {
             .builder();
 
     // Reference Maps
-    public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
+    public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnifyItems = new HashMap<>();
+    public static final Map<MaterialEntry, Supplier<? extends Block>> toUnifyBlocks = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {

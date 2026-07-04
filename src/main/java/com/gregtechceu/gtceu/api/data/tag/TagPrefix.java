@@ -769,35 +769,35 @@ public class TagPrefix {
 
     // Pipes
     public static final TagPrefix pipeTinyFluid = new TagPrefix("pipeTinyFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Tiny %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M / 2)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeSmallFluid = new TagPrefix("pipeSmallFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Small %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalFluid = new TagPrefix("pipeNormalFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Normal %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeFluid = new TagPrefix("pipeLargeFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Large %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeFluid = new TagPrefix("pipeHugeFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Huge %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
@@ -805,14 +805,14 @@ public class TagPrefix {
             .enableRecycling();
 
     public static final TagPrefix pipeQuadrupleFluid = new TagPrefix("pipeQuadrupleFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Quadruple %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNonupleFluid = new TagPrefix("pipeNonupleFluid")
-            .itemTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.FLUID_PIPE_BLOCKS)
             .langValue("Nonuple %s Fluid Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 9)
@@ -820,28 +820,28 @@ public class TagPrefix {
             .enableRecycling();
 
     public static final TagPrefix pipeSmallItem = new TagPrefix("pipeSmallItem")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Small %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalItem = new TagPrefix("pipeNormalItem")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Normal %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeItem = new TagPrefix("pipeLargeItem")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Large %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeItem = new TagPrefix("pipeHugeItem")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Huge %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M * 12)
@@ -849,30 +849,30 @@ public class TagPrefix {
             .enableRecycling();
 
     public static final TagPrefix pipeSmallRestrictive = new TagPrefix("pipeSmallRestrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS)
             .langValue("Small Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeNormalRestrictive = new TagPrefix("pipeNormalRestrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Normal Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 3)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeLargeRestrictive = new TagPrefix("pipeLargeRestrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe")
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Large Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 6)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix pipeHugeRestrictive = new TagPrefix("pipeHugeRestrictive")
-            .itemTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe")
+            .blockTable(() -> GTMaterialBlocks.ITEM_PIPE_BLOCKS).langValue("Huge Restrictive %s Item Pipe")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WRENCH).materialAmount(GTValues.M * 12)
             .unificationEnabled(true)
             .enableRecycling();
 
     // Wires and cables
-    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+    public static final TagPrefix wireGtHex = new TagPrefix("wireGtHex").blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
@@ -880,7 +880,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix wireGtOctal = new TagPrefix("wireGtOctal")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
@@ -888,7 +888,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix wireGtQuadruple = new TagPrefix("wireGtQuadruple")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("4x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
@@ -896,7 +896,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix wireGtDouble = new TagPrefix("wireGtDouble")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
@@ -904,7 +904,7 @@ public class TagPrefix {
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix wireGtSingle = new TagPrefix("wireGtSingle")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Wire")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
@@ -913,34 +913,34 @@ public class TagPrefix {
             .enableRecycling();
 
     public static final TagPrefix cableGtHex = new TagPrefix("cableGtHex")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("16x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 8)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtOctal = new TagPrefix("cableGtOctal")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("8x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 4)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtQuadruple = new TagPrefix("cableGtQuadruple")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS).langValue("4x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M * 2)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtDouble = new TagPrefix("cableGtDouble")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("2x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
     public static final TagPrefix cableGtSingle = new TagPrefix("cableGtSingle")
-            .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
+            .blockTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)
             .materialAmount(GTValues.M / 2)
@@ -1025,13 +1025,16 @@ public class TagPrefix {
 
     @Setter
     private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
+    @Setter
+    private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends Block>>> blockTable;
 
     @Nullable
     @Getter
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredItems = new HashMap<>();
+    private final Map<Material, Supplier<? extends Block>[]> ignoredBlocks = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -1201,12 +1204,28 @@ public class TagPrefix {
     }
 
     public boolean hasItemTable() {
-        return itemTable != null;
+        return itemTable != null || blockTable != null;
+    }
+
+    public boolean hasBlockTable() {
+        return blockTable != null;
     }
 
     @SuppressWarnings("unchecked")
     public Supplier<ItemLike> getItemFromTable(Material material) {
-        return (Supplier<ItemLike>) itemTable.get().get(this, material);
+        if (itemTable != null) {
+            var table = itemTable.get();
+            return table == null ? null : (Supplier<ItemLike>) table.get(this, material);
+        }
+        Supplier<Block> block = getBlockFromTable(material);
+        return block == null ? null : () -> block.get().asItem();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Supplier<Block> getBlockFromTable(Material material) {
+        if (blockTable == null) return null;
+        var table = blockTable.get();
+        return table == null ? null : (Supplier<Block>) table.get(this, material);
     }
 
     public boolean doGenerateItem() {
@@ -1216,7 +1235,7 @@ public class TagPrefix {
     public boolean doGenerateItem(Material material) {
         return generateItem && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
-                (hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null);
+                (hasItemTable() && getItemFromTable(material) != null);
     }
 
     public boolean doGenerateBlock() {
@@ -1226,7 +1245,7 @@ public class TagPrefix {
     public boolean doGenerateBlock(Material material) {
         return generateBlock && !isIgnored(material) &&
                 (generationCondition == null || generationCondition.test(material)) ||
-                hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
+                hasBlockTable() && getBlockFromTable(material) != null;
     }
 
     public MaterialIconType getMaterialIconType(Material material) {
@@ -1270,46 +1289,65 @@ public class TagPrefix {
     }
 
     public boolean isIgnored(Material material) {
-        return ignoredMaterials.containsKey(material);
+        return ignoredItems.containsKey(material) || ignoredBlocks.containsKey(material);
     }
 
     @SafeVarargs
     public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
-        ignoredMaterials.put(material, items);
+        ignoredItems.put(material, items);
         if (items.length > 0) {
-            ItemMaterialData.registerMaterialEntries(Arrays.asList(items), this, material);
+            ItemMaterialData.registerItemMaterialEntries(Arrays.asList(items), this, material);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void setIgnored(Material material, ItemLike... items) {
-        // go through setIgnoredBlock to wrap if this is a block prefix
         if (this.doGenerateBlock()) {
-            this.setIgnoredBlock(material,
-                    Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast).toArray(Block[]::new));
-        } else {
-            this.setIgnored(material,
-                    Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+            Block[] blocks = Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast)
+                    .toArray(Block[]::new);
+            if (blocks.length != items.length) {
+                throw new IllegalArgumentException(
+                        "TagPrefix '%s' generates blocks, so setIgnored(Material, ItemLike...) only accepts Block instances. Use setIgnoredBlock for deferred or external blocks."
+                                .formatted(name));
+            }
+            this.setIgnoredBlock(material, blocks);
+            return;
         }
+
+        this.setIgnored(material,
+                Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
     }
 
     @SuppressWarnings("unchecked")
     public void setIgnoredBlock(Material material, Block... items) {
-        this.setIgnored(material, Arrays.stream(items).map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
+        this.setIgnoredBlock(material, Arrays.stream(items).map(block -> GTMemoizer.memoizeBlockSupplier(() -> block))
                 .toArray(Supplier[]::new));
+    }
+
+    @SafeVarargs
+    public final void setIgnoredBlock(Material material, Supplier<? extends Block>... blocks) {
+        ignoredBlocks.put(material, blocks);
+        if (blocks.length > 0) {
+            ItemMaterialData.registerBlockMaterialEntries(Arrays.asList(blocks), this, material);
+        }
     }
 
     @SuppressWarnings("unchecked")
     public void setIgnored(Material material) {
-        this.ignoredMaterials.put(material, new Supplier[0]);
+        this.ignoredItems.put(material, new Supplier[0]);
     }
 
     public void removeIgnored(Material material) {
-        ignoredMaterials.remove(material);
+        ignoredItems.remove(material);
+        ignoredBlocks.remove(material);
     }
 
-    public Map<Material, Supplier<? extends ItemLike>[]> getIgnored() {
-        return new HashMap<>(ignoredMaterials);
+    public Map<Material, Supplier<? extends ItemLike>[]> getIgnoredItems() {
+        return new HashMap<>(ignoredItems);
+    }
+
+    public Map<Material, Supplier<? extends Block>[]> getIgnoredBlocks() {
+        return new HashMap<>(ignoredBlocks);
     }
 
     public boolean isAmountModified(Material material) {
