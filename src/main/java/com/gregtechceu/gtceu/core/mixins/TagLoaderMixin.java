@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.IGTTagLoader;
-import com.gregtechceu.gtceu.core.MixinHelpers;
+import com.gregtechceu.gtceu.data.tags.DynamicTagLoader;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +29,7 @@ public class TagLoaderMixin implements IGTTagLoader {
     public void gtceu$load(ResourceManager resourceManager,
                            CallbackInfoReturnable<Map<ResourceLocation, List<TagLoader.EntryWithSource>>> cir) {
         if (gtceu$storedRegistry == null) return;
-        MixinHelpers.generateGTDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
+        DynamicTagLoader.generateGTDynamicTags(cir.getReturnValue(), gtceu$storedRegistry);
     }
 
     @Override
