@@ -176,6 +176,9 @@ public class MultiPredicate implements Iterable<BasePredicate> {
             protected void appendContents(StringBuilder builder) {
                 getParent().appendContents(builder);
             }
+
+            @Override
+            protected void appendStats(StringBuilder builder) {}
         };
     }
 
