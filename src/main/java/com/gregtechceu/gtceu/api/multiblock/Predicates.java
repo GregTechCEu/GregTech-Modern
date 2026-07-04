@@ -75,7 +75,7 @@ public class Predicates {
             }
         }
         return customPredicate(debugName,
-                ctx -> states.contains(ctx.state()) || ctx.error(PLACEHOLDER),
+                ctx -> states.contains(ctx.state()) || ctx.internalError(PLACEHOLDER),
                 states.stream().map(BlockInfo::fromBlockState),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -86,7 +86,7 @@ public class Predicates {
 
     public static MultiPredicate blocks(Block block) {
         return customPredicate("Block",
-                ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
+                ctx -> ctx.state().is(block) || ctx.blockMatchingError(List.of(block)),
                 Stream.of(BlockInfo.fromBlock(block)),
                 builder -> builder.append(blockToString(block)));
     }
@@ -112,7 +112,7 @@ public class Predicates {
             for (var block : blocks) {
                 if (ctx.state().is(block)) return true;
             }
-            return ctx.error(new BlockMatchingError(ctx.pos(), blocks));
+            return ctx.blockMatchingError(blocks);
         }, candidates.map(BlockInfo::fromBlock), builder -> {
             StringJoiner joiner = new StringJoiner(", ");
             blocks.forEach(block -> joiner.add(blockToString(block)));
@@ -146,7 +146,7 @@ public class Predicates {
 
     public static MultiPredicate fluids(Fluid... fluids) {
         return customPredicate("Fluids",
-                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
+                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.internalError(PLACEHOLDER),
                 Arrays.stream(fluids).map(BlockInfo::fromFluid),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -173,7 +173,7 @@ public class Predicates {
                                                 @Nullable List<BlockInfo> candidates) {
         return customPredicate(ctx -> {
             PatternError error = predicate.apply(ctx.getBlockInfo());
-            return error == null || ctx.error(error);
+            return error == null || ctx.internalError(error);
         }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
     }
 
@@ -205,8 +205,7 @@ public class Predicates {
 
     public static MultiPredicate abilities(PartAbility ability) {
         return customPredicate("Ability",
-                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
+                ctx -> ability.isApplicable(ctx.state().getBlock()) || ctx.abilityError(ability),
                 ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
                 builder -> builder.append(ability.getName()));
     }
@@ -218,7 +217,7 @@ public class Predicates {
                         if (ability.isApplicable(ctx.state().getBlock())) {
                             return true;
                         }
-                        ctx.error(new PartAbilityError(ctx.pos(), ability));
+                        ctx.abilityError(ability);
                     }
                     return false;
                 },
@@ -241,7 +240,7 @@ public class Predicates {
         }
         return customPredicate("Ability[" + sb + "]",
                 ctx -> ability.isApplicable(ctx.state().getBlock()) ||
-                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
+                        ctx.abilityError(ability),
                 ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
@@ -400,10 +399,10 @@ public class Predicates {
         return customPredicate("FramedPipes", ctx -> {
             BlockEntity tileEntity = ctx.blockEntity();
             if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                return ctx.error(PLACEHOLDER);
+                return ctx.internalError(PLACEHOLDER);
             }
             return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
-                    ctx.error(PLACEHOLDER);
+                    ctx.internalError(PLACEHOLDER);
         }, Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
     }
 }

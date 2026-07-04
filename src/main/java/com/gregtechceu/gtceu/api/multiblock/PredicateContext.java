@@ -1,11 +1,16 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -30,7 +35,7 @@ public final class PredicateContext {
     private final @Nullable Object2IntMap<BasePredicate> layerCache;
     @Getter
     @Setter
-    private FailureReason failureReason;
+    private FailureReason lastFailureReason;
 
     public PredicateContext(CurrentBlockInfo blockInfo,
                             Object2IntMap<BasePredicate> globalCache,
@@ -43,9 +48,38 @@ public final class PredicateContext {
     /// accepts a pattern error
     ///
     /// @return false
-    public boolean error(PatternError error) {
+    private boolean error(PatternError error) {
         this.errors.add(error);
         return false;
+    }
+
+    public boolean abilityError(PartAbility ability) {
+        return internalError(new PartAbilityError(pos(), ability));
+    }
+
+    public boolean blockMatchingError(List<Block> blocks) {
+        return internalError(new BlockMatchingError(pos(), blocks));
+    }
+
+    public boolean internalError(PatternError error) {
+        this.lastFailureReason = FailureReason.INTERNAL;
+        return error(error);
+    }
+
+    public boolean globalError(BasePredicate predicate, boolean min) {
+        this.lastFailureReason = min ? FailureReason.GLOBAL_MIN : FailureReason.GLOBAL_MAX;
+        SinglePredicateError error = min
+                ? SinglePredicateError.minCount(predicate, getGlobalCount(predicate))
+                : SinglePredicateError.maxCount(predicate, getGlobalCount(predicate));
+        return error(error);
+    }
+
+    public boolean sliceError(BasePredicate predicate, boolean min) {
+        this.lastFailureReason = min ? FailureReason.SLICE_MIN : FailureReason.SLICE_MAX;
+        SinglePredicateError error = min
+                ? SinglePredicateError.minLayerCount(predicate, getSliceCount(predicate))
+                : SinglePredicateError.maxLayerCount(predicate, getSliceCount(predicate));
+        return error(error);
     }
 
     public List<PatternError> getErrors() {

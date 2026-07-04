@@ -472,7 +472,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected static MultiPredicate doorPredicate() {
         return Predicates.customPredicate(
-                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
+                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.internalError(Predicates.PLACEHOLDER),
                 Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
                         new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
                                 .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
@@ -488,7 +488,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             BlockEntity blockEntity = ctx.blockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
-                    return ctx.error(Predicates.PLACEHOLDER);
+                    return ctx.internalError(Predicates.PLACEHOLDER);
                 }
                 // todo do this in structure form not in the predicate
                 // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);

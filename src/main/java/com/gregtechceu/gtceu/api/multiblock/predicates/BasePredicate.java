@@ -65,32 +65,28 @@ public abstract class BasePredicate {
     public boolean testGlobalMax(PredicateContext ctx) {
         if (getMaxCount() == -1) return true;
         int count = ctx.incrementGlobalCount(this);
-        if (testGlobalMax(count)) return true;
-        return ctx.error(SinglePredicateError.maxCount(this, count));
+        return testGlobalMax(count) || ctx.globalError(this, false);
     }
 
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
         if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
         int count = ctx.incrementSliceCount(this);
-        if (testSliceMax(count)) return true;
-        return ctx.error(SinglePredicateError.maxLayerCount(this, count));
+        return testSliceMax(count) || ctx.sliceError(this, false);
     }
 
     /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
-        if (testGlobalMin(count)) return true;
-        return ctx.error(SinglePredicateError.minCount(this, count));
+        return testGlobalMin(count) || ctx.globalError(this, true);
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (getMinSliceCount() == -1 || ctx.layerCache() == null) return true;
         int count = ctx.getSliceCount(this);
-        if (testSliceMin(count)) return true;
-        return ctx.error(SinglePredicateError.minLayerCount(this, count));
+        return testSliceMin(count) || ctx.globalError(this, true);
     }
 
     /// simple test against global min count

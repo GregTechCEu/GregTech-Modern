@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -12,7 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -348,24 +345,24 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
             @Override
             public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-                return test(ctx, predicates,
+                return test(predicates,
                         p -> p.getMinCount() == -1,
                         p -> p.testGlobalMin(ctx.getGlobalCount(p)),
-                        p -> SinglePredicateError.minCount(p, ctx.getGlobalCount(p)));
+                        p -> ctx.globalError(p, true));
             }
 
             @Override
             public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-                return ctx.layerCache() == null || test(ctx, predicates,
+                return ctx.layerCache() == null || test(predicates,
                         p -> p.getMinSliceCount() == -1,
                         p -> p.testSliceMin(ctx.getSliceCount(p)),
-                        p -> SinglePredicateError.minLayerCount(p, ctx.getSliceCount(p)));
+                        p -> ctx.sliceError(p, true));
             }
 
-            private boolean test(PredicateContext ctx, MultiPredicate predicates,
+            private boolean test(MultiPredicate predicates,
                                  Predicate<BasePredicate> skip,
                                  Predicate<BasePredicate> tester,
-                                 Function<BasePredicate, PatternError> errorFunction) {
+                                 Consumer<BasePredicate> errorFunction) {
                 int skipped = 0, passed = 0, size = predicates.predicateList.size();
                 for (BasePredicate predicate : predicates) {
                     if (skip.test(predicate)) {
@@ -378,13 +375,14 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                     if (tester.test(predicate)) {
                         if (++passed > 1) {
                             // TODO special xor error
-                            return ctx.error(errorFunction.apply(predicate));
+                            errorFunction.accept(predicate);
+                            return false;
                         }
                     }
                 }
                 if (passed == 0) {
                     // todo special xor error
-                    predicates.forEach(p -> ctx.error(errorFunction.apply(p)));
+                    predicates.forEach(errorFunction);
                     return false;
                 }
                 return true;

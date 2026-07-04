@@ -750,7 +750,7 @@ public class GTMachineUtils {
                             .isAir()) {
                 return true;
             }
-            return ctx.error(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
+            return ctx.internalError(new PartAbilityError(ctx.pos(), PartAbility.ROTOR_HOLDER));
         }, PartAbility.ROTOR_HOLDER.getAllBlocks()
                 .stream()
                 .map(BlockInfo::fromBlock))
