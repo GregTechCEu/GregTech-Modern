@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.widgets;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.mui.MultiblockSchemaInfo;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
@@ -90,6 +91,7 @@ public class MultiblockPreviewWidget extends ParentWidget<MultiblockPreviewWidge
     public MultiblockPreviewWidget(MultiblockMachineDefinition definition, MultiblockSchemaInfo schemaInfo, int width,
                                    int height) {
         this.multiblockDefinition = definition;
+        if (!GTCEu.isClientThread()) return;
         this.frontFacing = definition.getRotationState().defaultDirection;
         this.upFacing = switch (definition.getRotationState()) {
             case Y_AXIS -> Direction.NORTH;

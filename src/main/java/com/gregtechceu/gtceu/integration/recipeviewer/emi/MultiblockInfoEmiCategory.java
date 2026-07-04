@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -25,13 +27,13 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
 
@@ -60,16 +62,15 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static class MultiblockInfoEmiWrapper extends ModularUIEmiRecipe {
 
         private final MultiblockMachineDefinition definition;
-        private final List<EmiStack> outputBlocks = new ArrayList<>();
+        private final List<EmiIngredient> containedBlocks = new ArrayList<>();
 
         public MultiblockInfoEmiWrapper(MultiblockMachineDefinition definition) {
             super(definition.getId(), () -> new MultiblockPreviewWidget(definition, null, 200, 180));
             this.definition = definition;
-
-            initializeOutputBlocks();
+            initializeContainedBlocks();
         }
 
-        private void initializeOutputBlocks() {
+        private void initializeContainedBlocks() {
             Map<BlockPos, BlockInfo> resultStructure = new HashMap<>();
             IBlockPattern pattern = definition.getStructurePatterns().get(DEFAULT_STRUCTURE).get();
             AbstractStructureHelper structureHelper = null;
@@ -93,10 +94,9 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
                             case ALL, NON_Y_AXIS, NONE -> Direction.UP;
                         }, false);
 
-                resultStructure.values().stream()
-                        .map(BlockInfo::getBlockState)
-                        .collect(Collectors.toSet())
-                        .forEach(block -> outputBlocks.add(EmiStack.of(block.getBlock())));
+                Object2IntMap<Block> blockCount = new Object2IntOpenHashMap<>();
+                resultStructure.forEach((pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
+                blockCount.forEach((block, count) -> containedBlocks.add(EmiStack.of(block.asItem(), count)));
             }
         }
 
@@ -117,12 +117,12 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
 
         @Override
         public List<EmiIngredient> getInputs() {
-            return List.of();
+            return containedBlocks;
         }
 
         @Override
         public List<EmiStack> getOutputs() {
-            return outputBlocks;
+            return List.of(EmiStack.of(definition.getBlock()));
         }
     }
 }
