@@ -11,12 +11,11 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.MultiblockPreviewWidget;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
@@ -27,7 +26,8 @@ import dev.emi.emi.api.widget.WidgetHolder;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.minecraft.world.level.block.Block;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -95,7 +95,8 @@ public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
                         }, false);
 
                 Object2IntMap<Block> blockCount = new Object2IntOpenHashMap<>();
-                resultStructure.forEach((pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
+                resultStructure.forEach(
+                        (pos, state) -> blockCount.mergeInt(state.getBlockState().getBlock(), 1, Integer::sum));
                 blockCount.forEach((block, count) -> containedBlocks.add(EmiStack.of(block.asItem(), count)));
             }
         }
