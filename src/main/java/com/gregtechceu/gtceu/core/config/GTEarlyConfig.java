@@ -41,9 +41,7 @@ public class GTEarlyConfig {
 
         // hidden rules for dev-only mixins
         addHiddenRule("dev", !FMLLoader.isProduction());
-
-        // mixins that target DatagenModLoader (MixinTargetAlreadyLoadedException).
-        addHiddenRule("dev.datagen", !FMLLoader.isProduction() && DatagenModLoader.isRunningDataGen());
+        addHiddenRule("dev.datagen", DatagenModLoader.isRunningDataGen());
 
         // bind non-empty parents
         for (Map.Entry<String, Option> entry : this.options.entrySet()) {
