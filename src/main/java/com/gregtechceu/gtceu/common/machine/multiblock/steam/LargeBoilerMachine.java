@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -27,6 +27,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
 import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.drawable.Icon;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
@@ -187,6 +189,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         return value;
     }
 
+    private void setThrottle(int newThrottle) {
+        this.throttle = newThrottle;
+        ((LargeBoilerRecipeLogic) (this.recipeLogic)).setCurrentThrottle(newThrottle);
+    }
+
     /**
      * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>
@@ -205,14 +212,8 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(new ParentWidget<>()
-                .widthRel(0.95f)
-                .heightRel(.65f)
-                .margin(4, 0)
-                .left(3).top(2)
-                .horizontalCenter()
-                .child(Flow.row()
-                        .child(getMainTextPanel(syncManager, 186, 146))));
+        mainWidget.child(getMainTextPanel(syncManager, 186, 146)
+                .margin(4, 2));
     }
 
     public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
@@ -223,12 +224,22 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 .height(height - 6)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
                 .posRel(Alignment.CenterLeft)
                 .left(3)
                 .top(3);
         parentWidget.size(width, height)
-                .background(GTGuiTextures.DISPLAY);
+                .background(GuiTextures.DISPLAY);
 
+        listWidget.children(getWidgetsForDisplay(syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
         // Machine generic sync handlers
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
@@ -246,31 +257,30 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
         IntSyncValue steamGenerated = new IntSyncValue(() -> this.steamGenerated);
         syncManager.syncValue("steamGenerated", steamGenerated);
 
-        IntSyncValue throttle = new IntSyncValue(() -> this.throttle, newValue -> this.throttle = newValue);
+        IntSyncValue throttle = new IntSyncValue(() -> this.throttle, this::setThrottle).allowC2S();
         syncManager.syncValue("throttle", throttle);
 
-        listWidget
-                .child(Text.dynamic(() -> {
-                    if (!isFormed.getBoolValue()) return Component.empty();
-                    return Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                            currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
-                            .withStyle(ChatFormatting.WHITE);
-                })
-                        .asWidget())
-                .child(Text.dynamic(() -> {
-                    if (!isFormed.getBoolValue()) return Component.empty();
-                    return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
-                            steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
-                })
-                        .asWidget())
-                .child(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
-                        .withStyle(ChatFormatting.WHITE))
-                        .asWidget())
-                .child(createIntInputWithButtons(throttle))
-
-                .setEnabledIf((widget) -> isFormed.getBoolValue());
-        parentWidget.child(listWidget);
-        return parentWidget;
+        widgets.add(Text.dynamic(() -> {
+            if (!isFormed.getBoolValue()) return Component.empty();
+            return Component.translatable("gtceu.multiblock.large_boiler.temperature",
+                    currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
+                    .withStyle(ChatFormatting.WHITE);
+        })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(Text.dynamic(() -> {
+            if (!isFormed.getBoolValue()) return Component.empty();
+            return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
+                    steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
+        })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
+                .withStyle(ChatFormatting.WHITE))
+                .asWidget().setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(createIntInputWithButtons(throttle)
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        return widgets;
     }
 
     public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue) {
@@ -281,7 +291,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
 
             @Override
             public boolean onMouseScrolled(double delta) {
-                int inc = (int) delta;
+                int inc = (int) delta * (MouseData.create(-1).shift() ? 5 : 1);
                 int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
                 syncValue.setIntValue(val, true, true);
                 return true;
@@ -362,8 +372,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
             return List.of(LargeBoilerMachine.class);
         }
 
-        public void setCurrentThrottle(int currentThrottle) {
-            this.currentThrottle = currentThrottle;
+        public void setCurrentThrottle(int newThrottle) {
+            this.modifyFuelBurnTime(newThrottle);
+            this.currentThrottle = newThrottle;
             syncDataHolder.markClientSyncFieldDirty("currentThrottle");
         }
 
@@ -372,7 +383,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
                 setCurrentThrottle(getMachine().getThrottle());
-                duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }
 
@@ -382,7 +392,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMu
                 duration = (int) Math.round(lastRecipe.duration / (newThrottle / 100.0));
                 progress = (int) Math.round(newThrottleMultiplier * progress);
             }
-            setCurrentThrottle(newThrottle);
         }
     }
 }
