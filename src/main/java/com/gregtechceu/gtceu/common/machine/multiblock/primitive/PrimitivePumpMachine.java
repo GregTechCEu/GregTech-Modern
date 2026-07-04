@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -44,9 +43,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class PrimitivePumpMachine extends MultiblockControllerMachine implements IMuiMachine {
 
-    @SyncToClient
     private int biomeModifier = 0;
-    @SyncToClient
     private int hatchModifier = 0;
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
@@ -78,7 +75,6 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
                     } else {
                         hatchModifier = 4;
                     }
-                    getSyncDataHolder().markClientSyncFieldDirty("hatchModifier");
                     return;
                 }
             }
@@ -113,7 +109,6 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
         if (getOffsetTimer() % 20 == 0 && isFormed()) {
             if (biomeModifier == 0) {
                 biomeModifier = GTUtil.getPumpBiomeModifier(getLevel().getBiome(getBlockPos()));
-                getSyncDataHolder().markClientSyncFieldDirty("biomeModifier");
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
@@ -173,16 +168,20 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine implements
 
         BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
                 () -> new BooleanSyncValue(this::isFormed));
-
-        IntSyncValue production = syncManager.getOrCreateSyncHandler("production", IntSyncValue.class,
-                () -> new IntSyncValue(this::getFluidProduction));
+        // Sync these values for use in getFluidProduction()
+        syncManager.getOrCreateSyncHandler("biomeModifier", IntSyncValue.class,
+                () -> new IntSyncValue(() -> this.biomeModifier, value -> this.biomeModifier = value));
+        syncManager.getOrCreateSyncHandler("hatchModifier", IntSyncValue.class,
+                () -> new IntSyncValue(() -> this.hatchModifier, value -> this.hatchModifier = value));
 
         widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
-        widgets.add(
-                Text.lang("gtceu.top.primitive_pump_production", FormattingUtil.formatNumbers(production.getIntValue()))
-                        .withStyle(ChatFormatting.WHITE)
-                        .asWidget()
-                        .setEnabledIf((widget) -> isFormed.getBoolValue()));
+        widgets.add(Text
+                .dynamic(() -> Text
+                        .lang("gtceu.top.primitive_pump_production",
+                                FormattingUtil.formatNumbers(this.getFluidProduction()))
+                        .withStyle(ChatFormatting.WHITE))
+                .asWidget()
+                .setEnabledIf((widget) -> isFormed.getBoolValue()));
 
         return widgets;
     }
