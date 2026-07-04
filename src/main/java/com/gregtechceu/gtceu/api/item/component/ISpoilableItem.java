@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.SpoilableItemStack;
 import com.gregtechceu.gtceu.common.item.behavior.SpoilableBehavior;
@@ -39,7 +38,7 @@ import java.util.Optional;
  * frozen stacks will be equal to non-frozen stacks if all else is equal. This is done to make filtering work correctly.
  * </p>
  * <p>
- * Spoilable stacks will be frozen if they enter a {@link PhantomSlotWidget},
+ * Spoilable stacks will be frozen if they enter a phantom slot,
  * to prevent stacks spoiling in filters. If you are a developer of a mod that adds filters, consider calling
  * {@link ISpoilableItem#freezeSpoiling()} on stacks entering these filters for compatibility :)
  * </p>
