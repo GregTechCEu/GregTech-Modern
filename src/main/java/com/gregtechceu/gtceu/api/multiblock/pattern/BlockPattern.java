@@ -163,6 +163,7 @@ public class BlockPattern implements IBlockPattern {
         // global min check
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testGlobalMin(patternState)) {
+                patternState.commitErrors();
                 return false;
             }
         }
@@ -212,8 +213,10 @@ public class BlockPattern implements IBlockPattern {
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
                 if (pred.test(patternState)) {
                     charPos.move(absoluteChar);
+                    patternState.clearErrors();
                     // continue...
                 } else {
+                    patternState.commitErrors();
                     return false;
                 }
             }
@@ -225,10 +228,12 @@ public class BlockPattern implements IBlockPattern {
         // slice min check
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testSliceMin(patternState)) {
+                patternState.commitErrors();
                 return false;
             }
         }
 
+        patternState.clearErrors();
         return true;
     }
 

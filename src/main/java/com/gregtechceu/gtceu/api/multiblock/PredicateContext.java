@@ -30,6 +30,7 @@ import java.util.Objects;
 public class PredicateContext {
 
     protected final List<PatternError> errors = new ArrayList<>();
+    protected final List<PatternError> commitedErrors = new ArrayList<>();
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
@@ -74,6 +75,11 @@ public class PredicateContext {
         return error(error);
     }
 
+    public void commitErrors() {
+        this.commitedErrors.addAll(this.errors);
+        this.errors.clear();
+    }
+
     public PredicateContext appendError(PatternError error) {
         this.errors.add(error);
         return this;
@@ -85,7 +91,7 @@ public class PredicateContext {
     }
 
     public List<PatternError> getErrors() {
-        return Collections.unmodifiableList(errors);
+        return Collections.unmodifiableList(this.commitedErrors);
     }
 
     /// @return the current Level
