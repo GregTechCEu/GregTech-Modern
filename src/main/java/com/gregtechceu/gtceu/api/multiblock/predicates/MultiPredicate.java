@@ -351,8 +351,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 return test(predicates,
                         p -> p.getMinCount() == -1,
                         p -> p.testGlobalMin(ctx.getGlobalCount(p)),
-                        () -> ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
-                                .setFailureReason(FailureReason.GLOBAL_MIN));
+                        () -> onError(ctx, predicates));
             }
 
             @Override
@@ -360,10 +359,16 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 return ctx.layerCache() == null || test(predicates,
                         p -> p.getMinSliceCount() == -1,
                         p -> p.testSliceMin(ctx.getSliceCount(p)),
-                        () -> ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
-                                .setFailureReason(FailureReason.SLICE_MIN));
+                        () -> onError(ctx, predicates));
             }
 
+            private void onError(PredicateContext ctx, MultiPredicate predicates) {
+                // todo better error
+                ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
+                        .setFailureReason(FailureReason.SLICE_MIN);
+            }
+
+            // i hate this
             private boolean test(MultiPredicate predicates,
                                  Predicate<BasePredicate> skip,
                                  Predicate<BasePredicate> tester,
