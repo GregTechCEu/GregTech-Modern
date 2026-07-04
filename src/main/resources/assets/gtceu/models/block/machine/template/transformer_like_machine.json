@@ -28,8 +28,8 @@
             }
         },
         {
-            "from": [ -0.01, -0.01, -0.01 ],
-            "to":   [ 16.01, 16.01, 16.01 ],
+            "from": [ -0.096, -0.096, -0.096 ],
+            "to":   [ 16.096, 16.096, 16.096 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_io",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_io", "cullface": "south" },
@@ -40,8 +40,8 @@
             }
         },
         {
-            "from": [ -0.04, -0.04, -0.04 ],
-            "to":   [ 16.04, 16.04, 16.04 ],
+            "from": [ -0.160, -0.160, -0.160 ],
+            "to":   [ 16.160, 16.160, 16.160 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -54,8 +54,8 @@
             }
         },
         {
-            "from": [ -0.02, -0.02, -0.02 ],
-            "to":   [ 16.02, 16.02, 16.02 ],
+            "from": [ -0.128, -0.128, -0.128 ],
+            "to":   [ 16.128, 16.128, 16.128 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_in_tinted",  "cullface": "north", "tintindex": 2 },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_out_tinted", "cullface": "south", "tintindex": 3 },

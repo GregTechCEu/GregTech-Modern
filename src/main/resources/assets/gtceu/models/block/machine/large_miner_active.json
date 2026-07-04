@@ -17,8 +17,8 @@
             }
         },
         {
-            "from": [ -0.002, -0.002, -0.002 ],
-            "to":   [ 16.002, 16.002, 16.002 ],
+            "from": [ -0.032, -0.032, -0.032 ],
+            "to":   [ 16.032, 16.032, 16.032 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_front",  "cullface": "north" },
                 "south": { "uv": [0, 0, 16, 16], "texture": "#overlay_back",   "cullface": "south" },
@@ -29,8 +29,8 @@
             }
         },
         {
-            "from": [ -0.004, -0.004, -0.004 ],
-            "to":   [ 16.004, 16.004, 16.004 ],
+            "from": [ -0.064, -0.064, -0.064 ],
+            "to":   [ 16.064, 16.064, 16.064 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -43,7 +43,7 @@
             }
         },
         {
-            "from": [  0, -0.01, 16 ],
+            "from": [  0, -0.096, 16 ],
             "to":   [ 16, -16  , 32 ],
             "faces": {
                 "down":  { "uv": [0, 0, 16, 16], "texture": "#overlay_pipe", "cullface": "down" }
