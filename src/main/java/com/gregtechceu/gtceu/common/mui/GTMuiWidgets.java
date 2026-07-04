@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
 import net.minecraft.network.chat.Component;
@@ -302,7 +303,7 @@ public class GTMuiWidgets {
             }
         } else {
             if (stack.isEmpty() ||
-                    (current == 0)) {
+                    (current == 0 && !ConfigHolder.INSTANCE.machines.ghostCircuit)) {
                 // if at no circuit, loop around to max
                 return IntCircuitBehaviour.CIRCUIT_MAX;
             } else if (current == 1) {

@@ -115,11 +115,9 @@ public class MultiblockPartMachine extends MetaMachine {
         if (handlerList == null) {
             List<IRecipeHandler<?>> handlers = new ArrayList<>();
             IO handlerIO = null;
-            for (var trait : getAllTraits()) {
-                if (trait instanceof IRecipeHandlerTrait<?> rht) {
-                    if (handlerIO == null) handlerIO = rht.getHandlerIO();
-                    handlers.add(rht);
-                }
+            for (var rht : getTraitHolder().getTraitsByInterface(IRecipeHandlerTrait.class)) {
+                if (handlerIO == null) handlerIO = rht.getHandlerIO();
+                handlers.add(rht);
             }
 
             if (handlers.isEmpty()) {

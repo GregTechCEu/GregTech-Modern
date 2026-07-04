@@ -157,6 +157,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     @Override
     public void onMachineLoad() {
+        super.onMachineLoad();
+
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,

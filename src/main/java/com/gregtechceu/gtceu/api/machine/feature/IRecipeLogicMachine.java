@@ -53,11 +53,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         recipe = self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
         if (recipe == null) return null;
 
-        for (var trait : self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait) {
-                recipe = rlTrait.modifyRecipe(recipe);
-                if (recipe == null) return null;
-            }
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            recipe = rlTrait.modifyRecipe(recipe);
+            if (recipe == null) return null;
         }
         return recipe;
     }
@@ -76,24 +74,23 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      * @param newStatus New recipe logic status
      */
     default void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        for (var trait : self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait)
-                rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            rlTrait.recipeLogicStatusChanged(oldStatus, newStatus);
         }
     }
 
     /**
      * Called when a recipe is about to be run, just before inputs are consumed.
      *
-     * @return true to cancel the recipe, false to continue
+     * @return false to cancel the recipe, true to continue
      *
      * @see RecipeLogic#setupRecipe(GTRecipe)
      */
     default boolean beforeWorking(@Nullable GTRecipe recipe) {
         if (!self().getDefinition().getBeforeWorking().test(this, recipe)) return false;
 
-        for (var trait : self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.beforeWorking(recipe)) return false;
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            if (!rlTrait.beforeWorking(recipe)) return false;
         }
         return true;
     }
@@ -101,17 +98,24 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called every tick while the recipe is working.
      *
-     * @return true to interrupt and suspend the recipe, false to continue working
+     * @return false to interrupt and suspend the recipe, true to continue working
      *
      * @see RecipeLogic#handleRecipeWorking()
      */
     default boolean onWorking() {
         if (!self().getDefinition().getOnWorking().test(this)) return false;
 
-        for (var trait : self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait && !rlTrait.onWorking()) return false;
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            if (!rlTrait.onWorking()) return false;
         }
         return true;
+    }
+
+    /**
+     * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
+     */
+    default void onWaiting() {
+        self().getDefinition().getOnWaiting().accept(this);
     }
 
     /**
@@ -121,8 +125,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     default void afterWorking() {
         self().getDefinition().getAfterWorking().accept(this);
-        for (var trait : self().getAllTraits()) {
-            if (trait instanceof IRecipeLogicModifierTrait rlTrait) rlTrait.afterWorking();
+        for (var rlTrait : self().getTraitHolder().getTraitsByInterface(IRecipeLogicModifierTrait.class)) {
+            rlTrait.afterWorking();
         }
     }
 

@@ -85,6 +85,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
         super(info, tier, io);
         this.inventory = attachTrait(inventory);
         this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
+        circuitSlot.setEnabled(io == IO.IN);
         filterHandler = FilterHandlers.item(this);
 
         inventory.setFilter(this::matchesFilter);

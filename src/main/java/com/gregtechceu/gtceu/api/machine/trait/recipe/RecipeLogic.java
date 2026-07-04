@@ -207,9 +207,14 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     @Override
+    public void onTraitAttached() {
+        super.onTraitAttached();
+        regressWhenWaiting = getMachine().getDefinition().isRegressWhenWaiting();
+    }
+
+    @Override
     public void onMachineLoad() {
         super.onMachineLoad();
-        regressWhenWaiting = getMachine().getDefinition().isRegressWhenWaiting();
         updateTickSubscription();
     }
 
@@ -479,6 +484,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         setStatus(Status.WAITING);
         waitingReason = reason;
         syncDataHolder.markClientSyncFieldDirty("waitingReason");
+        getRLMachine().onWaiting();
     }
 
     /**

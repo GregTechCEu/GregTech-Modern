@@ -299,7 +299,7 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
-            GTMachineInstanceFactories.HPCA_COOLER, "heat_sink", false)
+            GTMachineInstanceFactories.HPCA_HEAT_SINK, "heat_sink", false)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1),
                     Component.translatable("gtceu.part_sharing.disabled"))

@@ -105,7 +105,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine {
 
     @Override
     public void saveToItem(CompoundTag tag, boolean clone) {
-        if (isTaped && !clone) tag.put("inventory", inventory.storage.serializeNBT());
+        if (isTaped) tag.put("inventory", inventory.storage.serializeNBT());
     }
 
     @Override

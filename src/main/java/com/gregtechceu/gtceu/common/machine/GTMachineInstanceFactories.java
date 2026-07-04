@@ -115,7 +115,7 @@ public interface GTMachineInstanceFactories {
                 GTGuiTextures.HPCA_DAMAGED_ADVANCED_COMPUTATION_COMPONENT, hpcaTrait);
     };
 
-    MachineInstanceFactory<HPCAComponentPartMachine> HPCA_COOLER = (info) -> {
+    MachineInstanceFactory<HPCAComponentPartMachine> HPCA_HEAT_SINK = (info) -> {
         var hpcaTrait = HPCAComponentPartMachine.createHPCACoolerTrait(false);
         return new HPCAComponentPartMachine(info, false, GTGuiTextures.HPCA_HEAT_SINK_COMPONENT,
                 GTGuiTextures.HPCA_HEAT_SINK_COMPONENT, hpcaTrait);

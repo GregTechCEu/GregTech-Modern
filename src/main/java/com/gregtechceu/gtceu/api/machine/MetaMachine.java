@@ -371,8 +371,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      *                         first, which may prevent traits with a lower priority from handling some events.
      * @param trait            The trait to register
      */
-    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait, int callbackPriority) {
-        return traitHolder.attachPersistentTrait(traitName, trait, callbackPriority);
+    public MetaMachine attachPersistentTrait(String traitName, MachineTrait trait, int callbackPriority) {
+        traitHolder.attachPersistentTrait(traitName, trait, callbackPriority);
+        return this;
     }
 
     /**
@@ -477,11 +478,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
         if (result != null && result.getSecond() != InteractionResult.PASS) return result;
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                var r = interactionTrait.onToolClick(context);
-                if (r.getSecond() != InteractionResult.PASS) return r;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IInteractionTrait.class)) {
+            var r = trait.onToolClick(context);
+            if (r.getSecond() != InteractionResult.PASS) return r;
         }
 
         return result != null ? result : Pair.of(null, InteractionResult.PASS);
@@ -578,11 +577,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                InteractionResult result = interactionTrait.onUse(context);
-                if (result != InteractionResult.PASS) return result;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IInteractionTrait.class)) {
+            InteractionResult result = trait.onUse(context);
+            if (result != InteractionResult.PASS) return result;
         }
 
         return InteractionResult.PASS;
@@ -597,10 +594,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      * @return true to cancel the click event, false to continue processing
      */
     public boolean onLeftClick(Player player, InteractionHand hand, @Nullable Direction face) {
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IInteractionTrait interactionTrait) {
-                if (interactionTrait.onLeftClick(player, hand, face)) return true;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IInteractionTrait.class)) {
+            if (trait.onLeftClick(player, hand, face)) return true;
         }
         return false;
     }
@@ -671,11 +666,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
                                     Set<GTToolType> toolTypes) {
         if (toolTypes.contains(GTToolType.WRENCH)) return true;
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRenderingTrait renderingTrait) {
-                var result = renderingTrait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
-                if (result) return true;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRenderingTrait.class)) {
+            var result = trait.shouldRenderGridOverlay(player, pos, state, held, toolTypes);
+            if (result) return true;
         }
 
         return false;
@@ -700,11 +693,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
             }
         }
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRenderingTrait renderingTrait) {
-                var result = renderingTrait.getGridOverlayIcon(player, pos, state, toolTypes, held, side);
-                if (result != null) return result;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRenderingTrait.class)) {
+            var result = trait.getGridOverlayIcon(player, pos, state, toolTypes, held, side);
+            if (result != null) return result;
         }
 
         return null;
@@ -776,10 +767,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     public boolean isFacingValid(Direction facing) {
         if (hasFrontFacing() && facing == getFrontFacing()) return false;
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IFrontFacingTrait modifyFacingTrait) {
-                if (!modifyFacingTrait.isValidFrontFace(facing)) return false;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IFrontFacingTrait.class)) {
+            if (!trait.isValidFrontFace(facing)) return false;
         }
 
         return getRotationState().test(facing);
@@ -954,10 +943,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         if (cover != null) return cover.getRedstoneSignalOutput();
 
         var signal = 0;
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
-                signal = Math.max(signal, redstoneSignalTrait.getOutputSignal(side));
-            }
+
+        for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
+            signal = Math.max(signal, trait.getOutputSignal(side));
         }
 
         return signal;
@@ -971,10 +959,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public int getOutputDirectSignal(@Nullable Direction side) {
         var signal = 0;
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
-                signal = Math.max(signal, redstoneSignalTrait.getOutputDirectSignal(side));
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
+            signal = Math.max(signal, trait.getOutputDirectSignal(side));
         }
 
         return signal;
@@ -987,10 +973,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public int getAnalogOutputSignal() {
         var signal = 0;
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
-                signal = Math.max(signal, redstoneSignalTrait.getAnalogOutputSignal());
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
+            signal = Math.max(signal, trait.getAnalogOutputSignal());
         }
 
         return signal;
@@ -1006,11 +990,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
         if (cover != null) return cover.canConnectRedstone();
 
-        for (var trait : getAllTraits()) {
-            if (trait instanceof IRedstoneSignalTrait redstoneSignalTrait) {
-                if (redstoneSignalTrait.canConnectRedstone(side)) return true;
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRedstoneSignalTrait.class)) {
+            if (trait.canConnectRedstone(side)) return true;
         }
+
         return false;
     }
 

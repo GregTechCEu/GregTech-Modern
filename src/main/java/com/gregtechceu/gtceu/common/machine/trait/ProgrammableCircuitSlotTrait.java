@@ -44,6 +44,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     private boolean enabled = true;
 
     public ProgrammableCircuitSlotTrait() {
+        setEnabled(ConfigHolder.INSTANCE.machines.ghostCircuit);
         storage = new CustomItemStackHandler(1);
         storage.setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
