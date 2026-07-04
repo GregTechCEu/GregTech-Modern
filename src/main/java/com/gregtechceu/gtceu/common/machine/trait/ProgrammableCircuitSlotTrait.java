@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import brachy.modularui.screen.ModularPanel;
@@ -63,7 +64,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
 
     @Override
     public void attachLeftConfigurators(Flow flow, ModularPanel<?> panel, PanelSyncManager syncManager) {
-        if (!enabled) return;
+        if (!enabled || !ConfigHolder.INSTANCE.machines.ghostCircuit) return;
         flow.child(GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager));
     }
 
@@ -99,7 +100,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
-        if (!enabled) return left;
+        if (!enabled | !ConfigHolder.INSTANCE.machines.ghostCircuit) return left;
         return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage);
     }
 
