@@ -205,14 +205,12 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                     if (!simulate) {
                         var machine = getMachine();
                         if (machine instanceof IRecipeLogicMachine rlm) {
-                            // first, remove the progress the recipe logic adds.
-                            rlm.getRecipeLogic().setProgressDelta(-1);
-                            rlm.getRecipeLogic().setProgressDelta(drawn);
+                            // remove the progress the recipe logic adds.
+                            rlm.getRecipeLogic().setProgressDelta(drawn - 1);
                         } else if (machine instanceof MultiblockPartMachine multiPart) {
                             for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
-                                    rlm.getRecipeLogic().setProgressDelta(-1);
-                                    rlm.getRecipeLogic().setProgressDelta(drawn);
+                                    rlm.getRecipeLogic().setProgressDelta(drawn - 1);
                                 }
                             }
                         }
@@ -233,7 +231,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
-    public List<Object> getContents() {
+    public @NotNull List<Object> getContents() {
         return List.of(lastOutputCwu);
     }
 
