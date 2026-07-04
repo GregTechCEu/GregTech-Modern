@@ -408,6 +408,7 @@ public class GTMultiMachines {
             .multiblock("primitive_pump", PrimitivePumpMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_PUMP_DECK)
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXXX", "##F#", "##F#")
                     .slice("XXHX", "F##F", "FFFF")
