@@ -77,6 +77,34 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return getMaxVoltage() >= GTValues.V[getTier() + 1];
     }
 
+    // @Override
+    // public void addDisplayText(List<Component> textList) {Expand commentComment on line L177
+    // MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, getDefaultPatternState())
+    // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
+    //
+    // long lastEUt = recipeLogic.getLastRecipe() != null ?
+    // recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
+    // if (isExtreme()) {
+    // builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
+    // } else {
+    // builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
+    // }
+    //
+    // if (isActive() && isWorkingEnabled()) {
+    // builder.addCurrentEnergyProductionLine(lastEUt);
+    // }
+    //
+    // builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
+    //
+    // if (isFormed && isOxygenBoosted) {
+    // final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+    // "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
+    // builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
+    // }
+    //
+    // builder.addWorkingStatusLine();
+    // }
+
     //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
