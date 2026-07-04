@@ -48,7 +48,7 @@ public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMulti
                     if (coilType == null) coilType = coil.coilType;
                     else {
                         if (coilType != coil.coilType) {
-                            patternStates.get(substructureName).setError(
+                            patternStates.get(substructureName).internalError(
                                     new CoilMatchingError(BlockPos.of(entry.getLongKey()), coilType, coil.coilType));
                             invalidateStructure(substructureName);
                             return;

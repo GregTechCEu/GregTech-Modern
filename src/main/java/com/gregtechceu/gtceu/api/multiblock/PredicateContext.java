@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -26,24 +27,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public final class PredicateContext {
+public class PredicateContext {
 
+    protected final List<PatternError> errors = new ArrayList<>();
     @Getter
-    private final CurrentBlockInfo blockInfo;
-    private final List<PatternError> errors = new ArrayList<>();
-    private final Object2IntMap<BasePredicate> globalCache;
-    private final @Nullable Object2IntMap<BasePredicate> layerCache;
+    protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
+    protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
+    protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
     @Getter
-    @Setter
     private FailureReason lastFailureReason;
-
-    public PredicateContext(CurrentBlockInfo blockInfo,
-                            Object2IntMap<BasePredicate> globalCache,
-                            @Nullable Object2IntMap<BasePredicate> layerCache) {
-        this.blockInfo = blockInfo;
-        this.globalCache = globalCache;
-        this.layerCache = layerCache;
-    }
 
     /// accepts a pattern error
     ///
@@ -82,18 +74,28 @@ public final class PredicateContext {
         return error(error);
     }
 
+    public PredicateContext appendError(PatternError error) {
+        this.errors.add(error);
+        return this;
+    }
+
+    public PredicateContext setFailureReason(FailureReason reason) {
+        this.lastFailureReason = reason;
+        return this;
+    }
+
     public List<PatternError> getErrors() {
         return Collections.unmodifiableList(errors);
     }
 
     /// @return the current Level
     public Level level() {
-        return Objects.requireNonNull(blockInfo.getLevel());
+        return Objects.requireNonNull(currentBlockInfo.getLevel());
     }
 
     /// @return the current Block State
     public BlockState state() {
-        return this.blockInfo.retrieveCurrentBlockState();
+        return this.currentBlockInfo.retrieveCurrentBlockState();
     }
 
     /// @return the current Fluid
@@ -108,25 +110,19 @@ public final class PredicateContext {
 
     /// @return the current block pos (immutable)
     public BlockPos pos() {
-        return this.blockInfo.getPos().immutable();
+        return this.currentBlockInfo.getPos().immutable();
     }
 
     public @Nullable BlockEntity blockEntity() {
-        return this.blockInfo.retrieveCurrentBlockEntity();
-    }
-
-    public static PredicateContext of(CurrentBlockInfo blockInfo,
-                                      Object2IntMap<BasePredicate> cache,
-                                      @Nullable Object2IntMap<BasePredicate> layerCache) {
-        return new PredicateContext(blockInfo, cache, layerCache);
+        return this.currentBlockInfo.retrieveCurrentBlockEntity();
     }
 
     public Object2IntMap<BasePredicate> globalCache() {
-        return globalCache;
+        return this.globalCount;
     }
 
     public @Nullable Object2IntMap<BasePredicate> layerCache() {
-        return layerCache;
+        return this.layerCount;
     }
 
     public int incrementGlobalCount(BasePredicate predicate) {

@@ -114,7 +114,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
     public PatternState checkStructurePattern(String name) {
         var patternState = super.checkStructurePattern(name);
         if (this.getUpwardsFacing() != Direction.UP && this.getUpwardsFacing() != Direction.DOWN) {
-            patternState.setError(Predicates.PLACEHOLDER);
+            patternState.internalError(Predicates.PLACEHOLDER);
         }
         return patternState;
     }

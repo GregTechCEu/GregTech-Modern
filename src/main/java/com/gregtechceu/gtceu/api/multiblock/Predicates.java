@@ -172,7 +172,7 @@ public class Predicates {
     public static MultiPredicate customFunction(Function<CurrentBlockInfo, @Nullable PatternError> predicate,
                                                 @Nullable List<BlockInfo> candidates) {
         return customPredicate(ctx -> {
-            PatternError error = predicate.apply(ctx.getBlockInfo());
+            PatternError error = predicate.apply(ctx.getCurrentBlockInfo());
             return error == null || ctx.internalError(error);
         }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
     }

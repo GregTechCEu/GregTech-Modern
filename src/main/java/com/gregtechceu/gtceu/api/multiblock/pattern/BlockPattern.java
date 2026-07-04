@@ -114,6 +114,7 @@ public class BlockPattern implements IBlockPattern {
             }
         }
 
+        // need to clear some errors, as there's a lot of useless info now
         boolean valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, false);
         if (valid) {
             // reaching here means the cache failed or was empty
@@ -122,7 +123,7 @@ public class BlockPattern implements IBlockPattern {
             return;
         }
 
-        if (allowsFlip) {
+        if (allowsFlip && patternState.getLastFailureReason().shouldCheckFlip()) {
             // this overwrites any previous errors
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
@@ -142,15 +143,15 @@ public class BlockPattern implements IBlockPattern {
                                   boolean isFlipped) {
         Objects.requireNonNull(patternState, "PatternState not set");
 
-        patternState.globalCount.clear();
-        patternState.layerCount.clear();
+        patternState.globalCache().clear();
+        patternState.layerCache().clear();
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {
-            patternState.cache.clear();
+            patternState.getCache().clear();
         }
 
-        patternState.currentBlockInfo.setLevel(level);
+        patternState.updateLevel(level);
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
@@ -160,15 +161,13 @@ public class BlockPattern implements IBlockPattern {
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         // global min check
-        PredicateContext ctx = patternState.toContext();
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testGlobalMin(ctx)) {
-                patternState.setErrors(ctx.getErrors());
+            if (!predicate.testGlobalMin(patternState)) {
                 return false;
             }
         }
 
-        patternState.setError(null);
+        patternState.clearErrors();
         return true;
     }
 
@@ -200,27 +199,21 @@ public class BlockPattern implements IBlockPattern {
         PatternSlice slice = slices[sliceIndex];
 
         // theoretically, predicates could track their own current layer/global count
-        patternState.layerCount.clear();
+        patternState.layerCache().clear();
 
-        PredicateContext ctx = patternState.toContext();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
             for (int charIdx = 0; charIdx < dimensions[2]; charIdx++) {
-                patternState.currentBlockInfo.setCurrentPos(charPos);
+                patternState.setPos(charPos);
                 MultiPredicate pred = predicates.get(slice.charAt(stringIdx, charIdx));
 
-                if (!pred.isAny()) {
-                    BlockEntity blockEntity = ctx.blockEntity();
-                    BlockState state = ctx.state();
-                    patternState.cache.put(charPos.asLong(), new BlockInfo(state, blockEntity));
-                }
+                if (!pred.isAny()) patternState.updateCache();
 
                 // internal predicate check, global/slice max checks
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
-                if (pred.test(ctx)) {
+                if (pred.test(patternState)) {
                     charPos.move(absoluteChar);
                     // continue...
                 } else {
-                    patternState.setErrors(ctx.getErrors());
                     return false;
                 }
             }
@@ -231,8 +224,8 @@ public class BlockPattern implements IBlockPattern {
 
         // slice min check
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testSliceMin(ctx)) {
-                patternState.setErrors(ctx.getErrors());
+            if (!predicate.testSliceMin(patternState)) {
+                return false;
             }
         }
 

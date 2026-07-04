@@ -63,10 +63,10 @@ public class ExpandablePattern implements IBlockPattern {
     @Override
     public void checkPatternFastAt(Level level, PatternState patternState, BlockPos centerPos, Direction frontFacing,
                                    Direction upwardsFacing, boolean allowsFlip) {
-        if (!patternState.cache.isEmpty()) {
+        if (!patternState.getCache().isEmpty()) {
             boolean pass = true;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-            for (var entry : patternState.cache.long2ObjectEntrySet()) {
+            for (var entry : patternState.getCache().long2ObjectEntrySet()) {
                 pos.set(entry.getLongKey());
                 BlockState state = level.getBlockState(pos);
 
@@ -102,7 +102,7 @@ public class ExpandablePattern implements IBlockPattern {
             return;
         }
 
-        if (allowsFlip) {
+        if (allowsFlip && patternState.getLastFailureReason().shouldCheckFlip()) {
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
         if (!valid) {
@@ -122,7 +122,7 @@ public class ExpandablePattern implements IBlockPattern {
         List<Integer> bounds = boundsProvider.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
         if (bounds.isEmpty()) return false;
 
-        patternState.globalCount.clear();
+        patternState.globalCache().clear();
 
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
@@ -146,7 +146,7 @@ public class ExpandablePattern implements IBlockPattern {
             }
         }
 
-        patternState.currentBlockInfo.setLevel(level);
+        patternState.updateLevel(level);
 
         BlockPos.MutableBlockPos translation = centerPos.mutable();
 
@@ -161,30 +161,22 @@ public class ExpandablePattern implements IBlockPattern {
                     pos.getZ());
             // translate from the origin to the center
             mPos = mPos.offset(translation).mutable();
-            patternState.currentBlockInfo.setCurrentPos(mPos);
+            patternState.setPos(mPos);
 
-            if (!pred.isAny()) {
-                BlockState state = patternState.currentBlockInfo.retrieveCurrentBlockState();
-                BlockEntity blockEntity = patternState.currentBlockInfo.retrieveCurrentBlockEntity();
-                patternState.cache.put(mPos.asLong(), new BlockInfo(state, blockEntity));
-            }
+            if (!pred.isAny()) patternState.updateCache();
 
-            PredicateContext ctx = patternState.noLayer();
-            if (!pred.test(ctx)) {
-                patternState.setErrors(ctx.getErrors());
+            if (!pred.test(patternState)) {
                 return false;
             }
         }
 
-        for (var entry : patternState.globalCount.object2IntEntrySet()) {
-            if (entry.getIntValue() < entry.getKey().getMinCount()) {
-                patternState.setError(SinglePredicateError.minCount(entry.getKey(),
-                        entry.getIntValue()));
+        for (var entry : patternState.globalCache().object2IntEntrySet()) {
+            if (!entry.getKey().testGlobalMin(patternState)) {
                 return false;
             }
         }
 
-        patternState.setError(null);
+        patternState.clearErrors();
         return true;
     }
 }

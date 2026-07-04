@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext.FailureReason;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -348,7 +351,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 return test(predicates,
                         p -> p.getMinCount() == -1,
                         p -> p.testGlobalMin(ctx.getGlobalCount(p)),
-                        p -> ctx.globalError(p, true));
+                        () -> ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
+                                .setFailureReason(FailureReason.GLOBAL_MIN));
             }
 
             @Override
@@ -356,13 +360,14 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 return ctx.layerCache() == null || test(predicates,
                         p -> p.getMinSliceCount() == -1,
                         p -> p.testSliceMin(ctx.getSliceCount(p)),
-                        p -> ctx.sliceError(p, true));
+                        () -> ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
+                                .setFailureReason(FailureReason.SLICE_MIN));
             }
 
             private boolean test(MultiPredicate predicates,
                                  Predicate<BasePredicate> skip,
                                  Predicate<BasePredicate> tester,
-                                 Consumer<BasePredicate> errorFunction) {
+                                 Runnable errorFunction) {
                 int skipped = 0, passed = 0, size = predicates.predicateList.size();
                 for (BasePredicate predicate : predicates) {
                     if (skip.test(predicate)) {
@@ -374,15 +379,13 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                     }
                     if (tester.test(predicate)) {
                         if (++passed > 1) {
-                            // TODO special xor error
-                            errorFunction.accept(predicate);
+                            errorFunction.run();
                             return false;
                         }
                     }
                 }
                 if (passed == 0) {
-                    // todo special xor error
-                    predicates.forEach(errorFunction);
+                    errorFunction.run();
                     return false;
                 }
                 return true;

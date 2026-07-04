@@ -3,29 +3,25 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
-public class PatternState {
+public class PatternState extends PredicateContext {
 
     @Getter
     protected @Nullable BlockPos controllerPos;
@@ -41,15 +37,9 @@ public class PatternState {
     protected boolean actualFlipped = false;
     @Setter
     protected boolean shouldUpdate = true;
-    @Getter
-    protected @Nullable List<PatternError> errors;
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
-    @Getter
-    protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
-    protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
-    protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
@@ -68,15 +58,11 @@ public class PatternState {
     }
 
     public boolean hasErrors() {
-        return errors != null;
+        return !this.errors.isEmpty();
     }
 
-    public void setError(@Nullable PatternError error) {
-        this.errors = error != null ? List.of(error) : null;
-    }
-
-    public void setErrors(@Nullable List<PatternError> error) {
-        this.errors = error;
+    public void clearErrors() {
+        this.errors.clear();
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
@@ -110,12 +96,16 @@ public class PatternState {
         }
     }
 
-    public PredicateContext toContext() {
-        return PredicateContext.of(this.currentBlockInfo, this.globalCount, this.layerCount);
+    protected void updateLevel(Level level) {
+        getCurrentBlockInfo().setLevel(level);
     }
 
-    public PredicateContext noLayer() {
-        return PredicateContext.of(this.currentBlockInfo, this.globalCount, null);
+    public void setPos(BlockPos.MutableBlockPos charPos) {
+        getCurrentBlockInfo().setCurrentPos(charPos);
+    }
+
+    protected void updateCache() {
+        getCache().put(pos().asLong(), new BlockInfo(state(), blockEntity()));
     }
 
     @Getter
