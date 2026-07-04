@@ -234,6 +234,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         syncDataHolder.markClientSyncFieldDirty("progress");
     }
 
+    public void setProgressDelta(int delta) {
+        setProgress(getProgress() + delta);
+    }
+
     public double getProgressPercent() {
         return duration == 0 ? 0.0 : progress / (duration * 1.0);
     }

@@ -206,13 +206,13 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
                         var machine = getMachine();
                         if (machine instanceof IRecipeLogicMachine rlm) {
                             // first, remove the progress the recipe logic adds.
-                            rlm.getRecipeLogic().setProgress(rlm.getProgress() - 1);
-                            rlm.getRecipeLogic().setProgress(rlm.getProgress() + drawn);
+                            rlm.getRecipeLogic().setProgressDelta(-1);
+                            rlm.getRecipeLogic().setProgressDelta(drawn);
                         } else if (machine instanceof MultiblockPartMachine multiPart) {
                             for (MultiblockControllerMachine controller : multiPart.getControllers()) {
                                 if (controller instanceof IRecipeLogicMachine rlm) {
-                                    rlm.getRecipeLogic().setProgress(rlm.getProgress() - 1);
-                                    rlm.getRecipeLogic().setProgress(rlm.getProgress() + drawn);
+                                    rlm.getRecipeLogic().setProgressDelta(-1);
+                                    rlm.getRecipeLogic().setProgressDelta(drawn);
                                 }
                             }
                         }
