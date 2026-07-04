@@ -53,8 +53,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                IDataInfoProvider, IMiner, IMuiMachine {
 
     @SaveField
-    public final NotifiableItemStackHandler importItems;
-    @SaveField
     public final NotifiableItemStackHandler exportItems;
     private final int inventorySize;
     private final int energyPerTick;
@@ -67,17 +65,27 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     private final ExhaustVentMachineTrait exhaustVentTrait;
 
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
-                             int fortune, int energyPerTick) {
+                             int fortune, int energyPerTick, NotifiableItemStackHandler exportItems) {
         super(info, isHighPressure, new SteamMinerLogic(fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
-        this.importItems = attachTrait(new NotifiableItemStackHandler(0, IO.IN));
-        this.exportItems = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.OUT));
+        this.exportItems = attachTrait(exportItems);
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         getRecipeLogic().resetRecipeLogic();
+    }
+
+    public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
+                             int fortune, int energyPerTick, int exportSlots) {
+        this(info, isHighPressure, speed, maximumRadius, fortune, energyPerTick,
+                new NotifiableItemStackHandler(4, IO.OUT));
+    }
+
+    public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
+                             int fortune, int energyPerTick) {
+        this(info, isHighPressure, speed, maximumRadius, fortune, energyPerTick, 4);
     }
 
     @Override

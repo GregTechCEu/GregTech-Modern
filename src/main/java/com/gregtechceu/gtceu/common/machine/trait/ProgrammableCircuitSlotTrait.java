@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.world.item.crafting.Ingredient;
 
 import brachy.modularui.screen.ModularPanel;
