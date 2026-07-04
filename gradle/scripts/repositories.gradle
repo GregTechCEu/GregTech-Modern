@@ -1,15 +1,29 @@
 repositories {
     mavenLocal()
     mavenCentral()
-    // force gradle to download FastUtil & LWJGL from the central maven so we can get source artifacts
+    // force gradle to download FastUtil and LWJGL from the central maven so we can get source artifacts
     exclusiveContent { // Force
         forRepository { mavenCentral() }
         filter {
             includeGroup("it.unimi.dsi")
             includeGroup("org.lwjgl")
+            includeGroupAndSubgroups("io.netty")
             includeGroup("com.google.guava")
             includeGroup("io.netty")
         }
+    }
+
+    exclusiveContent { // Create, Ponder, Flywheel
+        forRepository { maven { url = "https://maven.blamejared.com" } }
+        filter {
+            includeGroup("mezz.jei")
+            includeGroup("org.embeddedt")
+        }
+    }
+
+    maven {
+        name 'GTCEu Maven'
+        url 'https://maven.gtceu.com'
     }
 
     maven { // JEI
@@ -45,7 +59,7 @@ repositories {
     }
     exclusiveContent { // KubeJS and Rhino
         forRepository { maven { url = "https://maven.latvian.dev/releases" } }
-        filter { includeGroup("dev.latvian.mods")}
+        filter { includeGroup("dev.latvian.mods") }
     }
     exclusiveContent { // FTB mods
         forRepository { maven { url = "https://maven.ftb.dev/releases" } }

@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -16,27 +16,42 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.Icon;
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.utils.Alignment;
+import brachy.modularui.utils.Color;
+import brachy.modularui.utils.MouseData;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.StringSyncValue;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.ButtonWidget;
+import brachy.modularui.widgets.ListWidget;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.textfield.TextFieldWidget;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDisplayUIMachine {
+public class LargeBoilerMachine extends WorkableMultiblockMachine implements IMuiMachine, IVoidable {
 
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
@@ -66,14 +81,14 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
     }
 
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    public void formStructure(@NotNull String substructureName) {
+        super.formStructure(substructureName);
         updateSteamSubscription();
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         updateSteamSubscription();
     }
 
@@ -120,12 +135,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                 inputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                 for (IRecipeHandler<?> tank : inputTanks) {
                     drainWater = (List<FluidIngredient>) tank.handleRecipe(IO.IN, null, drainWater, false);
-                    if (drainWater == null || drainWater.isEmpty()) {
+                    if (drainWater.isEmpty()) {
                         break;
                     }
                 }
-                var drained = (drainWater == null || drainWater.isEmpty()) ? maxDrain :
-                        maxDrain - drainWater.get(0).getAmount();
+                var drained = drainWater.isEmpty() ? maxDrain : maxDrain - drainWater.get(0).getAmount();
 
                 steamGenerated = drained * ConfigHolder.INSTANCE.machines.largeBoilers.steamPerWater;
 
@@ -137,7 +151,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                     outputTanks.addAll(getCapabilitiesFlat(IO.BOTH, FluidRecipeCapability.CAP));
                     for (IRecipeHandler<?> tank : outputTanks) {
                         fillSteam = (List<FluidIngredient>) tank.handleRecipe(IO.OUT, null, fillSteam, false);
-                        if (fillSteam == null) break;
+                        if (fillSteam.isEmpty()) break;
                     }
                 }
 
@@ -175,6 +189,11 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
         return value;
     }
 
+    private void setThrottle(int newThrottle) {
+        this.throttle = newThrottle;
+        ((LargeBoilerRecipeLogic) (this.recipeLogic)).setCurrentThrottle(newThrottle);
+    }
+
     /**
      * Recipe Modifier for <b>Large Boiler Machines</b> - can be used as a valid {@link RecipeModifier}
      * <p>
@@ -190,40 +209,145 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
         return ModifierFunction.IDENTITY;
     }
 
-    public void addDisplayText(List<Component> textList) {
-        IDisplayUIMachine.super.addDisplayText(textList);
-        if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.large_boiler.temperature",
-                    currentTemperature + 274, maxTemperature + 274));
-            textList.add(Component.translatable("gtceu.multiblock.large_boiler.steam_output",
-                    steamGenerated / TICKS_PER_STEAM_GENERATION));
-
-            var throttleText = Component.translatable("gtceu.multiblock.large_boiler.throttle",
-                    ChatFormatting.AQUA.toString() + getThrottle() + "%")
-                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                            Component.translatable("gtceu.multiblock.large_boiler.throttle.tooltip"))));
-            textList.add(throttleText);
-
-            var buttonText = Component.translatable("gtceu.multiblock.large_boiler.throttle_modify");
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[-]"), "sub"));
-            buttonText.append(" ");
-            buttonText.append(ComponentPanelWidget.withButton(Component.literal("[+]"), "add"));
-            textList.add(buttonText);
-        }
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        mainWidget.child(getMainTextPanel(syncManager, 186, 146)
+                .margin(4, 2));
     }
 
-    public void handleDisplayClick(String componentData, ClickData clickData) {
-        if (!clickData.isRemote) {
-            int result = componentData.equals("add") ? 5 : -5;
-            this.throttle = Mth.clamp(throttle + result, 25, 100);
-            this.getRecipeLogic().modifyFuelBurnTime(this.throttle);
-        }
+    public Widget<?> getMainTextPanel(PanelSyncManager syncManager, int width, int height) {
+        var parentWidget = new ParentWidget<>();
+        var listWidget = new ListWidget<>();
+        listWidget
+                .width(width - 6)
+                .height(height - 6)
+                .childSeparator(Icon.EMPTY_2PX)
+                .crossAxisAlignment(Alignment.CrossAxis.START)
+                .collapseDisabledChildren()
+                .posRel(Alignment.CenterLeft)
+                .left(3)
+                .top(3);
+        parentWidget.size(width, height)
+                .background(GuiTextures.DISPLAY);
+
+        listWidget.children(getWidgetsForDisplay(syncManager));
+        parentWidget.child(listWidget.left(3).top(3));
+        return parentWidget;
     }
 
     @Override
-    public IGuiTexture getScreenTexture() {
-        return GuiTextures.DISPLAY_STEAM.get(maxTemperature > 800);
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = new ArrayList<>();
+        widgets.add(GTMultiblockTextUtil.addUnformedWarning(this, syncManager));
+        // Machine generic sync handlers
+        BooleanSyncValue isFormed = syncManager.getOrCreateSyncHandler("isFormed", BooleanSyncValue.class,
+                () -> new BooleanSyncValue(this::isFormed));
+
+        // Large Boiler specific sync handlers
+        // These will not be called anywhere else, so we can create them directly instead of using
+        // getOrCreateSyncHandler
+
+        IntSyncValue currentTemperature = new IntSyncValue(this::getCurrentTemperature);
+        syncManager.syncValue("currentTemperature", currentTemperature);
+
+        IntSyncValue maxTemperature = new IntSyncValue(this::getMaxTemperature);
+        syncManager.syncValue("maxTemperature", maxTemperature);
+
+        IntSyncValue steamGenerated = new IntSyncValue(() -> this.steamGenerated);
+        syncManager.syncValue("steamGenerated", steamGenerated);
+
+        IntSyncValue throttle = new IntSyncValue(() -> this.throttle, this::setThrottle).allowC2S();
+        syncManager.syncValue("throttle", throttle);
+
+        widgets.add(Text.dynamic(() -> {
+            if (!isFormed.getBoolValue()) return Component.empty();
+            return Component.translatable("gtceu.multiblock.large_boiler.temperature",
+                    currentTemperature.getIntValue() + 274, maxTemperature.getIntValue() + 274)
+                    .withStyle(ChatFormatting.WHITE);
+        })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(Text.dynamic(() -> {
+            if (!isFormed.getBoolValue()) return Component.empty();
+            return Component.translatable("gtceu.multiblock.large_boiler.steam_output",
+                    steamGenerated.getIntValue() / TICKS_PER_STEAM_GENERATION).withStyle(ChatFormatting.WHITE);
+        })
+                .asWidget()
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(Text.of(Component.translatable("gtceu.multiblock.large_boiler.throttle_modify")
+                .withStyle(ChatFormatting.WHITE))
+                .asWidget().setEnabledIf((w) -> isFormed.getBoolValue()));
+        widgets.add(createIntInputWithButtons(throttle)
+                .setEnabledIf((w) -> isFormed.getBoolValue()));
+        return widgets;
+    }
+
+    public static ParentWidget<?> createIntInputWithButtons(IntSyncValue syncValue) {
+        StringSyncValue formattedValue = new StringSyncValue(syncValue::getStringValue,
+                syncValue::setStringValue);
+
+        var textField = new TextFieldWidget() {
+
+            @Override
+            public boolean onMouseScrolled(double delta) {
+                int inc = (int) delta * (MouseData.create(-1).shift() ? 5 : 1);
+                int val = Mth.clamp(syncValue.getIntValue() + inc, 25, 100);
+                syncValue.setIntValue(val, true, true);
+                return true;
+            }
+        }
+                .left(18).right(18)
+                .setTextAlignment(Alignment.Center)
+                .setTextColor(Color.WHITE.darker(1))
+                .setNumbers(25, 100)
+                .value(formattedValue);
+
+        return Flow.row()
+                .coverChildrenHeight()
+                .marginBottom(2)
+                .widthRel(1.0f)
+                .child(new ButtonWidget<>()
+                        .left(0).width(18)
+                        .onMousePressed((context, button) -> {
+                            int val = syncValue.getIntValue() - getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, 25, 100);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(false))))
+                .child(textField)
+                .child(new ButtonWidget<>()
+                        .right(0).width(18)
+                        .onMousePressed((context, button) -> {
+                            int val = syncValue.getIntValue() + getIncrementValue(MouseData.create(button));
+                            val = Mth.clamp(val, 25, 100);
+                            syncValue.setIntValue(val, true, true);
+                            return true;
+                        })
+                        .onUpdateListener(w -> w.overlay(createAdjustOverlay(true))));
+    }
+
+    private static Text createAdjustOverlay(boolean increment) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(increment ? '+' : '-');
+        builder.append(getIncrementValue(MouseData.create(-1)));
+
+        float scale = 1f;
+        if (builder.length() == 3) {
+            scale = 0.8f;
+        } else if (builder.length() == 4) {
+            scale = 0.6f;
+        } else if (builder.length() > 4) {
+            scale = 0.5f;
+        }
+        return Text.str(builder.toString())
+                .color(Color.WHITE.main)
+                .scale(scale);
+    }
+
+    private static int getIncrementValue(MouseData data) {
+        return data.shift() ? 5 : 1;
     }
 
     public static class LargeBoilerRecipeLogic extends RecipeLogic {
@@ -248,8 +372,9 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
             return List.of(LargeBoilerMachine.class);
         }
 
-        public void setCurrentThrottle(int currentThrottle) {
-            this.currentThrottle = currentThrottle;
+        public void setCurrentThrottle(int newThrottle) {
+            this.modifyFuelBurnTime(newThrottle);
+            this.currentThrottle = newThrottle;
             syncDataHolder.markClientSyncFieldDirty("currentThrottle");
         }
 
@@ -258,7 +383,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
             super.setupRecipe(recipe);
             if (lastRecipe != null) {
                 setCurrentThrottle(getMachine().getThrottle());
-                duration = (int) Math.round(lastRecipe.duration / (currentThrottle / 100.0));
             }
         }
 
@@ -268,7 +392,6 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IDi
                 duration = (int) Math.round(lastRecipe.duration / (newThrottle / 100.0));
                 progress = (int) Math.round(newThrottleMultiplier * progress);
             }
-            setCurrentThrottle(newThrottle);
         }
     }
 }

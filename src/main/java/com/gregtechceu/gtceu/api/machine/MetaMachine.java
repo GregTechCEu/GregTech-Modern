@@ -13,8 +13,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighlight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -29,36 +27,34 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRedstoneSignalTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
 import com.gregtechceu.gtceu.api.misc.*;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.api.sync_system.ManagedSyncBlockEntity;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncBlockEntity;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.item.behavior.MachineConfigCopyBehaviour;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.common.machine.owner.PlayerOwner;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.data.TagCompatibilityFixer;
 
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
@@ -91,9 +87,11 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.Capabilities;
+import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.*;
 
 import java.util.*;
@@ -104,7 +102,9 @@ import java.util.function.Predicate;
  * The base BlockEntity for all GT machines.
  */
 public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBlockEntity, IToolGridHighlight,
-                         IFancyTooltip, IPaintable, IMachineFeature, ICopyable {
+                         IPaintable, IMachineFeature, ICopyable {
+
+    private static final int MIN_OFFSET_BOUND = 20;
 
     @Getter
     protected final SyncDataHolder syncDataHolder = new SyncDataHolder(this);
@@ -131,8 +131,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @SyncToClient
     @RerenderOnChanged
     private MachineRenderState renderState;
+
     @Getter(value = AccessLevel.PROTECTED)
-    private final long offset = GTValues.RNG.nextInt(20);
+    @Setter(value = AccessLevel.PROTECTED)
+    private long offset = GTValues.RNG.nextInt(MIN_OFFSET_BOUND);
 
     @Getter
     @SaveField
@@ -141,6 +143,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
+
+    // If this machine data needs to be migrated from 7.x to 8.x
+    private boolean isOldMachineData = false;
 
     public MetaMachine(BlockEntityCreationInfo info) {
         super(info);
@@ -157,7 +162,9 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     @Override
     public void load(CompoundTag tag) {
+        isOldMachineData = !tag.contains("traitHolder");
         TagCompatibilityFixer.fixMachineAutoOutputTag(tag);
+
         super.load(tag);
     }
 
@@ -170,6 +177,21 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @MustBeInvokedByOverriders
     public void onLoad() {
         getAllTraits().forEach(MachineTrait::onMachineLoad);
+
+        if (isOldMachineData) {
+            Direction upwardsGlobal = TagCompatibilityFixer.fixUpwardsFacing(this.getFrontFacing(),
+                    this.getUpwardsFacing());
+            if (upwardsGlobal != null && getBlockState().hasProperty(GTBlockStateProperties.UPWARDS_FACING)) {
+                // force the global upwards direction
+                var blockState = getBlockState();
+                boolean changeGlobal = blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsGlobal;
+                if (blockState.getBlock() instanceof MetaMachineBlock && changeGlobal) {
+                    getLevel().setBlock(getBlockPos(),
+                            blockState.setValue(GTBlockStateProperties.UPWARDS_FACING, upwardsGlobal),
+                            Block.UPDATE_IMMEDIATE);
+                }
+            }
+        }
 
         // update the painted model property if the machine is painted
         MachineRenderState renderState = getRenderState();
@@ -219,7 +241,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called to modify the drops returned when this block is destroyed
-     * 
+     *
      * @param drops A modifiable list of drops.
      */
     public void modifyDrops(List<ItemStack> drops) {}
@@ -235,10 +257,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @Nullable
     public TickableSubscription subscribeServerTick(Runnable runnable) {
         if (!isRemote()) {
-            var subscription = new TickableSubscription(runnable);
-            waitingToAdd.add(subscription);
-            return subscription;
-        } else if (getLevel() instanceof DummyWorld) {
             var subscription = new TickableSubscription(runnable);
             waitingToAdd.add(subscription);
             return subscription;
@@ -258,21 +276,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         executeTick();
     }
 
-    public boolean isFirstDummyWorldTick = true;
-
     /**
      * Called every tick on the client side.
      */
     @OnlyIn(Dist.CLIENT)
-    public void clientTick() {
-        if (getLevel() instanceof DummyWorld) {
-            if (isFirstDummyWorldTick) {
-                isFirstDummyWorldTick = false;
-                onLoad();
-            }
-            executeTick();
-        }
-    }
+    public void clientTick() {}
 
     private void executeTick() {
         if (!waitingToAdd.isEmpty()) {
@@ -305,7 +313,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Attaches a trait to this machine, with the default trait callback priority of 1.
-     * 
+     *
      * @param trait The trait to attach
      * @return The attached trait
      */
@@ -315,7 +323,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Attaches a trait to this machine.
-     * 
+     *
      * @param trait            The trait to attach
      * @param callbackPriority The trait's callback priority. Traits with a higher priority will have their events fired
      *                         first, which may prevent traits with a lower priority from handling some events.
@@ -357,7 +365,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets a trait registered by {@code registerPersistentTrait}
-     * 
+     *
      * @param traitName the unique identifier for the trait
      * @return the trait, or null if not present
      */
@@ -367,7 +375,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
-     * 
+     *
      * @param type The trait type to get
      * @return The trait, or null if no traits of the given type are present.
      */
@@ -377,7 +385,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the first trait (trait with highest priority) of a specified type
-     * 
+     *
      * @param type The trait type to get
      * @return An optional result containing the trait if present.
      */
@@ -387,7 +395,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Get all traits with the specified type.
-     * 
+     *
      * @return An unmodifiable list containing all traits of the specified type.
      */
     public <T extends MachineTrait> @Unmodifiable List<T> getTraits(MachineTraitType<T> type) {
@@ -400,7 +408,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a player clicks this machine with a GT tool
-     * 
+     *
      * @param context The context of this interaction.
      * @return A pair containing the type of the tool (if the interaction was successful), and the result of the
      *         interaction.
@@ -473,8 +481,8 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var player = context.getPlayer();
         var gridSide = context.getGridSide();
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            setUpwardsFacing(player.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() :
-                    getUpwardsFacing().getClockWise());
+            Direction newUpwards = GTUtil.cross(getFrontFacing(), getUpwardsFacing());
+            setUpwardsFacing(player.isShiftKeyDown() ? newUpwards : newUpwards.getOpposite());
             return InteractionResult.sidedSuccess(isRemote());
         }
         if (player.isShiftKeyDown()) {
@@ -505,7 +513,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a machine is right clicked with an item.
-     * 
+     *
      * @param context The context which this interaction is being performed from.
      * @return The result of this interaction callback.
      */
@@ -530,14 +538,17 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Called when a machine is right clicked without an item, or if this machine was clicked with an item but no
      * item-specific interaction was performed.
-     * 
+     *
      * @param context The context which this interaction is being performed from.
      * @return The result of this interaction callback.
      */
     public InteractionResult onUse(ExtendedUseOnContext context) {
         if (context.getPlayer().isShiftKeyDown()) {
-            var cover = coverContainer.getCoverAtSide(context.getClickedFace());
-            if (cover != null) cover.onScrewdriverClick(context);
+            var cover = coverContainer.getCoverAtSide(context.getGridSide());
+            if (cover != null) {
+                var result = cover.onScrewdriverClick(context);
+                if (result != InteractionResult.PASS) return result;
+            }
         }
 
         for (var trait : getAllTraits()) {
@@ -623,6 +634,11 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     public void onPaintingColorChanged(int color) {}
 
+    public void setOffsetBound(int offsetBound) {
+        var bound = Math.max(offsetBound, MIN_OFFSET_BOUND);
+        offset = GTValues.RNG.nextInt(bound);
+    }
+
     @Override
     public boolean shouldRenderGrid(Player player, BlockPos pos, BlockState state, ItemStack held,
                                     Set<GTToolType> toolTypes) {
@@ -639,21 +655,21 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     }
 
     @Override
-    public @Nullable ResourceTexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                              Direction side) {
+    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                        Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (player.isShiftKeyDown()) {
                 if (isFacingValid(side) || (allowExtendedFacing() && hasFrontFacing() && side == getFrontFacing())) {
-                    return GuiTextures.TOOL_FRONT_FACING_ROTATION;
+                    return GTGuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (this instanceof IControllable controllable) {
-                return controllable.isWorkingEnabled() ? GuiTextures.TOOL_START : GuiTextures.TOOL_PAUSE;
+                return controllable.isWorkingEnabled() ? GTGuiTextures.TOOL_START : GTGuiTextures.TOOL_PAUSE;
             }
         } else if (toolTypes.contains(GTToolType.HARD_HAMMER)) {
             if (this instanceof IMufflableMachine mufflableMachine) {
-                return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
+                return mufflableMachine.isMuffled() ? GTGuiTextures.TOOL_SOUND : GTGuiTextures.TOOL_MUTE;
             }
         }
 
@@ -669,7 +685,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Adds extra information to the F3 debug overlay when looking at this machine.
-     * 
+     *
      * @param lines A string consumer which lines are added to.
      */
     public void addDebugOverlayText(Consumer<String> lines) {
@@ -679,13 +695,13 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         // add render state info
         MachineRenderState renderState = this.getRenderState();
         for (var property : renderState.getValues().entrySet()) {
-            lines.accept(ModelUtils.getPropertyValueString(property));
+            lines.accept(GTStringUtils.getPropertyValueString(property));
         }
     }
 
     /**
      * The {@link MachineDefinition} of this machine.
-     * 
+     *
      * @return The {@link MachineDefinition}
      */
     public MachineDefinition getDefinition() {
@@ -707,7 +723,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the direction which this machine is facing.
-     * 
+     *
      * @return The direction the machine is facing, or north if this machine does not have a front face.
      */
     public Direction getFrontFacing() {
@@ -717,7 +733,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine has a front face.
-     * 
+     *
      * @return If this machine has a front face.
      */
     public final boolean hasFrontFacing() {
@@ -726,7 +742,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine can be rotated to face a specific direction
-     * 
+     *
      * @param facing The direction to test
      * @return If it is possible to rotate this machine to face the given direction.
      */
@@ -744,7 +760,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns the {@link RotationState} properties which this machine type supports.
-     * 
+     *
      * @return The {@link RotationState}
      */
     public RotationState getRotationState() {
@@ -753,14 +769,14 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Rotates this machine to face a specific direction, if that direction is a valid facing direction.
-     * 
+     *
      * @param facing The new facing direction.
      */
     public void setFrontFacing(Direction facing) {
         var oldFacing = getFrontFacing();
         if (oldFacing == facing) return;
 
-        if (allowExtendedFacing()) {
+        if (getUpwardsFacing().getAxis() == facing.getAxis()) {
             var newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
             setUpwardsFacing(newUpwardsFacing);
         }
@@ -777,27 +793,24 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the direction which is this machine's upwards face.
-     * 
+     *
      * @return The upwards facing direction, or north if this machine does not allow extended facing.
      */
     public Direction getUpwardsFacing() {
         return this.allowExtendedFacing() ? this.getBlockState().getValue(GTBlockStateProperties.UPWARDS_FACING) :
-                Direction.NORTH;
+                Direction.UP;
     }
 
     /**
      * Changes this machine's upwards facing direction, if this machine supports extended facing directions.
-     * 
+     *
      * @param upwardsFacing The new upwards facing direction.
      */
     public void setUpwardsFacing(Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) {
             return;
         }
-        if (upwardsFacing.getAxis() == Direction.Axis.Y) {
-            GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
-            return;
-        }
+
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock &&
                 blockState.getValue(GTBlockStateProperties.UPWARDS_FACING) != upwardsFacing) {
@@ -811,7 +824,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Returns whether this machine supports extended facing directions.
-     * 
+     *
      * @return If extended facing directions are supported.
      */
     public boolean allowExtendedFacing() {
@@ -820,7 +833,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when this machine is rotated
-     * 
+     *
      * @param oldFacing The previous facing direction
      * @param newFacing The new facing direction
      */
@@ -828,7 +841,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called by the block colour handler to get tint colour for a specific layer index
-     * 
+     *
      * @param index colour layer index
      * @return Integer colour, or -1 to not apply a colour tint.
      */
@@ -851,7 +864,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Called when a neighboring block is updated.
-     * 
+     *
      * @param neighborBlock The neighbor block type.
      * @param neighborPos   The neighbor position.
      * @param isMoving      If the neighbor block is moving (e.g. moved by a piston)
@@ -883,7 +896,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     /**
      * Gets the current tick offset, which can be used to run code after a certain number of ticks.
      * For example, {@code getOffsetTimer() % 20 == 0} will be true every 20 ticks (1 second)
-     * 
+     *
      * @return The current tick offset.
      */
     public final long getOffsetTimer() {
@@ -893,11 +906,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         var server = getLevel().getServer();
         if (server == null) return getOffset();
         return server.getTickCount() + getOffset();
-    }
-
-    @Override
-    public boolean isRemote() {
-        return IGregtechBlockEntity.super.isRemote();
     }
 
     ////////////////////////////////
@@ -991,35 +999,6 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         return MachineOwner.getPlayerOwner(ownerUUID);
     }
 
-    //////////////////////////////////////
-    // ******** GUI *********//
-    //////////////////////////////////////
-    @Override
-    public IGuiTexture getFancyTooltipIcon() {
-        return GuiTextures.INFO_ICON;
-    }
-
-    @Override
-    public final List<Component> getFancyTooltip() {
-        var tooltips = new ArrayList<Component>();
-        onAddFancyInformationTooltip(tooltips);
-        return tooltips;
-    }
-
-    @Override
-    public boolean showFancyTooltip() {
-        return !getFancyTooltip().isEmpty();
-    }
-
-    public void onAddFancyInformationTooltip(List<Component> tooltips) {
-        getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
-        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
-                getDefinition().getId().getPath());
-        if (Language.getInstance().has(mainKey)) {
-            tooltips.add(0, Component.translatable(mainKey));
-        }
-    }
-
     @Override
     public int getDefaultPaintingColor() {
         return getDefinition().getDefaultPaintingColor();
@@ -1029,8 +1008,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
     @OnlyIn(Dist.CLIENT)
     @Override
     public AABB getRenderBoundingBox() {
-        BlockRenderDispatcher blockRenderDispatcher = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = blockRenderDispatcher.getBlockModel(this.getBlockState());
+        BakedModel model = RenderUtil.getModelForState(this.getBlockState());
 
         if (model instanceof IBlockEntityRendererBakedModel<?> modelWithBER) {
             if (modelWithBER.getBlockEntityType() == this.getType()) {
@@ -1047,7 +1025,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the item filter for a specific side of this machine.
-     * 
+     *
      * @param side Side
      * @param io   The IO mode this filter should be applicable to.
      * @return A {@code Predicate<ItemStack>} representing this filter
@@ -1072,7 +1050,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the fluid filter for a specific side of this machine.
-     * 
+     *
      * @param side Side
      * @param io   The IO mode this filter should be applicable to.
      * @return A {@code Predicate<FluidStack>} representing this filter
@@ -1097,7 +1075,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the item handler capability for a specific side of this machine
-     * 
+     *
      * @param side               The side
      * @param useCoverCapability Whether to return an item handler provided by an attached cover, if present.
      * @return The {@link IItemHandlerModifiable} capability, or null.
@@ -1129,7 +1107,7 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
 
     /**
      * Gets the fluid handler capability for a specific side of this machine
-     * 
+     *
      * @param side               The side
      * @param useCoverCapability Whether to return a fluid handler provided by an attached cover, if present.
      * @return The {@link IFluidHandlerModifiable} capability, or null.
@@ -1307,14 +1285,91 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
         }
     }
 
+    // NBT keys for machine config values
+    private static final String COVER = "cover";
+    private static final String FACING_DIR = "front_facing";
+
+    private static final String ITEM_OUTPUT_SIDE = "output_direction_item";
+    private static final String ITEM_AUTO_OUTPUT = "item_auto_output";
+    private static final String ALLOW_ITEM_IN_FROM_OUT = "allow_input_from_output_item";
+
+    private static final String FLUID_OUTPUT_SIDE = "output_direction_fluid";
+    private static final String FLUID_AUTO_OUTPUT = "fluid_auto_output";
+    private static final String ALLOW_FLUID_IN_FROM_OUT = "allow_input_from_output_fluid";
+
+    private static final String MUFFLED = "muffled";
+    private static final String CIRCUIT = "circuit_config";
+
     @Override
-    public CompoundTag copyConfig(CompoundTag tag) {
-        return ICopyable.super.copyConfig(tag);
+    public void copyConfig(CompoundTag tag) {
+        tag.putString(FACING_DIR, MachineConfigCopyBehaviour.directionToString(getFrontFacing()));
+
+        var outputTrait = getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null && outputTrait.supportsAutoOutputItems() &&
+                outputTrait.getItemOutputDirection() != null) {
+            tag.putString(ITEM_OUTPUT_SIDE,
+                    MachineConfigCopyBehaviour.directionToString(outputTrait.getItemOutputDirection()));
+            tag.putBoolean(ITEM_AUTO_OUTPUT, outputTrait.isAutoOutputItems());
+            tag.putBoolean(ALLOW_ITEM_IN_FROM_OUT, outputTrait.allowsItemInputFromOutputSide());
+        }
+
+        if (outputTrait != null && outputTrait.supportsAutoOutputFluids() &&
+                outputTrait.getFluidOutputDirection() != null) {
+            tag.putString(FLUID_OUTPUT_SIDE,
+                    MachineConfigCopyBehaviour.directionToString(outputTrait.getFluidOutputDirection()));
+            tag.putBoolean(FLUID_AUTO_OUTPUT, outputTrait.isAutoOutputFluids());
+            tag.putBoolean(ALLOW_FLUID_IN_FROM_OUT, outputTrait.allowsFluidInputFromOutputSide());
+        }
+
+        if (this instanceof IMufflableMachine mufflableMachine) {
+            tag.putBoolean(MUFFLED, mufflableMachine.isMuffled());
+        }
+
+        if (this instanceof IHasCircuitSlot circuitMachine) {
+            var circuit = IntCircuitBehaviour
+                    .getCircuitConfiguration(circuitMachine.getCircuitInventory().getStackInSlot(0));
+            if (circuitMachine.isCircuitSlotEnabled() && circuit != 0) {
+                tag.putInt(CIRCUIT, circuit);
+            }
+        }
+
+        var coverTag = new CompoundTag();
+        getCoverContainer().copyConfig(coverTag);
+        tag.put(COVER, coverTag);
     }
 
     @Override
     public void pasteConfig(ServerPlayer player, CompoundTag tag) {
-        ICopyable.super.pasteConfig(player, tag);
+        var outputTrait = getTrait(AutoOutputTrait.TYPE);
+        if (outputTrait != null) {
+            if (tag.contains(ITEM_OUTPUT_SIDE))
+                outputTrait.setItemOutputDirection(
+                        MachineConfigCopyBehaviour.stringToDirection(tag.getString(ITEM_OUTPUT_SIDE)));
+            if (tag.contains(ITEM_AUTO_OUTPUT)) outputTrait.setAllowAutoOutputItems(tag.getBoolean(ITEM_AUTO_OUTPUT));
+            if (tag.contains(ALLOW_ITEM_IN_FROM_OUT))
+                outputTrait.setAllowItemInputFromOutputSide(tag.getBoolean(ALLOW_ITEM_IN_FROM_OUT));
+            if (tag.contains(FLUID_OUTPUT_SIDE))
+                outputTrait.setFluidOutputDirection(
+                        MachineConfigCopyBehaviour.stringToDirection(tag.getString(FLUID_OUTPUT_SIDE)));
+            if (tag.contains(FLUID_AUTO_OUTPUT))
+                outputTrait.setAllowAutoOutputFluids(tag.getBoolean(FLUID_AUTO_OUTPUT));
+            if (tag.contains(ALLOW_FLUID_IN_FROM_OUT))
+                outputTrait.setAllowFluidInputFromOutputSide(tag.getBoolean(ALLOW_FLUID_IN_FROM_OUT));
+        }
+
+        Direction facingDir = Direction.byName(tag.getString(FACING_DIR));
+        if (facingDir != null) setFrontFacing(facingDir);
+
+        if (this instanceof IMufflableMachine mufflableMachine) {
+            if (tag.contains(MUFFLED)) mufflableMachine.setMuffled(tag.getBoolean(MUFFLED));
+        }
+
+        if (this instanceof IHasCircuitSlot circuitMachine) {
+            if (tag.contains(CIRCUIT))
+                circuitMachine.getCircuitInventory().setStackInSlot(0, IntCircuitBehaviour.stack(tag.getInt(CIRCUIT)));
+        }
+
+        getCoverContainer().pasteConfig(player, tag.getCompound(COVER));
     }
 
     @Override

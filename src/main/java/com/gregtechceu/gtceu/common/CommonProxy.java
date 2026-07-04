@@ -16,9 +16,9 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.mui.factory.MachineUIFactory;
+import com.gregtechceu.gtceu.api.multiblock.error.GTPatternErrors;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.*;
@@ -29,6 +29,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
@@ -44,7 +45,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
-import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
 import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
 import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
@@ -53,8 +53,6 @@ import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
-
-import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
@@ -76,6 +74,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegisterEvent;
 
+import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -92,6 +91,13 @@ public class CommonProxy {
         eventBus.register(this);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+
+        // GTGuiTheme.registerThemes();
+
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
             ConfigHolder.INSTANCE.compat.energy.enableFEConverters = true;
@@ -103,14 +109,13 @@ public class CommonProxy {
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
         GTParticleTypes.init(eventBus);
+
+        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
     }
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTNetwork.init();
-        UIFactory.register(MachineUIFactory.INSTANCE);
-        UIFactory.register(CoverUIFactory.INSTANCE);
-        UIFactory.register(GTUIEditorFactory.INSTANCE);
 
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
@@ -126,22 +131,25 @@ public class CommonProxy {
         TagPrefix.init();
         GTSoundEntries.init();
         GTDamageTypes.init();
-        GTPlaceholders.initPlaceholders();
+        GTPlaceholders.init();
+
         if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
             GTCreateIntegration.init();
-        }
-        if (GTCEu.Mods.isAE2Loaded()) {
-            GTAEPlaceholders.init();
         }
 
         GTCovers.init();
         GTCreativeModeTabs.init();
+
+        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        GTMenuTypes.init(modBus);
+
         GTBlocks.init();
         GTFluids.init();
         GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTRecipeCategories.init();
+        GTPatternErrors.init();
         GTMachineUtils.init();
         GTMachines.init();
 
@@ -154,17 +162,16 @@ public class CommonProxy {
 
         GregTechDatagen.initPost();
         // Register all material manager registries, for materials with mod ids.
-        GTRegistries.MATERIALS.forEach(material -> {
-            var location = material.getResourceLocation();
+        GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
-            var registrate = GTRegistrate.createIgnoringListenerErrors(location.getNamespace());
+            var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
             AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
             if (accessor.getDoDatagen().get()) {
                 // noinspection UnstableApiUsage
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
                         .get(ProviderType.LANG);
                 NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
-                        .generate((RegistrateLangProvider) provider, location.getNamespace());
+                        .generate((RegistrateLangProvider) provider, namespace);
                 if (providers == null) {
                     accessor.getDatagens().put(ProviderType.LANG, generator);
                 } else {
@@ -173,7 +180,7 @@ public class CommonProxy {
             }
         });
 
-        WorldGenLayers.registerAll();
+        WorldGenLayers.init();
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 
@@ -188,6 +195,9 @@ public class CommonProxy {
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");
         FusionReactorMachine.registerFusionTier(GTValues.UV, " (MKIII)");
     }
+
+    @SubscribeEvent
+    public void preInit(FMLConstructModEvent event) {}
 
     private static void initMaterials() {
         // First, register CEu Materials

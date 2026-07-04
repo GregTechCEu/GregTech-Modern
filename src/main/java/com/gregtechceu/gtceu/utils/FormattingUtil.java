@@ -7,9 +7,11 @@ import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4fc;
+import org.joml.Options;
+import org.joml.Runtime;
 
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -79,7 +81,7 @@ public class FormattingUtil {
      *
      * @param string Any string with ASCII characters.
      * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
-     * 
+     *
      *         <pre>
      *         <br>{@code "maragingSteel300" -> "maraging_steel_300"}
      *         <br>{@code "gtceu:maraging_steel_300" -> "gtceu:maraging_steel_300"}
@@ -102,15 +104,6 @@ public class FormattingUtil {
             if (nextIsUpper || Character.isDigit(curChar) ^ Character.isDigit(nextChar)) result.append('_');
         }
         return result.toString();
-    }
-
-    /**
-     * @deprecated use {@link FormattingUtil#toLowerCaseUnderscore(String) toLowerCaseUnderscore} instead.
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    @Deprecated(since = "7.0.0")
-    public static String toLowerCaseUnder(String string) {
-        return toLowerCaseUnderscore(string);
     }
 
     /**
@@ -297,4 +290,46 @@ public class FormattingUtil {
             return formatNumbers(temperature - 273) + " °C";
         else return formatNumbers(temperature) + " K";
     }
+
+    /**
+     * Return a single-line string representation of {@code matrix} using JOML's number formatting.
+     *
+     * @return the string representation
+     */
+    public static String matrixToSingleLineString(Matrix4fc matrix) {
+        String str = matrixToSingleLineString(matrix, Options.NUMBER_FORMAT);
+        StringBuilder res = new StringBuilder();
+        int eIndex = Integer.MIN_VALUE;
+
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c == 'E') {
+                eIndex = i;
+            } else if (c == ' ' && eIndex == i - 1) {
+                // workaround Java 1.4 DecimalFormat bug
+                res.append('+');
+                continue;
+            } else if (Character.isDigit(c) && eIndex == i - 1) {
+                res.append('+');
+            }
+            res.append(c);
+        }
+        return res.toString();
+    }
+
+    /**
+     * Return a single-line string representation of this matrix by formatting the matrix
+     * elements with the given {@link NumberFormat}.
+     *
+     * @param formatter the {@link NumberFormat} used to format the matrix values with
+     * @return the string representation
+     */
+    // spotless:off
+    public static String matrixToSingleLineString(Matrix4fc matrix, NumberFormat formatter) {
+        return "{ [" + Runtime.format(matrix.m00(), formatter) + " " + Runtime.format(matrix.m10(), formatter) + " " + Runtime.format(matrix.m20(), formatter) + " " + Runtime.format(matrix.m30(), formatter) + "]. "
+                + "[" + Runtime.format(matrix.m01(), formatter) + " " + Runtime.format(matrix.m11(), formatter) + " " + Runtime.format(matrix.m21(), formatter) + " " + Runtime.format(matrix.m31(), formatter) + "], "
+                + "[" + Runtime.format(matrix.m02(), formatter) + " " + Runtime.format(matrix.m12(), formatter) + " " + Runtime.format(matrix.m22(), formatter) + " " + Runtime.format(matrix.m32(), formatter) + "]. "
+                + "[" + Runtime.format(matrix.m03(), formatter) + " " + Runtime.format(matrix.m13(), formatter) + " " + Runtime.format(matrix.m23(), formatter) + " " + Runtime.format(matrix.m33(), formatter) + "] }";
+    }
+    // spotless:on
 }

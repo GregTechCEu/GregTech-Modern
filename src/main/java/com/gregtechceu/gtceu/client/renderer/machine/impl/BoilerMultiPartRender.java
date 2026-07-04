@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.client.model.machine.IControllerModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRender;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderType;
-import com.gregtechceu.gtceu.client.util.ModelUtils;
+import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 
@@ -96,13 +96,13 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
                                 @NotNull ModelData modelData, @Nullable RenderType renderType) {
         if (this.fireboxIdleModel == null) {
-            this.fireboxIdleModel = ModelUtils.getModelForState(fireboxIdle);
+            this.fireboxIdleModel = RenderUtil.getModelForState(fireboxIdle);
         }
         if (this.fireboxActiveModel == null) {
-            this.fireboxActiveModel = ModelUtils.getModelForState(fireboxActive);
+            this.fireboxActiveModel = RenderUtil.getModelForState(fireboxActive);
         }
         if (this.casingModel == null) {
-            this.casingModel = ModelUtils.getModelForState(casing);
+            this.casingModel = RenderUtil.getModelForState(casing);
         }
 
         BlockPos partPos = part.self().getBlockPos();
@@ -111,7 +111,7 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
         Direction multiFront = controller.getFrontFacing();
         Direction multiUpward = controller.getUpwardsFacing();
         boolean flipped = controller.isFlipped();
-        Direction relativeDown = RelativeDirection.DOWN.getRelative(multiFront, multiUpward, flipped);
+        Direction relativeDown = RelativeDirection.DOWN.getRelativeFacing(multiFront, multiUpward, flipped);
 
         int belowControllerY = controllerPos.relative(relativeDown).get(relativeDown.getAxis());
         int partY = partPos.get(relativeDown.getAxis());

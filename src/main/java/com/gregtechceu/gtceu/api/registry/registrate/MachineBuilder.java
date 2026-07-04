@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.events.ModifyMachineEvent;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -51,6 +51,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
+import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -148,10 +149,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
     @Getter
     private boolean regressWhenWaiting = true;
     private boolean allowCoverOnFront = false;
-    private Supplier<BlockState> appearance;
-    @Getter // getter for KJS
+    @Getter
     @Nullable
-    private EditableMachineUI editableUI;
+    private PanelFactory ui = null;
+    @Getter
+    private String themeId = ThemeAPI.DEFAULT_ID;
+    private Supplier<BlockState> appearance;
     @Getter // getter for KJS
     @Nullable
     private String langValue = null;
@@ -300,8 +303,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
-    public TYPE editableUI(EditableMachineUI editableUI) {
-        this.editableUI = editableUI;
+    public TYPE ui(PanelFactory ui) {
+        this.ui = ui;
         return getThis();
     }
 
@@ -515,6 +518,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         return getThis();
     }
 
+    public TYPE themeId(String themeId) {
+        this.themeId = themeId;
+        return getThis();
+    }
+
+    public TYPE themeId(Function<Integer, String> themeId) {
+        this.themeId = themeId.apply(tier);
+        return getThis();
+    }
+
     public TYPE modelProperty(Property<?> property) {
         return modelProperty(property, null);
     }
@@ -692,6 +705,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
             blockEntityBuilder = blockEntityBuilder.renderer(() -> BlockEntityWithBERModelRenderer::new);
         }
         var blockEntity = blockEntityBuilder.register();
+        if (this.ui != null) {
+            definition.setUI(ui);
+        }
+        if (this.themeId != null) {
+            definition.setThemeId(themeId);
+        }
         definition.setRecipeTypes(recipeTypes);
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
@@ -718,9 +737,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, TYPE extends M
         }
         if (appearance == null) {
             appearance = block::getDefaultState;
-        }
-        if (editableUI != null) {
-            definition.setEditableUI(editableUI);
         }
         definition.setAppearance(appearance);
         definition.setAllowExtendedFacing(allowExtendedFacing);

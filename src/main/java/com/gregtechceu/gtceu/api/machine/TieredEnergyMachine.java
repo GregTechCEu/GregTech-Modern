@@ -2,16 +2,10 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.EnvironmentalExplosionTrait;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 
 import net.minecraft.util.Mth;
 
@@ -91,19 +85,5 @@ public class TieredEnergyMachine extends TieredMachine {
      */
     protected boolean isEnergyEmitter() {
         return false;
-    }
-
-    /**
-     * Create an energy bar widget.
-     */
-    protected static EditableUI<ProgressWidget, TieredEnergyMachine> createEnergyBar() {
-        return new EditableUI<>("energy_container", ProgressWidget.class, () -> {
-            var progressBar = new ProgressWidget(ProgressWidget.JEIProgress, 0, 0, 18, 60,
-                    new ProgressTexture(IGuiTexture.EMPTY, GuiTextures.ENERGY_BAR_BASE));
-            progressBar.setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP);
-            progressBar.setBackground(GuiTextures.ENERGY_BAR_BACKGROUND);
-            return progressBar;
-        }, (progressBar, machine) -> progressBar.setProgressSupplier(
-                () -> machine.energyContainer.getEnergyStored() * 1d / machine.energyContainer.getEnergyCapacity()));
     }
 }

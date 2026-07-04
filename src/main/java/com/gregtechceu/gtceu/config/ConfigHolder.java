@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.client.bloom.BloomType;
 
 import net.minecraft.commands.Commands;
 
+import brachy.modularui.screen.RichTooltip;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -28,6 +30,11 @@ public class ConfigHolder {
                 INSTANCE = INTERNAL_INSTANCE.getConfigInstance();
             }
         }
+    }
+
+    public static ConfigHolder getInstance() {
+        init();
+        return INSTANCE;
     }
 
     @Configurable
@@ -308,11 +315,11 @@ public class ConfigHolder {
             public String borderColor = "#00000000";
 
             @Configurable
-            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: \"BOTTOM_LEFT\"" })
+            @Configurable.Comment({ "Which part of the screen to anchor buttons to", "Default: BOTTOM_LEFT" })
             public Anchor buttonAnchor = Anchor.BOTTOM_LEFT;
 
             @Configurable
-            @Configurable.Comment({ "Which direction the buttons will go", "Default: \"VERTICAL\"" })
+            @Configurable.Comment({ "Which direction the buttons will go", "Default: VERTICAL" })
             public Direction direction = Direction.VERTICAL;
 
             @Configurable
@@ -846,31 +853,25 @@ public class ConfigHolder {
         @Configurable.Gui.ColorValue
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
-        @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                "#FFFFFF is no coloring (like GTCE) (default).",
-                "#D2DCFF is the classic blue from GT5." })
-        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
-        @Configurable.Gui.ColorValue
-        public String defaultUIColor = "#FFFFFF";
-        @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
                 "Disable if you have issues with rendering multiblocks.", "Default: true" })
         @Configurable.UpdateRestriction(UpdateRestrictions.MAIN_MENU)
         public boolean useVBO = true;
         @Configurable
-        @Configurable.Comment({ "Duration of the multiblock in-world preview (s)", "Default: 10" })
+        @Configurable.Comment({ "Duration of the multiblock in-world preview (in seconds)", "Default: 10" })
         @Configurable.Range(min = 1, max = 999)
         public int inWorldPreviewDuration = 10;
-        @Configurable
-        @Configurable.Comment({ "Duration of UI animations in ms", "Default: 300" })
-        @Configurable.Range(min = 1)
-        public int animationTime = 300;
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
         @Configurable
         public Renderers renderer = new Renderers();
         @Configurable
+        @Configurable.Comment("Config options for bloom and other post-processing effects")
+        public BloomOptions bloom = new BloomOptions();
+        @Configurable
         public TankItemFluidPreview tankItemFluidPreview = new TankItemFluidPreview();
+        @Configurable
+        public UIConfigs ui = new UIConfigs();
 
         public int getDefaultPaintingColor() {
             // OR with full alpha to differentiate from a machine that's painted white (map color 0xffffff)
@@ -892,6 +893,61 @@ public class ConfigHolder {
             @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
+        }
+
+        public static class BloomOptions {
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Algorithm",
+                    "Requires reloading all chunks ",
+                    "UNITY - Unity-like Bloom (rescale)",
+                    "UNREAL - Unreal-like Bloom (gaussian blur)",
+                    "DISABLED - No bloom",
+                    "Default: UNREAL" })
+            // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 4.x
+            public BloomType type = BloomType.UNREAL;
+
+            @Configurable
+            @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
+            public boolean emissiveTexturesHaveBloom = true;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not exceed this value. It can be used to limit the brightness of highlights (e.g., daytime)",
+                    "This value should be greater than minBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + min + (1 - BACKGROUND_BRIGHTNESS) * ({max} - min)))",
+                    "Default: 0.5" })
+            @Configurable.DecimalRange(min = 0)
+            public float maxBrightness = 0.5f;
+
+            @Configurable
+            @Configurable.Comment({
+                    "The brightness after bloom should not smaller than this value. It can be used to limit the brightness of dusky parts (e.g., night/caves)",
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * (base + {min} + (1 - BACKGROUND_BRIGHTNESS) * (max - {min})))",
+                    "Default: 0.2" })
+            @Configurable.DecimalRange(min = 0)
+            public float minBrightness = 0.2f;
+
+            @Configurable
+            @Configurable.Comment({ "The base brightness of the bloom.", "It is similar to strength",
+                    "This value should be lower than maxBrightness.",
+                    "OUTPUT = BACKGROUND + BLOOM * strength * ({base} + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
+                    "Default: 0.1" })
+            @Configurable.DecimalRange(min = 0)
+            public float baseBrightness = 0.1f;
+
+            @Configurable
+            @Configurable.Comment({ "Bloom Strength",
+                    "OUTPUT = BACKGROUND + BLOOM * {strength} * (base + min + (1 - BACKGROUND_BRIGHTNESS) * (max - min)))",
+                    "Default: 1.5" })
+            @Configurable.DecimalRange(min = 0)
+            public float strength = 1.5f;
+
+            @Configurable
+            @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
+            @Configurable.DecimalRange(min = 0)
+            public float step = 1.0f;
         }
 
         public static class Renderers {
@@ -924,11 +980,58 @@ public class ConfigHolder {
         public static class TankItemFluidPreview {
 
             @Configurable
-            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums" })
+            @Configurable.Comment({ "Set true to render the including fluid icons to GT Drums",
+                    "Default: false" })
             public boolean drum = false;
             @Configurable
-            @Configurable.Comment({ "Set true to render the including fluid icons to Super (Quantum) Tanks" })
+            @Configurable.Comment({ "Set true to render the including fluid icons to Super and Quantum Tanks",
+                    "Default: false" })
             public boolean quantumTank = false;
+        }
+
+        public static class UIConfigs {
+
+            @Configurable
+            @Configurable.Comment({
+                    "If progress bar should step in texture pixels or screen pixels. (Screen pixels are way smaller and therefore smoother)",
+                    "Default: true" })
+            public boolean smoothProgressBar = true;
+            @Configurable
+            @Configurable.Comment({ "Duration of UI animations in ms.",
+                    "Default: 100" })
+            @Configurable.Range(min = 1, max = 500)
+            public int animationTime = 100;
+            @Configurable
+            @Configurable.Comment({ "Default tooltip position around the widget or its panel.",
+                    "Default: VERTICAL" })
+            public RichTooltip.Pos tooltipPos = RichTooltip.Pos.NEXT_TO_MOUSE;
+
+            @Configurable
+            @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
+                    "#FFFFFF is no coloring (like GTCE) (default).",
+                    "#D2DCFF is the classic blue from GT5." })
+            @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+            @Configurable.Gui.ColorValue
+            public String defaultUIColor = "#FFFFFF";
+            @Configurable
+            @Configurable.Comment({
+                    "If true, pressing the ESC key in a text field will restore the last text instead of confirming current one.",
+                    "Default: fakse" })
+            public boolean escRestoresLastText = false;
+            @Configurable
+            @Configurable.Comment({
+                    "If true and not specified otherwise, screens will try to use the 'vanilla_dark' theme.",
+                    "Default: false" })
+            public boolean useDarkThemeByDefault = false;
+
+            @Configurable
+            @Configurable.Comment({ "If true, vanilla tooltips will be replaced with MUI's RichTooltip",
+                    "Default: false" })
+            public boolean replaceVanillaTooltips = false;
+
+            public int getDefaultUIColor() {
+                return Long.decode(ConfigHolder.INSTANCE.client.ui.defaultUIColor).intValue() | 0xFF000000;
+            }
         }
     }
 

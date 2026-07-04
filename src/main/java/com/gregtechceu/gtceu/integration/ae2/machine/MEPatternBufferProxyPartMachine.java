@@ -5,13 +5,13 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
+import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.ProxySlotRecipeHandler;
-
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -22,6 +22,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +35,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine implements IDataStickInteractable {
+public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
+                                             implements IMuiMachine, IDataStickInteractable {
 
     @Getter
     private final ProxySlotRecipeHandler proxySlotRecipeHandler;
@@ -88,9 +93,16 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine impleme
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        assert getBuffer() != null; // UI should never be able to be opened when buffer is null
-        return getBuffer().createUI(entityPlayer);
+    public MachineUIPanelBuilder getPanelBuilder(PosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        assert getBuffer() != null;
+        return getBuffer().getPanelBuilder(data, syncManager, settings);
+    }
+
+    @Override
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        assert getBuffer() != null;
+        getBuffer().buildMainUI(mainWidget, guiData, syncManager, settings);
     }
 
     @Override

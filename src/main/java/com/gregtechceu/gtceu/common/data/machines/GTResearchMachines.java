@@ -10,11 +10,9 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
@@ -26,19 +24,15 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -47,7 +41,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.IS_FORMED;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
+import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.CREATIVE_TOOLTIPS;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.*;
@@ -64,14 +59,14 @@ public class GTResearchMachines {
             .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
             .appearanceBlock(ADVANCED_COMPUTER_CASING)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip"))
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
-                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
-                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
-                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
-                    .aisle(" X ", "XAX", "---", "---", "---", "XAX", " X ")
-                    .aisle(" X ", "XAX", "-A-", "-H-", "-A-", "XAX", " X ")
-                    .aisle("   ", "XXX", "---", "---", "---", "XXX", "   ")
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    .slice("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
+                    .slice("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
+                    .slice("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
+                    .slice("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
+                    .slice(" X ", "XAX", "---", "---", "---", "XAX", " X ")
+                    .slice(" X ", "XAX", "-A-", "-H-", "-A-", "XAX", " X ")
+                    .slice("   ", "XXX", "---", "---", "---", "XXX", "   ")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('X', blocks(COMPUTER_CASING.get()))
                     .where(' ', any())
@@ -83,28 +78,6 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1))
                             .or(autoAbilities(true, false, false)))
                     .where('H', abilities(PartAbility.OBJECT_HOLDER))
-                    .build())
-            .shapeInfo(definition -> MultiblockShapeInfo.builder()
-                    .aisle("---", "XXX", "---", "---", "---", "XXX", "---")
-                    .aisle("-X-", "XAX", "-A-", "-H-", "-A-", "XAX", "-X-")
-                    .aisle("-X-", "XAX", "---", "---", "---", "XAX", "-X-")
-                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
-                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
-                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
-                    .aisle("XXX", "VVV", "POP", "PEP", "PMP", "VVV", "XXX")
-                    .where('S', GTResearchMachines.RESEARCH_STATION, Direction.NORTH)
-                    .where('X', COMPUTER_CASING.get())
-                    .where('-', Blocks.AIR)
-                    .where('V', COMPUTER_HEAT_VENT.get())
-                    .where('A', ADVANCED_COMPUTER_CASING.get())
-                    .where('P', COMPUTER_CASING.get())
-                    .where('O', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.SOUTH)
-                    .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.SOUTH)
-                    .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance ?
-                            GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(
-                                    GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.SOUTH) :
-                            COMPUTER_CASING.getDefaultState())
-                    .where('H', GTResearchMachines.OBJECT_HOLDER, Direction.SOUTH)
                     .build())
             .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/advanced_computer_casing"),
                     GTCEu.id("block/multiblock/research_station"))
@@ -123,7 +96,7 @@ public class GTResearchMachines {
                     }))
             .register();
 
-    public static final MachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
+    public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
             .langValue("Data Bank")
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(COMPUTER_CASING)
@@ -135,10 +108,10 @@ public class GTResearchMachines {
                             FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH)),
                     Component.translatable("gtceu.machine.data_bank.tooltip.4",
                             FormattingUtil.formatNumbers(DataBankMachine.EUT_PER_HATCH_CHAINED)))
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XDDDX", "XDDDX", "XDDDX")
-                    .aisle("XDDDX", "XAAAX", "XDDDX")
-                    .aisle("XCCCX", "XCSCX", "XCCCX")
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    .slice("XDDDX", "XDDDX", "XDDDX")
+                    .slice("XDDDX", "XAAAX", "XDDDX")
+                    .slice("XCCCX", "XCSCX", "XCCCX")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('X', blocks(COMPUTER_HEAT_VENT.get()))
                     .where('D', blocks(COMPUTER_CASING.get()).setMinGlobalLimited(3)
@@ -154,7 +127,7 @@ public class GTResearchMachines {
                     GTCEu.id("block/multiblock/data_bank"))
             .register();
 
-    public static final MachineDefinition NETWORK_SWITCH = REGISTRATE
+    public static final MultiblockMachineDefinition NETWORK_SWITCH = REGISTRATE
             .multiblock("network_switch", NetworkSwitchMachine::new)
             .langValue("Network Switch")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -165,10 +138,10 @@ public class GTResearchMachines {
                     Component.translatable("gtceu.machine.network_switch.tooltip.2"),
                     Component.translatable("gtceu.machine.network_switch.tooltip.3",
                             FormattingUtil.formatNumbers(NetworkSwitchMachine.EUT_PER_HATCH)))
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXX", "XXX", "XXX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XXX", "XSX", "XXX")
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    .slice("XXX", "XXX", "XXX")
+                    .slice("XXX", "XAX", "XXX")
+                    .slice("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('A', blocks(ADVANCED_COMPUTER_CASING.get()))
                     .where('X', blocks(COMPUTER_CASING.get()).setMinGlobalLimited(7)
@@ -177,23 +150,11 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setMinGlobalLimited(1, 2))
                             .or(autoAbilities(true, false, false)))
                     .build())
-            .shapeInfo(definition -> MultiblockShapeInfo.builder()
-                    .aisle("XMX", "XSX", "XRX")
-                    .aisle("XXX", "XAX", "XXX")
-                    .aisle("XEX", "XXX", "TTT")
-                    .where('S', GTResearchMachines.NETWORK_SWITCH, Direction.NORTH)
-                    .where('X', COMPUTER_CASING)
-                    .where('A', ADVANCED_COMPUTER_CASING)
-                    .where('R', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.NORTH)
-                    .where('T', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.SOUTH)
-                    .where('M', GTMachines.MAINTENANCE_HATCH, Direction.NORTH)
-                    .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.NORTH)
-                    .build())
             .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/network_switch"))
             .register();
 
-    public static final MachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
+    public static final MultiblockMachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE
             .multiblock("high_performance_computation_array", HPCAMachine::new)
             .langValue("High Performance Computation Array (HPCA)")
             .rotationState(RotationState.NON_Y_AXIS)
@@ -202,12 +163,12 @@ public class GTResearchMachines {
             .appearanceBlock(COMPUTER_CASING)
             .recipeType(GTRecipeTypes.DUMMY_RECIPES)
             .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip"))
-            .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("AA", "CC", "CC", "CC", "AA")
-                    .aisle("VA", "XV", "XV", "XV", "VA")
-                    .aisle("VA", "XV", "XV", "XV", "VA")
-                    .aisle("VA", "XV", "XV", "XV", "VA")
-                    .aisle("SA", "CC", "CC", "CC", "AA")
+            .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
+                    .slice("AA", "CC", "CC", "CC", "AA")
+                    .slice("VA", "XV", "XV", "XV", "VA")
+                    .slice("VA", "XV", "XV", "XV", "VA")
+                    .slice("VA", "XV", "XV", "XV", "VA")
+                    .slice("SA", "CC", "CC", "CC", "AA")
                     .where('S', controller(blocks(definition.getBlock())))
                     .where('A', blocks(ADVANCED_COMPUTER_CASING.get()))
                     .where('V', blocks(COMPUTER_HEAT_VENT.get()))
@@ -218,78 +179,6 @@ public class GTResearchMachines {
                             .or(abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1))
                             .or(autoAbilities(true, false, false)))
                     .build())
-            .shapeInfos(definition -> {
-                List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                MultiblockShapeInfo.ShapeInfoBuilder builder = MultiblockShapeInfo.builder()
-                        .aisle("SA", "CC", "CC", "OC", "AA")
-                        .aisle("VA", "8V", "5V", "2V", "VA")
-                        .aisle("VA", "7V", "4V", "1V", "VA")
-                        .aisle("VA", "6V", "3V", "0V", "VA")
-                        .aisle("AA", "EC", "MC", "HC", "AA")
-                        .where('S', GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.NORTH)
-                        .where('A', ADVANCED_COMPUTER_CASING)
-                        .where('V', COMPUTER_HEAT_VENT)
-                        .where('C', COMPUTER_CASING)
-                        .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.SOUTH)
-                        .where('H', GTMachines.FLUID_IMPORT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('O', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.NORTH)
-                        .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance ?
-                                GTMachines.MAINTENANCE_HATCH.defaultBlockState().setValue(
-                                        GTMachines.MAINTENANCE_HATCH.get().getRotationState().property,
-                                        Direction.SOUTH) :
-                                COMPUTER_CASING.getDefaultState());
-
-                // a few example structures
-                shapeInfo.add(builder.shallowCopy()
-                        .where('0', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .where('1', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('2', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .where('3', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .where('4', GTResearchMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('5', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .where('6', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .where('7', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('8', GTResearchMachines.HPCA_EMPTY_COMPONENT, Direction.WEST)
-                        .build());
-
-                shapeInfo.add(builder.shallowCopy()
-                        .where('0', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('1', GTResearchMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('2', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('3', GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                        .where('4', GTResearchMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('5', GTResearchMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                        .where('6', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('7', GTResearchMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('8', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .build());
-
-                shapeInfo.add(builder.shallowCopy()
-                        .where('0', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('1', GTResearchMachines.HPCA_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('2', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('3', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('4', GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('5', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('6', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('7', GTResearchMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                        .where('8', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .build());
-
-                shapeInfo.add(builder.shallowCopy()
-                        .where('0', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('1', GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('2', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('3', GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                        .where('4', GTResearchMachines.HPCA_BRIDGE_COMPONENT, Direction.WEST)
-                        .where('5', GTResearchMachines.HPCA_ACTIVE_COOLER_COMPONENT, Direction.WEST)
-                        .where('6', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .where('7', GTResearchMachines.HPCA_ADVANCED_COMPUTATION_COMPONENT, Direction.WEST)
-                        .where('8', GTResearchMachines.HPCA_HEAT_SINK_COMPONENT, Direction.WEST)
-                        .build());
-
-                return shapeInfo;
-            })
             .sidedWorkableCasingModel(GTCEu.id("block/casings/hpca/computer_casing"),
                     GTCEu.id("block/multiblock/hpca"))
             .register();

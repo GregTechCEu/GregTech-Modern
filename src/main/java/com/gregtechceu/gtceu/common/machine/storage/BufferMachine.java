@@ -2,31 +2,29 @@ package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.TankWidget;
 import com.gregtechceu.gtceu.api.machine.TieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.value.sync.SyncHandlers;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.SlotGroupWidget;
+import brachy.modularui.widgets.slot.FluidSlot;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.Getter;
 
 import java.util.List;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class BufferMachine extends TieredMachine implements IFancyUIMachine {
+public class BufferMachine extends TieredMachine implements IMuiMachine {
 
     public static final int TANK_SIZE = 64000;
 
@@ -65,30 +63,32 @@ public class BufferMachine extends TieredMachine implements IFancyUIMachine {
     // ********** GUI *********** //
     ////////////////////////////////
 
+    // TODO MUI: Needs EIO widget
     @Override
-    public Widget createUIWidget() {
-        int invTier = getTankSize(tier);
-        var group = new WidgetGroup(0, 0, 18 * (invTier + 1) + 16, 18 * invTier + 16);
-        var container = new WidgetGroup(4, 4, 18 * (invTier + 1) + 8, 18 * invTier + 8);
-
-        int index = 0;
-        for (int y = 0; y < invTier; y++) {
-            for (int x = 0; x < invTier; x++) {
-                container.addWidget(new SlotWidget(
-                        getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, true)
-                        .setBackgroundTexture(GuiTextures.SLOT));
-            }
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        for (int i = 0; i < tank.getTanks(); i++) {
+            syncManager.syncValue("fluids", i, SyncHandlers.fluidSlot(tank.getStorages()[i]));
         }
 
-        index = 0;
-        for (int y = 0; y < invTier; y++) {
-            container.addWidget(new TankWidget(
-                    tank.getStorages()[index++], 4 + invTier * 18, 4 + y * 18, true, true)
-                    .setBackground(GuiTextures.FLUID_SLOT));
+        SlotGroup slotGroup = new SlotGroup("inventory", inventory.getSlots());
+
+        int size = tank.getTanks();
+        String[] matrix = new String[size];
+        for (int i = 0; i < size; i++) {
+            String row = "I".repeat(size) + "F";
+            matrix[i] = row;
         }
 
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-        return group;
+        SlotGroupWidget slotWidget = SlotGroupWidget.builder()
+                .matrix(matrix)
+                .key('I', i -> new ItemSlot()
+                        .slot(new ModularSlot(inventory, i)
+                                .slotGroup(slotGroup)))
+                .key('F', i -> new FluidSlot()
+                        .syncHandler("fluids", i))
+                .build();
+
+        mainWidget.child(slotWidget.center().margin(0, 10));
     }
 }
