@@ -83,7 +83,7 @@ public interface IMaterialRegistry extends Iterable<Material> {
     /**
      *
      * @return {@code true} if this registry is frozen, {@code false} otherwise
-     * @see MappedRegistryAccessor#isFrozen()
+     * @see MappedRegistryAccessor#gtceu$isFrozen()
      */
     boolean isFrozen();
 }

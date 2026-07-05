@@ -111,7 +111,7 @@ public final class MaterialRegistry extends MappedRegistry<Material> implements 
 
     @Override
     public boolean isFrozen() {
-        return ((MappedRegistryAccessor) (Object) this).isFrozen();
+        return ((MappedRegistryAccessor) (Object) this).gtceu$isFrozen();
     }
 
     public void close() {
