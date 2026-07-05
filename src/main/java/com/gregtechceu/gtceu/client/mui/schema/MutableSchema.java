@@ -30,6 +30,7 @@ public class MutableSchema implements ISchema {
     protected final Level level = new SchemaLevel();
     @Getter
     protected @NotNull BlockPos origin = BlockPos.ZERO;
+    @Getter
     protected @NotNull Vector3f center = new Vector3f();
     @Getter
     private BlockPos controllerPos = BlockPos.ZERO;
