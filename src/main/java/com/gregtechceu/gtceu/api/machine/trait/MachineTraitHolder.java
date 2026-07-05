@@ -30,7 +30,7 @@ public final class MachineTraitHolder {
 
     private @Nullable List<MachineTrait> allTraits = null;
 
-    private final Map<Class<?>, Set<?>> traitsByClass = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, List<?>> traitsByClass = new Object2ObjectOpenHashMap<>();
 
     public MachineTraitHolder(MetaMachine machine) {
         this.machine = machine;
@@ -50,18 +50,17 @@ public final class MachineTraitHolder {
      * Gets all traits implementing a specific interface/class
      */
     @SuppressWarnings("unchecked")
-    public <T> @Unmodifiable Set<T> getTraitsByInterface(Class<T> clazz) {
+    public <T> @Unmodifiable List<T> getTraitsByInterface(Class<T> clazz) {
+        if (traitsByClass.containsKey(clazz)) return (List<T>) traitsByClass.get(clazz);
 
-        if (traitsByClass.containsKey(clazz)) return (Set<T>) traitsByClass.get(clazz);
-
-        Set<T> set = new ObjectOpenHashSet<>();
+        List<T> list = new ObjectArrayList<>();
 
         for (var t : getAllTraits()) {
-            if (clazz.isAssignableFrom(t.getClass())) set.add(clazz.cast(t));
+            if (clazz.isAssignableFrom(t.getClass())) list.add(clazz.cast(t));
         }
 
-        if (!allowTraitAttachment) traitsByClass.put(clazz, Collections.unmodifiableSet(set));
-        return set;
+        if (!allowTraitAttachment) traitsByClass.put(clazz, Collections.unmodifiableList(list));
+        return list;
     }
 
     /**
