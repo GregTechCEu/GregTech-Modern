@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +46,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import brachy.modularui.drawable.UITexture;
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -85,6 +87,12 @@ public abstract class PipeBlockEntity<NodeDataType extends PipeSegmentProperties
     @Getter
     private NodeDataType nodeData;
 
+    /**
+     * The pipe segment currently attached to this pipe BE.
+     */
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private @Nullable PipeSegment<NodeDataType> currentSegment = null;
     @SaveField
     @SyncToClient
     @RerenderOnChanged

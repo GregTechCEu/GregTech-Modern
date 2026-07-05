@@ -22,6 +22,7 @@ public interface IMaterialPipeVariant<NodeDataType extends PipeSegmentProperties
      */
     TagPrefix getTagPrefix();
 
+
     @Override
     default NodeDataType createSegmentProperties(PipeBlock block) {
         if (block instanceof MaterialPipeBlock materialPipeBlock) {
@@ -31,8 +32,19 @@ public interface IMaterialPipeVariant<NodeDataType extends PipeSegmentProperties
                 "Attempted to create material pipe segment properties for a non-material pipe block");
     }
 
+    /**
+     * Creates the default segment properties for a specific pipe block.<br>
+     * NOTE: This should always create a new object and never pass a reference to an existing object.
+     */
     NodeDataType createSegmentProperties(MaterialPipeBlock block, Material material);
 
+    /**
+     * Used for datagen, creates the model for pipe blocks of this variant.
+     *
+     * @param block    The block to create the model for
+     * @param provider Datagen blockstate provider
+     * @return Pipe model
+     */
     @Override
     default PipeModel createPipeModel(PipeBlock block, GTBlockstateProvider provider) {
         if (block instanceof MaterialPipeBlock materialPipeBlock) {

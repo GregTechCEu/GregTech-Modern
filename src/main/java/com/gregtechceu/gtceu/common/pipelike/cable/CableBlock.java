@@ -28,8 +28,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class CableBlock extends MaterialPipeBlock {
 
-
-
     public CableBlock(Properties properties, CableVariant cableVariant, Material material) {
         super(properties, cableVariant, GTPipeNetworks.ENERGY, material);
     }
