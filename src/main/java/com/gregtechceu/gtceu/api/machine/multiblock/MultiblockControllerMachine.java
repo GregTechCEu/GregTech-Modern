@@ -30,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
@@ -154,7 +155,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     protected void updatePartPositions() {
         this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
-                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
+                this.parts.stream().map(BlockEntity::getBlockPos).toArray(BlockPos[]::new);
         syncDataHolder.markClientSyncFieldDirty("partPositions");
     }
 
@@ -188,7 +189,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void checkAndFormStructure() {
         if (!(getLevel() instanceof ServerLevel serverLevel)) return;
-        if (self().isRemoved()) return;
+        if (isRemoved()) return;
         for (var entry : patternStates.entrySet()) {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
@@ -440,7 +441,7 @@ public class MultiblockControllerMachine extends MetaMachine {
      * {@link PatternState#onBlockStateChanged(BlockPos, BlockState, BlockState)}
      */
     public void onPartUnload() {
-        parts.removeIf(part -> part.self().isRemoved());
+        parts.removeIf(BlockEntity::isRemoved);
         updatePartPositions();
     }
 

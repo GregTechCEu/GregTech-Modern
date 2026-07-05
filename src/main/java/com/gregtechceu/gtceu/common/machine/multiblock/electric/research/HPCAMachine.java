@@ -103,7 +103,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // Long2ObjectMaps::emptyMap);
         for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
+            componentTraits.addAll(part.getTraits(HPCAComponentTrait.TYPE));
             if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
@@ -206,7 +206,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.self().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
         }
     }
 

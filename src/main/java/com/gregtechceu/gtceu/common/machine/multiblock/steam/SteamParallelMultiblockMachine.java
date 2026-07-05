@@ -75,7 +75,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
         for (var part : getParts()) {
-            if (!PartAbility.STEAM.isApplicable(part.self().getDefinition().getBlock())) continue;
+            if (!PartAbility.STEAM.isApplicable(part.getDefinition().getBlock())) continue;
             var handlers = part.getRecipeHandlers();
             for (var hl : handlers) {
                 if (!hl.isValid(IO.IN)) continue;

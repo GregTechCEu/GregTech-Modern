@@ -740,7 +740,7 @@ public class GTMachineUtils {
                 .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
                 .partAppearance((controller, part, side) ->
-                        controller.self().getBlockPos().below().getY() == part.self().getBlockPos().getY() ?
+                        controller.getBlockPos().below().getY() == part.getBlockPos().getY() ?
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     PatternPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
@@ -914,7 +914,7 @@ public class GTMachineUtils {
                     worldState.getPos().immutable()) instanceof RotorHolderPartMachine rotorHolder &&
                     worldState.getLevel()
                             .getBlockState(worldState.getPos().immutable()
-                                    .relative(rotorHolder.self().getFrontFacing()))
+                                    .relative(rotorHolder.getFrontFacing()))
                             .isAir()) {
                 return null;
             }

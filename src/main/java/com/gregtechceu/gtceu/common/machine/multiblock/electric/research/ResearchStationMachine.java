@@ -69,7 +69,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 this.objectHolder = holder;
             }
 
-            part.self()
+            part
                     .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER)
                     .ifPresent(provider -> this.computationProvider = provider);
         }

@@ -185,7 +185,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
             setRotorSpeed(getRotorSpeed() + SPEED_INCREMENT);
             updateRotorSubscription();
         }
-        if (self().getOffsetTimer() % 20 == 0) {
+        if (getOffsetTimer() % 20 == 0) {
             var numMaintenanceProblems = 0;
 
             for (var part : getControllers().first().getParts()) {
@@ -364,10 +364,10 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      * @return true if the front face is unobstructed
      */
     public boolean isFrontFaceFree() {
-        final var facing = self().getFrontFacing();
+        final var facing = getFrontFacing();
         final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
-        final var pos = self().getBlockPos();
-        final var level = self().getLevel();
+        final var pos = getBlockPos();
+        final var level = getLevel();
         for (int dLeft = -1; dLeft < 2; dLeft++) {
             for (int dUp = -1; dUp < 2; dUp++) {
                 final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);

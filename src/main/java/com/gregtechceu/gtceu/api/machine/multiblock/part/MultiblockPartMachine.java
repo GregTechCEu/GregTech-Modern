@@ -139,7 +139,7 @@ public class MultiblockPartMachine extends MetaMachine {
                 toIter = new ObjectOpenHashSet<>(controllers);
             }
             for (MultiblockControllerMachine controller : toIter) {
-                if (serverLevel.isLoaded(controller.self().getBlockPos())) {
+                if (serverLevel.isLoaded(controller.getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
                 }

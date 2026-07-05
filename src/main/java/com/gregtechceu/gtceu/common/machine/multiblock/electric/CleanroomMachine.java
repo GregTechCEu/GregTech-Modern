@@ -210,7 +210,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     public boolean shouldAddPartToController(MultiblockPartMachine part) {
         var posCache = patternStates.get(DEFAULT_STRUCTURE).getCache().keySet();
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (!posCache.contains(part.self().getBlockPos().relative(side).asLong())) { // part is on a wall or edge
+            if (!posCache.contains(part.getBlockPos().relative(side).asLong())) { // part is on a wall or edge
                 return true;
             }
         }

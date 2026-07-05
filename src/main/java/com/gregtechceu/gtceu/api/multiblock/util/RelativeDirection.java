@@ -88,12 +88,12 @@ public enum RelativeDirection implements StringRepresentable {
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> p -> p.self().getBlockPos().getY();
-            case DOWN -> p -> -p.self().getBlockPos().getY();
-            case EAST -> p -> p.self().getBlockPos().getX();
-            case WEST -> p -> -p.self().getBlockPos().getX();
-            case NORTH -> p -> -p.self().getBlockPos().getZ();
-            case SOUTH -> p -> p.self().getBlockPos().getZ();
+            case UP -> p -> p.getBlockPos().getY();
+            case DOWN -> p -> -p.getBlockPos().getY();
+            case EAST -> p -> p.getBlockPos().getX();
+            case WEST -> p -> -p.getBlockPos().getX();
+            case NORTH -> p -> -p.getBlockPos().getZ();
+            case SOUTH -> p -> p.getBlockPos().getZ();
         };
     }
 

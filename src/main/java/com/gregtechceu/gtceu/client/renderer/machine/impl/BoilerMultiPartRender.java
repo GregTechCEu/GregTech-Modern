@@ -31,7 +31,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -95,7 +94,7 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
     public void renderPartModel(List<BakedQuad> quads, MultiblockControllerMachine controller,
                                 MultiblockPartMachine part,
                                 Direction frontFacing, @Nullable Direction side, RandomSource rand,
-                                @NotNull ModelData modelData, @Nullable RenderType renderType) {
+                                ModelData modelData, @Nullable RenderType renderType) {
         if (this.fireboxIdleModel == null) {
             this.fireboxIdleModel = RenderUtil.getModelForState(fireboxIdle);
         }
@@ -106,7 +105,7 @@ public class BoilerMultiPartRender extends DynamicRender<MultiblockControllerMac
             this.casingModel = RenderUtil.getModelForState(casing);
         }
 
-        BlockPos partPos = part.self().getBlockPos();
+        BlockPos partPos = part.getBlockPos();
 
         BlockPos controllerPos = controller.getBlockPos();
         Direction multiFront = controller.getFrontFacing();

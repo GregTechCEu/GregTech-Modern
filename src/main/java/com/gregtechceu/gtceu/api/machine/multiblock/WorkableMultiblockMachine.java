@@ -212,7 +212,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        return getDefinition().getRecipeModifier().applyModifier(this, recipe);
     }
 
     public void updateActiveBlocks(boolean active) {
@@ -238,9 +238,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
         for (MultiblockPartMachine part : getParts()) {
             part.recipeLogicStatusChanged(oldStatus, newStatus);
-            MachineRenderState state = part.self().getRenderState();
+            MachineRenderState state = part.getRenderState();
             if (state.hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
-                part.self().setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
+                part.setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
             }
         }
     }

@@ -92,7 +92,7 @@ public class GrowingPlantRender extends DynamicRender<IRecipeLogicMachine, Growi
 
     @Override
     public AABB getRenderBoundingBox(IRecipeLogicMachine machine) {
-        final BlockPos pos = machine.self().getBlockPos();
+        final BlockPos pos = machine.getBlockPos();
 
         List<BlockPos> positions = new ArrayList<>();
         Collections.addAll(positions, pos.offset(-1, 0, -1), pos.offset(2, 2, 2));

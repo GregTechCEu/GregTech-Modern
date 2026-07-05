@@ -94,7 +94,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         int transmitters = 0;
         int regulars = 0;
         for (var part : this.getParts()) {
-            Block block = part.self().getBlockState().getBlock();
+            Block block = part.getBlockState().getBlock();
             if (PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
                 ++receivers;
             }

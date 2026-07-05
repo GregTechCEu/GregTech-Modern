@@ -100,7 +100,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     @Override
     public void afterWorking(WorkableMultiblockMachine controller) {
         hazardEmitter.emitHazard();
-        var supplier = controller.self().getDefinition().getRecoveryItems();
+        var supplier = controller.getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());
         }
@@ -137,17 +137,17 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
     }
 
     public boolean isFrontFaceFree() {
-        var frontPos = self().getBlockPos().relative(self().getFrontFacing());
-        return self().getLevel().getBlockState(frontPos).isAir() ||
-                GTCapabilityHelper.getHazardContainer(self().getLevel(),
-                        frontPos, self().getFrontFacing().getOpposite()) != null;
+        var frontPos = getBlockPos().relative(getFrontFacing());
+        return getLevel().getBlockState(frontPos).isAir() ||
+                GTCapabilityHelper.getHazardContainer(getLevel(),
+                        frontPos, getFrontFacing().getOpposite()) != null;
     }
 
     public void emitPollutionParticles() {
-        var pos = self().getBlockPos();
-        var facing = self().getFrontFacing();
+        var pos = getBlockPos();
+        var facing = getFrontFacing();
 
-        IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(self().getLevel(),
+        IHazardParticleContainer container = GTCapabilityHelper.getHazardContainer(getLevel(),
                 pos.relative(facing), facing.getOpposite());
         if (container != null) {
             // do not emit particles if front face has a duct on it.
@@ -164,7 +164,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
         var xSpd = facing.getStepX() + (GTValues.RNG.nextFloat() - .5f) * .5f;
         var zSpd = facing.getStepZ() + (GTValues.RNG.nextFloat() - .5f) * .5f;
 
-        self().getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
+        getLevel().addParticle(GTParticleTypes.MUFFLER_PARTICLE.get(),
                 xPos, yPos, zPos, xSpd, ySpd, zSpd);
     }
 

@@ -51,7 +51,7 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
             List<IDataAccessHatch> dataAccesses = new ArrayList<>();
             List<IDataAccessHatch> transmitters = new ArrayList<>();
             for (var part : controller.getParts()) {
-                Block block = part.self().getBlockState().getBlock();
+                Block block = part.getBlockState().getBlock();
                 if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                     dataAccesses.add(hatch);
                 }

@@ -176,7 +176,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         ItemFilter filter = null;
         if (!filterInventory.getStackInSlot(0).isEmpty())
             filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
-        BlockPos centerPos = self().getBlockPos().above();
+        BlockPos centerPos = getBlockPos().above();
 
         List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, Objects.requireNonNull(aabb));
         for (ItemEntity itemEntity : itemEntities) {
