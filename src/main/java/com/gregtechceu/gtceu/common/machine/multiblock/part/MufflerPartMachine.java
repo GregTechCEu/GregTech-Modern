@@ -94,7 +94,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMuiMachine
 
     @Override
     public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
-        return isFrontFaceFree() ? recipe : super.modifyRecipe(recipe);
+        return isFrontFaceFree() ? recipe : null;
     }
 
     @Override
