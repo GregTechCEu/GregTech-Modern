@@ -10,7 +10,6 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -129,10 +128,9 @@ public final class MachineTraitHolder {
      *                         first, which may prevent traits with a lower priority from handling some events.
      * @param trait            The trait to register
      */
-    public <T extends MachineTrait> T attachPersistentTrait(String traitName, T trait, int callbackPriority) {
+    public void attachPersistentTrait(String traitName, MachineTrait trait, int callbackPriority) {
         attachTrait(trait, callbackPriority);
         registerPersistentTrait(traitName, trait);
-        return trait;
     }
 
     /**
