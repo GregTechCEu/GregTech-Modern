@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.ApiStatus;
@@ -23,7 +24,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private static final MultiPredicate EMPTY = new MultiPredicate();
 
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
-    @Getter(lombok.AccessLevel.PROTECTED)
+    @Getter(AccessLevel.PROTECTED)
     private final Logic type;
     private final boolean hasAir;
     @Getter
@@ -327,84 +328,13 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     protected enum Logic {
 
-        SINGLE,
-        OR,
-        AND {
-
-            @Override
-            public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-                for (BasePredicate predicate : predicates) {
-                    if (!predicate.testGlobalMin(ctx)) return false;
-                }
-                return true;
-            }
-
-            @Override
-            public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-                for (BasePredicate predicate : predicates) {
-                    if (!predicate.testSliceMin(ctx)) return false;
-                }
-                return true;
-            }
-        },
-        XOR {
-
-            @Override
-            public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-                return test(predicates,
-                        p -> p.getMinCount() == -1,
-                        p -> p.testGlobalMin(ctx.getGlobalCount(p)),
-                        () -> onError(ctx, predicates));
-            }
-
-            @Override
-            public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-                return ctx.layerCache() == null || test(predicates,
-                        p -> p.getMinSliceCount() == -1,
-                        p -> p.testSliceMin(ctx.getSliceCount(p)),
-                        () -> onError(ctx, predicates));
-            }
-
-            private void onError(PredicateContext ctx, MultiPredicate predicates) {
-                // todo better error
-                ctx.appendError(new PatternStringError(Component.literal("One of: " + predicates.predicateList)))
-                        .setFailureReason(FailureReason.SLICE_MIN);
-            }
-
-            // i hate this
-            private boolean test(MultiPredicate predicates,
-                                 Predicate<BasePredicate> skip,
-                                 Predicate<BasePredicate> tester,
-                                 Runnable errorFunction) {
-                int skipped = 0, passed = 0, size = predicates.predicateList.size();
-                for (BasePredicate predicate : predicates) {
-                    if (skip.test(predicate)) {
-                        if (++skipped == size) {
-                            return true;
-                        } else {
-                            continue;
-                        }
-                    }
-                    if (tester.test(predicate)) {
-                        if (++passed > 1) {
-                            errorFunction.run();
-                            return false;
-                        }
-                    }
-                }
-                if (passed == 0) {
-                    errorFunction.run();
-                    return false;
-                }
-                return true;
-            }
-        };
+        SINGLE, OR, AND, XOR;
 
         /// @param a will have type set
         /// @param b may or may not be a multi predicate
         /// @return copy of {@code a} combined with {@code b}
         protected MultiPredicate combine(MultiPredicate a, @Nullable MultiPredicate b) {
-            if (b == null) return a; // b really should not be null in the first place
+            if (b == null) return a; // no op
             if (a.isEmpty()) return b;
             var ret = new MultiPredicate(this, a.hasAir() || b.hasAir());
             appendPredicate(a, ret);
@@ -422,6 +352,29 @@ public class MultiPredicate implements Iterable<BasePredicate> {
             }
         }
 
+        /*
+         * OR logic
+         *   at least one of n predicates must be valid
+         * AND logic
+         *   must have n valid predicates in multi
+         * XOR logic
+         *   must only have one of n predicates be valid and present in multi
+         *
+         * when it comes to the internal predicates
+         * any can pass, regardless of logic type
+         * since a block can only have one state
+         * and internal predicate is checked per block
+         *
+         * this may also introduce the ability
+         * to have an invalid predicate form a multiblock
+         * if predicate a has a min of two,
+         * and predicate b has min of one,
+         * and you use XOR logic
+         * the multi predicate would pass since a fails and b succeeds min checks
+         * really it should be "only one predicate can be present in multi/slice"
+         *
+         * how do i handle global/slice max?
+         */
         protected boolean run(PredicateContext ctx, MultiPredicate predicates) {
             for (BasePredicate basePredicate : predicates) {
                 if (basePredicate.testLimited(ctx)) return true;
@@ -430,18 +383,136 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         }
 
         public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-            for (BasePredicate predicate : predicates) {
-                if (predicate.testGlobalMin(ctx)) return true;
-            }
-            return false;
+            return test(ctx, predicates, Tester.GLOBAL_MIN);
         }
 
         public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-            if (ctx.layerCache() == null) return true;
+            return test(ctx, predicates, Tester.SLICE_MIN);
+        }
+
+        // i hate this (but not as much)
+        private boolean test(PredicateContext ctx, MultiPredicate predicates,
+                             Tester tester) {
+            if (tester.shouldSkipTest(ctx)) return true;
+            int skipped = 0, passed = 0, size = predicates.predicateList.size();
             for (BasePredicate predicate : predicates) {
-                if (predicate.testSliceMin(ctx)) return true;
+                // get min count
+                int expectedCount = tester.getCount(predicate);
+                if (expectedCount == -1) {
+                    if (++skipped == size) {
+                        return true;
+                    } else {
+                        continue;
+                    }
+                }
+                int actualCount = tester.getActualCount(ctx, predicate);
+
+                boolean success = tester.test(expectedCount, actualCount);
+                if (success) passed++;
+
+                if (tester.returnEarly(passed, success, this)) {
+                    // get true or false
+                    return tester.hasErrored(passed, size, ctx, predicates, this);
+                }
             }
-            return false;
+            if (tester.finalReturn(passed, skipped, this)) {
+                tester.onError(ctx, predicates);
+                return false;
+            }
+            return true;
+        }
+    }
+
+    enum Tester {
+        GLOBAL_MIN,
+        GLOBAL_MAX,
+        SLICE_MIN,
+        SLICE_MAX;
+
+        public int getCount(BasePredicate predicate) {
+            return switch (this) {
+                case GLOBAL_MIN -> predicate.getMinCount();
+                case GLOBAL_MAX -> predicate.getMaxCount();
+                case SLICE_MIN -> predicate.getMinSliceCount();
+                case SLICE_MAX -> predicate.getMaxSliceCount();
+            };
+        }
+
+        public int getActualCount(PredicateContext ctx, BasePredicate predicate) {
+            return switch (this) {
+                case GLOBAL_MIN -> ctx.getGlobalCount(predicate);
+                case GLOBAL_MAX -> ctx.incrementGlobalCount(predicate);
+                case SLICE_MIN -> ctx.getSliceCount(predicate);
+                case SLICE_MAX -> ctx.incrementSliceCount(predicate);
+            };
+        }
+
+        public boolean test(int expected, int actual) {
+            return switch (this) {
+                case GLOBAL_MIN, SLICE_MIN -> expected <= actual;
+                case GLOBAL_MAX, SLICE_MAX -> expected >= actual;
+            };
+        }
+
+        public void onError(PredicateContext ctx, MultiPredicate predicates) {
+            // todo better error
+            var joiner = new StringJoiner("\n");
+            predicates.forEach(p -> joiner.add("\t" + p));
+            ctx.appendError(new PatternStringError(Component.literal("One of: \n" + joiner)));
+            switch (this) {
+                case GLOBAL_MIN -> ctx.setFailureReason(FailureReason.GLOBAL_MIN);
+                case GLOBAL_MAX -> ctx.setFailureReason(FailureReason.GLOBAL_MAX);
+                case SLICE_MIN -> ctx.setFailureReason(FailureReason.SLICE_MIN);
+                case SLICE_MAX -> ctx.setFailureReason(FailureReason.SLICE_MAX);
+            }
+        }
+
+        public boolean returnEarly(int passed, boolean success, Logic logicType) {
+            // return true to return early
+            return switch (logicType) {
+                case XOR -> passed > 1;
+                case AND -> !success;
+                default -> false;
+            };
+        }
+
+        public boolean finalReturn(int passed, int size, Logic logicType) {
+            // return true if failed
+            return switch (logicType) {
+                case SINGLE, XOR -> passed != 1;
+                case OR -> passed == 0;
+                case AND -> passed != size;
+            };
+        }
+
+        public boolean isGlobal() {
+            return this == GLOBAL_MIN || this == GLOBAL_MAX;
+        }
+
+        public boolean isSlice() {
+            return this == SLICE_MIN || this == SLICE_MAX;
+        }
+
+        public boolean isMin() {
+            return this == GLOBAL_MIN || this == SLICE_MIN;
+        }
+
+        public boolean isMax() {
+            return this == GLOBAL_MAX || this == SLICE_MAX;
+        }
+
+        public boolean shouldSkipTest(PredicateContext ctx) {
+            // skip test if we're slice and slice cache is null
+            return isSlice() && ctx.layerCache() != null;
+        }
+
+        // called after return early
+        public boolean hasErrored(int passed, int size, PredicateContext ctx, MultiPredicate predicates, Logic logic) {
+            boolean error = finalReturn(passed, size, logic);
+            if (error) {
+                onError(ctx, predicates);
+            }
+            return error;
         }
     }
 }
