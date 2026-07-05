@@ -313,7 +313,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = getValidFloorBlocks().or(states(getCasingState(), getGlassState()));
+            PatternPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
             PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 
