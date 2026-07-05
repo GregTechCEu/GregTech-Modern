@@ -43,8 +43,6 @@ public final class MachineTraitHolder {
      * @return An unmodifiable list of all traits attached to this machine.
      */
     public @Unmodifiable List<MachineTrait> getAllTraits() {
-        if (allowTraitAttachment) GTCEu.LOGGER.warn(
-                "MachineTraitHolder getAllTraits() called before trait finalisation, some traits may not be attached yet.");
         return allTraits != null ? allTraits : Collections.unmodifiableList(traits);
     }
 
@@ -53,8 +51,6 @@ public final class MachineTraitHolder {
      */
     @SuppressWarnings("unchecked")
     public <T> @Unmodifiable Set<T> getTraitsByInterface(Class<T> clazz) {
-        if (allowTraitAttachment) throw new IllegalStateException(
-                "MachineTraitHolder getTraitsByInterface() called before trait finalisation.");
 
         if (traitsByClass.containsKey(clazz)) return (Set<T>) traitsByClass.get(clazz);
 
@@ -64,7 +60,7 @@ public final class MachineTraitHolder {
             if (clazz.isAssignableFrom(t.getClass())) set.add(clazz.cast(t));
         }
 
-        traitsByClass.put(clazz, Collections.unmodifiableSet(set));
+        if (!allowTraitAttachment) traitsByClass.put(clazz, Collections.unmodifiableSet(set));
         return set;
     }
 
