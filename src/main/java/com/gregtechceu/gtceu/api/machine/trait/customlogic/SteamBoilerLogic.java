@@ -61,10 +61,12 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
 
     private GTRecipe makeRecipe(ItemStack input, int burnTime) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(input.getItem());
-        return getRecipeType().recipeBuilder(GTCEu.id(itemId.toDebugFileName()))
+        GTRecipe recipe = getRecipeType().recipeBuilder(GTCEu.id(itemId.toDebugFileName()))
                 .inputItems(input.copyWithCount(1))
                 .duration(modifyBurnTime(burnTime))
                 .build();
+        recipe.id = recipe.id.withPrefix("/");
+        return recipe;
     }
 
     @Override
