@@ -127,8 +127,8 @@ public class IntProviderFluidIngredient extends FluidIngredient implements IRang
     }
 
     @Override
-    public FluidIngredient replace() {
-        IRangedIngredient.super.replace();
+    public FluidIngredient collapse() {
+        IRangedIngredient.super.collapse();
         return new FluidIngredient(inner.values, rollSampledCount(), inner.nbt);
     }
 

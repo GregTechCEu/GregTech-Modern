@@ -216,7 +216,7 @@ public class IntProviderIngredientTest {
         helper.assertTrue(ingredient.getItems().length == 0, "A ranged ingredient " +
                 "should not return items!");
         ingredient.rollSampledCount();
-        var stacks = ingredient.replace().getItems();
+        var stacks = ingredient.collapse().getItems();
         helper.assertTrue(stacks.length == 1, "Replaced IntProviderIngredient should only " +
                 "return 1 item when made with 1 item");
         helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),

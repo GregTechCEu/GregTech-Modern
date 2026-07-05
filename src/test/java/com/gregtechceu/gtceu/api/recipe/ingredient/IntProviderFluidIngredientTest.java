@@ -221,7 +221,7 @@ public class IntProviderFluidIngredientTest {
         helper.assertTrue(ingredient.getStacks().length == 0, "A ranged fluid ingredient " +
                 "should not return items!");
         ingredient.rollSampledCount();
-        var stacks = ingredient.replace().getStacks();
+        var stacks = ingredient.collapse().getStacks();
         helper.assertTrue(stacks.length == 1, "Replaced IntProviderFluidIngredient should only " +
                 "return 1 fluid when made with 1 fluid");
         helper.assertTrue(stacks[0].isFluidEqual(GTMaterials.Water.getFluid(1)),

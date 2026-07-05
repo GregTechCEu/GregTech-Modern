@@ -240,7 +240,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 var content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.replace(), content.chance(), content.maxChance()));
+                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
                 }
             }
         }
@@ -249,7 +249,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 var content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.replace(), content.chance(), content.maxChance()));
+                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
                 }
             }
         }
@@ -268,7 +268,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 var content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
-                    content = new Content(ranged.replace(), content.chance(), content.maxChance());
+                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    ranged.reset();
                 }
                 tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }
@@ -279,7 +280,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 var content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
-                    content = new Content(ranged.replace(), content.chance(), content.maxChance());
+                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    ranged.reset();
                 }
                 tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
             }

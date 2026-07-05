@@ -133,8 +133,8 @@ public class IntProviderIngredient extends Ingredient implements IRangedIngredie
     }
 
     @Override
-    public SizedIngredient replace() {
-        IRangedIngredient.super.replace();
+    public SizedIngredient collapse() {
+        IRangedIngredient.super.collapse();
         return SizedIngredient.create(inner, rollSampledCount());
     }
 
