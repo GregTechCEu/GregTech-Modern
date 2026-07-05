@@ -77,15 +77,21 @@ public class CraftingRecipeLoader {
                 new MaterialEntry(plate, Ruby));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "item_composite_filter", COMPOSITE_ITEM_FILTER.asStack(), "XFX",
-                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', ITEM_FILTER.asStack(), 'C', CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Steel));
+                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', ITEM_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Steel));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lapis", COMPOSITE_FLUID_FILTER.asStack(), "XFX",
-                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C', CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lapis));
-        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lazurite", COMPOSITE_FLUID_FILTER.asStack(), "XFX",
-                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C', CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lazurite));
-        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_sodalite", COMPOSITE_FLUID_FILTER.asStack(), "XFX",
-                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C', CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Sodalite));
-
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lapis", COMPOSITE_FLUID_FILTER.asStack(),
+                "XFX",
+                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lapis));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_lazurite",
+                COMPOSITE_FLUID_FILTER.asStack(), "XFX",
+                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Lazurite));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_composite_filter_sodalite",
+                COMPOSITE_FLUID_FILTER.asStack(), "XFX",
+                "SCS", "XFX", 'X', new MaterialEntry(foil, Zinc), 'F', FLUID_FILTER.asStack(), 'C',
+                CustomTags.LV_CIRCUITS, 'S', new MaterialEntry(plate, Sodalite));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ",
                 " X ", "s  ", 'X', ItemTags.PLANKS);
