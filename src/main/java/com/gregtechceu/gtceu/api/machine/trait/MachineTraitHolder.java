@@ -43,7 +43,7 @@ public final class MachineTraitHolder {
      * @return An unmodifiable list of all traits attached to this machine.
      */
     public @Unmodifiable List<MachineTrait> getAllTraits() {
-        GTCEu.LOGGER.warn(
+        if (allowTraitAttachment) GTCEu.LOGGER.warn(
                 "MachineTraitHolder getAllTraits() called before trait finalisation, some traits may not be attached yet.");
         return allTraits != null ? allTraits : Collections.unmodifiableList(traits);
     }
