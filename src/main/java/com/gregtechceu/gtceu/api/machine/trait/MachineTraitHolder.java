@@ -10,6 +10,7 @@ import net.minecraft.nbt.Tag;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -29,7 +30,7 @@ public final class MachineTraitHolder {
 
     private @Nullable List<MachineTrait> allTraits = null;
 
-    private final Map<Class<?>, List<?>> traitsByClass = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, Set<?>> traitsByClass = new Object2ObjectOpenHashMap<>();
 
     public MachineTraitHolder(MetaMachine machine) {
         this.machine = machine;
@@ -42,6 +43,8 @@ public final class MachineTraitHolder {
      * @return An unmodifiable list of all traits attached to this machine.
      */
     public @Unmodifiable List<MachineTrait> getAllTraits() {
+        GTCEu.LOGGER.warn(
+                "MachineTraitHolder getAllTraits() called before trait finalisation, some traits may not be attached yet.");
         return allTraits != null ? allTraits : Collections.unmodifiableList(traits);
     }
 
@@ -49,17 +52,20 @@ public final class MachineTraitHolder {
      * Gets all traits implementing a specific interface/class
      */
     @SuppressWarnings("unchecked")
-    public <T> List<T> getTraitsByInterface(Class<T> clazz) {
-        if (traitsByClass.containsKey(clazz)) return (List<T>) traitsByClass.get(clazz);
+    public <T> @Unmodifiable Set<T> getTraitsByInterface(Class<T> clazz) {
+        if (allowTraitAttachment) throw new IllegalStateException(
+                "MachineTraitHolder getTraitsByInterface() called before trait finalisation.");
 
-        List<T> list = new ObjectArrayList<>();
+        if (traitsByClass.containsKey(clazz)) return (Set<T>) traitsByClass.get(clazz);
+
+        Set<T> set = new ObjectOpenHashSet<>();
 
         for (var t : getAllTraits()) {
-            if (clazz.isAssignableFrom(t.getClass())) list.add(clazz.cast(t));
+            if (clazz.isAssignableFrom(t.getClass())) set.add(clazz.cast(t));
         }
 
-        traitsByClass.put(clazz, list);
-        return list;
+        traitsByClass.put(clazz, Collections.unmodifiableSet(set));
+        return set;
     }
 
     /**

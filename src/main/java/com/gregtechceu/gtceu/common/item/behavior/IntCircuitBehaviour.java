@@ -92,7 +92,7 @@ public class IntCircuitBehaviour implements IAddInformation, IItemUIHolder {
                     }
                     if (inserted) break;
                 }
-                stack.shrink(1);
+                if (inserted) stack.shrink(1);
             }
 
             machine.getTraitOptional(ProgrammableCircuitSlotTrait.TYPE)

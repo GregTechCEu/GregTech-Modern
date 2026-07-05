@@ -126,7 +126,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     private Reference2IntMap<RecipeCapability<?>> recipeOutputLimits = new Reference2IntOpenHashMap<>();
     private int paintingColor = ConfigHolder.INSTANCE.client.getDefaultPaintingColor();
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
-            GTValues.VC[tier] : tintIndex == 1 ? paintingColor : -1);
+            GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
     private final List<Component> tooltips = new ArrayList<>();
     @Nullable

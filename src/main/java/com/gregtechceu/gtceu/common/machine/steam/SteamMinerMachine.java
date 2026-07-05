@@ -80,7 +80,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
                              int fortune, int energyPerTick, int exportSlots) {
         this(info, isHighPressure, speed, maximumRadius, fortune, energyPerTick,
-                new NotifiableItemStackHandler(4, IO.OUT));
+                new NotifiableItemStackHandler(exportSlots, IO.OUT));
     }
 
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,

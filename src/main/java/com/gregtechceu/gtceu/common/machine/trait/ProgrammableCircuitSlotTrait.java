@@ -42,6 +42,8 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     @Getter
     @Setter
     private boolean enabled = true;
+    @Getter
+    private boolean controllerAllowsCircuits = true;
 
     public ProgrammableCircuitSlotTrait() {
         setEnabled(ConfigHolder.INSTANCE.machines.ghostCircuit);
@@ -65,13 +67,13 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
 
     @Override
     public void attachLeftConfigurators(Flow flow, ModularPanel<?> panel, PanelSyncManager syncManager) {
-        if (!enabled || !ConfigHolder.INSTANCE.machines.ghostCircuit) return;
+        if (!controllerAllowsCircuits || !enabled || !ConfigHolder.INSTANCE.machines.ghostCircuit) return;
         flow.child(GTMuiWidgets.createCircuitSlotPanel(this, panel, syncManager));
     }
 
     @Override
     public void addedToController(MultiblockControllerMachine controller) {
-        if (!controller.allowCircuitSlots()) setEnabled(false);
+        if (!controller.allowCircuitSlots()) controllerAllowsCircuits = false;
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
                 break;
             }
         }
-        setEnabled(allControllersAllowCircuits);
+        controllerAllowsCircuits = allControllersAllowCircuits;
     }
 
     // Capability handler stuff
@@ -101,7 +103,7 @@ public class ProgrammableCircuitSlotTrait extends NotifiableRecipeHandlerTrait<I
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
                                               boolean simulate) {
-        if (!enabled | !ConfigHolder.INSTANCE.machines.ghostCircuit) return left;
+        if (!controllerAllowsCircuits || !enabled || !ConfigHolder.INSTANCE.machines.ghostCircuit) return left;
         return NotifiableItemStackHandler.handleRecipe(io, recipe, left, simulate, getHandlerIO(), storage);
     }
 
