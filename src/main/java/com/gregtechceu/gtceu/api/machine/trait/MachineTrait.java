@@ -58,7 +58,7 @@ public abstract class MachineTrait implements ISyncManaged {
 
     public MetaMachine getMachine() {
         if (machine == null) throw new IllegalStateException(
-                "Machine trait not attached to machine. Trait initialisation that depends on machine instance should run in onMachineLoad.");
+                "Machine trait not attached to machine. Trait initialisation that depends on machine instance should run in onTraitAttached.");
         return machine;
     }
 
