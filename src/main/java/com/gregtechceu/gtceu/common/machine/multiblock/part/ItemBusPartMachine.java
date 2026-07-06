@@ -57,8 +57,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemBusPartMachine extends TieredIOPartMachine
-                                implements IDistinctPart, IMachineLife, IHasCircuitSlot, IPaintable {
+public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
 
     @Getter
     @Persisted
@@ -67,8 +66,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
-    @Getter(AccessLevel.PROTECTED)
-    private boolean hasCircuitSlot = true;
+    @Getter
+    private boolean circuitSlotEnabled = true;
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
@@ -111,7 +110,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
             return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
                     .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
         } else {
-            hasCircuitSlot = false;
+            circuitSlotEnabled = false;
             return new NotifiableItemStackHandler(this, 0, IO.NONE);
         }
     }
@@ -289,10 +288,10 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
         if (this.io == IO.IN) {
-            IDistinctPart.super.attachConfigurators(left, right);
-            if (hasCircuitSlot && isCircuitSlotEnabled()) {
+            if (isCircuitSlotEnabled()) {
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
+            IDistinctPart.super.attachConfigurators(left, right);
         } else {
             super.attachConfigurators(left, right);
         }
