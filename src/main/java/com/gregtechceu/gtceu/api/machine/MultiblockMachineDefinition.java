@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 
 import net.minecraft.core.Direction;
@@ -41,10 +41,10 @@ public class MultiblockMachineDefinition extends MachineDefinition {
     private Supplier<ItemStack[]> recoveryItems;
     @Setter
     @Getter
-    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter;
+    private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter;
     @Getter
     @Setter
-    private TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+    private TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
     @Getter
     @Setter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay;

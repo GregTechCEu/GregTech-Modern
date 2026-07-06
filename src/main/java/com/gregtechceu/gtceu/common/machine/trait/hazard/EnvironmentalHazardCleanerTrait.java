@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.feature.IRecipeLogicModifierTrait;
 import com.gregtechceu.gtceu.common.blockentity.DuctPipeBlockEntity;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiPredicate;
 
-public class EnvironmentalHazardCleanerTrait extends MachineTrait {
+public class EnvironmentalHazardCleanerTrait extends MachineTrait implements IRecipeLogicModifierTrait {
 
     public static final MachineTraitType<EnvironmentalHazardCleanerTrait> TYPE = new MachineTraitType<>(
             EnvironmentalHazardCleanerTrait.class);
@@ -53,6 +54,17 @@ public class EnvironmentalHazardCleanerTrait extends MachineTrait {
     @Override
     public MachineTraitType<EnvironmentalHazardCleanerTrait> getTraitType() {
         return TYPE;
+    }
+
+    @Override
+    public boolean onWorking() {
+        cleanHazard();
+        return true;
+    }
+
+    @Override
+    public void afterWorking() {
+        endCleaningOperation();
     }
 
     public boolean cleanHazard(MedicalCondition condition, float totalAmountToRemove) {
