@@ -250,8 +250,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
                                 .slotGroup(group)
-                                .changeListener((newItem, amount, client, init) -> {
-                                    if (amount) {
+                                .changeListener((oldStack, newStack, client, init) -> {
+                                    if (ItemStack.isSameItem(oldStack, newStack)) {
                                         inventory.onContentsChanged();
                                     }
                                 })
