@@ -6,20 +6,15 @@ import com.gregtechceu.gtceu.api.capability.IMonitorComponent;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
+import com.gregtechceu.gtceu.integration.ae2.GridNodeHost;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
-
-import appeng.me.helpers.IGridConnectedBlockEntity;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -27,14 +22,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class HullMachine extends TieredPartMachine implements IMonitorComponent {
 
-    private final Object gridNodeHost;
+    private final MachineTrait gridNodeHost;
     @Persisted
     protected NotifiableEnergyContainer energyContainer;
 
     public HullMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
-            this.gridNodeHost = new GridNodeHostTrait(this);
+            this.gridNodeHost = new GridNodeHost(this);
         } else {
             this.gridNodeHost = null;
         }
@@ -48,47 +43,20 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     }
 
     @Override
-    public void onLoad() {
-        super.onLoad();
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity &&
-                getLevel() instanceof ServerLevel level) {
-            level.getServer().tell(new TickTask(0, connectedBlockEntity::init));
-        }
-    }
-
-    @Override
-    public void onUnload() {
-        super.onUnload();
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
-            connectedBlockEntity.getMainNode().destroy();
-        }
-    }
-
-    @Override
-    public void setFrontFacing(Direction facing) {
-        super.setFrontFacing(facing);
-        if (isFacingValid(facing)) {
-            if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity) {
-                connectedBlockEntity.init();
-            }
-        }
-    }
-
-    @Override
-    public void saveCustomPersistedData(@NotNull CompoundTag tag, boolean forDrop) {
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
         super.saveCustomPersistedData(tag, forDrop);
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost != null) {
             CompoundTag nbt = new CompoundTag();
-            connectedBlockEntity.getMainNode().saveToNBT(nbt);
+            gridNodeHost.saveCustomPersistedData(nbt, false);
             tag.put("grid_node", nbt);
         }
     }
 
     @Override
-    public void loadCustomPersistedData(@NotNull CompoundTag tag) {
+    public void loadCustomPersistedData(CompoundTag tag) {
         super.loadCustomPersistedData(tag);
-        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost instanceof IGridConnectedBlockEntity connectedBlockEntity) {
-            connectedBlockEntity.getMainNode().loadFromNBT(tag.getCompound("grid_node"));
+        if (GTCEu.Mods.isAE2Loaded() && gridNodeHost != null) {
+            gridNodeHost.loadCustomPersistedData(tag.getCompound("grid_node"));
         }
     }
 

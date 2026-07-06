@@ -316,7 +316,6 @@ public class SimpleTieredMachine extends RecipeTieredMachine
 
     @Override
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
-
         if (hasAutoOutputFluid()) {
             left.attachConfigurators(createAutoOutputFluidConfigurator());
         }
