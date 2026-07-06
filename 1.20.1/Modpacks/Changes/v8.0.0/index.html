@@ -3877,32 +3877,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tieredenergymachine" class="md-nav__link">
+  <a href="#machines-with-createx-functions-eg-createenergycontainer-createrecipelogic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        TieredEnergyMachine
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workabletieredmachine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        WorkableTieredMachine
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workablemultiblockmachine-workableelectricmultiblockmachine-and-steamworkablemachine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        WorkableMultiblockMachine, WorkableElectricMultiblockMachine and SteamWorkableMachine
+        Machines with createX functions (e.g. createEnergyContainer, createRecipeLogic)
       
     </span>
   </a>
@@ -5220,32 +5198,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#tieredenergymachine" class="md-nav__link">
+  <a href="#machines-with-createx-functions-eg-createenergycontainer-createrecipelogic" class="md-nav__link">
     <span class="md-ellipsis">
       
-        TieredEnergyMachine
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workabletieredmachine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        WorkableTieredMachine
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#workablemultiblockmachine-workableelectricmultiblockmachine-and-steamworkablemachine" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        WorkableMultiblockMachine, WorkableElectricMultiblockMachine and SteamWorkableMachine
+        Machines with createX functions (e.g. createEnergyContainer, createRecipeLogic)
       
     </span>
   </a>
@@ -5414,31 +5370,9 @@ Machine interactions have been split into two methods: <code>MetaMachine::onUse<
 <ul>
 <li>Replace the first constructor argument <code>IMachineBlockEntity holder</code> with <code>BlockEntityCreationInfo info</code></li>
 </ul>
-<h4 id="tieredenergymachine"><code>TieredEnergyMachine</code></h4>
+<h4 id="machines-with-createx-functions-eg-createenergycontainer-createrecipelogic">Machines with <code>createX</code> functions (e.g. <code>createEnergyContainer</code>, <code>createRecipeLogic</code>)</h4>
 <ul>
-<li>Removed <code>createEnergyContainer</code> method</li>
-<li>Constructor now has an optional <code>NotifiableEnergyContainer</code> argument</li>
-</ul>
-<h4 id="workabletieredmachine"><code>WorkableTieredMachine</code></h4>
-<ul>
-<li>Removed <code>createRecipeLogic</code>, <code>createImportItemHandler</code>, <code>createExportItemHandler</code>, <code>createImportFluidHandler</code>, <code>createExportFluidHandler</code> methods</li>
-<li>Added a new constructor:<ul>
-<li><code>BlockEntityCreationInfo info</code> </li>
-<li><code>int tier</code></li>
-<li><code>RecipeLogic recipeLogic</code> Recipe logic, defaults to the standard <code>RecipeLogic</code> class.</li>
-<li><code>int importSlots</code> Item import slots, defaults to the amount of slots in the machine's default recipe type.</li>
-<li><code>int exportSlots</code> Same as above, but for item export slots.</li>
-<li><code>int fluidImportSlots</code> As above, but for fluid import slots.</li>
-<li><code>int fluidExportSlots</code> As above, but for fluid export slots.</li>
-<li><code>boolean isEnergyEmitter</code> If this machine should emit/receiver energy.</li>
-<li><code>Int2IntFunction tankScalingFunction</code> Fluid tank capacity scaling function.</li>
-</ul>
-</li>
-</ul>
-<h4 id="workablemultiblockmachine-workableelectricmultiblockmachine-and-steamworkablemachine"><code>WorkableMultiblockMachine</code>, <code>WorkableElectricMultiblockMachine</code> and <code>SteamWorkableMachine</code></h4>
-<ul>
-<li>Removed <code>createRecipeLogic</code> method</li>
-<li>Constructor now has an optional <code>Supplier&lt;RecipeLogic&gt;</code> argument, defaults to the standard <code>RecipeLogic</code> class</li>
+<li>Creation functions have been removed in favor of arguments being passed into the constructor.</li>
 </ul>
 <h4 id="important-migration-note">IMPORTANT MIGRATION NOTE:</h4>
 <p>Traits must be attached to a machine directly by calling <code>attachTrait(MachineTrait trait)</code> on the trait being attached. 
@@ -5453,6 +5387,8 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <h3 id="removed-interfaces">Removed interfaces</h3>
 <p>A large number of machine feature interfaces have been removed, and have had their functionality merged into the standard MetaMachine class, or now use the new machine trait system:</p>
 <ul>
+<li><code>IMultiPart</code> Use the <code>MultiblockPartMachine</code> class directly.</li>
+<li><code>IWorkableMultiController</code> Use the <code>WorkableMultiblockMachine</code> class directly.</li>
 <li><code>ITurbineMachine</code> Use the <code>LargeTurbineMachine</code> class directly.</li>
 <li><code>IRotorHolderMachine</code> Use the <code>RotorHolderMachine</code> class directly.</li>
 <li><code>IMultiController</code> Use the <code>MultiblockControllerMachine</code> class directly.</li>
@@ -5467,6 +5403,7 @@ When migrating, remove the <code>this</code> argument from the machine trait con
 <li><code>IHPCAComputationProvider</code> - Use <code>HPCAComputationProviderTrait</code></li>
 <li><code>IHPCACoolantProvider</code> - Use <code>HPCACoolantProviderTrait</code></li>
 <li><code>IFluidRendererMulti</code> - Use <code>MultiblockFluidRendererTrait</code></li>
+<li><code>IMaintenanceMachine</code> Use <code>MaintenanceHatchPartMachine</code></li>
 </ul>
 <h2 id="connected-texture-reimplementation">Connected texture reimplementation</h2>
 <p>The mod's connected texture logic has been reimplemented in GTM proper.
