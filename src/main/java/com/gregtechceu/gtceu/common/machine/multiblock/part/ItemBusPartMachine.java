@@ -291,7 +291,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                         .slot(SyncHandlers.itemSlot(inventory, index)
                                 .slotGroup(group)
                                 .changeListener((oldStack, newStack, client, init) -> {
-                                    if (!ItemStack.isSameItem(oldStack, newStack)) {
+                                    if (ItemStack.isSameItem(oldStack, newStack)) {
                                         inventory.onContentsChanged();
                                     }
                                 })
