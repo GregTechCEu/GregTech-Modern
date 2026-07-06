@@ -37,9 +37,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
             @Override
             public boolean test(PredicateContext ctx) {
-                boolean passed = predicate.test(ctx);
-                ctx.updateState(this, FailureReason.INTERNAL, passed);
-                return passed;
+                return predicate.test(ctx);
             }
 
             @Override
@@ -93,22 +91,12 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     /// delegates to {@link #type} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
-        boolean passed = false;
-        for (BasePredicate p : predicateList) {
-            ctx.updateState(p, FailureReason.GLOBAL_MIN, passed |= p.testGlobalMin(ctx));
-        }
-        return passed;
-//        return getType().testGlobalMin(ctx, this);
+        return getType().test(ctx, this, Tester.GLOBAL_MIN);
     }
 
     /// delegates to {@link #type} to test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        boolean passed = false;
-        for (BasePredicate p : predicateList) {
-            ctx.updateState(p, FailureReason.SLICE_MIN, passed |= p.testSliceMin(ctx));
-        }
-        return passed;
-//        return getType().testSliceMin(ctx, this);
+        return getType().test(ctx, this, Tester.SLICE_MIN);
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
@@ -156,49 +144,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     protected BasePredicate compact() {
-        return new BasePredicate() {
-
-            private MultiPredicate getParent() {
-                return MultiPredicate.this;
-            }
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                // this also tests global/slice max, but with no respect to logic type
-                return getParent().test(ctx);
-            }
-
-            @Override
-            public boolean testGlobalMin(PredicateContext ctx) {
-                return getParent().testGlobalMin(ctx);
-            }
-
-            @Override
-            public boolean testSliceMin(PredicateContext ctx) {
-                return getParent().testSliceMin(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return getParent().getCandidates()
-                        .stream()
-                        .flatMap(Collection::stream)
-                        .toList();
-            }
-
-            @Override
-            public String getTypeName() {
-                return getParent().getTypeName();
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                getParent().appendContents(builder);
-            }
-
-            @Override
-            protected void appendStats(StringBuilder builder) {}
-        };
+        return new CompactedPredicate();
     }
 
     public MultiPredicate setMinGlobalLimited(int min) {
@@ -407,28 +353,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
          * i dont think i actually need to
          * what i really need to do is track passed vs failed predicates
          */
-        boolean run(PredicateContext ctx, MultiPredicate predicates) {
-            for (BasePredicate basePredicate : predicates) {
-                if (basePredicate.testLimited(ctx)) return true;
-            }
-            return false;
-        }
-
-        public boolean testGlobalMin(PredicateContext ctx, MultiPredicate predicates) {
-            return test(ctx, predicates, Tester.GLOBAL_MIN);
-        }
-
-        public boolean testSliceMin(PredicateContext ctx, MultiPredicate predicates) {
-            return test(ctx, predicates, Tester.SLICE_MIN);
-        }
-
         // i hate this (but not as much)
         private boolean test(PredicateContext ctx, MultiPredicate predicates,
                              Tester tester) {
             if (tester.shouldSkipTest(ctx)) return true;
             int skipped = 0, passed = 0, size = predicates.predicateList.size();
             for (BasePredicate predicate : predicates) {
-                // this doesn't work with compacted multi predicates
+                if (predicate instanceof CompactedPredicate compacted) {
+                    return test(ctx, compacted.getParent(), tester);
+                }
 
                 // get min count
                 int expectedCount = tester.getCount(predicate);
@@ -443,7 +376,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
                 boolean success = tester.test(expectedCount, actualCount);
                 if (success) passed++;
-                ctx.updateState(predicate, tester.getFailureReason(), success);
 
                 if (tester.returnEarly(passed, success, this)) {
                     // get true or false
@@ -490,7 +422,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         public void onError(PredicateContext ctx, MultiPredicate predicates) {
             // todo better error
             var joiner = new StringJoiner("\n");
-            predicates.forEach(p -> joiner.add("\t" + p));
+            predicates.forEach(p -> joiner.add("  " + p));
             ctx.appendError(new PatternStringError(Component.literal("One of: \n" + joiner)));
             switch (this) {
                 case GLOBAL_MIN -> ctx.setFailureReason(FailureReason.GLOBAL_MIN);
@@ -556,5 +488,49 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 case SLICE_MAX -> FailureReason.SLICE_MAX;
             };
         }
+    }
+
+    private class CompactedPredicate extends BasePredicate {
+
+        private MultiPredicate getParent() {
+            return MultiPredicate.this;
+        }
+
+        @Override
+        public boolean test(PredicateContext ctx) {
+            // this also tests global/slice max, but with no respect to logic type
+            return getParent().test(ctx);
+        }
+
+        @Override
+        public boolean testGlobalMin(PredicateContext ctx) {
+            return getParent().testGlobalMin(ctx);
+        }
+
+        @Override
+        public boolean testSliceMin(PredicateContext ctx) {
+            return getParent().testSliceMin(ctx);
+        }
+
+        @Override
+        public List<BlockInfo> computeCandidates() {
+            return getParent().getCandidates()
+                    .stream()
+                    .flatMap(Collection::stream)
+                    .toList();
+        }
+
+        @Override
+        public String getTypeName() {
+            return getParent().getTypeName();
+        }
+
+        @Override
+        protected void appendContents(StringBuilder builder) {
+            getParent().appendContents(builder);
+        }
+
+        @Override
+        protected void appendStats(StringBuilder builder) {}
     }
 }

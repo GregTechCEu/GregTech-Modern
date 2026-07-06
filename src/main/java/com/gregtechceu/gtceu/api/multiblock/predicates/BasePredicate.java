@@ -57,24 +57,21 @@ public abstract class BasePredicate {
 
     /// test with internal function and global/slice max
     public boolean testLimited(PredicateContext ctx) {
-        // this is some fucked up shit
-        boolean passed = test(ctx);
-        ctx.updateState(this, PredicateContext.FailureReason.INTERNAL, passed);
-        return passed;
+        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count
-    public boolean testGlobalMax(boolean b, PredicateContext ctx) {
+    public boolean testGlobalMax(PredicateContext ctx) {
         if (getMaxCount() == -1) return true;
-        int count = b ? ctx.incrementGlobalCount(this) : ctx.getGlobalCount(this);
-        return testGlobalMax(count) || b || ctx.globalError(this, false);
+        int count = ctx.incrementGlobalCount(this);
+        return testGlobalMax(count) || ctx.globalError(this, false);
     }
 
     /// test against slice max count
-    public boolean testSliceMax(boolean b, PredicateContext ctx) {
+    public boolean testSliceMax(PredicateContext ctx) {
         if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
-        int count = b ? ctx.incrementSliceCount(this) : ctx.getSliceCount(this);
-        return testSliceMax(count) || b || ctx.sliceError(this, false);
+        int count = ctx.incrementSliceCount(this);
+        return testSliceMax(count) || ctx.sliceError(this, false);
     }
 
     /// test against global min count

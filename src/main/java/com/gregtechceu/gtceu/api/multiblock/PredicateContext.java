@@ -21,7 +21,6 @@ import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -30,11 +29,11 @@ public class PredicateContext {
 
     protected final List<PatternError> errors = new ArrayList<>();
     protected final List<PatternError> commitedErrors = new ArrayList<>();
-    protected final Object2ObjectMap<BasePredicate, BitSet> validationMap = new Object2ObjectArrayMap<>();
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
+    public final Object2ObjectMap<BasePredicate, Set<BlockPos>> predicatePositions = new Object2ObjectArrayMap<>();
     @Getter
     private FailureReason lastFailureReason;
 
@@ -132,13 +131,11 @@ public class PredicateContext {
     }
 
     public int incrementGlobalCount(BasePredicate predicate) {
-        globalCache().mergeInt(predicate, 1, Integer::sum);
-        return globalCache().getInt(predicate);
+        return globalCache().mergeInt(predicate, 1, Integer::sum);
     }
 
     public int incrementSliceCount(BasePredicate predicate) {
-        Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
-        return layerCache().getInt(predicate);
+        return Objects.requireNonNull(layerCache()).mergeInt(predicate, 1, Integer::sum);
     }
 
     public int getGlobalCount(BasePredicate predicate) {
@@ -147,11 +144,6 @@ public class PredicateContext {
 
     public int getSliceCount(BasePredicate predicate) {
         return Objects.requireNonNull(layerCache()).getInt(predicate);
-    }
-
-    public void updateState(BasePredicate predicate, FailureReason index, boolean passed) {
-        validationMap.computeIfAbsent(predicate, p -> new BitSet())
-                .set(index.ordinal(), passed);
     }
 
     public enum FailureReason {
