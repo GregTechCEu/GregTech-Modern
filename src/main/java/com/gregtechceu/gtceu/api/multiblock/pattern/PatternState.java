@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -106,6 +105,10 @@ public class PatternState extends PredicateContext {
 
     protected void updateCache() {
         getCache().put(pos().asLong(), new BlockInfo(state(), blockEntity()));
+    }
+
+    public boolean shouldCheckFlip() {
+        return this.getLastFailureReason().shouldCheckFlip();
     }
 
     @Getter

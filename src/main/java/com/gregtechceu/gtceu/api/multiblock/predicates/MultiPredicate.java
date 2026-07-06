@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext.FailureReason;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -36,7 +37,9 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
             @Override
             public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
+                boolean passed = predicate.test(ctx);
+                ctx.updateState(this, FailureReason.INTERNAL, passed);
+                return passed;
             }
 
             @Override
@@ -80,17 +83,32 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     /// delegates to {@link #type} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
-        return getType().run(ctx, this);
+        boolean passed = false;
+        for (BasePredicate p : predicateList) {
+            passed |= p.testLimited(ctx);
+        }
+        return passed;
+//        return getType().run(ctx, this);
     }
 
     /// delegates to {@link #type} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
-        return getType().testGlobalMin(ctx, this);
+        boolean passed = false;
+        for (BasePredicate p : predicateList) {
+            ctx.updateState(p, FailureReason.GLOBAL_MIN, passed |= p.testGlobalMin(ctx));
+        }
+        return passed;
+//        return getType().testGlobalMin(ctx, this);
     }
 
     /// delegates to {@link #type} to test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        return getType().testSliceMin(ctx, this);
+        boolean passed = false;
+        for (BasePredicate p : predicateList) {
+            ctx.updateState(p, FailureReason.SLICE_MIN, passed |= p.testSliceMin(ctx));
+        }
+        return passed;
+//        return getType().testSliceMin(ctx, this);
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
@@ -326,14 +344,26 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return EMPTY;
     }
 
-    protected enum Logic {
+    public boolean testGlobal(PredicateContext ctx) {
+        // this is what depends on logic
+        return getType().test(ctx, this, Tester.GLOBAL_MIN) &&
+                getType().test(ctx, this, Tester.GLOBAL_MAX);
+    }
+
+    public boolean testSlice(PredicateContext ctx) {
+        // this is what depends on logic
+        return getType().test(ctx, this, Tester.SLICE_MIN) &&
+                getType().test(ctx, this, Tester.SLICE_MAX);
+    }
+
+    public enum Logic {
 
         SINGLE, OR, AND, XOR;
 
         /// @param a will have type set
         /// @param b may or may not be a multi predicate
         /// @return copy of {@code a} combined with {@code b}
-        protected MultiPredicate combine(MultiPredicate a, @Nullable MultiPredicate b) {
+        MultiPredicate combine(MultiPredicate a, @Nullable MultiPredicate b) {
             if (b == null) return a; // no op
             if (a.isEmpty()) return b;
             var ret = new MultiPredicate(this, a.hasAir() || b.hasAir());
@@ -342,7 +372,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
             return ret.sorted();
         }
 
-        private void appendPredicate(MultiPredicate source, MultiPredicate dest) {
+        void appendPredicate(MultiPredicate source, MultiPredicate dest) {
             if (source.isSingle()) {
                 dest.addPredicate(source.predicateList.get(0));
             } else if (source.type != this) {
@@ -374,8 +404,10 @@ public class MultiPredicate implements Iterable<BasePredicate> {
          * really it should be "only one predicate can be present in multi/slice"
          *
          * how do i handle global/slice max?
+         * i dont think i actually need to
+         * what i really need to do is track passed vs failed predicates
          */
-        protected boolean run(PredicateContext ctx, MultiPredicate predicates) {
+        boolean run(PredicateContext ctx, MultiPredicate predicates) {
             for (BasePredicate basePredicate : predicates) {
                 if (basePredicate.testLimited(ctx)) return true;
             }
@@ -396,6 +428,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
             if (tester.shouldSkipTest(ctx)) return true;
             int skipped = 0, passed = 0, size = predicates.predicateList.size();
             for (BasePredicate predicate : predicates) {
+                // this doesn't work with compacted multi predicates
+
                 // get min count
                 int expectedCount = tester.getCount(predicate);
                 if (expectedCount == -1) {
@@ -409,6 +443,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
                 boolean success = tester.test(expectedCount, actualCount);
                 if (success) passed++;
+                ctx.updateState(predicate, tester.getFailureReason(), success);
 
                 if (tester.returnEarly(passed, success, this)) {
                     // get true or false
@@ -423,7 +458,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         }
     }
 
-    enum Tester {
+    public enum Tester {
         GLOBAL_MIN,
         GLOBAL_MAX,
         SLICE_MIN,
@@ -440,10 +475,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
         public int getActualCount(PredicateContext ctx, BasePredicate predicate) {
             return switch (this) {
-                case GLOBAL_MIN -> ctx.getGlobalCount(predicate);
-                case GLOBAL_MAX -> ctx.incrementGlobalCount(predicate);
-                case SLICE_MIN -> ctx.getSliceCount(predicate);
-                case SLICE_MAX -> ctx.incrementSliceCount(predicate);
+                case GLOBAL_MIN, GLOBAL_MAX -> ctx.getGlobalCount(predicate);
+                case SLICE_MIN, SLICE_MAX -> ctx.getSliceCount(predicate);
             };
         }
 
@@ -513,6 +546,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 onError(ctx, predicates);
             }
             return error;
+        }
+
+        public FailureReason getFailureReason() {
+            return switch (this) {
+                case GLOBAL_MIN -> FailureReason.GLOBAL_MIN;
+                case GLOBAL_MAX -> FailureReason.GLOBAL_MAX;
+                case SLICE_MIN -> FailureReason.SLICE_MIN;
+                case SLICE_MAX -> FailureReason.SLICE_MAX;
+            };
         }
     }
 }

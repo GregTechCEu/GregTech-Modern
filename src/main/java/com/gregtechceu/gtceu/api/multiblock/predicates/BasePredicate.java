@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.client.Minecraft;
@@ -58,21 +57,24 @@ public abstract class BasePredicate {
 
     /// test with internal function and global/slice max
     public boolean testLimited(PredicateContext ctx) {
-        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+        // this is some fucked up shit
+        boolean passed = test(ctx);
+        ctx.updateState(this, PredicateContext.FailureReason.INTERNAL, passed);
+        return passed;
     }
 
     /// test against global max count
-    public boolean testGlobalMax(PredicateContext ctx) {
+    public boolean testGlobalMax(boolean b, PredicateContext ctx) {
         if (getMaxCount() == -1) return true;
-        int count = ctx.incrementGlobalCount(this);
-        return testGlobalMax(count) || ctx.globalError(this, false);
+        int count = b ? ctx.incrementGlobalCount(this) : ctx.getGlobalCount(this);
+        return testGlobalMax(count) || b || ctx.globalError(this, false);
     }
 
     /// test against slice max count
-    public boolean testSliceMax(PredicateContext ctx) {
+    public boolean testSliceMax(boolean b, PredicateContext ctx) {
         if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
-        int count = ctx.incrementSliceCount(this);
-        return testSliceMax(count) || ctx.sliceError(this, false);
+        int count = b ? ctx.incrementSliceCount(this) : ctx.getSliceCount(this);
+        return testSliceMax(count) || b || ctx.sliceError(this, false);
     }
 
     /// test against global min count

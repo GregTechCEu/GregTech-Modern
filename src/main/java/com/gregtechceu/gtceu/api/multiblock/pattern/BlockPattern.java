@@ -123,7 +123,7 @@ public class BlockPattern implements IBlockPattern {
             return;
         }
 
-        if (allowsFlip && patternState.getLastFailureReason().shouldCheckFlip()) {
+        if (allowsFlip && patternState.shouldCheckFlip()) {
             // this overwrites any previous errors
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
@@ -162,7 +162,7 @@ public class BlockPattern implements IBlockPattern {
 
         // global min check
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testGlobalMin(patternState)) {
+            if (!predicate.testGlobal(patternState)) {
                 patternState.commitErrors();
                 return false;
             }
@@ -227,7 +227,7 @@ public class BlockPattern implements IBlockPattern {
 
         // slice min check
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testSliceMin(patternState)) {
+            if (!predicate.testSlice(patternState)) {
                 patternState.commitErrors();
                 return false;
             }

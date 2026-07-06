@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -22,15 +24,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class PredicateContext {
 
     protected final List<PatternError> errors = new ArrayList<>();
     protected final List<PatternError> commitedErrors = new ArrayList<>();
+    protected final Object2ObjectMap<BasePredicate, BitSet> validationMap = new Object2ObjectArrayMap<>();
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
@@ -147,6 +147,11 @@ public class PredicateContext {
 
     public int getSliceCount(BasePredicate predicate) {
         return Objects.requireNonNull(layerCache()).getInt(predicate);
+    }
+
+    public void updateState(BasePredicate predicate, FailureReason index, boolean passed) {
+        validationMap.computeIfAbsent(predicate, p -> new BitSet())
+                .set(index.ordinal(), passed);
     }
 
     public enum FailureReason {
