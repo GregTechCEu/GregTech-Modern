@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
@@ -27,7 +26,6 @@ import net.minecraft.world.item.Items;
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
-import brachy.modularui.api.value.IValue;
 import brachy.modularui.drawable.*;
 import brachy.modularui.drawable.text.TextRenderer;
 import brachy.modularui.factory.SidedPosGuiData;
@@ -38,7 +36,6 @@ import brachy.modularui.utils.Alignment;
 import brachy.modularui.utils.Color;
 import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.BoolValue;
-import brachy.modularui.value.ObjectValue;
 import brachy.modularui.value.sync.*;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.*;
@@ -292,20 +289,6 @@ public class GTMuiWidgets {
                         (machine.getCircuitInventory().getStackInSlot(0).isEmpty() ? 0 :
                                 IntCircuitBehaviour
                                         .getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0))))));
-    }
-
-    public static ItemDisplayWidget createCyclingItemDisplay(List<ItemStack> stacks) {
-        final int CYCLE_TIME = 1000;
-
-        IValue<ItemStack> value = new ObjectValue.Dynamic<>(ItemStack.class,
-                () -> stacks.get((int) ((Util.getMillis() % (CYCLE_TIME * stacks.size())) / CYCLE_TIME)), x -> {});
-        return new ItemDisplayWidget()
-                .item(value)
-                .tooltipDynamic(tooltip -> {
-                    stacks.forEach(stack -> tooltip.addDrawable(new ItemDrawable(stack)));
-                    tooltip.newLine().addFromItem(value.getValue());
-                    tooltip.markDirty();
-                });
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {

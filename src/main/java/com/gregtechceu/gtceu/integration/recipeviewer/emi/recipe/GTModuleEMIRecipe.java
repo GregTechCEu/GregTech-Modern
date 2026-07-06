@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
@@ -10,7 +12,6 @@ import com.gregtechceu.gtceu.api.item.module.ItemModule;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
 
 import net.minecraft.network.chat.Component;
@@ -27,9 +28,7 @@ import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
 import brachy.modularui.value.IntValue;
-import brachy.modularui.value.ObjectValue;
 import brachy.modularui.widgets.CycleButtonWidget;
-import brachy.modularui.widgets.ItemDisplayWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.dynamic.DynamicHandler;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
@@ -44,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+@SuppressWarnings("UnstableApiUsage")
 public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
 
     private static final ItemStack NO_ITEM = Items.BARRIER.getDefaultInstance()
@@ -92,28 +92,24 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
                     ItemModule module = recipe.getModules()[actualValue.getValue()];
                     ItemStack[] moduleItems = getModuleItems(recipe, module);
                     ItemStack[] allEquipment = getEquipment(recipe, module);
-                    ItemDisplayWidget equipmentWidget = GTMuiWidgets.createCyclingItemDisplay(List.of(allEquipment))
-                            .recipeSlotRole(RecipeSlotRole.INPUT);
-                    ItemDisplayWidget moduleItemWidget = GTMuiWidgets.createCyclingItemDisplay(List.of(moduleItems))
-                            .recipeSlotRole(RecipeSlotRole.INPUT);
-                    var equipmentValue = equipmentWidget.getValue();
-                    var moduleItemValue = moduleItemWidget.getValue();
-                    assert equipmentValue != null && moduleItemValue != null;
+                    List<ItemStack> allResults = Arrays.stream(allEquipment)
+                            .map(equipment -> getResult(recipe, equipment, moduleItems[0], module))
+                            .toList();
                     return Flow.col()
                             .coverChildren()
                             .horizontalCenter()
                             .child(Flow.row()
                                     .coverChildren()
-                                    .child(equipmentWidget)
+                                    .child(RecipeViewerSlotWidget.create()
+                                            .value(ItemStackList.of(List.of(allEquipment)))
+                                            .recipeSlotRole(RecipeSlotRole.INPUT))
                                     .child(GuiTextures.ADD.asWidget())
-                                    .child(moduleItemWidget)
+                                    .child(RecipeViewerSlotWidget.create()
+                                            .value(ItemStackList.of(List.of(moduleItems)))
+                                            .recipeSlotRole(RecipeSlotRole.INPUT))
                                     .child(GuiTextures.RIGHTLOAD.asWidget())
-                                    .child(new ItemDisplayWidget()
-                                            .item(new ObjectValue.Dynamic<>(ItemStack.class, () -> getResult(
-                                                    recipe,
-                                                    equipmentValue.getValue(),
-                                                    moduleItemValue.getValue(),
-                                                    module), x -> {}))
+                                    .child(RecipeViewerSlotWidget.create()
+                                            .value(ItemStackList.of(allResults))
                                             .recipeSlotRole(RecipeSlotRole.OUTPUT)))
                             .child(new TextWidget<>(module.getInfo()));
                 });
@@ -130,7 +126,8 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
                 .child(Flow.row()
                         .coverChildren()
                         .horizontalCenter()
-                        .child(GTMuiWidgets.createCyclingItemDisplay(List.of(moduleItems))))
+                        .child(RecipeViewerSlotWidget.create()
+                                .value(ItemStackList.of(List.of(moduleItems)))))
                 .child(new DynamicWidget<>()
                         .clientOnlyHandler(handler))
                 .childIf(modules.length > 0, () -> new CycleButtonWidget()
