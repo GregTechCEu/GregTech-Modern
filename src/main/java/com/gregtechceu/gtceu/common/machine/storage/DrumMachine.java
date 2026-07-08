@@ -121,7 +121,7 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
-        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        autoOutput.setAllowAutoOutputFluids(!autoOutput.isAutoOutputFluids());
         return InteractionResult.SUCCESS;
     }
 }
