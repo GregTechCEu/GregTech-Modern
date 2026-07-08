@@ -126,7 +126,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
 
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
-        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        autoOutput.setAllowAutoOutputFluids(!autoOutput.isAutoOutputFluids());
         return InteractionResult.SUCCESS;
     }
 
