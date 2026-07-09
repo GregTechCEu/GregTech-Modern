@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
-import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
-import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -160,9 +158,29 @@ public class BlockPattern implements IBlockPattern {
         sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
+        /*
+         * NOTES
+         * as we iterate each slice of the multiblock
+         * check each predicates' state check
+         * each block pos can only be one predicate
+         * we need to know what logic type each predicate should uses
+         * this is only globally
+         * thought i could see a use for xor in a slice, but not globally
+         * how exactly would this work
+         * XOR_SLICE and XOR_GLOBAL?
+         * and idea i had is that if a xor multi predicate is iterated
+         * a list of "banned" base predicates could be checked
+         * so if another predicate from the same multi predicate passes, it would fail
+         *
+         * another predicament is handling the edge case of a xor predicate
+         * having two-
+         * actually i need the xor logic to run in the state check
+         * along with the previously mentioned idea of banned predicates
+         */
+
         // global min check
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testGlobal(patternState)) {
+            if (!predicate.testGlobalMin(patternState)) {
                 patternState.commitErrors();
                 return false;
             }
@@ -227,7 +245,7 @@ public class BlockPattern implements IBlockPattern {
 
         // slice min check
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testSlice(patternState)) {
+            if (!predicate.testSliceMin(patternState)) {
                 patternState.commitErrors();
                 return false;
             }

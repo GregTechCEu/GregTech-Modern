@@ -79,6 +79,7 @@ public class BasicSliceStrategy extends SliceStrategy {
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
+                state.commitSliceErrors();
                 return slices.get(index).actualRepeats = i - 1;
             }
         }

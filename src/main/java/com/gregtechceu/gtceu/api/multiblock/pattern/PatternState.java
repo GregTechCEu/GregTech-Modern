@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Contains vital information to an instanced version of a structure pattern.
@@ -62,6 +66,12 @@ public class PatternState extends PredicateContext {
 
     public void clearErrors() {
         this.errors.clear();
+    }
+
+    List<List<PatternError>> sliceErrors = new ArrayList<>();
+
+    public void commitSliceErrors() {
+        this.sliceErrors.add(List.copyOf(this.errors));
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
