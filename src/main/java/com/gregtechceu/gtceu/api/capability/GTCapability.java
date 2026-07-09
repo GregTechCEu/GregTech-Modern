@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraftforge.common.capabilities.Capability;
