@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
 
@@ -74,5 +75,10 @@ public final class RangedItemIngredient extends ItemIngredient {
     @Override
     public ChancedItemIngredient copyWithChance(int chance) {
         return new ChancedItemIngredient(copy(), chance);
+    }
+
+    @Override
+    public Ingredient toVanillaIngredient() {
+        return inner.toVanillaIngredient();
     }
 }

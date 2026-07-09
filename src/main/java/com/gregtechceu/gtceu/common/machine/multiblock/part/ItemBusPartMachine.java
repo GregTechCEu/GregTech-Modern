@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
@@ -19,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -46,12 +43,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -165,27 +158,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
-    }
-
-    @Override
-    protected RecipeHandlerList getHandlerList() {
-        if (handlerList == null) {
-            List<IRecipeHandler<?>> handlers = new ArrayList<>();
-            IO handlerIO = null;
-            for (var trait : traits) {
-                if (trait instanceof IRecipeHandler<?> rht) {
-                    if (handlerIO == null) handlerIO = rht.getHandlerIO();
-                    handlers.add(rht);
-                }
-            }
-
-            if (handlers.isEmpty()) {
-                handlerList = RecipeHandlerList.NO_DATA;
-            } else {
-                handlerList = RecipeHandlerList.of(this::getPaintingColor, this::isDistinct, handlers);
-            }
-        }
-        return handlerList;
     }
 
     //////////////////////////////////////

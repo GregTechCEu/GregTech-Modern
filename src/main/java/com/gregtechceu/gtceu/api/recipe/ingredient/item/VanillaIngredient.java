@@ -90,4 +90,9 @@ public class VanillaIngredient extends ItemIngredient {
     public ChancedItemIngredient copyWithChance(int chance) {
         return new ChancedItemIngredient(copy(), chance);
     }
+
+    @Override
+    public Ingredient toVanillaIngredient() {
+        return inner;
+    }
 }

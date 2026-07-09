@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
@@ -100,6 +101,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
             if (handlers.isEmpty()) {
                 handlerList = RecipeHandlerList.NO_DATA;
+            } else if (this instanceof IDistinctPart distinctPart) {
+                handlerList = RecipeHandlerList.of(this::getPaintingColor, distinctPart::isDistinct, handlers);
             } else {
                 handlerList = RecipeHandlerList.of(this::getPaintingColor, handlers);
             }

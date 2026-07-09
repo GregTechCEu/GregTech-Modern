@@ -6,6 +6,8 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import lombok.Getter;
 
@@ -95,5 +97,10 @@ public final class IntCircuitIngredient extends ItemIngredient {
     @Override
     public IntCircuitIngredient copyWithChance(int chance) {
         return copy();
+    }
+
+    @Override
+    public Ingredient toVanillaIngredient() {
+        return StrictNBTIngredient.of(IntCircuitBehaviour.stack(configuration));
     }
 }

@@ -55,6 +55,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         super(0, 0, width, height);
         this.mainPage = mainPage;
 
+        addWidget(this.titleBar = new TitleBarWidget(width, this::navigateBack, this::openPageSwitcher));
         addWidget(this.pageContainer = new WidgetGroup(0, 0, width, height));
 
         if (mainPage.hasPlayerInventory()) {
@@ -65,7 +66,6 @@ public class FancyMachineUIWidget extends WidgetGroup {
             playerInventory = null;
         }
 
-        addWidget(this.titleBar = new TitleBarWidget(width, this::navigateBack, this::openPageSwitcher));
         addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::navigate, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));

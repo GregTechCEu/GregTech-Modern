@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.ItemMapIngredient
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
 
@@ -58,5 +59,10 @@ public final class SimpleItemIngredient extends ItemIngredient {
     @Override
     public ChancedItemIngredient copyWithChance(int chance) {
         return new ChancedItemIngredient(copy(), chance);
+    }
+
+    @Override
+    public Ingredient toVanillaIngredient() {
+        return Ingredient.of(item);
     }
 }

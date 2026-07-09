@@ -229,6 +229,8 @@ public abstract class ItemIngredient {
         return ranged(machine.asStack(), minCount, maxCount);
     }
 
+    abstract public Ingredient toVanillaIngredient();
+
     public static ItemIngredient fromNetwork(FriendlyByteBuf buf) {
         byte type = buf.readByte();
         return switch (type) {

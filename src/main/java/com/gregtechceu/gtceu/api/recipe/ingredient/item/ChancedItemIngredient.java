@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Range;
@@ -90,5 +91,10 @@ public final class ChancedItemIngredient extends ItemIngredient implements IChan
     @Override
     public ChancedItemIngredient copyWithChance(int chance) {
         return new ChancedItemIngredient(inner.copy(), chance, multiplier);
+    }
+
+    @Override
+    public Ingredient toVanillaIngredient() {
+        return inner.toVanillaIngredient();
     }
 }
