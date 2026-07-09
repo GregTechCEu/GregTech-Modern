@@ -5,12 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
+import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.client.Minecraft;
@@ -21,20 +18,17 @@ import brachy.modularui.api.drawable.IDrawable;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.utils.Alignment;
-import brachy.modularui.utils.MouseData;
 import brachy.modularui.value.DoubleValue;
 import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widget.WidgetTree;
 import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-
-import static com.gregtechceu.gtceu.api.GTValues.ULV;
-import static com.gregtechceu.gtceu.api.GTValues.V;
 
 public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
 
@@ -62,6 +56,9 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
     private final int minTier;
     private int tier;
 
+    private final RecipeModifierPreview recipeModifierPreview;
+    private @Nullable Component modifierPreviewFailReason = null;
+
     public GTRecipeViewerWidget(GTRecipe recipe) {
         this.baseRecipe = recipe;
         this.recipeType = recipe.getType();
@@ -70,6 +67,7 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 "No recipe type UI declared, add one to your recipe type definition.");
         this.minTier = RecipeHelper.getRecipeEUtTier(recipe);
         this.tier = minTier;
+        this.recipeModifierPreview = uiLayout.getRecipeModifierPreview().get();
 
         Flow mainColumn = Flow.col().widthRel(1f).coverChildrenHeight();
 
@@ -93,11 +91,8 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
         mainColumn.child(additionalRecipeContent.child(textComponents));
 
         loadContentIntoSlots();
-
         buildAdditionalRecipeContent();
-
-        attachOverclockButton();
-
+        attachRecipeModifierPreview();
         attachDebugRecipeIDButton();
     }
 
@@ -193,22 +188,20 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                 }));
     }
 
-    private void attachOverclockButton() {
-        textComponents.child(new ButtonWidget<>().background(IDrawable.NONE)
+    private void attachRecipeModifierPreview() {
+
+        var row = Flow.row().widthRel(1f).coverChildrenHeight();
+
+        row.child(new ButtonWidget<>().background(IDrawable.NONE)
                 .hoverBackground(IDrawable.NONE)
-                .size(22, 12)
-                .rightRel(0.0f)
                 .overlay(Text.dynamic(() -> Component.literal(GTValues.VNF[tier])))
                 .tooltipBuilder(tooltip -> {
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.0", GTValues.VNF[minTier]));
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.1"));
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.2"));
                     tooltip.addLine(Text.lang("gtceu.oc.tooltip.3"));
-                    tooltip.addLine(Text.lang("gtceu.oc.tooltip.4"));
                 })
                 .onMousePressed((ctx, b) -> {
-                    var mouse = MouseData.create(b);
-
                     if (b == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
                         if (tier == GTValues.MAX) return true;
                         tier++;
@@ -219,37 +212,24 @@ public class GTRecipeViewerWidget extends ParentWidget<GTRecipeViewerWidget> {
                         tier = minTier;
                     }
 
-                    updateOverclock(mouse);
+                    runModifierPreview();
                     return true;
                 }).setEnabledIf(w -> RecipeHelper.getRealEUtWithIO(baseRecipe).isInput()));
+
+        textComponents.child(row);
     }
 
-    private void updateOverclock(MouseData data) {
-        OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
-        if (data.shift()) oc = OverclockingLogic.PERFECT_OVERCLOCK;
+    private void runModifierPreview() {
+        ModifierFunction newModifier = recipeModifierPreview.getModifier(baseRecipe, minTier, tier);
+        GTRecipe result = newModifier.apply(baseRecipe);
 
-        // TODO more contextual oc values based on recipe type or machine
-        if (modifiedRecipe.recipeType == GTRecipeTypes.FUSION_RECIPES) {
-            oc = FusionReactorMachine.FUSION_OC;
-        }
-
-        applyOverclock(oc);
-    }
-
-    private void applyOverclock(OverclockingLogic logic) {
-        EnergyStack inputEUt = baseRecipe.getInputEUt();
-
-        if (tier > minTier && !inputEUt.isEmpty()) {
-            int ocs = tier - minTier;
-            if (minTier == ULV) ocs--;
-            var params = new OverclockingLogic.OCParams(inputEUt.voltage(), baseRecipe.duration, ocs, 1);
-            var modifier = logic.runOverclockingLogic(params, V[tier]).toModifier();
-
-            modifiedRecipe = Objects.requireNonNull(modifier.apply(baseRecipe));
-        } else {
+        if (result == null) {
             modifiedRecipe = baseRecipe;
+            modifierPreviewFailReason = newModifier.getFailReason();
+        } else {
+            modifiedRecipe = result;
+            modifierPreviewFailReason = null;
         }
-
         loadContentIntoSlots();
     }
 }

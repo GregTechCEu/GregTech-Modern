@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
@@ -22,6 +24,7 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Holds UI information for a recipe type UI.
@@ -41,16 +44,19 @@ public class GTRecipeTypeUILayout {
     private final List<RecipeUIModifier> recipeUIModifiers;
     @Getter
     private final @Nullable Function<GTRecipe, Flow> customUIBuilder;
+    @Getter
+    private final Supplier<RecipeModifierPreview> recipeModifierPreview;
 
     public GTRecipeTypeUILayout(GTRecipeType recipeType, Map<RecipeCapability<?>, CapabilityUIInfo> capabilityInfo,
                                 List<RecipeUIModifier> recipeUIModifiers,
                                 ProgressWidgetSupplier progressWidgetSupplier,
-                                @Nullable Function<GTRecipe, Flow> customUIBuilder) {
+                                @Nullable Function<GTRecipe, Flow> customUIBuilder, Supplier<RecipeModifierPreview> modifierPreview) {
         this.recipeType = recipeType;
         this.capabilityInfo = capabilityInfo;
         this.recipeUIModifiers = recipeUIModifiers;
         this.progressWidgetSupplier = progressWidgetSupplier;
         this.customUIBuilder = customUIBuilder;
+        this.recipeModifierPreview = modifierPreview;
     }
 
     public CapabilityUIInfo capabilityInfo(RecipeCapability<?> cap) {
@@ -130,6 +136,8 @@ public class GTRecipeTypeUILayout {
 
         private @Nullable Function<GTRecipe, Flow> customUIBuilder;
 
+        private Supplier<RecipeModifierPreview> recipeModifierPreview;
+
         public Builder(GTRecipeType recipeType) {
             this.recipeType = recipeType;
 
@@ -148,6 +156,8 @@ public class GTRecipeTypeUILayout {
             getCapInfo(FluidRecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.FLUID;
             getCapInfo(CWURecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.COMPUTATION;
             getCapInfo(EURecipeCapability.CAP).capabilityWidgetBuilder = CapabilityContentBuilder.EU;
+
+            recipeModifierPreview = GTRecipeModifiers.ocModifierPreview(OverclockingLogic.NON_PERFECT_OVERCLOCK);
         }
 
         private CapabilityUIInfo getCapInfo(RecipeCapability<?> cap) {
@@ -348,6 +358,11 @@ public class GTRecipeTypeUILayout {
             return this;
         }
 
+        public Builder setRecipeModifierPreview(Supplier<RecipeModifierPreview> modifierPreview) {
+            this.recipeModifierPreview = modifierPreview;
+            return this;
+        }
+
         public GTRecipeTypeUILayout build() {
             var progressWidgetSupplier = this.progressWidgetSupplier;
             if (progressWidgetSupplier == null) {
@@ -359,7 +374,7 @@ public class GTRecipeTypeUILayout {
             }
 
             var layout = new GTRecipeTypeUILayout(recipeType, capabilityInfo, recipeUIModifiers, progressWidgetSupplier,
-                    customUIBuilder);
+                    customUIBuilder, recipeModifierPreview);
             layout.progressBar = progressBar;
             return layout;
         }

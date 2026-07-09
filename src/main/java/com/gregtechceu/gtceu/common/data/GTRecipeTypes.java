@@ -213,7 +213,9 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.IN, 0, GTGuiTextures.MOLECULAR_OVERLAY_3)
                     .setFluidSlotOverlay(IO.IN, 1, GTGuiTextures.MOLECULAR_OVERLAY_4)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
-                    .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_2))
+                    .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_2)
+                    .setRecipeModifierPreview(GTRecipeModifiers.ocModifierPreview(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
+            )
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .onRecipeBuild((recipeBuilder, provider) -> GTRecipeTypes.LARGE_CHEMICAL_RECIPES.copyFrom(recipeBuilder)
                     .save(provider));
@@ -685,14 +687,18 @@ public class GTRecipeTypes {
                     .setFluidSlotOverlay(IO.IN, 2, GTGuiTextures.MOLECULAR_OVERLAY_4)
                     .setItemSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
                     .setFluidSlotOverlay(IO.OUT, 0, GTGuiTextures.VIAL_OVERLAY_1)
-                    .setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE))
+                    .setProgressBar(GTGuiTextures.PROGRESS_ARROW_MULTIPLE)
+                    .setRecipeModifierPreview(GTRecipeModifiers.ocModifierPreview(OverclockingLogic.PERFECT_OVERCLOCK_SUBTICK))
+            )
             .setSound(GTValues.FOOLS.getAsBoolean() ? GTSoundEntries.SCIENCE : GTSoundEntries.CHEMICAL)
             .setSmallRecipeMap(CHEMICAL_RECIPES);
 
     public static final GTRecipeType FUSION_RECIPES = register("fusion_reactor", MULTIBLOCK).setMaxIOSize(0, 0, 2, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_FUSION)
-                    .addRecipeUIModifier(FusionReactorMachine::addEUToStartLabel))
+                    .addRecipeUIModifier(FusionReactorMachine::addEUToStartLabel)
+                    .setRecipeModifierPreview(GTRecipeModifiers.ocModifierPreview(FusionReactorMachine.FUSION_OC))
+            )
             .setSound(GTSoundEntries.ARC)
             .setMaxTooltips(4);
 

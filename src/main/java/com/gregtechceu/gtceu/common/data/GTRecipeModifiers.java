@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.gui.RecipeModifierPreview;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
@@ -27,7 +28,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.GTValues.ULV;
+import static com.gregtechceu.gtceu.api.GTValues.V;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 
 public class GTRecipeModifiers {
@@ -50,6 +54,30 @@ public class GTRecipeModifiers {
     public static final RecipeModifier OC_NON_PERFECT = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK);
     public static final RecipeModifier OC_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(PERFECT_OVERCLOCK_SUBTICK);
     public static final RecipeModifier OC_NON_PERFECT_SUBTICK = ELECTRIC_OVERCLOCK.apply(NON_PERFECT_OVERCLOCK_SUBTICK);
+
+    public static Supplier<RecipeModifierPreview> ocModifierPreview(OverclockingLogic overclockingLogic) {
+        return () -> new RecipeModifierPreview() {
+
+            @Override
+            public boolean showPreviewUIPanel() {
+                return false;
+            }
+
+            @Override
+            public void buildPreviewUIPanel() {}
+
+            @Override
+            public @NotNull ModifierFunction getModifier(@NotNull GTRecipe baseRecipe, int minVoltageTier, int selectedVoltageTier) {
+
+                EnergyStack inputEUt = baseRecipe.getInputEUt();
+
+                int ocs = selectedVoltageTier - minVoltageTier;
+                if (minVoltageTier == ULV) ocs--;
+                var params = new OverclockingLogic.OCParams(inputEUt.voltage(), baseRecipe.duration, ocs, 1);
+                return overclockingLogic.runOverclockingLogic(params, V[selectedVoltageTier]).toModifier();
+            }
+        };
+    }
 
     public static final BiFunction<MedicalCondition, Integer, RecipeModifier> ENVIRONMENT_REQUIREMENT = Util
             .memoize((condition, maxAllowedStrength) -> (machine, recipe) -> {
@@ -252,7 +280,7 @@ public class GTRecipeModifiers {
         if (parallels == 0) return ModifierFunction.NULL;
 
         int duration = (int) (128 * 2.0 * parallels / maxParallel);
-        long eut = (long) (4 * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
+        long eut = (long) (4L * maxParallel / (8.0 * coilMachine.getCoilType().getEnergyDiscount()));
         ModifierFunction baseModifier = r -> {
             var copy = r.copy();
             EURecipeCapability.putEUContent(copy.tickInputs, new EnergyStack(Math.max(1, eut)));

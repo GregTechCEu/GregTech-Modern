@@ -4,6 +4,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import brachy.modularui.api.drawable.Text;
 
+/**
+ * A function that modifiers a recipe viewer UI after creation. Used to add extra information to a recipe UI (e.g. conditions, coil requirements, etc)
+ */
 @FunctionalInterface
 public interface RecipeUIModifier {
 
