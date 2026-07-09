@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -27,8 +27,7 @@ import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.slot.ItemSlot;
 import lombok.Getter;
 
-public class CrateMachine extends MetaMachine implements IMuiMachine,
-                          IDropSaveMachine {
+public class CrateMachine extends MetaMachine implements IMuiMachine {
 
     @Getter
     private final Material material;
@@ -105,7 +104,7 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
         if (isTaped) tag.put("inventory", inventory.storage.serializeNBT());
     }
 
@@ -114,10 +113,5 @@ public class CrateMachine extends MetaMachine implements IMuiMachine,
         if (tag.contains("inventory")) {
             this.inventory.storage.deserializeNBT(tag.getCompound("inventory"));
         }
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return isTaped;
     }
 }

@@ -29,7 +29,7 @@ public abstract class MultiblockMachineTrait extends MachineTrait {
      * 
      * @param substructureName - the name of the substructure
      *
-     * @see MultiblockControllerMachine#formStructure(String) ()
+     * @see MultiblockControllerMachine#formStructure(String)
      */
     public void onStructureFormed(String substructureName) {}
 

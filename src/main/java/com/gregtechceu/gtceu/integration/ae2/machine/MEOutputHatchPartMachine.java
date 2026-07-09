@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
@@ -32,7 +31,6 @@ import brachy.modularui.widget.scroll.VerticalScrollData;
 import brachy.modularui.widgets.DynamicSyncedWidget;
 import brachy.modularui.widgets.TextWidget;
 import brachy.modularui.widgets.layout.Flow;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,7 +55,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
     @Override
     protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
         this.internalBuffer = new KeyStorage();
-        return new InaccessibleInfiniteTank(this);
+        return new InaccessibleInfiniteTank();
     }
 
     @Override
@@ -138,7 +136,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
 
         FluidStorageDelegate storage;
 
-        public InaccessibleInfiniteTank(MetaMachine holder) {
+        public InaccessibleInfiniteTank() {
             super(List.of(new FluidStorageDelegate()), IO.OUT, IO.NONE);
             internalBuffer.setOnContentsChanged(this::onContentsChanged);
             storage = (FluidStorageDelegate) getStorages()[0];
@@ -184,8 +182,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine {
         }
 
         @Override
-        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                                boolean simulate) {
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       boolean simulate) {
             if (io != IO.OUT) return left;
             FluidAction action = simulate ? FluidAction.SIMULATE : FluidAction.EXECUTE;
             for (var it = left.iterator(); it.hasNext();) {

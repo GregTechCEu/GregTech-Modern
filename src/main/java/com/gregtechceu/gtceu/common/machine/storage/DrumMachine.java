@@ -5,8 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
@@ -29,7 +28,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class DrumMachine extends MetaMachine implements IDropSaveMachine {
+public class DrumMachine extends MetaMachine {
 
     @Getter
     private final int maxStoredFluids;
@@ -96,7 +95,8 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
     //////////////////////////////////////
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
+        if (clone || stored.isEmpty()) return;
         tag.put("Fluid", stored.writeToNBT(new CompoundTag()));
     }
 
@@ -107,11 +107,6 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
         cache.getStorages()[0].setFluid(stored.copy());
-    }
-
-    @Override
-    public boolean savePickClone() {
-        return false;
     }
 
     @Override
@@ -126,12 +121,7 @@ public class DrumMachine extends MetaMachine implements IDropSaveMachine {
 
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
-        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        autoOutput.setAllowAutoOutputFluids(!autoOutput.isAutoOutputFluids());
         return InteractionResult.SUCCESS;
-    }
-
-    @Override
-    public boolean saveBreak() {
-        return !stored.isEmpty();
     }
 }

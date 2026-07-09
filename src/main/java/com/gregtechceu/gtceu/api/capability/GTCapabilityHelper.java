@@ -77,11 +77,6 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, level, pos, side);
-    }
-
-    @Nullable
     public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_LASER, level, pos, side);
     }

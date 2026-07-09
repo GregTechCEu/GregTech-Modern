@@ -6,14 +6,14 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTMath;
 
@@ -156,8 +156,8 @@ public class GTMuiWidgets {
         return new FluidSlot().size(20, 58).alwaysShowFull(false);
     }
 
-    public static ItemSlot createBatterySlot(IHasBatterySlot batterySlot, PanelSyncManager syncManager) {
-        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(batterySlot.getChargerInventory(), 0));
+    public static ItemSlot createBatterySlot(BatterySlotTrait batterySlot, PanelSyncManager syncManager) {
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(batterySlot.getStorage(), 0));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
@@ -248,11 +248,12 @@ public class GTMuiWidgets {
         return createCircuitSlotPanel(circuitSyncValue, syncManager);
     }
 
-    public static ButtonWidget<?> createCircuitSlotPanel(IHasCircuitSlot machine, ModularPanel<?> parentPanel,
+    public static ButtonWidget<?> createCircuitSlotPanel(ProgrammableCircuitSlotTrait circuitTrait,
+                                                         ModularPanel<?> parentPanel,
                                                          PanelSyncManager syncManager) {
         IntSyncValue circuitSyncValue = createCircuitSlotSyncValue(
-                i -> machine.getCircuitInventory().setStackInSlot(0, i),
-                () -> machine.getCircuitInventory().getStackInSlot(0));
+                i -> circuitTrait.storage.setStackInSlot(0, i),
+                () -> circuitTrait.storage.getStackInSlot(0));
 
         syncManager.syncValue("circuit_slot", circuitSyncValue);
         IPanelHandler circuitPanelHandler = syncManager.syncedPanel("circuit_panel", true,
@@ -271,24 +272,22 @@ public class GTMuiWidgets {
                     return true;
                 })
                 .onMouseScrolled((context, delta) -> {
-                    int newValue = nextCircuitValue(machine.getCircuitInventory().getStackInSlot(0),
+                    int newValue = nextCircuitValue(circuitTrait.storage.getStackInSlot(0),
                             circuitSyncValue.getIntValue(), delta);
                     circuitSyncValue.setValue(newValue);
                     return true;
                 })
                 .overlay(new DynamicDrawable(() -> {
-                    if (machine.getCircuitInventory().getStackInSlot(0).isEmpty()) {
+                    if (circuitTrait.storage.getStackInSlot(0).isEmpty()) {
                         return new DrawableStack(new ItemDrawable(IntCircuitBehaviour.stack(0)),
                                 new ItemDrawable(Items.BARRIER)).asIcon().size(16);
                     }
-                    return new ItemDrawable(machine.getCircuitInventory().getStackInSlot(0))
+                    return new ItemDrawable(circuitTrait.storage.getStackInSlot(0))
                             .asIcon().size(16);
                 }))
                 .tooltipAutoUpdate(true)
-                .tooltipBuilder((r) -> r.addLine(Text.lang("metaitem.int_circuit.configuration",
-                        (machine.getCircuitInventory().getStackInSlot(0).isEmpty() ? 0 :
-                                IntCircuitBehaviour
-                                        .getCircuitConfiguration(machine.getCircuitInventory().getStackInSlot(0))))));
+                .tooltipBuilder((r) -> r
+                        .addLine(Text.lang("metaitem.int_circuit.configuration", circuitTrait.getCurrentCircuit())));
     }
 
     private static int nextCircuitValue(ItemStack stack, int current, double delta) {
@@ -308,7 +307,7 @@ public class GTMuiWidgets {
                     (current == 0 && !ConfigHolder.INSTANCE.machines.ghostCircuit)) {
                 // if at no circuit, loop around to max
                 return IntCircuitBehaviour.CIRCUIT_MAX;
-            } else if (current == 1 && ConfigHolder.INSTANCE.machines.ghostCircuit) {
+            } else if (current == 1) {
                 // if at 1, skip 0 and return no circuit
                 return -1;
             } else {

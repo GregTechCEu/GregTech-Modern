@@ -3,9 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemList;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEItemSlot;
@@ -36,14 +34,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MEInputBusPartMachine extends MEBusPartMachine
-                                   implements IDataStickInteractable, IHasCircuitSlot {
+                                   implements IDataStickInteractable {
 
     protected final static int CONFIG_SIZE = 16;
 
     protected ExportOnlyAEItemList aeItemHandler;
 
     public MEInputBusPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new ExportOnlyAEItemList(CONFIG_SIZE));
+        aeItemHandler = (ExportOnlyAEItemList) getInventory();
+    }
+
+    public MEInputBusPartMachine(BlockEntityCreationInfo info, NotifiableItemStackHandler inventory) {
+        super(info, IO.IN, inventory);
     }
 
     /////////////////////////////////
@@ -53,12 +56,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine
     @Override
     public void onMachineDestroyed() {
         flushInventory();
-    }
-
-    @Override
-    protected NotifiableItemStackHandler createInventory() {
-        this.aeItemHandler = new ExportOnlyAEItemList(CONFIG_SIZE);
-        return this.aeItemHandler;
     }
 
     /////////////////////////////////
@@ -250,7 +247,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             configStacks.put(Integer.toString(i), stackTag);
         }
         tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+                (byte) circuitSlot.getCurrentCircuit());
         tag.putBoolean("DistinctBuses", isDistinct());
         return tag;
     }
@@ -269,7 +266,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine
             }
         }
         if (tag.contains("GhostCircuit")) {
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
         }
         if (tag.contains("DistinctBuses")) {
             setDistinct(tag.getBoolean("DistinctBuses"));
