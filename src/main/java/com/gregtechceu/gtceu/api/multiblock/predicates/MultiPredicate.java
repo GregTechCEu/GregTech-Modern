@@ -29,30 +29,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     MultiPredicate(@Nullable String debugName, Predicate<PredicateContext> predicate,
                    Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        this(new BasePredicate() {
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return candidateStream.toList();
-            }
-
-            @Override
-            public String getTypeName() {
-                return Objects.requireNonNullElse(debugName, "Predicate");
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                if (contents != null) {
-                    contents.accept(builder);
-                }
-            }
-        });
+        this();
+        addPredicate(BasePredicate.of(this, debugName, predicate, candidateStream, contents));
     }
 
     private MultiPredicate(Logic type, boolean hasAir) {
@@ -60,14 +38,9 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.hasAir = hasAir;
     }
 
-    private MultiPredicate(BasePredicate singleton) {
-        this();
-        addPredicate(singleton);
-    }
-
     private MultiPredicate() {
         this.type = Logic.SINGLE;
-        this.hasAir = false;
+        this.hasAir = isAir();
     }
 
     @ApiStatus.Internal
@@ -353,7 +326,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     private class CompactedPredicate extends BasePredicate {
 
-        private MultiPredicate getParent() {
+        public MultiPredicate getParent() {
             return MultiPredicate.this;
         }
 

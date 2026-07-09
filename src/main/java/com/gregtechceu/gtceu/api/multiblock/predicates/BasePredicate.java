@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import java.util.stream.Stream;
 
 public abstract class BasePredicate {
 
+    // should air use isAir() instead of checking for air block directly?
     public static final MultiPredicate AIR = create("Air", ctx -> ctx.state().is(Blocks.AIR));
 
     public static final MultiPredicate ANY = create("Any", ctx -> true);
@@ -52,40 +54,48 @@ public abstract class BasePredicate {
     @Setter
     private @Nullable String nbtParser; // unsure what this does
 
+    public abstract MultiPredicate getParent();
+
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
 
     /// test with internal function and global/slice max
     public boolean testLimited(PredicateContext ctx) {
-        return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
+        ctx.setStage(PredicateContext.PredicateStage.INTERNAL);
+        if (!test(ctx)) return false;
+        ctx.setStage(PredicateContext.PredicateStage.GLOBAL_MAX);
+        if (!testGlobalMax(ctx)) return false;
+        ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
+        return testSliceMax(ctx);
+        // return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count
     public boolean testGlobalMax(PredicateContext ctx) {
         if (getMaxCount() == -1) return true;
         int count = ctx.incrementGlobalCount(this);
-        return testGlobalMax(count) || ctx.globalError(this, false);
+        return testGlobalMax(count) || ctx.error(SinglePredicateError.maxCount(this, count));
     }
 
     /// test against slice max count
     public boolean testSliceMax(PredicateContext ctx) {
         if (getMaxSliceCount() == -1 || ctx.layerCache() == null) return true;
         int count = ctx.incrementSliceCount(this);
-        return testSliceMax(count) || ctx.sliceError(this, false);
+        return testSliceMax(count) || ctx.error(SinglePredicateError.maxLayerCount(this, count));
     }
 
     /// test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         if (getMinCount() == -1) return true;
         int count = ctx.getGlobalCount(this);
-        return testGlobalMin(count) || ctx.globalError(this, true);
+        return testGlobalMin(count) || ctx.error(SinglePredicateError.minCount(this, count));
     }
 
     /// test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (getMinSliceCount() == -1 || ctx.layerCache() == null) return true;
         int count = ctx.getSliceCount(this);
-        return testSliceMin(count) || ctx.globalError(this, true);
+        return testSliceMin(count) || ctx.error(SinglePredicateError.minLayerCount(this, count));
     }
 
     /// simple test against global min count
@@ -177,5 +187,38 @@ public abstract class BasePredicate {
     public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
                                         Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
         return new MultiPredicate(debugName, predicate, candidateStream, contents);
+    }
+
+    static BasePredicate of(MultiPredicate parent, @Nullable String debugName, Predicate<PredicateContext> predicate,
+                            Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
+        return new BasePredicate() {
+
+            @Override
+            public MultiPredicate getParent() {
+                return parent;
+            }
+
+            @Override
+            public boolean test(PredicateContext ctx) {
+                return predicate.test(ctx);
+            }
+
+            @Override
+            public List<BlockInfo> computeCandidates() {
+                return candidateStream.toList();
+            }
+
+            @Override
+            public String getTypeName() {
+                return Objects.requireNonNullElse(debugName, "Predicate");
+            }
+
+            @Override
+            protected void appendContents(StringBuilder builder) {
+                if (contents != null) {
+                    contents.accept(builder);
+                }
+            }
+        };
     }
 }

@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
+import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PlaceholderError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
@@ -73,7 +75,7 @@ public class Predicates {
             }
         }
         return customPredicate(debugName,
-                ctx -> states.contains(ctx.state()) || ctx.internalError(PLACEHOLDER),
+                ctx -> states.contains(ctx.state()) || ctx.error(PLACEHOLDER),
                 states.stream().map(BlockInfo::fromBlockState),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -84,7 +86,7 @@ public class Predicates {
 
     public static MultiPredicate blocks(Block block) {
         return customPredicate("Block",
-                ctx -> ctx.state().is(block) || ctx.blockMatchingError(List.of(block)),
+                ctx -> ctx.state().is(block) || ctx.error(new BlockMatchingError(ctx.pos(), List.of(block))),
                 Stream.of(BlockInfo.fromBlock(block)),
                 builder -> builder.append(blockToString(block)));
     }
@@ -110,7 +112,7 @@ public class Predicates {
             for (var block : blocks) {
                 if (ctx.state().is(block)) return true;
             }
-            return ctx.blockMatchingError(blocks);
+            return ctx.error(new BlockMatchingError(ctx.pos(), blocks));
         }, candidates.map(BlockInfo::fromBlock), builder -> {
             StringJoiner joiner = new StringJoiner(", ");
             blocks.forEach(block -> joiner.add(blockToString(block)));
@@ -144,7 +146,7 @@ public class Predicates {
 
     public static MultiPredicate fluids(Fluid... fluids) {
         return customPredicate("Fluids",
-                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.internalError(PLACEHOLDER),
+                ctx -> ArrayUtils.contains(fluids, ctx.fluid()) || ctx.error(PLACEHOLDER),
                 Arrays.stream(fluids).map(BlockInfo::fromFluid),
                 builder -> {
                     StringJoiner joiner = new StringJoiner(", ");
@@ -171,7 +173,7 @@ public class Predicates {
                                                 @Nullable List<BlockInfo> candidates) {
         return customPredicate(ctx -> {
             PatternError error = predicate.apply(ctx.getCurrentBlockInfo());
-            return error == null || ctx.internalError(error);
+            return error == null || ctx.error(error);
         }, Objects.<List<BlockInfo>>requireNonNullElse(candidates, Collections.emptyList()).stream());
     }
 
@@ -203,7 +205,8 @@ public class Predicates {
 
     public static MultiPredicate abilities(PartAbility ability) {
         return customPredicate("Ability",
-                ctx -> ability.isApplicable(ctx.state().getBlock()) || ctx.abilityError(ability),
+                ctx -> ability.isApplicable(ctx.state().getBlock()) ||
+                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
                 ability.getAllBlocks().stream().map(BlockInfo::fromBlock),
                 builder -> builder.append(ability.getName()));
     }
@@ -215,7 +218,7 @@ public class Predicates {
                         if (ability.isApplicable(ctx.state().getBlock())) {
                             return true;
                         }
-                        ctx.abilityError(ability);
+                        ctx.error(new PartAbilityError(ctx.pos(), ability));
                     }
                     return false;
                 },
@@ -238,7 +241,7 @@ public class Predicates {
         }
         return customPredicate("Ability[" + sb + "]",
                 ctx -> ability.isApplicable(ctx.state().getBlock()) ||
-                        ctx.abilityError(ability),
+                        ctx.error(new PartAbilityError(ctx.pos(), ability)),
                 ability.getBlocks(tiers).stream().map(BlockInfo::fromBlock));
     }
 
@@ -397,10 +400,10 @@ public class Predicates {
         return customPredicate("FramedPipes", ctx -> {
             BlockEntity tileEntity = ctx.blockEntity();
             if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
-                return ctx.internalError(PLACEHOLDER);
+                return ctx.error(PLACEHOLDER);
             }
             return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial()) ||
-                    ctx.internalError(PLACEHOLDER);
+                    ctx.error(PLACEHOLDER);
         }, Arrays.stream(frameBlocks).map(BlockInfo::fromBlock));
     }
 }

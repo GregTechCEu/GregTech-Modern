@@ -1,17 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock;
 
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.multiblock.error.BlockMatchingError;
-import com.gregtechceu.gtceu.api.multiblock.error.PartAbilityError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.CurrentBlockInfo;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -19,9 +13,8 @@ import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -34,43 +27,19 @@ public class PredicateContext {
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
-    public final Object2ObjectMap<BasePredicate, Set<BlockPos>> predicatePositions = new Object2ObjectArrayMap<>();
+
     @Getter
     private FailureReason lastFailureReason = FailureReason.NONE;
+
+    @Setter
+    private PredicateStage stage = PredicateStage.INTERNAL;
 
     /// accepts a pattern error
     ///
     /// @return false
-    private boolean error(PatternError error) {
-        this.errors.add(error);
+    public boolean error(PatternError error) {
+        appendError(error);
         return false;
-    }
-
-    public boolean abilityError(PartAbility ability) {
-        return internalError(new PartAbilityError(pos(), ability));
-    }
-
-    public boolean blockMatchingError(List<Block> blocks) {
-        return internalError(new BlockMatchingError(pos(), blocks));
-    }
-
-    public boolean internalError(PatternError error) {
-        this.lastFailureReason = FailureReason.INTERNAL;
-        return error(error);
-    }
-
-    public boolean globalError(BasePredicate predicate, boolean min) {
-        this.lastFailureReason = min ? FailureReason.GLOBAL_MIN : FailureReason.GLOBAL_MAX;
-        SinglePredicateError error = min ? SinglePredicateError.minCount(predicate, getGlobalCount(predicate)) :
-                SinglePredicateError.maxCount(predicate, getGlobalCount(predicate));
-        return error(error);
-    }
-
-    public boolean sliceError(BasePredicate predicate, boolean min) {
-        this.lastFailureReason = min ? FailureReason.SLICE_MIN : FailureReason.SLICE_MAX;
-        SinglePredicateError error = min ? SinglePredicateError.minLayerCount(predicate, getSliceCount(predicate)) :
-                SinglePredicateError.maxLayerCount(predicate, getSliceCount(predicate));
-        return error(error);
     }
 
     public void commitErrors() {
@@ -80,11 +49,7 @@ public class PredicateContext {
 
     public PredicateContext appendError(PatternError error) {
         this.errors.add(error);
-        return this;
-    }
-
-    public PredicateContext setFailureReason(FailureReason reason) {
-        this.lastFailureReason = reason;
+        this.lastFailureReason = this.stage.getFailureReason();
         return this;
     }
 
@@ -145,26 +110,23 @@ public class PredicateContext {
         return Objects.requireNonNull(layerCache()).getInt(predicate);
     }
 
-    public Object2ObjectMap<BasePredicate, MultiPredicate> passedPredicates = new Object2ObjectArrayMap<>();
+    public enum PredicateStage {
 
-    public void onPredicatePass(MultiPredicate multiPredicate, BasePredicate predicate) {
-        if (!multiPredicate.isAir()) {
-            this.predicatePositions
-                    .computeIfAbsent(predicate, key -> new HashSet<>())
-                    .add(pos());
-            this.passedPredicates.putIfAbsent(predicate, multiPredicate);
+        INTERNAL,
+        GLOBAL_MIN,
+        GLOBAL_MAX,
+        SLICE_MIN,
+        SLICE_MAX;
+
+        private FailureReason getFailureReason() {
+            return switch (this) {
+                case INTERNAL -> FailureReason.INTERNAL;
+                case GLOBAL_MIN -> FailureReason.GLOBAL_MIN;
+                case GLOBAL_MAX -> FailureReason.GLOBAL_MAX;
+                case SLICE_MIN -> FailureReason.SLICE_MIN;
+                case SLICE_MAX -> FailureReason.SLICE_MAX;
+            };
         }
-        incrementGlobalCount(predicate);
-        if (layerCache() != null)
-            incrementSliceCount(predicate);
-    }
-
-    public List<BasePredicate> getPresentPredicates(List<BasePredicate> predicates) {
-        return predicates.stream().filter(this.predicatePositions::containsKey).toList();
-    }
-
-    public Set<BlockPos> getPredicatePositions(BasePredicate predicate) {
-        return this.predicatePositions.getOrDefault(predicate, Collections.emptySet());
     }
 
     public enum FailureReason {

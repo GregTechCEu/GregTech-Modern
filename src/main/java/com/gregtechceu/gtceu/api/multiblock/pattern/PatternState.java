@@ -72,6 +72,7 @@ public class PatternState extends PredicateContext {
 
     public void commitSliceErrors() {
         this.sliceErrors.add(List.copyOf(this.errors));
+        clearErrors();
     }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {

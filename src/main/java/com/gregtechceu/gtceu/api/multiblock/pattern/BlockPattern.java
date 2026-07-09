@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
@@ -179,6 +180,7 @@ public class BlockPattern implements IBlockPattern {
          */
 
         // global min check
+        patternState.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testGlobalMin(patternState)) {
                 patternState.commitErrors();
@@ -244,6 +246,7 @@ public class BlockPattern implements IBlockPattern {
         }
 
         // slice min check
+        patternState.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testSliceMin(patternState)) {
                 patternState.commitErrors();

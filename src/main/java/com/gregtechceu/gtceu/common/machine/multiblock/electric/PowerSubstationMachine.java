@@ -156,7 +156,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine
          */
         if (batteries.isEmpty()) {
             // only empty batteries found in the structure
-            pState.internalError(new PatternStringError(
+            pState.error(new PatternStringError(
                     Component.translatable("gtceu.predicate_error.power_substation.missing_batteries")));
             invalidateStructure();
             return;

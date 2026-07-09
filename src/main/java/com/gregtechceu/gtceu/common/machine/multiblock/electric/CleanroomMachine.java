@@ -135,14 +135,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         int f = bounds.get(4);
         int b = bounds.get(5);
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            pState.internalError(
+            pState.error(
                     new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
             invalidateStructure();
             return;
         }
 
         if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
-            pState.internalError(
+            pState.error(
                     new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
@@ -159,7 +159,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     if (filterType == null) filterType = filter.getKey();
                     else {
                         if (filterType != filter.getKey()) {
-                            pState.internalError(new FilterMatchingError(BlockPos.of(entry.getLongKey()),
+                            pState.error(new FilterMatchingError(BlockPos.of(entry.getLongKey()),
                                     filterType.getCleanroomType(),
                                     filter.getKey().getCleanroomType()));
                             invalidateStructure(substructureName);
@@ -472,7 +472,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected static MultiPredicate doorPredicate() {
         return Predicates.customPredicate(
-                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.internalError(Predicates.PLACEHOLDER),
+                ctx -> ctx.state().getBlock() instanceof DoorBlock || ctx.error(Predicates.PLACEHOLDER),
                 Stream.of(new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()),
                         new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()
                                 .setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))));
@@ -488,7 +488,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
             BlockEntity blockEntity = ctx.blockEntity();
             if (blockEntity instanceof MetaMachine machine) {
                 if (isMachineBanned(machine)) {
-                    return ctx.internalError(Predicates.PLACEHOLDER);
+                    return ctx.error(Predicates.PLACEHOLDER);
                 }
                 // todo do this in structure form not in the predicate
                 // machine.getTraitOptional(CleanroomReceiverTrait.TYPE).ifPresent(cleanroomReceivers::add);
