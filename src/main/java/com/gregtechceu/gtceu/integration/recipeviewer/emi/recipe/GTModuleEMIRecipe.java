@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 
-import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
-import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
@@ -27,6 +25,8 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.drawable.GuiTextures;
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import brachy.modularui.integration.recipeviewer.RecipeSlotRole;
+import brachy.modularui.integration.recipeviewer.RecipeViewerSlotWidget;
+import brachy.modularui.integration.recipeviewer.entry.item.ItemStackList;
 import brachy.modularui.value.IntValue;
 import brachy.modularui.widgets.CycleButtonWidget;
 import brachy.modularui.widgets.TextWidget;
