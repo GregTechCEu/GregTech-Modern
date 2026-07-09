@@ -190,7 +190,7 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     @Override
     public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
-                                        Direction side) {
+                                        ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GTGuiTextures.TOOL_REMOVE_COVER;
         }

@@ -32,7 +32,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -61,10 +60,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Getter
     @Setter
-    private @NotNull GTRecipeType @NotNull [] recipeTypes;
+    private GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    private int tier;
+    private int tier = -1;
     @Getter
     @Setter
     private int defaultPaintingColor;
@@ -74,19 +73,15 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
-    @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @NotNull
+    private BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking = (machine, recipe) -> true;
     @Getter
     @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
@@ -139,6 +134,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public MachineDefinition(ResourceLocation id) {
         this.id = id;
+    }
+
+    public boolean isTiered() {
+        return tier != -1;
     }
 
     public final void registerDefaultState(MachineRenderState state) {
