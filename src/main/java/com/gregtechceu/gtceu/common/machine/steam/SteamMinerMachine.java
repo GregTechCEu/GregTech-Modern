@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.steam.SteamWorkableMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.ExhaustVentMachineTrait;
@@ -53,8 +53,6 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
                                IDataInfoProvider, IMiner, IMuiMachine {
 
     @SaveField
-    public final NotifiableItemStackHandler importItems;
-    @SaveField
     public final NotifiableItemStackHandler exportItems;
     private final int inventorySize;
     private final int energyPerTick;
@@ -67,30 +65,32 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IControll
     private final ExhaustVentMachineTrait exhaustVentTrait;
 
     public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
-                             int fortune, int energyPerTick) {
+                             int fortune, int energyPerTick, NotifiableItemStackHandler exportItems) {
         super(info, isHighPressure, new SteamMinerLogic(fortune, speed, maximumRadius));
 
         this.inventorySize = 4;
         this.energyPerTick = energyPerTick;
-        this.importItems = attachTrait(createImportItemHandler());
-        this.exportItems = attachTrait(createExportItemHandler());
+        this.exportItems = attachTrait(exportItems);
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDirection(Direction.UP);
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
         getRecipeLogic().resetRecipeLogic();
     }
 
+    public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
+                             int fortune, int energyPerTick, int exportSlots) {
+        this(info, isHighPressure, speed, maximumRadius, fortune, energyPerTick,
+                new NotifiableItemStackHandler(exportSlots, IO.OUT));
+    }
+
+    public SteamMinerMachine(BlockEntityCreationInfo info, boolean isHighPressure, int speed, int maximumRadius,
+                             int fortune, int energyPerTick) {
+        this(info, isHighPressure, speed, maximumRadius, fortune, energyPerTick, 4);
+    }
+
     @Override
     public SteamMinerLogic getRecipeLogic() {
         return (SteamMinerLogic) super.getRecipeLogic();
-    }
-
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(0, IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(inventorySize, IO.OUT);
     }
 
     @Override

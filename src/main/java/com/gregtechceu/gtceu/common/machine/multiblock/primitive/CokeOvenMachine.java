@@ -61,10 +61,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
         ITheme uiTheme = ThemeAPI.INSTANCE.getTheme(getDefinition().getThemeId());
 
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
-                () -> new DoubleSyncValue(() -> {
-                    if (recipeLogic == null) return -1f;
-                    return recipeLogic.getProgressPercent();
-                }));
+                () -> new DoubleSyncValue(recipeLogic::getProgressPercent));
 
         Flow row = Flow.row().coverChildren();
 
