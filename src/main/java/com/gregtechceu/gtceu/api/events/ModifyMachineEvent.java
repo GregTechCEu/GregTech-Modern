@@ -10,9 +10,9 @@ import lombok.Getter;
 public class ModifyMachineEvent extends Event implements IModBusEvent {
 
     @Getter
-    private final MachineBuilder<?, ?> builder;
+    private final MachineBuilder<?, ?, ?> builder;
 
-    public ModifyMachineEvent(MachineBuilder<?, ?> builder) {
+    public ModifyMachineEvent(MachineBuilder<?, ?, ?> builder) {
         this.builder = builder;
     }
 }

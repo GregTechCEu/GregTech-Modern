@@ -13,7 +13,7 @@ public class ModifyMachineEventJS extends EventJS {
         this.event = event;
     }
 
-    public MachineBuilder<?, ?> getBuilder() {
+    public MachineBuilder<?, ?, ?> getBuilder() {
         return this.event.getBuilder();
     }
 }

@@ -592,7 +592,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         return getThis();
     }
 
-    public TYPE addRecipeModifier(RecipeModifier recipeModifier) {
+    public SELF addRecipeModifier(RecipeModifier recipeModifier) {
         if (this.recipeModifier instanceof RecipeModifierList list) {
             this.recipeModifier = new RecipeModifierList(ArrayUtils.add(list.getModifiers(), recipeModifier));
         } else {
