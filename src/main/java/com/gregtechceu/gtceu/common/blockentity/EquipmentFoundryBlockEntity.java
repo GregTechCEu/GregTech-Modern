@@ -24,6 +24,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -125,6 +127,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public ModularPanel<?> buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager, UISettings uiSettings) {
         List<ItemSlot> moduleSlots = new ArrayList<>();
         for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
@@ -158,50 +161,6 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
                         .minRowHeight(39)
                         .gridOf(5, moduleSlots));
     }
-
-    /*
-     * @Override
-     * public ModularUI createUI(Player entityPlayer) {
-     * ModularUI modularUI = new ModularUI(176, 166, this, entityPlayer);
-     * modularUI.background(GuiTextures.BACKGROUND.copy().setColor(0xff69645f));
-     * 
-     * IGuiTexture slotTexture = GuiTextures.SLOT.copy().setColor(0xff69645f);
-     * 
-     * TextTexture titleText = new TextTexture(getBlockState().getBlock().getDescriptionId())
-     * .setColor(0xffffff)
-     * .setDropShadow(false)
-     * .setType(TextTexture.TextType.ROLL)
-     * .setWidth(105);
-     * titleText.setRollSpeed(0.7f);
-     * modularUI.widget(new WidgetGroup(9, -16, 160, 16)
-     * .addWidget(new ImageWidget(
-     * 16, 2, 105, 16, titleText))
-     * .setBackground(GuiTextures.TITLE_BAR_BACKGROUND.copy().setColor(0xff69645f)));
-     * modularUI.widget(new ImageWidget(4, 4, 168, 75, GuiTextures.EQUIPMENT_FOUNDRY_BACKGROUND));
-     * List<SlotWidget> slotWidgets = new ArrayList<>();
-     * modularUI.widget(new SlotWidget(equipmentSlot, 0, 14, 32)
-     * .setChangeListener(() -> this.onEquipmentSlotChanged(entityPlayer, slotWidgets))
-     * .setBackgroundTexture(null));
-     * 
-     * int x = 42;
-     * int y = 13;
-     * for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
-     * final int finalI = i;
-     * SlotWidget slotWidget = new SlotWidget(moduleSlots, i, x, y)
-     * // .setIsBlocked(() -> isModifierSlotBlocked(finalI))
-     * .setBackgroundTexture(null);
-     * modularUI.widget(slotWidget);
-     * slotWidgets.add(slotWidget);
-     * x += 26;
-     * if (i == 4) {
-     * x = 42;
-     * y = 52;
-     * }
-     * }
-     * // modularUI.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), slotTexture, 7, 84, true));
-     * return modularUI;
-     * }
-     */
 
     public boolean isModifierSlotBlocked(int slot) {
         ItemStack equipment = equipmentSlot.getStackInSlot(0);
@@ -287,6 +246,7 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public ModularScreen createScreen(PosGuiData posGuiData, ModularPanel<?> modularPanel) {
         return new GTGuiScreen(modularPanel, GTGuiTheme.EQUIPMENT_FOUNDRY);
     }
