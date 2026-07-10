@@ -28,6 +28,22 @@ public class PatternStringError extends PatternError {
         this.component = component;
     }
 
+    public static PatternStringError literal(String s) {
+        return new PatternStringError(Component.literal(s));
+    }
+
+    public static PatternStringError literal(String s, Object... args) {
+        return new PatternStringError(Component.literal(String.format(s, args)));
+    }
+
+    public static PatternStringError translatable(String s) {
+        return new PatternStringError(Component.translatable(s));
+    }
+
+    public static PatternStringError translatable(String s, Object... args) {
+        return new PatternStringError(Component.translatable(s, args));
+    }
+
     @Override
     public PatternErrorUI getPatternErrorUIModifier() {
         return (parent) -> {
