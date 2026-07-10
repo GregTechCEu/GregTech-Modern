@@ -42,11 +42,6 @@ public class PredicateContext {
         return false;
     }
 
-    public void commitErrors() {
-        this.commitedErrors.addAll(this.errors);
-        this.errors.clear();
-    }
-
     public PredicateContext appendError(PatternError error) {
         this.errors.add(error);
         this.lastFailureReason = this.stage.getFailureReason();

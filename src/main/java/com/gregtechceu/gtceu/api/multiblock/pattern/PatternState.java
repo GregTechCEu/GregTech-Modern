@@ -71,7 +71,19 @@ public class PatternState extends PredicateContext {
     List<List<PatternError>> sliceErrors = new ArrayList<>();
 
     public void commitSliceErrors() {
+        this.sliceErrors.remove(this.sliceErrors.size() - 1);
+        this.sliceErrors.forEach(this.commitedErrors::addAll);
+        clearErrors();
+    }
+
+    public void pushSliceErrors() {
+        if (this.errors.isEmpty()) return;
         this.sliceErrors.add(List.copyOf(this.errors));
+        clearErrors();
+    }
+
+    public void commitErrors() {
+        this.commitedErrors.addAll(this.errors);
         clearErrors();
     }
 

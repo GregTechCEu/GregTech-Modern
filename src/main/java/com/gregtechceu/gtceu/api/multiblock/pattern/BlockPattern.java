@@ -154,6 +154,9 @@ public class BlockPattern implements IBlockPattern {
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
+        // reset predicates for testing
+        predicates.values().forEach(MultiPredicate::reset);
+
         // handle slices
         sliceStrategy.setPattern(this);
         sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
@@ -175,7 +178,7 @@ public class BlockPattern implements IBlockPattern {
          *
          * another predicament is handling the edge case of a xor predicate
          * having two-
-         * actually i need the xor logic to run in the state check
+         * actually i could have the xor logic to run in the state check
          * along with the previously mentioned idea of banned predicates
          */
 
@@ -231,14 +234,13 @@ public class BlockPattern implements IBlockPattern {
 
                 // internal predicate check, global/slice max checks
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
-                if (pred.test(patternState)) {
-                    charPos.move(absoluteChar);
-                    patternState.clearErrors();
-                    // continue...
-                } else {
-                    patternState.commitErrors();
+                if (!pred.test(patternState)) {
+//                    patternState.commitErrors();
                     return false;
                 }
+                charPos.move(absoluteChar);
+                patternState.clearErrors();
+                // continue...
             }
 
             stringStart.move(absoluteString);
@@ -249,12 +251,10 @@ public class BlockPattern implements IBlockPattern {
         patternState.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testSliceMin(patternState)) {
-                patternState.commitErrors();
                 return false;
             }
         }
 
-        patternState.clearErrors();
         return true;
     }
 

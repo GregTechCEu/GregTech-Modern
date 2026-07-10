@@ -76,6 +76,7 @@ public class BasicSliceStrategy extends SliceStrategy {
         PatternSlice slice = slices.get(index);
         for (int i = 1; i <= slice.maxRepeats; i++) {
             boolean res = checkSlice(state, index, offset + i - 1, flip);
+            state.pushSliceErrors();
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
