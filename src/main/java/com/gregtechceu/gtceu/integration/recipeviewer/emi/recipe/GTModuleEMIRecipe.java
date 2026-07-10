@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.recipe.type.EquipmentFoundryRecipe;
-
 import com.gregtechceu.gtceu.integration.recipeviewer.widgets.ModuleRecipeWidget;
+
 import net.minecraft.world.item.crafting.Ingredient;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
@@ -39,8 +39,7 @@ public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
     public List<EmiIngredient> getInputs() {
         return List.of(
                 EmiIngredient.of(recipe.getEquipment()),
-                EmiIngredient.of(recipe.getIngredient())
-        );
+                EmiIngredient.of(recipe.getIngredient()));
     }
 
     @Override
