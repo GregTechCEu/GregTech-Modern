@@ -132,7 +132,8 @@ public class MachineUIPanelBuilder {
                             .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
                                     FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                                     FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
-                    .leftRel(0.0f).left(-36).top(4));
+                    .leftRel(0.0f).left(-36).top(4)
+                    .excludeAreaInRecipeViewer());
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
