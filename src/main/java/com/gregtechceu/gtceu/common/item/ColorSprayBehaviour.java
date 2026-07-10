@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.integration.ae2.AE2Compat;
 import com.gregtechceu.gtceu.utils.BreadthFirstBlockSearch;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 
@@ -40,9 +41,6 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.TriPredicate;
 
-import appeng.api.implementations.blockentities.IColorableBlockEntity;
-import appeng.api.util.AEColor;
-import appeng.blockentity.networking.CableBusBlockEntity;
 import com.google.common.collect.ImmutableMap;
 import it.unimi.dsi.fastutil.ints.IntIntPair;
 import org.jetbrains.annotations.Nullable;
@@ -117,6 +115,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         int colorValue = this.color == null ? 0x969696 : this.color.getTextColor();
         this.totalUses = totalUses;
         this.durabilityBarColors = GradientUtil.getGradient(colorValue, 10);
+    }
+
+    @Nullable
+    public DyeColor getPaintColor() {
+        return color;
     }
 
     @Override
@@ -205,24 +208,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (player == null) {
             return false;
         }
-        if (GTCEu.Mods.isAE2Loaded() && AE2CallWrapper.isColorable(first)) {
-            Set<? extends IColorableBlockEntity> collected;
-            if (first instanceof CableBusBlockEntity) {
-                collected = AE2CallWrapper.collect(first, limit);
-            } else {
-                collected = Set.of((IColorableBlockEntity) first);
-            }
-            var ae2Color = color == null ? AEColor.TRANSPARENT : AEColor.values()[color.ordinal()];
-            for (var c : collected) {
-                if (c.getColor() == ae2Color) {
-                    continue;
-                }
-                c.recolourBlock(context.getClickedFace(), ae2Color, player);
-                if (!useItemDurability(player, context.getHand(), context.getItemInHand(), ItemStack.EMPTY)) {
-                    break;
-                }
-            }
-        } else if (first instanceof IPipeNode pipe) {
+        if (GTCEu.Mods.isAE2Loaded() && AE2Compat.recolor(this, first, limit, context)) {
+            return true;
+        }
+        if (first instanceof IPipeNode pipe) {
             var collected = BreadthFirstBlockSearch.conditionalSearch(IPipeNode.class, pipe,
                     first.getLevel(), IPipeNode::getPipePos,
                     gtPipePredicate, limit, limit * 6);
@@ -476,25 +465,4 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return parent.isConnected(direction) && child.isConnected(direction.getOpposite());
     };
 
-    private static class AE2CallWrapper {
-
-        static Set<CableBusBlockEntity> collect(BlockEntity first, int limit) {
-            return BreadthFirstBlockSearch.conditionalBlockEntitySearch(CableBusBlockEntity.class,
-                    (CableBusBlockEntity) first,
-                    AE2CallWrapper::ae2CablePredicate,
-                    limit, limit * 6);
-        }
-
-        static boolean isColorable(BlockEntity be) {
-            return be instanceof IColorableBlockEntity;
-        }
-
-        static boolean ae2CablePredicate(CableBusBlockEntity parent, CableBusBlockEntity child, Direction direction) {
-            if (parent == null) return true;
-            var childDirection = direction.getOpposite();
-            return parent.getPart(direction) == null && parent.getCableConnectionType(direction).isValid() &&
-                    child.getPart(childDirection) == null && child.getCableConnectionType(childDirection).isValid() &&
-                    parent.getColor() == child.getColor();
-        }
-    }
 }

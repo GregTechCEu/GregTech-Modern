@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
+import com.gregtechceu.gtceu.integration.ae2.AE2Compat;
 import com.gregtechceu.gtceu.utils.ManagedFieldHolderMap;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -44,8 +45,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.capabilities.Capabilities;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -278,7 +277,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
         }
         if (GTCEu.Mods.isAE2Loaded()) {
-            LazyOptional<?> opt = AE2CallWrapper.getGridNodeHostCapability(cap, machine, side);
+            LazyOptional<?> opt = AE2Compat.getGridNodeHostCapability(cap, machine, side);
             if (opt.isPresent()) {
                 // noinspection unchecked
                 return (LazyOptional<T>) opt;
@@ -319,21 +318,4 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         return new AABB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 
-    public static class AE2CallWrapper {
-
-        public static LazyOptional<?> getGridNodeHostCapability(Capability<?> cap, MetaMachine machine,
-                                                                Direction side) {
-            if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {
-                if (machine instanceof IInWorldGridNodeHost nodeHost) {
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
-                }
-                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
-                if (!list.isEmpty()) {
-                    // TODO wrap list in the future (or not.)
-                    return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
-                }
-            }
-            return LazyOptional.empty();
-        }
-    }
 }

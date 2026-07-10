@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.integration.ae2.GridNodeHost;
+import com.gregtechceu.gtceu.integration.ae2.AE2Compat;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -29,7 +29,7 @@ public class HullMachine extends TieredPartMachine implements IMonitorComponent 
     public HullMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         if (GTCEu.Mods.isAE2Loaded()) {
-            this.gridNodeHost = new GridNodeHost(this);
+            this.gridNodeHost = AE2Compat.createGridNodeHost(this);
         } else {
             this.gridNodeHost = null;
         }

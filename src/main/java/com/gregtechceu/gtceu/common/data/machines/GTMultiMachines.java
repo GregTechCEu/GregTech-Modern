@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastF
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitivePumpMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultiblockMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.AE2Compat;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -43,9 +44,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
-
-import appeng.api.networking.pathing.ChannelMode;
-import appeng.core.AEConfig;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -790,7 +788,7 @@ public class GTMultiMachines {
                     // tooltip.add(Component.translatable("gtceu.machine.cleanroom.tooltip.8"));
                     if (GTCEu.Mods.isAE2Loaded()) {
                         tooltip.add(
-                                Component.translatable(AEConfig.instance().getChannelMode() == ChannelMode.INFINITE ?
+                                Component.translatable(AE2Compat.hasInfiniteChannels() ?
                                         "gtceu.machine.cleanroom.tooltip.ae2.no_channels" :
                                         "gtceu.machine.cleanroom.tooltip.ae2.channels"));
                     }
