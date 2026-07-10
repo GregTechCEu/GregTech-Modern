@@ -235,7 +235,7 @@ public class BlockPattern implements IBlockPattern {
                 // internal predicate check, global/slice max checks
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
                 if (!pred.test(patternState)) {
-//                    patternState.commitErrors();
+                    // patternState.commitErrors();
                     return false;
                 }
                 charPos.move(absoluteChar);
