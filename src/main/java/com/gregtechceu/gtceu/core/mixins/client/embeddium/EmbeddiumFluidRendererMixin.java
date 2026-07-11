@@ -60,14 +60,11 @@ public class EmbeddiumFluidRendererMixin {
         }
     }
 
-    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP", remap = true)
-    @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN", remap = true)
-    @Expression(value = "UP", id = "up")
-    @Expression(value = "DOWN", id = "down")
-    @ModifyExpressionValue(method = "*", at = {
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "up"),
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "down"),
-    }, expect = 10)
+    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", remap = true)
+    @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
+    @Expression({ "UP", "DOWN" })
+    @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
+            at = @At("MIXINEXTRAS:EXPRESSION"), expect = 10)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -78,12 +75,8 @@ public class EmbeddiumFluidRendererMixin {
 
     @Definition(id = "NEG_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;NEG_Y")
     @Definition(id = "POS_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;POS_Y")
-    @Expression(value = "POS_Y", id = "pos_y")
-    @Expression(value = "NEG_Y", id = "neg_y")
-    @ModifyExpressionValue(method = "*", at = {
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "pos_y"),
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "neg_y"),
-    }, expect = 3)
+    @Expression({ "POS_Y", "NEG_Y" })
+    @ModifyExpressionValue(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), expect = 3)
     private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
