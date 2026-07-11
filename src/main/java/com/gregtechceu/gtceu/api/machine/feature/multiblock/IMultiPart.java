@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -11,7 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,42 +19,56 @@ import org.jetbrains.annotations.UnmodifiableView;
 import java.util.List;
 import java.util.SortedSet;
 
-public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
+public interface IMultiPart extends IMachineFeature {
 
     /**
-     * Can it be shared among multi multiblock.
+     * @return If this multiblock part can be shared between multiple multiblocks.
      */
-    default boolean canShared() {
+    default boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return true;
     }
 
     /**
-     * Whether it belongs to...
+     * If this multiblock part belongs to a controller at the given position
+     *
+     * @param controllerPos Controller position
+     * @return If this multiblock part belongs to a controller at the given position
      */
     boolean hasController(BlockPos controllerPos);
 
     /**
-     * Whether it belongs to a formed Multiblock.
+     * @return If this multiblock part belongs to a formed multiblock.
      */
     boolean isFormed();
 
     /**
-     * Get this MultiPart's controllers
+     * Gets all controllers this multiblock part belongs to
      * 
-     * @return An Unmodifiable View of the part's controllers
+     * @return An unmodifiable set containing the controllers.
      */
     @UnmodifiableView
     SortedSet<MultiblockControllerMachine> getControllers();
 
     /**
-     * Called when it was removed from a multiblock.
+     * Gets the name of the main substructure this multiblock part is attached to.
+     * 
+     * @return
+     */
+    String getSubstructureName();
+
+    /**
+     * Called when this part is removed from a multiblock.
+     *
+     * @param controller The controller which this part has been removed from.
      */
     void removedFromController(MultiblockControllerMachine controller);
 
     /**
-     * Called when it was added to a multiblock.
+     * Called when this part is added to a multiblock.
+     *
+     * @param controller The controller which this part has been added to
      */
-    void addedToController(MultiblockControllerMachine controller);
+    void addedToController(MultiblockControllerMachine controller, String substructureName);
 
     /**
      * Get all available traits for recipe logic.
@@ -63,18 +76,21 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     List<RecipeHandlerList> getRecipeHandlers();
 
     /**
-     * whether its base model can be replaced by controller when it is formed.
+     * If this part's base model can be replaced by controller when it is formed.
      */
     default boolean replacePartModelWhenFormed() {
         return true;
     }
 
     /**
-     * get part's Appearance. same as IBlockExtension.getAppearance() / IFabricBlock.getAppearance()
+     * Called to get block appearance when this multi part is in a formed multiblock.
+     *
+     * @see MetaMachine#getBlockAppearance(BlockState, BlockAndTintGetter, BlockPos, Direction, BlockState, BlockPos)
      */
     @Nullable
     default BlockState getFormedAppearance(BlockState sourceState, BlockPos sourcePos, Direction side) {
         for (MultiblockControllerMachine controller : getControllers()) {
+            if (controller == null) continue;
             var appearance = controller.getPartAppearance(this, side, sourceState, sourcePos);
             if (appearance != null) return appearance;
         }
@@ -126,16 +142,4 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
     }
-
-    /**
-     * Add text to the multiblock's screen.
-     * 
-     * @param textList the text list to add to.
-     */
-    default void addMultiText(List<Component> textList) {}
-
-    /**
-     * Attach part's tooltips to the controller.
-     */
-    default void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {}
 }

@@ -18,13 +18,12 @@ public class JourneymapWaypointHandler implements IWaypointHandler {
     private static final Map<String, Waypoint> waypoints = new Object2ObjectOpenHashMap<>();
 
     @Override
-    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
-        Waypoint waypoint = WaypointFactory.createClientWaypoint(GTCEu.MOD_ID, new BlockPos(x, y, z),
-                name, dim, true);
+    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
+        Waypoint waypoint = WaypointFactory.createWaypoint(GTCEu.MOD_ID, pos, name, dim, true);
         waypoint.setColor(color);
         waypoints.put(key, waypoint);
         try {
-            JourneyMapPlugin.getJmApi().addWaypoint(GTCEu.MOD_ID, waypoint);
+            GTJourneyMapPlugin.getJmApi().addWaypoint(GTCEu.MOD_ID, waypoint);
         } catch (Exception e) {
             // It never actually throws anything...
             GTCEu.LOGGER.error("Failed to enable waypoint with name {}", name, e);
@@ -35,7 +34,7 @@ public class JourneymapWaypointHandler implements IWaypointHandler {
     public void removeWaypoint(String key) {
         Waypoint removed = waypoints.remove(key);
         if (removed != null) {
-            JourneyMapPlugin.getJmApi().removeWaypoint(GTCEu.MOD_ID, removed);
+            GTJourneyMapPlugin.getJmApi().removeWaypoint(GTCEu.MOD_ID, removed);
         }
     }
 }

@@ -36,6 +36,6 @@ public class GTNetwork {
 
         registar.playBidirectional(SCPacketShareProspection.TYPE, SCPacketShareProspection.CODEC, SCPacketShareProspection::execute);
 
-        // spotless:on        
+        // spotless:on
     }
 }

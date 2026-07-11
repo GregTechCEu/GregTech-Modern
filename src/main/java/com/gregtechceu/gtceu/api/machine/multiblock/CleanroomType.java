@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,24 +10,41 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public record CleanroomType(String name, String translationKey) {
+public class CleanroomType {
 
     private static final Map<String, CleanroomType> CLEANROOM_TYPES = new Object2ObjectOpenHashMap<>();
 
-    public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", "gtceu.recipe.cleanroom.display_name");
-    public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom",
+    public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", 0,
+            "gtceu.recipe.cleanroom.display_name");
+    public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom", 1,
             "gtceu.recipe.cleanroom_sterile.display_name");
 
-    public static final Codec<CleanroomType> CODEC = Codec.stringResolver(CleanroomType::name, CLEANROOM_TYPES::get);
+    public static final Codec<CleanroomType> CODEC = Codec.STRING.xmap(CLEANROOM_TYPES::get, CleanroomType::getName);
 
-    public CleanroomType(@NotNull String name, @NotNull String translationKey) {
+    private final String name;
+    @Getter
+    private final int tier;
+    private final String translationKey;
+
+    public CleanroomType(String name, int tier, String translationKey) {
         if (CLEANROOM_TYPES.get(name) != null)
             throw new IllegalArgumentException(
                     String.format("CleanroomType with name %s is already registered!", name));
 
         this.name = name;
+        this.tier = tier;
         this.translationKey = translationKey;
         CLEANROOM_TYPES.put(name, this);
+    }
+
+    @NotNull
+    public String getName() {
+        return this.name;
+    }
+
+    @NotNull
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 
     @Nullable

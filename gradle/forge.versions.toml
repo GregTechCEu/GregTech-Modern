@@ -1,17 +1,16 @@
 [versions]
-ldlib = "1.0.35.a"
 registrate = "MC1.21-1.3.0+67"
 configuration = "3.1.1-neoforge"
-
 jei = "19.25.1.328"
 rei = "16.0.799"
 emi = "1.1.22+1.21.1"
 ae2 = "19.2.8"
+mui = "3.3.0-SNAPSHOT"
 kubejs = "2101.7.2-build.336"
 rhino = "2101.2.7-build.81"
 architectury = "13.0.8"
 clothconfig = "15.0.140"
-create = "6.0.8-168"
+create = "6.0.10-281"
 ponder = "1.0.64"
 flywheel = "1.0.5"
 curios = "9.4.2+1.21.1"
@@ -25,6 +24,10 @@ ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
+sable = "2.0.3"
+sableCompanion = "1.6.0"
+createAeronautics = "1.3.0"
+veil = "4.1.4"
 # TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
 # FIXME for some reason their maven only has versions up to 1.1.10? latest on modrinth is 1.1.13
@@ -32,11 +35,19 @@ heracles = "1.1.10"
 xaerosLib = "1.1.0"
 xaerosWorldMap = "1.40.11"
 xaerosMinimap = "25.3.10"
+embeddium = "1.0.8-beta.367+mc1.21"
+sodium = "0.8.12-beta.1+mc1.21.1"
+fabricApi-base = "0.4.42+d1308ded19"
+fabricApi-rendering = "3.4.1+9125b6dc19"
+fabricApi-renderingData = "0.3.48+73761d2e19"
+fabricApi-blockView = "1.0.10+9afaaf8c19"
+
+
+
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
-sodium = "mc1.21.1-0.6.13-neoforge"
-iris = "1.8.8+1.21.1-neoforge"
+iris = "1.8.14-beta.1+1.21.1-neoforge"
 modernfix = "4SPHwiDB" # 5.24.3+mc1.21.1
 
 ## cursemaven ##
@@ -47,18 +58,14 @@ journeyMap = "6383889"
 spark = "6225208"
 observable = "5733591"
 
-
 [libraries]
-ldlib               = { module = "com.lowdragmc.ldlib:ldlib-neoforge-1.21.1", version.ref = "ldlib" }
 registrate          = { module = "com.tterrag.registrate:Registrate", version.ref = "registrate" }
 configuration       = { module = "dev.toma.configuration:configuration-1.21.1", version.ref = "configuration" }
 
+mui = { module = "brachy.modularui:modularui-mc1.21.1", version.ref = "mui" }
 jei-common-api      = { module = "mezz.jei:jei-1.21.1-common-api", version.ref = "jei" }
 jei-neoforge-api    = { module = "mezz.jei:jei-1.21.1-neoforge-api", version.ref = "jei" }
 jei-neoforge-impl   = { module = "mezz.jei:jei-1.21.1-neoforge", version.ref = "jei" }
-rei-plugin          = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge", version.ref = "rei" }
-rei-api             = { module = "me.shedaniel:RoughlyEnoughItems-api-neoforge", version.ref = "rei" }
-rei-neoforge        = { module = "me.shedaniel:RoughlyEnoughItems-neoforge", version.ref = "rei" }
 emi                 = { module = "dev.emi:emi-neoforge", version.ref = "emi" }
 
 ae2                 = { module = "org.appliedenergistics:appliedenergistics2", version.ref = "ae2" }
@@ -67,9 +74,9 @@ rhino               = { module = "dev.latvian.mods:rhino", version.ref = "rhino"
 architectury        = { module = "dev.architectury:architectury-neoforge", version.ref = "architectury" }
 clothconfig         = { module = "me.shedaniel.cloth:cloth-config-neoforge", version.ref = "clothconfig" }
 create              = { module = "com.simibubi.create:create-1.21.1", version.ref = "create" }
-ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder"}
-flywheel-forge-api  = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel"}
-flywheel-forge      = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel"}
+ponder              = { module = "net.createmod.ponder:Ponder-NeoForge-1.21.1", version.ref = "ponder" }
+flywheel-api        = { module = "dev.engine-room.flywheel:flywheel-neoforge-api-1.21.1", version.ref = "flywheel" }
+flywheel            = { module = "dev.engine-room.flywheel:flywheel-neoforge-1.21.1", version.ref = "flywheel" }
 curios              = { module = "top.theillusivec4.curios:curios-neoforge", version.ref = "curios" }
 kotlinforforge      = { module = "thedarkcolour:kotlinforforge-neoforge", version.ref = "kotlinforforge" }
 journeymap-api      = { module = "info.journeymap:journeymap-api-neoforge", version.ref = "journeyMapApi" }
@@ -93,10 +100,25 @@ xaerosworldmap      = { module = "xaero.map:xaeroworldmap-neoforge-1.21.1", vers
 xaerosminimap       = { module = "xaero.minimap:xaerominimap-neoforge-1.21.1", version.ref = "xaerosMinimap" }
 
 jade                = { module = "maven.modrinth:jade", version.ref = "jade" }
-sodium              = { module = "maven.modrinth:sodium", version.ref = "sodium" }
+embeddium           = { module = "org.embeddedt:embeddium-1.21", version.ref = "embeddium" }
 iris                = { module = "maven.modrinth:iris", version.ref = "iris" }
 modernfix           = { module = "maven.modrinth:modernfix", version.ref = "modernfix" }
 
+sodium-api          = { module = "net.caffeinemc:sodium-neoforge-api", version.ref = "sodium" }
+sodium-impl         = { module = "net.caffeinemc:sodium-neoforge-mod", version.ref = "sodium" }
+sodium-full         = { module = "net.caffeinemc:sodium-neoforge", version.ref = "sodium" }
+fabricApi-base          = { module = "org.sinytra.forgified-fabric-api:fabric-api-base", version.ref = "fabricApi-base" }
+fabricApi-rendering     = { module = "org.sinytra.forgified-fabric-api:fabric-renderer-api-v1", version.ref = "fabricApi-rendering" }
+fabricApi-renderingData = { module = "org.sinytra.forgified-fabric-api:fabric-rendering-data-attachment-v1", version.ref = "fabricApi-renderingData" }
+fabricApi-blockView     = { module = "org.sinytra.forgified-fabric-api:fabric-block-view-api-v2", version.ref = "fabricApi-blockView" }
+
+sable                   = { module = "dev.ryanhcode.sable:sable-neoforge-1.21.1", version.ref = "sable" }
+sableRapier             = { module = "dev.ryanhcode.sable:sable-sable_rapier-1.21.1", version.ref = "sable" }
+sableCompanion          = { module = "dev.ryanhcode.sable-companion:sable-companion-common-1.21.1", version.ref = "sableCompanion" }
+aeronautics             = { module = "dev.eriksonn.aeronautics:aeronautics-neoforge-1.21.1", version.ref = "createAeronautics" }
+simulated               = { module = "dev.simulated_team.simulated:simulated-neoforge-1.21.1", version.ref = "createAeronautics" }
+offroad                 = { module = "dev.ryanhcode.offroad:offroad-neoforge-1.21.1", version.ref = "createAeronautics" }
+veil                    = { module = "foundry.veil:veil-neoforge-1.21.1", version.ref = "veil" }
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.21.1-core-api", version.ref = "ccTweaked" }
 cc-tweaked-forge-api  = { module = "cc.tweaked:cc-tweaked-1.21.1-forge-api", version.ref = "ccTweaked" }
@@ -111,7 +133,5 @@ observable          = { module = "curse.maven:observable-509575", version.ref = 
 
 [bundles]
 jei = ["jei-common-api", "jei-neoforge-api", "jei-neoforge-impl"]
-rei = ["rei-plugin", "rei-neoforge"]
-rei-runtime = ["rei-neoforge", "architectury", "clothconfig"]
 kjs = ["kubejs", "rhino"]
 

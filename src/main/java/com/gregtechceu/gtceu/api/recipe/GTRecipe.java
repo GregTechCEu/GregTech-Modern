@@ -239,7 +239,7 @@ public class GTRecipe implements Recipe<RecipeInput> {
         if (outputs == null) return EnergyStack.EMPTY;
         long v = 0, a = 0;
         for (var content : outputs) {
-            EnergyStack stack = EURecipeCapability.CAP.of(content.content);
+            EnergyStack stack = EURecipeCapability.CAP.of(content.content());
             v += stack.voltage();
             a += stack.amperage();
         }

@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.TabsWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoStockingFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -56,7 +53,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     private int minStackSize = 1;
 
     @Getter
-    @Setter
     @SaveField
     private int ticksPerCycle = 40;
 
@@ -66,6 +62,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     public MEStockingHatchPartMachine(BlockEntityCreationInfo info) {
         super(info);
         this.autoPullTest = $ -> false;
+        setOffsetBound(ticksPerCycle);
     }
 
     /////////////////////////////////
@@ -73,9 +70,9 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
     /////////////////////////////////
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller) {
-        super.addedToController(controller);
-        IMEStockingPart.super.addedToController(controller);
+    public void addedToController(MultiblockControllerMachine controller, String name) {
+        super.addedToController(controller, name);
+        IMEStockingPart.super.addedToController(controller, name);
     }
 
     @Override
@@ -125,10 +122,12 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
     }
 
-    @Override
-    public void attachSideTabs(TabsWidget sideTabs) {
-        sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
-    }
+    /*
+     * @Override
+     * public void attachSideTabs(TabsWidget sideTabs) {
+     * sideTabs.setMainTab(this); // removes the cover configurator, it's pointless and clashes with layout.
+     * }
+     */
 
     @Override
     protected void flushInventory() {
@@ -170,6 +169,11 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
                 updateTankSubscription();
             }
         }
+    }
+
+    public void setTicksPerCycle(int ticksPerCycle) {
+        this.ticksPerCycle = ticksPerCycle;
+        setOffsetBound(ticksPerCycle);
     }
 
     private void refreshList() {
@@ -229,17 +233,6 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         }
 
         aeFluidHandler.clearInventory(index);
-    }
-
-    ///////////////////////////////
-    // ********** GUI ***********//
-    ///////////////////////////////
-
-    @Override
-    public void attachConfigurators(ConfiguratorPanel configuratorPanel) {
-        IMEStockingPart.super.attachConfigurators(configuratorPanel);
-        super.attachConfigurators(configuratorPanel);
-        configuratorPanel.attachConfigurators(new AutoStockingFancyConfigurator(this));
     }
 
     ////////////////////////////////

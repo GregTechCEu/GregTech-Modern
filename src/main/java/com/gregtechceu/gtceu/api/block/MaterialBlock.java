@@ -184,8 +184,8 @@ public class MaterialBlock extends Block {
                 blockPos.move(Direction.UP);
                 continue;
             }
-            BlockEntity te = level.getBlockEntity(blockPos);
-            if (te instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
+            BlockEntity be = level.getBlockEntity(blockPos);
+            if (be instanceof PipeBlockEntity<?, ?> pbe && !pbe.getFrameMaterial().isNull()) {
                 blockPos.move(Direction.UP);
                 continue;
             }
@@ -194,7 +194,7 @@ public class MaterialBlock extends Block {
                 if (!player.isCreative())
                     stack.shrink(1);
                 return ItemInteractionResult.SUCCESS;
-            } else if (te instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
+            } else if (be instanceof PipeBlockEntity<?, ?> pbe && pbe.getFrameMaterial().isNull()) {
                 pbe.setFrameMaterial(frameBlock.material);
 
                 if (!player.isCreative())
@@ -220,8 +220,8 @@ public class MaterialBlock extends Block {
     }
 
     public boolean removeFrame(Level level, BlockPos pos, Player player, ItemStack stack) {
-        BlockEntity te = level.getBlockEntity(pos);
-        if (te instanceof PipeBlockEntity<?, ?> pipeTile) {
+        BlockEntity be = level.getBlockEntity(pos);
+        if (be instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
             if (!mat.isNull()) {
                 pipeTile.setFrameMaterial(GTMaterials.NULL);

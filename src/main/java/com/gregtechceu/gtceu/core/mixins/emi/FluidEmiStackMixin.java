@@ -40,7 +40,7 @@ public abstract class FluidEmiStackMixin extends EmiStack {
             remap = false,
             require = 0)
     private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir,
-                                       @Local(ordinal = 0) List<ClientTooltipComponent> list) {
+                                       @Local(name = "list") List<ClientTooltipComponent> list) {
         TooltipsHandler.appendFluidTooltips(new FluidStack(
                 this.fluid.builtInRegistryHolder(),
                 Math.max(GTMath.saturatedCast(this.getAmount()), 1),

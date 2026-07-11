@@ -1,0 +1,23 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "mixinextras": {
+        "minVersion": "0.5.0-rc.3"
+    },
+    "refmap": "gtceu.refmap.json",
+    "package": "com.gregtechceu.gtceu.core.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
+    "client": [
+        "client.bloom.normal.sodium.BlockRendererMixin",
+        "client.bloom.normal.sodium.DefaultMaterialsMixin",
+        "client.bloom.normal.sodium.DefaultTerrainRenderPassesMixin",
+        "client.bloom.normal.sodium.SodiumWorldRendererMixin",
+        "client.bloom.safemode.sodium.BlockRendererMixin"
+    ],
+    "mixins": [],
+    "injectors": {
+        "defaultRequire": 1,
+        "maxShiftBy": 5
+    }
+}

@@ -4,68 +4,57 @@ import com.gregtechceu.gtceu.GTCEu;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Predicate;
+import java.util.*;
 
 public class VirtualEnderRegistry extends SavedData {
 
     private static final String DATA_ID = GTCEu.MOD_ID + ".virtual_entry_data";
     private static final String PUBLIC_KEY = "Public";
     private static final String PRIVATE_KEY = "Private";
-    private static volatile VirtualEnderRegistry data;
+
+    private VirtualRegistryMap PUBLIC_REGISTRY = new VirtualRegistryMap();
     private final Map<UUID, VirtualRegistryMap> VIRTUAL_REGISTRIES = new HashMap<>();
 
     public VirtualEnderRegistry() {}
 
-    public VirtualEnderRegistry(CompoundTag name, HolderLookup.@NotNull Provider registries) {
+    public VirtualEnderRegistry(CompoundTag name, HolderLookup.Provider registries) {
         readFromNBT(registries, name);
     }
 
-    public static VirtualEnderRegistry getInstance() {
-        if (data == null) {
-            var server = GTCEu.getMinecraftServer();
-            if (server != null) {
-                data = server.overworld().getDataStorage().computeIfAbsent(
-                        new SavedData.Factory<>(VirtualEnderRegistry::new, VirtualEnderRegistry::new), DATA_ID);
-            }
-        }
-
-        return data;
+    public static VirtualEnderRegistry get(ServerLevel sLvl) {
+        return sLvl.getServer().overworld().getDataStorage()
+                .computeIfAbsent(new SavedData.Factory<>(VirtualEnderRegistry::new, VirtualEnderRegistry::new),
+                        DATA_ID);
     }
 
-    /**
-     * To be called on server stopped event
-     */
-    public static void release() {
-        if (data != null) {
-            data = null;
-            GTCEu.LOGGER.debug("VirtualEnderRegistry has been unloaded");
-        }
-    }
-
-    public <T extends VirtualEntry> T getEntry(@Nullable UUID owner, EntryTypes<T> type, String name) {
+    public <T extends VirtualEntry> @Nullable T getEntry(@Nullable UUID owner, EntryTypes<T> type, String name) {
+        if (owner == null) return PUBLIC_REGISTRY.getEntry(type, name);
         return getRegistry(owner).getEntry(type, name);
     }
 
+    public <T extends VirtualEntry> Map<String, VirtualEntry> getEntries(@Nullable UUID owner, EntryTypes<T> type) {
+        if (owner == null) return PUBLIC_REGISTRY.getEntries(type);
+        return VIRTUAL_REGISTRIES.get(owner).getEntries(type);
+    }
+
     public void addEntry(@Nullable UUID owner, String name, VirtualEntry entry) {
-        getRegistry(owner).addEntry(name, entry);
+        if (owner == null) PUBLIC_REGISTRY.addEntry(name, entry);
+        else getRegistry(owner).addEntry(name, entry);
     }
 
     public boolean hasEntry(@Nullable UUID owner, EntryTypes<?> type, String name) {
+        if (owner == null) return PUBLIC_REGISTRY.contains(type, name);
         return getRegistry(owner).contains(type, name);
     }
 
-    public @NotNull <T extends VirtualEntry> T getOrCreateEntry(@Nullable UUID owner, EntryTypes<T> type, String name) {
+    public <T extends VirtualEntry> T getOrCreateEntry(@Nullable UUID owner, EntryTypes<T> type, String name) {
         if (!hasEntry(owner, type, name)) addEntry(owner, name, type.createInstance());
-        return getEntry(owner, type, name);
+        return Objects.requireNonNull(getEntry(owner, type, name));
     }
 
     /**
@@ -75,34 +64,33 @@ public class VirtualEnderRegistry extends SavedData {
      * @param type  Type of the registry to remove from
      * @param name  The name of the entry
      */
-    public void deleteEntry(@Nullable UUID owner, EntryTypes<?> type, String name) {
+    public void forceDeleteEntry(@Nullable UUID owner, EntryTypes<?> type, String name) {
+        if (owner == null) {
+            PUBLIC_REGISTRY.deleteEntry(type, name);
+            return;
+        }
+
         var registry = getRegistry(owner);
         if (registry.contains(type, name)) {
             registry.deleteEntry(type, name);
-            return;
         }
-        GTCEu.LOGGER.warn("Attempted to delete {} entry {} of type {}, which does not exist",
-                owner == null ? "public" : String.format("private [%s]", owner), name, type);
     }
 
-    public <T extends VirtualEntry> void deleteEntryIf(@Nullable UUID owner, EntryTypes<T> type, String name,
-                                                       Predicate<T> shouldDelete) {
+    public <T extends VirtualEntry> void tryDeleteEntry(@Nullable UUID owner, EntryTypes<T> type, String name) {
         T entry = getEntry(owner, type, name);
-        if (entry != null && shouldDelete.test(entry)) deleteEntry(owner, type, name);
-    }
-
-    public Set<String> getEntryNames(UUID owner, EntryTypes<?> type) {
-        return getRegistry(owner).getEntryNames(type);
+        if (entry == null) return;
+        if (entry.canRemove()) forceDeleteEntry(owner, type, name);
     }
 
     private VirtualRegistryMap getRegistry(UUID owner) {
-        return getInstance().VIRTUAL_REGISTRIES.computeIfAbsent(owner, key -> new VirtualRegistryMap());
+        return VIRTUAL_REGISTRIES.computeIfAbsent(owner, key -> new VirtualRegistryMap());
     }
 
-    public final void readFromNBT(HolderLookup.@NotNull Provider registries, CompoundTag nbt) {
+    public final void readFromNBT(HolderLookup.Provider registries, CompoundTag nbt) {
         if (nbt.contains(PUBLIC_KEY)) {
-            VIRTUAL_REGISTRIES.put(null, new VirtualRegistryMap(registries, nbt.getCompound(PUBLIC_KEY)));
+            PUBLIC_REGISTRY = new VirtualRegistryMap(registries, nbt.getCompound(PUBLIC_KEY));
         }
+
         if (nbt.contains(PRIVATE_KEY)) {
             CompoundTag privateEntries = nbt.getCompound(PRIVATE_KEY);
             for (String owner : privateEntries.getAllKeys()) {
@@ -112,17 +100,14 @@ public class VirtualEnderRegistry extends SavedData {
         }
     }
 
-    @NotNull
     @Override
-    public final CompoundTag save(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
+    public final CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         var privateTag = new CompoundTag();
+        tag.put(PUBLIC_KEY, PUBLIC_REGISTRY.serializeNBT(registries));
         for (var owner : VIRTUAL_REGISTRIES.keySet()) {
+            if (VIRTUAL_REGISTRIES.get(owner).isEmpty()) continue;
             var mapTag = VIRTUAL_REGISTRIES.get(owner).serializeNBT(registries);
-            if (owner != null) {
-                privateTag.put(owner.toString(), mapTag);
-            } else {
-                tag.put(PUBLIC_KEY, mapTag);
-            }
+            privateTag.put(owner.toString(), mapTag);
         }
         tag.put(PRIVATE_KEY, privateTag);
         return tag;

@@ -5,15 +5,15 @@
     },
     "elements": [
         {
-            "from": [  0,  0, -0.01 ],
-            "to":   [ 16, 16, -0.01 ],
+            "from": [  0,  0, -0.096 ],
+            "to":   [ 16, 16, -0.096 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
             }
         },
         {
-            "from": [  0,  0, -0.02 ],
-            "to":   [ 16, 16, -0.02 ],
+            "from": [  0,  0, -0.128 ],
+            "to":   [ 16, 16, -0.128 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {
@@ -21,8 +21,8 @@
             }
         },
         {
-            "from": [  0,  0, -0.03 ],
-            "to":   [ 16, 16, -0.03 ],
+            "from": [  0,  0, -0.160 ],
+            "to":   [ 16, 16, -0.160 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {

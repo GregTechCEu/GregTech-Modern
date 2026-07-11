@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
@@ -27,12 +28,18 @@ public record ContentJS<T>(RecipeComponentType<T> baseComponent, RecipeCapabilit
         return TypeInfo.of(Content.class);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean matches(RecipeMatchContext cx, Content value, ReplacementMatchInfo match) {
+        return baseComponent.instance().matches(cx, (T) value.content(), match);
+    }
+
     @Override
     public Content replace(RecipeScriptContext cx, Content original, ReplacementMatchInfo match, Object with) {
         return new Content(
                 baseComponent.instance().replace(cx,
-                        baseComponent.instance().wrap(cx, original.content), match, with),
-                original.chance, original.maxChance, original.tierChanceBoost);
+                        baseComponent.instance().wrap(cx, original.chance()), match, with),
+                original.chance(), original.maxChance(), original.tierChanceBoost());
     }
 
     @Override

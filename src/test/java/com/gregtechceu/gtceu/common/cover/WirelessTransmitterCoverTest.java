@@ -31,6 +31,8 @@ public class WirelessTransmitterCoverTest {
     @GameTest(template = "central_monitor", batch = "coverTests")
     public static void wirelessTransmitterCoverTest(GameTestHelper helper) {
         CentralMonitorMachine machine = helper.getBlockEntity(new BlockPos(1, 3, 2));
+        machine.invalidateStructure();
+        machine.checkAndFormStructure();
         DataAccessHatchMachine dataHatch = helper.getBlockEntity(new BlockPos(1, 2, 2));
         BatteryBufferMachine batteryBuffer = helper.getBlockEntity(new BlockPos(2, 2, 3));
         WirelessTransmitterCover cover = (WirelessTransmitterCover) batteryBuffer.getCoverContainer()

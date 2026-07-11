@@ -25,6 +25,7 @@ public class MonitorImageRenderer implements IMonitorRenderer {
     @Override
     public void render(CentralMonitorMachine machine, MonitorGroup group, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffer, int packedLight, int packedOverlay) {
+        if (group.isEmpty()) return;
         BlockPos rel = group.getRow(0, machine::toRelative).get(0);
         BlockPos size = group.getRow(-1, machine::toRelative).getLast()
                 .offset(-rel.getX() + 1, -rel.getY() + 1, -rel.getZ() + 1);

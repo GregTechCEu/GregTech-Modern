@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.api.placeholder.*;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.InvalidArgsException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.MissingItemException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.NotSupportedException;
-import com.gregtechceu.gtceu.api.placeholder.exceptions.PlaceholderException;
+import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.createmod.catnip.data.Couple;
@@ -36,8 +33,10 @@ public class GTCreateIntegration {
     public static void init() {
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
+    }
 
-        PlaceholderHandler.addPlaceholder(new Placeholder("redstone", 1) {
+    public static void initPlaceholders() {
+        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -60,7 +59,8 @@ public class GTCreateIntegration {
     }
 
     private static int getRedstoneLinkPower(PlaceholderContext ctx,
-                                            Couple<RedstoneLinkNetworkHandler.Frequency> freq) {
+                                            Couple<RedstoneLinkNetworkHandler.Frequency> freq) throws PlaceholderException {
+        if (ctx.pos() == null) throw new NoTargetException();
         IRedstoneLinkable linkable = new IRedstoneLinkable() {
 
             @Override

@@ -79,8 +79,8 @@ public interface ILDEndpoint extends ILDNetworkPart {
 
     @Nullable
     static ILDEndpoint tryGet(LevelAccessor world, BlockPos pos) {
-        BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof ILDEndpoint endpoint) {
+        BlockEntity be = world.getBlockEntity(pos);
+        if (be instanceof ILDEndpoint endpoint) {
             return endpoint;
         }
         return null;

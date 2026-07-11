@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -34,7 +35,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
@@ -42,9 +42,8 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
+import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -73,7 +72,8 @@ import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.common.data.models.GTMachineModels;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
-import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveWorkableMachine;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
@@ -139,23 +139,21 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.of(GTRegistries.MACHINE_REGISTRY, reg -> {
             reg.addDefault(KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleTieredMachine::new,
-                                    SimpleTieredMachine.EDITABLE_UI_CREATOR, false)));
+                            new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
 
             reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
             reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
             reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class,
                     (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new,
-                                    SimpleGeneratorMachine.EDITABLE_UI_CREATOR, true)));
+                            new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
 
             reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class,
                     MultiblockMachineBuilderWrapper::createKJSMulti);
             reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
                     KJSWrappingMultiblockBuilder::new);
             reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class,
-                    (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveFancyUIWorkableMachine::new));
+                    (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {
@@ -242,7 +240,6 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         // Material related
         event.add("GTElements", GTElements.class);
         event.add("GTMaterials", GTMaterials.class);
-        event.add("GTMaterialRegistry", GTCEuAPI.materialManager);
         event.add("TagPrefix", TagPrefix.class);
         event.add("ItemGenerationCondition", TagPrefix.Conditions.class);
         event.add("MaterialEntry", MaterialEntry.class);
@@ -271,8 +268,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("GCYMMachines", GCYMMachines.class);
         // Multiblock related
         event.add("RotationState", RotationState.class);
-        event.add("FactoryBlockPattern", FactoryBlockPattern.class);
-        event.add("MultiblockShapeInfo", MultiblockShapeInfo.class);
+        event.add("FactoryBlockPattern", MultiblockPatternBuilder.class);
         event.add("Predicates", Predicates.class);
         event.add("PartAbility", PartAbility.class);
         // Recipe related
@@ -295,13 +291,13 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         // Sound related
         event.add("GTSoundEntries", GTSoundEntries.class);
         event.add("SoundType", SoundType.class);
-        // GUI related
-        event.add("GuiTextures", GuiTextures.class);
         // Client/Server data related
         event.add("GTModels", GTModels.class);
         event.add("GTMachineModels", GTMachineModels.class);
         event.add("GTModelProperties", GTMachineModelProperties.class);
         event.add("GTDynamicRenders", DynamicRenderHelper.class);
+        event.add("GTGuiTextures", GTGuiTextures.class);
+        event.add("IO", IO.class);
 
         // Hazard Related
         event.add("HazardProperty", HazardProperty.class);
@@ -339,7 +335,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.register(Element.class, o -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof Element element) return element;
-            if (o instanceof CharSequence chars) return GTElements.get(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.ELEMENTS.get(GTCEu.id(chars.toString()));
             return null;
         });
         registry.register(Material.class, o -> {
@@ -385,7 +381,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.register(MaterialIconSet.class, o -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof MaterialIconSet iconSet) return iconSet;
-            if (o instanceof CharSequence chars) return MaterialIconSet.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.MATERIAL_ICON_SETS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         registry.register(MaterialStack.class, o -> {
@@ -407,7 +404,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.register(IWorldGenLayer.class, o -> {
             o = Wrapper.unwrapped(o);
             if (o instanceof IWorldGenLayer layer) return layer;
-            if (o instanceof CharSequence chars) return WorldGenLayers.getByName(chars.toString());
+            if (o instanceof CharSequence chars) return GTRegistries.WORLD_GEN_LAYERS
+                    .get(GTCEu.id(chars.toString()));
             return null;
         });
         registry.registerMapCodec(HeightRangePlacement.class, HeightRangePlacement.CODEC);

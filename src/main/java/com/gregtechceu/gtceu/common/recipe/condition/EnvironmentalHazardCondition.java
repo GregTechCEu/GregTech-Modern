@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
@@ -26,7 +27,7 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
 
     // spotless:off
     public static final MapCodec<EnvironmentalHazardCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance).and(
-            MedicalCondition.CODEC.fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
+            GTRegistries.MEDICAL_CONDITIONS.byNameCodec().fieldOf("condition").forGetter(EnvironmentalHazardCondition::getCondition)
     ).apply(instance, EnvironmentalHazardCondition::new));
     // spotless:on
 
@@ -46,10 +47,8 @@ public class EnvironmentalHazardCondition extends RecipeCondition<EnvironmentalH
     @Override
     public Component getTooltips() {
         return isReverse ?
-                Component.translatable("gtceu.recipe.environmental_hazard.reverse",
-                        Component.translatable("gtceu.medical_condition." + condition.name)) :
-                Component.translatable("gtceu.recipe.environmental_hazard",
-                        Component.translatable("gtceu.medical_condition." + condition.name));
+                Component.translatable("gtceu.recipe.environmental_hazard.reverse", condition.getTranslatableName()) :
+                Component.translatable("gtceu.recipe.environmental_hazard", condition.getTranslatableName());
     }
 
     @Override

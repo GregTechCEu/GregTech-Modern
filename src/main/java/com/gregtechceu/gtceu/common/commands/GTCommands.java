@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
 import com.gregtechceu.gtceu.core.mixins.ResourceKeyArgumentAccessor;
+import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,9 +24,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
@@ -66,12 +69,6 @@ public class GTCommands {
     // spotless:off
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(literal("gtceu")
-                .then(literal("ui_editor")
-                        .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                        .executes(context -> {
-                            GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
-                            return 1;
-                        }))
                 .then(literal("place_vein")
                         .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
                         .then(argument("vein", ResourceKeyArgument.key(GTRegistries.ORE_VEIN_REGISTRY))
@@ -139,7 +136,16 @@ public class GTCommands {
                                         .executes(ctx -> {
                                             ServerPlayer player = ctx.getSource().getPlayerOrException();
                                             return setActiveCape(ctx.getSource(), player, null);
-                                        })))));
+                                        })))
+                .then(literal("share_prospection_data")
+                        .then(argument("player", EntityArgument.player())
+                                .executes(ctx -> {
+                                    Player player = EntityArgument.getPlayer(ctx, "player");
+                                    Thread sendThread = new Thread(new GTCommands.ProspectingShareTask(
+                                            ctx.getSource().getPlayerOrException().getUUID(), player.getUUID()));
+                                    sendThread.start();
+                                    return 1;
+                                })))));
     }
     // spotless:on
 
@@ -298,5 +304,34 @@ public class GTCommands {
         }
 
         return 1;
+    }
+
+    private static class ProspectingShareTask implements Runnable {
+
+        private final List<ClientCacheManager.ProspectionInfo> prospectionData;
+        private final UUID sender;
+        private final UUID receiver;
+
+        public ProspectingShareTask(UUID sender, UUID receiver) {
+            prospectionData = ClientCacheManager.getProspectionShareData();
+            this.sender = sender;
+            this.receiver = receiver;
+        }
+
+        @Override
+        public void run() {
+            boolean first = true;
+            for (ClientCacheManager.ProspectionInfo info : prospectionData) {
+                PacketDistributor.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
+                        info.isDimCache, info.dim, info.data, first));
+                first = false;
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 }

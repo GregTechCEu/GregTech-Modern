@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.utils.TagExprFilter;
 
@@ -15,25 +16,30 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
 
     protected TagFluidFilter(String filterExpr) {
-        setFilterExpr(filterExpr);
+        this.setFilterString(filterExpr);
     }
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
         var expr = itemStack.getOrDefault(GTDataComponents.TAG_FILTER_EXPRESSION, "");
         var handler = new TagFluidFilter(expr);
         handler.itemWriter = filter -> itemStack.set(GTDataComponents.TAG_FILTER_EXPRESSION,
-                ((TagFluidFilter) filter).tagFilterExpression);
+                ((TagFluidFilter) filter).filterString);
         return handler;
     }
 
-    public void setFilterExpr(String filterExpr) {
+    public void setFilterString(String oreDict) {
         cache.clear();
-        super.setFilterExpr(filterExpr);
+        super.setFilterString(oreDict);
+    }
+
+    @Override
+    public ItemStack getFilterItem() {
+        return GTItems.TAG_FLUID_FILTER.asStack();
     }
 
     @Override
     public boolean test(FluidStack fluidStack) {
-        if (tagFilterExpression.isEmpty()) return false;
+        if (filterString.isEmpty()) return false;
         if (cache.containsKey(fluidStack.getFluid())) return cache.getOrDefault(fluidStack.getFluid(), false);
         if (TagExprFilter.tagsMatch(matchExpr, fluidStack)) {
             cache.put(fluidStack.getFluid(), true);

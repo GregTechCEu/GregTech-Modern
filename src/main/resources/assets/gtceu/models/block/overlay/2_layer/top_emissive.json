@@ -14,15 +14,15 @@
             }
         },
         {
-            "from": [  0, 16.01,  0 ],
-            "to":   [ 16, 16.01, 16 ],
+            "from": [  0, 16.096,  0 ],
+            "to":   [ 16, 16.096, 16 ],
             "faces": {
                 "up": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "up" }
             }
         },
         {
-            "from": [  0, 16.02,  0 ],
-            "to":   [ 16, 16.02, 16 ],
+            "from": [  0, 16.128,  0 ],
+            "to":   [ 16, 16.128, 16 ],
             "neoforge_data": { "block_light": 15, "sky_light": 15 },
             "shade": false,
             "faces": {

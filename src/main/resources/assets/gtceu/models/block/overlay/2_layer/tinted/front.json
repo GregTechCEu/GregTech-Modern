@@ -14,15 +14,15 @@
             }
         },
         {
-            "from": [  0,  0, -0.01 ],
-            "to":   [ 16, 16, -0.01 ],
+            "from": [  0,  0, -0.096 ],
+            "to":   [ 16, 16, -0.096 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": "north" }
             }
         },
         {
-            "from": [  0,  0, -0.02 ],
-            "to":   [ 16, 16, -0.02 ],
+            "from": [  0,  0, -0.128 ],
+            "to":   [ 16, 16, -0.128 ],
             "faces": {
                 "north": { "uv": [0, 0, 16, 16], "texture": "#overlay_tinted", "cullface": "north", "tintindex": 2 }
             }

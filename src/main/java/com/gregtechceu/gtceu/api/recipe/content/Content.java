@@ -3,38 +3,18 @@ package com.gregtechceu.gtceu.api.recipe.content;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.chance.boost.ChanceBoostFunction;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderIngredient;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GradientUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import brachy.modularui.screen.RichTooltip;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-public class Content {
-
-    @Getter
-    public final Object content;
-    public final int chance;
-    public final int maxChance;
-    public final int tierChanceBoost;
+public record Content(Object content, int chance, int maxChance, int tierChanceBoost) {
 
     public Content(Object content, int chance, int maxChance, int tierChanceBoost) {
         this.content = content;
@@ -103,117 +83,53 @@ public class Content {
         return chanceBoost < 0 ? -fixed : fixed;
     }
 
-    public IGuiTexture createOverlay(boolean perTick, int recipeTier, int chanceTier,
-                                     @Nullable ChanceBoostFunction function) {
-        return new IGuiTexture() {
+    public static void addChanceTooltips(RichTooltip tooltip, Content content, ChanceLogic logic, int recipeTier,
+                                         int chanceTier, ChanceBoostFunction function) {
+        if (content.chance() < ChanceLogic.getMaxChancedValue()) {
+            int boostedChance = function.getBoostedChance(content, recipeTier, chanceTier);
+            if (boostedChance == 0) {
+                tooltip.addLine(Component.translatable("gtceu.gui.content.chance_nc"));
+            } else {
+                float baseChanceFloat = 100f * content.chance() / content.maxChance();
+                if (content.tierChanceBoost() != 0) {
+                    float boostedChanceFloat = 100f * boostedChance / content.maxChance();
 
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
-                drawChance(graphics, x, y, width, height, recipeTier, chanceTier, function);
-                drawRangeAmount(graphics, x, y, width, height);
-                drawFluidAmount(graphics, x, y, width, height);
-                if (perTick) {
-                    drawTick(graphics, x, y, width, height);
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_base_logic",
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base",
+                                        baseChanceFloat));
+                    }
+
+                    String key = "gtceu.gui.content.chance_tier_boost_" +
+                            ((content.tierChanceBoost() > 0) ? "plus" : "minus");
+                    tooltip.addLine(FormattingUtil.formatPercentage2Places(key,
+                            Math.abs(100f * content.tierChanceBoost() / content.maxChance())));
+
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_boosted_logic",
+                                FormattingUtil.formatNumber2Places(boostedChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_boosted",
+                                        boostedChanceFloat));
+                    }
+                } else {
+                    if (logic != ChanceLogic.NONE && logic != ChanceLogic.OR) {
+                        tooltip.addLine(Component.translatable("gtceu.gui.content.chance_no_boost_logic",
+                                FormattingUtil.formatNumber2Places(baseChanceFloat), logic.getTranslation())
+                                .withStyle(ChatFormatting.YELLOW));
+                    } else {
+                        tooltip.addLine(
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost",
+                                        baseChanceFloat));
+                    }
                 }
             }
-        };
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void drawRangeAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof IntProviderIngredient ingredient) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 400);
-            graphics.pose().scale(0.5f, 0.5f, 1);
-            int min = ingredient.getCountProvider().getMinValue();
-            int max = ingredient.getCountProvider().getMaxValue();
-            String s = String.format("%s-%s", min, max);
-            int color = 0xFFFFFF;
-            Font fontRenderer = Minecraft.getInstance().font;
-            // 5 == max num of characters that fit in a slot at 0.5x render size
-            if (s.length() > 5) {
-                s = "X-Y";
-                color = ChatFormatting.GOLD.getColor(); // Orange?
-            }
-            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21),
-                    (int) ((y + (height / 3f) + 6) * 2), color, true);
-            graphics.pose().popPose();
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void drawFluidAmount(GuiGraphics graphics, float x, float y, int width, int height) {
-        if (content instanceof SizedFluidIngredient ingredient) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 400);
-            graphics.pose().scale(0.5f, 0.5f, 1);
-            Font fontRenderer = Minecraft.getInstance().font;
-            int color;
-            String s;
-            if (ingredient.ingredient() instanceof IntProviderFluidIngredient) {
-                // with only 5 characters worth of space, that's not enough for a fluid range
-                color = ChatFormatting.GOLD.getColor();
-                s = "X-Y";
-            } else {
-                int amount = ingredient.amount();
-                color = 0xFFFFFF;
-                s = FormattingUtil.formatBuckets(amount);
-                if (fontRenderer.width(s) > 32)
-                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_1F, "B");
-                if (fontRenderer.width(s) > 32)
-                    s = FormattingUtil.formatNumberReadable(amount, true, FormattingUtil.DECIMAL_FORMAT_0F, "B");
-            }
-            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 22),
-                    (int) ((y + (height / 3f) + 6) * 2), color, true);
-            graphics.pose().popPose();
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int recipeTier,
-                           int chanceTier, @Nullable ChanceBoostFunction function) {
-        if (chance == ChanceLogic.getMaxChancedValue()) return;
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 400);
-        graphics.pose().scale(0.5f, 0.5f, 1);
-        var func = function == null ? ChanceBoostFunction.NONE : function;
-        int chance = func.getBoostedChance(this, recipeTier, chanceTier);
-        float chanceFloat = 1f * chance / this.maxChance;
-        String percent = FormattingUtil.formatNumber2Places(100 * chanceFloat);
-
-        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
-                percent + "%";
-
-        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
-        Font fontRenderer = Minecraft.getInstance().font;
-        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
-                (int) ((y + (height / 3f) + 6) * 2 - height), color, true);
-        graphics.pose().popPose();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void drawTick(GuiGraphics graphics, float x, float y, int width, int height) {
-        graphics.pose().pushPose();
-        RenderSystem.disableDepthTest();
-        graphics.pose().translate(0, 0, 400);
-        graphics.pose().scale(0.5f, 0.5f, 1);
-        String s = LocalizationUtils.format("gtceu.gui.content.tips.per_tick_short");
-        int color = 0xFFFF00;
-        Font fontRenderer = Minecraft.getInstance().font;
-        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
-                (int) ((y + (height / 3f) + 6) * 2 - height + (chance == ChanceLogic.getMaxChancedValue() ? 0 : 10)),
-                color);
-        graphics.pose().popPose();
-    }
-
-    @Override
-    public String toString() {
-        return "Content{" +
-                "content=" + content +
-                ", chance=" + chance +
-                ", maxChance=" + maxChance +
-                ", tierChanceBoost=" + tierChanceBoost +
-                '}';
     }
 }

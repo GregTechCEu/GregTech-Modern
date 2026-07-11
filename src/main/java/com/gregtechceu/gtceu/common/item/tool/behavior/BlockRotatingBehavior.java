@@ -9,12 +9,12 @@ import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,9 +56,9 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        BlockEntity te = level.getBlockEntity(pos);
-        // MTEs have special handling on rotation
-        if (te instanceof MetaMachine) {
+        BlockEntity be = level.getBlockEntity(pos);
+        // Machines have special handling on rotation
+        if (be instanceof MetaMachine) {
             return InteractionResult.PASS;
         }
 
@@ -103,18 +103,46 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
     }
 
     public static BlockHitResult retraceBlock(BlockGetter level, Player player, BlockPos pos) {
-        Vec3 startVec = RayTraceHelper.getTraceOrigin(player);
-        Vec3 endVec = RayTraceHelper.getTraceTarget(player, player.blockInteractionRange(), startVec);
+        double playerX = player.getX();
+        double playerY = player.getY() + (double) player.getEyeHeight();
+        double playerZ = player.getZ();
+
+        Vec3 startVec = new Vec3(playerX, playerY, playerZ);
+
+        double reachDistance = player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).getValue();
+
+        float playerXRot = player.getXRot();
+        float playerYRot = player.getYRot();
+
+        float yawCos = Mth.cos(-playerYRot * ((float) Math.PI / 180F) - (float) Math.PI);
+        float yawSin = Mth.sin(-playerYRot * ((float) Math.PI / 180F) - (float) Math.PI);
+
+        float pitchCos = -Mth.cos(-playerXRot * ((float) Math.PI / 180F));
+        float pitchSin = Mth.sin(-playerXRot * ((float) Math.PI / 180F));
+
+        float lookX = yawSin * pitchCos;
+        float lookZ = yawCos * pitchCos;
+
+        Vec3 endVec = startVec.add(
+                (double) lookX * reachDistance,
+                (double) pitchSin * reachDistance,
+                (double) lookZ * reachDistance);
+
         BlockState state = level.getBlockState(pos);
+
         VoxelShape baseShape = state.getShape(level, pos);
         BlockHitResult baseTraceResult = baseShape.clip(startVec, endVec, pos);
+
         if (baseTraceResult != null) {
-            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player))
+            BlockHitResult visualShapeTraceResult = state
+                    .getVisualShape(level, pos, CollisionContext.of(player))
                     .clip(startVec, endVec, pos);
-            if (raytraceTraceShape != null) {
-                return raytraceTraceShape;
+
+            if (visualShapeTraceResult != null) {
+                return visualShapeTraceResult;
             }
         }
+
         return baseTraceResult;
     }
 }
