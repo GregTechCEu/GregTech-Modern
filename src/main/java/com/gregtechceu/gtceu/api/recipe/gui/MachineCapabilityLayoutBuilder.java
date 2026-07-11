@@ -96,7 +96,7 @@ public interface MachineCapabilityLayoutBuilder {
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new FluidSlot()
-                        .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0]).controlsAmount(true))
+                        .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[i]).controlsAmount(true))
                         .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
                 .size(18, 18)
