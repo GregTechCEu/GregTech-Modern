@@ -128,12 +128,11 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                 new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
                         IO.IN, IO.BOTH));
         this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
-                        IO.OUT));
+                new NotifiableItemStackHandler(getMaxOutputSize(ItemRecipeCapability.CAP), IO.OUT));
         this.importFluids = attachTrait(new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
                 tankScalingFunction.applyAsInt(getTier()), IO.IN));
         this.exportFluids = attachTrait(
-                new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                new NotifiableFluidTank(getMaxOutputSize(FluidRecipeCapability.CAP),
                         tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
@@ -176,6 +175,13 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public void setMuffled(boolean muffled) {
         isMuffled = muffled;
         syncDataHolder.markClientSyncFieldDirty("isMuffled");
+    }
+
+    private int getMaxOutputSize(RecipeCapability<?> cap) {
+        int recipeTypeOutputSize = getRecipeType().getMaxOutputs(cap);
+        int machineTypeOutputLimit = this.getDefinition().getRecipeOutputLimits().getOrDefault(cap,
+                recipeTypeOutputSize);
+        return Math.min(recipeTypeOutputSize, machineTypeOutputLimit);
     }
 
     //////////////////////////////////////
