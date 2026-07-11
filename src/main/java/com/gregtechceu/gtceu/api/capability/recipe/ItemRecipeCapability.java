@@ -48,6 +48,9 @@ import org.jetbrains.annotations.UnknownNullability;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.gregtechceu.gtceu.client.util.DrawUtil.drawChance;
+import static com.gregtechceu.gtceu.client.util.DrawUtil.drawString;
+
 public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
 
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability("item", 0xFFD96106, true,
@@ -96,26 +99,6 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
                 }
             }
         };
-    }
-
-    private static void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int chance) {
-        if (chance == IChancedIngredient.MAX_CHANCE) return;
-        float chanceFloat = 1f * chance / IChancedIngredient.MAX_CHANCE;
-        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
-                FormattingUtil.formatNumber2Places(100 * chanceFloat) + "%";
-        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
-        drawString(graphics, x, y, width, height, s, color, true);
-    }
-
-    private static void drawString(GuiGraphics graphics, float x, float y, int width, int height, String s, int color,
-                                   boolean top) {
-        graphics.pose().pushPose();
-        graphics.pose().translate(0, 0, 400);
-        graphics.pose().scale(0.5f, 0.5f, 1);
-        Font fontRenderer = Minecraft.getInstance().font;
-        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
-                (int) ((y + (height / 3f) + 6) * 2 - (top ? height + 5 : 0)), color, true);
-        graphics.pose().popPose();
     }
 
     @Override

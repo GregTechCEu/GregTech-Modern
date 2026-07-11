@@ -1,13 +1,20 @@
 package com.gregtechceu.gtceu.client.util;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
 
+import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 public class DrawUtil {
@@ -76,5 +83,25 @@ public class DrawUtil {
                 (float) (argb & 255) / 255.0F,
                 (float) (argb >> 24 & 255) / 255.0F
         };
+    }
+
+    public static void drawChance(GuiGraphics graphics, float x, float y, int width, int height, int chance) {
+        if (chance == IChancedIngredient.MAX_CHANCE) return;
+        float chanceFloat = 1f * chance / IChancedIngredient.MAX_CHANCE;
+        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_nc_short") :
+                FormattingUtil.formatNumber2Places(100 * chanceFloat) + "%";
+        int color = chance == 0 ? 0xFF0000 : GradientUtil.toRGB(Mth.lerp(chanceFloat, 29f, 167f), 100f, 50f);
+        drawString(graphics, x, y, width, height, s, color, true);
+    }
+
+    public static void drawString(GuiGraphics graphics, float x, float y, int width, int height, String s, int color,
+                                   boolean top) {
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        graphics.pose().scale(0.5f, 0.5f, 1);
+        Font fontRenderer = Minecraft.getInstance().font;
+        graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23),
+                (int) ((y + (height / 3f) + 6) * 2 - (top ? height + 5 : 0)), color, true);
+        graphics.pose().popPose();
     }
 }
