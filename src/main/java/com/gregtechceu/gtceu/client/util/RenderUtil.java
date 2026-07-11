@@ -25,17 +25,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.textures.FluidSpriteCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
@@ -49,7 +50,6 @@ import org.joml.*;
 
 import java.lang.Math;
 import java.util.*;
-import java.util.function.BiFunction;
 
 import static net.minecraft.util.FastColor.ARGB32.*;
 
@@ -58,37 +58,74 @@ public class RenderUtil {
 
     public enum FluidTextureType {
 
-        STILL((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getStillTexture(fluidStack);
-            else return fluidTypeExtensions.getStillTexture();
-        }),
-        FLOWING((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(fluidStack);
-            else return fluidTypeExtensions.getFlowingTexture();
-        }),
-        OVERLAY((fluidTypeExtensions, fluidStack) -> {
-            if (!fluidStack.isEmpty()) return fluidTypeExtensions.getOverlayTexture(fluidStack);
-            else return fluidTypeExtensions.getOverlayTexture();
-        });
+        STILL {
+            @Override
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
+                if (!stack.isEmpty()) return fluidTypeExtensions.getStillTexture(stack);
+                else return fluidTypeExtensions.getStillTexture();
+            }
 
-        private static final ResourceLocation WATER_STILL = ResourceLocation.withDefaultNamespace("block/water_still");
+            @Override
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions,
+                                             FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                if (!state.isEmpty()) return fluidTypeExtensions.getStillTexture(state, getter, pos);
+                else return fluidTypeExtensions.getStillTexture();
+            }
+        },
+        FLOWING {
+            @Override
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
+                if (!stack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(stack);
+                else return fluidTypeExtensions.getFlowingTexture();
+            }
 
-        private final BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper;
+            @Override
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions,
+                                             FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                if (!state.isEmpty()) return fluidTypeExtensions.getFlowingTexture(state, getter, pos);
+                else return fluidTypeExtensions.getFlowingTexture();
+            }
+        },
+        OVERLAY {
+            @Override
+            @Nullable
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
+                if (!stack.isEmpty()) return fluidTypeExtensions.getOverlayTexture(stack);
+                else return fluidTypeExtensions.getOverlayTexture();
+            }
 
-        FluidTextureType(BiFunction<IClientFluidTypeExtensions, FluidStack, ResourceLocation> mapper) {
-            this.mapper = mapper;
-        }
+            @Override
+            @Nullable
+            ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions,
+                                             FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+                if (!state.isEmpty()) return fluidTypeExtensions.getOverlayTexture(state, getter, pos);
+                else return fluidTypeExtensions.getOverlayTexture();
+            }
+        };
 
-        public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions) {
+        abstract @Nullable ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions,
+                                                            FluidStack stack);
+
+        abstract @Nullable ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions,
+                                                            FluidState state, BlockAndTintGetter getter, BlockPos pos);
+
+        public @Nullable TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions) {
             return map(fluidTypeExtensions, FluidStack.EMPTY);
         }
 
-        public TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack fluidStack) {
-            ResourceLocation texture = mapper.apply(fluidTypeExtensions, fluidStack);
-            if (texture == null) texture = STILL.mapper.apply(fluidTypeExtensions, fluidStack);
-            if (texture == null) texture = WATER_STILL;
+        public @Nullable TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
+            ResourceLocation texture = getFluidTexture(fluidTypeExtensions, stack);
+            if (texture == null) return null;
 
-            return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
+            return FluidSpriteCache.getSprite(texture);
+        }
+
+        public @Nullable TextureAtlasSprite map(IClientFluidTypeExtensions fluidTypeExtensions,
+                                                FluidState state, BlockAndTintGetter getter, BlockPos pos) {
+            ResourceLocation texture = getFluidTexture(fluidTypeExtensions, state, getter, pos);
+            if (texture == null) return null;
+
+            return FluidSpriteCache.getSprite(texture);
         }
     }
 
