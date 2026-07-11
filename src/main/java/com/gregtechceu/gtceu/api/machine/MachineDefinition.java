@@ -219,4 +219,16 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     public static void clearBuilt() {
         STATE.remove();
     }
+
+    /**
+     * Gets the output size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getOutputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeOutputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeOutputSize = Math.max(recipeType.getMaxOutputs(cap), recipeTypeOutputSize);
+        }
+        int machineTypeOutputLimit = this.getRecipeOutputLimits().getOrDefault(cap, recipeTypeOutputSize);
+        return Math.min(recipeTypeOutputSize, machineTypeOutputLimit);
+    }
 }

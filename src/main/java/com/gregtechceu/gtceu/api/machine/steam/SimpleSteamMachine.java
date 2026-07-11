@@ -58,11 +58,9 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         super(info, isHighPressure);
         this.importItems = attachTrait(
                 new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH));
-        int recipeTypeOutputSize = getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP);
-        int machineTypeOutputLimit = this.getDefinition().getRecipeOutputLimits().getOrDefault(ItemRecipeCapability.CAP,
-                recipeTypeOutputSize);
         this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(Math.min(recipeTypeOutputSize, machineTypeOutputLimit), IO.OUT));
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()), IO.OUT));
 
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
