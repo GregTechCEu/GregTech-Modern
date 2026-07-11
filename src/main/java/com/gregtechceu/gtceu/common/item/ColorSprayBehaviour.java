@@ -464,5 +464,4 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         }
         return parent.isConnected(direction) && child.isConnected(direction.getOpposite());
     };
-
 }

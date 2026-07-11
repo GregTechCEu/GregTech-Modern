@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.machine.trait.NetworkedComputationContainer;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
+import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.common.computation.ComputationNetworkManager;
 import com.gregtechceu.gtceu.integration.xei.widgets.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -9,6 +13,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 
 import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -31,6 +36,27 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     @Override
     public void toNetwork(Integer ingredient, FriendlyByteBuf friendlyByteBuf) {
         friendlyByteBuf.writeVarInt(ingredient);
+    }
+
+    @Override
+    public int getMaxParallelByInput(RecipeHandlerGroup holder, GTRecipe recipe, int limit, boolean tick) {
+        int requiredCWU = (tick ? recipe.tickInputs : recipe.inputs)
+                .getOrDefault(this, List.of()).stream().reduce(0, Integer::sum);
+        if (requiredCWU == 0) return limit;
+
+        var availableCWU = holder.getInputHandlerMap().get(this).stream()
+                .filter(NetworkedComputationContainer.class::isInstance)
+                .map(NetworkedComputationContainer.class::cast)
+                .mapToInt(container -> {
+                    var level = container.getMachine().getLevel();
+                    if (level instanceof ServerLevel serverLevel) {
+                        return ComputationNetworkManager.get(serverLevel).getNetWorkAvailableCWUt(container);
+                    }
+                    return 0;
+                })
+                .sum();
+
+        return Math.min(limit, availableCWU / requiredCWU);
     }
 
     @Override

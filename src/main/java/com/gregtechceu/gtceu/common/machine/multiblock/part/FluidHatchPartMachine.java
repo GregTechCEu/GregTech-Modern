@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
@@ -14,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigura
 import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -51,7 +52,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachineLife, IHasCircuitSlot, IPaintable {
+public class FluidHatchPartMachine extends TieredIOPartMachine implements IDistinctPart, IMachineLife, IHasCircuitSlot {
 
     public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidType.BUCKET_VOLUME;
     public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidType.BUCKET_VOLUME;
@@ -64,6 +65,11 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription tankSubs;
+
+    @Getter
+    @Persisted
+    @DescSynced
+    private boolean isDistinct = false;
 
     @Getter
     @Persisted
@@ -128,6 +134,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     @Override
     public void onPaintingColorChanged(int color) {
+        getControllers().forEach(controller -> {
+            if (controller instanceof IRecipeLogicMachine rlm) {
+                rlm.getRecipeLogic().resetLastGroup();
+            }
+        });
+    }
+
+    @Override
+    public void setDistinct(boolean distinct) {
+        isDistinct = (io != IO.OUT && distinct);
         getControllers().forEach(controller -> {
             if (controller instanceof IRecipeLogicMachine rlm) {
                 rlm.getRecipeLogic().resetLastGroup();
@@ -245,9 +261,13 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMachi
 
     @Override
     public void attachConfigurators(ConfiguratorPanel left, ConfiguratorPanel right) {
-        super.attachConfigurators(left, right);
-        if (isCircuitSlotEnabled() && this.io == IO.IN) {
-            left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+        if (this.io == IO.IN) {
+            if (isCircuitSlotEnabled()) {
+                left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
+            }
+            IDistinctPart.super.attachConfigurators(left, right);
+        } else {
+            super.attachConfigurators(left, right);
         }
     }
 

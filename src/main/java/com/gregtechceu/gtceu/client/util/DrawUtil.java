@@ -2,19 +2,19 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.IChancedIngredient;
 import com.gregtechceu.gtceu.core.mixins.client.GuiGraphicsAccessor;
-
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GradientUtil;
-import com.lowdragmc.lowdraglib.utils.ColorUtils;
 
+import com.lowdragmc.lowdraglib.utils.ColorUtils;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
 
 public class DrawUtil {
@@ -95,7 +95,7 @@ public class DrawUtil {
     }
 
     public static void drawString(GuiGraphics graphics, float x, float y, int width, int height, String s, int color,
-                                   boolean top) {
+                                  boolean top) {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);

@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.integration.xei.entry.fluid.FluidTagList;
 import com.gregtechceu.gtceu.integration.xei.handlers.fluid.CycleFluidEntryHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
-import com.gregtechceu.gtceu.utils.GradientUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -27,12 +26,9 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -316,11 +312,13 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         if (value instanceof FluidIngredient.TagValue tagValue) {
             tags.add(tagValue.getTag(), amount, value.nbt());
         } else {
-            fluids.addAll(value.getStacks().stream().map(stack -> {
-                FluidStack copy = stack.copy();
-                copy.setAmount(amount);
-                return copy;
-            }).toList());
+            fluids.addAll(value.getStacks().stream()
+                    .filter(fluidStack -> !fluidStack.isEmpty())
+                    .map(stack -> {
+                        FluidStack copy = stack.copy();
+                        copy.setAmount(amount);
+                        return copy;
+                    }).toList());
         }
         if (!tags.isEmpty()) {
             return tags;

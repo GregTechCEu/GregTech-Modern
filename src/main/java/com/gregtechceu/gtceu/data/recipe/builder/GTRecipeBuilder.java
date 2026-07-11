@@ -566,6 +566,10 @@ public class GTRecipeBuilder {
         return input(ItemRecipeCapability.CAP, ItemIngredient.of(itemStack).copyWithChance(0));
     }
 
+    public GTRecipeBuilder notConsumable(TagKey<Item> tag) {
+        return input(ItemRecipeCapability.CAP, ItemIngredient.of(tag).copyWithChance(0));
+    }
+
     public GTRecipeBuilder notConsumable(Ingredient ingredient) {
         return input(ItemRecipeCapability.CAP, ItemIngredient.of(ingredient).copyWithChance(0));
     }

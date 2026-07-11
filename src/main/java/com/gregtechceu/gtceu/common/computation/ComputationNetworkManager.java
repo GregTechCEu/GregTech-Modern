@@ -107,6 +107,15 @@ public class ComputationNetworkManager {
         return 0;
     }
 
+    public int getNetWorkAvailableCWUt(ComputationConsumer consumer) {
+        for (ComputationNetwork network : networks) {
+            if (network.contains(consumer)) {
+                return network.lastSpareCWUt;
+            }
+        }
+        return 0;
+    }
+
     public List<DebugTopology> getDebugTopologies() {
         List<DebugTopology> topologies = new ArrayList<>();
         for (ComputationNetwork network : networks) {

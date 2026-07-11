@@ -141,7 +141,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             Component text1 = Component.translatable(isInput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted",
                     FormattingUtil.formatNumber2Places(amp), GTValues.VN[recipe.tier])
                     .withStyle(ChatFormatting.UNDERLINE);
-            var recipeVoltageText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT + 1),
+            var recipeVoltageText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT),
                     text1)
                     .setTextColor(-1).setDropShadow(true);
             recipeVoltageText.setHoverTooltips(
@@ -152,7 +152,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             if (!recipe.data.contains("duration_is_total_cwu")) {
                 long euTotal = eut * duration;
                 Component text2 = Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal));
-                var totalEUText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT), text2)
+                var totalEUText = new LabelWidget(3 - xOffset, yOffset.addAndGet(GTRecipeWidget.LINE_HEIGHT + 1), text2)
                         .setTextColor(-1).setDropShadow(true);
                 group.addWidget(totalEUText);
             }

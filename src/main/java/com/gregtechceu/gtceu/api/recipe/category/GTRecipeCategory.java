@@ -51,6 +51,13 @@ public class GTRecipeCategory {
         this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
     }
 
+    public GTRecipeCategory(@NotNull ResourceLocation registryKey, @NotNull GTRecipeType recipeType) {
+        this.recipeType = recipeType;
+        this.name = registryKey.getPath();
+        this.registryKey = registryKey;
+        this.languageKey = "%s.recipe.category.%s".formatted(registryKey.getNamespace(), registryKey.getPath());
+    }
+
     public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
         GTRecipeCategory category = new GTRecipeCategory(recipeType);
         GTRegistries.RECIPE_CATEGORIES.register(category.registryKey, category);
