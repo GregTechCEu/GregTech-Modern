@@ -46,6 +46,20 @@ public class EmbeddiumFluidRendererMixin {
         }
     }
 
+    @Definition(id = "shouldRenderBackwardUpFace", method = "Lnet/minecraft/world/level/material/FluidState;shouldRenderBackwardUpFace(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z")
+    @Definition(id = "scratchPos", field = "Lorg/embeddedt/embeddium/impl/render/chunk/compile/pipeline/FluidRenderer;scratchPos:Lnet/minecraft/core/BlockPos$MutableBlockPos;")
+    @Definition(id = "set", method = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;")
+    @Expression("?.shouldRenderBackwardUpFace(?, @(this.scratchPos.set(?, ? + 1, ?)))")
+    @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), index = 2)
+    private int gtceu$invertFluidBackwardUpFaceCheckDirection(int posY) {
+        if (gtceu$drawingUpsideDownFluid) {
+            // `posY - 2` because the original function already did `posY + 1`
+            return posY - 2;
+        } else {
+            return posY;
+        }
+    }
+
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP", remap = true)
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN", remap = true)
     @Expression(value = "UP", id = "up")
