@@ -102,7 +102,9 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     public void loadFromItem(CompoundTag tag) {
-        if (!tag.contains("Fluid")) {
+        if (tag.contains("Fluid")) {
+            stored = FluidStack.loadFluidStackFromNBT(tag.getCompound("Fluid"));
+        } else {
             stored = FluidStack.EMPTY;
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
