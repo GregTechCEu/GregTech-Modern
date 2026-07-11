@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.client.util.ExtendedBlockModelRotation;
 
-import net.minecraft.core.Direction;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.blockstates.*;
@@ -101,14 +100,14 @@ public class GTBlockstateProvider extends RegistrateBlockstateProvider {
             var disp = PropertyDispatch.property(rotationState.property);
 
             dispatch = disp.generate((front) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, Direction.NORTH);
+                var orientation = ExtendedBlockModelRotation.get(front);
                 return applyOrientation(Variant.variant(), orientation);
             });
         } else {
             var disp = PropertyDispatch.properties(rotationState.property, GTBlockStateProperties.UPWARDS_FACING);
 
             dispatch = disp.generate((front, up) -> {
-                var orientation = ExtendedBlockModelRotation.get(front, up);
+                var orientation = ExtendedBlockModelRotation.getExtended(front, up);
                 return applyOrientation(Variant.variant(), orientation);
             });
         }

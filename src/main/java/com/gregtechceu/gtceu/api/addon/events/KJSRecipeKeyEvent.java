@@ -4,13 +4,16 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
+
 import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @SuppressWarnings("unused")
-public class KJSRecipeKeyEvent {
+public class KJSRecipeKeyEvent extends Event implements IModBusEvent {
 
     @Getter
     private final Map<RecipeCapability<?>, ContentJS<?>> registeredKeys = new HashMap<>();

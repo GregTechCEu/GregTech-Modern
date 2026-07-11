@@ -1,19 +1,19 @@
 package com.gregtechceu.gtceu.client.renderer.item.decorator;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
+import brachy.modularui.drawable.GuiDraw;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Range;
@@ -78,7 +78,7 @@ public class GTTankItemFluidPreview implements IItemDecorator {
 
     @Override
     public boolean render(GuiGraphics guiGraphics, Font font, ItemStack itemStack, int x, int y) {
-        if (isRequireShiftKeyDown() && !Screen.hasShiftDown()) {
+        if (isRequireShiftKeyDown() && !GTUtil.isShiftDown()) {
             return false;
         }
 
@@ -94,12 +94,16 @@ public class GTTankItemFluidPreview implements IItemDecorator {
         for (int index = 0, renderedCount = 0; index < fluidHandler.getTanks() &&
                 renderedCount < getMaxRenderCount(); index++) {
             FluidStack fluidInTank = fluidHandler.getFluidInTank(index);
-            if (fluidInTank.isEmpty()) {
-                continue;
+            if (!fluidInTank.isEmpty()) {
+                GuiDraw.drawFluidTexture(
+                        guiGraphics,
+                        fluidInTank,
+                        x + OFFSET[renderedCount][0],
+                        y + OFFSET[renderedCount][1],
+                        8.0F,
+                        8.0F, 0);
+                renderedCount++;
             }
-            DrawerHelper.drawFluidForGui(guiGraphics, fluidInTank,
-                    x + OFFSET[renderedCount][0], y + OFFSET[renderedCount][1], 8.0F, 8.0F);
-            renderedCount++;
         }
 
         return true;

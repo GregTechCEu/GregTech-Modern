@@ -326,7 +326,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                         ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("inner_placements").forGetter(config -> config.innerPlacements),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("cannot_replace").forGetter(config -> config.cannotReplace),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks").forGetter(config -> config.invalidBlocks),
-                        TagPrefix.CODEC.optionalFieldOf("provider_material_prefix", TagPrefix.block).forGetter(config -> config.providerMaterialPrefix))
+                        GTRegistries.TAG_PREFIXES.byNameCodec().optionalFieldOf("provider_material_prefix", TagPrefix.block).forGetter(config -> config.providerMaterialPrefix))
                 .apply(instance, GeodeBlockSettings::new));
         // spotless:on
     }

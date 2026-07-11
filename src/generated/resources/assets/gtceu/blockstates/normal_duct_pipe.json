@@ -1,7 +1,7 @@
 {
-  "variants": {
-    "": {
-      "model": "gtceu:block/normal_duct_pipe"
+    "variants": {
+        "": {
+            "model": "gtceu:block/normal_duct_pipe"
+        }
     }
-  }
 }

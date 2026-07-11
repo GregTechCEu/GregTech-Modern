@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -13,10 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import snownee.jade.addon.harvest.HarvestToolProvider;
 import snownee.jade.addon.harvest.SimpleToolHandler;
-import snownee.jade.api.IWailaClientRegistration;
-import snownee.jade.api.IWailaCommonRegistration;
-import snownee.jade.api.IWailaPlugin;
-import snownee.jade.api.WailaPlugin;
+import snownee.jade.api.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,30 +24,30 @@ public class GTJadePlugin implements IWailaPlugin {
 
     @Override
     public void register(IWailaCommonRegistration registration) {
-        registration.registerBlockDataProvider(new ElectricContainerBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new ParallelProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new RecipeOutputProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new MultiblockStructureProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new MaintenanceBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new ExhaustVentBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new SteamBoilerBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new AutoOutputBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new CableBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new MachineModeProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new StainedColorProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new HazardCleanerBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new TransformerBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new PrimitivePumpBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new DataBankBlockProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new EnergyConverterModeProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new BatteryStorageInfoProvider(), BlockEntity.class);
-        registration.registerBlockDataProvider(new LDPEndpointProvider(), BlockEntity.class);
+        register(registration, new ElectricContainerBlockProvider(),
+                new WorkableBlockProvider(),
+                new ControllableBlockProvider(),
+                new RecipeLogicProvider(),
+                new ParallelProvider(),
+                new RecipeOutputProvider(),
+                new MultiblockStructureProvider(),
+                new MaintenanceBlockProvider(),
+                new ExhaustVentBlockProvider(),
+                new SteamBoilerBlockProvider(),
+                new AutoOutputBlockProvider(),
+                new CableBlockProvider(),
+                new MachineModeProvider(),
+                new StainedColorProvider(),
+                new HazardCleanerBlockProvider(),
+                new TransformerBlockProvider(),
+                new PrimitivePumpBlockProvider(),
+                new DataBankBlockProvider(),
+                new EnergyConverterModeProvider(),
+                new BatteryStorageInfoProvider(),
+                new LDPEndpointProvider());
+
         if (GTCEu.Mods.isAE2Loaded()) {
-            registration.registerBlockDataProvider(new MEPatternBufferProvider(), BlockEntity.class);
-            registration.registerBlockDataProvider(new MEPatternBufferProxyProvider(), BlockEntity.class);
+            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorage(GTItemStorageProvider.INSTANCE, MetaMachine.class);
@@ -59,35 +57,59 @@ public class GTJadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        registration.registerBlockComponent(new ElectricContainerBlockProvider(), Block.class);
-        registration.registerBlockComponent(new WorkableBlockProvider(), Block.class);
-        registration.registerBlockComponent(new ControllableBlockProvider(), Block.class);
-        registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
-        registration.registerBlockComponent(new ParallelProvider(), Block.class);
-        registration.registerBlockComponent(new RecipeOutputProvider(), Block.class);
-        registration.registerBlockComponent(new MultiblockStructureProvider(), Block.class);
-        registration.registerBlockComponent(new MaintenanceBlockProvider(), Block.class);
-        registration.registerBlockComponent(new ExhaustVentBlockProvider(), Block.class);
-        registration.registerBlockComponent(new SteamBoilerBlockProvider(), Block.class);
-        registration.registerBlockComponent(new AutoOutputBlockProvider(), Block.class);
-        registration.registerBlockComponent(new CableBlockProvider(), Block.class);
-        registration.registerBlockComponent(new MachineModeProvider(), Block.class);
-        registration.registerBlockComponent(new StainedColorProvider(), Block.class);
-        registration.registerBlockComponent(new HazardCleanerBlockProvider(), Block.class);
-        registration.registerBlockComponent(new TransformerBlockProvider(), Block.class);
-        registration.registerBlockComponent(new PrimitivePumpBlockProvider(), Block.class);
-        registration.registerBlockComponent(new DataBankBlockProvider(), Block.class);
-        registration.registerBlockComponent(new LDPEndpointProvider(), Block.class);
-        registration.registerBlockComponent(new EnergyConverterModeProvider(), Block.class);
-        registration.registerBlockComponent(new BatteryStorageInfoProvider(), Block.class);
+        register(registration,
+                new ElectricContainerBlockProvider(),
+                new WorkableBlockProvider(),
+                new ControllableBlockProvider(),
+                new RecipeLogicProvider(),
+                new ParallelProvider(),
+                new RecipeOutputProvider(),
+                new MultiblockStructureProvider(),
+                new MaintenanceBlockProvider(),
+                new ExhaustVentBlockProvider(),
+                new SteamBoilerBlockProvider(),
+                new AutoOutputBlockProvider(),
+                new MachineModeProvider(),
+                new StainedColorProvider(),
+                new HazardCleanerBlockProvider(),
+                new TransformerBlockProvider(),
+                new PrimitivePumpBlockProvider(),
+                new DataBankBlockProvider(),
+                new LDPEndpointProvider(),
+                new EnergyConverterModeProvider(),
+                new BatteryStorageInfoProvider(),
+                new CableBlockProvider());
+
         if (GTCEu.Mods.isAE2Loaded()) {
-            registration.registerBlockComponent(new MEPatternBufferProvider(), Block.class);
-            registration.registerBlockComponent(new MEPatternBufferProxyProvider(), Block.class);
+            register(registration, new MEPatternBufferProvider(), new MEPatternBufferProxyProvider());
         }
 
         registration.registerItemStorageClient(GTItemStorageProvider.INSTANCE);
         registration.registerFluidStorageClient(GTFluidStorageProvider.INSTANCE);
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
+    }
+
+    @SafeVarargs
+    public static void register(IWailaCommonRegistration reg, IServerDataProvider<BlockAccessor>... providers) {
+        for (var provider : providers) {
+            Class<? extends BlockEntity> clazz = BlockEntity.class;
+
+            if (provider instanceof MachineInfoProvider<?, ?> machineInfoProvider)
+                clazz = machineInfoProvider.machineType;
+            if (provider instanceof MachineTraitProvider<?, ?>) clazz = MetaMachine.class;
+
+            reg.registerBlockDataProvider(provider, clazz);
+        }
+    }
+
+    public static void register(IWailaClientRegistration reg, IBlockComponentProvider... providers) {
+        for (var provider : providers) {
+            Class<? extends Block> clazz = Block.class;
+            if (provider instanceof MachineInfoProvider<?, ?> || provider instanceof MachineTraitProvider<?, ?>) {
+                clazz = MetaMachineBlock.class;
+            }
+            reg.registerBlockComponent(provider, clazz);
+        }
     }
 
     static {

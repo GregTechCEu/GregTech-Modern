@@ -2,24 +2,23 @@ package com.gregtechceu.gtceu.api.misc.virtualregistry;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
 
-    private final Map<EntryTypes<?>, Map<String, VirtualEntry>> registryMap = new ConcurrentHashMap<>();
+    private final Map<EntryTypes<?>, Map<String, VirtualEntry>> registryMap = new Object2ObjectOpenHashMap<>();
 
     public VirtualRegistryMap() {}
 
-    public VirtualRegistryMap(HolderLookup.@NotNull Provider registries, CompoundTag tag) {
+    public VirtualRegistryMap(HolderLookup.Provider registries, CompoundTag tag) {
         deserializeNBT(registries, tag);
     }
 
@@ -29,7 +28,11 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
     }
 
     public void addEntry(String name, VirtualEntry entry) {
-        registryMap.computeIfAbsent(entry.getType(), k -> new ConcurrentHashMap<>()).put(name, entry);
+        registryMap.computeIfAbsent(entry.getType(), k -> new Object2ObjectOpenHashMap<>()).put(name, entry);
+    }
+
+    public <T extends VirtualEntry> Map<String, VirtualEntry> getEntries(EntryTypes<T> type) {
+        return registryMap.getOrDefault(type, new Object2ObjectOpenHashMap<>());
     }
 
     public boolean contains(EntryTypes<?> type, String name) {
@@ -50,35 +53,51 @@ public class VirtualRegistryMap implements INBTSerializable<CompoundTag> {
         registryMap.clear();
     }
 
-    public Set<String> getEntryNames(EntryTypes<?> type) {
-        return new HashSet<>(registryMap.getOrDefault(type, Collections.emptyMap()).keySet());
+    public boolean isEmpty() {
+        return registryMap.isEmpty();
     }
 
     @Override
-    public @NotNull CompoundTag serializeNBT(HolderLookup.@NotNull Provider registries) {
+    public CompoundTag serializeNBT(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
         for (Map.Entry<EntryTypes<?>, Map<String, VirtualEntry>> entry : registryMap.entrySet()) {
-            CompoundTag entriesTag = new CompoundTag();
-            for (Map.Entry<String, VirtualEntry> subEntry : entry.getValue().entrySet()) {
-                entriesTag.put(subEntry.getKey(), subEntry.getValue().serializeNBT(registries));
+            ListTag entriesTag = new ListTag();
+            for (VirtualEntry innerEntry : entry.getValue().values()) {
+                if (innerEntry.canRemove()) continue;
+                entriesTag.add(innerEntry.serializeNBT(registries));
             }
-            tag.put(entry.getKey().getId().toString(), entriesTag);
+            tag.put(entry.getKey().toString(), entriesTag);
         }
         return tag;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.@NotNull Provider registries, CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider registries, CompoundTag nbt) {
         for (String entryTypeString : nbt.getAllKeys()) {
-            EntryTypes<?> type = EntryTypes.fromString(entryTypeString);
-
+            ResourceLocation entryTypeLoc = ResourceLocation.tryParse(entryTypeString);
+            if (entryTypeLoc == null) continue;
+            EntryTypes<?> type = EntryTypes.fromLocation(entryTypeLoc);
             if (type == null) continue;
 
-            CompoundTag virtualEntries = nbt.getCompound(entryTypeString);
-            for (String name : virtualEntries.getAllKeys()) {
-                CompoundTag entryTag = virtualEntries.getCompound(name);
-                addEntry(name, type.createInstance(registries, entryTag));
+            Tag virtualEntries = nbt.get(entryTypeString);
+
+            // backwards compat
+            if (virtualEntries instanceof CompoundTag compoundTag) {
+                for (String name : compoundTag.getAllKeys()) {
+                    CompoundTag entryTag = compoundTag.getCompound(name);
+                    VirtualEntry entry = type.createInstance(registries, entryTag);
+                    if (entry.canRemove()) continue;
+                    addEntry(entry.getColorStr(), type.createInstance(registries, entryTag));
+                }
+            } else {
+                ListTag listTag = (ListTag) virtualEntries;
+                for (int i = 0; i < Objects.requireNonNull(listTag).size(); i++) {
+                    var entry = type.createInstance(registries, listTag.getCompound(i));
+                    if (entry.canRemove()) continue;
+                    addEntry(entry.getColorStr(), entry);
+                }
             }
+
         }
     }
 }

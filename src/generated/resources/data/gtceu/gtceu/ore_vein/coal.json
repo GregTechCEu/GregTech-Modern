@@ -45,6 +45,6 @@
             "radius": 5
         }
     ],
-    "layer": "stone",
+    "layer": "gtceu:stone",
     "weight": 80
 }

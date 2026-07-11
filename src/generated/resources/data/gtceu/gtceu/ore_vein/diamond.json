@@ -49,6 +49,6 @@
             "radius": 2
         }
     ],
-    "layer": "deepslate",
+    "layer": "gtceu:deepslate",
     "weight": 40
 }

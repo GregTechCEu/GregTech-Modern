@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.network.packets.prospecting;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
 import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 
 import net.minecraft.core.BlockPos;

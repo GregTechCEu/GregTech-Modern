@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -13,7 +12,7 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,11 +55,11 @@ public final class ProxySlotRecipeHandler {
 
         public ProxyRHL(MEPatternBufferProxyPartMachine machine) {
             super(IO.IN);
-            circuit = new ProxyItemRecipeHandler(machine);
-            sharedItem = new ProxyItemRecipeHandler(machine);
-            slotItem = new ProxyItemRecipeHandler(machine);
-            sharedFluid = new ProxyFluidRecipeHandler(machine);
-            slotFluid = new ProxyFluidRecipeHandler(machine);
+            circuit = machine.attachTrait(new ProxyItemRecipeHandler());
+            sharedItem = machine.attachTrait(new ProxyItemRecipeHandler());
+            slotItem = machine.attachTrait(new ProxyItemRecipeHandler());
+            sharedFluid = machine.attachTrait(new ProxyFluidRecipeHandler());
+            slotFluid = machine.attachTrait(new ProxyFluidRecipeHandler());
             addHandlers(circuit, sharedItem, slotItem, sharedFluid, slotFluid);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
@@ -101,18 +100,18 @@ public final class ProxySlotRecipeHandler {
             return TYPE;
         }
 
-        private IRecipeHandlerTrait<SizedIngredient> proxy = null;
-        private ISubscription proxySub = null;
+        private @Nullable IRecipeHandlerTrait<SizedIngredient> proxy = null;
+        private @Nullable ISubscription proxySub = null;
 
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<SizedIngredient> capability = ItemRecipeCapability.CAP;
         private final boolean isDistinct = true;
 
-        public ProxyItemRecipeHandler(MetaMachine machine) {
-            super(machine);
+        public ProxyItemRecipeHandler() {
+            super();
         }
 
-        public void setProxy(IRecipeHandlerTrait<SizedIngredient> proxy) {
+        public void setProxy(@Nullable IRecipeHandlerTrait<SizedIngredient> proxy) {
             this.proxy = proxy;
             if (proxySub != null) {
                 proxySub.unsubscribe();
@@ -137,7 +136,7 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             if (proxy == null) return Collections.emptyList();
             return proxy.getContents();
         }
@@ -165,18 +164,18 @@ public final class ProxySlotRecipeHandler {
             return TYPE;
         }
 
-        private IRecipeHandlerTrait<SizedFluidIngredient> proxy = null;
-        private ISubscription proxySub = null;
+        private @Nullable IRecipeHandlerTrait<SizedFluidIngredient> proxy = null;
+        private @Nullable ISubscription proxySub = null;
 
         private final IO handlerIO = IO.IN;
         private final RecipeCapability<SizedFluidIngredient> capability = FluidRecipeCapability.CAP;
         private final boolean isDistinct = true;
 
-        public ProxyFluidRecipeHandler(MetaMachine machine) {
-            super(machine);
+        public ProxyFluidRecipeHandler() {
+            super();
         }
 
-        public void setProxy(IRecipeHandlerTrait<SizedFluidIngredient> proxy) {
+        public void setProxy(@Nullable IRecipeHandlerTrait<SizedFluidIngredient> proxy) {
             this.proxy = proxy;
             if (proxySub != null) {
                 proxySub.unsubscribe();
@@ -201,7 +200,7 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public @NotNull List<Object> getContents() {
+        public List<Object> getContents() {
             if (proxy == null) return Collections.emptyList();
             return proxy.getContents();
         }

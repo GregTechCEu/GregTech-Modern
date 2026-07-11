@@ -11,11 +11,9 @@ import com.gregtechceu.gtceu.client.model.GTModelProperties;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelDataManager;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -122,25 +120,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
     }
 
     void notifyBlockUpdate();
-
-    default void scheduleRenderUpdate() {
-        var pos = getBlockPos();
-        var level = getLevel();
-        if (level != null) {
-            var state = level.getBlockState(pos);
-            if (level.isClientSide) {
-                // simplified from requestModelDataUpdate
-                ModelDataManager manager = level.getModelDataManager();
-                if (manager != null) {
-                    manager.requestRefresh(self());
-                }
-
-                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
-            } else {
-                level.blockEvent(pos, state.getBlock(), 1, 0);
-            }
-        }
-    }
 
     default void serverTick() {}
 

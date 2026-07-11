@@ -26,6 +26,7 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientActionHolder;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -65,7 +66,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     };
 
     public static final Codec<Map<RecipeCapability<?>, ChanceLogic>> CHANCE_LOGIC_MAP_CODEC = Codec.
-            unboundedMap(RecipeCapability.DIRECT_CODEC, GTRegistries.CHANCE_LOGICS.byNameCodec());
+            unboundedMap(GTRegistries.RECIPE_CAPABILITIES.byNameCodec(), GTRegistries.CHANCE_LOGICS.byNameCodec());
 
     public static final MapCodec<GTRecipe> CODEC = makeCodec(GTCEu.Mods.isKubeJSLoaded());
     public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec
@@ -122,8 +123,9 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @NotNull
+    @Nullable
     public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
+        if (!buf.readBoolean()) return null;
         ResourceLocation recipeType = buf.readResourceLocation();
         ResourceLocation id = buf.readResourceLocation();
         int duration = buf.readVarInt();
@@ -181,6 +183,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static void toNetwork(RegistryFriendlyByteBuf buf, GTRecipe recipe) {
+        buf.writeBoolean(recipe != null);
+        if (recipe == null) return;
         buf.writeResourceLocation(recipe.recipeType.registryName);
         buf.writeResourceLocation(recipe.id);
         buf.writeVarInt(recipe.duration);

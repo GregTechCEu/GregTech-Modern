@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sync_system.ISyncManaged;
+import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -42,6 +42,11 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
 
     IGregtechBlockEntity getHolder();
 
+    @Override
+    default ISyncManaged getParentSyncObject() {
+        return getHolder();
+    }
+
     default Level getLevel() {
         return getHolder().getLevel();
     }
@@ -66,16 +71,8 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         getHolder().notifyBlockUpdate();
     }
 
-    default void scheduleRenderUpdate() {
-        getHolder().notifyBlockUpdate();
-    }
-
     default void scheduleNeighborShapeUpdate() {
         getHolder().scheduleNeighborShapeUpdate();
-    }
-
-    default void markAsChanged() {
-        getHolder().markAsChanged();
     }
 
     @Nullable
@@ -195,11 +192,9 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     default boolean hasAnyCover() {
-        for (Direction facing : GTUtil.DIRECTIONS) {
-            if (getCoverAtSide(facing) != null) {
+        for (Direction facing : GTUtil.DIRECTIONS)
+            if (getCoverAtSide(facing) != null)
                 return true;
-            }
-        }
         return false;
     }
 
@@ -311,7 +306,9 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
         var tag = new CompoundTag();
         tag.putString("id", GTRegistries.COVERS.getKey(cover.coverDefinition).toString());
         tag.put("item", cover.getAttachItem().save(getLevel().registryAccess()));
-        tag.put("data", cover.copyConfig(new CompoundTag()));
+        var dataTag = new CompoundTag();
+        cover.copyConfig(dataTag);
+        tag.put("data", dataTag);
         return tag;
     }
 
@@ -329,12 +326,10 @@ public interface ICoverable extends ITickSubscription, ISyncManaged, ICopyable {
     }
 
     @Override
-    default CompoundTag copyConfig(CompoundTag tag) {
+    default void copyConfig(CompoundTag tag) {
         for (Direction dir : GTUtil.DIRECTIONS) {
             tag.put(dir.getName(), hasCover(dir) ? createCoverConfigTag(getCoverAtSide(dir)) : new CompoundTag());
         }
-
-        return tag;
     }
 
     @Override

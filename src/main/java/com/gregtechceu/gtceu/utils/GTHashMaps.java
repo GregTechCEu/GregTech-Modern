@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
 import it.unimi.dsi.fastutil.objects.*;
@@ -89,44 +87,5 @@ public final class GTHashMaps {
     public static Object2IntMap<ItemStack> createItemStackMap(boolean linked) {
         ItemStackHashStrategy strategy = ItemStackHashStrategy.comparingAllButCount();
         return linked ? new Object2IntLinkedOpenCustomHashMap<>(strategy) : new Object2IntOpenCustomHashMap<>(strategy);
-    }
-
-    /**
-     * Collects the FluidStacks in an IFluidHandler into a map of FluidStack -> total amount
-     * Note that FluidStacks are compared by their Fluid and Tag, not their amount
-     *
-     * @param fluidInputs The {@link IFluidHandler} to query from
-     * @return a map of FluidStack -> amount
-     */
-    public static Object2IntMap<FluidStack> fromFluidHandler(IFluidHandler fluidInputs) {
-        Object2IntLinkedOpenCustomHashMap<FluidStack> map = new Object2IntLinkedOpenCustomHashMap<>(
-                FluidStackHashStrategy.comparingAllButAmount());
-        // Create a single stack of the combined count for each item
-        for (int i = 0; i < fluidInputs.getTanks(); i++) {
-            FluidStack fluidStack = fluidInputs.getFluidInTank(i);
-            if (!fluidStack.isEmpty()) {
-                map.addTo(fluidStack, fluidStack.getAmount());
-            }
-        }
-        return map;
-    }
-
-    /**
-     * Collects FluidStacks into a map of FluidStack -> total amount
-     * Note that FluidStacks are compared by their Fluid and Tag, not their amount
-     *
-     * @param fluidInputs an iterable set of FluidStacks
-     * @return a map of FluidStack -> amount
-     */
-    public static Object2IntMap<FluidStack> fromFluidCollection(Iterable<FluidStack> fluidInputs) {
-        Object2IntLinkedOpenCustomHashMap<FluidStack> map = new Object2IntLinkedOpenCustomHashMap<>(
-                FluidStackHashStrategy.comparingAllButAmount());
-        // Create a single stack of the combined count for each item
-        for (FluidStack fluidStack : fluidInputs) {
-            if (fluidStack != null && !fluidStack.isEmpty()) {
-                map.addTo(fluidStack, fluidStack.getAmount());
-            }
-        }
-        return map;
     }
 }

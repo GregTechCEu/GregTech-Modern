@@ -25,9 +25,9 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     private final RecipeConstructor<T> constructor;
     protected final String folder;
 
-    protected Ingredient input;
+    protected @Nullable Ingredient input;
     @Setter
-    protected String group;
+    protected String group = "";
     @Setter
     protected CookingBookCategory category = CookingBookCategory.MISC;
 
@@ -37,7 +37,7 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     @Setter
     protected int cookingTime;
     @Setter
-    protected ResourceLocation id;
+    protected @Nullable ResourceLocation id;
 
     protected SimpleCookingRecipeBuilder(@Nullable ResourceLocation id, String folder,
                                          RecipeConstructor<T> constructor) {
@@ -103,13 +103,13 @@ public class SimpleCookingRecipeBuilder<T extends AbstractCookingRecipe> {
     }
 
     private T create() {
-        return constructor.create(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output,
+        Objects.requireNonNull(input, "Input ingredient cannot be null");
+        return constructor.create(this.group, this.category, this.input, this.output,
                 this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {
-        var recipeId = id == null ? defaultId() : id;
-        consumer.accept(recipeId.withPrefix(folder + "/"), create(), null);
+        consumer.accept(id == null ? defaultId() : id.withPrefix(folder + "/"), create(), null);
     }
 
     @FunctionalInterface

@@ -3,16 +3,18 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.MapColorAccessor;
+import com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe.GTRecipeEMICategory;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.GTJEIPlugin;
+import com.gregtechceu.gtceu.integration.recipeviewer.jei.recipe.GTRecipeJEICategory;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -37,21 +39,23 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.InputConstants;
+import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import org.joml.Vector3f;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -64,6 +68,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.DECIMAL_FORMAT_SIC_2F;
 public class GTUtil {
 
     public static final Direction[] DIRECTIONS = Direction.values();
+    public static final Direction[] HORIZONTALS = { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final @Nullable Direction @NotNull [] DIRECTIONS_WITH_NULL = ArrayUtils.add(DIRECTIONS, null);
 
     public static final ImmutableList<BlockPos> NON_CORNER_NEIGHBOURS = Util.make(() -> {
@@ -341,27 +346,21 @@ public class GTUtil {
 
     public static boolean isShiftDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+            return Screen.hasShiftDown();
         }
         return false;
     }
 
     public static boolean isCtrlDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
+            return Screen.hasControlDown();
         }
         return false;
     }
 
     public static boolean isAltDown() {
         if (GTCEu.isClientSide()) {
-            var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
-                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
+            return Screen.hasAltDown();
         }
         return false;
     }
@@ -482,19 +481,6 @@ public class GTUtil {
         return opacity << 24 | colorValue;
     }
 
-    /**
-     * @param material the material to use
-     * @return the correct "molten" fluid for a material
-     */
-    @Nullable
-    public static Fluid getMoltenFluid(@NotNull Material material) {
-        if (material.hasProperty(PropertyKey.ALLOY_BLAST))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
-        if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))
-            return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.LIQUID);
-        return null;
-    }
-
     public static int getFluidColor(FluidStack fluid) {
         return IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid);
     }
@@ -564,15 +550,13 @@ public class GTUtil {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
 
         if (GTUtil.isShiftDown()) {
-            tooltipComponents.add(Component.translatable("gtceu.medical_condition.description_shift"));
-            tooltipComponents.add(Component
-                    .translatable("gtceu.medical_condition." + material.getProperty(HAZARD).condition.name));
-            tooltipComponents.add(Component.translatable("gtceu.hazard_trigger.description"));
-            tooltipComponents.add(Component
-                    .translatable("gtceu.hazard_trigger." + material.getProperty(HAZARD).hazardTrigger.name()));
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description_shift"));
+            tooltipComponents.add(material.getProperty(HAZARD).condition.getTranslatableName());
+            tooltipComponents.add(Component.translatable("tooltip.gtceu.hazard_trigger"));
+            tooltipComponents.add(material.getProperty(HAZARD).hazardTrigger.getTranslatableName());
             return;
         }
-        tooltipComponents.add(Component.translatable("gtceu.medical_condition.description"));
+        tooltipComponents.add(Component.translatable("tooltip.gtceu.medical_condition.description"));
     }
 
     public static Tuple<ItemStack, MutableComponent> getMaintenanceText(byte flag) {
@@ -628,6 +612,15 @@ public class GTUtil {
         return new ArrayList<>(List.of(obj));
     }
 
+    public static Direction cross(Direction a, Direction b) {
+        if (a.getAxis() == b.getAxis()) return null;
+
+        return Direction.getNearest(
+                a.getStepY() * b.getStepZ() - a.getStepZ() * b.getStepY(),
+                a.getStepZ() * b.getStepX() - a.getStepX() * b.getStepZ(),
+                a.getStepX() * b.getStepY() - a.getStepY() * b.getStepX());
+    }
+
     public static void doExplosion(Level level, BlockPos pos, float explosionPower) {
         level.removeBlock(pos, false);
         level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
@@ -648,6 +641,90 @@ public class GTUtil {
                     level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);
                 }
             }
+        }
+    }
+
+    public static AABB rotateAABB(AABB AABB, Direction facing) {
+        switch (facing) {
+            case SOUTH -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 180);
+            }
+            case EAST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), -90);
+            }
+            case WEST -> {
+                return rotateAABB(AABB, new Vector3f(0, 1, 0), 90);
+            }
+            case UP -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), 90);
+            }
+            case DOWN -> {
+                return rotateAABB(AABB, new Vector3f(1, 0, 0), -90);
+            }
+        }
+        return AABB;
+    }
+
+    public static AABB rotateAABB(AABB AABB, Vector3f axis, double degree) {
+        Vector3f min = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        Vector3f max = new Vector3f((float) AABB.minX, (float) AABB.minY, (float) AABB.minZ).sub(0.5f, 0.5f, 0.5f);
+        float radians = (float) Math.toRadians(degree);
+        min.rotateAxis(radians, axis.x, axis.y, axis.z);
+        max.rotateAxis(radians, axis.x, axis.y, axis.z);
+        min.add(0.5f, 0.5f, 0.5f);
+        max.add(0.5f, 0.5f, 0.5f);
+        return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Vector3f axis, double degree) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, axis, degree)))
+                .reduce(Shapes.empty(), Shapes::or);
+    }
+
+    public static VoxelShape rotateVoxelShape(VoxelShape shape, Direction dir) {
+        return shape.toAabbs().stream().map(AABB -> Shapes.create(rotateAABB(AABB, dir))).reduce(Shapes.empty(),
+                Shapes::or);
+    }
+
+    public static boolean resourceExists(@NotNull ResourceLocation rs) {
+        if (GTCEu.isClientSide()) {
+            return Minecraft.getInstance().getResourceManager().getResource(rs).isPresent();
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean textureResourceExists(ResourceLocation location) {
+        var textureLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                "textures/%s.png".formatted(location.getPath()));
+        return resourceExists(textureLocation);
+    }
+
+    public static boolean modelResourceExists(ResourceLocation location) {
+        var modelLocation = ResourceLocation.fromNamespaceAndPath(location.getNamespace(),
+                "models/%s.json".formatted(location.getPath()));
+        return resourceExists(modelLocation);
+    }
+
+    public static void openRecipeViewerCategory(GTRecipeCategory category) {
+        if (GTCEu.Mods.isEMILoaded()) {
+            EmiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            JeiCallWrapper.openRecipeCategory(category);
+        }
+    }
+
+    private static class EmiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            EmiApi.displayRecipeCategory(GTRecipeEMICategory.machineCategory(category));
+        }
+    }
+
+    private static class JeiCallWrapper {
+
+        public static void openRecipeCategory(GTRecipeCategory category) {
+            GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
         }
     }
 }

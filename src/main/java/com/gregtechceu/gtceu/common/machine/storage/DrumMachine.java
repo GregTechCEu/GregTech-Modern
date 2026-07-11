@@ -5,11 +5,11 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
+import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -53,8 +53,9 @@ public class DrumMachine extends MetaMachine {
         super(info);
         this.material = material;
         this.maxStoredFluids = maxStoredFluids;
-        this.cache = createCacheFluidHandler();
-        this.autoOutput = new AutoOutputTrait(this, List.of(), List.of(cache), false);
+        this.cache = attachTrait(new NotifiableFluidTank(1, maxStoredFluids, IO.BOTH)
+                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE)));
+        this.autoOutput = attachTrait(new AutoOutputTrait(List.of(), List.of(cache), false));
         autoOutput.setFluidOutputDirection(Direction.DOWN);
         autoOutput.setFluidOutputDirectionValidator(d -> d == Direction.DOWN);
     }
@@ -62,11 +63,6 @@ public class DrumMachine extends MetaMachine {
     //////////////////////////////////////
     // ***** Initialization *****//
     //////////////////////////////////////
-
-    protected NotifiableFluidTank createCacheFluidHandler() {
-        return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH)
-                .setFilter(material.getProperty(PropertyKey.FLUID_PIPE));
-    }
 
     @Override
     public void onLoad() {
@@ -96,7 +92,6 @@ public class DrumMachine extends MetaMachine {
         }
     }
 
-    //////////////////////////////////////
     //////////////////////////////////////
     // ****** Fluid Logic *******//
     //////////////////////////////////////

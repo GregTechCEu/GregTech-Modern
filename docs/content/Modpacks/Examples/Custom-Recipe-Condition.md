@@ -83,6 +83,11 @@ public class ExampleCondition extends RecipeCondition<ExampleCondition> {
         return Component.literal(String.format("Should be ran at least at height %d", height));
     }
 
+    public RecipeUIModifier modifyUI() {
+        return RecipeUIModifier.textLine(Text.of(String.format("Should be ran at least at height %d", height)));
+    }
+
+
     @Override
     protected boolean testCondition(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         return recipeLogic.getMachine().getHolder().getCurrentPos().getY() >= height;

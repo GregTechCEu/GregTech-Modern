@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import net.neoforged.testframework.annotation.ForEachTest;
-import net.neoforged.testframework.annotation.TestHolder;
 
 import appeng.api.networking.IGrid;
 import appeng.api.networking.crafting.CalculationStrategy;
@@ -48,13 +46,6 @@ public class PatternBufferTest {
         LCR_RECIPE_TYPE = TestUtils.createRecipeTypeAndInsertRecipe("pattern_buffer_tests",
                 GTRecipeTypes.LARGE_CHEMICAL_RECIPES);
 
-        LCR_RECIPE_TYPE.getAdditionHandler().addStaging(LCR_RECIPE_TYPE
-                .recipeBuilder(GTCEu.id("test_recipe_pattern_buffer"))
-                .id(GTCEu.id("test_recipe_pattern_buffer"))
-                .inputItems(new ItemStack(Items.RED_BED))
-                .outputItems(new ItemStack(Blocks.BROWN_BED))
-                .EUt(GTValues.V[GTValues.EV])
-                .duration(1).build());
         LCR_RECIPE_TYPE.getAdditionHandler().completeStaging();
     }
 
@@ -71,7 +62,7 @@ public class PatternBufferTest {
     private static BusHolder getBussesAndForm(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) helper.getBlockEntity(new BlockPos(1, 2, 0));
         assert controller != null;
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
         ItemBusPartMachine inputBus2 = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 2, 0));
@@ -83,7 +74,6 @@ public class PatternBufferTest {
     }
 
     // Test for putting ingredient on the normal input bus when the pattern buffer exists on machine
-    @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferNormalInputBusTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);
@@ -100,7 +90,6 @@ public class PatternBufferTest {
     }
 
     // Test for checking if pattern buffers work at all
-    @TestHolder()
     @GameTest(template = "patternbuffertest", batch = "PatternBuffer", setupTicks = 40, timeoutTicks = 200)
     public static void patternBufferBasicRequestTest(GameTestHelper helper) {
         BusHolder busHolder = getBussesAndForm(helper);

@@ -86,7 +86,7 @@ public class MultipleEnergyHatchTest {
         WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) helper
                 .getBlockEntity(new BlockPos(1, 2, 0));
         assert controller != null;
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(2, 1, 0));
         ItemBusPartMachine outputBus = (ItemBusPartMachine) helper.getBlockEntity(new BlockPos(0, 1, 0));

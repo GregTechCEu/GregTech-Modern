@@ -410,7 +410,7 @@ public class ToolHelper {
             boolean isOre = !prefix.isEmpty() && TagPrefix.ORES.containsKey(prefix);
 
             for (Content content : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                ItemStack output = ItemRecipeCapability.CAP.of(content.content).getItems()[0];
+                ItemStack output = ItemRecipeCapability.CAP.of(content.content()).getItems()[0];
                 // only apply hammer drop conversion to ore blocks
                 if (!isOre) {
                     drops.add(output);

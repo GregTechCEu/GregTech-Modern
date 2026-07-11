@@ -15,13 +15,10 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -30,14 +27,13 @@ import java.util.Objects;
 
 public abstract class LongDistanceEndpointMachine extends MetaMachine implements ILDEndpoint, IDataInfoProvider {
 
-    @NotNull
     @Getter
     private final LongDistancePipeType pipeType;
     @SaveField
     @Getter
     @Setter
     private IO ioType = IO.NONE;
-    private ILDEndpoint link;
+    private @Nullable ILDEndpoint link;
     private boolean placed = false;
     @Nullable
     protected TickableSubscription refreshNetSubs;
@@ -102,9 +98,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     @Override
     public void onLoad() {
         super.onLoad();
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            serverLevel.getServer().tell(new TickTask(0, this::updateRefreshNetSubscription));
-        }
+        scheduleForNextServerTick(this::updateRefreshNetSubscription);
     }
 
     @Override
@@ -200,9 +194,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     public void invalidateLink() {
         if (link != null) {
             this.link = null;
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                serverLevel.getServer().tell(new TickTask(0, this::updateRefreshNetSubscription));
-            }
+            scheduleForNextServerTick(this::updateRefreshNetSubscription);
         }
     }
 

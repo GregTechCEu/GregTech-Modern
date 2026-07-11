@@ -33,11 +33,11 @@ public interface IContentSerializer<T> {
 
     @SuppressWarnings("unchecked")
     default void toNetworkContent(RegistryFriendlyByteBuf buf, Content content) {
-        T inner = (T) content.getContent();
+        T inner = (T) content.content();
         toNetwork(buf, inner);
-        buf.writeVarInt(content.chance);
-        buf.writeVarInt(content.maxChance);
-        buf.writeVarInt(content.tierChanceBoost);
+        buf.writeVarInt(content.chance());
+        buf.writeVarInt(content.maxChance());
+        buf.writeVarInt(content.tierChanceBoost());
     }
 
     default Content fromNetworkContent(RegistryFriendlyByteBuf buf) {

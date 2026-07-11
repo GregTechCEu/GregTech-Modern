@@ -5,22 +5,24 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
+import com.gregtechceu.gtceu.client.particle.GTOverheatParticle;
+import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.item.GTItemAbilities;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -28,13 +30,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
+import brachy.modularui.drawable.UITexture;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -46,7 +51,9 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
-    private static final int meltTemp = 3000;
+    @OnlyIn(Dist.CLIENT)
+    private GTOverheatParticle particle;
+    public static final int meltTemp = 3000;
 
     private final EnumMap<Direction, EnergyNetHandler> handlers = new EnumMap<>(Direction.class);
     private final PerTickLongCounter maxVoltageCounter = new PerTickLongCounter();
@@ -144,7 +151,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     private void subscribeHeat() {
         if (this.heatSubs == null) {
-            this.heatSubs = subscribeServerTick(this::update);
+            this.heatSubs = subscribeServerTick(this::updateHeat);
         }
     }
 
@@ -179,7 +186,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return getNodeData().getVoltage();
     }
 
-    public int getDefaultTemp() {
+    public static int getDefaultTemp() {
         return 293;
     }
 
@@ -208,14 +215,33 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return false;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public boolean isParticleAlive() {
+        return particle != null && particle.isAlive();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void createParticle() {
+        particle = new GTOverheatParticle(this, meltTemp, getPipeType().isCable());
+        GTParticleManager.INSTANCE.addEffect(particle);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void killParticle() {
+        if (isParticleAlive()) {
+            particle.setExpired();
+            particle = null;
+        }
+    }
+
     public void applyHeat(int amount) {
         heatQueue += amount;
-        if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
+        if (!getLevel().isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
             subscribeHeat();
         }
     }
 
-    private boolean update() {
+    private boolean updateHeat() {
         if (heatQueue > 0) {
             // if received heat from overvolting or overamping, add heat
             setTemperature(temperature + heatQueue);
@@ -232,32 +258,31 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             return false;
         }
 
-        if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1) {
+        if (getPipeType().isCable() && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1f) {
             // insulation melted
             uninsulate();
             return false;
         }
 
-        if (heatQueue == 0) {
+        if (heatQueue <= 0) {
             // otherwise cool down
-            setTemperature((int) (temperature - Math.pow(temperature - getDefaultTemp(), 0.35)));
-        } else {
-            heatQueue = 0;
+            setTemperature((int) (temperature - Math.pow(temperature - getDefaultTemp(), 0.35f)));
         }
+        heatQueue = 0;
         return true;
     }
 
     private void uninsulate() {
-        int temp = temperature;
+        int oldTemperature = temperature;
         setTemperature(getDefaultTemp());
-        int index = getPipeType().insulationLevel;
-        CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS
-                .get(Insulation.values()[index].tagPrefix, getPipeBlock().material)
-                .get();
+
+        TagPrefix uninsulatedPrefix = getPipeType().getUninsulated().tagPrefix;
+        CableBlock newBlock = GTMaterialBlocks.CABLE_BLOCKS.get(uninsulatedPrefix, getPipeBlock().material).get();
         level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
+
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
-            newCable.setTemperature(temp);
+            newCable.setTemperature(oldTemperature);
             newCable.subscribeHeat();
             for (Direction facing : GTUtil.DIRECTIONS) {
                 if (isConnected(facing)) {
@@ -274,23 +299,36 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
         level.getLightEngine().checkBlock(worldPosition);
-        if (!level.isClientSide && temperature >= meltTemp) {
-            var facing = Direction.UP;
-            float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
-            float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;
-            float zPos = facing.getStepZ() * 0.76F + worldPosition.getZ() + 0.25F;
+    }
 
-            float ySpd = facing.getStepY() * 0.1F + 0.2F + 0.1F * GTValues.RNG.nextFloat();
-            float temp = GTValues.RNG.nextFloat() * 2 * (float) Math.PI;
-            float xSpd = (float) Math.sin(temp) * 0.1F;
-            float zSpd = (float) Math.cos(temp) * 0.1F;
+    @ClientFieldChangeListener(fieldName = "temperature")
+    public void onTemperatureUpdated() {
+        if (temperature <= getDefaultTemp()) {
+            if (isParticleAlive()) {
+                particle.setExpired();
+            }
+        } else {
+            if (!isParticleAlive()) {
+                createParticle();
+            }
+            particle.setTemperature(temperature);
+        }
 
-            ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
-                    xPos + GTValues.RNG.nextFloat() * 0.5F,
-                    yPos + GTValues.RNG.nextFloat() * 0.5F,
-                    zPos + GTValues.RNG.nextFloat() * 0.5F,
-                    0,
-                    xSpd, ySpd, zSpd, 1);
+        if (this.temperature >= meltTemp) {
+            float xPos = Direction.UP.getStepX() * 0.76f + getBlockPos().getX() + 0.25f;
+            float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
+            float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
+
+            float horizontalDirection = getLevel().random.nextFloat() * 2 * Mth.PI;
+            float xSpd = Mth.sin(horizontalDirection) * 0.1f;
+            float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * getLevel().random.nextFloat();
+            float zSpd = Mth.cos(horizontalDirection) * 0.1f;
+
+            level.addParticle(ParticleTypes.SMOKE,
+                    xPos + level.random.nextFloat() * 0.5f,
+                    yPos + level.random.nextFloat() * 0.5f,
+                    zPos + level.random.nextFloat() * 0.5f,
+                    xSpd, ySpd, zSpd);
         }
     }
 
@@ -299,8 +337,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     //////////////////////////////////////
 
     @Override
-    public ResourceTexture getPipeTexture(boolean isBlock) {
-        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    public UITexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GTGuiTextures.TOOL_WIRE_CONNECT : GTGuiTextures.TOOL_WIRE_BLOCK;
     }
 
     @Override
@@ -314,7 +352,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||

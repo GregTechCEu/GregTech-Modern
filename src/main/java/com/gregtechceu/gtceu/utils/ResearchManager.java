@@ -143,7 +143,7 @@ public final class ResearchManager {
             outer:
             for (GTRecipe recipe : recipes) {
                 ItemStack output = ItemRecipeCapability.CAP
-                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content)
+                        .of(recipe.getOutputContents(ItemRecipeCapability.CAP).getFirst().content())
                         .getItems()[0];
                 for (var item : added) {
                     if (output.is(item.getItem())) continue outer;

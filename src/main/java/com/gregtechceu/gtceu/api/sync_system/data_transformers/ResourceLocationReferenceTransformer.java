@@ -11,10 +11,10 @@ import java.util.function.Function;
 public class ResourceLocationReferenceTransformer<T> implements ValueTransformer<T> {
 
     private final Function<T, ResourceLocation> getResourceLocation;
-    private final Function<ResourceLocation, T> loadFromLocation;
+    private final Function<ResourceLocation, @Nullable T> loadFromLocation;
 
     public ResourceLocationReferenceTransformer(Function<T, ResourceLocation> getResourceLocation,
-                                                Function<ResourceLocation, T> loadFromLocation) {
+                                                Function<ResourceLocation, @Nullable T> loadFromLocation) {
         this.getResourceLocation = getResourceLocation;
         this.loadFromLocation = loadFromLocation;
     }
