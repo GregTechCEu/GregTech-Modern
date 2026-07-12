@@ -861,11 +861,7 @@ public class GTMultiMachines {
             .rotationState(RotationState.ALL)
             .recipeType(DUMMY_RECIPES)
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
-            .pattern((definition) -> MultiblockPatternBuilder.start()
-                    .slice("BCB", "BBB", "BBB", "BBB")
-                    .where('C', Predicates.controller(Predicates.blocks(definition.get())))
-                    .where('B', CentralMonitorMachine.getMultiPredicate())
-                    .build())
+            .pattern(CentralMonitorMachine::getPattern)
             .modelProperty(RecipeLogic.STATUS_PROPERTY, RecipeLogic.Status.IDLE)
             .model(createWorkableCasingMachineModel(
                     GTCEu.id("block/casings/solid/machine_casing_frost_proof"),

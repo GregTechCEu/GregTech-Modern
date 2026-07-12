@@ -142,6 +142,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.appendNewline();
         }
         if (!out.isEmpty()) out.remove(out.size() - 1);
+        out.addGraphics(this.getGraphics());
         return out;
     }
 
@@ -152,6 +153,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.appendNewline();
         }
         if (!out.isEmpty()) out.remove(out.size() - 1);
+        out.addGraphics(this.getGraphics());
         return out;
     }
 
