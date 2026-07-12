@@ -56,7 +56,7 @@ public class SodiumDefaultFluidRendererMixin {
     @Definition(id = "scratchPos", field = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;scratchPos:Lnet/minecraft/core/BlockPos$MutableBlockPos;")
     @Definition(id = "set", method = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;")
     @Expression("?.shouldRenderBackwardUpFace(?, @(this.scratchPos.set(?, ? + 1, ?)))")
-    @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), index = 2)
+    @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), index = 1)
     private int gtceu$invertFluidBackwardUpFaceCheckDirection(int posY) {
         if (gtceu$drawingUpsideDownFluid) {
             // `posY - 2` because the original function already did `posY + 1`
