@@ -59,7 +59,8 @@ public abstract class VeinGenerator {
 
     public List<Material> getAllMaterials() {
         return getAllEntries().stream()
-                .sorted(Comparator.comparingInt(VeinEntry::chance))
+                .sorted((a, b) -> Integer.compare(b.chance, a.chance))
+                //.sorted(Comparator.comparingInt(VeinEntry::chance))
                 .map(VeinEntry::mapToMaterial)
                 .filter(mat -> !mat.isNull())
                 .toList();
