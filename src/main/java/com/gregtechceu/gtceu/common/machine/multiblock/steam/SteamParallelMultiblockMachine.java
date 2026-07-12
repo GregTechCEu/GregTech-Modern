@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -49,7 +48,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     private int maxParallels;
 
     @Nullable
-    @SyncToClient
     private SteamEnergyRecipeHandler steamEnergy = null;
 
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
@@ -83,7 +81,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                     if (!(fluidHandler instanceof NotifiableFluidTank nft)) continue;
                     if (nft.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
                         steamEnergy = new SteamEnergyRecipeHandler(nft, getConversionRate());
-                        syncDataHolder.markClientSyncFieldDirty("steamEnergy");
                         addHandlerList(RecipeHandlerList.of(IO.IN, steamEnergy));
                         return;
                     }
