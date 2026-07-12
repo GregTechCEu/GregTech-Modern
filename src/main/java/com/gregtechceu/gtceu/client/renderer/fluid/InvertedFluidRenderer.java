@@ -15,7 +15,9 @@ import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.client.model.pipeline.VertexConsumerWrapper;
 import net.neoforged.neoforge.fluids.FluidType;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import lombok.experimental.UtilityClass;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -81,7 +83,19 @@ public class InvertedFluidRenderer {
         return true;
     }
 
+    /**
+     * This class handles both inverting fluid quads' positions and their order when drawing through the vanilla path.
+     *
+     * <p>
+     * It's done here because vanilla adds the vertices through repeated invocations of
+     * {@link VertexConsumer#addVertex(float, float, float) addVertex & co}, which means it's easier handling the actual
+     * vertex inversion logic ourselves after vanilla is done.
+     */
     private static class VertexYInvertingVertexConsumer extends VertexConsumerWrapper {
+
+        private final Vertex[] vertices = Vertex.uninitializedQuad();
+        private int vertexCount = 0;
+        private int elementsToFill = initialElementsToFill();
 
         public VertexYInvertingVertexConsumer(VertexConsumer parent) {
             super(parent);
@@ -89,18 +103,107 @@ public class InvertedFluidRenderer {
 
         @Override
         public VertexConsumer addVertex(float x, float y, float z) {
-            // the scratch is always up to date when VertexConsumer#addVertex is called by LiquidBlockRenderer
-            float blockY = posScratch.get().getY();
-            float inBlockY = y - blockY;
+            Vertex vtx = vertices[vertexCount];
+            vtx.x = x;
+            vtx.y = y;
+            vtx.z = z;
 
-            // invert the added vertices' positions here
-            return super.addVertex(x, blockY + (1.0f - inBlockY), z);
+            elementFilled(VertexFormatElement.POSITION);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setColor(int r, int g, int b, int a) {
+            Vertex vtx = vertices[vertexCount];
+            vtx.r = r;
+            vtx.g = g;
+            vtx.b = b;
+            vtx.a = a;
+
+            elementFilled(VertexFormatElement.COLOR);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv(float u, float v) {
+            Vertex vtx = vertices[vertexCount];
+            vtx.u = u;
+            vtx.v = v;
+
+            elementFilled(VertexFormatElement.UV0);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setUv2(int bl, int sl) {
+            Vertex vtx = vertices[vertexCount];
+            vtx.bl = bl;
+            vtx.sl = sl;
+
+            elementFilled(VertexFormatElement.UV2);
+            return this;
         }
 
         @Override
         public VertexConsumer setNormal(float x, float y, float z) {
             // also invert the normal
-            return super.setNormal(x, (1.0f - y), z);
+            Vertex vtx = vertices[vertexCount];
+            vtx.nx = x;
+            vtx.ny = y;
+            vtx.nz = z;
+
+            elementFilled(VertexFormatElement.NORMAL);
+            return this;
+        }
+
+        private void elementFilled(VertexFormatElement element) {
+            this.elementsToFill &= ~element.mask();
+
+            // if all elements are filled
+            if (elementsToFill == 0) {
+                elementsToFill = initialElementsToFill();
+
+                // increment vertex count and check if 4 have been made
+                if (++vertexCount == 4) {
+                    vertexCount = 0;
+
+                    // if that's the case, write out every vertex to the original buffer *in reverse order*
+                    for (int i = 0; i < 4; i++) {
+                        Vertex out = vertices[(3 - i + 1) % 4];
+                        //Vertex out = vertices[i];
+                        out.writeTo(this.parent);
+                    }
+                }
+            }
+        }
+
+        private static int initialElementsToFill() {
+            return DefaultVertexFormat.BLOCK.getElementsMask();
+        }
+
+        private static class Vertex {
+            private float x, y, z;
+            private int r, g, b, a;
+            private float u, v;
+            private int bl, sl; // blockLight, skyLight
+            private float nx, ny, nz; // normal*
+
+
+            public static Vertex[] uninitializedQuad() {
+                Vertex[] vertices = new Vertex[4];
+                for (int i = 0; i < 4; i++) {
+                    vertices[i] = new Vertex();
+                }
+                return vertices;
+            }
+
+            public void writeTo(VertexConsumer consumer) {
+                consumer.addVertex(x, y, z)
+                        .setColor(r, g, b, a)
+                        .setUv(u ,v)
+                        .setUv2(bl, sl)
+                        .setNormal(nx, ny, nz);
+            }
         }
     }
 }

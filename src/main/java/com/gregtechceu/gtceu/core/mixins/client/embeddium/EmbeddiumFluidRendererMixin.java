@@ -17,7 +17,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(value = FluidRenderer.class, remap = false)
 public class EmbeddiumFluidRendererMixin {
@@ -60,6 +62,19 @@ public class EmbeddiumFluidRendererMixin {
         }
     }
 
+    @ModifyArgs(method = "isSideExposed",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/phys/shapes/Shapes;box(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+    private void gtceu$invertFluidBackwardUpFaceCheckDirection(Args args) {
+        if (gtceu$drawingUpsideDownFluid) {
+            // set minY to original maxY
+            double maxY = args.get(4);
+            args.set(1, maxY);
+            // set maxY to 1
+            args.set(4, 1.0D);
+        }
+    }
+
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", remap = true)
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
     @Expression({ "UP", "DOWN" })
@@ -82,6 +97,18 @@ public class EmbeddiumFluidRendererMixin {
             return original.getOpposite();
         } else {
             return original;
+        }
+    }
+
+    @Definition(id = "NEG_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;NEG_Y")
+    @Definition(id = "writeQuad", method = "Lorg/embeddedt/embeddium/impl/render/chunk/compile/pipeline/FluidRenderer;writeQuad(Lorg/embeddedt/embeddium/impl/render/chunk/compile/buffers/ChunkModelBuilder;Lorg/embeddedt/embeddium/impl/render/chunk/terrain/material/Material;Lnet/minecraft/core/BlockPos;Lorg/embeddedt/embeddium/impl/model/quad/ModelQuadView;Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;Z)V")
+    @Expression("this.writeQuad(?, ?, ?, ?, NEG_Y, false)")
+    @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), allow = 1)
+    private boolean gtceu$invertBottomQuadsOrder(boolean flip) {
+        if (gtceu$drawingUpsideDownFluid) {
+            return !flip;
+        } else {
+            return flip;
         }
     }
 

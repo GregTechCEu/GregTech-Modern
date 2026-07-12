@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.core.mixins.client.sodium;
 
 import com.gregtechceu.gtceu.client.renderer.fluid.InvertedFluidRenderer;
+import com.gregtechceu.gtceu.core.util.extensions.BlockOcclusionCacheAccess;
 
 import net.caffeinemc.mods.sodium.client.model.quad.properties.ModelQuadFacing;
+import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.DefaultFluidRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,29 +14,31 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import org.spongepowered.asm.mixin.Debug;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Debug(export = true)
 @Mixin(value = DefaultFluidRenderer.class, remap = false)
 public class SodiumDefaultFluidRendererMixin {
 
+    @Shadow
+    @Final
+    private BlockOcclusionCache occlusionCache;
     @Unique
     private boolean gtceu$drawingUpsideDownFluid = false;
 
     @Inject(method = "render", at = @At("HEAD"))
     private void gtceu$cacheInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
+        ((BlockOcclusionCacheAccess) this.occlusionCache)
+                .gtceu$drawingUpsideDownFluid(this.gtceu$drawingUpsideDownFluid);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void gtceu$resetInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = false;
+        ((BlockOcclusionCacheAccess) this.occlusionCache).gtceu$drawingUpsideDownFluid(false);
     }
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
@@ -62,6 +66,19 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
+    @ModifyArgs(method = "isSideExposed",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/phys/shapes/Shapes;box(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+    private void gtceu$invertExposedSideCheckDirection(Args args) {
+        if (gtceu$drawingUpsideDownFluid) {
+            // set minY to original maxY
+            double maxY = args.get(4);
+            args.set(1, maxY);
+            // set maxY to 1
+            args.set(4, 1.0D);
+        }
+    }
+
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", remap = true)
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
     @Expression({ "UP", "DOWN" })
@@ -84,6 +101,18 @@ public class SodiumDefaultFluidRendererMixin {
             return original.getOpposite();
         } else {
             return original;
+        }
+    }
+
+    @Definition(id = "NEG_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y")
+    @Definition(id = "writeQuad", method = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;writeQuad(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;Lnet/caffeinemc/mods/sodium/client/render/chunk/translucent_sorting/TranslucentGeometryCollector;Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/material/Material;Lnet/minecraft/core/BlockPos;Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadView;Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;Z)V")
+    @Expression("this.writeQuad(?, ?, ?, ?, ?, NEG_Y, false)")
+    @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), allow = 1)
+    private boolean gtceu$invertBottomQuadsOrder(boolean flip) {
+        if (gtceu$drawingUpsideDownFluid) {
+            return !flip;
+        } else {
+            return flip;
         }
     }
 
