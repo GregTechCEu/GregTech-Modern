@@ -25,10 +25,9 @@ public class StaticFaceBakery {
 
     public static final AABB BLOCK = new AABB(0, 0, 0, 1, 1, 1);
 
-    public static final AABB SLIGHTLY_OVER_BLOCK = BLOCK.inflate(0.001);
-    public static final AABB OUTPUT_OVERLAY = BLOCK.inflate(0.006);
-    public static final AABB AUTO_OUTPUT_OVERLAY = BLOCK.inflate(0.008);
-    public static final AABB COVER_OVERLAY = BLOCK.inflate(0.002);
+    public static final AABB COVER_OVERLAY = BLOCK.inflate(0.014);
+    public static final AABB OUTPUT_OVERLAY = BLOCK.inflate(0.018);
+    public static final AABB AUTO_OUTPUT_OVERLAY = BLOCK.inflate(0.022);
 
     private static final int VERTEX_INT_SIZE = 8;
     private static final float RESCALE_22_5 = 1.0F / (float) Math.cos((float) (Math.PI / 8)) - 1.0F;
@@ -228,9 +227,13 @@ public class StaticFaceBakery {
         vertexData[i + POSITION_INDEX + 2] = Float.floatToRawIntBits(face.z());
         vertexData[i + COLOR_INDEX] = 0xffffffff;
         vertexData[i + UV_INDEX] = Float.floatToRawIntBits(
-                sprite.getU(blockFaceUV.getU(vertexIndex) * 0.999f + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001f));
+                sprite.getU(
+                        (blockFaceUV.getU(vertexIndex) * 0.999f + blockFaceUV.getU((vertexIndex + 2) % 4) * 0.001f) /
+                                16.0F));
         vertexData[i + UV_INDEX + 1] = Float.floatToRawIntBits(
-                sprite.getV(blockFaceUV.getV(vertexIndex) * 0.999f + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001f));
+                sprite.getV(
+                        (blockFaceUV.getV(vertexIndex) * 0.999f + blockFaceUV.getV((vertexIndex + 2) % 4) * 0.001f) /
+                                16.0F));
     }
 
     private static float[] setupShape(Vector3f min, Vector3f max) {

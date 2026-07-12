@@ -24,6 +24,10 @@ ccTweaked = "1.116.0"
 resourcefullib = "3.0.12"
 gamestages = "17.0.1"
 bookshelf = "21.1.56"
+sable = "2.0.3"
+sableCompanion = "1.6.0"
+createAeronautics = "1.3.0"
+veil = "4.1.4"
 # TODO update these once there's 1.21 versions
 argonauts = "1.2.4"
 xaerosLib = "1.1.0"
@@ -37,6 +41,9 @@ fabricApi-base = "0.4.42+d1308ded19"
 fabricApi-rendering = "3.4.1+9125b6dc19"
 fabricApi-renderingData = "0.3.48+73761d2e19"
 fabricApi-blockView = "1.0.10+9afaaf8c19"
+
+
+
 
 ## modrinth maven ##
 jade = "15.10.0+neoforge"
@@ -105,6 +112,13 @@ fabricApi-rendering     = { module = "org.sinytra.forgified-fabric-api:fabric-re
 fabricApi-renderingData = { module = "org.sinytra.forgified-fabric-api:fabric-rendering-data-attachment-v1", version.ref = "fabricApi-renderingData" }
 fabricApi-blockView     = { module = "org.sinytra.forgified-fabric-api:fabric-block-view-api-v2", version.ref = "fabricApi-blockView" }
 
+sable                   = { module = "dev.ryanhcode.sable:sable-neoforge-1.21.1", version.ref = "sable" }
+sableRapier             = { module = "dev.ryanhcode.sable:sable-sable_rapier-1.21.1", version.ref = "sable" }
+sableCompanion          = { module = "dev.ryanhcode.sable-companion:sable-companion-common-1.21.1", version.ref = "sableCompanion" }
+aeronautics             = { module = "dev.eriksonn.aeronautics:aeronautics-neoforge-1.21.1", version.ref = "createAeronautics" }
+simulated               = { module = "dev.simulated_team.simulated:simulated-neoforge-1.21.1", version.ref = "createAeronautics" }
+offroad                 = { module = "dev.ryanhcode.offroad:offroad-neoforge-1.21.1", version.ref = "createAeronautics" }
+veil                    = { module = "foundry.veil:veil-neoforge-1.21.1", version.ref = "veil" }
 
 cc-tweaked-core-api   = { module = "cc.tweaked:cc-tweaked-1.21.1-core-api", version.ref = "ccTweaked" }
 cc-tweaked-forge-api  = { module = "cc.tweaked:cc-tweaked-1.21.1-forge-api", version.ref = "ccTweaked" }

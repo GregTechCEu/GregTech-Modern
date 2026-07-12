@@ -1238,7 +1238,7 @@
     "block.gtceu.zpm_transformer_2a": "Высокотоковый трансформатор (2А §cZPM§r)",
     "block.gtceu.zpm_transformer_4a": "Высокотоковый трансформатор (4А §cZPM§r)",
     "block.gtceu.zpm_wiremill": "§cПревосходный волочильный станок III§r",
-    "block.surface_rock": "Поверхностная порода (%s)",
+    "block.gtceu.surface_rock": "Поверхностная порода (%s)",
     "config.gtceu.option.allUniqueStoneTypes": "allUniqueStoneTypes",
     "config.gtceu.option.bedrockOreDropTagPrefix": "bedrockOreDropTagPrefix",
     "config.gtceu.option.cleanMultiblocks": "cleanMultiblocks",

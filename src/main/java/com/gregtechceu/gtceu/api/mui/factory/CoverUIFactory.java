@@ -8,15 +8,18 @@ import com.gregtechceu.gtceu.api.cover.IMuiCover;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import brachy.modularui.api.IUIHolder;
 import brachy.modularui.factory.AbstractUIFactory;
 import brachy.modularui.factory.GuiManager;
 import brachy.modularui.factory.SidedPosGuiData;
+import dev.ryanhcode.sable.Sable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -67,7 +70,13 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
 
     @Override
     public boolean canInteractWith(Player player, SidedPosGuiData guiData) {
-        return guiData.getSquaredDistance(player) <= 8 * 8;
+        if (guiData.getSquaredDistance(player) <= 8 * 8) {
+            return true;
+        }
+        if (!GTCEu.Mods.isSableLoaded()) {
+            return false;
+        }
+        return SableUtils.isWithinSubLevel(guiData.getLevel(), guiData.getBlockPos());
     }
 
     @Override
@@ -79,5 +88,12 @@ public class CoverUIFactory extends AbstractUIFactory<SidedPosGuiData> {
     @Override
     public @NotNull SidedPosGuiData readGuiData(Player player, RegistryFriendlyByteBuf buffer) {
         return new SidedPosGuiData(player, buffer.readBlockPos(), Direction.from3DDataValue(buffer.readByte()));
+    }
+
+    private static class SableUtils {
+
+        public static boolean isWithinSubLevel(Level level, BlockPos pos) {
+            return Sable.HELPER.getContaining(level, (Vec3i) pos) != null;
+        }
     }
 }

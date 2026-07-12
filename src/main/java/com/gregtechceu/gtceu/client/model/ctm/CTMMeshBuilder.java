@@ -52,6 +52,7 @@ public class CTMMeshBuilder {
 
                     emitter.fromVanilla(originalQuad, cullFace);
                     emitter.spriteUnbake(originalSprite, BAKE_NORMALIZED | BAKE_DEROTATE_UV);
+                    canonicalizeWinding(emitter);
 
                     // slice quad into the current quadrant
                     subsect(emitter, Submap.X2[xQuadrant][yQuadrant]);
@@ -122,6 +123,49 @@ public class CTMMeshBuilder {
         quad.uv(1, uvs[1].x <= minUV.x ? minU : maxU, uvs[1].y <= minUV.y ? minV : maxV);
         quad.uv(2, uvs[2].x <= minUV.x ? minU : maxU, uvs[2].y <= minUV.y ? minV : maxV);
         quad.uv(3, uvs[3].x <= minUV.x ? minU : maxU, uvs[3].y <= minUV.y ? minV : maxV);
+    }
+
+    private static void canonicalizeWinding(MutableQuadView emitter) {
+        Direction face = emitter.nominalFace();
+        if (face == null) return;
+
+        int target = anchorIndex(emitter, face);
+        if (target <= 0) return;
+
+        Vector3f[] pos = new Vector3f[4];
+        int[] color = new int[4];
+        int[] light = new int[4];
+        for (int i = 0; i < 4; i++) {
+            pos[i] = emitter.copyPos(i, new Vector3f());
+            color[i] = emitter.color(i);
+            light[i] = emitter.lightmap(i);
+        }
+        for (int i = 0; i < 4; i++) {
+            int s = (i + target) & 3;
+            emitter.pos(i, pos[s].x, pos[s].y, pos[s].z);
+            emitter.color(i, color[s]);
+            emitter.lightmap(i, light[s]);
+        }
+    }
+
+    private static int anchorIndex(MutableQuadView emitter, Direction face) {
+        for (int i = 0; i < 4; i++) {
+            float x = emitter.x(i), y = emitter.y(i), z = emitter.z(i);
+            boolean hit = switch (face) {
+                case UP -> near(x, 0.0F) && near(z, 0.0F);
+                case DOWN -> near(x, 0.0F) && near(z, 1.0F);
+                case NORTH -> near(x, 1.0F) && near(y, 1.0F);
+                case SOUTH -> near(x, 0.0F) && near(y, 1.0F);
+                case EAST -> near(y, 1.0F) && near(z, 1.0F);
+                case WEST -> near(y, 1.0F) && near(z, 0.0F);
+            };
+            if (hit) return i;
+        }
+        return -1;
+    }
+
+    private static boolean near(float a, float b) {
+        return Math.abs(a - b) < 0.01F;
     }
 
     // TODO simplify, this is quite long

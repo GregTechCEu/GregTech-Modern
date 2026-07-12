@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import dev.latvian.mods.kubejs.recipe.RecipeScriptContext;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponentType;
+import dev.latvian.mods.kubejs.recipe.filter.RecipeMatchContext;
 import dev.latvian.mods.kubejs.recipe.match.ReplacementMatchInfo;
 import dev.latvian.mods.rhino.type.TypeInfo;
 
@@ -25,6 +26,12 @@ public record ContentJS<T>(RecipeComponentType<T> baseComponent, RecipeCapabilit
     @Override
     public TypeInfo typeInfo() {
         return TypeInfo.of(Content.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public boolean matches(RecipeMatchContext cx, Content value, ReplacementMatchInfo match) {
+        return baseComponent.instance().matches(cx, (T) value.content(), match);
     }
 
     @Override

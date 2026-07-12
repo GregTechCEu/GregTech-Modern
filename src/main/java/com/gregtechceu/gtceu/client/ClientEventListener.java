@@ -73,7 +73,8 @@ public class ClientEventListener {
         MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
 
         // render the preview in every stage; it filters itself
-        PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, event.getStage(), partialTick);
+        PatternPreviewRenderer.INSTANCE.draw(poseStack, bufferSource, camera, event.getStage(), partialTick,
+                event.getModelViewMatrix());
 
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
             // render the highlight after block entities but before translucent blocks so it can be seen through

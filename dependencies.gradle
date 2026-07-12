@@ -33,6 +33,9 @@ dependencies {
     compileOnly(variantOf(forge.create) { classifier("slim") })
     compileOnly(forge.flywheel.api)
 
+    // Sable (Create Aeronautics physics sub-levels)
+    compileOnly(forge.sable)
+
     // KJS
     compileOnly(forge.bundles.kjs)
 
@@ -109,6 +112,16 @@ dependencies {
         exclude group: "maven.modrinth", module: "journeymap"
         exclude group: "info.journeymap", module: "journeymap-api-neoforge"
     }
+
+    // Create Aeronautics suite (Sable physics sub-levels) for dev-testing the compat, enabled if needed
+
+//    extraLocalRuntime(forge.sable)
+//    extraLocalRuntime(forge.sableRapier)
+//    extraLocalRuntime(forge.sableCompanion)
+//    extraLocalRuntime(forge.veil)
+//    extraLocalRuntime(forge.aeronautics) { transitive = false }
+//    extraLocalRuntime(forge.simulated) { transitive = false }
+//    extraLocalRuntime(forge.offroad) { transitive = false }
 
     extraLocalRuntime(forge.bundles.kjs)
 

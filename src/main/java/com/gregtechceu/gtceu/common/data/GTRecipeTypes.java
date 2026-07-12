@@ -60,6 +60,7 @@ public class GTRecipeTypes {
                     GTRecipeTypes.LARGE_BOILER_RECIPES.copyFrom(builder).duration(duration).save(provider);
                 }
             })
+            .addCustomRecipeLogic(SmallBoilerLogic.INSTANCE)
             .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 
@@ -520,6 +521,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType LARGE_BOILER_RECIPES = register("large_boiler", MULTIBLOCK)
             .setMaxIOSize(1, 0, 1, 1)
             .UI(builder -> builder.setProgressBar(GTGuiTextures.PROGRESS_BOILER_FUEL_STEEL))
+            .addCustomRecipeLogic(LargeBoilerLogic.INSTANCE)
             .setMaxTooltips(1)
             .setSound(GTSoundEntries.FURNACE);
 

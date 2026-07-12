@@ -1699,7 +1699,7 @@
     "block.gtceu.zpm_wiremill": "§c精英線材軋機 III§r",
     "block.gtceu.zpm_world_accelerator": "§c精英世界加速器 III§r",
     "block.sterilizing_filter_casing.tooltip": "創造一個§a無菌§r環境",
-    "block.surface_rock": "地表岩石（%s）",
+    "block.gtceu.surface_rock": "地表岩石（%s）",
     "button.gtceu.mark_as_depleted.name": "標記為枯竭",
     "button.gtceu.toggle_waypoint.name": "切換路徑點",
     "command.gtceu.dump_data.success": "已將登錄檔%2$s中的%1$s個資源轉儲到%3$s",
