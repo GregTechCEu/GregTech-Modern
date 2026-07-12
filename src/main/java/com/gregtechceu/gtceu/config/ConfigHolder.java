@@ -831,6 +831,12 @@ public class ConfigHolder {
         @Configurable.Synchronized
         public boolean gasesVaporizeOnPlacement = true;
         @Configurable
+        @Configurable.Comment({
+                "Whether or not ALL GT fluids have blocks by default. Individual fluids can override this option.",
+                "Default: false" })
+        @Configurable.UpdateRestriction(UpdateRestrictions.GAME_RESTART)
+        public boolean allFluidsHaveBlocks = false;
+        @Configurable
         @Configurable.Comment({ "List of domains that are allowed in the image module" })
         public String[] allowedImageDomains = new String[] { "imgur.com", "discord.com", "github.com",
                 "raw.githubusercontent.com" };

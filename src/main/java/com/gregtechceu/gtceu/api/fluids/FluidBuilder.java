@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.block.GTLiquidBlock;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.client.renderer.RenderType;
@@ -94,7 +95,7 @@ public class FluidBuilder {
     @Setter
     private @Nullable MaterialIconSet customIconSet = null;
 
-    private boolean hasFluidBlock = true;
+    private boolean hasFluidBlock = ConfigHolder.INSTANCE.gameplay.allFluidsHaveBlocks;
     private boolean hasBucket = true;
 
     public FluidBuilder() {}
@@ -263,6 +264,16 @@ public class FluidBuilder {
      */
     public FluidBuilder block() {
         this.hasFluidBlock = true;
+        return this;
+    }
+
+    /**
+     * Disables the auto-generated fluid block for the fluid
+     *
+     * @return this
+     */
+    public FluidBuilder disableBlock() {
+        this.hasFluidBlock = false;
         return this;
     }
 

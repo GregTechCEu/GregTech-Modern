@@ -989,7 +989,7 @@ public class ElementMaterials {
 
         Neutronium = new Material.Builder(GTCEu.id("neutronium"))
                 .ingot(6)
-                .liquid(new FluidBuilder().temperature(100_000).density(-1000))
+                .liquid(new FluidBuilder().block().temperature(100_000).density(-1000))
                 .color(0xFFFFFF).secondaryColor(0x000000)
                 .appendFlags(EXT_METAL, GENERATE_BOLT_SCREW, GENERATE_FRAME, GENERATE_GEAR, GENERATE_LONG_ROD)
                 .element(GTElements.Nt)
