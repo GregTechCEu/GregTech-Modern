@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.embeddedt.embeddium.impl.model.quad.properties.ModelQuadFacing;
 import org.embeddedt.embeddium.impl.render.chunk.compile.pipeline.FluidRenderer;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -75,11 +76,11 @@ public class EmbeddiumFluidRendererMixin {
         }
     }
 
-    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", remap = true)
-    @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
-    @Expression({ "UP", "DOWN" })
     @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
-            at = @At("MIXINEXTRAS:EXPRESSION"), require = 9)
+            at = {
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
+            }, require = 9)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -88,10 +89,11 @@ public class EmbeddiumFluidRendererMixin {
         }
     }
 
-    @Definition(id = "NEG_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;NEG_Y")
-    @Definition(id = "POS_Y", field = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;POS_Y")
-    @Expression({ "POS_Y", "NEG_Y" })
-    @ModifyExpressionValue(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), require = 3)
+    @ModifyExpressionValue(method = "render",
+            at = {
+                    @At(value = "FIELD", target = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;POS_Y:Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC),
+                    @At(value = "FIELD", target = "Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;NEG_Y:Lorg/embeddedt/embeddium/impl/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC)
+            }, require = 3)
     private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();

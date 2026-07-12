@@ -14,6 +14,7 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -79,11 +80,11 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
-    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", remap = true)
-    @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
-    @Expression({ "UP", "DOWN" })
     @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
-            at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
+            at = {
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
+            }, require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -92,10 +93,11 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
-    @Definition(id = "POS_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y")
-    @Definition(id = "NEG_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y")
-    @Expression({ "POS_Y", "NEG_Y" })
-    @ModifyExpressionValue(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), require = 5)
+    @ModifyExpressionValue(method = "render",
+            at = {
+                    @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC),
+                    @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC)
+            }, require = 5)
     private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();

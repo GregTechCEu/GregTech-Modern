@@ -12,6 +12,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -45,10 +46,11 @@ public class LiquidBlockRendererMixin {
         }
     }
 
-    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP")
-    @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN")
-    @Expression({ "UP", "DOWN" })
-    @ModifyExpressionValue(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
+    @ModifyExpressionValue(method = "tesselate", at = {
+            @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
+            @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
+            },
+            require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
             return original.getOpposite();
