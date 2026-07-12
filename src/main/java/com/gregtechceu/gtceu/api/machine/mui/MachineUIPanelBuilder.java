@@ -14,7 +14,6 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.network.chat.Component;
 
-import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.UITexture;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.utils.Color;
@@ -22,7 +21,6 @@ import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.IntSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.widget.ParentWidget;
-import brachy.modularui.widgets.ButtonWidget;
 import brachy.modularui.widgets.layout.Flow;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -137,11 +135,7 @@ public class MachineUIPanelBuilder {
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {
-            attachLeft.child(new ButtonWidget<>()
-                    .overlay(new ItemDrawable(cover.getAttachItem()))
-                    .onMousePressed((context, button) -> {
-                        return true;
-                    }));
+            GTMuiWidgets.createCoverWidget(attachLeft, cover, null, syncManager, settings);
         }
 
         return panel;

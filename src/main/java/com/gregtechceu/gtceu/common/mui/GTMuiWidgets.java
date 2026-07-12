@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.Filter;
 import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
@@ -363,6 +365,28 @@ public class GTMuiWidgets {
         }
 
         return cycleButton;
+    }
+
+    public static ParentWidget<?> createCoverWidget(Flow flow, CoverBehavior cover, SidedPosGuiData data,
+                                                    PanelSyncManager syncManager, UISettings settings) {
+        IMuiCover muiCover;
+        if (cover instanceof IMuiCover) {
+            muiCover = (IMuiCover) cover;
+        } else {
+            muiCover = null;
+            return null;
+        }
+        IPanelHandler panelHandler = syncManager.syncedPanel(
+                cover.getAttachItem().getDisplayName() + cover.attachedSide.name(), true,
+                (sm, sh) -> muiCover.buildUI(data, sm, settings).disablePanelsBelow(true)
+                        .closeOnOutOfBoundsClick(true));
+        return flow.child(new ButtonWidget<>()
+                .overlay(new ItemDrawable(cover.getAttachItem()))
+                .tooltip(r -> r.addFromItem(cover.getAttachItem()))
+                .onMousePressed((context, button) -> {
+                    panelHandler.togglePanel();
+                    return true;
+                }));
     }
 
     public static <T, S extends Filter<T, S>> ParentWidget<?> createFilterRow(Flow existingRow,
