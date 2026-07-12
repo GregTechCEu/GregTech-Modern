@@ -51,7 +51,7 @@ public interface MachineCapabilityLayoutBuilder {
             var slot = new ItemSlot()
                     .slot(new ModularSlot(itemHandler, 0)
                             .slotGroup(slotGroup)
-                            .accessibility(io == IO.IN, true))
+                            .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                     .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
             else widget.outputColumn.child(slot);
@@ -64,7 +64,7 @@ public interface MachineCapabilityLayoutBuilder {
                 .key('s', i -> new ItemSlot()
                         .slot(new ModularSlot(itemHandler, i)
                                 .slotGroup(slotGroup)
-                                .accessibility(io == IO.IN, true))
+                                .accessibility(itemHandler.getCapabilityIO().support(IO.IN), true))
                         .backgroundOverlay(layout.capabilityInfo(ItemRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
                 .size(18, 18)
@@ -86,7 +86,10 @@ public interface MachineCapabilityLayoutBuilder {
 
         if (layout.getRecipeType().getMaxSlots(FluidRecipeCapability.CAP, io) == 1) {
             var slot = new FluidSlot()
-                    .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0]).controlsAmount(false))
+                    .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[0])
+                            .canFillSlot(fluidTank.getCapabilityIO().support(IO.IN))
+                            .canDrainSlot(true)
+                            .controlsAmount(false))
                     .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, 0));
             if (io == IO.IN) widget.inputColumn.child(slot);
             else widget.outputColumn.child(slot);
@@ -96,7 +99,10 @@ public interface MachineCapabilityLayoutBuilder {
         var slotGroupWidget = SlotGroupWidget.builder()
                 .matrix(layout.capabilityInfo(FluidRecipeCapability.CAP).getMachineGrid(io, machine))
                 .key('s', i -> new FluidSlot()
-                        .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[i]).controlsAmount(true))
+                        .syncHandler(new FluidSlotSyncHandler(fluidTank.getStorages()[i])
+                                .canFillSlot(fluidTank.getCapabilityIO().support(IO.IN))
+                                .canDrainSlot(true)
+                                .controlsAmount(true))
                         .backgroundOverlay(layout.capabilityInfo(FluidRecipeCapability.CAP).getOverlay(io, i)))
                 .build()
                 .size(18, 18)
