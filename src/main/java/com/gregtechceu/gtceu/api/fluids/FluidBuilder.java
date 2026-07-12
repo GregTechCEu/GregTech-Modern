@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Items;
@@ -305,7 +306,8 @@ public class FluidBuilder {
                 .source((p) -> new GTFluid.Source(this.state, this.burnTime, p))
                 .properties(p -> this.setupFluidTypeProperties(p, material))
                 .fluidProperties(p -> this.setupFluidProperties(p, material))
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop());
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .renderType(() -> RenderType::translucent);
         if (this.hasFluidBlock) {
             // noinspection Convert2MethodRef
             builder.block()
