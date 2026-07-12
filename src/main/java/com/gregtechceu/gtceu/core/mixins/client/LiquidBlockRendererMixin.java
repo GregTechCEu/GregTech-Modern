@@ -11,55 +11,41 @@ import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-@Mixin(LiquidBlockRenderer.class)
+@Mixin(value = LiquidBlockRenderer.class, remap = false)
 public class LiquidBlockRendererMixin {
-
-    @Unique
-    private boolean gtceu$drawingUpsideDownFluid = false;
-
-    @Inject(method = "tesselate", at = @At("HEAD"))
-    private void gtceu$cacheInvertedState(CallbackInfo ci) {
-        gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
-    }
-
-    @Inject(method = "tesselate", at = @At("RETURN"))
-    private void gtceu$resetInvertedState(CallbackInfo ci) {
-        gtceu$drawingUpsideDownFluid = false;
-    }
 
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP")
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN")
     @Expression({ "UP", "DOWN" })
-    @ModifyExpressionValue(method = "*", at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
+    @ModifyExpressionValue(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
-        if (gtceu$drawingUpsideDownFluid) {
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
             return original.getOpposite();
         } else {
             return original;
         }
     }
 
-    @WrapOperation(method = "*", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
+    @WrapOperation(method = { "tesselate", "getHeight*", "getLightColor" },
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
             require = 3)
     private BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
-        if (gtceu$drawingUpsideDownFluid) {
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
             return pos.below();
         } else {
             return original.call(pos);
         }
     }
 
-    @WrapOperation(method = "*", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/core/BlockPos;below()Lnet/minecraft/core/BlockPos;"))
+    @WrapOperation(method = "tesselate",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/core/BlockPos;below()Lnet/minecraft/core/BlockPos;"))
     private BlockPos gtceu$invertFluidLightCheckBelow(BlockPos pos, Operation<BlockPos> original) {
-        if (gtceu$drawingUpsideDownFluid) {
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
             return pos.above();
         } else {
             return original.call(pos);
