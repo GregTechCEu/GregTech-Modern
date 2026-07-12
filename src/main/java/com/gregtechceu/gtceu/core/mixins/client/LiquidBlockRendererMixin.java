@@ -46,12 +46,28 @@ public class LiquidBlockRendererMixin {
         }
     }
 
+    // this direction replacement injection is split into 2 because we don't want to replace the UP shade query.
+    // this one handles everything up to (and including) the first level.getShade call
     @ModifyExpressionValue(method = "tesselate", at = {
-            @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
-            @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
+                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
             },
-            require = 8)
+            slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/BlockAndTintGetter;getShade(Lnet/minecraft/core/Direction;Z)F", ordinal = 0)),
+            require = 5)
     private Direction gtceu$invertFluidCulling(Direction original) {
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+            return original.getOpposite();
+        } else {
+            return original;
+        }
+    }
+
+    // and this handles the one instance of Direction.UP after those.
+    @Definition(id = "isFaceOccludedByNeighbor", method = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;isFaceOccludedByNeighbor(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;FLnet/minecraft/world/level/block/state/BlockState;)Z")
+    @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;")
+    @Expression("isFaceOccludedByNeighbor(?, ?, UP, ?, ?)")
+    @ModifyArg(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"))
+    private Direction gtceu$invertFluidCulling2(Direction original) {
         if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
             return original.getOpposite();
         } else {
