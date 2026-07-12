@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -23,6 +22,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
@@ -237,7 +237,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     }
 
     private Component getFluidAmountText() {
-        return Component.literal(FormattingUtil.formatBuckets(this.tank.getFluidInTank(0).getAmount()));
+        return Component.translatable("gtceu.gui.fluid_amount").append(CommonComponents.SPACE).append(
+                Component.literal(FormattingUtil.formatNumberReadable(this.tank.getFluidInTank(0).getAmount())));
     }
 
     private Component getFluidText() {
@@ -251,21 +252,25 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager));
+        mainWidget.coverChildren()
+                .coverChildrenWidth(100)
+                .child((slots == 1 ? createSingleSlotUI(syncManager) : createMultiSlotUI(syncManager)).padding(0, 4));
     }
 
     protected Flow createSingleSlotUI(PanelSyncManager syncManager) {
         BooleanSyncValue locked = new BooleanSyncValue(this.tank::isLocked, this.tank::setLocked);
         syncManager.syncValue("locked", locked);
-        return Flow.col()
-                .width(MachineUIPanel.DEFAULT_CONTENT_WIDTH)
-                .height(60)
-                .mainAxisAlignment(Alignment.MainAxis.CENTER)
-                .childPadding(4)
-                .child(new TextWidget<>(Text.dynamic(this::getFluidNameText))
-                        .horizontalCenter())
-                .child(new TextWidget<>(Text.dynamic(this::getFluidAmountText))
-                        .horizontalCenter())
+        return Flow.row()
+                .coverChildren()
+                .childPadding(3)
+                .child(Flow.col()
+                        .name("contextText")
+                        .childPadding(2)
+                        .coverChildren()
+                        .crossAxisAlignment(Alignment.CrossAxis.START)
+                        .childPadding(4)
+                        .child(new TextWidget<>(Text.dynamic(this::getFluidNameText)))
+                        .child(new TextWidget<>(Text.dynamic(this::getFluidAmountText))))
                 .child(Flow.row()
                         .childPadding(2)
                         .coverChildren()
@@ -286,7 +291,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine implements IMuiMa
                         .child(new FluidSlot()
                                 .name("regularFluid")
                                 .syncHandler(new FluidSlotSyncHandler(tank.getStorages()[0])
-                                        .canFillSlot(io.support(IO.IN)))));
+                                        .canFillSlot(io.support(IO.IN)))))
+                .horizontalCenter();
     }
 
     protected SlotGroupWidget createMultiSlotUI(PanelSyncManager syncManager) {
