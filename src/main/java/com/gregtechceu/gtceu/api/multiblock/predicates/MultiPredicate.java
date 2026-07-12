@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -49,101 +50,145 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this == EMPTY;
     }
 
-    public void reset() {
+    public void resetGlobal() {
         this.passedPredicates.clear();
+        resetSlice();
     }
 
-    private final List<BasePredicate> passedPredicates = new ArrayList<>();
+    public void resetSlice() {
+        this.passedSlicePredicates.clear();
+    }
+
+    private final Set<BasePredicate> passedPredicates = new HashSet<>();
+    private final Set<BasePredicate> passedSlicePredicates = new HashSet<>();
+
+    private void predicatePassed(BasePredicate p) {
+        this.passedPredicates.add(p);
+        this.passedSlicePredicates.add(p);
+    }
 
     // this is called for each block
     /// delegates to {@link #type} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
         if (isXor() && !passedPredicates.isEmpty()) {
             // the idea here is that if we are xor and a predicate previously passed their state check
-            // ONLY that predicate may pass for future state checks
+            // ONLY that predicate may pass for future state/count checks
             // logic XOR error
-            boolean passed = passedPredicates.get(0).testLimited(ctx);
+            boolean passed = passedPredicates.iterator().next().testLimited(ctx);
             if (!passed) {
                 ctx.error(PatternStringError.literal("XOR error"));
             }
             return passed;
         }
 
-        // for AND predicates, every predicate in list must pass state check and count
+        // for AND predicates, every predicate in list must pass count checks
+        // AND does not care about state checks
         for (BasePredicate p : predicateList) {
-            // test deeper for compact predicates
-            boolean passed = p.test(ctx);
+            boolean passed = p.testLimited(ctx);
 
-            // passed is for state check
-            // AND does not care about state checks
-            // don't include compacted predicates in predicate counts
-            if (!(p instanceof CompactedPredicate)) {
-                boolean passedCount = p.testGlobalMax(ctx) && p.testSliceMax(ctx);
-                if (isAnd()) {
-                    // if failed count checks as AND, early return
-                    if (!passedCount) {
-                        return ctx.error(PatternStringError.literal("AND error"));
-                    } else {
-                        passedPredicates.add(p);
+            if (isXor()) {
+                if (passed && passedPredicates.isEmpty()) {
+                    predicatePassed(p);
+                    return true;
+                }
+                // continue...
+            } else if (isAnd()) {
+                PredicateContext.FailureReason reason = ctx.getLastFailureReason();
+                switch (reason) {
+                    case GLOBAL_MAX, SLICE_MAX -> {
+                        if (!passed) ctx.error(PatternStringError.literal("AND error"));
+                        return passed;
                     }
+                    default -> predicatePassed(p);
+                    // continue...
                 }
-                passed &= passedCount;
+            } else if (passed) {
+                // OR/SINGLE
+                return true;
             }
+        }
 
-            // now passed is for global/slice max + state check
-            if (passed) {
-                if (isXor() && passedPredicates.isEmpty()) {
-                    passedPredicates.add(p);
-                    return true;
-                } else if (isAnd()) {
-                    passedPredicates.add(p);
-                } else {
-                    // OR/SINGLE
-                    return true;
-                }
-            }
-        }
         if (isAnd()) {
-            // logic AND error
-            boolean passed = passedPredicates.size() == predicateList.size();
-            if (!passed) {
-                ctx.error(PatternStringError.literal("AND error"));
-            }
-            return passed;
+            // check AND later
+            return true;
         }
+
+        if (isXor()) {
+            // do something
+            if (!passedSlicePredicates.isEmpty()) return true;
+            return ctx.error(PatternStringError.literal("XOR error"));
+        }
+
         return ctx.error(PatternStringError.literal("OR error"));
-        // return getType().run(ctx, this);
     }
 
     /// delegates to {@link #type} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         if (isXor()) {
-            // passedPredicates cannot be empty by this point
-            return passedPredicates.get(0).testGlobalMin(ctx);
+            if (passedPredicates.isEmpty()) return ctx.error(PatternStringError.literal("XOR error"));
+
+            BasePredicate selected = passedPredicates.iterator().next();
+            if (!selected.testGlobalMin(ctx)) return ctx.error(PatternStringError.literal("XOR error"));
+            // for every other predicate
+            for (BasePredicate p : predicateList) {
+                if (p == selected) continue;
+                // cannot be globally present
+                if (ctx.getGlobalCount(p) > 0) {
+                    return ctx.error(PatternStringError.literal("XOR error"));
+                }
+            }
+            return true;
+        }
+        if (isAnd()) {
+            if (passedPredicates.size() != predicateList.size()) return ctx.error(PatternStringError.literal("AND error"));
+            // passed predicates should include all predicates that passed their max count checks
         }
         for (BasePredicate p : predicateList) {
             boolean passed = p.testGlobalMin(ctx);
             // if AND failed count check, return false, else return true
-            if (isAnd() && !passed) return false;
-            else return true;
+            if (isAnd() ^ passed) {
+                if (isAnd()) ctx.error(PatternStringError.literal("AND error"));
+                return passed;
+            }
         }
         // default return is true for AND, otherwise false
+        if (!isAnd()) ctx.error(PatternStringError.literal("OR error"));
         return isAnd();
     }
 
     /// delegates to {@link #type} to test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
         if (isXor()) {
-            // passedPredicates cannot be empty by this point
-            return passedPredicates.get(0).testSliceMin(ctx);
+            if (passedSlicePredicates.isEmpty()) {
+                return ctx.error(PatternStringError.literal("XOR error"));
+            }
+
+            BasePredicate selected = passedSlicePredicates.iterator().next();
+            if (!selected.testSliceMin(ctx)) {
+                return ctx.error(PatternStringError.literal("XOR error"));
+            }
+            // for every other predicate
+            for (BasePredicate p : predicateList) {
+                if (p == selected) continue;
+                // cannot be present in slice
+                // todo make configurable?
+                if (ctx.getSliceCount(p) > 0) {
+                    return ctx.error(PatternStringError.literal("Predicate " + p +
+                            " must not be present in slice " + ctx.pos()));
+                }
+            }
+            return true;
         }
         for (BasePredicate p : predicateList) {
             boolean passed = p.testSliceMin(ctx);
             // if AND failed count check, return false, else return true
-            if (isAnd() && !passed) return false;
-            else return true;
+            if (isAnd() ^ passed) {
+                if (isAnd()) ctx.error(PatternStringError.literal("AND error"));
+                return passed;
+            }
         }
         // default return is true for AND, otherwise false
+        if (!isAnd()) ctx.error(PatternStringError.literal("OR error"));
         return isAnd();
     }
 
@@ -404,8 +449,24 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
         @Override
         public boolean test(PredicateContext ctx) {
-            // this also tests global/slice max, but with no respect to logic type
+            // test parent predicates
             return getParent().test(ctx);
+        }
+
+        @Override
+        public boolean testGlobalMax(PredicateContext ctx) {
+            for (BasePredicate p : getParent()) {
+                if (p.testGlobalMax(ctx)) return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean testSliceMax(PredicateContext ctx) {
+            for (BasePredicate p : getParent()) {
+                if (p.testSliceMax(ctx)) return true;
+            }
+            return false;
         }
 
         @Override

@@ -29,10 +29,10 @@ public class PredicateContext {
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
 
     @Getter
-    private FailureReason lastFailureReason = FailureReason.NONE;
+    protected FailureReason lastFailureReason = FailureReason.NONE;
 
     @Setter
-    private PredicateStage stage = PredicateStage.INTERNAL;
+    protected PredicateStage stage = PredicateStage.INTERNAL;
 
     /// accepts a pattern error
     ///
@@ -42,10 +42,9 @@ public class PredicateContext {
         return false;
     }
 
-    public PredicateContext appendError(PatternError error) {
+    private void appendError(PatternError error) {
         this.errors.add(error);
         this.lastFailureReason = this.stage.getFailureReason();
-        return this;
     }
 
     public List<PatternError> getErrors() {

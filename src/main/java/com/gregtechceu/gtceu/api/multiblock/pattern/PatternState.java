@@ -66,6 +66,7 @@ public class PatternState extends PredicateContext {
 
     public void clearErrors() {
         this.errors.clear();
+        this.lastFailureReason = FailureReason.NONE;
     }
 
     List<List<PatternError>> sliceErrors = new ArrayList<>();
@@ -77,7 +78,6 @@ public class PatternState extends PredicateContext {
     }
 
     public void pushSliceErrors() {
-        if (this.errors.isEmpty()) return;
         this.sliceErrors.add(List.copyOf(this.errors));
         clearErrors();
     }
