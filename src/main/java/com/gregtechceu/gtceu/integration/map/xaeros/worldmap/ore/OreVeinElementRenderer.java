@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.client.util.RenderUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.map.GroupingMapRenderer;
+import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
@@ -83,13 +84,13 @@ public class OreVeinElementRenderer extends
         GeneratedVeinMetadata vein = element.getVein();
         int iconSize = ConfigHolder.INSTANCE.compat.minimap.oreIconSize;
 
-        Material firstMaterial = vein.definition().veinGenerator().getAllMaterials().get(0);
-        int materialARGB = firstMaterial.getMaterialARGB();
+        Material material = OreRenderLayer.getMaterial(vein);
+        int materialARGB = material.getMaterialARGB();
         float[] colors = RenderUtil.floats(materialARGB);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         ResourceLocation oreTexture = MaterialIconType.rawOre
-                .getItemTexturePath(firstMaterial.getMaterialIconSet(), true);
+                .getItemTexturePath(material.getMaterialIconSet(), true);
         if (oreTexture != null) {
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -98,9 +99,9 @@ public class OreVeinElementRenderer extends
                     oreSprite, colors[0], colors[1], colors[2], 1);
         }
 
-        oreTexture = MaterialIconType.rawOre.getItemTexturePath(firstMaterial.getMaterialIconSet(), "secondary", true);
+        oreTexture = MaterialIconType.rawOre.getItemTexturePath(material.getMaterialIconSet(), "secondary", true);
         if (oreTexture != null) {
-            int materialSecondaryARGB = firstMaterial.getMaterialSecondaryARGB();
+            int materialSecondaryARGB = material.getMaterialSecondaryARGB();
             colors = RenderUtil.floats(materialSecondaryARGB);
             var oreSprite = Minecraft.getInstance()
                     .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
