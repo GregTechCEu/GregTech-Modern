@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.client.sodium;
 
-import com.gregtechceu.gtceu.core.util.extensions.BlockOcclusionCacheAccess;
+import com.gregtechceu.gtceu.core.util.extensions.sodium.BlockOcclusionCacheExt;
 
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
 import net.minecraft.core.Direction;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = BlockOcclusionCache.class, remap = false)
-public class BlockOcclusionCacheMixin implements BlockOcclusionCacheAccess {
+public class BlockOcclusionCacheMixin implements BlockOcclusionCacheExt {
 
     @Unique
     boolean gtceu$drawingUpsideDownFluid = false;

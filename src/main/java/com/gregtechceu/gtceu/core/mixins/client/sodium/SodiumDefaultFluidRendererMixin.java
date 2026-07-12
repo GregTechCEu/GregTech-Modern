@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.client.sodium;
 
 import com.gregtechceu.gtceu.client.renderer.fluid.InvertedFluidRenderer;
-import com.gregtechceu.gtceu.core.util.extensions.BlockOcclusionCacheAccess;
+import com.gregtechceu.gtceu.core.util.extensions.sodium.BlockOcclusionCacheExt;
 
 import net.caffeinemc.mods.sodium.client.model.quad.properties.ModelQuadFacing;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockOcclusionCache;
@@ -32,14 +32,14 @@ public class SodiumDefaultFluidRendererMixin {
     @Inject(method = "render", at = @At("HEAD"))
     private void gtceu$cacheInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
-        ((BlockOcclusionCacheAccess) this.occlusionCache)
+        ((BlockOcclusionCacheExt) this.occlusionCache)
                 .gtceu$drawingUpsideDownFluid(this.gtceu$drawingUpsideDownFluid);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void gtceu$resetInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = false;
-        ((BlockOcclusionCacheAccess) this.occlusionCache).gtceu$drawingUpsideDownFluid(false);
+        ((BlockOcclusionCacheExt) this.occlusionCache).gtceu$drawingUpsideDownFluid(false);
     }
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
