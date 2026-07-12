@@ -127,7 +127,6 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public ModularPanel<?> buildUI(PosGuiData posGuiData, PanelSyncManager panelSyncManager, UISettings uiSettings) {
         List<ItemSlot> moduleSlots = new ArrayList<>();
         for (int i = 0; i < MAX_MODIFIER_SLOTS; i++) {
