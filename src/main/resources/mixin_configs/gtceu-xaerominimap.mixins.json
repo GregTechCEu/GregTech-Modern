@@ -9,7 +9,6 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.gregtechceu.gtceu.core.mixins.GTMixinPlugin",
   "client": [
-    "client.AbstractWidgetMixin",
     "xaerominimap.HighlighterRegistryMixin",
     "xaerominimap.MinimapFBORendererMixin"
   ],
