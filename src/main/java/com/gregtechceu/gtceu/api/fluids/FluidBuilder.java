@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.block.GTLiquidBlock;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -310,7 +311,7 @@ public class FluidBuilder {
                 .renderType(() -> RenderType::translucent);
         if (this.hasFluidBlock) {
             // noinspection Convert2MethodRef
-            builder.block()
+            builder.block(GTLiquidBlock::new)
                     .properties(p -> p.liquid())
                     .color(() -> () -> (state, level, pos, index) -> {
                         if (this.isColorEnabled) {
@@ -377,6 +378,7 @@ public class FluidBuilder {
                 flowing = still;
             }
         } else if (usesSameTextureForStillAndFlowing) {
+            // same note as above
             flowing = still;
         } else {
             flowing = iconType.getBlockTexturePath(iconSet, "flow", true);

@@ -37,8 +37,7 @@ public class GTBucketItem extends BucketItem {
 
     @Override
     public Component getDescription() {
-        Component materialName = material.getLocalizedName();
-        return Component.translatable("item.gtceu.bucket", this.content.getFluidType().getDescription());
+        return Component.translatable(getDescriptionId(), this.content.getFluidType().getDescription());
     }
 
     @Override
