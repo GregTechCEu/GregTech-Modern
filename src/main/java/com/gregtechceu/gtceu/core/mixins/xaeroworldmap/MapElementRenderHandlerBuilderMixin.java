@@ -15,8 +15,8 @@ import java.util.List;
 public class MapElementRenderHandlerBuilderMixin {
 
     @ModifyArg(method = "build",
-            at = @At(value = "INVOKE",
-                    target = "Lxaero/map/element/MapElementRenderHandler;<init>(Ljava/util/List;Lxaero/map/element/render/ElementRenderLocation;)V"))
+               at = @At(value = "INVOKE",
+                        target = "Lxaero/map/element/MapElementRenderHandler;<init>(Ljava/util/List;Lxaero/map/element/render/ElementRenderLocation;)V"))
     private List<MapElementRenderer<?, ?, ?>> gtceu$addOreRenderer(List<MapElementRenderer<?, ?, ?>> value) {
         if (ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) {
             value.add(OreVeinElementRenderer.Builder.begin().build());

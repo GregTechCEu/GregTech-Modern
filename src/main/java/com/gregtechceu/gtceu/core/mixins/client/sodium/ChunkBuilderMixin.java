@@ -31,15 +31,17 @@ public class ChunkBuilderMixin {
         return new GlobalChunkBuildContext.WorkerThread(task, name, context);
     }
 
-    @Inject(method = "tryStealTask", at = @At(value = "INVOKE",
-            target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/executor/ChunkJob;execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;)V"))
+    @Inject(method = "tryStealTask",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/executor/ChunkJob;execute(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;)V"))
     private static void gtceu$captureLocalContext(ChunkJob job, CallbackInfo ci,
                                                   @Local(name = "localContext") ChunkBuildContext localContext) {
         GlobalChunkBuildContext.bindMainThread(localContext);
     }
 
-    @Inject(method = "tryStealTask", at = @At(value = "INVOKE",
-                    target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;cleanup()V"))
+    @Inject(method = "tryStealTask",
+            at = @At(value = "INVOKE",
+                     target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/ChunkBuildContext;cleanup()V"))
     private static void gtceu$clearLocalContext(ChunkJob job, CallbackInfo ci) {
         GlobalChunkBuildContext.bindMainThread(null);
     }

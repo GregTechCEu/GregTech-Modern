@@ -59,6 +59,7 @@ public class RenderUtil {
     public enum FluidTextureType {
 
         STILL {
+
             @Override
             ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
                 if (!stack.isEmpty()) return fluidTypeExtensions.getStillTexture(stack);
@@ -73,6 +74,7 @@ public class RenderUtil {
             }
         },
         FLOWING {
+
             @Override
             ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {
                 if (!stack.isEmpty()) return fluidTypeExtensions.getFlowingTexture(stack);
@@ -87,6 +89,7 @@ public class RenderUtil {
             }
         },
         OVERLAY {
+
             @Override
             @Nullable
             ResourceLocation getFluidTexture(IClientFluidTypeExtensions fluidTypeExtensions, FluidStack stack) {

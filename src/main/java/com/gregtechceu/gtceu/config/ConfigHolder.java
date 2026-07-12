@@ -818,13 +818,15 @@ public class ConfigHolder {
                 "Default: 0.001" })
         public float environmentalHazardDecayRate = 0.001f;
         @Configurable
-        @Configurable.Comment({ "Whether or not low density fluid blocks (such as gases and plasmas) should flow up or not.",
+        @Configurable.Comment({
+                "Whether or not low density fluid blocks (such as gases and plasmas) should flow up or not.",
                 "May cause bugs or odd interactions with other mods. Disable this if that happens to you.",
                 "Default: true" })
         @Configurable.Synchronized
         public boolean lowDensityFluidsFlowUp = true;
         @Configurable
-        @Configurable.Comment({ "Whether or not gases and plasmas should vaporize when placed from a bucket (like water does in the Nether).",
+        @Configurable.Comment({
+                "Whether or not gases and plasmas should vaporize when placed from a bucket (like water does in the Nether).",
                 "Default: true" })
         @Configurable.Synchronized
         public boolean gasesVaporizeOnPlacement = true;

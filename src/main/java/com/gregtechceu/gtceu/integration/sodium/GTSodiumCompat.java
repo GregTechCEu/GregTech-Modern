@@ -78,8 +78,9 @@ public class GTSodiumCompat {
 
             FluidRenderer fluidRenderer = buildContext.cache.getFluidRenderer();
             if (!(fluidRenderer instanceof FluidRendererImplAccessor accessor)) {
-                GTCEu.LOGGER.error("Sodium's fluid renderer doesn't have our accessor. Maybe it was replaced with a different type?" +
-                        "\n            Using slower vanilla fluid renderer implementation.");
+                GTCEu.LOGGER.error(
+                        "Sodium's fluid renderer doesn't have our accessor. Maybe it was replaced with a different type?" +
+                                "\n            Using slower vanilla fluid renderer implementation.");
                 return false;
             }
             TranslucentGeometryCollector collector = accessor.getCurrentDefaultContext().get().gtceu$getCollector();

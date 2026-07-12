@@ -36,6 +36,7 @@ import java.util.Map;
 
 // TODO implement burning/acid/etc. damage when standing in a fluid block
 public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFluid {
+
     private static final double MAX_FLUID_HEIGHT = 8.0D / 9.0D;
 
     @Getter
@@ -45,7 +46,8 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     @Getter
     private final int burnTime;
 
-    public GTFluid(com.gregtechceu.gtceu.api.fluids.FluidState state, int burnTime, BaseFlowingFluid.Properties properties) {
+    public GTFluid(com.gregtechceu.gtceu.api.fluids.FluidState state, int burnTime,
+                   BaseFlowingFluid.Properties properties) {
         super(properties);
         this.state = state;
         this.burnTime = burnTime;
@@ -172,14 +174,16 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
         BlockPos spreadPos = pos.above();
         BlockState spreadState = level.getBlockState(spreadPos);
         FluidState spreadFluid = this.getNewLiquid(level, spreadPos, spreadState);
-        if (this.canSpreadTo(level, pos, blockState, Direction.UP, spreadPos, spreadState, level.getFluidState(spreadPos), spreadFluid.getType())) {
+        if (this.canSpreadTo(level, pos, blockState, Direction.UP, spreadPos, spreadState,
+                level.getFluidState(spreadPos), spreadFluid.getType())) {
             this.spreadTo(level, spreadPos, spreadState, Direction.UP, spreadFluid);
             if (this.sourceNeighborCount(level, pos) >= 3) {
                 this.spreadToSides(level, pos, state, blockState);
             }
-        } else if (state.isSource() || !this.isWaterHole(level, spreadFluid.getType(), pos, blockState, spreadPos, spreadState)) {
-            this.spreadToSides(level, pos, state, blockState);
-        }
+        } else if (state.isSource() ||
+                !this.isWaterHole(level, spreadFluid.getType(), pos, blockState, spreadPos, spreadState)) {
+                    this.spreadToSides(level, pos, state, blockState);
+                }
     }
 
     @Override
@@ -218,8 +222,8 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
         BlockPos spreadPos = pos.below();
         BlockState spreadState = level.getBlockState(spreadPos);
         FluidState spreadStateFluid = spreadState.getFluidState();
-        if (!spreadStateFluid.isEmpty() && spreadStateFluid.getType().isSame(this)
-                && this.canPassThroughWall(Direction.DOWN, level, pos, blockState, spreadPos, spreadState)) {
+        if (!spreadStateFluid.isEmpty() && spreadStateFluid.getType().isSame(this) &&
+                this.canPassThroughWall(Direction.DOWN, level, pos, blockState, spreadPos, spreadState)) {
             return this.getFlowing(8, true);
         } else {
             int actualLevel = highestAdjacentLevel - this.getDropOff(level);
@@ -280,7 +284,8 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     }
 
     @Override
-    public boolean isWaterHole(BlockGetter level, Fluid fluid, BlockPos pos, BlockState state, BlockPos spreadPos, BlockState spreadState) {
+    public boolean isWaterHole(BlockGetter level, Fluid fluid, BlockPos pos, BlockState state, BlockPos spreadPos,
+                               BlockState spreadState) {
         if (!shouldFlowUpward()) {
             return super.isWaterHole(level, fluid, pos, state, spreadPos, spreadState);
         }
@@ -313,7 +318,8 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
             FluidState spreadFluid = pair.getSecond();
             FluidState newFluid = this.getNewLiquid(level, spreadPos, spreadBlock);
 
-            if (!this.canPassThrough(level, newFluid.getType(), pos, state, spreadDirection, spreadPos, spreadBlock, spreadFluid)) {
+            if (!this.canPassThrough(level, newFluid.getType(), pos, state, spreadDirection, spreadPos, spreadBlock,
+                    spreadFluid)) {
                 continue;
             }
 
@@ -324,7 +330,8 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
             });
             int slopeDistance = 0;
             if (!hasWaterHole) {
-                slopeDistance = this.getSlopeDistance(level, spreadPos, 1, spreadDirection.getOpposite(), spreadBlock, pos,
+                slopeDistance = this.getSlopeDistance(level, spreadPos, 1, spreadDirection.getOpposite(), spreadBlock,
+                        pos,
                         stateCache, waterHoleCache);
             }
 
@@ -368,7 +375,6 @@ public abstract class GTFluid extends BaseFlowingFluid implements IAttributedFlu
     }
 
     // endregion upside down gas handling
-
 
     public static class Source extends GTFluid {
 

@@ -18,8 +18,10 @@ public class BlockOcclusionCacheMixin implements BlockOcclusionCacheExt {
     boolean gtceu$drawingUpsideDownFluid = false;
 
     @ModifyExpressionValue(method = "shouldDrawFullBlockFluidSide",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;",
-                    opcode = Opcodes.GETSTATIC, remap = true))
+                           at = @At(value = "FIELD",
+                                    target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;",
+                                    opcode = Opcodes.GETSTATIC,
+                                    remap = true))
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();

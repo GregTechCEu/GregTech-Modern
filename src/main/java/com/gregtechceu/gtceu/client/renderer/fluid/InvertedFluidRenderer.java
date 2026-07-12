@@ -28,7 +28,8 @@ public class InvertedFluidRenderer {
 
     private static final ThreadLocal<BlockPos.MutableBlockPos> posScratch = ThreadLocal
             .withInitial(BlockPos.MutableBlockPos::new);
-    private static final AtomicBoolean CAN_RENDER_USING_SODIUM_EMBEDDIUM = new AtomicBoolean(GTCEu.Mods.isSodiumEmbeddiumLoaded());
+    private static final AtomicBoolean CAN_RENDER_USING_SODIUM_EMBEDDIUM = new AtomicBoolean(
+            GTCEu.Mods.isSodiumEmbeddiumLoaded());
 
     public static boolean maybeRenderFluidInverted(FluidType fluidType, FluidState fluidState, BlockState blockState,
                                                    BlockAndTintGetter level, BlockPos pos,

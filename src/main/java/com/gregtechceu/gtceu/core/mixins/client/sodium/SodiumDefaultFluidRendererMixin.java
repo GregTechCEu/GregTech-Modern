@@ -42,9 +42,11 @@ public class SodiumDefaultFluidRendererMixin {
         ((BlockOcclusionCacheExt) this.occlusionCache).gtceu$drawingUpsideDownFluid(false);
     }
 
-    @ModifyArg(method = "render", at = @At(value = "INVOKE",
-            target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"),
-            index = 3, require = 16)
+    @ModifyArg(method = "render",
+               at = @At(value = "INVOKE",
+                        target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"),
+               index = 3,
+               require = 16)
     private float gtceu$invertFluidFlowDirection(float originalY) {
         if (gtceu$drawingUpsideDownFluid) {
             return 1.0f - originalY;
@@ -53,9 +55,12 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
-    @Definition(id = "shouldRenderBackwardUpFace", method = "Lnet/minecraft/world/level/material/FluidState;shouldRenderBackwardUpFace(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z")
-    @Definition(id = "scratchPos", field = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;scratchPos:Lnet/minecraft/core/BlockPos$MutableBlockPos;")
-    @Definition(id = "set", method = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;")
+    @Definition(id = "shouldRenderBackwardUpFace",
+                method = "Lnet/minecraft/world/level/material/FluidState;shouldRenderBackwardUpFace(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z")
+    @Definition(id = "scratchPos",
+                field = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;scratchPos:Lnet/minecraft/core/BlockPos$MutableBlockPos;")
+    @Definition(id = "set",
+                method = "Lnet/minecraft/core/BlockPos$MutableBlockPos;set(III)Lnet/minecraft/core/BlockPos$MutableBlockPos;")
     @Expression("?.shouldRenderBackwardUpFace(?, @(this.scratchPos.set(?, ? + 1, ?)))")
     @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), index = 1)
     private int gtceu$invertFluidBackwardUpFaceCheckDirection(int posY) {
@@ -68,8 +73,8 @@ public class SodiumDefaultFluidRendererMixin {
     }
 
     @ModifyArgs(method = "isSideExposed",
-            at = @At(value = "INVOKE",
-                    target = "Lnet/minecraft/world/phys/shapes/Shapes;box(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+                at = @At(value = "INVOKE",
+                         target = "Lnet/minecraft/world/phys/shapes/Shapes;box(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
     private void gtceu$invertExposedSideCheckDirection(Args args) {
         if (gtceu$drawingUpsideDownFluid) {
             // set minY to original maxY
@@ -81,10 +86,15 @@ public class SodiumDefaultFluidRendererMixin {
     }
 
     @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
-            at = {
-                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC),
-                    @At(value = "FIELD", target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", opcode = Opcodes.GETSTATIC)
-            }, require = 8)
+                           at = {
+                                   @At(value = "FIELD",
+                                       target = "Lnet/minecraft/core/Direction;UP:Lnet/minecraft/core/Direction;",
+                                       opcode = Opcodes.GETSTATIC),
+                                   @At(value = "FIELD",
+                                       target = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;",
+                                       opcode = Opcodes.GETSTATIC)
+                           },
+                           require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -94,10 +104,15 @@ public class SodiumDefaultFluidRendererMixin {
     }
 
     @ModifyExpressionValue(method = "render",
-            at = {
-                    @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC),
-                    @At(value = "FIELD", target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;", opcode = Opcodes.GETSTATIC)
-            }, require = 5)
+                           at = {
+                                   @At(value = "FIELD",
+                                       target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;",
+                                       opcode = Opcodes.GETSTATIC),
+                                   @At(value = "FIELD",
+                                       target = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y:Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;",
+                                       opcode = Opcodes.GETSTATIC)
+                           },
+                           require = 5)
     private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -107,7 +122,8 @@ public class SodiumDefaultFluidRendererMixin {
     }
 
     @Definition(id = "NEG_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y")
-    @Definition(id = "writeQuad", method = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;writeQuad(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;Lnet/caffeinemc/mods/sodium/client/render/chunk/translucent_sorting/TranslucentGeometryCollector;Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/material/Material;Lnet/minecraft/core/BlockPos;Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadView;Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;Z)V")
+    @Definition(id = "writeQuad",
+                method = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;writeQuad(Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/buffers/ChunkModelBuilder;Lnet/caffeinemc/mods/sodium/client/render/chunk/translucent_sorting/TranslucentGeometryCollector;Lnet/caffeinemc/mods/sodium/client/render/chunk/terrain/material/Material;Lnet/minecraft/core/BlockPos;Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadView;Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;Z)V")
     @Expression("this.writeQuad(?, ?, ?, ?, ?, NEG_Y, false)")
     @ModifyArg(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), allow = 1)
     private boolean gtceu$invertBottomQuadsOrder(boolean flip) {
@@ -118,9 +134,10 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
-    @WrapOperation(method = "*", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
-            require = 0)
+    @WrapOperation(method = "*",
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
+                   require = 0)
     private BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
         if (gtceu$drawingUpsideDownFluid) {
             return pos.below();
@@ -129,9 +146,10 @@ public class SodiumDefaultFluidRendererMixin {
         }
     }
 
-    @WrapOperation(method = "*", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/core/BlockPos;below()Lnet/minecraft/core/BlockPos;"),
-            require = 0)
+    @WrapOperation(method = "*",
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/core/BlockPos;below()Lnet/minecraft/core/BlockPos;"),
+                   require = 0)
     private BlockPos gtceu$invertFluidLightCheckBelow(BlockPos pos, Operation<BlockPos> original) {
         if (gtceu$drawingUpsideDownFluid) {
             return pos.above();

@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
 public final class GlobalChunkBuildContext {
+
     private static ChunkBuildContext mainThreadContext;
     private static final Thread mainThread = ((MinecraftAccessor) Minecraft.getInstance()).gtceu$getGameThread();
 
@@ -37,6 +38,7 @@ public final class GlobalChunkBuildContext {
     }
 
     public static class WorkerThread extends Thread {
+
         private final ChunkBuildContext context;
 
         public WorkerThread(Runnable runnable, String name, ChunkBuildContext context) {
