@@ -285,6 +285,14 @@ public record MaterialIconType(String name) {
         return this.name;
     }
 
+    @ApiStatus.Internal
+    public static void invalidateCaches() {
+        ITEM_MODEL_CACHE.clear();
+        ITEM_TEXTURE_CACHE.clear();
+        BLOCK_MODEL_CACHE.clear();
+        BLOCK_TEXTURE_CACHE.clear();
+    }
+
     private static class KJSCallWrapper {
 
         private static void postEvent() {

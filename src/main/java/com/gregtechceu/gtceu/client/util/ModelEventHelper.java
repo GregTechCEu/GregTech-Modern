@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.client.model.ctm.CTMBakedModel;
 import com.gregtechceu.gtceu.client.model.machine.MachineModel;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
@@ -92,6 +93,7 @@ public class ModelEventHelper {
                     WRAPPED_MODELS.clear();
                     SCRAPED_TEXTURES.clear();
                     TextureMetadataHelper.invalidateCaches();
+                    MaterialIconType.invalidateCaches();
                 });
     }
 
