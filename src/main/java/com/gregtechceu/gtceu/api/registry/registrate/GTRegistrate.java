@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
@@ -182,31 +183,32 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                         .setData(ProviderType.LANG, NonNullBiConsumer.noop()));
     }
 
-    public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION, ?> machine(String name,
+    public <DEFINITION extends MachineDefinition,
+            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
                                                                                         Function<ResourceLocation, DEFINITION> definitionFactory,
                                                                                         BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                                                                                         BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MachineBuilder<>(this, name, definitionFactory,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MachineBuilder<MachineDefinition, ?> machine(String name,
-                                                        Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
+                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MachineBuilder<>(this, name, MachineDefinition::new,
                 MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
     }
 
-    public MultiblockMachineBuilder<MultiblockMachineDefinition, ?> multiblock(String name,
-                                                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
+                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public MultiblockMachineBuilder<MultiblockMachineDefinition, ?> multiblock(String name,
-                                                                               Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
+                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
                 blockEntityFactory);
     }
@@ -244,10 +246,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
     }
 
-    private RegistryEntry<CreativeModeTab> currentTab;
-    private static final Map<RegistryEntry<?>, RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
+    private @Nullable RegistryEntry<CreativeModeTab> currentTab;
+    private static final Map<RegistryEntry<?>, @Nullable RegistryEntry<CreativeModeTab>> TAB_LOOKUP = new IdentityHashMap<>();
 
-    public RegistryEntry<CreativeModeTab> creativeModeTab() {
+    public @Nullable RegistryEntry<CreativeModeTab> creativeModeTab() {
         return this.currentTab;
     }
 

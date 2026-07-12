@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -12,6 +16,7 @@ import com.gregtechceu.gtceu.utils.ISubscription;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -65,7 +70,7 @@ public final class ProxySlotRecipeHandler {
         }
 
         public void setBuffer(MEPatternBufferPartMachine buffer, SlotRHL slotRHL) {
-            circuit.setProxy(buffer.getCircuitInventory());
+            circuit.setProxy(buffer.getCircuitSlot());
             sharedItem.setProxy(buffer.getShareInventory());
             sharedFluid.setProxy(buffer.getShareTank());
             slotItem.setProxy(slotRHL.getItemRecipeHandler());
@@ -123,7 +128,8 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+        public @NotNull List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                           boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
         }
@@ -186,8 +192,8 @@ public final class ProxySlotRecipeHandler {
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (proxy == null) return left;
             return proxy.handleRecipeInner(io, recipe, left, simulate);
         }

@@ -4,40 +4,39 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
-import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.behavior.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
+import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.IntSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.ParentWidget;
+import brachy.modularui.widgets.slot.ItemSlot;
+import brachy.modularui.widgets.slot.ModularSlot;
+import brachy.modularui.widgets.slot.SlotGroup;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -45,7 +44,7 @@ import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelPropertie
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine {
+public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMachine {
 
     public static final int SPEED_INCREMENT = 1;
     public static final int SPEED_DECREMENT = 3;
@@ -103,7 +102,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     }
 
     @Override
-    public boolean canShared() {
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
         return false;
     }
 
@@ -161,7 +160,7 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     }
 
     private void updateRotorSpeed() {
-        if (isFormed() && getControllers().first() instanceof IWorkableMultiController workable) {
+        if (isFormed() && getControllers().first() instanceof WorkableMultiblockMachine workable) {
             if (workable.getRecipeLogic().isWorking()) return;
         }
         if (!hasRotor()) {
@@ -181,15 +180,19 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     }
 
     @Override
-    public boolean onWorking(IWorkableMultiController controller) {
+    public boolean onWorking(WorkableMultiblockMachine controller) {
         if (getRotorSpeed() < getMaxRotorHolderSpeed()) {
             setRotorSpeed(getRotorSpeed() + SPEED_INCREMENT);
             updateRotorSubscription();
         }
-        if (self().getOffsetTimer() % 20 == 0) {
+        if (getOffsetTimer() % 20 == 0) {
             var numMaintenanceProblems = 0;
-            if (isFormed() && getControllers().first() instanceof IMaintenanceMachine maintenance) {
-                numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
+
+            for (var part : getControllers().first().getParts()) {
+                if (part instanceof MaintenanceHatchPartMachine maintenance) {
+                    numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
+                    break;
+                }
             }
             damageRotor(1 + numMaintenanceProblems);
         }
@@ -229,16 +232,23 @@ public class RotorHolderPartMachine extends TieredPartMachine {
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
+
+    // TODO MUI: Might need EIO widget? Not sure
     @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 18 + 16, 18 + 16);
-        var container = new WidgetGroup(4, 4, 18 + 8, 18 + 8);
-        container.addWidget(new BlockableSlotWidget(inventory.storage, 0, 4, 4)
-                .setIsBlocked(() -> rotorSpeed != 0)
-                .setBackground(GuiTextures.SLOT, GuiTextures.TURBINE_OVERLAY));
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
-        return group;
+    public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
+                            UISettings settings) {
+        var slot = new ItemSlot()
+                .slot(new ModularSlot(inventory, 0).slotGroup(new SlotGroup("rotor", 1)))
+                .background(GTGuiTextures.SLOT, GTGuiTextures.TURBINE_OVERLAY).center();
+
+        var rotorSync = new IntSyncValue(this::getRotorSpeed);
+        rotorSync.setChangeListener(() -> {
+            boolean canEdit = rotorSync.getIntValue() == 0;
+            slot.getSlot().accessibility(canEdit, canEdit);
+        });
+        syncManager.syncValue("rotor_speed", rotorSync);
+
+        mainWidget.child(slot);
     }
 
     //////////////////////////////////////
@@ -250,24 +260,6 @@ public class RotorHolderPartMachine extends TieredPartMachine {
             return null;
         }
         return super.modifyRecipe(recipe);
-    }
-
-    //////////////////////////////////////
-    // ******* FANCY GUI ********//
-    //////////////////////////////////////
-    @Override
-    public void attachFancyTooltipsToController(MultiblockControllerMachine controller, TooltipsPanel tooltipsPanel) {
-        attachTooltips(tooltipsPanel);
-    }
-
-    @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        tooltipsPanel.attachTooltips(new Basic(
-                () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-                () -> List.of(Component.translatable("gtceu.multiblock.universal.rotor_obstructed")
-                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
-                () -> !isFrontFaceFree(),
-                () -> null));
     }
 
     /**
@@ -372,10 +364,10 @@ public class RotorHolderPartMachine extends TieredPartMachine {
      * @return true if the front face is unobstructed
      */
     public boolean isFrontFaceFree() {
-        final var facing = self().getFrontFacing();
+        final var facing = getFrontFacing();
         final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
-        final var pos = self().getBlockPos();
-        final var level = self().getLevel();
+        final var pos = getBlockPos();
+        final var level = getLevel();
         for (int dLeft = -1; dLeft < 2; dLeft++) {
             for (int dUp = -1; dUp < 2; dUp++) {
                 final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);

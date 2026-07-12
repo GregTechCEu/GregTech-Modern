@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.map.xaeros;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.integration.map.IWaypointHandler;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
@@ -23,9 +24,10 @@ public class XaeroWaypointHandler implements IWaypointHandler {
     private final List<String> knownKeys = new ObjectArrayList<>();
 
     @Override
-    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, int x, int y, int z) {
+    public void setWaypoint(String key, String name, int color, ResourceKey<Level> dim, BlockPos pos) {
         waypoints.get().put(getIndex(key),
-                new WaypointWithDimension(dim, x, y, z, name, name.substring(0, 1), WaypointColor.WHITE));
+                new WaypointWithDimension(dim, pos.getX(), pos.getY(), pos.getZ(),
+                        name, name.substring(0, 1), WaypointColor.WHITE));
     }
 
     @Override

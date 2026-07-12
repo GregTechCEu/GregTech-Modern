@@ -4,7 +4,12 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableComputationContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -58,11 +63,25 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
+    /**
+     * Creates a {@link WorkableTieredMachine}.
+     * 
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param recipeLogic         The recipe logic to use.
+     * @param importSlots         The amount of item input slots this machine should have (can be 0).
+     * @param exportSlots         The amount of item output slots this machine should have (can be 0).
+     * @param fluidImportSlots    The amount of fluid input slots this machine should have (can be 0).
+     * @param fluidExportSlots    The amount of fluid output slots this machine should have (can be 0).
+     * @param energyEmitter       If this machine should input or output energy.
+     * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
+     */
     public WorkableTieredMachine(BlockEntityCreationInfo info, int tier,
                                  RecipeLogic recipeLogic, int importSlots,
                                  int exportSlots,
-                                 int fluidImportSlots, int fluidExportSlots, Int2IntFunction tankScalingFunction) {
-        super(info, tier);
+                                 int fluidImportSlots, int fluidExportSlots, boolean energyEmitter,
+                                 Int2IntFunction tankScalingFunction) {
+        super(info, tier, energyEmitter);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -71,6 +90,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
         this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
         this.importFluids = attachTrait(
@@ -83,8 +103,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
     }
 
-    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, Int2IntFunction tankScalingFunction) {
-        super(info, tier);
+    /**
+     * Creates a {@link WorkableTieredMachine} with default settings.<br>
+     * The amount of item and fluid input and output slots is determined by the machine's recipe type.
+     *
+     * @param info                {@link BlockEntityCreationInfo}
+     * @param tier                Machine tier.
+     * @param energyEmitter       If this machine should input or output energy.
+     * @param tankScalingFunction The tank scaling function which determines the capaacity of fluid slots.
+     */
+    public WorkableTieredMachine(BlockEntityCreationInfo info, int tier, boolean energyEmitter,
+                                 Int2IntFunction tankScalingFunction) {
+        super(info, tier, energyEmitter);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
@@ -93,16 +123,19 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.traitSubscriptions = new ArrayList<>();
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(new RecipeLogic());
+        this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
-                        IO.IN));
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN, IO.BOTH));
         this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
                         IO.OUT));
-        this.importFluids = attachTrait(new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                tankScalingFunction.applyAsInt(getTier()), IO.IN));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        tankScalingFunction.applyAsInt(getTier()), IO.IN));
         this.exportFluids = attachTrait(
-                new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
                         tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));
@@ -118,10 +151,8 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
 
-        for (MachineTrait trait : getAllTraits()) {
-            if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRecipeHandlerTrait.class)) {
+            ioTraits.computeIfAbsent(trait.getHandlerIO(), i -> new ArrayList<>()).add(trait);
         }
 
         for (var entry : ioTraits.entrySet()) {
@@ -191,13 +222,9 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         }
     }
 
-    @Override
-    public boolean keepSubscribing() {
-        return false;
-    }
-
     public GTRecipeType getRecipeType() {
-        return recipeTypes[activeRecipeType];
+        int index = activeRecipeType >= 0 && activeRecipeType < recipeTypes.length ? activeRecipeType : 0;
+        return recipeTypes[index];
     }
 
     /**

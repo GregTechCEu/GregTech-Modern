@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.integration.ae2.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEPatternBufferPartMachine;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public final class InternalSlotRecipeHandler {
             super(IO.IN);
             itemRecipeHandler = buffer.attachTrait(new SlotItemRecipeHandler(slot, idx));
             fluidRecipeHandler = buffer.attachTrait(new SlotFluidRecipeHandler(slot, idx));
-            addHandlers(buffer.getCircuitInventory(), buffer.getShareInventory(), buffer.getShareTank(),
+            addHandlers(buffer.getCircuitSlot(), buffer.getShareInventory(), buffer.getShareTank(),
                     itemRecipeHandler, fluidRecipeHandler);
             this.setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
         }
@@ -84,8 +84,8 @@ public final class InternalSlotRecipeHandler {
         }
 
         @Override
-        public @Nullable List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                            boolean simulate) {
+        public @NotNull List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                           boolean simulate) {
             if (io != IO.IN || slot.isItemEmpty()) return left;
             return slot.handleItemInternal(left, simulate);
         }
@@ -128,8 +128,8 @@ public final class InternalSlotRecipeHandler {
         }
 
         @Override
-        public @Nullable List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                                 boolean simulate) {
+        public @NotNull List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                                boolean simulate) {
             if (io != IO.IN || slot.isFluidEmpty()) return left;
             return slot.handleFluidInternal(left, simulate);
         }

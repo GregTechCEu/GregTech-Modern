@@ -11,6 +11,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine.DEFAULT_STRUCTURE;
+
 public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
 
     public static final MachineTraitType<MultiblockFluidRendererTrait> TYPE = new MachineTraitType<>(
@@ -36,12 +38,14 @@ public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
     }
 
     @Override
-    public void onStructureInvalid() {
-        fluidBlockOffsets.clear();
+    public void onStructureInvalid(String name) {
+        if (DEFAULT_STRUCTURE.equals(name)) {
+            fluidBlockOffsets.clear();
+        }
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<MultiblockFluidRendererTrait> getTraitType() {
         return TYPE;
     }
 }

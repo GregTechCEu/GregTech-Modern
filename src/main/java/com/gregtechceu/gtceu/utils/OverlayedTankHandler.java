@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 
 import net.minecraftforge.fluids.FluidStack;
 

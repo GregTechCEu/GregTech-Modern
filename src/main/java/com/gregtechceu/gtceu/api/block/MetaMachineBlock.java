@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.sync_system.managed.ManagedSyncEntityBlock;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
-import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -34,12 +34,9 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.storage.loot.LootParams;
@@ -59,7 +56,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class MetaMachineBlock extends Block implements EntityBlock {
+public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
 
     @Getter
     public final MachineDefinition definition;
@@ -72,7 +69,7 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             BlockState defaultState = this.defaultBlockState().setValue(rotationState.property,
                     rotationState.defaultDirection);
             if (definition.isAllowExtendedFacing()) {
-                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.NORTH);
+                defaultState = defaultState.setValue(GTBlockStateProperties.UPWARDS_FACING, Direction.UP);
             }
             registerDefaultState(defaultState);
         }
@@ -123,12 +120,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
                     machine.setOwnerUUID(sPlayer.getUUID());
                 }
 
-                if (machine instanceof IDropSaveMachine dropSaveMachine) {
-                    CompoundTag tag = pStack.getTag();
-                    if (tag != null) {
-                        dropSaveMachine.loadFromItem(tag);
-                    }
-                }
+                CompoundTag tag = pStack.getTag();
+                if (tag != null) machine.loadFromItem(tag);
             }
         }
     }
@@ -147,29 +140,40 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         var player = context.getPlayer();
         var blockPos = context.getClickedPos();
         var state = defaultBlockState();
+        var machine = MetaMachine.getMachine(context.getLevel(), blockPos);
         if (player != null && rotationState != RotationState.NONE) {
+            Direction newFrontDir;
+            Direction newUpFacing;
             if (rotationState == RotationState.Y_AXIS) {
-                state = state.setValue(rotationState.property, Direction.UP);
+                newFrontDir = Direction.UP;
             } else {
-                state = state.setValue(rotationState.property, player.getDirection().getOpposite());
+                newFrontDir = player.getDirection().getOpposite();
             }
+
             Vec3 pos = player.position();
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
                 if (d0 - (double) blockPos.getY() > 2.0D && rotationState.test(Direction.UP)) {
-                    state = state.setValue(rotationState.property, Direction.UP);
+                    newFrontDir = Direction.UP;
                 }
                 if ((double) blockPos.getY() - d0 > 0.0D && rotationState.test(Direction.DOWN)) {
-                    state = state.setValue(rotationState.property, Direction.DOWN);
+                    newFrontDir = Direction.DOWN;
                 }
+            }
+
+            state = state.setValue(rotationState.property, newFrontDir);
+            if (machine != null) {
+                machine.setFrontFacing(newFrontDir);
             }
             if (getDefinition().isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
-                if (frontFacing == Direction.UP) {
+                if (frontFacing.getAxis() == Direction.Axis.Y) {
+                    newUpFacing = player.getDirection();
                     state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection());
-                } else if (frontFacing == Direction.DOWN) {
-                    state = state.setValue(GTBlockStateProperties.UPWARDS_FACING, player.getDirection().getOpposite());
+                    if (machine instanceof MultiblockControllerMachine controller) {
+                        controller.setUpwardsFacing(newUpFacing);
+                    }
                 }
             }
         }
@@ -179,10 +183,8 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
-        if (MetaMachine.getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine &&
-                dropSaveMachine.savePickClone()) {
-            dropSaveMachine.saveToItem(itemStack.getOrCreateTag());
-        }
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine != null) machine.saveToItem(itemStack.getOrCreateTag(), true);
         return itemStack;
     }
 
@@ -192,17 +194,19 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
-        if (GTUtil.isShiftDown()) {
-            if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
-                var pattern = multiblockDefinition.getPatternFactory().get();
-                if (pattern != null) {
-                    var aisleDims = pattern.getDimensions();
-                    assert aisleDims.length == 3;
-                    tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
-                            aisleDims[2]));
-                }
-            }
-        }
+        /*
+         * if (GTUtil.isShiftDown()) {
+         * if (definition instanceof MultiblockMachineDefinition multiblockDefinition) {
+         * var pattern = multiblockDefinition.getPatternFactory().get();
+         * if (pattern != null) {
+         * var aisleDims = pattern.getDimensions();
+         * assert aisleDims.length == 3;
+         * tooltip.add(Component.translatable("gtceu.multiblock.dimension", aisleDims[0], aisleDims[1],
+         * aisleDims[2]));
+         * }
+         * }
+         * }
+         */
         if (Language.getInstance().has(mainKey)) {
             tooltip.add(1, Component.translatable(mainKey));
         }
@@ -233,13 +237,11 @@ public class MetaMachineBlock extends Block implements EntityBlock {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof MetaMachine machine) {
             machine.modifyDrops(drops);
-            if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        dropSaveMachine.saveToItem(drop.getOrCreateTag());
-                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
-                        break;
-                    }
+            for (ItemStack drop : drops) {
+                if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
+                    machine.saveToItem(drop.getOrCreateTag(), false);
+                    // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                    break;
                 }
             }
         }
@@ -294,9 +296,12 @@ public class MetaMachineBlock extends Block implements EntityBlock {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
-        if (shouldOpenUi && machine instanceof IUIMachine uiMachine &&
-                MachineOwner.canOpenOwnerMachine(player, machine)) {
-            return uiMachine.tryToOpenUI(player, hand, hit);
+        if (shouldOpenUi && MachineOwner.canOpenOwnerMachine(player, machine)) {
+            if (machine.getDefinition().getUI() != null) {
+                return machine.getDefinition().getUI().tryToOpenUI(player, hand, hit);
+            } else if (machine instanceof IMuiMachine muiMachine) {
+                return muiMachine.tryToOpenUI(player, hand, hit);
+            }
         }
         return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
@@ -379,27 +384,5 @@ public class MetaMachineBlock extends Block implements EntityBlock {
     @Override
     public final BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return getDefinition().getBlockEntityType().create(pos, state);
-    }
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                  BlockEntityType<T> blockEntityType) {
-        if (blockEntityType == getDefinition().getBlockEntityType()) {
-            if (!level.isClientSide) {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof MetaMachine metaMachine) {
-                        metaMachine.serverTick();
-                    }
-                };
-            } else {
-                return (pLevel, pPos, pState, pTile) -> {
-                    if (pTile instanceof MetaMachine metaMachine) {
-                        metaMachine.clientTick();
-                    }
-                };
-            }
-        }
-        return null;
     }
 }
