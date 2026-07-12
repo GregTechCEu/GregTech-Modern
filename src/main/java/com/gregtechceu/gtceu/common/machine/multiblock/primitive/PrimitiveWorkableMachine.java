@@ -70,12 +70,15 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
     public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
         super(info);
         this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN));
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN));
         this.exportItems = attachTrait(
                 new NotifiableItemStackHandler(
-                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()), IO.OUT));
-        this.importFluids = attachTrait(new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                32 * FluidType.BUCKET_VOLUME, IO.IN));
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        32 * FluidType.BUCKET_VOLUME, IO.IN));
         this.exportFluids = attachTrait(
                 new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
                         32 * FluidType.BUCKET_VOLUME, IO.OUT));
