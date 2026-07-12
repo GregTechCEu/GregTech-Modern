@@ -30,7 +30,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @Setter
     public transient SteamDefinitionFunction definition = (isHP, def) -> def.tier(isHP ? 1 : 0);
 
-    private @Nullable MachineBuilder<?, ?> lowPressureBuilder = null, highPressureBuilder = null;
+    private @Nullable MachineBuilder<?, ?, ?> lowPressureBuilder = null, highPressureBuilder = null;
     @Nullable
     private MachineDefinition lpObject = null, hpObject = null;
 
@@ -116,6 +116,6 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> imple
     @FunctionalInterface
     public interface SteamDefinitionFunction {
 
-        void apply(boolean isHighPressure, MachineBuilder<?, ?> builder);
+        void apply(boolean isHighPressure, MachineBuilder<?, ?, ?> builder);
     }
 }

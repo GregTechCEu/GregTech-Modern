@@ -33,6 +33,7 @@
         "client.bloom.BufferBuilderAccessor",
         "client.bloom.LevelRendererAccessor",
         "client.bloom.LevelRendererMixin",
+        "client.bloom.LevelRendererMixin",
         "client.bloom.LightPipelineAwareModelBlockRendererMixin",
         "client.bloom.ModelBlockRendererMixin",
         "client.bloom.PostChainAccessor",
@@ -75,6 +76,10 @@
         "WorldLoaderMixin",
         "dev.datagen.FixParallelKeyMappingRegistrationMixin",
         "dev.test.GameTestRegistryMixin",
+        "emi.EmiApiAccessor",
+        "emi.FillRecipePacketMixin",
+        "emi.FluidEmiStackMixin",
+        "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],

@@ -303,10 +303,9 @@ public class QuantumChestMachine extends TieredMachine implements IControllable,
     //////////////////////////////////////
     // ******* Rendering ********//
     //////////////////////////////////////
-
     @Override
-    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state,
-                                        Set<GTToolType> toolTypes, ItemStack held, Direction side) {
+    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                        ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (side == getFrontFacing()) return null;
         }

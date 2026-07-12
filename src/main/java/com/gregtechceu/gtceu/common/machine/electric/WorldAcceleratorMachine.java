@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -218,9 +218,8 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
     @Override
-    public @org.jspecify.annotations.Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state,
-                                                                 Set<GTToolType> toolTypes,
-                                                                 ItemStack held, Direction side) {
+    public @Nullable UITexture sideTips(Player player, BlockPos pos, BlockState state, Set<GTToolType> toolTypes,
+                                        ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             return isWorkingEnabled ? GTGuiTextures.TOOL_PAUSE : GTGuiTextures.TOOL_START;
         }

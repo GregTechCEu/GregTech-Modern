@@ -44,7 +44,7 @@ public class LargeMacerationTowerMachine extends WorkableElectricMultiblockMachi
     }
 
     @Override
-    public void invalidateStructure(String name) {
+    public void invalidateStructure(@NotNull String name) {
         super.invalidateStructure(name);
         unsubscribe(hurtSub);
         hurtSub = null;

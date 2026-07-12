@@ -10,16 +10,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.*;
-import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 
 import brachy.modularui.api.drawable.Text;
@@ -57,13 +53,12 @@ public interface CapabilityContentBuilder {
                                      recipeType, recipe, chanceTier, recipeTier) -> {
         if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
 
-        float chance = (float) recipeType.getChanceFunction()
-                .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance();
+        float chance = (float) content.chance() / content.maxChance();
         var innerContent = ItemRecipeCapability.CAP.of(content.content());
 
         recipeViewerSlotWidget.value(ItemRecipeCapability.mapIngredientToEntryList(innerContent));
         recipeViewerSlotWidget
-                .overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
+                .overlay(new ContentOverlay(content, perTick));
         recipeViewerSlotWidget.chance(chance);
 
         if (io == IO.IN && (content.chance() == 0 ||
@@ -78,8 +73,7 @@ public interface CapabilityContentBuilder {
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
 
             Content.addChanceTooltips(tooltip, content,
-                    recipe.getChanceLogicForCapability(ItemRecipeCapability.CAP, io, perTick),
-                    recipeTier, chanceTier, recipeType.getChanceFunction());
+                    recipe.getChanceLogicForCapability(ItemRecipeCapability.CAP, io, perTick));
 
             if (innerContent.ingredient().getCustomIngredient() instanceof IntProviderIngredient ingredient) {
                 IntProvider countProvider = ingredient.getCountProvider();
@@ -103,21 +97,15 @@ public interface CapabilityContentBuilder {
                                       recipeType, recipe, chanceTier, recipeTier) -> {
         if (!(widget instanceof RecipeViewerSlotWidget<?> recipeViewerSlotWidget)) return;
 
-        float chance = (float) recipeType.getChanceFunction()
-                .getBoostedChance(content, recipeTier, chanceTier) / content.maxChance();
+        float chance = (float) content.chance() / content.maxChance();
         SizedFluidIngredient ingredient = FluidRecipeCapability.CAP.of(content.content());
 
         recipeViewerSlotWidget.value(FluidRecipeCapability.mapIngredientToEntryList(ingredient));
         recipeViewerSlotWidget
-                .overlay(new ContentOverlay(content, perTick, recipeTier, chanceTier, recipeType.getChanceFunction()));
+                .overlay(new ContentOverlay(content, perTick));
         recipeViewerSlotWidget.chance(chance);
 
         recipeViewerSlotWidget.tooltipBuilder((tooltip) -> {
-            if (ingredient.getFluids().length > 0) {
-                FluidStack stack = ingredient.getFluids()[0];
-                TooltipsHandler.appendFluidTooltips(stack, tooltip::addLine, TooltipFlag.NORMAL,
-                        Item.TooltipContext.EMPTY);
-            }
             if (ingredient.ingredient() instanceof IRangedIngredient provider) {
                 IntProvider countProvider = provider.getCountProvider();
                 tooltip.addLine(Component.translatable("gtceu.gui.content.fluid_range",

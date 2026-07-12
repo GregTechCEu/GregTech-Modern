@@ -93,8 +93,6 @@ public interface GTRecipeSchema {
         public int chance = ChanceLogic.getMaxChancedValue();
         @Setter
         public int maxChance = ChanceLogic.getMaxChancedValue();
-        @Setter
-        public int tierChanceBoost = 0;
         @Getter
         private ResourceLocation idWithoutType;
         @Setter
@@ -131,7 +129,7 @@ public interface GTRecipeSchema {
             if (getValue(key) == null) setValue(key, new CapabilityMap());
             CapabilityMap map = getValue(key);
             for (Object object : obj) {
-                map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
+                map.add(capability, new Content(object, chance, maxChance));
             }
             save();
             return this;
@@ -142,7 +140,7 @@ public interface GTRecipeSchema {
             if (getValue(key) == null) setValue(key, new CapabilityMap());
             CapabilityMap map = getValue(key);
             for (Object object : obj) {
-                map.add(capability, new Content(object, chance, maxChance, tierChanceBoost));
+                map.add(capability, new Content(object, chance, maxChance));
             }
             save();
             return this;
@@ -435,7 +433,7 @@ public interface GTRecipeSchema {
             return notConsumableItem(new SizedIngredient(IntCircuitIngredient.circuit(configuration), 1));
         }
 
-        public GTKubeRecipe chancedInput(SizedIngredient stack, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedInput(SizedIngredient stack, int chance) {
             validateItems("chanced input", stack);
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -444,33 +442,26 @@ public interface GTRecipeSchema {
                                 ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
             inputItems(stack);
             this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
             return this;
         }
 
-        public GTKubeRecipe chancedFluidInput(SizedFluidIngredient stack, int chance,
-                                              int tierChanceBoost) {
+        public GTKubeRecipe chancedFluidInput(SizedFluidIngredient stack, int chance) {
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
                 throw new KubeRuntimeException(
                         String.format("Chance cannot be less or equal to 0 or more than %s, Actual: %s, id: %s",
                                 ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
             inputFluids(stack);
             this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
             return this;
         }
 
-        public GTKubeRecipe chancedOutput(SizedIngredient stack, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedOutput(SizedIngredient stack, int chance) {
             validateItems("chanced output", stack);
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -479,25 +470,22 @@ public interface GTRecipeSchema {
                                 ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
             outputItems(stack);
             this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
             return this;
         }
 
-        public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(tag, mat, 1, chance, tierChanceBoost);
+        public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int chance) {
+            return chancedOutput(tag, mat, 1, chance);
         }
 
-        public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedOutput(TagPrefix tag, Material mat, int count, int chance) {
             return chancedOutput(SizedIngredient.of(ChemicalHelper.get(tag, mat).getItem(), count),
-                    chance, tierChanceBoost);
+                    chance);
         }
 
-        public GTKubeRecipe chancedOutput(SizedIngredient stack, String fraction, int tierChanceBoost) {
+        public GTKubeRecipe chancedOutput(SizedIngredient stack, String fraction) {
             validateItems("chanced output", stack);
 
             String[] split = fraction.split("/");
@@ -518,7 +506,7 @@ public interface GTRecipeSchema {
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
                             fraction));
                 }
-                return chancedOutput(stack, chance, tierChanceBoost);
+                return chancedOutput(stack, chance);
             }
             try {
                 chance = Integer.parseInt(split[0]);
@@ -546,29 +534,24 @@ public interface GTRecipeSchema {
 
             int lastChance = this.chance;
             int lastMaxChance = this.maxChance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
             this.maxChance = maxChance;
-            this.tierChanceBoost = tierChanceBoost;
             outputItems(stack);
             this.chance = lastChance;
             this.maxChance = lastMaxChance;
-            this.tierChanceBoost = lastTierChanceBoost;
 
             return this;
         }
 
-        public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, int count, String fraction,
-                                          int tierChanceBoost) {
-            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(prefix, material).getItem(), count), fraction,
-                    tierChanceBoost);
+        public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, int count, String fraction) {
+            return chancedOutput(SizedIngredient.of(ChemicalHelper.get(prefix, material).getItem(), count), fraction);
         }
 
-        public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, String fraction, int tierChanceBoost) {
-            return chancedOutput(prefix, material, 1, fraction, tierChanceBoost);
+        public GTKubeRecipe chancedOutput(TagPrefix prefix, Material material, String fraction) {
+            return chancedOutput(prefix, material, 1, fraction);
         }
 
-        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, int chance, int tierChanceBoost) {
+        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, int chance) {
             validateFluids("chanced output", stack);
 
             if (0 >= chance || chance > ChanceLogic.getMaxChancedValue()) {
@@ -577,16 +560,13 @@ public interface GTRecipeSchema {
                                 ChanceLogic.getMaxChancedValue(), chance, id));
             }
             int lastChance = this.chance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
-            this.tierChanceBoost = tierChanceBoost;
             outputFluids(stack);
             this.chance = lastChance;
-            this.tierChanceBoost = lastTierChanceBoost;
             return this;
         }
 
-        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, String fraction, int tierChanceBoost) {
+        public GTKubeRecipe chancedFluidOutput(SizedFluidIngredient stack, String fraction) {
             validateFluids("chanced output", stack);
             if (stack.amount() == 0) {
                 return this;
@@ -610,7 +590,7 @@ public interface GTRecipeSchema {
                             "Fraction or number was not parsed correctly! Expected format is \"1/3\" or \"1000\". Actual: \"%s\".",
                             fraction));
                 }
-                return chancedFluidOutput(stack, chance, tierChanceBoost);
+                return chancedFluidOutput(stack, chance);
             }
 
             try {
@@ -639,14 +619,11 @@ public interface GTRecipeSchema {
 
             int lastChance = this.chance;
             int lastMaxChance = this.maxChance;
-            int lastTierChanceBoost = this.tierChanceBoost;
             this.chance = chance;
             this.maxChance = maxChance;
-            this.tierChanceBoost = tierChanceBoost;
             outputFluids(stack);
             this.chance = lastChance;
             this.maxChance = lastMaxChance;
-            this.tierChanceBoost = lastTierChanceBoost;
 
             return this;
         }

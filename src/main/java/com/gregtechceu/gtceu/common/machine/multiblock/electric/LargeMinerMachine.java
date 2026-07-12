@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
@@ -109,7 +109,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         List<IFluidHandler> fluidTanks = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             // if (io == IO.NONE) continue;
 

@@ -7,10 +7,9 @@ import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
@@ -28,6 +27,7 @@ import brachy.modularui.api.widget.IWidget;
 import brachy.modularui.value.sync.PanelSyncManager;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,12 +41,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                                     implements IOpticalComputationReceiver {
 
     @Getter
-    private IOpticalComputationProvider computationProvider;
+    private @Nullable IOpticalComputationProvider computationProvider;
     @Getter
-    private ObjectHolderMachine objectHolder;
+    private @Nullable ObjectHolderMachine objectHolder;
 
     public ResearchStationMachine(BlockEntityCreationInfo info) {
         super(info, new ResearchStationRecipeLogic());
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     public void formStructure(@NotNull String substructureName) {
         var pState = patternStates.get(substructureName);
         super.formStructure(substructureName);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder.getFrontFacing() != getFrontFacing().getOpposite()) {
                     pState.setError(new PatternStringError(
@@ -69,9 +70,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
                 this.objectHolder = holder;
             }
 
-            MetaMachine base = part.self();
             var provider = getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER,
-                    base.getBlockPos(), base.getBlockState(), base, null);
+                    part.getBlockPos(), part.getBlockState(), part, null);
             if (provider != null) {
                 this.computationProvider = provider;
             }
@@ -114,7 +114,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
     public void invalidateStructure(String name) {
         computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (part instanceof ObjectHolderMachine holder) {
                 if (holder == objectHolder) {
                     objectHolder.setLocked(false);
@@ -123,11 +123,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine
         }
         objectHolder = null;
         super.invalidateStructure(name);
-    }
-
-    @Override
-    public boolean regressWhenWaiting() {
-        return false;
     }
 
     @Override

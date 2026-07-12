@@ -2,22 +2,20 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
@@ -42,7 +40,6 @@ import brachy.modularui.drawable.ItemDrawable;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.BoolValue;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -71,10 +68,6 @@ public class FisherMachine extends TieredEnergyMachine
     protected boolean allowInputFromOutputSideItems;
     @SaveField
     protected final NotifiableItemStackHandler baitHandler;
-
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription batterySubs, fishingSubs;
     @Nullable
@@ -111,22 +104,19 @@ public class FisherMachine extends TieredEnergyMachine
     public final AutoOutputTrait autoOutput;
 
     public FisherMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.maxProgress = calcMaxProgress(tier);
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
 
-        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.BOTH, IO.IN));
+        this.baitHandler = attachTrait(new NotifiableItemStackHandler(1, IO.IN, IO.BOTH));
         baitHandler.setFilter(item -> item.is(Items.STRING));
-
-        this.chargerInventory = new CustomItemStackHandler();
-        chargerInventory.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
 
         autoOutput = attachTrait(AutoOutputTrait.ofItems(cache));
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
+
+        attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
     }
 
     public void setWorkingEnabled(boolean enabled) {
@@ -143,12 +133,8 @@ public class FisherMachine extends TieredEnergyMachine
     public void onLoad() {
         super.onLoad();
         if (isRemote()) return;
-        energySubs = energyContainer.addChangedListener(() -> {
-            this.updateBatterySubscription();
-            this.updateFishingUpdateSubscription();
-        });
+        energySubs = energyContainer.addChangedListener(this::updateFishingUpdateSubscription);
         baitSubs = baitHandler.addChangedListener(this::updateFishingUpdateSubscription);
-        chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         this.updateFishingUpdateSubscription();
     }
 
@@ -163,12 +149,6 @@ public class FisherMachine extends TieredEnergyMachine
             baitSubs.unsubscribe();
             baitSubs = null;
         }
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     public static int calcMaxProgress(int tier) {
@@ -269,20 +249,6 @@ public class FisherMachine extends TieredEnergyMachine
         return false;
     }
 
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true))
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false))
-            updateBatterySubscription();
-    }
-
     //////////////////////////////////////
     // ********** GUI ***********//
     //////////////////////////////////////
@@ -295,7 +261,7 @@ public class FisherMachine extends TieredEnergyMachine
                                 .value(new BoolValue.Dynamic(this::isJunkEnabled, this::setJunkEnabled))
                                 .overlay(new ItemDrawable(Items.NAME_TAG))
                                 .tooltipAutoUpdate(true)
-                                .tooltipBuilder((r) -> {
+                                .tooltipDynamic((r) -> {
                                     var lines = LangHandler.getMultiLang("gtceu.gui.fisher_mode.tooltip",
                                             GTValues.VNF[getTier()], GTValues.VNF[getTier()]);
                                     for (var line : lines) {
@@ -312,18 +278,25 @@ public class FisherMachine extends TieredEnergyMachine
         DoubleSyncValue progressPercent = syncManager.getOrCreateSyncHandler("progressPercent", DoubleSyncValue.class,
                 () -> new DoubleSyncValue(() -> progress / (double) maxProgress));
 
-        mainWidget.child(Flow.row()
-                .coverChildren()
-                .center()
-                .margin(0, 15)
-                .crossAxisAlignment(Alignment.CrossAxis.CENTER)
-                .child(new ItemSlot().slot(new ModularSlot(baitHandler, 0))
-                        .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY).marginRight(2))
-                .child(new ProgressWidget()
-                        .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
-                        .value(progressPercent))
-                .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
-                        "output_item_inv", cache.getSize(), 'i',
-                        syncManager, outputItemGrid).marginLeft(2)));
+        mainWidget
+                .name("content")
+                .coverChildrenWidth()
+                .coverChildrenHeight(54)
+                .child(Flow.row()
+                        .name("mainRow")
+                        .center()
+                        .coverChildren()
+                        .margin(2, 3)
+                        .childPadding(4)
+                        .child(new ItemSlot()
+                                .slot(new ModularSlot(baitHandler, 0).singletonSlotGroup(0).accessibility(true, true))
+                                .background(GTGuiTextures.SLOT, GTGuiTextures.STRING_SLOT_OVERLAY))
+                        .child(new ProgressWidget()
+                                .texture(GTGuiTextures.PROGRESS_ARROW.main(), ProgressDrawable.Direction.RIGHT)
+                                .value(progressPercent))
+                        .child(GTMuiMachineUtil.createSlotGroupFromInventory(cache,
+                                "output_item_inv", cache.getSize(), 'i',
+                                syncManager, outputItemGrid))
+                        .padding(4, 0));
     }
 }
