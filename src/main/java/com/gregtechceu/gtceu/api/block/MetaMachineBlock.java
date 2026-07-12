@@ -10,10 +10,9 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.misc.EnergyInfoProviderList;
 import com.gregtechceu.gtceu.api.misc.LaserContainerList;
@@ -99,6 +98,10 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                 pBuilder.add(GTBlockStateProperties.UPWARDS_FACING);
             }
         }
+    }
+
+    public RotationState getRotationState() {
+        return getDefinition().getRotationState();
     }
 
     @Override
@@ -367,10 +370,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         };
     }
 
-    public RotationState getRotationState() {
-        return getDefinition().getRotationState();
-    }
-
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(GTCapability.CAPABILITY_COVERABLE, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof MetaMachine machine) {
@@ -437,12 +436,6 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                 if (!list.isEmpty()) {
                     return list.size() == 1 ? list.getFirst() : new EnergyInfoProviderList(list);
                 }
-            }
-            return null;
-        }, this);
-        event.registerBlock(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, (level, pos, state, blockEntity, side) -> {
-            if (blockEntity instanceof IMaintenanceMachine maintenance) {
-                return maintenance;
             }
             return null;
         }, this);

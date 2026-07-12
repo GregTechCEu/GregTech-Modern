@@ -10,11 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
-    private final String autoTooltipKey;
-
     public SteamItemBusPartMachine(BlockEntityCreationInfo info, IO io) {
         super(info, 1, io);
-        autoTooltipKey = io == IO.IN ? "gtceu.gui.item_auto_input.tooltip" : "gtceu.gui.item_auto_output.tooltip";
+        circuitSlot.setEnabled(false);
     }
 
     @Override
@@ -41,10 +39,5 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
             newMachine.setUpwardsFacing(this.getUpwardsFacing());
         }
         return true;
-    }
-
-    @Override
-    public boolean isCircuitSlotEnabled() {
-        return false;
     }
 }

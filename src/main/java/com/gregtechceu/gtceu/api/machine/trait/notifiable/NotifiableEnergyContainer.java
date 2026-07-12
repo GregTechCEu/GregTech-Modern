@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.api.machine.trait.notifiable;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -25,7 +26,6 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
             NotifiableEnergyContainer.class);
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<? extends NotifiableEnergyContainer> getTraitType() {
         return TYPE;
     }
 
@@ -311,8 +311,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Ener
     }
 
     @Override
-    public @NotNull List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
-                                                        boolean simulate) {
+    public List<EnergyStack> handleRecipeInner(IO io, GTRecipe recipe, List<EnergyStack> left,
+                                               boolean simulate) {
         for (var it = left.listIterator(); it.hasNext();) {
             EnergyStack stack = it.next();
             if (stack.isEmpty()) {

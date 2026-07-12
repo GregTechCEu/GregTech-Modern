@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -154,7 +154,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     protected TickableSubscription updateSubs;
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof EncodedPatternItem<?>);
         for (int i = 0; i < this.internalInventory.length; i++) {
@@ -484,7 +484,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
-                ItemStack circuitStack = isHasCircuitSlot() ? circuitInventory.storage.getStackInSlot(0) :
+                ItemStack circuitStack = circuitSlot.isEnabled() ? circuitSlot.storage.getStackInSlot(0) :
                         ItemStack.EMPTY;
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);

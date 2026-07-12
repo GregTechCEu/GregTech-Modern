@@ -26,7 +26,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -51,6 +50,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     public LargeCombustionEngineMachine(BlockEntityCreationInfo info, int tier) {
         super(info);
         this.tier = tier;
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     private boolean isIntakesObstructed() {
@@ -76,6 +76,34 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     public boolean isBoostAllowed() {
         return getMaxVoltage() >= GTValues.V[getTier() + 1];
     }
+
+    // @Override
+    // public void addDisplayText(List<Component> textList) {Expand commentComment on line L177
+    // MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, getDefaultPatternState())
+    // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
+    //
+    // long lastEUt = recipeLogic.getLastRecipe() != null ?
+    // recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
+    // if (isExtreme()) {
+    // builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
+    // } else {
+    // builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
+    // }
+    //
+    // if (isActive() && isWorkingEnabled()) {
+    // builder.addCurrentEnergyProductionLine(lastEUt);
+    // }
+    //
+    // builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
+    //
+    // if (isFormed && isOxygenBoosted) {
+    // final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
+    // "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
+    // builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
+    // }
+    //
+    // builder.addWorkingStatusLine();
+    // }
 
     //////////////////////////////////////
     // ****** Recipe Logic *******//
@@ -114,7 +142,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
      * @param recipe  recipe
      * @return A {@link ModifierFunction} for the given Combustion Engine
      */
-    public static ModifierFunction recipeModifier(@NotNull MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static ModifierFunction recipeModifier(MetaMachine machine, GTRecipe recipe) {
         if (!(machine instanceof LargeCombustionEngineMachine engineMachine)) {
             return RecipeModifier.nullWrongType(LargeCombustionEngineMachine.class, machine);
         }
@@ -164,43 +192,6 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         return value;
     }
 
-    @Override
-    public boolean regressWhenWaiting() {
-        return false;
-    }
-
-    //////////////////////////////////////
-    // ******* GUI ********//
-    //////////////////////////////////////
-
-    // @Override
-    // public void addDisplayText(List<Component> textList) {
-    // MultiblockDisplayText.Builder builder = MultiblockDisplayText.builder(textList, getDefaultPatternState())
-    // .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive());
-    //
-    // long lastEUt = recipeLogic.getLastRecipe() != null ?
-    // recipeLogic.getLastRecipe().getOutputEUt().getTotalEU() : 0;
-    // if (isExtreme()) {
-    // builder.addEnergyProductionLine(GTValues.V[tier + 1], lastEUt);
-    // } else {
-    // builder.addEnergyProductionAmpsLine(GTValues.V[tier] * 3, 3);
-    // }
-    //
-    // if (isActive() && isWorkingEnabled()) {
-    // builder.addCurrentEnergyProductionLine(lastEUt);
-    // }
-    //
-    // builder.addFuelNeededLine(getRecipeFluidInputInfo(), recipeLogic.getDuration());
-    //
-    // if (isFormed && isOxygenBoosted) {
-    // final var key = isExtreme() ? "gtceu.multiblock.large_combustion_engine.liquid_oxygen_boosted" :
-    // "gtceu.multiblock.large_combustion_engine.oxygen_boosted";
-    // builder.addCustom(tl -> tl.add(Component.translatable(key).withStyle(ChatFormatting.AQUA)));
-    // }
-    //
-    // builder.addWorkingStatusLine();
-    // }
-
     @Nullable
     public String getRecipeFluidInputInfo() {
         // Previous Recipe is always null on first world load, so try to acquire a new recipe
@@ -216,15 +207,4 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
         int neededAmount = GTMath.saturatedCast(ocAmount * requiredFluidInput.getAmount());
         return ChatFormatting.RED + FormattingUtil.formatNumbers(neededAmount) + "mB";
     }
-
-    // @Override
-    // public void attachTooltips(TooltipsPanel tooltipsPanel) {
-    // super.attachTooltips(tooltipsPanel);
-    // tooltipsPanel.attachTooltips(new IFancyTooltip.Basic(
-    // () -> GuiTextures.INDICATOR_NO_STEAM.get(false),
-    // () -> List.of(Component.translatable("gtceu.multiblock.large_combustion_engine.obstructed")
-    // .setStyle(Style.EMPTY.withColor(ChatFormatting.RED))),
-    // this::isIntakesObstructed,
-    // () -> null));
-    // }
 }

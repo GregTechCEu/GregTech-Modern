@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -347,7 +347,7 @@ public class GTMultiMachines {
                         .build();
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/distillation_tower"))
             .register();
@@ -412,6 +412,7 @@ public class GTMultiMachines {
             .multiblock("primitive_pump", PrimitivePumpMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_PUMP_DECK)
+            .themeId(GTGuiTheme.PRIMITIVE.getId())
             .pattern(definition -> MultiblockPatternBuilder.start(FRONT, UP, RIGHT)
                     .slice("XXXX", "##F#", "##F#")
                     .slice("XXHX", "F##F", "FFFF")

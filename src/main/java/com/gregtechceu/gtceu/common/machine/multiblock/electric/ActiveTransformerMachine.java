@@ -6,11 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
@@ -73,7 +72,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
     protected boolean isSubscriptionActive() {
         if (!isFormed()) return false;
 
-        if (powerInput.getEnergyStored() <= 0) return false;
+        if (powerInput == null || powerInput.getEnergyStored() <= 0) return false;
+        if (powerOutput == null) return false;
         if (powerOutput.getEnergyStored() >= powerOutput.getEnergyCapacity()) return false;
 
         return true;
@@ -89,7 +89,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
 
-        for (IMultiPart part : getPrioritySortedParts()) {
+        for (MultiblockPartMachine part : getPrioritySortedParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
             // if (io == IO.NONE) continue;
             var handlerLists = part.getRecipeHandlers();
@@ -126,20 +126,18 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
         converterSubscription.updateSubscription();
     }
 
-    private List<IMultiPart> getPrioritySortedParts() {
+    private List<MultiblockPartMachine> getPrioritySortedParts() {
         return getParts().stream().sorted(Comparator.comparingInt(part -> {
-            if (part instanceof MetaMachine partMachine) {
-                Block partBlock = partMachine.getBlockState().getBlock();
+            Block partBlock = part.getBlockState().getBlock();
 
-                if (PartAbility.OUTPUT_ENERGY.isApplicable(partBlock))
-                    return 1;
+            if (PartAbility.OUTPUT_ENERGY.isApplicable(partBlock))
+                return 1;
 
-                if (PartAbility.SUBSTATION_OUTPUT_ENERGY.isApplicable(partBlock))
-                    return 2;
+            if (PartAbility.SUBSTATION_OUTPUT_ENERGY.isApplicable(partBlock))
+                return 2;
 
-                if (PartAbility.OUTPUT_LASER.isApplicable(partBlock))
-                    return 3;
-            }
+            if (PartAbility.OUTPUT_LASER.isApplicable(partBlock))
+                return 3;
 
             return 4;
         })).toList();

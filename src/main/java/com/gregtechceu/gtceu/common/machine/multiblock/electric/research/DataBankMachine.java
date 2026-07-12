@@ -6,13 +6,13 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
@@ -41,7 +41,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
 
-    private IMaintenanceMachine maintenance;
+    private MaintenanceHatchPartMachine maintenance;
     private IEnergyContainer energyContainer;
 
     @Getter
@@ -62,9 +62,9 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         List<IEnergyContainer> energyContainers = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             // if (io == IO.NONE || io == IO.OUT) continue;
@@ -94,7 +94,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         int transmitters = 0;
         int regulars = 0;
         for (var part : this.getParts()) {
-            Block block = part.self().getBlockState().getBlock();
+            Block block = part.getBlockState().getBlock();
             if (PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
                 ++receivers;
             }

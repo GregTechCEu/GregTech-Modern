@@ -7,7 +7,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -75,6 +78,7 @@ public abstract class SteamWorkableMachine extends SteamMachine
         this.activeRecipeType = 0;
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
@@ -101,10 +105,8 @@ public abstract class SteamWorkableMachine extends SteamMachine
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new Object2ObjectOpenHashMap<>();
 
-        for (MachineTrait trait : getAllTraits()) {
-            if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRecipeHandlerTrait.class)) {
+            ioTraits.computeIfAbsent(trait.getHandlerIO(), i -> new ArrayList<>()).add(trait);
         }
 
         for (var entry : ioTraits.entrySet()) {
@@ -164,11 +166,6 @@ public abstract class SteamWorkableMachine extends SteamMachine
             return InteractionResult.sidedSuccess(player.level().isClientSide);
         }
         return super.onWrenchClick(context);
-    }
-
-    @Override
-    public boolean keepSubscribing() {
-        return false;
     }
 
     @Override

@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamEnergyRecipeHandler;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -36,7 +35,6 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.ListWidget;
 import lombok.Getter;
 import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,7 +48,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     private int maxParallels;
 
     @Nullable
-    @SyncToClient
     private SteamEnergyRecipeHandler steamEnergy = null;
 
     // if in millibuckets, this is 2.0, Meaning 2mb of steam -> 1 EU
@@ -72,11 +69,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     @Override
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         super.formStructure(substructureName);
         var pState = patternStates.get(substructureName);
         for (var part : getParts()) {
-            if (!PartAbility.STEAM.isApplicable(part.self().getDefinition().getBlock())) continue;
+            if (!PartAbility.STEAM.isApplicable(part.getDefinition().getBlock())) continue;
             var handlers = part.getRecipeHandlers();
             for (var hl : handlers) {
                 if (!hl.isValid(IO.IN)) continue;
@@ -84,7 +81,6 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                     if (!(fluidHandler instanceof NotifiableFluidTank nft)) continue;
                     if (nft.isFluidValid(0, GTMaterials.Steam.getFluid(1))) {
                         steamEnergy = new SteamEnergyRecipeHandler(nft, getConversionRate());
-                        syncDataHolder.markClientSyncFieldDirty("steamEnergy");
                         addHandlerList(RecipeHandlerList.of(IO.IN, steamEnergy));
                         return;
                     }
@@ -140,11 +136,11 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.size(170, 70).background(GuiTextures.DISPLAY);
+        mainWidget.size(170, 76).background(GuiTextures.DISPLAY);
 
         var listWidget = new ListWidget<>()
                 .width(170 - 6)
-                .height(70 - 6)
+                .height(76)
                 .childSeparator(Icon.EMPTY_2PX)
                 .crossAxisAlignment(Alignment.CrossAxis.START)
                 .posRel(Alignment.CenterLeft);
@@ -152,6 +148,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         listWidget
                 .child(GTMultiblockTextUtil.addUnformedWarning(this, syncManager))
                 .child(GTMultiblockTextUtil.addSteamUsageLine(this.steamEnergy, syncManager))
+                .child(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addProgressLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addParallelLine(this, syncManager))
                 .child(GTMultiblockTextUtil.addOutputLines(this, syncManager));

@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -24,8 +23,6 @@ public class GTCapability {
             .createSided(GTCEu.id("recipe_logic"), RecipeLogic.class);
     public static final ItemCapability<IElectricItem, Void> CAPABILITY_ELECTRIC_ITEM = ItemCapability
             .createVoid(GTCEu.id("electric_item"), IElectricItem.class);
-    public static final BlockCapability<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE = BlockCapability
-            .createSided(GTCEu.id("maintenance"), IMaintenanceMachine.class);
     public static final BlockCapability<ILaserContainer, Direction> CAPABILITY_LASER = BlockCapability
             .createSided(GTCEu.id("laser_container"), ILaserContainer.class);
     public static final BlockCapability<IOpticalComputationProvider, Direction> CAPABILITY_COMPUTATION_PROVIDER = BlockCapability
