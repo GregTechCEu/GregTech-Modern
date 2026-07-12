@@ -32,14 +32,14 @@ public class SodiumDefaultFluidRendererMixin {
         gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
+    @Inject(method = "render", at = @At("RETURN"), expect = -1)
     private void gtceu$resetInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = false;
     }
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"),
-            index = 3)
+            index = 3, expect = 16)
     private float gtceu$invertFluidFlowDirection(float originalY) {
         if (gtceu$drawingUpsideDownFluid) {
             return 1.0f - originalY;

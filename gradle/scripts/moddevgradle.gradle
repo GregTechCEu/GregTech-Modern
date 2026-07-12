@@ -167,6 +167,14 @@ neoForge {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             logLevel = org.slf4j.event.Level.INFO
 
+            // enable additional mixin validation
+            systemProperty 'mixin.debug.verify', 'true'
+            systemProperty 'mixin.debug.countInjections', 'true'
+            systemProperty 'mixin.debug.strict.unique', 'true'
+            systemProperty 'mixin.checks', 'true'
+            // enable mixin hotswapping
+            systemProperty 'mixin.hotSwap', 'true'
+
             // Disable JOML using scientific notation for its types' toString() outputs
             systemProperty 'joml.format', 'false'
         }

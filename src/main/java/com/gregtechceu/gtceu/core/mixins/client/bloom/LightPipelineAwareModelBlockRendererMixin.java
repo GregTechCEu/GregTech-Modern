@@ -27,7 +27,7 @@ public class LightPipelineAwareModelBlockRendererMixin {
     @Definition(id = "pos", local = @Local(type = BlockPos.class, argsOnly = true))
     @Definition(id = "state", local = @Local(type = BlockState.class, argsOnly = true))
     @Expression("@(?).setup(level, pos, state)")
-    @ModifyExpressionValue(method = "render", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
+    @ModifyExpressionValue(method = "render", at = @At(value = "MIXINEXTRAS:EXPRESSION"), expect = 4)
     private static QuadLighter gtceu$setQuadLighterRenderType(QuadLighter lighter,
                                                               @Local(argsOnly = true) RenderType renderType) {
         ((QuadLighterExt) lighter).gtceu$setRenderType(renderType);

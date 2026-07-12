@@ -41,8 +41,8 @@ public class TextureAtlasMixin implements SpriteFinder.SpriteFinderAccess {
     @Unique
     private SpriteFinder gtceu$spriteFinder = null;
 
-    @Inject(at = @At("TAIL"), method = "upload")
-    private void uploadHook(SpriteLoader.Preparations preparations, CallbackInfo info) {
+    @Inject(method = "upload", at = @At("TAIL"))
+    private void gtceu$clearSpriteFinder(SpriteLoader.Preparations preparations, CallbackInfo info) {
         gtceu$spriteFinder = null;
     }
 

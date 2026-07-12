@@ -37,7 +37,7 @@ public class EmbeddiumFluidRendererMixin {
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
             target = "Lorg/embeddedt/embeddium/impl/render/chunk/compile/pipeline/FluidRenderer;setVertex(Lorg/embeddedt/embeddium/impl/model/quad/ModelQuadViewMutable;IFFFFF)V"),
-            index = 3)
+            index = 3, expect = 16)
     private float gtceu$invertFluidFlowDirection(float originalY) {
         if (gtceu$drawingUpsideDownFluid) {
             return 1.0f - originalY;
@@ -64,7 +64,7 @@ public class EmbeddiumFluidRendererMixin {
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
     @Expression({ "UP", "DOWN" })
     @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
-            at = @At("MIXINEXTRAS:EXPRESSION"), expect = 10)
+            at = @At("MIXINEXTRAS:EXPRESSION"), expect = 9)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();

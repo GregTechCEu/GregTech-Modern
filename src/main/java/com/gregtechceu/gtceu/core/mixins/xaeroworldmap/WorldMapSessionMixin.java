@@ -20,10 +20,9 @@ public abstract class WorldMapSessionMixin {
 
     @Inject(
             method = "init",
-            at = @At(value = "INVOKE", target = "Lxaero/map/highlight/HighlighterRegistry;end()V"),
-            locals = LocalCapture.CAPTURE_FAILSOFT)
-    private void cadmus$registerHighlighters(ClientPacketListener connection, long biomeZoomSeed, CallbackInfo ci,
-                                             @Local HighlighterRegistry highlightRegistry) {
+            at = @At(value = "INVOKE", target = "Lxaero/map/highlight/HighlighterRegistry;end()V"))
+    private void gtceu$registerHighlighters(ClientPacketListener connection, long biomeZoomSeed, CallbackInfo ci,
+                                            @Local(name = "highlightRegistry") HighlighterRegistry highlightRegistry) {
         if (!ConfigHolder.INSTANCE.compat.minimap.toggle.xaerosMapIntegration) return;
         highlightRegistry.register(new FluidChunkHighlighter());
     }
