@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.fluids;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
@@ -9,6 +11,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.common.item.GTBucketItem;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -84,6 +87,10 @@ public class FluidBuilder {
     private boolean hasCustomStill = false;
     @Getter
     private boolean hasCustomFlowing = false;
+    @Setter
+    private @Nullable MaterialIconType customIconType = null;
+    @Setter
+    private @Nullable MaterialIconSet customIconSet = null;
 
     private boolean hasFluidBlock = true;
     private boolean hasBucket = true;
@@ -340,18 +347,41 @@ public class FluidBuilder {
 
     @ApiStatus.Internal
     public void determineTextures(Material material, FluidStorageKey key) {
+        MaterialIconType iconType = customIconType != null ? customIconType : key.getIconType();
+        MaterialIconSet iconSet = customIconSet != null ? customIconSet : material.getMaterialIconSet();
+
+        boolean usesSameTextureForStillAndFlowing = false;
         if (hasCustomStill || material.isNull()) {
-            still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
+            still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name + "_still");
+            if (!GTUtil.resourceExists(MaterialIconType.TEXTURE_ID_CONVERTER.idToFile(still))) {
+                still = ResourceLocation.fromNamespaceAndPath(material.getModid(), "block/fluids/fluid." + name);
+                usesSameTextureForStillAndFlowing = true;
+            }
         } else {
-            still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+            still = iconType.getBlockTexturePath(iconSet, "still", true);
+            if (still.equals(GTModels.BLANK_TEXTURE)) {
+                still = iconType.getBlockTexturePath(iconSet, null, true);
+                usesSameTextureForStillAndFlowing = true;
+            }
         }
 
         if (hasCustomFlowing) {
             flowing = ResourceLocation.fromNamespaceAndPath(material.getModid(),
                     "block/fluids/fluid." + name + "_flow");
-        } else {
-            // FIXME this is actually wrong, flowing fluids should have 32x32 textures (double the size of still ones).
+
+            if (!GTUtil.resourceExists(MaterialIconType.TEXTURE_ID_CONVERTER.idToFile(flowing))) {
+                // this is technically wrong, flowing fluids should have 32x32 textures (double the size of still ones)
+                // it'll look weird if the still texture isn't a single color (note: gases are, so those are fine)
+                flowing = still;
+            }
+        } else if (usesSameTextureForStillAndFlowing) {
             flowing = still;
+        } else {
+            flowing = iconType.getBlockTexturePath(iconSet, "flow", true);
+            if (flowing.equals(GTModels.BLANK_TEXTURE)) {
+                // same note as above
+                flowing = still;
+            }
         }
     }
 
@@ -390,7 +420,7 @@ public class FluidBuilder {
 
     private void determineColor(Material material) {
         if (color != INFER_COLOR) return;
-        if (isColorEnabled && !material.isNull()) {
+        if (isColorEnabled && !material.isNull() && material.hasFluidColor()) {
             color = GTUtil.convertRGBtoARGB(material.getMaterialRGB());
         }
     }
