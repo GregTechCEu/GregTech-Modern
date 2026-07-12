@@ -2,12 +2,11 @@ package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.ae2.machine.feature.multiblock.IMEStockingPart;
 import com.gregtechceu.gtceu.integration.ae2.slot.ExportOnlyAEFluidList;
@@ -145,7 +144,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         if (!isFormed()) return false;
 
         for (MultiblockControllerMachine controller : getControllers()) {
-            for (IMultiPart part : controller.getParts()) {
+            for (MultiblockPartMachine part : controller.getParts()) {
                 if (part instanceof MEStockingHatchPartMachine hatch) {
                     if (hatch == this) continue;
                     if (hatch.aeFluidHandler.hasStackInConfig(config, false)) {
@@ -269,7 +268,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("AutoPull", true);
         tag.putByte("GhostCircuit",
-                (byte) IntCircuitBehaviour.getCircuitConfiguration(circuitInventory.getStackInSlot(0)));
+                (byte) circuitSlot.getCurrentCircuit());
         return tag;
     }
 
@@ -278,7 +277,7 @@ public class MEStockingHatchPartMachine extends MEInputHatchPartMachine implemen
         if (tag.getBoolean("AutoPull")) {
             // if being set to auto-pull, no need to read the configured slots
             this.setAutoPull(true);
-            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(tag.getByte("GhostCircuit")));
+            circuitSlot.setCurrentCircuit(tag.getByte("GhostCircuit"));
             return;
         }
         // set auto pull first to avoid issues with clearing the config after reading from the data stick

@@ -28,7 +28,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable MultiblockMachineDefinition @NotNull []>
                                         implements IMachineBuilderKJS {
 
-    private final MultiblockMachineBuilder<?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
+    private final MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
 
     @Setter
     public transient int[] tiers = GTMachineUtils.ELECTRIC_TIERS;
@@ -92,7 +92,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
         MultiblockMachineDefinition[] definitions = new MultiblockMachineDefinition[TIER_COUNT];
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder<MultiblockMachineDefinition, ?> builder = GTRegistrate
+            MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> builder = GTRegistrate
                     .createIgnoringListenerErrors(this.id.getNamespace())
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier));
@@ -115,6 +115,6 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<@Nullable Multiblock
     @FunctionalInterface
     public interface DefinitionFunction {
 
-        void apply(int tier, MachineBuilder<?, ?> builder);
+        void apply(int tier, MachineBuilder<?, ?, ?> builder);
     }
 }

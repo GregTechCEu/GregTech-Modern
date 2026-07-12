@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.common.machine.trait.hazard.EnvironmentalHazardEmitterTrait;
@@ -34,42 +36,54 @@ public class PrimitiveWorkableMachine extends WorkableMultiblockMachine {
     @Getter
     private final EnvironmentalHazardEmitterTrait hazardEmitter;
 
-    public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
-        super(info);
-        this.importItems = attachTrait(createImportItemHandler());
-        this.exportItems = attachTrait(createExportItemHandler());
-        this.importFluids = attachTrait(createImportFluidHandler());
-        this.exportFluids = attachTrait(createExportFluidHandler());
+    /**
+     * Creates a {@link PrimitiveWorkableMachine}.
+     *
+     * @param info             {@link BlockEntityCreationInfo}
+     * @param recipeLogic      The recipe logic to use.
+     * @param importSlots      The amount of item input slots this machine should have (can be 0).
+     * @param exportSlots      The amount of item output slots this machine should have (can be 0).
+     * @param fluidImportSlots The amount of fluid input slots this machine should have (can be 0).
+     * @param fluidExportSlots The amount of fluid output slots this machine should have (can be 0).
+     * @param tankCapacity     The fluid tank capacity.
+     */
+    public PrimitiveWorkableMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic, int importSlots,
+                                    int exportSlots,
+                                    int fluidImportSlots, int fluidExportSlots,
+                                    int tankCapacity) {
+        super(info, recipeLogic);
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
+        this.importFluids = attachTrait(new NotifiableFluidTank(fluidImportSlots, tankCapacity, IO.IN, IO.BOTH));
+        this.exportFluids = attachTrait(new NotifiableFluidTank(fluidExportSlots, tankCapacity, IO.OUT));
         this.hazardEmitter = attachTrait(
                 new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
                         0.1f));
     }
 
-    //////////////////////////////////////
-    // ***** Initialization ******//
-    //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
-    }
-
-    protected NotifiableFluidTank createImportFluidHandler() {
-        return new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                32 * FluidType.BUCKET_VOLUME, IO.IN);
-    }
-
-    protected NotifiableFluidTank createExportFluidHandler() {
-        return new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
-                32 * FluidType.BUCKET_VOLUME, IO.OUT);
-    }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        hazardEmitter.emitHazard();
+    /**
+     * Creates a {@link WorkableTieredMachine} with default settings.<br>
+     * The amount of item and fluid input and output slots is determined by the machine's recipe type.
+     *
+     * @param info {@link BlockEntityCreationInfo}
+     */
+    public PrimitiveWorkableMachine(BlockEntityCreationInfo info) {
+        super(info);
+        this.importItems = attachTrait(
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN));
+        this.exportItems = attachTrait(
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        32 * FluidType.BUCKET_VOLUME, IO.IN));
+        this.exportFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        32 * FluidType.BUCKET_VOLUME, IO.OUT));
+        this.hazardEmitter = attachTrait(
+                new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
+                        0.1f));
     }
 }

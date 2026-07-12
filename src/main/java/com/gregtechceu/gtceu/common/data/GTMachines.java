@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.machines.*;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
+import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.electric.*;
 import com.gregtechceu.gtceu.common.machine.mui.TestMuiMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.*;
@@ -185,7 +186,7 @@ public class GTMachines {
             GTRecipeTypes.ALLOY_SMELTER_RECIPES).register();
 
     public static final MachineDefinition[] ARC_FURNACE = registerTieredMachines("arc_furnace",
-            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+            SimpleTieredMachine::new, (tier, builder) -> builder
                     .langValue("%s Arc Furnace %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.ARC_FURNACE_RECIPES)
@@ -296,7 +297,7 @@ public class GTMachines {
             .hasPollutionDebuff(true)
             .register();
     public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator",
-            (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+            SimpleTieredMachine::new, (tier, builder) -> builder
                     .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
@@ -319,7 +320,7 @@ public class GTMachines {
             .register();
 
     public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher",
-            RockCrusherMachine::new, (tier, builder) -> builder
+            GTMachineInstanceFactories.ROCK_CRUSHER, (tier, builder) -> builder
                     .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
                     .ui(GTSingleblockMachinePanels.GENERAL_MACHINE)
                     .rotationState(RotationState.NON_Y_AXIS)

@@ -24,8 +24,9 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
 
     public SimpleGeneratorMachine(BlockEntityCreationInfo info, int tier,
                                   float hazardStrengthPerOperation, Int2IntFunction tankScalingFunction) {
-        super(info, tier, tankScalingFunction);
+        super(info, tier, true, tankScalingFunction);
 
+        recipeLogic.setRegressWhenWaiting(false);
         energyContainer.setSideOutputCondition(side -> !hasFrontFacing() || side == getFrontFacing());
         this.hazardEmitter = attachTrait(
                 new EnvironmentalHazardEmitterTrait(GTMedicalConditions.CARBON_MONOXIDE_POISONING,
@@ -38,12 +39,6 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
 
     //////////////////////////////////////
     // ***** Initialization ******//
-    //////////////////////////////////////
-
-    @Override
-    protected boolean isEnergyEmitter() {
-        return true;
-    }
 
     @Override
     public int tintColor(int index) {
@@ -86,19 +81,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine {
     }
 
     @Override
-    public boolean regressWhenWaiting() {
-        return false;
-    }
-
-    @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
         return capability != EURecipeCapability.CAP;
-    }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        hazardEmitter.emitHazard();
     }
 
     @Override

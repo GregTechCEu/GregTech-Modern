@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -80,5 +81,11 @@ public class CustomItemStackHandler extends ItemStackHandler
             Block.popResource(world, pos, stack);
         }
         clear();
+    }
+
+    @Override
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        if (nbt.getInt("Size") != stacks.size()) nbt.putInt("Size", stacks.size());
+        super.deserializeNBT(provider, nbt);
     }
 }

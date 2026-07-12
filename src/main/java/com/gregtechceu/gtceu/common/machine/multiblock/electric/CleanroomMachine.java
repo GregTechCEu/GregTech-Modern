@@ -10,11 +10,10 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
@@ -32,6 +31,7 @@ import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeCombustionEngineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.generator.LargeTurbineMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.MufflerPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveBlastFurnaceMachine;
@@ -208,10 +208,10 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         this.cleanroomReceivers.clear();
     }
 
-    public boolean shouldAddPartToController(IMultiPart part) {
+    public boolean shouldAddPartToController(MultiblockPartMachine part) {
         var posCache = patternStates.get(DEFAULT_STRUCTURE).getCache().keySet();
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (!posCache.contains(part.self().getBlockPos().relative(side).asLong())) { // part is on a wall or edge
+            if (!posCache.contains(part.getBlockPos().relative(side).asLong())) { // part is on a wall or edge
                 return true;
             }
         }
@@ -225,7 +225,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     protected void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (isPartIgnored(part)) continue;
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
@@ -235,7 +235,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                         .forEach(energyContainers::add);
             }
 
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 getRecipeLogic().setMaintenanceMachine(maintenanceMachine);
             }
         }
@@ -245,7 +245,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
     }
 
     @SuppressWarnings("RedundantIfStatement") // `return false` being a separate statement is better for readability
-    private static boolean isPartIgnored(IMultiPart part) {
+    private static boolean isPartIgnored(MultiblockPartMachine part) {
         if (part instanceof DiodePartMachine) return true;
         if (part instanceof HullMachine) return true;
 
@@ -314,7 +314,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
 
     public static Function<MultiblockMachineDefinition, IBlockPattern> getPattern() {
         return (definition) -> {
-            PatternPredicate wallPredicate = getValidFloorBlocks().or(states(getCasingState(), getGlassState()));
+            PatternPredicate wallPredicate = states(getCasingState(), getGlassState()).or(getValidFloorBlocks());
             PatternPredicate energyPredicate = autoAbilities(true, false, false).or(abilities(PartAbility.INPUT_ENERGY)
                     .setMinGlobalLimited(1).setMaxGlobalLimited(3));
 

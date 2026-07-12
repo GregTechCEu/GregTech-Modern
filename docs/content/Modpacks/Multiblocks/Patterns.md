@@ -31,10 +31,17 @@ public static MultiblockMachineDefinition MY_MACHINE = REGISTRATE
                 .build())
         .register();
 ```
+
 1. The three directions passed in `.start()` are the directions to traverse per-slice, per-string-in-slice, and per-char-in-string respectively. The directions are relative based on the controllers front and upwards facing. Calling `.start()` with no arguments uses `BACK, UP, RIGHT`.
+
 2. How the 2-D view of this specific slice's mapping looks.
+
 3. A slice with an optional amount of repeats allowed, first value is min allowed(can be zero to make the whole slice optional), second is max allowed.
+
 4. `.where(char, PatternPredicate)` is how the block info to predicate evaluation mapping happens.
+
 5. An example complex PatternPredicate.
+
 6. This char mapping will throw an exception as 'A' does not appear in the pattern slices.
+
 7. This slice view will throw an exception as all slice's widths and heights must be the same respectively.

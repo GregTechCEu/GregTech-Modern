@@ -4,12 +4,10 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import lombok.Getter;
@@ -18,8 +16,6 @@ import lombok.Getter;
  * A singleblock machine with a steam tank.
  */
 public abstract class SteamMachine extends MetaMachine implements ITieredMachine {
-
-    public static final BooleanProperty STEEL_PROPERTY = GTMachineModelProperties.IS_STEEL_MACHINE;
 
     @Getter
     public final boolean isHighPressure;

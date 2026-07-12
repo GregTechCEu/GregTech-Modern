@@ -7,10 +7,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
@@ -18,6 +17,7 @@ import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComponentTrait;
 import com.gregtechceu.gtceu.common.machine.trait.hpca.HPCAComputationProviderTrait;
@@ -73,7 +73,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private static final double IDLE_TEMPERATURE = 200;
     private static final double DAMAGE_TEMPERATURE = 1000;
 
-    private IMaintenanceMachine maintenance;
+    private MaintenanceHatchPartMachine maintenance;
     private IEnergyContainer energyContainer;
     private IFluidHandler coolantHandler;
     @SaveField
@@ -103,10 +103,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         List<HPCAComponentTrait> componentTraits = new ArrayList<>();
         // Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
         // Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             // IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            componentTraits.addAll(part.self().getTraits(HPCAComponentTrait.TYPE));
-            if (part instanceof IMaintenanceMachine maintenanceMachine) {
+            componentTraits.addAll(part.getTraits(HPCAComponentTrait.TYPE));
+            if (part instanceof MaintenanceHatchPartMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
             // if (io == IO.NONE || io == IO.OUT) continue;
@@ -208,7 +208,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
 
     private void updateActive(boolean active) {
         for (var part : getParts()) {
-            part.self().getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
+            part.getTraitOptional(HPCAComponentTrait.TYPE).ifPresent(t -> t.setActive(active));
         }
     }
 
@@ -423,8 +423,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         // cached gui info
         // holding these values past the computation clear because GUI is too "late" to read the state in time
         @SyncToClient
-        private long cachedEUt;
-        @SyncToClient
         private int cachedCWUt;
 
         public HPCAGridHandler(@Nullable HPCAMachine controller) {
@@ -473,8 +471,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 cachedCWUt = allocatedCWUt;
                 syncDataHolder.markClientSyncFieldDirty("cachedCWUt");
             }
-            cachedEUt = getCurrentEUt();
-            syncDataHolder.markClientSyncFieldDirty("cachedEUt");
             if (allocatedCWUt != 0) {
                 allocatedCWUt = 0;
             }

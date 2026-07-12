@@ -2,19 +2,20 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.util.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.NetworkSwitchMachine;
@@ -23,7 +24,6 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.*;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -31,11 +31,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -91,9 +88,7 @@ public class GTResearchMachines {
             .modelProperty(IS_FORMED, false)
             .modelProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS, RecipeLogic.Status.IDLE)
             .model(createWorkableTieredHullMachineModel(GTCEu.id("block/machines/object_holder"))
-                    .andThen((ctx, prov, model) -> {
-                        model.addReplaceableTextures("bottom", "top", "side");
-                    }))
+                    .andThen((ctx, prov, model) -> model.addReplaceableTextures("bottom", "top", "side")))
             .register();
 
     public static final MultiblockMachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
@@ -276,12 +271,13 @@ public class GTResearchMachines {
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
             "hpca_empty_component", "Empty HPCA Component",
-            HPCAEmptyPartMachine::new, "empty", false)
+            GTMachineInstanceFactories.HPCA_EMPTY, "empty", false)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
             .register();
+
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_computation_component", "HPCA Computation Component",
-            holder -> new HPCAComputationPartMachine(holder, false), "computation", false)
+            GTMachineInstanceFactories.HPCA_COMPUTATION, "computation", false)
             .tooltips(
                     Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[GTValues.EV]),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.LuV]),
@@ -292,7 +288,7 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = registerHPCAPart(
             "hpca_advanced_computation_component", "HPCA Advanced Computation Component",
-            holder -> new HPCAComputationPartMachine(holder, true), "advanced_computation", true)
+            GTMachineInstanceFactories.HPCA_COMPUTATION_ADVANCED, "advanced_computation", true)
             .tooltips(
                     Component.translatable("gtceu.machine.hpca.component_general.upkeep_eut", GTValues.VA[GTValues.IV]),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.ZPM]),
@@ -303,14 +299,14 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
             "hpca_heat_sink_component", "HPCA Heat Sink Component",
-            holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", false)
+            GTMachineInstanceFactories.HPCA_HEAT_SINK, "heat_sink", false)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1),
                     Component.translatable("gtceu.part_sharing.disabled"))
             .register();
     public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
-            holder -> new HPCACoolerPartMachine(holder, true), "active_cooler", true)
+            GTMachineInstanceFactories.HPCA_COOLER_ADVANCED, "active_cooler", true)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_active"),
                     Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",
@@ -320,16 +316,19 @@ public class GTResearchMachines {
             .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = registerHPCAPart(
             "hpca_bridge_component", "HPCA Bridge Component",
-            HPCABridgePartMachine::new, "bridge", false)
+            GTMachineInstanceFactories.HPCA_BRIDGE, "bridge", false)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_type.bridge"),
                     Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]),
                     Component.translatable("gtceu.part_sharing.disabled"))
             .register();
 
-    @NotNull
-    private static MachineBuilder<MachineDefinition, ?> registerDataHatch(String name, String displayName, int tier,
-                                                                          Function<BlockEntityCreationInfo, MetaMachine> constructor,
-                                                                          String model, PartAbility... abilities) {
+    private static <
+            MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerDataHatch(String name,
+                                                                                                         String displayName,
+                                                                                                         int tier,
+                                                                                                         MachineInstanceFactory<MACHINE> constructor,
+                                                                                                         String model,
+                                                                                                         PartAbility... abilities) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .tier(tier)
@@ -338,9 +337,12 @@ public class GTResearchMachines {
                 .overlayTieredHullModel(model);
     }
 
-    private static MachineBuilder<MachineDefinition, ?> registerHPCAPart(String name, String displayName,
-                                                                         Function<BlockEntityCreationInfo, MetaMachine> constructor,
-                                                                         String texture, boolean isAdvanced) {
+    private static <
+            MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> registerHPCAPart(String name,
+                                                                                                        String displayName,
+                                                                                                        MachineInstanceFactory<MACHINE> constructor,
+                                                                                                        String texture,
+                                                                                                        boolean isAdvanced) {
         return REGISTRATE.machine(name, constructor)
                 .langValue(displayName)
                 .rotationState(RotationState.ALL)
