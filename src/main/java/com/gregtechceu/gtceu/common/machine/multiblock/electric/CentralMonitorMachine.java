@@ -27,9 +27,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SCPacketMonitorGroupNBTChange;
 
-import it.unimi.dsi.fastutil.ints.IntIntPair;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,6 +36,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 import brachy.modularui.api.drawable.IDrawable;
+import it.unimi.dsi.fastutil.ints.IntIntPair;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -132,7 +132,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
 
     public static boolean isValidMonitorBlock(Level level, BlockPos pos) {
         if (level.isOutsideBuildHeight(pos)) return false;
-        CurrentBlockInfo info = new  CurrentBlockInfo();
+        CurrentBlockInfo info = new CurrentBlockInfo();
         info.setLevel(level);
         info.setCurrentPos(pos);
         return getMultiPredicate().test(info, new Object2IntOpenHashMap<>(), null).isEmpty();
@@ -156,7 +156,8 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         getSyncDataHolder().markClientSyncFieldDirty("downDist");
     }
 
-    public static IntList getBounds(Level level, BlockPos.MutableBlockPos controllerPos, Direction front, Direction upFace) {
+    public static IntList getBounds(Level level, BlockPos.MutableBlockPos controllerPos, Direction front,
+                                    Direction upFace) {
         Direction left = RelativeDirection.LEFT.getRelativeFacing(front, upFace, false);
         Direction right = RelativeDirection.RIGHT.getRelativeFacing(front, upFace, false);
         Direction up = RelativeDirection.UP.getRelativeFacing(front, upFace, false);
@@ -196,8 +197,9 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
         return IntList.of(upDist, downDist, leftDist, rightDist, 0, 0);
     }
 
-    private static boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist, Direction left,
-                                           Direction right) {
+    private static boolean isValidMonitorBlockRow(Level level, BlockPos pos, int leftDist, int rightDist,
+                                                  Direction left,
+                                                  Direction right) {
         BlockPos.MutableBlockPos mutable = pos.mutable();
         mutable.move(left, leftDist);
         for (int i = 0; i < leftDist + rightDist; i++) {
@@ -214,8 +216,7 @@ public class CentralMonitorMachine extends WorkableElectricMultiblockMachine
                 IntIntPair.of(0, 10),
                 IntIntPair.of(0, 10),
                 IntIntPair.of(0, 0),
-                IntIntPair.of(0, 0)
-        );
+                IntIntPair.of(0, 0));
     }
 
     public static IBlockPattern getPattern(MultiblockMachineDefinition definition) {
