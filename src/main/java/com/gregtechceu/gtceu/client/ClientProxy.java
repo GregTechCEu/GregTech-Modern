@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.cosmetics.event.RegisterGTCapesEvent;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
@@ -190,6 +191,7 @@ public class ClientProxy {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void preRegisterDynamicAssets(RegisterDynamicResourcesEvent event) {
         PipeModel.DYNAMIC_MODELS.clear();
+        MaterialIconType.invalidateCaches();
     }
 
     @SubscribeEvent

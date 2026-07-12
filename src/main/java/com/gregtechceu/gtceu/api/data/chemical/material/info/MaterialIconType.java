@@ -150,7 +150,7 @@ public record MaterialIconType(String name) {
 
         if (readCache) {
             Map<String, ResourceLocation> suffixMap = BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
-            if (suffixMap != null) {
+            if (suffixMap != null && suffixMap.containsKey(suffix)) {
                 return suffixMap.get(suffix);
             }
         }
@@ -251,7 +251,7 @@ public record MaterialIconType(String name) {
 
         if (readCache) {
             Map<String, ResourceLocation> suffixMap = ITEM_TEXTURE_CACHE.get(this, materialIconSet);
-            if (suffixMap != null) {
+            if (suffixMap != null && suffixMap.containsKey(suffix)) {
                 return suffixMap.get(suffix);
             }
         }
