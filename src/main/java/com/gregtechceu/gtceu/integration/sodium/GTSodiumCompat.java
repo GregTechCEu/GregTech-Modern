@@ -86,8 +86,9 @@ public class GTSodiumCompat {
 
             fluidRenderer.render(levelSlice, blockState, fluidState, blockPos, offset, collector, buildContext.buffers);
             return true;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             GTCEu.LOGGER.error("Something went wrong with rendering a fluid block using Sodium's fluid renderer.");
+            GTCEu.LOGGER.error(e);
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.embeddium;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.GTRenderTypes;
 
 import net.minecraft.core.BlockPos;
@@ -25,17 +26,23 @@ public class GTEmbeddiumCompat {
      */
     public static boolean renderFluidBlock(BlockState blockState, FluidState fluidState,
                                            BlockAndTintGetter level, BlockPos blockPos, BlockPos offset) {
-        if (!(level instanceof WorldSlice levelSlice)) {
+        try {
+            if (!(level instanceof WorldSlice levelSlice)) {
+                return false;
+            }
+            ChunkBuildContext buildContext = GlobalChunkBuildContext.get();
+            if (buildContext == null) {
+                return false;
+            }
+
+            FluidRenderer fluidRenderer = buildContext.cache.getFluidRenderer();
+
+            fluidRenderer.render(levelSlice, fluidState, blockPos, offset, buildContext.buffers);
+            return true;
+        } catch (Exception e) {
+            GTCEu.LOGGER.error("Something went wrong with rendering a fluid block using Embeddium's fluid renderer.");
+            GTCEu.LOGGER.error(e);
             return false;
         }
-        ChunkBuildContext buildContext = GlobalChunkBuildContext.get();
-        if (buildContext == null) {
-            return false;
-        }
-
-        FluidRenderer fluidRenderer = buildContext.cache.getFluidRenderer();
-
-        fluidRenderer.render(levelSlice, fluidState, blockPos, offset, buildContext.buffers);
-        return true;
     }
 }
