@@ -312,6 +312,8 @@ public class FluidBuilder {
         if (this.hasFluidBlock) {
             // noinspection Convert2MethodRef
             builder.block(GTLiquidBlock::new)
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                     .properties(p -> p.liquid())
                     .color(() -> () -> (state, level, pos, index) -> {
                         if (this.isColorEnabled) {
@@ -485,7 +487,8 @@ public class FluidBuilder {
     }
 
     @SuppressWarnings("DataFlowIssue")
-    private BaseFlowingFluid.Properties setupFluidProperties(BaseFlowingFluid.Properties properties, Material material) {
+    private BaseFlowingFluid.Properties setupFluidProperties(BaseFlowingFluid.Properties properties,
+                                                             Material material) {
         if (!this.hasFluidBlock) properties.block(null);
         if (!this.hasBucket) properties.bucket(null);
 

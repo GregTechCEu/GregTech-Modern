@@ -687,7 +687,7 @@ public class GTUtil {
     }
 
     public static boolean resourceExists(@NotNull ResourceLocation rs) {
-        if (GTCEu.isClientSide()) {
+        if (GTCEu.isClientSide() && !GTCEu.isDataGen()) {
             return Minecraft.getInstance().getResourceManager().getResource(rs).isPresent();
         } else {
             return false;
