@@ -4525,6 +4525,8 @@
       
         
       
+        
+      
     
     
     
@@ -4594,6 +4596,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -4892,15 +4922,23 @@
 <p>Structure checking/forming only happens on the server side, if you need that information on client it MUST be synced through the annotation system (non ui) or MUI synced values (ui)</p>
 </div>
 <ol>
-<li>When the controller is first placed <code>checkAndFormStructure()</code> is called.</li>
-<li>For every <code>IBlockPattern</code> in its definition, if that corresponding <code>PatternState</code> is not already formed:</li>
+<li>
+<p>When the controller is first placed <code>checkAndFormStructure()</code> is called.</p>
+</li>
+<li>
+<p>For every <code>IBlockPattern</code> in its definition, if that corresponding <code>PatternState</code> is not already formed:</p>
+</li>
 <li>Each <code>IBlockPattern</code> is run through <code>checkStructurePattern(name)</code> </li>
-<li>If that structure is valid the structure is run through <code>formStructure(name)</code></li>
-<li>The <code>PatternState</code> is added to the <code>MultiblockWorldSaveData</code> for <code>BlockState</code> listening</li>
+<li>
+<p>If that structure is valid the structure is run through <code>formStructure(name)</code></p>
+</li>
+<li>
+<p>The <code>PatternState</code> is added to the <code>MultiblockWorldSaveData</code> for <code>BlockState</code> listening</p>
+</li>
 </ol>
 <p>In <code>checkStructurePattern</code>, the pattern will use its iteration method and ensure every <code>PatternPredicate</code> succeeds, for each block position that matches the predicate, that block's information will be put in the <code>PatternState</code>'s cache for future use, like retrieving multi parts for recipe logic handler collection. When a predicate fails, it puts the failure reason(s) into the <code>PatternState</code> and stops the match iteration early.</p>
 <p>In <code>formStructure</code>, every <code>IMultiPart</code> found in the <code>PatternState</code> cache is attached to that specific controller.</p>
-<p><div class="highlight"><span class="filename">MultiPartGathering.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">formStructure</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">substructureName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><span class="filename">MultiPartGathering.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">formStructure</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">substructureName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">    </span><span class="p">...</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">patternState</span><span class="p">.</span><span class="na">getState</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">PatternState</span><span class="p">.</span><span class="na">CheckState</span><span class="p">.</span><span class="na">VALID_UNCACHED</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="n">forEachMultiPart</span><span class="p">(</span><span class="n">substructureName</span><span class="p">,</span><span class="w"> </span><span class="n">part</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)</span>
@@ -4924,55 +4962,76 @@
 <a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">    </span><span class="p">...</span>
 <a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="p">}</span>
 </code></pre></div>
-1. Execute some runnable for every multipart in this multiblock pattern structure.</p>
+<ol>
+<li>Execute some runnable for every multipart in this multiblock pattern structure.</li>
+</ol>
 <p>Machine classes can extend <code>formStructure(name)</code> for additional information gathering, like the coiled multiblocks. 
-```java title="WorkableCoilElectricMultiblock.java
-public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine { // (1)
-    @Getter
-    private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
-    @SyncToClient
-    @Getter
-    private int coilTier = 1;</p>
-<div class="highlight"><pre><span></span><code>@Override
-public void formStructure(@NotNull String substructureName) { // (2)
-    super.formStructure(substructureName);
-    var cache = patternStates.get(substructureName).getCache(); // (3)
-    ICoilType coilType = null;
-    for (var entry : cache.long2ObjectEntrySet()) {
-        var state = entry.getValue().getBlockState();
-        if (state.getBlock() instanceof CoilBlock coil) {
-            if (GTCEuAPI.HEATING_COILS.containsKey(coil.coilType)) {
-                if (coilType == null) coilType = coil.coilType;
-                else {
-                    if (coilType != coil.coilType) {
-                        // (4)
-                        patternStates.get(substructureName).setError(
-                                new CoilMatchingError(BlockPos.of(entry.getLongKey()), coilType, coil.coilType));
-                        invalidateStructure(substructureName); // (5)
-                        return;
-                    }
-                }
-            }
-        }
-    }
-    if (coilType != null) {
-        this.coilType = coilType;
-        this.coilTier = coilType.getTier();
-        getSyncDataHolder().markClientSyncFieldDirty(&quot;coilTier&quot;);
-    }
-}
-</code></pre></div>
-<p>}
-<code>``
-1. WorkableElectricMultiblockMachine extends MultiblockControllerMachine, where</code>formStructure()<code>is.
-2.</code>formStructure<code>can behave differently depending on what name is passed, for example if you want sub structures to have different forming logic.
-3. How to retrieve information from the pattern cache.
-4. If you want to explicitly invalidate a structure with custom reasoning, make sure to set the</code>PatternError<code>so that users know why.
-5. Call</code>invalidateStructure` manually so that that specific substructure is not formed.</p>
-<p>Structure check and forming only occurs under a few conditions:
- - the controller is first loaded into world.
- - a block state change occurred somewhere in the bounds of the pattern cache (only for predicates that are not ANY).
- - The multiblock controller has its front or upwards facing rotated.</p>
+<div class="highlight"><span class="filename">WorkableCoilElectricMultiblock.java</span><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CoilWorkableElectricMultiblockMachine</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">WorkableElectricMultiblockMachine</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (1)</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nd">@Getter</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="n">ICoilType</span><span class="w"> </span><span class="n">coilType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CoilBlock</span><span class="p">.</span><span class="na">CoilType</span><span class="p">.</span><span class="na">CUPRONICKEL</span><span class="p">;</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="nd">@SyncToClient</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="nd">@Getter</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">coilTier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nd">@Override</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">formStructure</span><span class="p">(</span><span class="nd">@NotNull</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">substructureName</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// (2)</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">        </span><span class="kd">super</span><span class="p">.</span><span class="na">formStructure</span><span class="p">(</span><span class="n">substructureName</span><span class="p">);</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">        </span><span class="kd">var</span><span class="w"> </span><span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">patternStates</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">substructureName</span><span class="p">).</span><span class="na">getCache</span><span class="p">();</span><span class="w"> </span><span class="c1">// (3)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">        </span><span class="n">ICoilType</span><span class="w"> </span><span class="n">coilType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kd">var</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">cache</span><span class="p">.</span><span class="na">long2ObjectEntrySet</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">            </span><span class="kd">var</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="na">getValue</span><span class="p">().</span><span class="na">getBlockState</span><span class="p">();</span>
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">getBlock</span><span class="p">()</span><span class="w"> </span><span class="k">instanceof</span><span class="w"> </span><span class="n">CoilBlock</span><span class="w"> </span><span class="n">coil</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">GTCEuAPI</span><span class="p">.</span><span class="na">HEATING_COILS</span><span class="p">.</span><span class="na">containsKey</span><span class="p">(</span><span class="n">coil</span><span class="p">.</span><span class="na">coilType</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">                    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">coilType</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="n">coilType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coil</span><span class="p">.</span><span class="na">coilType</span><span class="p">;</span>
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">                    </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="w">                        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">coilType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">coil</span><span class="p">.</span><span class="na">coilType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">                            </span><span class="c1">// (4)</span>
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">                            </span><span class="n">patternStates</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">substructureName</span><span class="p">).</span><span class="na">setError</span><span class="p">(</span>
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="w">                                    </span><span class="k">new</span><span class="w"> </span><span class="n">CoilMatchingError</span><span class="p">(</span><span class="n">BlockPos</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">entry</span><span class="p">.</span><span class="na">getLongKey</span><span class="p">()),</span><span class="w"> </span><span class="n">coilType</span><span class="p">,</span><span class="w"> </span><span class="n">coil</span><span class="p">.</span><span class="na">coilType</span><span class="p">));</span>
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">                            </span><span class="n">invalidateStructure</span><span class="p">(</span><span class="n">substructureName</span><span class="p">);</span><span class="w"> </span><span class="c1">// (5)</span>
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">                            </span><span class="k">return</span><span class="p">;</span>
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="w">                        </span><span class="p">}</span>
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">                    </span><span class="p">}</span>
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">                </span><span class="p">}</span>
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="w">            </span><span class="p">}</span>
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">coilType</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">coilType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coilType</span><span class="p">;</span>
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="na">coilTier</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">coilType</span><span class="p">.</span><span class="na">getTier</span><span class="p">();</span>
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="w">            </span><span class="n">getSyncDataHolder</span><span class="p">().</span><span class="na">markClientSyncFieldDirty</span><span class="p">(</span><span class="s">&quot;coilTier&quot;</span><span class="p">);</span>
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="w">        </span><span class="p">}</span>
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="p">}</span>
+</code></pre></div></p>
+<ol>
+<li>
+<p>WorkableElectricMultiblockMachine extends MultiblockControllerMachine, where <code>formStructure()</code> is.</p>
+</li>
+<li>
+<p><code>formStructure</code> can behave differently depending on what name is passed, for example if you want sub structures to have different forming logic.</p>
+</li>
+<li>
+<p>How to retrieve information from the pattern cache.</p>
+</li>
+<li>
+<p>If you want to explicitly invalidate a structure with custom reasoning, make sure to set the <code>PatternError</code> so that users know why.</p>
+</li>
+<li>
+<p>Call <code>invalidateStructure</code> manually so that that specific substructure is not formed.</p>
+</li>
+</ol>
+<p>Structure check and forming only occurs under a few conditions:</p>
+<ul>
+<li>
+<p>the controller is first loaded into world.</p>
+</li>
+<li>
+<p>a block state change occurred somewhere in the bounds of the pattern cache (only for predicates that are not ANY).</p>
+</li>
+<li>
+<p>The multiblock controller has its front or upwards facing rotated.</p>
+</li>
+</ul>
 <p>Structure checking also no longer happens off thread or asynchronously.</p>
 
 

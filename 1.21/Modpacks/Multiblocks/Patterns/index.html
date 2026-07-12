@@ -4525,6 +4525,8 @@
       
         
       
+        
+      
     
     
     
@@ -4594,6 +4596,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -4891,7 +4921,7 @@
 <p>BlockPatterns are a list of slices which are comprised of a list of strings and a mapping of each character to some <code>PatternPredicate</code>.</p>
 <p>ExpandablePatterns are a pattern that checks in some axis aligned cuboid around the pattern's origin and for each block in the bounds runs a <code>Predicate&lt;PatternPredicate&gt;</code>.</p>
 <p>When creating a <code>PatternDefinition</code> for either a <code>BlockPattern</code> or <code>ExpandablePattern</code> in a <code>MultiblockMachineDefinition</code>, you need to define the iteration directionality and the origin of the pattern. The pattern <code>OriginOffset</code> is where each block in the pattern should be relative to (usually where the controller appears in the pattern).</p>
-<p><div class="highlight"><span class="filename">ExampleBlockPattern.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">MultiblockMachineDefinition</span><span class="w"> </span><span class="n">MY_MACHINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REGISTRATE</span>
+<div class="highlight"><span class="filename">ExampleBlockPattern.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">MultiblockMachineDefinition</span><span class="w"> </span><span class="n">MY_MACHINE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">REGISTRATE</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">        </span><span class="p">.</span><span class="na">multiblock</span><span class="p">(</span><span class="s">&quot;my_machine&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">creationInfo</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MyMachineClass</span><span class="p">(</span><span class="n">creationInfo</span><span class="p">))</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">        </span><span class="p">.</span><span class="na">rotationState</span><span class="p">(</span><span class="n">RotationState</span><span class="p">.</span><span class="na">ALL</span><span class="p">)</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="p">.</span><span class="na">recipeType</span><span class="p">(</span><span class="n">GTRecipeTypes</span><span class="p">.</span><span class="na">ASSEMBLER_RECIPES</span><span class="p">)</span>
@@ -4909,13 +4939,29 @@
 <a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">                </span><span class="p">.</span><span class="na">build</span><span class="p">())</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">        </span><span class="p">.</span><span class="na">register</span><span class="p">();</span>
 </code></pre></div>
-1. The three directions passed in <code>.start()</code> are the directions to traverse per-slice, per-string-in-slice, and per-char-in-string respectively. The directions are relative based on the controllers front and upwards facing. Calling <code>.start()</code> with no arguments uses <code>BACK, UP, RIGHT</code>.
-2. How the 2-D view of this specific slice's mapping looks.
-3. A slice with an optional amount of repeats allowed, first value is min allowed(can be zero to make the whole slice optional), second is max allowed.
-4. <code>.where(char, PatternPredicate)</code> is how the block info to predicate evaluation mapping happens.
-5. An example complex PatternPredicate.
-6. This char mapping will throw an exception as 'A' does not appear in the pattern slices.
-7. This slice view will throw an exception as all slice's widths and heights must be the same respectively.</p>
+<ol>
+<li>
+<p>The three directions passed in <code>.start()</code> are the directions to traverse per-slice, per-string-in-slice, and per-char-in-string respectively. The directions are relative based on the controllers front and upwards facing. Calling <code>.start()</code> with no arguments uses <code>BACK, UP, RIGHT</code>.</p>
+</li>
+<li>
+<p>How the 2-D view of this specific slice's mapping looks.</p>
+</li>
+<li>
+<p>A slice with an optional amount of repeats allowed, first value is min allowed(can be zero to make the whole slice optional), second is max allowed.</p>
+</li>
+<li>
+<p><code>.where(char, PatternPredicate)</code> is how the block info to predicate evaluation mapping happens.</p>
+</li>
+<li>
+<p>An example complex PatternPredicate.</p>
+</li>
+<li>
+<p>This char mapping will throw an exception as 'A' does not appear in the pattern slices.</p>
+</li>
+<li>
+<p>This slice view will throw an exception as all slice's widths and heights must be the same respectively.</p>
+</li>
+</ol>
 
 
 

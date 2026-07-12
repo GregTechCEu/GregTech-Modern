@@ -4525,6 +4525,8 @@
       
         
       
+        
+      
     
     
     
@@ -4594,6 +4596,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -4888,12 +4918,18 @@
 
 <p>PartAbilities are a quick way of creating a PatternPredicate from a similar collection of blocks. Some examples are all EnergyHatches, every MufflerPart, all LaserHatches, etc.</p>
 <p>When you register some block or machine, you can set that block or machine as the value for some specific part abilities tier key.</p>
-<p><div class="highlight"><span class="filename">PartAbilityExample.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PartAbility</span><span class="w"> </span><span class="n">myPartAbility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PartAbility</span><span class="p">(</span><span class="s">&quot;myPartAbility&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// (1)</span>
+<div class="highlight"><span class="filename">PartAbilityExample.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">PartAbility</span><span class="w"> </span><span class="n">myPartAbility</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PartAbility</span><span class="p">(</span><span class="s">&quot;myPartAbility&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// (1)</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="p">...</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">myPartAbility</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">Blocks</span><span class="p">.</span><span class="na">WOOD</span><span class="p">);</span><span class="w"> </span><span class="c1">// (2)</span>
 </code></pre></div>
-1. How to create a part ability
-2. How to register values to a part ability</p>
+<ol>
+<li>
+<p>How to create a part ability.</p>
+</li>
+<li>
+<p>How to register values to a part ability.</p>
+</li>
+</ol>
 
 
 

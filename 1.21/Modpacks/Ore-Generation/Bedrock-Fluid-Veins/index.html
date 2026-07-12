@@ -1997,6 +1997,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#modifying-a-bedrock-fluid-vein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifying a Bedrock Fluid Vein
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-a-bedrock-fluid-vein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing a Bedrock Fluid Vein
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4580,6 +4602,8 @@
       
         
       
+        
+      
     
     
     
@@ -4649,6 +4673,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -4932,6 +4984,28 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#modifying-a-bedrock-fluid-vein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modifying a Bedrock Fluid Vein
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-a-bedrock-fluid-vein" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Removing a Bedrock Fluid Vein
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -4993,7 +5067,7 @@ To have multiple dimensions in the same set, simply add more <code>ResourceKey&l
 </code></pre></div>
 You can define this in any class you want (including the one with the bedrock fluid vein definitions themselves), as long as you're able to reference it in the class where you're defining the bedrock fluid veins.<br />
 With this done, you can reference said variables in the <code>BedrockFluidDefinition</code> builder. Let's use <code>DIM_OVERWORLD</code> in this example.  </p>
-<div class="highlight"><span class="filename">ExampleBedrockFluidVeins.java</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">pubic</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleBedrockFluidVeins</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><span class="filename">ExampleBedrockFluidVeins.java</span><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleBedrockFluidVeins</span><span class="w"> </span><span class="p">{</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">()</span><span class="w"> </span><span class="p">{}</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">Set</span><span class="o">&lt;</span><span class="n">ResourceKey</span><span class="o">&lt;</span><span class="n">Level</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">DIM_OVERWORLD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Set</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="n">Level</span><span class="p">.</span><span class="na">OVERWORLD</span><span class="p">);</span>
@@ -5023,6 +5097,48 @@ With this done, you can reference said variables in the <code>BedrockFluidDefini
 <a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="c1">// ...</span>
 <a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="modifying-a-bedrock-fluid-vein">Modifying a Bedrock Fluid Vein</h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">JavaScript</label><label for="__tabbed_2_2">Java</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">fluid_veins.js</span><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">// In server events</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nx">GTCEuServerEvents</span><span class="p">.</span><span class="nx">fluidVeins</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">modify</span><span class="p">(</span><span class="s1">&#39;gtceu:heavy_oil_deposit&#39;</span><span class="p">,</span><span class="w"> </span><span class="nx">vein</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">        </span><span class="nx">vein</span><span class="p">.</span><span class="nx">setWeight</span><span class="p">(</span><span class="mf">9999</span><span class="p">);</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">    </span><span class="p">});</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">});</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">ExampleBedrockFluidVeins.java</span><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleBedrockFluidVeins</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">        </span><span class="n">GTRegistries</span><span class="p">.</span><span class="na">BEDROCK_FLUID_DEFINITIONS</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">GTCEu</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="err">&#39;</span><span class="n">heavy_oil_deposit</span><span class="err">&#39;</span><span class="p">)).</span><span class="na">setWeight</span><span class="p">(</span><span class="mi">9999</span><span class="p">);</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="removing-a-bedrock-fluid-vein">Removing a Bedrock Fluid Vein</h2>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">JavaScript</label><label for="__tabbed_3_2">Java</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">fluid_veins.js</span><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// In server events</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nx">GTCEuServerEvents</span><span class="p">.</span><span class="nx">fluidVeins</span><span class="p">(</span><span class="nx">event</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="nx">event</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="s1">&#39;gtceu:heavy_oil_deposit&#39;</span><span class="p">);</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="p">});</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><span class="filename">ExampleBedrockFluidVeins.java</span><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleBedrockFluidVeins</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">init</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">        </span><span class="n">GTRegistries</span><span class="p">.</span><span class="na">BEDROCK_FLUID_DEFINITIONS</span><span class="p">.</span><span class="na">remove</span><span class="p">(</span><span class="n">GTCEu</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">&quot;heavy_oil_deposit&quot;</span><span class="p">));</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="p">}</span>
 </code></pre></div>
 </div>
 </div>

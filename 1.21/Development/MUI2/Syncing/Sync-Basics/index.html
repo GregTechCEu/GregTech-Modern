@@ -14,7 +14,7 @@
         <link rel="prev" href="../">
       
       
-        <link rel="next" href="../Synced-Actions/">
+        <link rel="next" href="../Sync-Handlers/">
       
       
         
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#sync-basics" class="md-skip">
+        <a href="#basics-of-syncing" class="md-skip">
           Skip to content
         </a>
       
@@ -4512,6 +4512,8 @@
       
         
       
+        
+      
     
     
     
@@ -4579,8 +4581,6 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
-        
-      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -4622,8 +4622,6 @@
 <nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-  
-    
   
   
     <label class="md-nav__title" for="__toc">
@@ -4730,6 +4728,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -4988,8 +5014,6 @@
   
   
   
-    
-  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -5119,7 +5143,8 @@
   
 
 
-<h1 id="sync-basics">Sync Basics</h1>
+  <h1>Sync Basics</h1>
+
 <h2 id="basics-of-syncing">Basics of Syncing</h2>
 <p>To display dynamic values on the client, you have to send the data from the server to the client. When making UIs, it is very important to keep track of if and how your data is being synced to the client. There are a few ways to do so, which will be discussed below.  </p>
 <p>When opening a UI, a copy of the UI is created both on the server and on the client. It is important to note here that the server's copy will have access to most everything about e.g. the machine, block state, the world etc., but the client's copy will not.  </p>
@@ -5132,6 +5157,10 @@
 </code></pre></div>
 This would not work, intSyncValue hasn't had time to send data over yet and thus int is still 0 on the client side.</p>
 <p>If you try to access values on the client that aren't synced or don't have a <code>SyncValue</code> or <code>SyncHandler</code>, they will have a default value, but they will not reflect the values or changes happening on the server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, <code>SyncValue</code>s or <code>SyncHandler</code>s don't allow client-to-server syncing. For that you will need to chain <code>.allowC2S()</code>. This gets called on the <code>SyncHandler</code> itself, so if you're using a builder, after the <code>.build()</code></p>
+</div>
 <h2 id="method-1-dynamic-widgets">Method 1: Dynamic Widgets</h2>
 <p>The first method is using dynamic widgets, which update every frame regardless of what happens.
 This method is easiest if you just need to sync some data over and display or edit it in a single widget. 
@@ -5353,6 +5382,9 @@ Without the wrap around the second boolSyncValue call, it would complain of regi
 
 
 
+
+  
+  
 
 
 

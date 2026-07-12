@@ -4525,6 +4525,8 @@
       
         
       
+        
+      
     
     
     
@@ -4594,6 +4596,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Development/MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -4888,52 +4918,51 @@
 
 <p><code>PatternError</code>s are a descriptive way to tell the player why the multiblock has failed to form. They take in an optional BlockPos and required list of candidates.</p>
 <p>Each PatternError also must implement the ui modifier, which is the way to display that information to the player (through the main multiblock GUI).</p>
-<p>```java title="ExmaplePatternError.java</p>
-<p>public class MyPatternError extends PatternError {</p>
-<div class="highlight"><pre><span></span><code>// This codec is needed for serialization. It should send all the needed data to display the error on the client. 
-public static Codec&lt;PlaceholderError&gt; CODEC = RecordCodecBuilder.create(instance -&gt; instance.group(
-                BlockPos.CODEC.fieldOf(&quot;pos&quot;).forGetter(PatternError::getPos),
-                Codec.list(Codec.list(BlockInfo.CODEC)).fieldOf(&quot;candidates&quot;).forGetter(PatternError::getCandidates))
-        .apply(instance, MyPatternError::new));
-
-public static final PatternErrorType TYPE = new PatternErrorType(ExampleMod.id(&quot;my_pattern_error&quot;), CODEC);
-
-public MyPatternError(@Nullable BlockPos pos, List&lt;List&lt;BlockInfo&gt;&gt; candidates) {
-    super(pos, candidates);
-}
-
-// The UI modifier adds the widget to be displayed to the user if this error occurs.
-public PatternErrorUI getPatternErrorUIModifier() {
-    return (widget) -&gt; {
-            widget.child(new ContextMenuButton&lt;&gt;(&quot;predicate&quot;)
-                    .menuList(l -&gt; l
-                            .maxSize(40)
-                            .children(candidates, candidate -&gt; {
-                                return new ItemDrawable(candidate.getItemStackForm()).asWidget()
-                                        .tooltip(r -&gt; r.add(candidate.getItemStackForm().getHoverName()));
-                            })));
-    };
-}
-
-@Override
-public PatternErrorType type() {
-    return TYPE;
-}
+<div class="highlight"><span class="filename">ExamplePatternError.java</span><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">MyPatternError</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">PatternError</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span><span class="c1">// This codec is needed for serialization. It should send all the needed data to display the error on the client. </span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Codec</span><span class="o">&lt;</span><span class="n">PlaceholderError</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CODEC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RecordCodecBuilder</span><span class="p">.</span><span class="na">create</span><span class="p">(</span><span class="n">instance</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">instance</span><span class="p">.</span><span class="na">group</span><span class="p">(</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">                    </span><span class="n">BlockPos</span><span class="p">.</span><span class="na">CODEC</span><span class="p">.</span><span class="na">fieldOf</span><span class="p">(</span><span class="s">&quot;pos&quot;</span><span class="p">).</span><span class="na">forGetter</span><span class="p">(</span><span class="n">PatternError</span><span class="p">::</span><span class="n">getPos</span><span class="p">),</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">                    </span><span class="n">Codec</span><span class="p">.</span><span class="na">list</span><span class="p">(</span><span class="n">Codec</span><span class="p">.</span><span class="na">list</span><span class="p">(</span><span class="n">BlockInfo</span><span class="p">.</span><span class="na">CODEC</span><span class="p">)).</span><span class="na">fieldOf</span><span class="p">(</span><span class="s">&quot;candidates&quot;</span><span class="p">).</span><span class="na">forGetter</span><span class="p">(</span><span class="n">PatternError</span><span class="p">::</span><span class="n">getCandidates</span><span class="p">))</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">            </span><span class="p">.</span><span class="na">apply</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span><span class="w"> </span><span class="n">MyPatternError</span><span class="p">::</span><span class="k">new</span><span class="p">));</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">PatternErrorType</span><span class="w"> </span><span class="n">TYPE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PatternErrorType</span><span class="p">(</span><span class="n">ExampleMod</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">&quot;my_pattern_error&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">CODEC</span><span class="p">);</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">MyPatternError</span><span class="p">(</span><span class="nd">@Nullable</span><span class="w"> </span><span class="n">BlockPos</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">BlockInfo</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">candidates</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">        </span><span class="kd">super</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">candidates</span><span class="p">);</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="w">    </span><span class="c1">// The UI modifier adds the widget to be displayed to the user if this error occurs.</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">PatternErrorUI</span><span class="w"> </span><span class="nf">getPatternErrorUIModifier</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">widget</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">            </span><span class="n">widget</span><span class="p">.</span><span class="na">child</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ContextMenuButton</span><span class="o">&lt;&gt;</span><span class="p">(</span><span class="s">&quot;predicate&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">                    </span><span class="p">.</span><span class="na">menuList</span><span class="p">(</span><span class="n">l</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">l</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">                            </span><span class="p">.</span><span class="na">maxSize</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">                            </span><span class="p">.</span><span class="na">children</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span><span class="w"> </span><span class="n">candidate</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="w">                                </span><span class="k">return</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ItemDrawable</span><span class="p">(</span><span class="n">candidate</span><span class="p">.</span><span class="na">getItemStackForm</span><span class="p">()).</span><span class="na">asWidget</span><span class="p">()</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="w">                                        </span><span class="p">.</span><span class="na">tooltip</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">r</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">candidate</span><span class="p">.</span><span class="na">getItemStackForm</span><span class="p">().</span><span class="na">getHoverName</span><span class="p">()));</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="w">                            </span><span class="p">})));</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="w">        </span><span class="p">};</span>
+<a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="w">    </span><span class="nd">@Override</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">PatternErrorType</span><span class="w"> </span><span class="nf">type</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">TYPE</span><span class="p">;</span>
+<a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="p">}</span>
 </code></pre></div>
-<p>}
-<code>You also need to register your new PatternErrors statically:</code>java
-
-public class ExampleMod {
-    public ExampleMod() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addGenericListener(PatternError.PatternErrorType.class, this::registerPatternErrors);
-    }
-
-    private void registerPatternErrors(GTCEuAPI.RegisterEvent<ResourceLocation, PatternError.PatternErrorType> event) {
-        event.register(MyPatternError.TYPE.id(), MyPatternError.TYPE);
-    }
-}
-```</p>
+<p>You also need to register your new PatternErrors statically:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExampleMod</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="nf">ExampleMod</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">        </span><span class="n">IEventBus</span><span class="w"> </span><span class="n">modEventBus</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FMLJavaModLoadingContext</span><span class="p">.</span><span class="na">get</span><span class="p">().</span><span class="na">getModEventBus</span><span class="p">();</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">        </span><span class="n">modEventBus</span><span class="p">.</span><span class="na">addGenericListener</span><span class="p">(</span><span class="n">PatternError</span><span class="p">.</span><span class="na">PatternErrorType</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">::</span><span class="n">registerPatternErrors</span><span class="p">);</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">registerPatternErrors</span><span class="p">(</span><span class="n">GTCEuAPI</span><span class="p">.</span><span class="na">RegisterEvent</span><span class="o">&lt;</span><span class="n">ResourceLocation</span><span class="p">,</span><span class="w"> </span><span class="n">PatternError</span><span class="p">.</span><span class="na">PatternErrorType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">        </span><span class="n">event</span><span class="p">.</span><span class="na">register</span><span class="p">(</span><span class="n">MyPatternError</span><span class="p">.</span><span class="na">TYPE</span><span class="p">.</span><span class="na">id</span><span class="p">(),</span><span class="w"> </span><span class="n">MyPatternError</span><span class="p">.</span><span class="na">TYPE</span><span class="p">);</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="p">}</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="p">}</span>
+</code></pre></div>
 
 
 

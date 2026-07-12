@@ -4629,6 +4629,8 @@
       
         
       
+        
+      
     
     
     
@@ -4698,6 +4700,34 @@
     
   
     Sync Basics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../MUI2/Syncing/Sync-Handlers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sync Handlers
   
 
     
@@ -5134,7 +5164,7 @@
 <li><code>@RequireRerender</code> -&gt; <code>@RerenderOnChanged</code></li>
 <li><code>@Persisted</code> -&gt; <code>@SaveField</code></li>
 <li><code>@UpdateListener</code> -&gt; <code>@ClientFieldChangeListener</code> on listener method.</li>
-<li><code>@DropSaved</code> - Removed, make machines implement <code>IDropSaveMachine</code> instead</li>
+<li><code>@DropSaved</code> - Replaced with overriding the <code>loadFromItem</code>/<code>saveToItem</code> methods on <code>MetaMachine</code></li>
 <li><code>@ReadOnlyManaged</code> and <code>@LazyManaged</code> See usage docs for instructions on complex sync objects </li>
 </ul>
 <h3 id="other-changes">Other changes</h3>
