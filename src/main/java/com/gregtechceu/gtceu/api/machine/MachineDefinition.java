@@ -221,6 +221,17 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     }
 
     /**
+     * Gets the input size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getInputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeInputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeInputSize = Math.max(recipeType.getMaxInputs(cap), recipeTypeInputSize);
+        }
+        return recipeTypeInputSize;
+    }
+
+    /**
      * Gets the output size for a machine for the capability with the machine having the specified recipe types
      */
     public int getOutputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {

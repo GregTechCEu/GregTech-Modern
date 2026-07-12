@@ -57,10 +57,12 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
         this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH));
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN, IO.BOTH));
         this.exportItems = attachTrait(
                 new NotifiableItemStackHandler(
-                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()), IO.OUT));
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
 
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
