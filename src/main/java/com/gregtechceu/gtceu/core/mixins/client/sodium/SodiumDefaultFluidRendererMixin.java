@@ -32,14 +32,14 @@ public class SodiumDefaultFluidRendererMixin {
         gtceu$drawingUpsideDownFluid = InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive();
     }
 
-    @Inject(method = "render", at = @At("RETURN"), expect = -1)
+    @Inject(method = "render", at = @At("RETURN"))
     private void gtceu$resetInvertedState(CallbackInfo ci) {
         gtceu$drawingUpsideDownFluid = false;
     }
 
     @ModifyArg(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/DefaultFluidRenderer;setVertex(Lnet/caffeinemc/mods/sodium/client/model/quad/ModelQuadViewMutable;IFFFFF)V"),
-            index = 3, expect = 16)
+            index = 3, require = 16)
     private float gtceu$invertFluidFlowDirection(float originalY) {
         if (gtceu$drawingUpsideDownFluid) {
             return 1.0f - originalY;
@@ -66,7 +66,7 @@ public class SodiumDefaultFluidRendererMixin {
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN:Lnet/minecraft/core/Direction;", remap = true)
     @Expression({ "UP", "DOWN" })
     @ModifyExpressionValue(method = { "render", "fluidCornerHeight", "isSideExposed" },
-            at = @At("MIXINEXTRAS:EXPRESSION"), expect = 9)
+            at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -78,7 +78,7 @@ public class SodiumDefaultFluidRendererMixin {
     @Definition(id = "POS_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;POS_Y")
     @Definition(id = "NEG_Y", field = "Lnet/caffeinemc/mods/sodium/client/model/quad/properties/ModelQuadFacing;NEG_Y")
     @Expression({ "POS_Y", "NEG_Y" })
-    @ModifyExpressionValue(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), expect = 5)
+    @ModifyExpressionValue(method = "render", at = @At("MIXINEXTRAS:EXPRESSION"), require = 5)
     private ModelQuadFacing gtceu$invertFluidFaceOrientation(ModelQuadFacing original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();

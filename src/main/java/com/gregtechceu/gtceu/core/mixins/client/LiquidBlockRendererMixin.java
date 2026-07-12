@@ -35,12 +35,8 @@ public class LiquidBlockRendererMixin {
 
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP")
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN")
-    @Expression(value = "DOWN", id = "down")
-    @Expression(value = "UP", id = "up")
-    @ModifyExpressionValue(method = "*", at = {
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "up"),
-            @At(value = "MIXINEXTRAS:EXPRESSION", id = "down"),
-    }, expect = 8)
+    @Expression({ "UP", "DOWN" })
+    @ModifyExpressionValue(method = "*", at = @At("MIXINEXTRAS:EXPRESSION"), require = 8)
     private Direction gtceu$invertFluidCulling(Direction original) {
         if (gtceu$drawingUpsideDownFluid) {
             return original.getOpposite();
@@ -51,7 +47,7 @@ public class LiquidBlockRendererMixin {
 
     @WrapOperation(method = "*", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/core/BlockPos;above()Lnet/minecraft/core/BlockPos;"),
-            expect = 3)
+            require = 3)
     private BlockPos gtceu$invertFluidLightCheckAbove(BlockPos pos, Operation<BlockPos> original) {
         if (gtceu$drawingUpsideDownFluid) {
             return pos.below();

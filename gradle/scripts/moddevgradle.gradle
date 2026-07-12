@@ -169,7 +169,7 @@ neoForge {
 
             // enable additional mixin validation
             systemProperty 'mixin.debug.verify', 'true'
-            systemProperty 'mixin.debug.countInjections', 'true'
+            // systemProperty 'mixin.debug.countInjections', 'true' // can't have this, dependencies are lazy
             systemProperty 'mixin.debug.strict.unique', 'true'
             systemProperty 'mixin.checks', 'true'
             // enable mixin hotswapping
