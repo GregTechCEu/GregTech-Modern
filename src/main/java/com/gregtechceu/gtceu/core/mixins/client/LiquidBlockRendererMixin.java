@@ -19,6 +19,32 @@ import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 @Mixin(value = LiquidBlockRenderer.class, remap = false)
 public class LiquidBlockRendererMixin {
 
+    @ModifyArg(method = "tesselate", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;vertex(Lcom/mojang/blaze3d/vertex/VertexConsumer;FFFFFFFFFI)V"),
+            index = 2, require = 16)
+    private float gtceu$invertFluidFlowDirection(float originalY,
+                                                 @Local(ordinal = 14) float sectionY) {
+        // sadly we can't cache this in the vanilla fluid renderer because it's a singleton instance
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+            return sectionY + (1.0f - (originalY - sectionY));
+        } else {
+            return originalY;
+        }
+    }
+
+    @ModifyArgs(method = "isFaceOccludedByState",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/phys/shapes/Shapes;box(DDDDDD)Lnet/minecraft/world/phys/shapes/VoxelShape;"))
+    private static void gtceu$invertExposedSideCheckDirection(Args args) {
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+            // set minY to original maxY
+            double maxY = args.get(4);
+            args.set(1, maxY);
+            // set maxY to 1
+            args.set(4, 1.0D);
+        }
+    }
+
     @Definition(id = "UP", field = "Lnet/minecraft/core/Direction;UP")
     @Definition(id = "DOWN", field = "Lnet/minecraft/core/Direction;DOWN")
     @Expression({ "UP", "DOWN" })
@@ -28,6 +54,36 @@ public class LiquidBlockRendererMixin {
             return original.getOpposite();
         } else {
             return original;
+        }
+    }
+
+    @Definition(id = "vertex", method = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;vertex(Lcom/mojang/blaze3d/vertex/VertexConsumer;FFFFFFFFFI)V")
+    @Definition(id = "sectionX", local = @Local(type = float.class, ordinal = 13))
+    @Definition(id = "sectionZ", local = @Local(type = float.class, ordinal = 15))
+    @Expression({
+            "this.vertex(?, sectionX, ?, sectionZ, ?, ?, ?, ?, ?, ?, ?)",
+            "this.vertex(?, sectionX + 1.0, ?, sectionZ + 1.0, ?, ?, ?, ?, ?, ?, ?)",
+    })
+    @ModifyArgs(method = "tesselate", at = @At("MIXINEXTRAS:EXPRESSION"),
+            slice = @Slice(
+                    from = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;getU0()F"),
+                    to = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/LiquidBlockRenderer;getLightColor(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/core/BlockPos;)I", ordinal = 2)
+            ),
+            require = 2, allow = 2)
+    private void gtceu$invertBottomQuadsOrder(Args args,
+                                              @Local(ordinal = 13) float localXOffset,
+                                              @Local(ordinal = 15) float localZOffset) {
+        // swap the 1st and 3rd vertex's position to invert the quad's orientation
+        if (InvertedFluidRenderer.INVERTED_FLUID_RENDERING.isActive()) {
+            float x = args.get(1);
+            float z = args.get(3);
+            if (x == localXOffset && z == localZOffset) {
+                args.set(1, x + 1.0F);
+                args.set(3, z + 1.0F);
+            } else {
+                args.set(1, x - 1.0F);
+                args.set(3, z - 1.0F);
+            }
         }
     }
 
