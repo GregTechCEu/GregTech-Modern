@@ -162,6 +162,14 @@ neoForge {
             // jvmArgument("-XX:+AllowEnhancedClassRedefinition")
             jvmArgument("-XX:+AllowRedefinitionToAddDeleteMethods")
 
+            // enable additional mixin validation
+            systemProperty 'mixin.debug.verify', 'true'
+            // systemProperty 'mixin.debug.countInjections', 'true' // can't have this, dependencies are lazy
+            systemProperty 'mixin.debug.strict.unique', 'true'
+            systemProperty 'mixin.checks', 'true'
+            // enable mixin hotswapping
+            systemProperty 'mixin.hotSwap', 'true'
+
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
