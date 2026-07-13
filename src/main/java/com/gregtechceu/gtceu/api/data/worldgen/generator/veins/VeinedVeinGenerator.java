@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.gregtechceu.gtceu.common.data.worldgen.GTDensityFunctions;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
@@ -116,8 +116,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
                                                   BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
-        Registry<? extends DensityFunction> densityFunctions = level.registryAccess()
-                .registry(Registries.DENSITY_FUNCTION).get();
+        Registry<DensityFunction> densityFunctions = level.registryAccess().registry(Registries.DENSITY_FUNCTION).get();
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
@@ -128,14 +127,12 @@ public class VeinedVeinGenerator extends VeinGenerator {
         }
 
         final Blender finalizedBlender = blender;
-        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
-        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
+        DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_TOGGLE), randomState);
+        DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTDensityFunctions.NEW_ORE_VEIN_RIDGED), randomState);
 
         int size = entry.clusterSize().sample(random);
 
         int radius = Mth.ceil(size / 2f);
-
-        int placedCount = 0;
 
         int randOffsetX = random.nextInt(16);
         int randOffsetY = random.nextInt(16);

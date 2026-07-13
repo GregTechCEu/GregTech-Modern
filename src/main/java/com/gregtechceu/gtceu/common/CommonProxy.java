@@ -30,6 +30,7 @@ import com.gregtechceu.gtceu.common.data.GTPlaceholders;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
@@ -103,7 +104,7 @@ public class CommonProxy {
         }
 
         GTValueProviderTypes.init(eventBus);
-        GTRegistries.init(eventBus);
+        GTPlacementModifiers.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
@@ -183,8 +184,6 @@ public class CommonProxy {
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
 
-        GTFeatures.init();
-        GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
         SyncedKeyMappings.init();
