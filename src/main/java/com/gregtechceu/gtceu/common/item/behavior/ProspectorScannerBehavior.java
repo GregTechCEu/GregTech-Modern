@@ -118,7 +118,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
         ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, this.radius, 1, searchValue, searchList,
                 panelSyncManager, guiData.getPlayer());
 
-        int mapSize = (this.radius * 2 - 1) * 16;
+        int mapSize = (this.radius * 2 - 1) * 16 + 1;
         return ModularPanel.defaultPanel("prospector_scanner", mapSize + 156, mapSize + 24)
                 .margin(4)
                 .child(new ToggleButton()

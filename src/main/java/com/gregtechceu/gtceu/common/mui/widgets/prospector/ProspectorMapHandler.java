@@ -88,8 +88,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
             background(this.texture);
             size(this.texture.getImageWidth(), this.texture.getImageHeight());
         } else {
-            int diameter = chunkRadius * 2 - 1;
-            size(diameter * 16, diameter * 16);
+            int diameter = (chunkRadius * 2 - 1) * 16 + 1;
+            size(diameter, diameter);
         }
 
         panelSyncManager.onServerTick(this::scanOres);

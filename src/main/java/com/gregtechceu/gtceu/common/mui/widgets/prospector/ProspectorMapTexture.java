@@ -53,7 +53,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
         ProspectorMode<T> mode = mapHandler.getMode();
         int diameter = mapHandler.getChunkRadius() * 2 - 1;
 
-        this.imageWidth = this.imageHeight = diameter * 16;
+        this.imageWidth = this.imageHeight = diameter * 16 + 1;
         // noinspection unchecked
         this.data = (T[][][]) Array.newInstance(mode.getItemClass(),
                 diameter * mode.cellSize, diameter * mode.cellSize, 0);
@@ -84,24 +84,28 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
 
         for (int x = 0; x < this.imageWidth; x++) {
             for (int z = 0; z < this.imageHeight; z++) {
-                T[] items = this.data[x * mode.cellSize / 16][z * mode.cellSize / 16];
+                // the last row/column is the closing grid line, past the end of the data
+                boolean edge = x == this.imageWidth - 1 || z == this.imageHeight - 1;
 
                 boolean drewColor = false;
                 // draw items
-                for (T item : items) {
-                    if (mapHandler.getSelected() == null || mapHandler.getSelected().equals(mode.getUniqueId(item))) {
-                        int color = mode.getItemColor(item);
-                        image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
+                if (!edge) {
+                    T[] items = this.data[x * mode.cellSize / 16][z * mode.cellSize / 16];
+                    for (T item : items) {
+                        if (mapHandler.getSelected() == null ||
+                                mapHandler.getSelected().equals(mode.getUniqueId(item))) {
+                            int color = mode.getItemColor(item);
+                            image.setPixelRGBA(x, z, GradientUtil.argbToAbgr(color) | 0xFF000000);
 
-                        drewColor = true;
-                        break;
+                            drewColor = true;
+                            break;
+                        }
                     }
                 }
                 if (!drewColor) {
                     // draw background color
                     image.setPixelRGBA(x, z, (mapHandler.isDarkMode() ? 0xFF666666 : 0xFFFFFFFF));
                 }
-                // draw grid
                 if (x % 16 == 0 || z % 16 == 0) {
                     image.blendPixel(x, z, 0xFF000000);
                 }
