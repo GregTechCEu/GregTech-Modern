@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
@@ -70,8 +71,8 @@ public class GTByteBufAdapters {
 
             @Override
             public boolean areEqual(T a, T b) {
-                String encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().toString();
-                String encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().toString();
+                JsonObject encoded1 = codec.encodeStart(JsonOps.INSTANCE, a).result().orElseThrow().getAsJsonObject();
+                JsonObject encoded2 = codec.encodeStart(JsonOps.INSTANCE, b).result().orElseThrow().getAsJsonObject();
                 return Objects.equals(encoded1, encoded2);
             }
         };
