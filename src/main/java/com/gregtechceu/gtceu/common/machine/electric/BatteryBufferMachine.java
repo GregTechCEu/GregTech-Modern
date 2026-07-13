@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
+import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -19,6 +20,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -152,10 +154,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .value(energyPercentage)
                 .marginLeft(5)
                 .size(18, 60)
-                .addTooltipLine(Text.dynamic(() -> Component.literal(
-                        "%s/%s EU".formatted(
-                                GTStringUtils.formatInt(energyContainer.getEnergyStored()),
-                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
+                .tooltipDynamic(this::getRichTooltip))
+                .tooltipAutoUpdate(true)
                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(
                         batteryInventory, "batteries",
                         inventorySize, 'B',
@@ -165,6 +165,19 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                         .center());
 
         mainWidget.child(flow);
+    }
+
+    private void getRichTooltip(RichTooltip r) {
+        if (GTUtil.isShiftDown()) {
+            r.addLine(Component.literal(
+                "%s/%s EU".formatted(
+                        energyContainer.getEnergyStored(), energyContainer.getEnergyCapacity())));
+        } else {
+            r.addLine(Component.literal(
+                    "%s/%s EU".formatted(
+                            FormattingUtil.formatNumberReadable(energyContainer.getEnergyStored()),
+                            FormattingUtil.formatNumberReadable(energyContainer.getEnergyCapacity()))));
+        }
     }
 
     private double getEnergyPercentage() {
