@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
+import brachy.modularui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -130,7 +131,8 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                                         .widthRel(0.5f)
                                         .overlay(Text.dynamic(() -> module.getDisplayName(appliedModule)).scale(0.5f))
                                         .backgroundOverlay(slots.get(index).getSlotTexture())
-                                        .addTooltipElement(Text.dynamic(module::getInfo));
+                                        .tooltipDynamic(tooltip -> tooltip
+                                                .add(module.getInfo()));
                             }
                         }));
     }
@@ -221,7 +223,7 @@ public class ModularItemUIHolder implements IUIHolder<GuiData> {
                     .selectable(new BoolValue.Dynamic(this::isInventoryLocked, null))
                     .selectedIndex(selectedSlotSyncValue)
                     .index(36 + i)
-                    .slot(inv, i)
+                    .slot(ModularSlot.playerSlot(inv, i, player))
                     .pos(0, (3 - i) * 18)
                     .name("slot_" + (i + 36)));
         }

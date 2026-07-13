@@ -150,7 +150,6 @@ public class EquipmentFoundryBlockEntity extends ManagedSyncBlockEntity
                                 .singletonSlotGroup()
                                 .changeListener((stack, onlyAmount, client, init) -> {
                                     onEquipmentSlotChanged(posGuiData.getPlayer(), moduleSlots);
-
                                 })))
                 .child(new Grid()
                         .background()
