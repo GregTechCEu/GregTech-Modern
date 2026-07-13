@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -17,8 +15,6 @@ public class GTPlacementModifiers {
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIERS = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
 
 
-    public static final RegistryObject<PlacementModifierType<FrequencyModifier>> FREQUENCY_MODIFIER = PLACEMENT_MODIFIERS.register("frequency", () -> () -> FrequencyModifier.CODEC);
-    public static final RegistryObject<PlacementModifierType<DimensionFilter>> DIMENSION_FILTER = PLACEMENT_MODIFIERS.register("dimension", () -> () -> DimensionFilter.CODEC);
     public static final RegistryObject<PlacementModifierType<BiomePlacement>> BIOME_PLACEMENT = PLACEMENT_MODIFIERS.register("biome_placement", () -> () -> BiomePlacement.CODEC);
     public static final RegistryObject<PlacementModifierType<RubberTreeChancePlacement>> RUBBER_TREE_CHANCE = PLACEMENT_MODIFIERS.register("rubber_tree_chance", () -> () -> RubberTreeChancePlacement.CODEC);
 
