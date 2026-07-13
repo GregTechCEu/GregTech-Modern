@@ -138,7 +138,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
 
     @Override
     public boolean supportsDistinct() {
-        return io != IO.OUT;
+        return !io.support(IO.OUT);
     }
 
     @Override
