@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
@@ -65,7 +66,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     // runtime
     @Getter
     private @Nullable String selected = null;
-    private final Set<T> items = new HashSet<>();
+    // keyed by uniqueId so entries are deduplicated across chunks
+    private final Map<String, T> items = new Object2ObjectOpenHashMap<>();
     private int chunkIndex = 0;
     private String lastSearch = "";
 
@@ -116,7 +118,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                     list.getScrollData().scrollTo(list.getScrollArea(), 0);
                                 }
                             })
-                            .children(this.items, item -> {
+                            .children(this.items.values(), item -> {
                                 String uniqueId = mode.getUniqueId(item);
                                 Component description = mode.getDescription(item);
 
@@ -187,7 +189,11 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     private void addOresToList(T[][][] data) {
         for (int x = 0; x < mode.cellSize; x++) {
             for (int z = 0; z < mode.cellSize; z++) {
-                Collections.addAll(this.items, data[x][z]);
+                for (T item : data[x][z]) {
+                    if (item != null) {
+                        this.items.putIfAbsent(mode.getUniqueId(item), item);
+                    }
+                }
             }
         }
     }
@@ -235,10 +241,18 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
     private @Nullable WaypointItem getClickedVein(double mouseX, double mouseY) {
         if (this.texture == null) return null;
-        int chunkX = (int) (mouseX - getArea().x()) / 16;
-        int chunkZ = (int) (mouseY - getArea().y()) / 16;
-        int offsetX = (int) (mouseX - getArea().x()) % 16;
-        int offsetZ = (int) (mouseY - getArea().y()) % 16;
+        int relX = (int) (mouseX - getArea().x());
+        int relZ = (int) (mouseY - getArea().y());
+
+        int mapPixels = (this.chunkRadius * 2 - 1) * 16;
+        if (relX < 0 || relZ < 0 || relX >= mapPixels || relZ >= mapPixels) {
+            return null;
+        }
+
+        int chunkX = relX / 16;
+        int chunkZ = relZ / 16;
+        int offsetX = relX % 16;
+        int offsetZ = relZ % 16;
         int xDiff = chunkX - (this.chunkRadius - 1);
         int zDiff = chunkZ - (this.chunkRadius - 1);
 
@@ -246,14 +260,10 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         int z = SectionPos.sectionToBlockCoord(player.chunkPosition().z + zDiff) + offsetZ;
         int y = player.level().getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
 
-        if (chunkX < 0 || chunkZ < 0 || chunkX >= this.chunkRadius * 2 - 1 || chunkZ >= this.chunkRadius * 2 - 1) {
-            return null;
-        }
-
         BlockPos pos = new BlockPos(x, y, z);
         // If the ores are filtered use its name
         if (this.getSelected() != null) {
-            for (T item : this.items) {
+            for (T item : this.items.values()) {
                 String uniqueId = mode.getUniqueId(item);
                 if (!this.getSelected().equals(uniqueId)) continue;
 
