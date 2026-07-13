@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.worldgen;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.worldgen.modifier.BiomeDependentPlacement;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraftforge.eventbus.api.IEventBus;

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.common.worldgen.modifier.BiomeDependentPlacement;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.worldgen.modifier.BiomeDependentPlacement;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 

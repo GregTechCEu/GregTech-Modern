@@ -2,15 +2,17 @@ package com.gregtechceu.gtceu.common.loot.condition;
 
 import com.gregtechceu.gtceu.common.data.loot.GTLootConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.toma.configuration.config.value.IConfigValue;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import java.util.Optional;
 import java.util.function.BooleanSupplier;

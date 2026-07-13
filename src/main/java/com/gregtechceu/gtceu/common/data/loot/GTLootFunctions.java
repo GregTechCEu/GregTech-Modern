@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data.loot;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.loot.serializer.CodecBasedSerializer;
 import com.gregtechceu.gtceu.common.loot.function.SetEUChargeFunction;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraftforge.eventbus.api.IEventBus;

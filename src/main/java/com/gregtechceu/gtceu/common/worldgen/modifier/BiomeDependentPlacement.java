@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.worldgen.modifier;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-
 import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;

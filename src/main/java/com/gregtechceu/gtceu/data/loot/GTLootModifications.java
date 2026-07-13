@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.data.loot;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.loot.modifier.AddTableLootModifier;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.data.GlobalLootModifierProvider;
 import net.minecraftforge.common.loot.LootTableIdCondition;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import static com.gregtechceu.gtceu.common.loot.condition.GTConfigValueCondition.*;
@@ -34,10 +36,8 @@ public class GTLootModifications extends GlobalLootModifierProvider {
     }
 
     protected void addAddTableModifier(ResourceLocation targetLootTableId, ResourceLocation addedLootTableId) {
-        final LootItemCondition[] conditions = ArrayUtils.add(
-                LOOT_CONFIG_ENABLED_CONDITION,
-                LootTableIdCondition.builder(targetLootTableId).build()
-        );
+        final LootItemCondition[] conditions = ArrayUtils.add(LOOT_CONFIG_ENABLED_CONDITION,
+                LootTableIdCondition.builder(targetLootTableId).build());
         add(addedLootTableId.getPath(), new AddTableLootModifier(conditions, addedLootTableId));
     }
 }

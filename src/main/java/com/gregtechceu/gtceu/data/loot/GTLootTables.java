@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
@@ -18,8 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
-// spotless:off
-
 import static com.gregtechceu.gtceu.common.loot.condition.GTConfigValueCondition.*;
 import static com.gregtechceu.gtceu.common.loot.function.SetEUChargeFunction.setCharge;
 import static com.gregtechceu.gtceu.data.loot.NumberProviderShortcuts.*;
@@ -28,10 +27,11 @@ import static net.minecraft.world.level.storage.loot.LootTable.lootTable;
 import static net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem;
 import static net.minecraft.world.level.storage.loot.functions.SetItemCountFunction.*;
 import static net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition.*;
+import static net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator.*;
 import static net.minecraft.world.level.storage.loot.providers.number.ConstantValue.*;
 import static net.minecraft.world.level.storage.loot.providers.number.UniformGenerator.*;
-import static net.minecraft.world.level.storage.loot.providers.number.BinomialDistributionGenerator.*;
 
+// spotless:off
 public class GTLootTables extends LootTableProvider {
 
     public static final ResourceLocation SPAWN_BONUS_CHEST_EXTRA = GTCEu.id("chests/extra/spawn_bonus_chest");

@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.loot.serializer;
 
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.storage.loot.Serializer;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.storage.loot.Serializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

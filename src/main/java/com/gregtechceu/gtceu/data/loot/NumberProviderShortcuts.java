@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.data.loot;
 
 import com.gregtechceu.gtceu.core.mixins.BinomialDistributionGeneratorAccessor;
 import com.gregtechceu.gtceu.core.mixins.UniformGeneratorAccessor;
-import lombok.experimental.UtilityClass;
+
 import net.minecraft.world.level.storage.loot.providers.number.*;
+
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class for working with loot tables and their number providers. To use this class efficiently, add the
  * following static imports to your class:
+ * 
  * <pre>{@code
  * import static com.gregtechceu.gtceu.data.loot.NumberProviderShortcuts.*;
  * import static net.minecraft.world.level.storage.loot.LootTable.lootTable;
