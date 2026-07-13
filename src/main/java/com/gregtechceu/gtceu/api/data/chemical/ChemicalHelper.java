@@ -20,6 +20,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -238,6 +239,16 @@ public class ChemicalHelper {
             }
             return items;
         }).stream().map(Supplier::get).collect(Collectors.toList());
+    }
+
+    public static Item getItem(MaterialEntry materialEntry) {
+        List<ItemLike> items = getItems(materialEntry);
+        if (items.isEmpty()) return Items.AIR;
+        return items.get(0).asItem();
+    }
+
+    public static Item getItem(TagPrefix tagPrefix, Material material) {
+        return getItem(new MaterialEntry(tagPrefix, material));
     }
 
     public static ItemStack get(MaterialEntry materialEntry, int size) {

@@ -10,6 +10,7 @@ import net.minecraft.world.level.storage.loot.providers.number.*;
  * following static imports to your class:
  * <pre>{@code
  * import static com.gregtechceu.gtceu.data.loot.NumberProviderShortcuts.*;
+ * import static net.minecraft.world.level.storage.loot.LootTable.lootTable;
  * import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
  * import static net.minecraft.world.level.storage.loot.entries.LootItem.lootTableItem;
  * import static net.minecraft.world.level.storage.loot.functions.SetItemCountFunction.*;
@@ -41,22 +42,6 @@ public class NumberProviderShortcuts {
 
     public static UniformGenerator between(NumberProvider min, float max) {
         return between(min, constant(max));
-    }
-
-    public static UniformGenerator uniform(float min, float max) {
-        return UniformGenerator.between(min, max);
-    }
-
-    public static UniformGenerator uniform(NumberProvider min, NumberProvider max) {
-        return between(min, max);
-    }
-
-    public static UniformGenerator uniform(float min, NumberProvider max) {
-        return between(min, max);
-    }
-
-    public static UniformGenerator uniform(NumberProvider min, float max) {
-        return between(min, max);
     }
 
     // endregion //

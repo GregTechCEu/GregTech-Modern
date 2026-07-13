@@ -49,4 +49,18 @@ public class GTConfigValueCondition implements LootItemCondition {
     public static LootItemCondition.Builder configEnabled(String configField) {
         return () -> new GTConfigValueCondition(configField);
     }
+
+    /**
+     * {@return Config value condition that checks the {@code worldgen.addLoot} config}
+     */
+    public static LootItemCondition.Builder addLootConfigEnabled() {
+        return configEnabled("worldgen.addLoot");
+    }
+
+    /**
+     * {@return Config value condition that checks the {@code worldgen.increaseDungeonLoot} config}
+     */
+    public static LootItemCondition.Builder increaseDungeonLootConfigEnabled() {
+        return configEnabled("worldgen.increaseDungeonLoot");
+    }
 }

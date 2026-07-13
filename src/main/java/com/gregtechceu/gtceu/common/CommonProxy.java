@@ -39,8 +39,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
-import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -54,7 +52,6 @@ import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.ItemStack;
@@ -72,7 +69,6 @@ import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegisterEvent;
 
 import brachy.modularui.factory.GuiManager;
 import com.google.common.collect.Multimaps;
@@ -107,6 +103,7 @@ public class CommonProxy {
         GTPlacementModifiers.init(eventBus);
         GTGlobalLootModifiers.init(eventBus);
         GTLootConditions.init(eventBus);
+        GTLootFunctions.init(eventBus);
         GTFeatures.init(eventBus);
         GTCommandArguments.init(eventBus);
         GTMobEffects.init(eventBus);
@@ -227,12 +224,6 @@ public class CommonProxy {
     }
 
     @SubscribeEvent
-    public void register(RegisterEvent event) {
-        if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
-            ChestGenHooks.RandomWeightLootFunction.init();
-    }
-
-    @SubscribeEvent
     public void modConstruct(FMLConstructModEvent event) {
         // this is done to delay initialization of content to be after KJS has set up.
         event.enqueueWork(CommonProxy::init);
@@ -306,8 +297,6 @@ public class CommonProxy {
             GTCraftingComponents.init();
             GTRecipes.recipeRemoval();
             GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-            // Initialize dungeon loot additions
-            DungeonLootLoader.init();
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
             event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
