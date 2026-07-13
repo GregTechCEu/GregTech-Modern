@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
 import com.gregtechceu.gtceu.common.data.worldgen.*;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.data.loot.GTLootTables;
 import com.gregtechceu.gtceu.data.loot.NewDungeonLootLoader;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
 import com.gregtechceu.gtceu.data.tags.DamageTagsLoader;
@@ -46,6 +47,8 @@ public class DataGenerators {
                     set));
             generator.addProvider(true,
                     new DamageTagsLoader(packOutput, provider.getRegistryProvider(), existingFileHelper));
+            generator.addProvider(true, new GTLootTables(packOutput));
+            generator.addProvider(true, new NewDungeonLootLoader(packOutput));
         }
     }
 }
