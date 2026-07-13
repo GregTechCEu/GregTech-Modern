@@ -2579,7 +2579,7 @@
   "gtceu.item_pipe.priority": "§9Priority: §f%d",
   "gtceu.jade.amperage_use": "%s A",
   "gtceu.jade.at": " @ ",
-  "gtceu.jade.changes_eu_sec": "%s EU/s",
+  "gtceu.jade.changes_eu_tick": "%s EU/t",
   "gtceu.jade.cleaned_this_second": "Cleaned hazard: %s/s",
   "gtceu.jade.days": "%s days",
   "gtceu.jade.energy_stored": "%d / %d EU",

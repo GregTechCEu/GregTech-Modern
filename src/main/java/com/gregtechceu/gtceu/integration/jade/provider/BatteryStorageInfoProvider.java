@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.machine.electric.BatteryBufferMachine;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.nbt.CompoundTag;
@@ -51,7 +52,8 @@ public class BatteryStorageInfoProvider extends MachineInfoProvider<BatteryBuffe
         CompoundTag container = data.getCompound("energy");
         long changed = container.getLong("changed"), stored = container.getLong("stored"),
                 capacity = container.getLong("capacity");
-        tooltip.add(Component.translatable("gtceu.jade.changes_eu_sec", formatLongNumber(changed)));
+        double changedTick = ((double) changed) / 20.0;
+        tooltip.add(Component.translatable("gtceu.jade.changes_eu_tick", FormattingUtil.formatNumbers(changedTick)));
         if (changed > 0L) {
             tooltip.add(Component
                     .translatable("gtceu.jade.remaining_charge_time",
