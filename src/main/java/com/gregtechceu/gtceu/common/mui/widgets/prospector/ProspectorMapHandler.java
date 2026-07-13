@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.integration.map.cache.client.GTClientCache;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.Component;
@@ -34,6 +33,7 @@ import brachy.modularui.widget.Widget;
 import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.layout.Flow;
 import com.google.common.base.Strings;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -90,6 +90,16 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
             this.texture = new ProspectorMapTexture<>(this);
             background(this.texture);
             size(this.texture.getImageWidth(), this.texture.getImageHeight());
+
+            tooltipAutoUpdate(true);
+            tooltipDynamic(tooltip -> {
+                tooltip.clearText();
+                List<T[]> cells = getHoveredChunkCells();
+                if (cells.isEmpty()) return;
+                List<Component> lines = new ArrayList<>();
+                this.mode.appendTooltips(cells, lines, null);
+                lines.forEach(tooltip::addLine);
+            });
         } else {
             int diameter = (chunkRadius * 2 - 1) * 16 + 1;
             size(diameter, diameter);
@@ -239,10 +249,39 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         return Result.SUCCESS;
     }
 
+    /**
+     * @return every non-empty data cell of the chunk currently under the cursor, or an empty list if the
+     *         cursor is off the map.
+     */
+    private List<T[]> getHoveredChunkCells() {
+        if (this.texture == null) return List.of();
+        int relX = getContext().getMouseX();
+        int relZ = getContext().getMouseY();
+
+        int mapPixels = (this.chunkRadius * 2 - 1) * 16;
+        if (relX < 0 || relZ < 0 || relX >= mapPixels || relZ >= mapPixels) {
+            return List.of();
+        }
+
+        int chunkX = relX / 16;
+        int chunkZ = relZ / 16;
+        int cellSize = this.mode.cellSize;
+        List<T[]> cells = new ArrayList<>();
+        for (int i = 0; i < cellSize; i++) {
+            for (int j = 0; j < cellSize; j++) {
+                T[] cell = this.texture.data[chunkX * cellSize + i][chunkZ * cellSize + j];
+                if (cell != null && cell.length > 0) {
+                    cells.add(cell);
+                }
+            }
+        }
+        return cells;
+    }
+
     private @Nullable WaypointItem getClickedVein(double mouseX, double mouseY) {
         if (this.texture == null) return null;
-        int relX = (int) (mouseX - getArea().x());
-        int relZ = (int) (mouseY - getArea().y());
+        int relX = (int) mouseX;
+        int relZ = (int) mouseY;
 
         int mapPixels = (this.chunkRadius * 2 - 1) * 16;
         if (relX < 0 || relZ < 0 || relX >= mapPixels || relZ >= mapPixels) {
