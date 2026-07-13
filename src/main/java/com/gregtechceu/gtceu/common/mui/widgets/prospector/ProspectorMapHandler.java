@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.mui.widgets.prospector;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePacket;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectorMode;
@@ -55,8 +56,11 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
     private final StringValue searchValue;
     private final DynamicSyncHandler syncHandler;
+
+    // client-only; null on server side
+    private @Nullable ProspectorMapTexture<T> texture;
     @Getter
-    private final ProspectorMapTexture<T> texture;
+    private boolean darkMode = true;
 
     // runtime
     @Getter
@@ -79,9 +83,14 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         this.player = player;
         this.playerChunkPos = player.chunkPosition();
 
-        this.texture = new ProspectorMapTexture<>(this);
-        background(this.texture);
-        size(this.texture.getImageWidth(), this.texture.getImageHeight());
+        if (GTCEu.isClientSide()) {
+            this.texture = new ProspectorMapTexture<>(this);
+            background(this.texture);
+            size(this.texture.getImageWidth(), this.texture.getImageHeight());
+        } else {
+            int diameter = (chunkRadius * 2 - 1) * 16 + 1;
+            size(diameter, diameter);
+        }
 
         panelSyncManager.onServerTick(this::scanOres);
     }
@@ -90,7 +99,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         return new DynamicSyncHandler()
                 .widgetProvider((syncManager, buf) -> {
                     ProspectingUpdatePacket<T> packet = ProspectingUpdatePacket.read(this.mode, buf);
-                    if (syncManager.isClient()) {
+                    if (syncManager.isClient() && this.texture != null) {
                         this.texture.updateTexture(packet);
                     }
                     this.addOresToList(packet.data);
@@ -178,7 +187,16 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         if (!Objects.equals(this.selected, uniqueID)) {
             this.selected = uniqueID;
 
-            if (isClient) {
+            if (isClient && this.texture != null) {
+                this.texture.loadToImage();
+            }
+        }
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        if (this.darkMode != darkMode) {
+            this.darkMode = darkMode;
+            if (this.texture != null) {
                 this.texture.loadToImage();
             }
         }
@@ -207,6 +225,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     }
 
     private @Nullable WaypointItem getClickedVein(double mouseX, double mouseY) {
+        if (this.texture == null) return null;
         int chunkX = (int) (mouseX - getArea().x()) / 16;
         int chunkZ = (int) (mouseY - getArea().y()) / 16;
         int offsetX = (int) (mouseX - getArea().x()) % 16;
