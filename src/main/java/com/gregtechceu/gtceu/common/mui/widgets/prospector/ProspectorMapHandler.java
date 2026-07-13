@@ -67,6 +67,7 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
     private @Nullable String selected = null;
     private final Set<T> items = new HashSet<>();
     private int chunkIndex = 0;
+    private String lastSearch = "";
 
     public ProspectorMapHandler(ProspectorMode<T> mode, int chunkRadius, int scanInterval,
                                 StringValue searchValue, DynamicSyncedWidget<?> searchListWidget,
@@ -108,6 +109,13 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                             .collapseDisabledChildren()
                             .expanded()
                             .sizeRel(1f)
+                            .onUpdateListener(list -> {
+                                String current = searchValue.getStringValue();
+                                if (!Objects.equals(current, this.lastSearch)) {
+                                    this.lastSearch = current;
+                                    list.getScrollData().scrollTo(list.getScrollArea(), 0);
+                                }
+                            })
                             .children(this.items, item -> {
                                 String uniqueId = mode.getUniqueId(item);
                                 Component description = mode.getDescription(item);
@@ -126,7 +134,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
                                             if (Strings.isNullOrEmpty(searched)) {
                                                 return true;
                                             } else {
-                                                return description.getString().toLowerCase().contains(searched);
+                                                return description.getString().toLowerCase()
+                                                        .contains(searched.toLowerCase());
                                             }
                                         })
                                         .child(Flow.row()
