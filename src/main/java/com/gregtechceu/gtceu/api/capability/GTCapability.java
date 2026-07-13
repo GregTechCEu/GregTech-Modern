@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.common.capability.MedicalConditionTracker;
 
 import net.minecraftforge.common.capabilities.Capability;
@@ -19,8 +18,6 @@ public class GTCapability {
     public static final Capability<IControllable> CAPABILITY_CONTROLLABLE = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<IElectricItem> CAPABILITY_ELECTRIC_ITEM = CapabilityManager
-            .get(new CapabilityToken<>() {});
-    public static final Capability<IMaintenanceMachine> CAPABILITY_MAINTENANCE_MACHINE = CapabilityManager
             .get(new CapabilityToken<>() {});
     public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager
             .get(new CapabilityToken<>() {});
@@ -43,7 +40,6 @@ public class GTCapability {
         event.register(IWorkable.class);
         event.register(IControllable.class);
         event.register(IElectricItem.class);
-        event.register(IMaintenanceMachine.class);
         event.register(ILaserContainer.class);
         event.register(IOpticalComputationProvider.class);
         event.register(IDataAccessHatch.class);

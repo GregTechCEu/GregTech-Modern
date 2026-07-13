@@ -74,7 +74,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
         tag.putInt("mBPerCycle", mBPerCycle);
         tag.putInt("ticksPerCycle", ticksPerCycle);
     }

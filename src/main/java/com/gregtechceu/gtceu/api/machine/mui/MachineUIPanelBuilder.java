@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.machine.mui;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IHasBatterySlot;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
@@ -78,15 +76,8 @@ public class MachineUIPanelBuilder {
         var attachMain = panel.getMainContents();
 
         if (addDefaultConfigurators) {
-            if (machine instanceof IHasCircuitSlot circuitSlot && circuitSlot.isCircuitSlotEnabled()) {
-                attachLeft.child(GTMuiWidgets.createCircuitSlotPanel(circuitSlot, panel, syncManager));
-            }
-
             if (machine instanceof IControllable controllable) {
                 attachRight.child(GTMuiWidgets.createPowerButton(controllable));
-            }
-            if (machine instanceof IHasBatterySlot batterySlot) {
-                attachRight.child(GTMuiWidgets.createBatterySlot(batterySlot, syncManager));
             }
             if (machine instanceof IVoidable voidable && machine instanceof WorkableMultiblockMachine) {
                 attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
@@ -101,11 +92,10 @@ public class MachineUIPanelBuilder {
         mainContents.accept(attachMain);
 
         if (addTraitConfigurators) {
-            for (var trait : machine.getTraitHolder().getAllTraits()) {
-                if (trait instanceof IAttachConfiguratorsTrait attachConfiguratorsTrait) {
-                    attachConfiguratorsTrait.attachLeftConfigurators(attachLeft, panel, syncManager);
-                    attachConfiguratorsTrait.attachRightConfigurators(attachRight, panel, syncManager);
-                }
+            for (var attachConfiguratorsTrait : machine.getTraitHolder()
+                    .getTraitsByInterface(IAttachConfiguratorsTrait.class)) {
+                attachConfiguratorsTrait.attachLeftConfigurators(attachLeft, panel, syncManager);
+                attachConfiguratorsTrait.attachRightConfigurators(attachRight, panel, syncManager);
             }
         }
 
@@ -142,7 +132,8 @@ public class MachineUIPanelBuilder {
                             .tooltipDynamic(r -> r.addLine(Component.translatable("gtceu.multiblock.steam.steam_stored",
                                     FormattingUtil.formatNumbers(steamAmount.getIntValue()),
                                     FormattingUtil.formatNumbers(steamCapacity.getIntValue())))))
-                    .leftRel(0.0f).left(-36).top(4));
+                    .leftRel(0.0f).left(-36).top(4)
+                    .excludeAreaInRecipeViewer());
         }
 
         for (var cover : machine.getCoverContainer().getCovers()) {

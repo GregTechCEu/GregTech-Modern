@@ -53,7 +53,7 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<MachineCoverContainer> getTraitType() {
         return TYPE;
     }
 
@@ -90,10 +90,10 @@ public class MachineCoverContainer extends MachineTrait
 
     @Override
     public @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                  Set<GTToolType> toolTypes, Direction side) {
+                                                  Set<GTToolType> toolTypes, ItemStack held, Direction side) {
         var cover = getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, pos, state, toolTypes, side);
+            return cover.sideTips(player, pos, state, toolTypes, held, side);
         }
         return null;
     }
