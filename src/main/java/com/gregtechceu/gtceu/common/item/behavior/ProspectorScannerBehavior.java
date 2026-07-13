@@ -125,8 +125,8 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
                         .top(4).leftRelAnchor(0f, 1f)
                         .decoration()
                         .stateBackground(GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL)
-                        .value(new BoolValue.Dynamic(mapHandler.getTexture()::isDarkMode,
-                                mapHandler.getTexture()::setDarkMode)))
+                        .value(new BoolValue.Dynamic(mapHandler::isDarkMode,
+                                mapHandler::setDarkMode)))
                 .child(Flow.row()
                         .childPadding(10)
                         .margin(6)

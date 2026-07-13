@@ -47,9 +47,6 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
     private final int imageHeight;
     public final T[][][] data;
 
-    @Getter
-    private boolean darkMode = true;
-
     public ProspectorMapTexture(ProspectorMapHandler<T> mapHandler) {
         this.mapHandler = mapHandler;
 
@@ -102,7 +99,7 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
                 }
                 if (!drewColor) {
                     // draw background color
-                    image.setPixelRGBA(x, z, (darkMode ? 0xFF666666 : 0xFFFFFFFF));
+                    image.setPixelRGBA(x, z, (mapHandler.isDarkMode() ? 0xFF666666 : 0xFFFFFFFF));
                 }
                 // draw grid
                 if (x % 16 == 0 || z % 16 == 0) {
@@ -169,11 +166,4 @@ public class ProspectorMapTexture<T> extends AbstractTexture implements IDrawabl
 
     @Override
     public void load(ResourceManager resourceManager) throws IOException {}
-
-    public void setDarkMode(boolean darkMode) {
-        if (this.darkMode != darkMode) {
-            this.darkMode = darkMode;
-            loadToImage();
-        }
-    }
 }
