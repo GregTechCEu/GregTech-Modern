@@ -83,7 +83,7 @@ public class MachineUIPanelBuilder {
                 attachRight.child(GTMuiWidgets.createVoidingButton(voidable));
             }
             if (machine instanceof IDistinctPart distinctPart) {
-                attachRight.child(GTMuiWidgets.createDistinctnessButton(distinctPart));
+                attachRight.childIf(distinctPart.supportsDistinct(), () -> GTMuiWidgets.createDistinctnessButton(distinctPart));
             }
         }
 
