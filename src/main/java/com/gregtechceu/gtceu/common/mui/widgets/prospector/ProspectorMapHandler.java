@@ -56,10 +56,8 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
     private final StringValue searchValue;
     private final DynamicSyncHandler syncHandler;
-    /**
-     * Client-only render texture. {@code null} on the dedicated server, where the widget tree is only
-     * built to discover sync handlers and the client-only {@link ProspectorMapTexture} must not be loaded.
-     */
+
+    // client-only; null on server side
     private @Nullable ProspectorMapTexture<T> texture;
     @Getter
     private boolean darkMode = true;
@@ -85,8 +83,6 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
         this.player = player;
         this.playerChunkPos = player.chunkPosition();
 
-        // The texture is purely a client-side render concern. Only touch the class on the physical client so
-        // the dedicated server can still build this widget tree (to find sync handlers) without loading it.
         if (GTCEu.isClientSide()) {
             this.texture = new ProspectorMapTexture<>(this);
             background(this.texture);
