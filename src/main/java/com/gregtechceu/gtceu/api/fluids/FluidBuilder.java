@@ -296,20 +296,24 @@ public class FluidBuilder {
     }
 
     private void determineTextures(@NotNull Material material, @Nullable FluidStorageKey key, @NotNull String modid) {
-        if (!material.isNull() && key != null) {
-            if (hasCustomStill) {
-                still = new ResourceLocation(modid, "block/fluids/fluid." + name);
+        if (still == null) {
+            if (!material.isNull() && key != null) {
+                if (hasCustomStill) {
+                    still = ResourceLocation.tryBuild(modid, "block/fluids/fluid." + name);
+                } else {
+                    still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+                }
             } else {
-                still = key.getIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+                still = ResourceLocation.tryBuild(modid, "block/fluids/fluid." + name);
             }
-        } else {
-            still = new ResourceLocation(modid, "block/fluids/fluid." + name);
         }
 
-        if (hasCustomFlowing) {
-            flowing = new ResourceLocation(modid, "block/fluids/fluid." + name + "_flow");
-        } else {
-            flowing = still;
+        if (flowing == null) {
+            if (hasCustomFlowing) {
+                flowing = ResourceLocation.tryBuild(modid, "block/fluids/fluid." + name + "_flow");
+            } else {
+                flowing = still;
+            }
         }
     }
 
