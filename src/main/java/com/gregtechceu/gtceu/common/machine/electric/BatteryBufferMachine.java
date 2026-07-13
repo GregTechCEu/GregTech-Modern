@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import brachy.modularui.screen.RichTooltip;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
@@ -21,7 +20,6 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
@@ -32,9 +30,9 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import brachy.modularui.api.drawable.IDrawable;
-import brachy.modularui.api.drawable.Text;
 import brachy.modularui.drawable.progress.ProgressDrawable;
 import brachy.modularui.factory.PosGuiData;
+import brachy.modularui.screen.RichTooltip;
 import brachy.modularui.screen.UISettings;
 import brachy.modularui.value.sync.DoubleSyncValue;
 import brachy.modularui.value.sync.PanelSyncManager;
@@ -170,8 +168,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     private void getRichTooltip(RichTooltip r) {
         if (GTUtil.isShiftDown()) {
             r.addLine(Component.literal(
-                "%s/%s EU".formatted(
-                        energyContainer.getEnergyStored(), energyContainer.getEnergyCapacity())));
+                    "%s/%s EU".formatted(
+                            energyContainer.getEnergyStored(), energyContainer.getEnergyCapacity())));
         } else {
             r.addLine(Component.literal(
                     "%s/%s EU".formatted(
