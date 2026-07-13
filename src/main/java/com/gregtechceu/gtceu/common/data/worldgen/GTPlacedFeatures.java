@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.common.worldgen.modifier.BiomeDependentPlacement;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.worldgen.modifier.RubberTreeChancePlacement;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -33,7 +33,7 @@ public class GTPlacedFeatures {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
 
         PlacementUtils.register(ctx, RUBBER_CHECKED, featureLookup.getOrThrow(GTConfiguredFeatures.RUBBER),
-                new BiomePlacement(List.of(
+                new BiomeDependentPlacement(List.of(
                         new BiomeWeightModifier(() -> biomeLookup.getOrThrow(CustomTags.IS_SWAMP), 50))),
                 RubberTreeChancePlacement.INSTANCE,
                 InSquarePlacement.spread(),

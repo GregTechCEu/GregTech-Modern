@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen.modifier;
+package com.gregtechceu.gtceu.common.worldgen.modifier;
 
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 
@@ -14,14 +14,14 @@ import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BiomePlacement extends PlacementModifier {
+public class BiomeDependentPlacement extends PlacementModifier {
 
-    public static final Codec<BiomePlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
-            .xmap(BiomePlacement::new, placement -> placement.modifiers).codec();
+    public static final Codec<BiomeDependentPlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
+            .xmap(BiomeDependentPlacement::new, placement -> placement.modifiers).codec();
 
     public final List<BiomeWeightModifier> modifiers;
 
-    public BiomePlacement(List<BiomeWeightModifier> modifiers) {
+    public BiomeDependentPlacement(List<BiomeWeightModifier> modifiers) {
         this.modifiers = modifiers;
     }
 
@@ -40,6 +40,6 @@ public class BiomePlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<?> type() {
-        return GTPlacementModifiers.BIOME_PLACEMENT.get();
+        return GTPlacementModifiers.BIOME_DEPENDENT.get();
     }
 }
