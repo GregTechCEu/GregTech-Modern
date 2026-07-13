@@ -118,7 +118,12 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
         ProspectorMapHandler<?> mapHandler = new ProspectorMapHandler<>(mode, this.radius, 1, searchValue, searchList,
                 panelSyncManager, guiData.getPlayer());
 
-        return ModularPanel.defaultPanel("prospector_scanner", 332, 200)
+        // The map renders at a fixed 16px per chunk, so its size depends on the scanner tier's radius.
+        // The panel was hand-tuned for the LuV scanner (176px map -> 332x200 panel); the sidebar and
+        // paddings are identical for every tier, so keep that fixed overhead and scale the panel with the
+        // map. Otherwise lower tiers get a tiny map floating in an oversized LuV-sized panel.
+        int mapSize = (this.radius * 2 - 1) * 16;
+        return ModularPanel.defaultPanel("prospector_scanner", mapSize + 156, mapSize + 24)
                 .margin(4)
                 .child(new ToggleButton()
                         .size(18)
