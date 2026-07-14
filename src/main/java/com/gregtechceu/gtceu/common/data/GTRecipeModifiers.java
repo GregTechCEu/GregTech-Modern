@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,7 @@ import net.minecraft.server.level.ServerLevel;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,6 +36,8 @@ import static com.gregtechceu.gtceu.api.GTValues.ULV;
 import static com.gregtechceu.gtceu.api.GTValues.V;
 import static com.gregtechceu.gtceu.api.recipe.OverclockingLogic.*;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class GTRecipeModifiers {
 
     /**
@@ -67,7 +71,7 @@ public class GTRecipeModifiers {
             public void buildPreviewUIPanel() {}
 
             @Override
-            public @NotNull ModifierFunction getModifier(@NotNull GTRecipe baseRecipe, int minVoltageTier, int selectedVoltageTier) {
+            public ModifierFunction getModifier(GTRecipe baseRecipe, int minVoltageTier, int selectedVoltageTier) {
 
                 EnergyStack inputEUt = baseRecipe.getInputEUt();
 

@@ -9,9 +9,12 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.google.common.math.IntMath;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.RoundingMode;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -23,7 +26,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @FunctionalInterface
 public interface OverclockingLogic {
 
-    OCResult runOverclockingLogic(@NotNull OCParams ocParams, long maxVoltage);
+    OCResult runOverclockingLogic(OCParams ocParams, long maxVoltage);
 
     double STD_VOLTAGE_FACTOR = 4.0;
     double PERFECT_HALF_VOLTAGE_FACTOR = 2.0;
@@ -61,13 +64,14 @@ public interface OverclockingLogic {
     /**
      * Determines overclocking parameters from the given arguments, runs the overclock, and returns a ModifierFunction
      * 
-     * @param machine        machine
+     * @param machine        machine (can be null if shouldParallel is false)
      * @param recipe         recipe
      * @param maxVoltage     max overclock voltage
      * @param shouldParallel whether the OC Logic should parallel or not
      * @return A {@link ModifierFunction} describing how the OC application should modify the recipe
      */
-    default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage,
+    @Contract("null, _, _, true -> fail")
+    default @NotNull ModifierFunction getModifier(@Nullable MetaMachine machine, GTRecipe recipe, long maxVoltage,
                                                   boolean shouldParallel) {
         long EUt = RecipeHelper.getRealEUt(recipe).getTotalEU();
         if (EUt == 0) return ModifierFunction.IDENTITY;
@@ -82,6 +86,7 @@ public interface OverclockingLogic {
         if (!shouldParallel || this == PERFECT_OVERCLOCK || this == NON_PERFECT_OVERCLOCK) { // don't parallel
             maxParallels = 1;
         } else {
+            Objects.requireNonNull(machine, "Cannot calculate parallels if machine is null");
             // lg = floor(log_4(duration)), which is how many OCs it takes to get duration < 4 with perfect duration
             // factor
             // If OCs <= lg, duration probably won't go below 4
@@ -98,12 +103,14 @@ public interface OverclockingLogic {
 
         OCParams params = new OCParams(EUt, recipe.duration, OCs, maxParallels);
         OCResult result = runOverclockingLogic(params, maxVoltage);
+
         return result.toModifier();
     }
 
     default @NotNull ModifierFunction getModifier(MetaMachine machine, GTRecipe recipe, long maxVoltage) {
         return getModifier(machine, recipe, maxVoltage, true);
     }
+
 
     /**
      * Standard overclocking algorithm with no sub-tick behavior.
