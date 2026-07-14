@@ -5437,6 +5437,7 @@ A few regexes for fixing all the MCMeta files is follows, run them in order:</p>
 <li><code>GTUtil.getMoltenFluid(Material)</code> has been moved to <code>Material.getHotFluid()</code>.</li>
 <li><code>ICopyable::copyConfig</code>'s <code>CompoundTag</code> argument should now be mutated by reference instead of a new one returned (and thus, the return type has been changed to <code>void</code>).</li>
 <li>Tiered Chance Boosting has been formally removed from the API (as it was deprecated in v7.0.) <code>ChancedInput</code> and <code>ChancedOutput</code> kubeJS calls will throw errors if they still had chance boost values as arguments.</li>
+<li>Any custom <code>IDistinctPart</code>'s will have to implement <code>supportsDistinct</code> if they don't extend <code>ItemBusPartMachine</code>.</li>
 </ul>
 
 
