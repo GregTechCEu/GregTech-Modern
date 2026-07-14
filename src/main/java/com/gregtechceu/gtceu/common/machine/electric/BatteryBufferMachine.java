@@ -152,10 +152,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 .value(energyPercentage)
                 .marginLeft(5)
                 .size(18, 60)
-                .addTooltipLine(Text.dynamic(() -> Component.literal(
+                .tooltipDynamic(tooltip -> tooltip.add(Text.dynamic(() -> Component.literal(
                         "%s/%s EU".formatted(
                                 GTStringUtils.formatInt(energyContainer.getEnergyStored()),
-                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity()))))))
+                                GTStringUtils.formatInt(energyContainer.getEnergyCapacity())))))))
                 .child(GTMuiMachineUtil.createSlotGroupFromInventory(
                         batteryInventory, "batteries",
                         inventorySize, 'B',
