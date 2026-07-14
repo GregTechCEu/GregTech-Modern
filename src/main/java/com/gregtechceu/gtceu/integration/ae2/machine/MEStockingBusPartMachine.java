@@ -310,7 +310,7 @@ public class MEStockingBusPartMachine extends MEInputBusPartMachine implements I
         public void setStockingBusPartMachine(@Nullable MEStockingBusPartMachine stockingBusPartMachine) {
             this.stockingBusPartMachine = stockingBusPartMachine;
             for (var slot : inventory) {
-                ((ExportOnlyAEStockingItemSlot)(slot)).setStockingBusPartMachine(stockingBusPartMachine);
+                ((ExportOnlyAEStockingItemSlot) (slot)).setStockingBusPartMachine(stockingBusPartMachine);
             }
         }
 
