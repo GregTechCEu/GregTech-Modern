@@ -91,12 +91,10 @@ Assure that the material is registered with a liquid before attempting to replac
     Depending on the way your fluid is registered you may need to change how you pass the `Fluid` argument, check how it is registered in the mod you are working with.
 
 ```java title="ExampleMaterials.java"
-import static com.gregtechceu.gtceu.common.data.GTFluids.handleNonMaterialFluids;
-
 public static void register() {
-    EXAMPLE_MATERIAL =  = new Material.Builder(your_mod_id.id("EXAMPLE_MATERIAL"))
-        .liquid().buildAndRegister();
+    GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
+        .liquid(new FluidBuilder()).buildAndRegister();
 
-    handleNonMaterialFluids(EXAMPLE_MATERIAL, ExampleFluidRegistry.EXAMPLE_FLUID_SOURCE::get);
+    GTFluids.handleNonMaterialFluids(GLUGG_BRINE, PVFluidRegistry.BRINE_FLUID_SOURCE::get);
 }
 ```
