@@ -78,7 +78,7 @@ public class BlockHighlightRenderer {
                             public @Nullable UITexture sideTips(@NotNull Player player, @NotNull BlockPos pos,
                                                                 @NotNull BlockState state,
                                                                 @NotNull Set<GTToolType> toolTypes,
-                                                                @NotNull Direction side) {
+                                                                ItemStack held, @NotNull Direction side) {
                                 return behavior.showSideTip(state, side) ? GTGuiTextures.TOOL_FRONT_FACING_ROTATION :
                                         null;
                             }
@@ -93,10 +93,10 @@ public class BlockHighlightRenderer {
                 if (gridHighlight.shouldRenderGrid(player, blockPos, state, held, toolType)) {
                     final IToolGridHighlight finalGridHighlight = gridHighlight;
                     drawGridOverlays(poseStack, multiBufferSource, cameraPos, target,
-                            side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, side));
+                            side -> finalGridHighlight.sideTips(player, blockPos, state, toolType, held, side));
                 } else {
                     Direction facing = target.getDirection();
-                    var texture = gridHighlight.sideTips(player, blockPos, state, toolType, facing);
+                    var texture = gridHighlight.sideTips(player, blockPos, state, toolType, held, facing);
                     if (texture != null) {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();
@@ -189,6 +189,11 @@ public class BlockHighlightRenderer {
         Direction right = RelativeDirection.RIGHT.applyDirection(front);
         Direction top = RelativeDirection.UP.applyDirection(front);
         Direction bottom = RelativeDirection.DOWN.applyDirection(front);
+        if (front.getAxis() == Direction.Axis.Y) {
+            Direction tmp = left;
+            left = right;
+            right = tmp;
+        }
 
         Quaternionfc rotation = getRotation(Direction.SOUTH, front);
         topRight.rotate(rotation);

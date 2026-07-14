@@ -182,22 +182,22 @@ public class GTOreByProduct {
         } else {
             addToOutputs(byproducts[0], TagPrefix.dust, 1);
         }
-        addChance(1400, 0);
+        addChance(1400);
 
         // macerate crushed -> impure
         addToOutputs(material, TagPrefix.dustImpure, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, byproductMultiplier);
-        addChance(1400, 0);
+        addChance(1400);
 
         // centrifuge impure -> dust
         addToOutputs(material, TagPrefix.dust, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, 1);
-        addChance(1111, 0);
+        addChance(1111);
 
         // ore wash crushed -> crushed purified
         addToOutputs(material, TagPrefix.crushedPurified, 1);
         addToOutputs(byproducts[0], TagPrefix.dust, 1);
-        addChance(3333, 0);
+        addChance(3333);
         FluidTagList tagList = new FluidTagList();
         tagList.add(GTMaterials.Water.getFluidTag(), 1000, null);
         tagList.add(GTMaterials.DistilledWater.getFluidTag(), 100, null);
@@ -206,22 +206,22 @@ public class GTOreByProduct {
         // TC crushed/crushed purified -> centrifuged
         addToOutputs(material, TagPrefix.crushedRefined, 1);
         addToOutputs(byproducts[1], TagPrefix.dust, byproductMultiplier);
-        addChance(3333, 0);
+        addChance(3333);
 
         // macerate centrifuged -> dust
         addToOutputs(material, TagPrefix.dust, 1);
         addToOutputs(byproducts[2], TagPrefix.dust, 1);
-        addChance(1400, 0);
+        addChance(1400);
 
         // macerate crushed purified -> purified
         addToOutputs(material, TagPrefix.dustPure, 1);
         addToOutputs(byproducts[1], TagPrefix.dust, 1);
-        addChance(1400, 0);
+        addChance(1400);
 
         // centrifuge purified -> dust
         addToOutputs(material, TagPrefix.dust, 1);
         addToOutputs(byproducts[1], TagPrefix.dust, 1);
-        addChance(1111, 0);
+        addChance(1111);
 
         // cauldron/simple washer
         addToOutputs(material, TagPrefix.crushed, 1);
@@ -237,7 +237,7 @@ public class GTOreByProduct {
         if (hasChemBath) {
             addToOutputs(material, TagPrefix.crushedPurified, 1);
             addToOutputs(byproducts[3], TagPrefix.dust, byproductMultiplier);
-            addChance(7000, 0);
+            addChance(7000);
             fluidInputs.add(FluidTagList.of(washedIn.first().getFluidTag(), washedIn.secondInt(), null));
         } else {
             addEmptyOutputs(2);
@@ -255,9 +255,9 @@ public class GTOreByProduct {
 
             addToOutputs(material, TagPrefix.dust, 1);
             addToOutputs(separatedInto.get(0), TagPrefix.dust, 1);
-            addChance(1000, 0);
+            addChance(1000);
             addToOutputs(separatedStack2);
-            addChance(prefix == TagPrefix.dust ? 500 : 2000, 0);
+            addChance(prefix == TagPrefix.dust ? 500 : 2000);
         } else {
             addEmptyOutputs(3);
         }
@@ -269,23 +269,23 @@ public class GTOreByProduct {
             ItemStack chippedStack = ChemicalHelper.get(TagPrefix.gemChipped, material);
 
             addToOutputs(material, TagPrefix.gemExquisite, 1);
-            addGemChance(300, 0, 500, 0, highOutput);
+            addGemChance(300, 500, highOutput);
             addToOutputs(material, TagPrefix.gemFlawless, 1);
-            addGemChance(1000, 0, 1500, 0, highOutput);
+            addGemChance(1000, 1500, highOutput);
             addToOutputs(material, TagPrefix.gem, 1);
-            addGemChance(3500, 0, 5000, 0, highOutput);
+            addGemChance(3500, 5000, highOutput);
             addToOutputs(material, TagPrefix.dustPure, 1);
-            addGemChance(5000, 0, 2500, 0, highOutput);
+            addGemChance(5000, 2500, highOutput);
 
             if (!flawedStack.isEmpty()) {
                 addToOutputs(flawedStack);
-                addGemChance(2500, 0, 2000, 0, highOutput);
+                addGemChance(2500, 2000, highOutput);
             } else {
                 addEmptyOutputs(1);
             }
             if (!chippedStack.isEmpty()) {
                 addToOutputs(chippedStack);
-                addGemChance(3500, 0, 3000, 0, highOutput);
+                addGemChance(3500, 3000, highOutput);
             } else {
                 addEmptyOutputs(1);
             }
@@ -299,15 +299,8 @@ public class GTOreByProduct {
             if (chances.containsKey(slotIndex)) {
                 Content entry = chances.get(slotIndex);
                 float chance = 100 * (float) entry.chance() / entry.maxChance();
-                if (entry.tierChanceBoost() != 0) {
-                    float boost = entry.tierChanceBoost() / 100.0f;
-                    tooltip.addLine(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_base", chance));
-                    tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_tier_boost_plus", boost));
-                } else {
-                    tooltip.addLine(
-                            FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
-                }
+                tooltip.addLine(
+                        FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_no_boost", chance));
             }
         };
     }
@@ -351,18 +344,18 @@ public class GTOreByProduct {
         itemInputs.add(ItemStackList.of(stack));
     }
 
-    private void addChance(int base, int tier) {
+    private void addChance(int base) {
         // this is solely for the chance overlay and tooltip, neither of which care about the ItemStack
         chances.put(currentSlot - 1,
-                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue(), tier));
+                new Content(ItemStack.EMPTY, base, ChanceLogic.getMaxChancedValue()));
     }
 
     // make the code less :weary:
-    private void addGemChance(int baseLow, int tierLow, int baseHigh, int tierHigh, boolean high) {
+    private void addGemChance(int baseLow, int baseHigh, boolean high) {
         if (high) {
-            addChance(baseHigh, tierHigh);
+            addChance(baseHigh);
         } else {
-            addChance(baseLow, tierLow);
+            addChance(baseLow);
         }
     }
 }

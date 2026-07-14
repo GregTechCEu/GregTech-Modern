@@ -161,7 +161,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             .unmodifiableList(workerHandlerLists);
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
-        super(info, IO.IN);
+        super(info, IO.IN, new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
 
@@ -735,7 +735,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
                         Component.literal(customName),
                         Collections.emptyList());
             } else {
-                ItemStack circuitStack = isHasCircuitSlot() ? circuitInventory.storage.getStackInSlot(0) :
+                ItemStack circuitStack = circuitSlot.isEnabled() ? circuitSlot.storage.getStackInSlot(0) :
                         ItemStack.EMPTY;
                 int circuitConfiguration = circuitStack.isEmpty() ? -1 :
                         IntCircuitBehaviour.getCircuitConfiguration(circuitStack);

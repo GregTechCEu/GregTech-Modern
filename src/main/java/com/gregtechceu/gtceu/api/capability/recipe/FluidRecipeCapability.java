@@ -2,12 +2,16 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntProviderFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.*;
@@ -130,7 +134,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         for (var content : outputContents) {
             var ing = this.of(content.content());
             int amount;
-            if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
+            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
             else amount = ing.getAmount();
             maxAmount = Math.max(maxAmount, amount);
             ingredients.add(ing);
@@ -179,7 +183,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             FluidIngredient ing = of(content.content());
 
             int amount;
-            if (ing instanceof IntProviderFluidIngredient provider) amount = provider.getCountProvider().getMaxValue();
+            if (ing instanceof IRangedIngredient provider) amount = provider.getMaxRoll();
             else amount = ing.getAmount();
 
             if (content.chance() == 0) {
@@ -314,8 +318,8 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     // Maps fluids to a FluidEntryList for XEI: either a FluidTagList or a FluidStackList
     public static FluidEntryList mapIngredientToEntryList(FluidIngredient ingredient) {
         int amount;
-        if (ingredient instanceof IntProviderFluidIngredient) {
-            amount = 1;
+        if (ingredient instanceof IRangedIngredient provider) {
+            amount = provider.getMaxRoll();
         } else {
             amount = ingredient.getAmount();
         }

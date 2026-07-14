@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.placeholder.MultiLineComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -165,6 +165,7 @@ public class TestUtils {
      * Ideally this doesn't need to happen, but it seems not doing this makes the multiblock tests flakey
      */
     public static void formMultiblock(GameTestHelper helper, MultiblockControllerMachine controller) {
+        if (controller.isFormed()) return;
         controller.checkAndFormStructure();
         helper.assertTrue(controller.isFormed(),
                 "Multiblock failed to form: " + controller + " at " + controller.getBlockPos());

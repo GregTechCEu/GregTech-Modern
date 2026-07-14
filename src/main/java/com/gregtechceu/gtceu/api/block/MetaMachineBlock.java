@@ -120,12 +120,8 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                     machine.setOwnerUUID(sPlayer.getUUID());
                 }
 
-                if (machine instanceof IDropSaveMachine dropSaveMachine) {
-                    CompoundTag tag = pStack.getTag();
-                    if (tag != null) {
-                        dropSaveMachine.loadFromItem(tag);
-                    }
-                }
+                CompoundTag tag = pStack.getTag();
+                if (tag != null) machine.loadFromItem(tag);
             }
         }
     }
@@ -187,10 +183,8 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
     @Override
     public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack itemStack = super.getCloneItemStack(level, pos, state);
-        if (MetaMachine.getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine &&
-                dropSaveMachine.savePickClone()) {
-            dropSaveMachine.saveToItem(itemStack.getOrCreateTag());
-        }
+        var machine = MetaMachine.getMachine(level, pos);
+        if (machine != null) machine.saveToItem(itemStack.getOrCreateTag(), true);
         return itemStack;
     }
 
@@ -243,13 +237,11 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
         BlockEntity be = builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY);
         if (be instanceof MetaMachine machine) {
             machine.modifyDrops(drops);
-            if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
-                for (ItemStack drop : drops) {
-                    if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        dropSaveMachine.saveToItem(drop.getOrCreateTag());
-                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
-                        break;
-                    }
+            for (ItemStack drop : drops) {
+                if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
+                    machine.saveToItem(drop.getOrCreateTag(), false);
+                    // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                    break;
                 }
             }
         }

@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -157,6 +157,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     @Override
     public void onMachineLoad() {
+        super.onMachineLoad();
+
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,

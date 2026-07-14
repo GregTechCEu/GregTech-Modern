@@ -8,6 +8,8 @@ import com.gregtechceu.gtceu.api.machine.trait.feature.IAttachConfiguratorsTrait
 import com.gregtechceu.gtceu.api.machine.trait.feature.IFrontFacingTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IInteractionTrait;
 import com.gregtechceu.gtceu.api.machine.trait.feature.IRenderingTrait;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -46,6 +48,9 @@ import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
 
+/**
+ * A machine trait which handles the auto output behaviour that most singleblock machines use.
+ */
 public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, IInteractionTrait, IFrontFacingTrait,
                              IAttachConfiguratorsTrait {
 
@@ -59,7 +64,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     @SaveField
     @SyncToClient
     @RerenderOnChanged
-    protected @Nullable Direction itemOutputDirection = Direction.UP, fluidOutputDirection = Direction.UP;
+    protected @Nullable Direction itemOutputDirection = null, fluidOutputDirection = null;
     @Getter
     @SaveField
     @SyncToClient
@@ -127,9 +132,10 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     public void onMachineLoad() {
         super.onMachineLoad();
 
-        this.itemOutputDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
+        Direction defaultDirection = getMachine().hasFrontFacing() ? getMachine().getFrontFacing().getOpposite() :
                 Direction.UP;
-        this.fluidOutputDirection = itemOutputDirection;
+        if (this.itemOutputDirection == null) this.itemOutputDirection = defaultDirection;
+        if (this.fluidOutputDirection == null) this.fluidOutputDirection = defaultDirection;
 
         getMachine().scheduleForNextServerTick(this::updateFluidOutputSubscription);
         getMachine().scheduleForNextServerTick(this::updateItemOutputSubscription);
@@ -213,7 +219,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
                     (getMachine().hasFrontFacing() && getMachine().getFrontFacing() == outputFacing))
                 return;
             this.fluidOutputDirection = outputFacing;
-            syncDataHolder.markClientSyncFieldDirty("outputFacingFluids");
+            syncDataHolder.markClientSyncFieldDirty("fluidOutputDirection");
             updateFluidOutputSubscription();
         }
     }
@@ -232,18 +238,14 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
     private boolean shouldKeepItemSubscription() {
         if (!supportsAutoOutputItems()) return false;
 
-        if (!isAutoOutputItems() || getItemOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection()))
-            return false;
-        return true;
+        return isAutoOutputItems() && getItemOutputDirection() != null &&
+                GTTransferUtils.hasAdjacentItemHandler(getLevel(), getBlockPos(), getItemOutputDirection());
     }
 
     private boolean shouldKeepFluidSubscription() {
         if (!supportsAutoOutputFluids()) return false;
-        if (!isAutoOutputFluids() || getFluidOutputDirection() == null ||
-                !GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection()))
-            return false;
-        return true;
+        return isAutoOutputFluids() && getFluidOutputDirection() != null &&
+                GTTransferUtils.hasAdjacentFluidHandler(getLevel(), getBlockPos(), getFluidOutputDirection());
     }
 
     protected void updateItemOutputSubscription() {
@@ -311,7 +313,7 @@ public class AutoOutputTrait extends MachineTrait implements IRenderingTrait, II
 
     @Override
     public @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                  Set<GTToolType> toolTypes, Direction side) {
+                                                  Set<GTToolType> toolTypes, ItemStack held, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isShiftKeyDown()) {
                 if (!getMachine().hasFrontFacing() || side != getMachine().getFrontFacing()) {

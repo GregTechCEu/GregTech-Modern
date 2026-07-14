@@ -523,8 +523,8 @@ public class TestMuiMachine extends MetaMachine implements IMuiMachine {
                                                                 .padding(7)
                                                                 .child(new ItemSlot()
                                                                         .slot(new ModularSlot(this.storageInventory0, 0)
-                                                                                .changeListener(((newItem, onlyAmountChanged, client, init) -> {
-                                                                                    if (client && !onlyAmountChanged) {
+                                                                                .changeListener(((oldItem, newItem, client, init) -> {
+                                                                                    if (client && !ItemStack.isSameItem(oldItem, newItem)) {
                                                                                         dynamicSyncHandler.notifyUpdate(
                                                                                                 packet -> packet.writeItem(newItem));
                                                                                     }

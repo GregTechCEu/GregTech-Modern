@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.integration.recipeviewer.emi.recipe;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeViewerWidget;
 
 import brachy.modularui.integration.emi.EmiStackConverter;
@@ -39,10 +38,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
         var fluids = recipe.getInputContents(FluidRecipeCapability.CAP);
 
         for (var itemContent : items) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(itemContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    itemContent.maxChance();
+            float chance = (float) itemContent.chance() / itemContent.maxChance();
 
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
@@ -51,10 +47,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
         }
 
         for (var fluidContent : fluids) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(fluidContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    fluidContent.maxChance();
+            float chance = (float) fluidContent.chance() / fluidContent.maxChance();
 
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));
@@ -73,10 +66,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
         var fluids = recipe.getOutputContents(FluidRecipeCapability.CAP);
 
         for (var itemContent : items) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(itemContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    itemContent.maxChance();
+            float chance = (float) itemContent.chance() / itemContent.maxChance();
 
             var mapped = ItemRecipeCapability
                     .mapIngredientToEntryList(ItemRecipeCapability.CAP.of(itemContent.content()));
@@ -85,10 +75,7 @@ public class GTEmiRecipe extends ModularUIEmiRecipe {
         }
 
         for (var fluidContent : fluids) {
-            float chance = (float) recipe.recipeType.getChanceFunction()
-                    .getBoostedChance(fluidContent, RecipeHelper.getRecipeEUtTier(recipe),
-                            RecipeHelper.getRecipeEUtTier(recipe)) /
-                    fluidContent.maxChance();
+            float chance = (float) fluidContent.chance() / fluidContent.maxChance();
 
             var mapped = FluidRecipeCapability
                     .mapIngredientToEntryList(FluidRecipeCapability.CAP.of(fluidContent.content()));

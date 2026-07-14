@@ -119,5 +119,7 @@ public class GTNetwork {
         register(SPacketSendWorldID.class, SPacketSendWorldID::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SPacketNotifyCapeChange.class, SPacketNotifyCapeChange::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SCPacketShareProspection.class, SCPacketShareProspection::new, null);
+        register(SPacketStartProspectionShare.class, SPacketStartProspectionShare::new,
+                NetworkDirection.PLAY_TO_CLIENT);
     }
 }

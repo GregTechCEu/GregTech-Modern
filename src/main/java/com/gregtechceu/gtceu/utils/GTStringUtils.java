@@ -32,6 +32,7 @@ public class GTStringUtils {
      * @return the string form of the stack
      */
     @NotNull
+    @SuppressWarnings("deprecation")
     public static String itemStackToString(@NotNull ItemStack stack) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
         return stack.getCount() + "x_" + itemId.getNamespace() + "_" + itemId.getPath();
@@ -50,6 +51,7 @@ public class GTStringUtils {
     }
 
     @NotNull
+    @SuppressWarnings("deprecation")
     public static String fluidStackToString(@NotNull FluidStack stack) {
         ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(stack.getFluid());
         return stack.getAmount() + "x_" + fluidId.getNamespace() + "_" + fluidId.getPath();

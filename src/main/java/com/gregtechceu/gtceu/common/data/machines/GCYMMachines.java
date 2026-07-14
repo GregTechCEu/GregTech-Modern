@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblo
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.PatternPredicate;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.machine.GTMachineInstanceFactories;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.DistillationTowerMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.gcym.*;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
@@ -37,7 +38,6 @@ import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.data.GCYMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GCYMRecipeTypes.ALLOY_BLAST_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.NaquadahAlloy;
 import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -49,7 +49,7 @@ public class GCYMMachines {
 
     public static void init() {}
 
-    public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines("parallel_hatch",
+    public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines(REGISTRATE, "parallel_hatch",
             ParallelHatchPartMachine::new,
             (tier, builder) -> builder
                     .langValue(switch (tier) {
@@ -101,7 +101,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE
-            .multiblock("large_chemical_bath", LargeChemicalBathMachine::new)
+            .multiblock("large_chemical_bath", GTMachineInstanceFactories.LARGE_CHEM_BATH)
             .langValue("Large Chemical Bath")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
@@ -161,7 +161,7 @@ public class GCYMMachines {
             .register();
 
     public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE
-            .multiblock("large_mixer", LargeMixerMachine::new)
+            .multiblock("large_mixer", GTMachineInstanceFactories.LARGE_MIXER)
             .langValue("Large Mixing Vessel")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
@@ -619,7 +619,7 @@ public class GCYMMachines {
                         .build();
             })
             .allowExtendedFacing(false)
-            .partSorter(Comparator.comparingInt(p -> p.self().getBlockPos().getY()))
+            .partSorter(Comparator.comparingInt(p -> p.getBlockPos().getY()))
             .workableCasingModel(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"))
             .register();

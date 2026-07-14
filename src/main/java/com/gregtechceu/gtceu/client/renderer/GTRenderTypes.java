@@ -137,6 +137,17 @@ public class GTRenderTypes extends RenderType {
                     .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false));
 
+    private static final Function<ResourceLocation, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
+        return create("gui_texture_triangle_strip", DefaultVertexFormat.POSITION_COLOR_TEX,
+                VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RenderStateShard.POSITION_COLOR_TEX_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                        .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                        .createCompositeState(false));
+    });
+
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
@@ -177,6 +188,10 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType guiTriangleStrip() {
         return GUI_TRIANGLE_STRIP;
+    }
+
+    public static RenderType guiTriangleStrip(ResourceLocation texture) {
+        return GUI_TEXTURE_TRIANGLE_STRIP.apply(texture);
     }
 
     public static RenderType guiTriangleFan() {
