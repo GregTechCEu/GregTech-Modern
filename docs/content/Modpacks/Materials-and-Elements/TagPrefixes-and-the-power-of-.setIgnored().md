@@ -82,9 +82,9 @@ material is custom, this is done using `GTCEuStartupEvents.registry()`, as depic
 
 Fluids are treated differently to items, their inclusion in a material is a property rather than a TagPrefix or MaterialFlag. 
 This makes replacing the fluid of a material with a fluid that you or another mod have created require a different approach than setIgnored. 
-This is done using `handleNonMaterialFluids()` which can be found in the [``GTFluids`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/GTFluids.java)
+The way to do this is using `GTFluids.handleNonMaterialFluids()` which can be found in the [``GTFluids`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/GTFluids.java)
 
-`.handleNonMaterialFluids()` takes in a `Material` and a `Fluid` or `Supplier<Fluid>` to replace the liquid of the material with the provided fluid.
+`GTFluids.handleNonMaterialFluids()` takes in a `Material` and a `Fluid` or `Supplier<Fluid>` to replace the liquid of the material with the provided fluid.
 Assure that the material is registered with a liquid before attempting to replace it with your new fluid. An example is below.
 
 !!! note "This may differ!"
@@ -95,6 +95,6 @@ public static void register() {
     GLUGG_BRINE = new Material.Builder(MyMod.id("glugg_brine"))
         .liquid(new FluidBuilder()).buildAndRegister();
 
-    GTFluids.handleNonMaterialFluids(GLUGG_BRINE, PVFluidRegistry.BRINE_FLUID_SOURCE::get);
+    GTFluids.handleNonMaterialFluids(GLUGG_BRINE, () -> PVFluidRegistry.BRINE_FLUID_SOURCE.get());
 }
 ```
