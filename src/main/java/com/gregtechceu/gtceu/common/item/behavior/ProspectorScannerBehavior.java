@@ -114,7 +114,7 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
                 panelSyncManager, guiData.getPlayer());
 
         int mapSize = (this.radius * 2 - 1) * 16 + 1;
-        return ModularPanel.defaultPanel("prospector_scanner", mapSize + 156, mapSize + 24)
+        return ModularPanel.defaultPanel("prospector_scanner", mapSize + 152, 200)
                 .margin(4)
                 .child(new ToggleButton()
                         .size(18)
@@ -122,7 +122,8 @@ public class ProspectorScannerBehavior implements IItemUIHolder, IInteractionIte
                         .decoration()
                         .stateBackground(GTGuiTextures.PROGRESS_BAR_SOLAR_STEEL)
                         .value(new BoolValue.Dynamic(mapHandler::isDarkMode,
-                                mapHandler::setDarkMode)))
+                                mapHandler::setDarkMode))
+                        .excludeAreaInRecipeViewer())
                 .child(Flow.row()
                         .childPadding(10)
                         .margin(6)
