@@ -301,15 +301,12 @@ public class ProspectorMapHandler<T> extends Widget<ProspectorMapHandler<T>> imp
 
         BlockPos pos = new BlockPos(x, y, z);
         // If the ores are filtered use its name
-        if (this.getSelected() != null) {
-            for (T item : this.items.values()) {
-                String uniqueId = mode.getUniqueId(item);
-                if (!this.getSelected().equals(uniqueId)) continue;
-
-                Component name = mode.getDescription(item);
-                int color = mode.getItemColor(item);
-                return new WaypointItem(pos, uniqueId, name, color);
-            }
+        T item = this.items.get(this.getSelected());
+        if (item != null) {
+            Component name = mode.getDescription(item);
+            int color = mode.getItemColor(item);
+            String uniqueId = mode.getUniqueId(item);
+            return new WaypointItem(pos, uniqueId, name, color);
         }
 
         // If the cursor is over an ore use its name
