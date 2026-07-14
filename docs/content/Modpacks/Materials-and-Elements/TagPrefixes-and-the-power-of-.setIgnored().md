@@ -76,3 +76,27 @@ GTCEuStartupEvents.materialModification(event => { // (1)
 
 The `Material` for which you are adjusting the TagPrefix must be registered in GTCEu Modern's material registry; if this
 material is custom, this is done using `GTCEuStartupEvents.registry()`, as depicted in these docs.
+
+## What about fluids?
+
+Fluids are treated differently to items, their inclusion in a material is a property rather than a TagPrefix or MaterialFlag. 
+This makes replacing the fluid of a material with a fluid that you or another mod have created require a different approach than setIgnored. 
+This is done using `handleNonMaterialFluids()` which can be found in the [``GTFluids`` class](https://github.com/GregTechCEu/GregTech-Modern/blob/1.20.1/src/main/java/com/gregtechceu/gtceu/common/data/GTFluids.java)
+
+`.handleNonMaterialFluids()` takes in a `Material` and a `Fluid` or `Supplier<Fluid>` to replace the liquid of the material with the provided fluid.
+Assure that the material is registered with a liquid before attempting to replace it with your new fluid. An example is below.
+
+!!! note "This may differ!"
+    Depending on the way your fluid is registered you may need to change how you pass the `Fluid` argument, check how it is registered in the mod you are working with.
+
+```java title="ExampleMaterials.java"
+import static com.gregtechceu.gtceu.common.data.GTFluids.handleNonMaterialFluids;
+
+public static void register() {
+    EXAMPLE_MATERIAL =  = new Material.Builder(your_mod_id.id("EXAMPLE_MATERIAL"))
+        .liquid().buildAndRegister();
+
+    handleNonMaterialFluids(EXAMPLE_MATERIAL, ExampleFluidRegistry.EXAMPLE_FLUID_SOURCE::get);
+
+}
+```
