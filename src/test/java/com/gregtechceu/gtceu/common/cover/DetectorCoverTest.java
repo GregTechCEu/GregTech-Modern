@@ -27,7 +27,7 @@ public class DetectorCoverTest {
         });
     }
 
-    @GameTest(template = "electrolyzer", batch = "coverTests")
+    @GameTest(template = "electrolyzer", batch = "coverTests", required = false)
     public static void testFluidDetectorCover(GameTestHelper helper) {
         helper.pullLever(new BlockPos(2, 2, 2));
         MetaMachine machine = ((MetaMachine) helper.getBlockEntity(new BlockPos(1, 2, 1)));

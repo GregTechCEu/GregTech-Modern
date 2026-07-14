@@ -137,6 +137,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
+    public boolean supportsDistinct() {
+        return !io.support(IO.OUT);
+    }
+
+    @Override
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
