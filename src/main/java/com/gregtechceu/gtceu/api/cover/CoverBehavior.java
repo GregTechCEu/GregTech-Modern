@@ -141,6 +141,9 @@ public abstract class CoverBehavior implements ISyncManaged, IToolGridHighlight,
 
     public final Pair<@Nullable GTToolType, InteractionResult> onToolClick(ExtendedUseOnContext context) {
         var toolType = context.getToolType();
+        if (toolType.isEmpty() && context.getPlayer().isShiftKeyDown()) {
+            return Pair.of(null, onScrewdriverClick(context));
+        }
         if (toolType.contains(GTToolType.SCREWDRIVER)) {
             return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(context));
         } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
