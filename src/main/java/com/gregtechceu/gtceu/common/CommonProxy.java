@@ -253,7 +253,21 @@ public class CommonProxy {
             if (GTCEu.Mods.isKubeJSLoaded()) {
                 KJSEventWrapper.materialModification();
             }
-            // --spacer--
+            // Eagerly create the per-namespace registrates for all material namespaces now, while the
+            // material registry event is being fired (before any vanilla registry event, see GameDataMixin).
+            // If they are instead created lazily during e.g. the BLOCK registry event (by
+            // GTMaterialBlocks#generateMaterialBlocks), their Registrate registration listener is subscribed
+            // to the mod bus *while that same event is being dispatched* and never runs for it, so every
+            // entry queued in that registrate for the in-flight registry is silently never registered.
+            // Dependent entries (e.g. a material block's BlockItem) then crash with
+            // "Trying to access unbound value" and/or leave unregistered intrusive holders that blow up
+            // MappedRegistry#freeze. This happens for any KubeJS material whose namespace is not a loaded
+            // mod (e.g. materials registered under a pack-specific namespace).
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> GTRegistrate
+                    .create(namespace, false)
+                    .registerEventListeners(ModList.get().getModContainerById(namespace)
+                            .map(ModContainer::getEventBus)
+                            .orElse(modBus)));
         } else if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
