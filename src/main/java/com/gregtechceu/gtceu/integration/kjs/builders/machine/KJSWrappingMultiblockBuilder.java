@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -75,7 +75,8 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     }
 
     public static MultiblockMachineBuilder<?, WorkableElectricMultiblockMachine, ?> createKJSMulti(ResourceLocation id) {
-        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
+        return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+                id.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
                 WorkableElectricMultiblockMachine::new);
@@ -83,7 +84,8 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
 
     public static MultiblockMachineBuilder<?, MultiblockControllerMachine, ?> createKJSMulti(ResourceLocation id,
                                                                                              KJSTieredMachineBuilder.CreationFunction<? extends MultiblockControllerMachine> machine) {
-        return new MultiblockMachineBuilder<>(GTRegistration.REGISTRATE, id.getPath(),
+        return new MultiblockMachineBuilder<>(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()),
+                id.getPath(),
                 MetaMachineBlock::new,
                 MetaMachineItem::new,
                 machine::create);
