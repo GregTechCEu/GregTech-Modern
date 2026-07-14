@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui.widgets.prospector;
 
-import brachy.modularui.screen.viewport.ModularGuiContext;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.component.prospector.ProspectingUpdatePacket;
