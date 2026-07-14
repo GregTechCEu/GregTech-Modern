@@ -28,7 +28,7 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return;
         }
 
-        MaintenanceHatchPartMachine maintenance = (MaintenanceHatchPartMachine) coverHolder;
+        MaintenanceHatchPartMachine maintenance = (MaintenanceHatchPartMachine) coverHolder.getHolder();
 
         int signal = getRedstoneSignalOutput();
         boolean shouldSignal = isInverted() != maintenance.hasMaintenanceProblems();
