@@ -77,6 +77,7 @@ GTCEuStartupEvents.materialModification(event => { // (1)
 The `Material` for which you are adjusting the TagPrefix must be registered in GTCEu Modern's material registry; if this
 material is custom, this is done using `GTCEuStartupEvents.registry()`, as depicted in these docs.
 
+
 ## What about fluids?
 
 Fluids are treated differently to items, their inclusion in a material is a property rather than a TagPrefix or MaterialFlag. 
@@ -97,6 +98,5 @@ public static void register() {
         .liquid().buildAndRegister();
 
     handleNonMaterialFluids(EXAMPLE_MATERIAL, ExampleFluidRegistry.EXAMPLE_FLUID_SOURCE::get);
-
 }
 ```
