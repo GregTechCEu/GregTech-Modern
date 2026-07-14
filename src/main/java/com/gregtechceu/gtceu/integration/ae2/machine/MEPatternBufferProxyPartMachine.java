@@ -64,7 +64,6 @@ public class MEPatternBufferProxyPartMachine extends TieredIOPartMachine
     public List<RecipeHandlerList> getRecipeHandlers() {
         var buf = getBuffer();
         if (buf != null) {
-            proxySlotRecipeHandler.syncHandlerCount(buf.getWorkerSlotCount());
             proxySlotRecipeHandler.updateProxy(buf);
         } else {
             proxySlotRecipeHandler.clearProxy();
