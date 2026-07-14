@@ -19,7 +19,7 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return false;
         }
 
-        return super.canAttach() && coverHolder instanceof MaintenanceHatchPartMachine;
+        return super.canAttach() && coverHolder.getHolder() instanceof MaintenanceHatchPartMachine;
     }
 
     @Override
