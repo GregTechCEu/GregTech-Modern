@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
-import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
+import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
+import com.gregtechceu.gtceu.api.multiblock.predicates.logic.BaseLogic;
+import com.gregtechceu.gtceu.api.multiblock.predicates.logic.OrLogic;
+import com.gregtechceu.gtceu.api.multiblock.predicates.logic.XorLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -23,8 +25,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private static final MultiPredicate EMPTY = new MultiPredicate();
 
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
-    @Getter(AccessLevel.PROTECTED)
-    private final Logic type;
+    private final BaseLogic logic;
     private final boolean hasAir;
     @Getter
     private boolean controller;
@@ -36,12 +37,16 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     private MultiPredicate(Logic type, boolean hasAir) {
-        this.type = type;
         this.hasAir = hasAir;
+        this.logic = switch (type) {
+            case AND -> new AndLogic(this);
+            case XOR -> new XorLogic(this);
+            default -> new OrLogic(this);
+        };
     }
 
-    private MultiPredicate() {
-        this.type = Logic.SINGLE;
+    MultiPredicate() {
+        this.logic = new OrLogic(this);
         this.hasAir = isAir();
     }
 
@@ -51,6 +56,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public void resetGlobal() {
+        this.logic.reset();
         this.passedPredicates.clear();
         resetSlice();
     }
@@ -68,127 +74,19 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     // this is called for each block
-    /// delegates to {@link #type} to run {@link BasePredicate#testLimited(PredicateContext)}
+    /// delegates to {@link #logic} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
-        if (isXor() && !passedPredicates.isEmpty()) {
-            // the idea here is that if we are xor and a predicate previously passed their state check
-            // ONLY that predicate may pass for future state/count checks
-            // logic XOR error
-            boolean passed = passedPredicates.iterator().next().testLimited(ctx);
-            if (!passed) {
-                ctx.error(PatternStringError.literal("XOR error"));
-            }
-            return passed;
-        }
-
-        // for AND predicates, every predicate in list must pass count checks
-        for (BasePredicate p : predicateList) {
-            boolean passed = p.testLimited(ctx);
-
-            if (isXor()) {
-                if (passed && passedPredicates.isEmpty()) {
-                    predicatePassed(p);
-                    return true;
-                }
-                // continue...
-            } else if (isAnd()) {
-                // AND does not care about state checks
-                switch (ctx.getLastFailureReason()) {
-                    case GLOBAL_MAX, SLICE_MAX -> {
-                        if (!passed) ctx.error(PatternStringError.literal("AND error"));
-                        return passed;
-                    }
-                    default -> predicatePassed(p);
-                    // continue...
-                }
-            } else if (passed) {
-                // OR/SINGLE
-                return true;
-            }
-        }
-
-        if (isAnd()) {
-            // check AND later
-            return true;
-        }
-
-        if (isXor()) {
-            // do something
-            if (!passedSlicePredicates.isEmpty()) return true;
-            return ctx.error(PatternStringError.literal("XOR error"));
-        }
-
-        return ctx.error(PatternStringError.literal("OR error"));
+        return this.logic.test(ctx);
     }
 
-    /// delegates to {@link #type} to test against global min count
+    /// delegates to {@link #logic} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
-        if (isXor()) {
-            if (passedPredicates.isEmpty()) return ctx.error(PatternStringError.literal("XOR error"));
-
-            BasePredicate selected = passedPredicates.iterator().next();
-            if (!selected.testGlobalMin(ctx)) return ctx.error(PatternStringError.literal("XOR error"));
-            // for every other predicate
-            for (BasePredicate p : predicateList) {
-                if (p == selected) continue;
-                // cannot be globally present
-                if (ctx.getGlobalCount(p) > 0) {
-                    return ctx.error(PatternStringError.literal("XOR error"));
-                }
-            }
-            return true;
-        }
-        if (isAnd()) {
-            if (passedPredicates.size() != predicateList.size()) return ctx.error(PatternStringError.literal("AND error"));
-            // passed predicates should include all predicates that passed their max count checks
-        }
-        for (BasePredicate p : predicateList) {
-            boolean passed = p.testGlobalMin(ctx);
-            // if AND failed count check, return false, else return true
-            if (isAnd() ^ passed) {
-                if (isAnd()) ctx.error(PatternStringError.literal("AND error"));
-                return passed;
-            }
-        }
-        // default return is true for AND, otherwise false
-        if (!isAnd()) ctx.error(PatternStringError.literal("OR error"));
-        return isAnd();
+        return this.logic.testGlobalMin(ctx);
     }
 
-    /// delegates to {@link #type} to test against slice min count
+    /// delegates to {@link #logic} to test against slice min count
     public boolean testSliceMin(PredicateContext ctx) {
-        if (isXor()) {
-            if (passedSlicePredicates.isEmpty()) {
-                return ctx.error(PatternStringError.literal("XOR error"));
-            }
-
-            BasePredicate selected = passedSlicePredicates.iterator().next();
-            if (!selected.testSliceMin(ctx)) {
-                return ctx.error(PatternStringError.literal("XOR error"));
-            }
-            // for every other predicate
-            for (BasePredicate p : predicateList) {
-                if (p == selected) continue;
-                // cannot be present in slice
-                // todo make configurable?
-                if (ctx.getSliceCount(p) > 0) {
-                    return ctx.error(PatternStringError.literal("Predicate " + p +
-                            " must not be present in slice " + ctx.pos()));
-                }
-            }
-            return true;
-        }
-        for (BasePredicate p : predicateList) {
-            boolean passed = p.testSliceMin(ctx);
-            // if AND failed count check, return false, else return true
-            if (isAnd() ^ passed) {
-                if (isAnd()) ctx.error(PatternStringError.literal("AND error"));
-                return passed;
-            }
-        }
-        // default return is true for AND, otherwise false
-        if (!isAnd()) ctx.error(PatternStringError.literal("OR error"));
-        return isAnd();
+        return this.logic.testSliceMin(ctx);
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
@@ -208,19 +106,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public boolean isOr() {
-        return this.type == Logic.OR;
+        return this.logic instanceof OrLogic;
     }
 
     public boolean isAnd() {
-        return this.type == Logic.AND;
+        return this.logic instanceof AndLogic;
     }
 
     public boolean isXor() {
-        return this.type == Logic.XOR;
-    }
-
-    protected boolean sameType(MultiPredicate other) {
-        return this.type == other.type;
+        return this.logic instanceof XorLogic;
     }
 
     public boolean isAny() {
@@ -340,11 +234,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     public boolean isSingle() {
-        return getType() == Logic.SINGLE;
-    }
-
-    public String getTypeName() {
-        return String.valueOf(this.type);
+        return predicateList.size() == 1;
     }
 
     protected void appendContents(StringBuilder builder) {
@@ -355,7 +245,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder(getTypeName());
+        StringBuilder builder = new StringBuilder("MulitPredicate");
         if (isController()) builder.append("[Controller]");
         builder.append('{');
         appendContents(builder);
@@ -397,7 +287,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private static void appendPredicate(MultiPredicate source, MultiPredicate dest, Logic type) {
         if (source.isSingle()) {
             dest.addPredicate(source.predicateList.get(0));
-        } else if (source.type != type) {
+        } else if (source.logic.getType() != type) {
             dest.addPredicate(source.compact());
         } else {
             dest.addPredicates(source);
@@ -455,19 +345,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         }
 
         @Override
-        public boolean testGlobalMax(PredicateContext ctx) {
-            for (BasePredicate p : getParent()) {
-                if (p.testGlobalMax(ctx)) return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean testSliceMax(PredicateContext ctx) {
-            for (BasePredicate p : getParent()) {
-                if (p.testSliceMax(ctx)) return true;
-            }
-            return false;
+        public boolean testLimited(PredicateContext ctx) {
+            return this.test(ctx);
         }
 
         @Override
@@ -490,7 +369,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
         @Override
         public String getTypeName() {
-            return getParent().getTypeName();
+            return "CompactedPredicate";
         }
 
         @Override

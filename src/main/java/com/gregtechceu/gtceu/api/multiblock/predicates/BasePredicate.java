@@ -157,24 +157,20 @@ public abstract class BasePredicate {
 
     protected void appendStats(StringBuilder builder) {
         if (minCount != -1 && maxCount != -1) {
-            builder.append("global=[%02d,%02d] ".formatted(minCount, maxCount));
+            builder.append("g[%d,%d] ".formatted(minCount, maxCount));
         }
         if (minSliceCount != -1 && maxSliceCount != -1) {
-            builder.append("slice=[%02d,%02d] ".formatted(minSliceCount, maxSliceCount));
-        }
-        if (previewCount != -1) {
-            builder.append("preview=%02d".formatted(previewCount));
+            builder.append("s[%d,%d] ".formatted(minSliceCount, maxSliceCount));
         }
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(getTypeName());
-        builder.append('{');
+        builder.append(" ");
         appendStats(builder);
-        builder.append("contents=[");
+        builder.append('{');
         appendContents(builder);
-        builder.append(']');
         builder.append('}');
         return builder.toString();
     }
