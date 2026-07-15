@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.mui;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
@@ -12,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.utils.EqualityTest;
 import brachy.modularui.utils.serialization.network.*;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
