@@ -2441,6 +2441,7 @@
   "gtceu.gui.item_voiding": "§7Voiding §6Items",
   "gtceu.gui.item_voiding_partial.tooltip.disabled": "Item Voiding Disabled",
   "gtceu.gui.item_voiding_partial.tooltip.enabled": "Item Voiding Enabled",
+  "gtceu.gui.large_stack.amount": "Amount: %s / %s",
   "gtceu.gui.machinemode": "Active Machine Mode: %s",
   "gtceu.gui.machinemode.tab_tooltip": "Change active Machine Mode",
   "gtceu.gui.machinemode.title": "Active Machine Mode",

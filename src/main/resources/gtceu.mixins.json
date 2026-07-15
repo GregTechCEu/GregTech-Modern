@@ -71,6 +71,7 @@
         "forge.PartialNBTIngredientAccessor",
         "forge.StrictNBTIngredientAccessor",
         "ldlib.SyncUtilsMixin",
+        "ldlib.ModularUIContainerMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor"
     ],

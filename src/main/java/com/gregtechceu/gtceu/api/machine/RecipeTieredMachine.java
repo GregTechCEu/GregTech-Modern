@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.handler.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.transfer.item.LargeStackItemHandler;
 
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -81,11 +82,18 @@ public abstract class RecipeTieredMachine extends WorkableTieredMachine implemen
     }
 
     protected NotifiableItemStackHandler createImportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN,
+                IO.IN,
+                slots -> new LargeStackItemHandler(slots, getItemSlotMultiplier()));
     }
 
     protected NotifiableItemStackHandler createExportItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
+        return new NotifiableItemStackHandler(this, getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT,
+                IO.OUT, slots -> new LargeStackItemHandler(slots, getItemSlotMultiplier()));
+    }
+
+    private int getItemSlotMultiplier() {
+        return getTier() == 0 ? 1 : 1 << (getTier() - 1);
     }
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {

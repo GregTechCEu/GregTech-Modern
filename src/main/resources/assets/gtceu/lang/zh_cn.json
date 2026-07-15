@@ -2389,6 +2389,7 @@
     "gtceu.gui.content.chance_tier_boost_plus": "奖励概率：+ %s%%/电压等级",
     "gtceu.gui.content.count_range": "%s-%sx",
     "gtceu.gui.content.fluid_range": "%s-%smB",
+    "gtceu.gui.large_stack.amount": "数量：%s / %s",
     "gtceu.gui.content.per_tick": "§a每刻（tick）消耗/产生§r",
     "gtceu.gui.content.range": "%s-%s",
     "gtceu.gui.content.times_item": "x %s",

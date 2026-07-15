@@ -1334,6 +1334,7 @@ public class LangHandler {
         provider.add("gtceu.gui.content.chance_boosted_logic", "Chance at Tier: %s%% (%s)");
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
         provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
+        provider.add("gtceu.gui.large_stack.amount", "Amount: %s / %s");
         provider.add("gtceu.gui.content.range", "%s-%s");
         provider.add("gtceu.gui.content.times_item", "x %s");
 

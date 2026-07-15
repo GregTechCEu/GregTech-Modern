@@ -2441,6 +2441,7 @@
   "gtceu.gui.item_voiding": "sɯǝʇI9§ buıpıoΛㄥ§",
   "gtceu.gui.item_voiding_partial.tooltip.disabled": "pǝןqɐsıᗡ buıpıoΛ ɯǝʇI",
   "gtceu.gui.item_voiding_partial.tooltip.enabled": "pǝןqɐuƎ buıpıoΛ ɯǝʇI",
+  "gtceu.gui.large_stack.amount": "%s / %s :ʇunoɯⱯ",
   "gtceu.gui.machinemode": "%s :ǝpoW ǝuıɥɔɐW ǝʌıʇɔⱯ",
   "gtceu.gui.machinemode.tab_tooltip": "ǝpoW ǝuıɥɔɐW ǝʌıʇɔɐ ǝbuɐɥƆ",
   "gtceu.gui.machinemode.title": "ǝpoW ǝuıɥɔɐW ǝʌıʇɔⱯ",

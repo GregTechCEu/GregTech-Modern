@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.gui.widget.LargeStackSlotWidget;
 import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeDefinition;
@@ -288,7 +289,7 @@ public class ItemRecipeCapability extends RecipeCapability<ItemIngredient> {
     @NotNull
     @Override
     public Widget createWidget() {
-        SlotWidget slot = new SlotWidget();
+        SlotWidget slot = new LargeStackSlotWidget();
         slot.initTemplate();
         return slot;
     }
