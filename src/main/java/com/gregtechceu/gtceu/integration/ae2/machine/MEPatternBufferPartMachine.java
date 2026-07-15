@@ -1,16 +1,25 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IFilteredHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataStickInteractable;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -21,7 +30,6 @@ import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
 import com.gregtechceu.gtceu.common.mui.widgets.PopupPanel;
-import com.gregtechceu.gtceu.integration.ae2.machine.trait.InternalSlotRecipeHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 
@@ -31,11 +39,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -71,8 +82,6 @@ import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
 import brachy.modularui.widgets.textfield.TextFieldWidget;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.Getter;
@@ -126,11 +135,10 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     @SaveField
     protected final NotifiableFluidTank shareTank;
 
-    @Getter
     @SaveField
     protected final InternalSlot[] internalInventory = new InternalSlot[MAX_PATTERN_COUNT];
 
-    private final BiMap<IPatternDetails, InternalSlot> detailsSlotMap = HashBiMap.create(MAX_PATTERN_COUNT);
+    private final @Nullable IPatternDetails[] patternSlotDetails = new IPatternDetails[MAX_PATTERN_COUNT];
 
     @SyncToClient
     @SaveField
@@ -142,23 +150,37 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     private final Set<BlockPos> proxies = new ObjectOpenHashSet<>();
     private final Set<MEPatternBufferProxyPartMachine> proxyMachines = new ReferenceOpenHashSet<>();
 
-    @Getter
-    protected final InternalSlotRecipeHandler internalRecipeHandler;
-
     @Nullable
     protected TickableSubscription updateSubs;
+
+    private final List<Worker> workers = new ArrayList<>();
+
+    @Getter
+    private final AggregateItemHandler aggregateItemHandler;
+    @Getter
+    private final AggregateFluidHandler aggregateFluidHandler;
+    @Getter
+    private final RecipeHandlerList bufferRecipeHandler;
+    private final List<RecipeHandlerList> bufferHandlers;
 
     public MEPatternBufferPartMachine(BlockEntityCreationInfo info) {
         super(info, IO.IN, new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         patternInventory.setOnContentsChanged(() -> getSyncDataHolder().markClientSyncFieldDirty("patternInventory"));
         this.patternInventory.setFilter(stack -> stack.getItem() instanceof ProcessingPatternItem);
+
         for (int i = 0; i < this.internalInventory.length; i++) {
             this.internalInventory[i] = new InternalSlot();
         }
+
         getMainNode().addService(ICraftingProvider.class, this);
+
         this.shareInventory = attachTrait(new NotifiableItemStackHandler(9, IO.IN, IO.NONE));
         this.shareTank = attachTrait(new NotifiableFluidTank(9, 8 * FluidType.BUCKET_VOLUME, IO.IN, IO.NONE));
-        this.internalRecipeHandler = new InternalSlotRecipeHandler(this, internalInventory);
+        this.aggregateItemHandler = attachTrait(new AggregateItemHandler());
+        this.aggregateFluidHandler = attachTrait(new AggregateFluidHandler());
+        this.bufferRecipeHandler = new BufferRecipeHandlerList();
+        this.bufferHandlers = List.of(bufferRecipeHandler);
+        addWorker();
     }
 
     @Override
@@ -166,19 +188,351 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         super.onLoad();
         if (!isRemote()) {
             for (int i = 0; i < patternInventory.getSlots(); i++) {
-                var pattern = patternInventory.getStackInSlot(i);
-                var patternDetails = PatternDetailsHelper.decodePattern(pattern, getLevel());
-                if (patternDetails != null) {
-                    this.detailsSlotMap.put(patternDetails, this.internalInventory[i]);
-                }
+                patternSlotDetails[i] = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(i),
+                        getLevel());
             }
             needPatternSync = true;
+            syncWorkerCount();
         }
     }
 
+    private void syncWorkerCount() {
+        int target = Mth.clamp(proxies.size() + 1, 1, MAX_PATTERN_COUNT);
+        while (workers.size() < target) {
+            addWorker();
+        }
+        while (workers.size() > target) {
+            removeLastWorker();
+        }
+    }
+
+    private void addWorker() {
+        int idx = workers.size();
+        if (idx >= MAX_PATTERN_COUNT) {
+            return;
+        }
+        InternalSlot slot = internalInventory[idx];
+        slot.setOnContentsChanged(this::onSlotChanged);
+        workers.add(new Worker(slot));
+    }
+
+    private void removeLastWorker() {
+        int last = workers.size() - 1;
+        if (last < 0) return;
+        Worker worker = workers.get(last);
+        worker.slot.refund();
+        worker.slot.setOnContentsChanged(() -> {});
+        workers.remove(last);
+        onSlotChanged();
+    }
+
+    private void onSlotChanged() {
+        aggregateItemHandler.notifyListeners();
+        aggregateFluidHandler.notifyListeners();
+    }
+
+    static boolean couldSlotMatchContents(InternalSlot slot, Map<RecipeCapability<?>, List<Object>> contents) {
+        List<Object> itemContents = contents.get(ItemRecipeCapability.CAP);
+        if (itemContents != null && !slot.isItemEmpty()) {
+            Set<Item> itemTypes = slot.getItemTypes();
+            for (Object obj : itemContents) {
+                if (!(obj instanceof Ingredient ing) || ing.isEmpty()) {
+                    continue;
+                }
+                for (ItemStack stack : ing.getItems()) {
+                    if (itemTypes.contains(stack.getItem())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        List<Object> fluidContents = contents.get(FluidRecipeCapability.CAP);
+        if (fluidContents != null && !slot.isFluidEmpty()) {
+            Set<Fluid> fluidTypes = slot.getFluidTypes();
+            for (Object obj : fluidContents) {
+                if (!(obj instanceof FluidIngredient ing) || ing.isEmpty()) {
+                    continue;
+                }
+                for (FluidStack stack : ing.getStacks()) {
+                    if (fluidTypes.contains(stack.getFluid())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    static class Worker {
+
+        final InternalSlot slot;
+        @Nullable
+        IPatternDetails pattern;
+        final SlotItemHandler itemHandler;
+        final SlotFluidHandler fluidHandler;
+
+        Worker(InternalSlot slot) {
+            this.slot = slot;
+            this.itemHandler = new SlotItemHandler(slot);
+            this.fluidHandler = new SlotFluidHandler(slot);
+        }
+    }
+
+    static class SlotItemHandler implements IRecipeHandler<Ingredient> {
+
+        private final InternalSlot slot;
+
+        SlotItemHandler(InternalSlot slot) {
+            this.slot = slot;
+        }
+
+        @Override
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+            if (io != IO.IN || slot.isItemEmpty()) {
+                return left;
+            }
+            return slot.handleItemInternal(left, simulate);
+        }
+
+        @Override
+        public List<Object> getContents() {
+            return new ArrayList<>(slot.getItems());
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            return slot.getItems().stream().mapToLong(ItemStack::getCount).sum();
+        }
+
+        @Override
+        public RecipeCapability<Ingredient> getCapability() {
+            return ItemRecipeCapability.CAP;
+        }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public int getPriority() {
+            return IFilteredHandler.HIGH;
+        }
+    }
+
+    static class SlotFluidHandler implements IRecipeHandler<FluidIngredient> {
+
+        private final InternalSlot slot;
+
+        SlotFluidHandler(InternalSlot slot) {
+            this.slot = slot;
+        }
+
+        @Override
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       boolean simulate) {
+            if (io != IO.IN || slot.isFluidEmpty()) return left;
+            return slot.handleFluidInternal(left, simulate);
+        }
+
+        @Override
+        public List<Object> getContents() {
+            return new ArrayList<>(slot.getFluids());
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            return slot.getFluids().stream().mapToLong(FluidStack::getAmount).sum();
+        }
+
+        @Override
+        public RecipeCapability<FluidIngredient> getCapability() {
+            return FluidRecipeCapability.CAP;
+        }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public int getPriority() {
+            return IFilteredHandler.HIGH;
+        }
+    }
+
+    @Getter
+    class AggregateItemHandler extends NotifiableRecipeHandlerTrait<Ingredient> {
+
+        static final MachineTraitType<AggregateItemHandler> TYPE = new MachineTraitType<>(AggregateItemHandler.class);
+
+        private final RecipeCapability<Ingredient> capability = ItemRecipeCapability.CAP;
+        private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
+
+        @Override
+        public MachineTraitType<AggregateItemHandler> getTraitType() {
+            return TYPE;
+        }
+
+        @Override
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate) {
+            return left;
+        }
+
+        @Override
+        public List<Object> getContents() {
+            List<Object> contents = new ArrayList<>();
+            for (Worker worker : workers) {
+                contents.addAll(worker.slot.getItems());
+            }
+            return contents;
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            double sum = 0;
+            for (Worker worker : workers) {
+                sum += worker.slot.getItems().stream().mapToLong(ItemStack::getCount).sum();
+            }
+            return sum;
+        }
+
+        @Override
+        public int getPriority() {
+            return IFilteredHandler.HIGH;
+        }
+    }
+
+    @Getter
+    class AggregateFluidHandler extends NotifiableRecipeHandlerTrait<FluidIngredient> {
+
+        static final MachineTraitType<AggregateFluidHandler> TYPE = new MachineTraitType<>(AggregateFluidHandler.class);
+
+        private final RecipeCapability<FluidIngredient> capability = FluidRecipeCapability.CAP;
+        private final IO handlerIO = IO.IN;
+        private final boolean isDistinct = true;
+
+        @Override
+        public MachineTraitType<AggregateFluidHandler> getTraitType() {
+            return TYPE;
+        }
+
+        @Override
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       boolean simulate) {
+            return left;
+        }
+
+        @Override
+        public List<Object> getContents() {
+            List<Object> contents = new ArrayList<>();
+            for (Worker worker : workers) {
+                contents.addAll(worker.slot.getFluids());
+            }
+            return contents;
+        }
+
+        @Override
+        public double getTotalContentAmount() {
+            double sum = 0;
+            for (Worker worker : workers) {
+                sum += worker.slot.getFluids().stream().mapToLong(FluidStack::getAmount).sum();
+            }
+            return sum;
+        }
+
+        @Override
+        public int getPriority() {
+            return IFilteredHandler.HIGH;
+        }
+    }
+
+    class BufferRecipeHandlerList extends RecipeHandlerList {
+
+        BufferRecipeHandlerList() {
+            super(IO.IN);
+            addHandlers(getCircuitSlot(), getShareInventory(), getShareTank(), aggregateItemHandler,
+                    aggregateFluidHandler);
+            setGroup(RecipeHandlerGroupDistinctness.BUS_DISTINCT);
+        }
+
+        @Override
+        public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
+                                                                   Map<RecipeCapability<?>, List<Object>> contents,
+                                                                   boolean simulate) {
+            if (io != IO.IN || contents.isEmpty()) {
+                return contents;
+            }
+
+            for (Worker worker : workers) {
+                InternalSlot slot = worker.slot;
+                if (slot.isItemEmpty() && slot.isFluidEmpty()) {
+                    continue;
+                }
+                if (!couldSlotMatchContents(slot, contents)) {
+                    continue;
+                }
+
+                Map<RecipeCapability<?>, List<Object>> left = consumeWorker(worker, io, recipe, contents, true);
+                if (!left.isEmpty()) {
+                    continue;
+                }
+
+                if (!simulate) {
+                    return consumeWorker(worker, io, recipe, contents, false);
+                }
+                return left;
+            }
+            return contents;
+        }
+
+        private Map<RecipeCapability<?>, List<Object>> consumeWorker(Worker worker, IO io, GTRecipe recipe,
+                                                                     Map<RecipeCapability<?>, List<Object>> contents,
+                                                                     boolean simulate) {
+            var copy = new Reference2ObjectOpenHashMap<>(contents);
+            for (var it = copy.reference2ObjectEntrySet().fastIterator(); it.hasNext();) {
+                var entry = it.next();
+                List<IRecipeHandler<?>> handlers = handlersFor(entry.getKey(), worker);
+                for (var handler : handlers) {
+                    if (io == IO.IN && handler.getTotalContentAmount() == 0 &&
+                            !handler.getCapability().skipEmptyContentCheck()) {
+                        continue;
+                    }
+                    var handlerLeft = handler.handleRecipe(io, recipe, entry.getValue(), simulate);
+                    if (handlerLeft.isEmpty()) {
+                        it.remove();
+                        break;
+                    } else {
+                        entry.setValue(new ArrayList<>(handlerLeft));
+                    }
+                }
+            }
+            return copy;
+        }
+
+        private List<IRecipeHandler<?>> handlersFor(RecipeCapability<?> cap, Worker worker) {
+            if (cap == ItemRecipeCapability.CAP) {
+                return List.of(getCircuitSlot(), getShareInventory(), worker.itemHandler);
+            }
+            if (cap == FluidRecipeCapability.CAP) {
+                return List.of(getShareTank(), worker.fluidHandler);
+            }
+            return List.of();
+        }
+
+        @Override
+        public boolean isDistinct() {
+            return true;
+        }
+
+        @Override
+        public void setDistinct(boolean ignored, boolean notify) {}
+    }
+
     @Override
-    public List<RecipeHandlerList> getRecipeHandlers() {
-        return internalRecipeHandler.getSlotHandlers();
+    public @UnmodifiableView List<RecipeHandlerList> getRecipeHandlers() {
+        return bufferHandlers;
     }
 
     @Override
@@ -228,11 +582,13 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void addProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.add(proxy.getBlockPos());
         proxyMachines.add(proxy);
+        syncWorkerCount();
     }
 
     public void removeProxy(MEPatternBufferProxyPartMachine proxy) {
         proxies.remove(proxy.getBlockPos());
         proxyMachines.remove(proxy);
+        syncWorkerCount();
     }
 
     @UnmodifiableView
@@ -249,8 +605,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     private void refundAll() {
-        for (InternalSlot internalSlot : internalInventory) {
-            internalSlot.refund();
+        for (InternalSlot slot : internalInventory) {
+            slot.refund();
         }
     }
 
@@ -258,14 +614,18 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     public void onPatternChange(int index) {
         if (isRemote()) return;
 
-        // remove old if applicable
-        var internalInv = internalInventory[index];
-        var newPattern = patternInventory.getStackInSlot(index);
-        var newPatternDetails = PatternDetailsHelper.decodePattern(newPattern, getLevel());
-        var oldPatternDetails = detailsSlotMap.inverse().get(internalInv);
-        detailsSlotMap.forcePut(newPatternDetails, internalInv);
-        if (oldPatternDetails != null && !oldPatternDetails.equals(newPatternDetails)) {
-            internalInv.refund();
+        IPatternDetails oldPattern = patternSlotDetails[index];
+        IPatternDetails newPatternDetails = PatternDetailsHelper.decodePattern(patternInventory.getStackInSlot(index),
+                getLevel());
+        patternSlotDetails[index] = newPatternDetails;
+        if (oldPattern != null && !oldPattern.equals(newPatternDetails)) {
+            for (Worker worker : workers) {
+                if (oldPattern.equals(worker.pattern)) {
+                    worker.slot.refund();
+                    worker.pattern = null;
+                    break;
+                }
+            }
         }
 
         needPatternSync = true;
@@ -422,19 +782,41 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
 
     @Override
     public List<IPatternDetails> getAvailablePatterns() {
-        return detailsSlotMap.keySet().stream().toList();
+        ArrayList<IPatternDetails> result = new ArrayList<>(MAX_PATTERN_COUNT);
+        for (IPatternDetails p : patternSlotDetails) {
+            if (p != null) result.add(p);
+        }
+        return result;
     }
 
     @Override
     public boolean pushPattern(IPatternDetails patternDetails, KeyCounter[] inputHolder) {
-        if (!isFormed() || !getMainNode().isActive() || !detailsSlotMap.containsKey(patternDetails) ||
-                !checkInput(inputHolder)) {
+        if (!isFormed() || !getMainNode().isActive() || !checkInput(inputHolder)) {
             return false;
         }
+        boolean knownPattern = false;
+        for (IPatternDetails p : patternSlotDetails) {
+            if (patternDetails.equals(p)) {
+                knownPattern = true;
+                break;
+            }
+        }
+        if (!knownPattern) return false;
 
-        var slot = detailsSlotMap.get(patternDetails);
-        if (slot != null) {
-            slot.pushPattern(patternDetails, inputHolder);
+        for (Worker worker : workers) {
+            if (worker.slot.isEmpty()) worker.pattern = null;
+        }
+        Worker free = null;
+        for (Worker worker : workers) {
+            if (patternDetails.equals(worker.pattern)) {
+                worker.slot.pushPattern(patternDetails, inputHolder);
+                return true;
+            }
+            if (free == null && worker.slot.isEmpty()) free = worker;
+        }
+        if (free != null) {
+            free.pattern = patternDetails;
+            free.slot.pushPattern(patternDetails, inputHolder);
             return true;
         }
         return false;
@@ -543,6 +925,8 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
         private final Object2LongOpenHashMap<FluidStack> fluidInventory = new Object2LongOpenHashMap<>();
         private @Nullable List<ItemStack> itemStacks = null;
         private @Nullable List<FluidStack> fluidStacks = null;
+        private @Nullable Set<Item> cachedItemTypes = null;
+        private @Nullable Set<Fluid> cachedFluidTypes = null;
 
         public InternalSlot() {}
 
@@ -558,9 +942,27 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
             return isItemEmpty() && isFluidEmpty();
         }
 
+        public Set<Item> getItemTypes() {
+            if (cachedItemTypes == null) {
+                cachedItemTypes = new ReferenceOpenHashSet<>(itemInventory.size());
+                itemInventory.keySet().forEach(s -> cachedItemTypes.add(s.getItem()));
+            }
+            return cachedItemTypes;
+        }
+
+        public Set<Fluid> getFluidTypes() {
+            if (cachedFluidTypes == null) {
+                cachedFluidTypes = new ReferenceOpenHashSet<>(fluidInventory.size());
+                fluidInventory.keySet().forEach(s -> cachedFluidTypes.add(s.getFluid()));
+            }
+            return cachedFluidTypes;
+        }
+
         public void onContentsChanged() {
             itemStacks = null;
             fluidStacks = null;
+            cachedItemTypes = null;
+            cachedFluidTypes = null;
             onContentsChanged.run();
         }
 
