@@ -13,7 +13,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IWorkLogicMachine, IMachineLife {
+public abstract class WorkableTieredMachine extends TieredEnergyMachine
+                                            implements IAllowSameUIProvider, IWorkLogicMachine, IMachineLife {
 
     @Getter
     @Persisted

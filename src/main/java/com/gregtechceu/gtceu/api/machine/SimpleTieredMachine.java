@@ -327,7 +327,7 @@ public class SimpleTieredMachine extends RecipeTieredMachine
             left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
         }
 
-        IFancyUIMachine.super.attachConfigurators(left, right);
+        super.attachConfigurators(left, right);
     }
 
     private IFancyConfigurator createAutoOutputFluidConfigurator() {

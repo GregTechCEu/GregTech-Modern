@@ -264,6 +264,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
                 left.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
             }
             IDistinctPart.super.attachConfigurators(left, right);
+
         } else {
             super.attachConfigurators(left, right);
         }

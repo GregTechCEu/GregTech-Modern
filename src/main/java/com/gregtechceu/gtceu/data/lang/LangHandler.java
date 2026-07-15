@@ -1335,6 +1335,17 @@ public class LangHandler {
         provider.add("gtceu.gui.content.count_range", "%s-%sx");
         provider.add("gtceu.gui.content.fluid_range", "%s-%smB");
         provider.add("gtceu.gui.large_stack.amount", "Amount: %s / %s");
+        provider.add("gtceu.gui.allow_same.enabled", "§aEnabled");
+        provider.add("gtceu.gui.allow_same.disabled", "§cDisabled");
+        provider.add("gtceu.gui.allow_same.not_allowed", "NOT ");
+        provider.add("gtceu.gui.allow_same.item_input.title", "Input Slot Protect");
+        provider.add("gtceu.gui.allow_same.item_input.tooltip", "Allow same items to occupy multiple input slots");
+        provider.add("gtceu.gui.allow_same.item_output.title", "Output Slot Protect");
+        provider.add("gtceu.gui.allow_same.item_output.tooltip", "Allow same items to occupy multiple output slots");
+        provider.add("gtceu.gui.allow_same.fluid_input.title", "Input Tank Protect");
+        provider.add("gtceu.gui.allow_same.fluid_input.tooltip", "Allow same fluids to occupy multiple input tanks");
+        provider.add("gtceu.gui.allow_same.fluid_output.title", "Output Tank Protect");
+        provider.add("gtceu.gui.allow_same.fluid_output.tooltip", "Allow same fluids to occupy multiple output tanks");
         provider.add("gtceu.gui.content.range", "%s-%s");
         provider.add("gtceu.gui.content.times_item", "x %s");
 

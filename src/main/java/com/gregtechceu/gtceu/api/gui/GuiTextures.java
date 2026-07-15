@@ -147,6 +147,14 @@ public class GuiTextures {
             "gtceu:textures/gui/widget/button_distribution_mode.png");
     public static final ResourceTexture BUTTON_AUTO_PULL = new ResourceTexture(
             "gtceu:textures/gui/widget/button_me_auto_pull.png");
+    public static final ResourceTexture ALLOW_SAME_ITEM_INPUT = new ResourceTexture(
+            "gtceu:textures/gui/widget/allow_item_input.png");
+    public static final ResourceTexture ALLOW_SAME_ITEM_OUTPUT = new ResourceTexture(
+            "gtceu:textures/gui/widget/allow_item_output.png");
+    public static final ResourceTexture ALLOW_SAME_FLUID_INPUT = new ResourceTexture(
+            "gtceu:textures/gui/widget/allow_fluid_input.png");
+    public static final ResourceTexture ALLOW_SAME_FLUID_OUTPUT = new ResourceTexture(
+            "gtceu:textures/gui/widget/allow_fluid_output.png");
     public static final ResourceTexture LOCK = new ResourceTexture("gtceu:textures/gui/widget/lock.png");
     public static final ResourceTexture LOCK_WHITE = new ResourceTexture("gtceu:textures/gui/widget/lock_white.png");
     public static final ResourceTexture SWITCH = new ResourceTexture("gtceu:textures/gui/widget/switch.png");

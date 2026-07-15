@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAllowSameContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.item.ItemIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -39,7 +40,7 @@ import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<ItemIngredient>
-                                        implements ICapabilityTrait, IItemHandlerModifiable {
+                                        implements ICapabilityTrait, IItemHandlerModifiable, IAllowSameContainer {
 
     @Getter
     public final IO handlerIO;
@@ -52,6 +53,8 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
     @Getter
     @Setter
     private boolean shouldSearchContent = true;
+    @Persisted
+    private boolean allowSameItems;
     private Boolean isEmpty;
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO,
@@ -60,6 +63,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
         this.handlerIO = handlerIO;
         this.storage = storageFactory.apply(slots);
         this.capabilityIO = capabilityIO;
+        this.allowSameItems = handlerIO.support(IO.OUT);
         this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
@@ -82,13 +86,29 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
     }
 
     @Override
+    public boolean isAllowSame() {
+        return allowSameItems;
+    }
+
+    @Override
+    public void setAllowSame(boolean allowSame) {
+        allowSameItems = allowSame;
+        onContentsChanged();
+    }
+
+    @Override
     public boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate) {
-        return handleRecipe(io, recipe, left, simulate, handlerIO, storage);
+        return handleRecipe(io, recipe, left, simulate, handlerIO, storage, allowSameItems);
     }
 
     // Notable caller is ItemRecipeHandler, used for MinerLogic
     public static boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate,
                                        IO handlerIO, CustomItemStackHandler storage) {
+        return handleRecipe(io, recipe, left, simulate, handlerIO, storage, true);
+    }
+
+    private static boolean handleRecipe(IO io, GTRecipe recipe, List<ItemIngredient> left, boolean simulate,
+                                        IO handlerIO, CustomItemStackHandler storage, boolean allowSameItems) {
         if (!handlerIO.support(io)) return false;
 
         Runnable listener = storage.getOnContentsChanged();
@@ -148,7 +168,17 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
                     amount = outputStack.getCount();
                 }
 
+                int matchingSlot = -1;
+                if (!allowSameItems) {
+                    for (int slot = 0; slot < storage.getSlots(); slot++) {
+                        if (GTUtil.isSameItemSameTags(storage.getStackInSlot(slot), outputStack)) {
+                            matchingSlot = slot;
+                            break;
+                        }
+                    }
+                }
                 for (int slot = 0; slot < storage.getSlots(); ++slot) {
+                    if (matchingSlot >= 0 && slot != matchingSlot) continue;
                     ItemStack current = visited[slot] == null ? storage.getStackInSlot(slot) : visited[slot];
                     int count = current.getCount();
                     ItemStack output = outputStack.copyWithCount(amount);
@@ -160,6 +190,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
                                 visited[slot] = output.copyWithCount(count + amount - remainder.getCount());
                             }
                             amount = remainder.getCount();
+                            if (!allowSameItems) break;
                         }
                     }
                     if (amount <= 0) {
@@ -293,6 +324,13 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ite
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (canCapInput()) {
+            if (!allowSameItems) {
+                for (int index = 0; index < storage.getSlots(); index++) {
+                    if (index != slot && GTUtil.isSameItemSameTags(stack, storage.getStackInSlot(index))) {
+                        return stack;
+                    }
+                }
+            }
             return storage.insertItem(slot, stack, simulate);
         }
         return stack;

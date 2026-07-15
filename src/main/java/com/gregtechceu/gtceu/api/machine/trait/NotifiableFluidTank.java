@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IAllowSameContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.fluid.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.AbstractMapIngredient;
@@ -27,7 +28,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
-                                 implements ICapabilityTrait, IFluidHandlerModifiable {
+                                 implements ICapabilityTrait, IFluidHandlerModifiable, IAllowSameContainer {
 
     @Getter
     public final IO handlerIO;
@@ -83,6 +84,17 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public void onContentsChanged() {
         isEmpty = null;
         notifyListeners();
+    }
+
+    @Override
+    public boolean isAllowSame() {
+        return allowSameFluids;
+    }
+
+    @Override
+    public void setAllowSame(boolean allowSame) {
+        allowSameFluids = allowSame;
+        onContentsChanged();
     }
 
     @Override
