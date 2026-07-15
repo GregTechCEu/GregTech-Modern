@@ -196,7 +196,7 @@ public class MEPatternBufferPartMachine extends MEBusPartMachine
     }
 
     private void syncWorkerCount() {
-        int target = Math.min(Math.max(proxies.size() + 1, 1), MAX_PATTERN_COUNT);
+        int target = Mth.clamp(proxies.size() + 1, 1, MAX_PATTERN_COUNT);
         while (workers.size() < target) {
             addWorker();
         }
