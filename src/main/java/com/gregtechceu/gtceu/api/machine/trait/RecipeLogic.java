@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.misc.SyncableMap;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 
+import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -58,6 +59,7 @@ public class RecipeLogic extends WorkLogic {
 
     @Getter
     @Persisted
+    @Setter
     protected int progress;
 
     @Getter
