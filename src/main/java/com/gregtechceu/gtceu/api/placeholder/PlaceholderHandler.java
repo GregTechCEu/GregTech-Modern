@@ -20,6 +20,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
 
 import brachy.modularui.api.IPanelHandler;
 import brachy.modularui.api.drawable.IDrawable;
@@ -180,7 +181,7 @@ public class PlaceholderHandler {
                         List<MultiLineComponent> placeholder = stack.pop();
                         try {
                             if (stack.isEmpty()) throw new UnexpectedBracketException();
-                            MultiLineComponent result = processPlaceholder(placeholder, ctx, indices);
+                            MultiLineComponent result = processPlaceholder(placeholder, ctx);
                             if (result.isIgnoreSpaces() || stack.size() == 1) {
                                 stack.peek().getLast().append(result);
                             } else {
@@ -347,8 +348,7 @@ public class PlaceholderHandler {
                                                         .center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang(
-                                                                        "gtceu.placeholder_info." + s)
+                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)

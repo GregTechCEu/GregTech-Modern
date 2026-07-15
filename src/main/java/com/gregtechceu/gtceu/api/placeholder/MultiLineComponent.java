@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.placeholder;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.*;
 
 import com.mojang.serialization.Codec;
@@ -177,6 +179,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.appendNewline();
         }
         if (!out.isEmpty()) out.removeLast();
+        out.addGraphics(this.getGraphics());
         return out;
     }
 
@@ -187,11 +190,44 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.appendNewline();
         }
         if (!out.isEmpty()) out.removeLast();
+        out.addGraphics(this.getGraphics());
         return out;
     }
 
-    public @UnmodifiableView List<Component> toImmutable() {
-        return Collections.unmodifiableList(this);
+    public List<Component> toImmutable() {
+        return new ArrayList<>(this);
+    }
+
+    public Tag toTag(HolderLookup.Provider registries) {
+        CompoundTag compoundTag = new CompoundTag();
+        ListTag tag = new ListTag();
+        for (MutableComponent component : this) {
+            tag.add(StringTag.valueOf(Component.Serializer.toJson(component, registries)));
+        }
+        compoundTag.put("text", tag);
+        ListTag graphicsTag = new ListTag();
+        for (GraphicsComponent component : this.getGraphics()) {
+            graphicsTag.add(GraphicsComponent.CODEC.encodeStart(NbtOps.INSTANCE, component).result().orElseThrow());
+        }
+        compoundTag.put("graphics", graphicsTag);
+        return compoundTag;
+    }
+
+    public static MultiLineComponent fromTag(@Nullable Tag tag, HolderLookup.Provider registries) {
+        MultiLineComponent out = MultiLineComponent.empty();
+        out.clear();
+        if (tag == null) return out;
+        if (tag instanceof ListTag listTag) {
+            for (Tag i : listTag) {
+                out.add(Component.Serializer.fromJson(i.getAsString(), registries));
+            }
+        } else if (tag instanceof CompoundTag compoundTag) {
+            ListTag textTag = compoundTag.getList("text", Tag.TAG_STRING);
+            for (Tag i : textTag) out.add(Component.Serializer.fromJson(i.getAsString(), registries));
+            ListTag graphicsTag = compoundTag.getList("graphics", Tag.TAG_COMPOUND);
+            for (Tag i : graphicsTag) out.addGraphics(GraphicsComponent.CODEC.parse(NbtOps.INSTANCE, i).getOrThrow());
+        }
+        return out;
     }
 
     public long toLong() {
