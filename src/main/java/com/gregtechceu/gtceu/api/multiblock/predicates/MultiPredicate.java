@@ -82,7 +82,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         }
 
         // for AND predicates, every predicate in list must pass count checks
-        // AND does not care about state checks
         for (BasePredicate p : predicateList) {
             boolean passed = p.testLimited(ctx);
 
@@ -93,8 +92,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
                 }
                 // continue...
             } else if (isAnd()) {
-                PredicateContext.FailureReason reason = ctx.getLastFailureReason();
-                switch (reason) {
+                // AND does not care about state checks
+                switch (ctx.getLastFailureReason()) {
                     case GLOBAL_MAX, SLICE_MAX -> {
                         if (!passed) ctx.error(PatternStringError.literal("AND error"));
                         return passed;
@@ -436,8 +435,10 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     public enum Logic {
         SINGLE,
         OR,
-        AND,
-        XOR;
+        AND, // AND_GLOBAL
+        // AND_SLICE
+        XOR // XOR_GLOBAL
+        // XOR_SLICE
     }
 
     private class CompactedPredicate extends BasePredicate {
