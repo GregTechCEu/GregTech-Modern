@@ -84,7 +84,7 @@ public final class ProxySlotRecipeHandler {
         public Map<RecipeCapability<?>, List<Object>> handleRecipe(IO io, GTRecipe recipe,
                                                                    Map<RecipeCapability<?>, List<Object>> contents,
                                                                    boolean simulate) {
-            var buf = buffer;
+            MEPatternBufferPartMachine buf = buffer;
             if (buf == null) return contents;
             return buf.getBufferRecipeHandler().handleRecipe(io, recipe, contents, simulate);
         }
