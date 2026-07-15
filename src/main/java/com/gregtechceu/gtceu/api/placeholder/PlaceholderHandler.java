@@ -13,9 +13,11 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.ResourceLocationException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -74,7 +76,7 @@ public class PlaceholderHandler {
     }
 
     public static @Nullable Placeholder getPlaceholder(String str) {
-        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(str));
+        return GTRegistries.PLACEHOLDERS.get(toId(str));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -98,14 +100,22 @@ public class PlaceholderHandler {
                         packedLight, packedOverlay, tag);
     }
 
+    public static @Nullable ResourceLocation toId(String placeholder) {
+        try {
+            return GTCEu.id(placeholder);
+        } catch (ResourceLocationException e) {
+            return null;
+        }
+    }
+
     public static MultiLineComponent processPlaceholder(List<MultiLineComponent> placeholder,
                                                         @Nullable PlaceholderContext context) throws PlaceholderException {
-        if (!GTRegistries.PLACEHOLDERS.containsKey(GTCEu.id(placeholder.get(0).toString())))
+        if (!GTRegistries.PLACEHOLDERS.containsKey(toId(placeholder.get(0).toString())))
             throw new UnknownPlaceholderException(placeholder.get(0).toString());
         if (context != null && context.level().isClientSide &&
-                !GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).isView())
+                !GTRegistries.PLACEHOLDERS.get(toId(placeholder.get(0).toString())).isView())
             GTCEu.LOGGER.warn("Placeholder processing is running on client instead of server!");
-        return GTRegistries.PLACEHOLDERS.get(GTCEu.id(placeholder.get(0).toString())).apply(context,
+        return GTRegistries.PLACEHOLDERS.get(toId(placeholder.get(0).toString())).apply(context,
                 placeholder.subList(1, placeholder.size()));
     }
 
@@ -329,17 +339,16 @@ public class PlaceholderHandler {
                                 .paddingBottom(5)
                                 .excludeAreaInRecipeViewer()
                                 .fullHeight()
-                                .children(GTRegistries.PLACEHOLDERS.keys()
+                                .children(GTRegistries.PLACEHOLDERS.values()
                                         .stream()
+                                        .map(Placeholder::getName)
                                         .sorted()
                                         .map(s -> (IWidget) Flow.row()
                                                 .coverChildren()
-                                                .child(new TextWidget<>(s.toString().replaceAll("gtceu:", ""))
-                                                        .center())
+                                                .child(new TextWidget<>(s).center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
-                                                                .getSingleOrMultiLang(
-                                                                        "gtceu.placeholder_info." + s)
+                                                                .getSingleOrMultiLang("gtceu.placeholder_info." + s)
                                                                 .stream()
                                                                 .map(Text::of)
                                                                 .map(key -> (IDrawable) key)
@@ -492,8 +501,8 @@ public class PlaceholderHandler {
             }
             if (prevOpenBracket) {
                 prevOpenBracket = false;
-                var id = GTCEu.id(s);
-                if (GTRegistries.PLACEHOLDERS.containsKey(id)) {
+                ResourceLocation id = toId(s);
+                if (id != null && GTRegistries.PLACEHOLDERS.containsKey(id)) {
                     if (GTRegistries.PLACEHOLDERS.get(id).isPure()) {
                         pureStarts.push(everything.length() - 1);
                     } else pureStarts.clear();
