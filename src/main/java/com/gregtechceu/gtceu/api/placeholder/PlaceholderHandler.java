@@ -336,7 +336,7 @@ public class PlaceholderHandler {
                                         .sorted()
                                         .map(s -> (IWidget) Flow.row()
                                                 .coverChildren()
-                                                .child(new TextWidget<>(s).center())
+                                                .child(Text.str(s.getNamespace().equals("gtceu") ? s.getPath() : s.toString()).asWidget().center())
                                                 .tooltip(new RichTooltip()
                                                         .addDrawableLines(LangHandler
                                                                 .getSingleOrMultiLang("gtceu.placeholder_info." + s)

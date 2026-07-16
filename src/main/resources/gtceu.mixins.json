@@ -103,6 +103,7 @@
         "forge.GameDataMixin",
         "jei.FluidHelperMixin",
         "kjs.RegistryEventJSMixin",
+        "kjs.RegistryInfoMixin",
         "registrate.AbstractRegistrateAccessor",
         "registrate.RegistrateDataProviderAccessor",
         "rei.InputSlotCrafterMixin",

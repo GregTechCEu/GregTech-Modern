@@ -1,18 +1,17 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -60,10 +59,10 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
                                              implements IMachineBuilderKJS,
                                              IGTDummyBuilder<MultiblockMachineDefinition> {
 
-    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal;
+    private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
 
     public MultiblockMachineBuilderWrapper(ResourceLocation id,
-                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?> internal) {
+                                           MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
         super(id);
         this.internal = internal;
     }
@@ -88,12 +87,12 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partSorter(Comparator<IMultiPart> partSorter) {
+    public MultiblockMachineBuilderWrapper partSorter(Comparator<MultiblockPartMachine> partSorter) {
         internal.partSorter(partSorter);
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilderWrapper partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         internal.partAppearance(partAppearance);
         return this;
     }
@@ -118,8 +117,8 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
         return this;
     }
 
-    public MultiblockMachineBuilderWrapper blockEntityFactory(Function<BlockEntityCreationInfo, MetaMachine> machine) {
-        internal.blockEntityFactory(machine);
+    public MultiblockMachineBuilderWrapper blockEntityFactory(MachineInstanceFactory machine) {
+        internal.instanceFactory(machine);
         return this;
     }
 

@@ -231,7 +231,7 @@ public class CommonProxy {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
-            GTCEu.LOGGER.info("Firing block register late event");
+            GTCEu.LOGGER.info("Generating material blocks...");
 
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
@@ -248,7 +248,7 @@ public class CommonProxy {
             GTMaterialBlocks.finaliseMaterialBlocks();
 
         } else if (event.getRegistryKey() == Registries.ITEM) {
-            GTCEu.LOGGER.info("Firing item register late event");
+            GTCEu.LOGGER.info("Generating material items...");
 
             // Material Items & Tools
             GTMaterialItems.generateMaterialItems();
