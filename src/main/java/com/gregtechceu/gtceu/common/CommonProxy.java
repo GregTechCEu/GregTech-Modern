@@ -200,7 +200,7 @@ public class CommonProxy {
         GTEntityTypes.init();
 
         GregTechDatagen.initPost();
-        WorldGenLayers.init();
+        WorldGenLayers.init(modBus);
         VeinGenerators.registerAddonGenerators();
         IndicatorGenerators.registerAddonGenerators();
         WaypointManager.init();
