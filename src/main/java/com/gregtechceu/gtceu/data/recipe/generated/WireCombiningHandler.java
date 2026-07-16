@@ -108,7 +108,7 @@ public final class WireCombiningHandler {
             return;
         }
 
-        PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
+        PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.getName())
                 .inputItems(prefix, material)
                 .outputItems(cableToWireMap.get(prefix), material)
                 .outputItems(plate, GTMaterials.Rubber,

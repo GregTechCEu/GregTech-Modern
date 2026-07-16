@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.utils.memoization.MemoizedSupplier;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -19,6 +21,9 @@ public class DimensionMarker {
     public static final int MAX_TIER = 99;
 
     @Getter
+    public final ResourceKey<Level> dimension;
+
+    @Getter
     public final int tier; // not only used to represent dimension tier, but also for sorting
 
     @Getter
@@ -26,7 +31,9 @@ public class DimensionMarker {
 
     private final MemoizedSupplier<ItemStack> iconSupplier;
 
-    public DimensionMarker(int tier, Supplier<? extends ItemLike> supplier, @Nullable Component overrideName) {
+    public DimensionMarker(ResourceKey<Level> dim, int tier, Supplier<? extends ItemLike> supplier,
+                           @Nullable Component overrideName) {
+        this.dimension = dim;
         this.tier = tier;
         this.overrideName = overrideName;
         this.iconSupplier = GTMemoizer.memoize(() -> getStack(supplier.get().asItem()));

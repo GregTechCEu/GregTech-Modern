@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.codec.StreamCodecUtils;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -45,8 +46,16 @@ public record ToolBehaviors(@Unmodifiable Map<ToolBehaviorType<?>, IToolBehavior
         return behaviors.containsKey(type);
     }
 
+    public boolean hasBehavior(Holder<ToolBehaviorType<?>> holder) {
+        return hasBehavior(holder.value());
+    }
+
     public <T extends IToolBehavior<T>> @Nullable T getBehavior(ToolBehaviorType<T> type) {
         return (T) this.behaviors.get(type);
+    }
+
+    public <T extends IToolBehavior<T>> @Nullable T getBehavior(Holder<ToolBehaviorType<?>> holder) {
+        return (T) getBehavior(holder.value());
     }
 
     public ToolBehaviors withBehavior(IToolBehavior<?> behavior) {

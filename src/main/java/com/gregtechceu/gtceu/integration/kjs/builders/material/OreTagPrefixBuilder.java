@@ -1,10 +1,9 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.block.OreBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -16,7 +15,6 @@ import lombok.experimental.Accessors;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
-import static com.gregtechceu.gtceu.integration.kjs.Validator.*;
 
 @Accessors(fluent = true, chain = true)
 public class OreTagPrefixBuilder extends TagPrefixBuilder {
@@ -41,7 +39,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     }
 
     @Override
-    public TagPrefix create(String id) {
+    public TagPrefix create(ResourceLocation id) {
         return new TagPrefix(id)
                 .defaultTagPath("ores/%s")
                 .prefixOnlyTagPath("ores_in_ground/%s")
@@ -54,14 +52,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
 
     @Override
     public TagPrefix createObject() {
-        validate(this.id,
-                errorIfNull(stateSupplier, "stateSupplier"),
-                onlySetDefault(templateProperties, () -> {
-                    templateProperties = () -> GTBlocks.copy(stateSupplier.get().getBlock().properties(),
-                            BlockBehaviour.Properties.of());
-                }),
-                errorIfNull(baseModelLocation, "baseModelLocation"));
-
         return base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation,
                 doubleDrops, isSand, shouldDropAsItem);
     }

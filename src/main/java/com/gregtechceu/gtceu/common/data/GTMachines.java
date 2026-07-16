@@ -52,7 +52,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import com.google.common.math.IntMath;
 import it.unimi.dsi.fastutil.Pair;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 

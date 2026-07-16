@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.create;
 
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 
 import net.createmod.catnip.data.Couple;
@@ -9,6 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.Create;
@@ -20,6 +23,7 @@ import com.simibubi.create.content.redstone.link.IRedstoneLinkable;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
 import com.simibubi.create.content.redstone.link.controller.LinkedControllerItem;
 import com.tterrag.registrate.AbstractRegistrate;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,23 +32,17 @@ import java.util.function.Supplier;
 
 public class GTCreateIntegration {
 
+    private static final DeferredRegister<Placeholder> CREATE_PLACEHOLDERS = DeferredRegister
+            .create(GTRegistries.Keys.PLACEHOLDER, "gtceu");
+
     private GTCreateIntegration() {}
 
-    public static void init() {
+    public static void init(IEventBus modBus) {
+        CREATE_PLACEHOLDERS.register(modBus);
         GTCreateDisplaySources.init();
         GTCreateDisplayTargets.init();
-    }
 
-    public static void initPlaceholders() {
-        PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
-
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                return processRedstonePlaceholder(ctx, args);
-            }
-        });
-        PlaceholderHandler.addPlaceholder(new Placeholder("displayTarget") {
+        CREATE_PLACEHOLDERS.register("display_target", () -> new Placeholder("displayTarget") {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
@@ -56,6 +54,18 @@ public class GTCreateIntegration {
                 return MultiLineComponent.of(cover.getCreateDisplayTargetBuffer().get(i - 1));
             }
         });
+    }
+
+    @ApiStatus.Internal
+    public static Placeholder getCreateRedstonePlaceholder() {
+        return new Placeholder("redstone") {
+
+            @Override
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                return processRedstonePlaceholder(ctx, args);
+            }
+        };
     }
 
     private static int getRedstoneLinkPower(PlaceholderContext ctx,

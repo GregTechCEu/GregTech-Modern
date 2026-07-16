@@ -8,13 +8,13 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -28,10 +28,23 @@ import java.util.List;
  */
 public abstract class ChanceLogic {
 
+    private static final DeferredRegister<ChanceLogic> CHANCE_LOGIC = DeferredRegister
+            .create(GTRegistries.Keys.CHANCE_LOGIC, GTCEu.MOD_ID);
+
+    public static void init(IEventBus modBus) {
+        CHANCE_LOGIC.register(modBus);
+
+        CHANCE_LOGIC.register("or", () -> OR);
+        CHANCE_LOGIC.register("and", () -> AND);
+        CHANCE_LOGIC.register("first", () -> FIRST);
+        CHANCE_LOGIC.register("xor", () -> XOR);
+        CHANCE_LOGIC.register("none", () -> NONE);
+    }
+
     /**
      * Chanced Output Logic where any ingredients succeeding their roll will be produced
      */
-    public static final ChanceLogic OR = new ChanceLogic("or") {
+    public static final ChanceLogic OR = new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -76,7 +89,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where all ingredients must succeed their roll in order for any to be produced
      */
-    public static final ChanceLogic AND = new ChanceLogic("and") {
+    public static final ChanceLogic AND = new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -115,7 +128,7 @@ public abstract class ChanceLogic {
      * Deprecated following the rewrite of XOR
      */
     @Deprecated
-    public static final ChanceLogic FIRST = new ChanceLogic("first") {
+    public static final ChanceLogic FIRST = new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -154,7 +167,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where only one of the ingredients will be output, in a manner weighted to the input chances
      */
-    public static final ChanceLogic XOR = new ChanceLogic("xor") {
+    public static final ChanceLogic XOR = new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -250,7 +263,7 @@ public abstract class ChanceLogic {
     /**
      * Chanced Output Logic where nothing is produced
      */
-    public static final ChanceLogic NONE = new ChanceLogic("none") {
+    public static final ChanceLogic NONE = new ChanceLogic() {
 
         @Override
         public @Unmodifiable List<@NotNull Content> roll(RecipeCapability<?> cap,
@@ -270,13 +283,7 @@ public abstract class ChanceLogic {
         }
     };
 
-    public ChanceLogic(ResourceLocation id) {
-        GTRegistries.register(GTRegistries.CHANCE_LOGICS, id, this);
-    }
-
-    private ChanceLogic(String id) {
-        this(GTCEu.id(id));
-    }
+    public ChanceLogic() {}
 
     /**
      * @param entry the entry to get the complete chance for
@@ -353,7 +360,4 @@ public abstract class ChanceLogic {
 
     @NotNull
     public abstract Component getTranslation();
-
-    @ApiStatus.Internal
-    public static void init() {}
 }

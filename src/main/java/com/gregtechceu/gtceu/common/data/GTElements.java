@@ -1,233 +1,206 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.resources.ResourceLocation;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
+@SuppressWarnings("unused")
 public class GTElements {
 
-    public static final Element H = createAndRegister(GTCEu.id("Hydrogen"), 1, 0, -1, null, "Hydrogen", "H", false);
-    public static final Element D = createAndRegister(GTCEu.id("Deuterium"), 1, 1, -1, "H", "Deuterium", "D", true);
-    public static final Element T = createAndRegister(GTCEu.id("Tritium"), 1, 2, -1, "D", "Tritium", "T", true);
-    public static final Element He = createAndRegister(GTCEu.id("Helium"), 2, 2, -1, null, "Helium", "He", false);
-    public static final Element He3 = createAndRegister(GTCEu.id("Helium-3"), 2, 1, -1, "H&D", "Helium-3", "He-3",
+    public static final Element H = REGISTRATE.element("Hydrogen", 1, 0, -1, null, "H", false);
+    public static final Element D = REGISTRATE.element("Deuterium", 1, 1, -1, "H", "D", true);
+    public static final Element T = REGISTRATE.element("Tritium", 1, 2, -1, "D", "T", true);
+    public static final Element He = REGISTRATE.element("Helium", 2, 2, -1, null, "He", false);
+    public static final Element He3 = REGISTRATE.element("Helium-3", 2, 1, -1, "H&D", "He-3",
             true);
-    public static final Element Li = createAndRegister(GTCEu.id("Lithium"), 3, 4, -1, null, "Lithium", "Li", false);
-    public static final Element Be = createAndRegister(GTCEu.id("Beryllium"), 4, 5, -1, null, "Beryllium", "Be", false);
-    public static final Element B = createAndRegister(GTCEu.id("Boron"), 5, 5, -1, null, "Boron", "B", false);
-    public static final Element C = createAndRegister(GTCEu.id("Carbon"), 6, 6, -1, null, "Carbon", "C", false);
-    public static final Element N = createAndRegister(GTCEu.id("Nitrogen"), 7, 7, -1, null, "Nitrogen", "N", false);
-    public static final Element O = createAndRegister(GTCEu.id("Oxygen"), 8, 8, -1, null, "Oxygen", "O", false);
-    public static final Element F = createAndRegister(GTCEu.id("Fluorine"), 9, 9, -1, null, "Fluorine", "F", false);
-    public static final Element Ne = createAndRegister(GTCEu.id("Neon"), 10, 10, -1, null, "Neon", "Ne", false);
-    public static final Element Na = createAndRegister(GTCEu.id("Sodium"), 11, 11, -1, null, "Sodium", "Na", false);
-    public static final Element Mg = createAndRegister(GTCEu.id("Magnesium"), 12, 12, -1, null, "Magnesium", "Mg",
+    public static final Element Li = REGISTRATE.element("Lithium", 3, 4, -1, null, "Li", false);
+    public static final Element Be = REGISTRATE.element("Beryllium", 4, 5, -1, null, "Be", false);
+    public static final Element B = REGISTRATE.element("Boron", 5, 5, -1, null, "B", false);
+    public static final Element C = REGISTRATE.element("Carbon", 6, 6, -1, null, "C", false);
+    public static final Element N = REGISTRATE.element("Nitrogen", 7, 7, -1, null, "N", false);
+    public static final Element O = REGISTRATE.element("Oxygen", 8, 8, -1, null, "O", false);
+    public static final Element F = REGISTRATE.element("Fluorine", 9, 9, -1, null, "F", false);
+    public static final Element Ne = REGISTRATE.element("Neon", 10, 10, -1, null, "Ne", false);
+    public static final Element Na = REGISTRATE.element("Sodium", 11, 11, -1, null, "Na", false);
+    public static final Element Mg = REGISTRATE.element("Magnesium", 12, 12, -1, null, "Mg",
             false);
-    public static final Element Al = createAndRegister(GTCEu.id("Aluminium"), 13, 13, -1, null, "Aluminium", "Al",
+    public static final Element Al = REGISTRATE.element("Aluminium", 13, 13, -1, null, "Al",
             false);
-    public static final Element Si = createAndRegister(GTCEu.id("Silicon"), 14, 14, -1, null, "Silicon", "Si", false);
-    public static final Element P = createAndRegister(GTCEu.id("Phosphorus"), 15, 15, -1, null, "Phosphorus", "P",
+    public static final Element Si = REGISTRATE.element("Silicon", 14, 14, -1, null, "Si", false);
+    public static final Element P = REGISTRATE.element("Phosphorus", 15, 15, -1, null, "P",
             false);
-    public static final Element S = createAndRegister(GTCEu.id("Sulfur"), 16, 16, -1, null, "Sulfur", "S", false);
-    public static final Element Cl = createAndRegister(GTCEu.id("Chlorine"), 17, 18, -1, null, "Chlorine", "Cl", false);
-    public static final Element Ar = createAndRegister(GTCEu.id("Argon"), 18, 22, -1, null, "Argon", "Ar", false);
-    public static final Element K = createAndRegister(GTCEu.id("Potassium"), 19, 20, -1, null, "Potassium", "K", false);
-    public static final Element Ca = createAndRegister(GTCEu.id("Calcium"), 20, 20, -1, null, "Calcium", "Ca", false);
-    public static final Element Sc = createAndRegister(GTCEu.id("Scandium"), 21, 24, -1, null, "Scandium", "Sc", false);
-    public static final Element Ti = createAndRegister(GTCEu.id("Titanium"), 22, 26, -1, null, "Titanium", "Ti", false);
-    public static final Element V = createAndRegister(GTCEu.id("Vanadium"), 23, 28, -1, null, "Vanadium", "V", false);
-    public static final Element Cr = createAndRegister(GTCEu.id("Chrome"), 24, 28, -1, null, "Chrome", "Cr", false);
-    public static final Element Mn = createAndRegister(GTCEu.id("Manganese"), 25, 30, -1, null, "Manganese", "Mn",
+    public static final Element S = REGISTRATE.element("Sulfur", 16, 16, -1, null, "S", false);
+    public static final Element Cl = REGISTRATE.element("Chlorine", 17, 18, -1, null, "Cl", false);
+    public static final Element Ar = REGISTRATE.element("Argon", 18, 22, -1, null, "Ar", false);
+    public static final Element K = REGISTRATE.element("Potassium", 19, 20, -1, null, "K", false);
+    public static final Element Ca = REGISTRATE.element("Calcium", 20, 20, -1, null, "Ca", false);
+    public static final Element Sc = REGISTRATE.element("Scandium", 21, 24, -1, null, "Sc", false);
+    public static final Element Ti = REGISTRATE.element("Titanium", 22, 26, -1, null, "Ti", false);
+    public static final Element V = REGISTRATE.element("Vanadium", 23, 28, -1, null, "V", false);
+    public static final Element Cr = REGISTRATE.element("Chrome", 24, 28, -1, null, "Cr", false);
+    public static final Element Mn = REGISTRATE.element("Manganese", 25, 30, -1, null, "Mn",
             false);
-    public static final Element Fe = createAndRegister(GTCEu.id("Iron"), 26, 30, -1, null, "Iron", "Fe", false);
-    public static final Element Co = createAndRegister(GTCEu.id("Cobalt"), 27, 32, -1, null, "Cobalt", "Co", false);
-    public static final Element Ni = createAndRegister(GTCEu.id("Nickel"), 28, 30, -1, null, "Nickel", "Ni", false);
-    public static final Element Cu = createAndRegister(GTCEu.id("Copper"), 29, 34, -1, null, "Copper", "Cu", false);
-    public static final Element Zn = createAndRegister(GTCEu.id("Zinc"), 30, 35, -1, null, "Zinc", "Zn", false);
-    public static final Element Ga = createAndRegister(GTCEu.id("Gallium"), 31, 39, -1, null, "Gallium", "Ga", false);
-    public static final Element Ge = createAndRegister(GTCEu.id("Germanium"), 32, 40, -1, null, "Germanium", "Ge",
+    public static final Element Fe = REGISTRATE.element("Iron", 26, 30, -1, null, "Fe", false);
+    public static final Element Co = REGISTRATE.element("Cobalt", 27, 32, -1, null, "Co", false);
+    public static final Element Ni = REGISTRATE.element("Nickel", 28, 30, -1, null, "Ni", false);
+    public static final Element Cu = REGISTRATE.element("Copper", 29, 34, -1, null, "Cu", false);
+    public static final Element Zn = REGISTRATE.element("Zinc", 30, 35, -1, null, "Zn", false);
+    public static final Element Ga = REGISTRATE.element("Gallium", 31, 39, -1, null, "Ga", false);
+    public static final Element Ge = REGISTRATE.element("Germanium", 32, 40, -1, null, "Ge",
             false);
-    public static final Element As = createAndRegister(GTCEu.id("Arsenic"), 33, 42, -1, null, "Arsenic", "As", false);
-    public static final Element Se = createAndRegister(GTCEu.id("Selenium"), 34, 45, -1, null, "Selenium", "Se", false);
-    public static final Element Br = createAndRegister(GTCEu.id("Bromine"), 35, 45, -1, null, "Bromine", "Br", false);
-    public static final Element Kr = createAndRegister(GTCEu.id("Krypton"), 36, 48, -1, null, "Krypton", "Kr", false);
-    public static final Element Rb = createAndRegister(GTCEu.id("Rubidium"), 37, 48, -1, null, "Rubidium", "Rb", false);
-    public static final Element Sr = createAndRegister(GTCEu.id("Strontium"), 38, 49, -1, null, "Strontium", "Sr",
+    public static final Element As = REGISTRATE.element("Arsenic", 33, 42, -1, null, "As", false);
+    public static final Element Se = REGISTRATE.element("Selenium", 34, 45, -1, null, "Se", false);
+    public static final Element Br = REGISTRATE.element("Bromine", 35, 45, -1, null, "Br", false);
+    public static final Element Kr = REGISTRATE.element("Krypton", 36, 48, -1, null, "Kr", false);
+    public static final Element Rb = REGISTRATE.element("Rubidium", 37, 48, -1, null, "Rb", false);
+    public static final Element Sr = REGISTRATE.element("Strontium", 38, 49, -1, null, "Sr",
             false);
-    public static final Element Y = createAndRegister(GTCEu.id("Yttrium"), 39, 50, -1, null, "Yttrium", "Y", false);
-    public static final Element Zr = createAndRegister(GTCEu.id("Zirconium"), 40, 51, -1, null, "Zirconium", "Zr",
+    public static final Element Y = REGISTRATE.element("Yttrium", 39, 50, -1, null, "Y", false);
+    public static final Element Zr = REGISTRATE.element("Zirconium", 40, 51, -1, null, "Zr",
             false);
-    public static final Element Nb = createAndRegister(GTCEu.id("Niobium"), 41, 53, -1, null, "Niobium", "Nb", false);
-    public static final Element Mo = createAndRegister(GTCEu.id("Molybdenum"), 42, 53, -1, null, "Molybdenum", "Mo",
+    public static final Element Nb = REGISTRATE.element("Niobium", 41, 53, -1, null, "Nb", false);
+    public static final Element Mo = REGISTRATE.element("Molybdenum", 42, 53, -1, null, "Mo",
             false);
-    public static final Element Tc = createAndRegister(GTCEu.id("Technetium"), 43, 55, -1, null, "Technetium", "Tc",
+    public static final Element Tc = REGISTRATE.element("Technetium", 43, 55, -1, null, "Tc",
             false);
-    public static final Element Ru = createAndRegister(GTCEu.id("Ruthenium"), 44, 57, -1, null, "Ruthenium", "Ru",
+    public static final Element Ru = REGISTRATE.element("Ruthenium", 44, 57, -1, null, "Ru",
             false);
-    public static final Element Rh = createAndRegister(GTCEu.id("Rhodium"), 45, 58, -1, null, "Rhodium", "Rh", false);
-    public static final Element Pd = createAndRegister(GTCEu.id("Palladium"), 46, 60, -1, null, "Palladium", "Pd",
+    public static final Element Rh = REGISTRATE.element("Rhodium", 45, 58, -1, null, "Rh", false);
+    public static final Element Pd = REGISTRATE.element("Palladium", 46, 60, -1, null, "Pd",
             false);
-    public static final Element Ag = createAndRegister(GTCEu.id("Silver"), 47, 60, -1, null, "Silver", "Ag", false);
-    public static final Element Cd = createAndRegister(GTCEu.id("Cadmium"), 48, 64, -1, null, "Cadmium", "Cd", false);
-    public static final Element In = createAndRegister(GTCEu.id("Indium"), 49, 65, -1, null, "Indium", "In", false);
-    public static final Element Sn = createAndRegister(GTCEu.id("Tin"), 50, 68, -1, null, "Tin", "Sn", false);
-    public static final Element Sb = createAndRegister(GTCEu.id("Antimony"), 51, 70, -1, null, "Antimony", "Sb", false);
-    public static final Element Te = createAndRegister(GTCEu.id("Tellurium"), 52, 75, -1, null, "Tellurium", "Te",
+    public static final Element Ag = REGISTRATE.element("Silver", 47, 60, -1, null, "Ag", false);
+    public static final Element Cd = REGISTRATE.element("Cadmium", 48, 64, -1, null, "Cd", false);
+    public static final Element In = REGISTRATE.element("Indium", 49, 65, -1, null, "In", false);
+    public static final Element Sn = REGISTRATE.element("Tin", 50, 68, -1, null, "Sn", false);
+    public static final Element Sb = REGISTRATE.element("Antimony", 51, 70, -1, null, "Sb", false);
+    public static final Element Te = REGISTRATE.element("Tellurium", 52, 75, -1, null, "Te",
             false);
-    public static final Element I = createAndRegister(GTCEu.id("Iodine"), 53, 74, -1, null, "Iodine", "I", false);
-    public static final Element Xe = createAndRegister(GTCEu.id("Xenon"), 54, 77, -1, null, "Xenon", "Xe", false);
-    public static final Element Cs = createAndRegister(GTCEu.id("Caesium"), 55, 77, -1, null, "Caesium", "Cs", false);
-    public static final Element Ba = createAndRegister(GTCEu.id("Barium"), 56, 81, -1, null, "Barium", "Ba", false);
-    public static final Element La = createAndRegister(GTCEu.id("Lanthanum"), 57, 81, -1, null, "Lanthanum", "La",
+    public static final Element I = REGISTRATE.element("Iodine", 53, 74, -1, null, "I", false);
+    public static final Element Xe = REGISTRATE.element("Xenon", 54, 77, -1, null, "Xe", false);
+    public static final Element Cs = REGISTRATE.element("Caesium", 55, 77, -1, null, "Cs", false);
+    public static final Element Ba = REGISTRATE.element("Barium", 56, 81, -1, null, "Ba", false);
+    public static final Element La = REGISTRATE.element("Lanthanum", 57, 81, -1, null, "La",
             false);
-    public static final Element Ce = createAndRegister(GTCEu.id("Cerium"), 58, 82, -1, null, "Cerium", "Ce", false);
-    public static final Element Pr = createAndRegister(GTCEu.id("Praseodymium"), 59, 81, -1, null, "Praseodymium", "Pr",
+    public static final Element Ce = REGISTRATE.element("Cerium", 58, 82, -1, null, "Ce", false);
+    public static final Element Pr = REGISTRATE.element("Praseodymium", 59, 81, -1, null, "Pr",
             false);
-    public static final Element Nd = createAndRegister(GTCEu.id("Neodymium"), 60, 84, -1, null, "Neodymium", "Nd",
+    public static final Element Nd = REGISTRATE.element("Neodymium", 60, 84, -1, null, "Nd",
             false);
-    public static final Element Pm = createAndRegister(GTCEu.id("Promethium"), 61, 83, -1, null, "Promethium", "Pm",
+    public static final Element Pm = REGISTRATE.element("Promethium", 61, 83, -1, null, "Pm",
             false);
-    public static final Element Sm = createAndRegister(GTCEu.id("Samarium"), 62, 88, -1, null, "Samarium", "Sm", false);
-    public static final Element Eu = createAndRegister(GTCEu.id("Europium"), 63, 88, -1, null, "Europium", "Eu", false);
-    public static final Element Gd = createAndRegister(GTCEu.id("Gadolinium"), 64, 93, -1, null, "Gadolinium", "Gd",
+    public static final Element Sm = REGISTRATE.element("Samarium", 62, 88, -1, null, "Sm", false);
+    public static final Element Eu = REGISTRATE.element("Europium", 63, 88, -1, null, "Eu", false);
+    public static final Element Gd = REGISTRATE.element("Gadolinium", 64, 93, -1, null, "Gd",
             false);
-    public static final Element Tb = createAndRegister(GTCEu.id("Terbium"), 65, 93, -1, null, "Terbium", "Tb", false);
-    public static final Element Dy = createAndRegister(GTCEu.id("Dysprosium"), 66, 96, -1, null, "Dysprosium", "Dy",
+    public static final Element Tb = REGISTRATE.element("Terbium", 65, 93, -1, null, "Tb", false);
+    public static final Element Dy = REGISTRATE.element("Dysprosium", 66, 96, -1, null, "Dy",
             false);
-    public static final Element Ho = createAndRegister(GTCEu.id("Holmium"), 67, 97, -1, null, "Holmium", "Ho", false);
-    public static final Element Er = createAndRegister(GTCEu.id("Erbium"), 68, 99, -1, null, "Erbium", "Er", false);
-    public static final Element Tm = createAndRegister(GTCEu.id("Thulium"), 69, 99, -1, null, "Thulium", "Tm", false);
-    public static final Element Yb = createAndRegister(GTCEu.id("Ytterbium"), 70, 103, -1, null, "Ytterbium", "Yb",
+    public static final Element Ho = REGISTRATE.element("Holmium", 67, 97, -1, null, "Ho", false);
+    public static final Element Er = REGISTRATE.element("Erbium", 68, 99, -1, null, "Er", false);
+    public static final Element Tm = REGISTRATE.element("Thulium", 69, 99, -1, null, "Tm", false);
+    public static final Element Yb = REGISTRATE.element("Ytterbium", 70, 103, -1, null, "Yb",
             false);
-    public static final Element Lu = createAndRegister(GTCEu.id("Lutetium"), 71, 103, -1, null, "Lutetium", "Lu",
+    public static final Element Lu = REGISTRATE.element("Lutetium", 71, 103, -1, null, "Lu",
             false);
-    public static final Element Hf = createAndRegister(GTCEu.id("Hafnium"), 72, 106, -1, null, "Hafnium", "Hf", false);
-    public static final Element Ta = createAndRegister(GTCEu.id("Tantalum"), 73, 107, -1, null, "Tantalum", "Ta",
+    public static final Element Hf = REGISTRATE.element("Hafnium", 72, 106, -1, null, "Hf", false);
+    public static final Element Ta = REGISTRATE.element("Tantalum", 73, 107, -1, null, "Ta",
             false);
-    public static final Element W = createAndRegister(GTCEu.id("Tungsten"), 74, 109, -1, null, "Tungsten", "W", false);
-    public static final Element Re = createAndRegister(GTCEu.id("Rhenium"), 75, 111, -1, null, "Rhenium", "Re", false);
-    public static final Element Os = createAndRegister(GTCEu.id("Osmium"), 76, 114, -1, null, "Osmium", "Os", false);
-    public static final Element Ir = createAndRegister(GTCEu.id("Iridium"), 77, 115, -1, null, "Iridium", "Ir", false);
-    public static final Element Pt = createAndRegister(GTCEu.id("Platinum"), 78, 117, -1, null, "Platinum", "Pt",
+    public static final Element W = REGISTRATE.element("Tungsten", 74, 109, -1, null, "W", false);
+    public static final Element Re = REGISTRATE.element("Rhenium", 75, 111, -1, null, "Re", false);
+    public static final Element Os = REGISTRATE.element("Osmium", 76, 114, -1, null, "Os", false);
+    public static final Element Ir = REGISTRATE.element("Iridium", 77, 115, -1, null, "Ir", false);
+    public static final Element Pt = REGISTRATE.element("Platinum", 78, 117, -1, null, "Pt",
             false);
-    public static final Element Au = createAndRegister(GTCEu.id("Gold"), 79, 117, -1, null, "Gold", "Au", false);
-    public static final Element Hg = createAndRegister(GTCEu.id("Mercury"), 80, 120, -1, null, "Mercury", "Hg", false);
-    public static final Element Tl = createAndRegister(GTCEu.id("Thallium"), 81, 123, -1, null, "Thallium", "Tl",
+    public static final Element Au = REGISTRATE.element("Gold", 79, 117, -1, null, "Au", false);
+    public static final Element Hg = REGISTRATE.element("Mercury", 80, 120, -1, null, "Hg", false);
+    public static final Element Tl = REGISTRATE.element("Thallium", 81, 123, -1, null, "Tl",
             false);
-    public static final Element Pb = createAndRegister(GTCEu.id("Lead"), 82, 125, -1, null, "Lead", "Pb", false);
-    public static final Element Bi = createAndRegister(GTCEu.id("Bismuth"), 83, 125, -1, null, "Bismuth", "Bi", false);
-    public static final Element Po = createAndRegister(GTCEu.id("Polonium"), 84, 124, -1, null, "Polonium", "Po",
+    public static final Element Pb = REGISTRATE.element("Lead", 82, 125, -1, null, "Pb", false);
+    public static final Element Bi = REGISTRATE.element("Bismuth", 83, 125, -1, null, "Bi", false);
+    public static final Element Po = REGISTRATE.element("Polonium", 84, 124, -1, null, "Po",
             false);
-    public static final Element At = createAndRegister(GTCEu.id("Astatine"), 85, 124, -1, null, "Astatine", "At",
+    public static final Element At = REGISTRATE.element("Astatine", 85, 124, -1, null, "At",
             false);
-    public static final Element Rn = createAndRegister(GTCEu.id("Radon"), 86, 134, -1, null, "Radon", "Rn", false);
-    public static final Element Fr = createAndRegister(GTCEu.id("Francium"), 87, 134, -1, null, "Francium", "Fr",
+    public static final Element Rn = REGISTRATE.element("Radon", 86, 134, -1, null, "Rn", false);
+    public static final Element Fr = REGISTRATE.element("Francium", 87, 134, -1, null, "Fr",
             false);
-    public static final Element Ra = createAndRegister(GTCEu.id("Radium"), 88, 136, -1, null, "Radium", "Ra", false);
-    public static final Element Ac = createAndRegister(GTCEu.id("Actinium"), 89, 136, -1, null, "Actinium", "Ac",
+    public static final Element Ra = REGISTRATE.element("Radium", 88, 136, -1, null, "Ra", false);
+    public static final Element Ac = REGISTRATE.element("Actinium", 89, 136, -1, null, "Ac",
             false);
-    public static final Element Th = createAndRegister(GTCEu.id("Thorium"), 90, 140, -1, null, "Thorium", "Th", false);
-    public static final Element Pa = createAndRegister(GTCEu.id("Protactinium"), 91, 138, -1, null, "Protactinium",
+    public static final Element Th = REGISTRATE.element("Thorium", 90, 140, -1, null, "Th", false);
+    public static final Element Pa = REGISTRATE.element("Protactinium", 91, 138, -1, null,
             "Pa", false);
-    public static final Element U = createAndRegister(GTCEu.id("Uranium"), 92, 146, -1, null, "Uranium", "U", false);
-    public static final Element U238 = createAndRegister(GTCEu.id("Uranium-238"), 92, 146, -1, null, "Uranium-238",
+    public static final Element U = REGISTRATE.element("Uranium", 92, 146, -1, null, "U", false);
+    public static final Element U238 = REGISTRATE.element("Uranium-238", 92, 146, -1, null,
             "U-238", false);
-    public static final Element U235 = createAndRegister(GTCEu.id("Uranium-235"), 92, 143, -1, null, "Uranium-235",
+    public static final Element U235 = REGISTRATE.element("Uranium-235", 92, 143, -1, null,
             "U-235", true);
-    public static final Element Np = createAndRegister(GTCEu.id("Neptunium"), 93, 144, -1, null, "Neptunium", "Np",
+    public static final Element Np = REGISTRATE.element("Neptunium", 93, 144, -1, null, "Np",
             false);
-    public static final Element Pu = createAndRegister(GTCEu.id("Plutonium"), 94, 152, -1, null, "Plutonium", "Pu",
+    public static final Element Pu = REGISTRATE.element("Plutonium", 94, 152, -1, null, "Pu",
             false);
-    public static final Element Pu239 = createAndRegister(GTCEu.id("Plutonium-239"), 94, 145, -1, null, "Plutonium-239",
+    public static final Element Pu239 = REGISTRATE.element("Plutonium-239", 94, 145, -1, null,
             "Pu-239", false);
-    public static final Element Pu241 = createAndRegister(GTCEu.id("Plutonium-241"), 94, 149, -1, null, "Plutonium-241",
+    public static final Element Pu241 = REGISTRATE.element("Plutonium-241", 94, 149, -1, null,
             "Pu-241", true);
-    public static final Element Am = createAndRegister(GTCEu.id("Americium"), 95, 150, -1, null, "Americium", "Am",
+    public static final Element Am = REGISTRATE.element("Americium", 95, 150, -1, null, "Am",
             false);
-    public static final Element Cm = createAndRegister(GTCEu.id("Curium"), 96, 153, -1, null, "Curium", "Cm", false);
-    public static final Element Bk = createAndRegister(GTCEu.id("Berkelium"), 97, 152, -1, null, "Berkelium", "Bk",
+    public static final Element Cm = REGISTRATE.element("Curium", 96, 153, -1, null, "Cm", false);
+    public static final Element Bk = REGISTRATE.element("Berkelium", 97, 152, -1, null, "Bk",
             false);
-    public static final Element Cf = createAndRegister(GTCEu.id("Californium"), 98, 153, -1, null, "Californium", "Cf",
+    public static final Element Cf = REGISTRATE.element("Californium", 98, 153, -1, null, "Cf",
             false);
-    public static final Element Es = createAndRegister(GTCEu.id("Einsteinium"), 99, 153, -1, null, "Einsteinium", "Es",
+    public static final Element Es = REGISTRATE.element("Einsteinium", 99, 153, -1, null, "Es",
             false);
-    public static final Element Fm = createAndRegister(GTCEu.id("Fermium"), 100, 157, -1, null, "Fermium", "Fm", false);
-    public static final Element Md = createAndRegister(GTCEu.id("Mendelevium"), 101, 157, -1, null, "Mendelevium", "Md",
+    public static final Element Fm = REGISTRATE.element("Fermium", 100, 157, -1, null, "Fm", false);
+    public static final Element Md = REGISTRATE.element("Mendelevium", 101, 157, -1, null, "Md",
             false);
-    public static final Element No = createAndRegister(GTCEu.id("Nobelium"), 102, 157, -1, null, "Nobelium", "No",
+    public static final Element No = REGISTRATE.element("Nobelium", 102, 157, -1, null, "No",
             false);
-    public static final Element Lr = createAndRegister(GTCEu.id("Lawrencium"), 103, 159, -1, null, "Lawrencium", "Lr",
+    public static final Element Lr = REGISTRATE.element("Lawrencium", 103, 159, -1, null, "Lr",
             false);
-    public static final Element Rf = createAndRegister(GTCEu.id("Rutherfordium"), 104, 161, -1, null, "Rutherfordium",
+    public static final Element Rf = REGISTRATE.element("Rutherfordium", 104, 161, -1, null,
             "Rf", false);
-    public static final Element Db = createAndRegister(GTCEu.id("Dubnium"), 105, 163, -1, null, "Dubnium", "Db", false);
-    public static final Element Sg = createAndRegister(GTCEu.id("Seaborgium"), 106, 165, -1, null, "Seaborgium", "Sg",
+    public static final Element Db = REGISTRATE.element("Dubnium", 105, 163, -1, null, "Db", false);
+    public static final Element Sg = REGISTRATE.element("Seaborgium", 106, 165, -1, null, "Sg",
             false);
-    public static final Element Bh = createAndRegister(GTCEu.id("Bohrium"), 107, 163, -1, null, "Bohrium", "Bh", false);
-    public static final Element Hs = createAndRegister(GTCEu.id("Hassium"), 108, 169, -1, null, "Hassium", "Hs", false);
-    public static final Element Mt = createAndRegister(GTCEu.id("Meitnerium"), 109, 167, -1, null, "Meitnerium", "Mt",
+    public static final Element Bh = REGISTRATE.element("Bohrium", 107, 163, -1, null, "Bh", false);
+    public static final Element Hs = REGISTRATE.element("Hassium", 108, 169, -1, null, "Hs", false);
+    public static final Element Mt = REGISTRATE.element("Meitnerium", 109, 167, -1, null, "Mt",
             false);
-    public static final Element Ds = createAndRegister(GTCEu.id("Darmstadtium"), 110, 171, -1, null, "Darmstadtium",
+    public static final Element Ds = REGISTRATE.element("Darmstadtium", 110, 171, -1, null,
             "Ds", false);
-    public static final Element Rg = createAndRegister(GTCEu.id("Roentgenium"), 111, 169, -1, null, "Roentgenium", "Rg",
+    public static final Element Rg = REGISTRATE.element("Roentgenium", 111, 169, -1, null, "Rg",
             false);
-    public static final Element Cn = createAndRegister(GTCEu.id("Copernicium"), 112, 173, -1, null, "Copernicium", "Cn",
+    public static final Element Cn = REGISTRATE.element("Copernicium", 112, 173, -1, null, "Cn",
             false);
-    public static final Element Nh = createAndRegister(GTCEu.id("Nihonium"), 113, 171, -1, null, "Nihonium", "Nh",
+    public static final Element Nh = REGISTRATE.element("Nihonium", 113, 171, -1, null, "Nh",
             false);
-    public static final Element Fl = createAndRegister(GTCEu.id("Flerovium"), 114, 175, -1, null, "Flerovium", "Fl",
+    public static final Element Fl = REGISTRATE.element("Flerovium", 114, 175, -1, null, "Fl",
             false);
-    public static final Element Mc = createAndRegister(GTCEu.id("Moscovium"), 115, 173, -1, null, "Moscovium", "Mc",
+    public static final Element Mc = REGISTRATE.element("Moscovium", 115, 173, -1, null, "Mc",
             false);
-    public static final Element Lv = createAndRegister(GTCEu.id("Livermorium"), 116, 177, -1, null, "Livermorium", "Lv",
+    public static final Element Lv = REGISTRATE.element("Livermorium", 116, 177, -1, null, "Lv",
             false);
-    public static final Element Ts = createAndRegister(GTCEu.id("Tennessine"), 117, 177, -1, null, "Tennessine", "Ts",
+    public static final Element Ts = REGISTRATE.element("Tennessine", 117, 177, -1, null, "Ts",
             false);
-    public static final Element Og = createAndRegister(GTCEu.id("Oganesson"), 118, 176, -1, null, "Oganesson", "Og",
+    public static final Element Og = REGISTRATE.element("Oganesson", 118, 176, -1, null, "Og",
             false);
-    public static final Element Tr = createAndRegister(GTCEu.id("Tritanium"), 119, 178, -1, null, "Tritanium", "Tr",
+    public static final Element Tr = REGISTRATE.element("Tritanium", 119, 178, -1, null, "Tr",
             false);
-    public static final Element Dr = createAndRegister(GTCEu.id("Duranium"), 120, 180, -1, null, "Duranium", "Dr",
+    public static final Element Dr = REGISTRATE.element("Duranium", 120, 180, -1, null, "Dr",
             false);
-    public static final Element Ke = createAndRegister(GTCEu.id("Trinium"), 125, 198, -1, null, "Trinium", "Ke", false);
-    public static final Element Nq = createAndRegister(GTCEu.id("Naquadah"), 174, 352, 140, null, "Naquadah", "Nq",
+    public static final Element Ke = REGISTRATE.element("Trinium", 125, 198, -1, null, "Ke", false);
+    public static final Element Nq = REGISTRATE.element("Naquadah", 174, 352, 140, null, "Nq",
             true);
-    public static final Element Nq1 = createAndRegister(GTCEu.id("NaquadahEnriched"), 174, 354, 140, null,
-            "NaquadahEnriched", "Nq+", true);
-    public static final Element Nq2 = createAndRegister(GTCEu.id("Naquadria"), 174, 348, 140, null, "Naquadria", "*Nq*",
+    public static final Element Nq1 = REGISTRATE.element("NaquadahEnriched", 174, 354, 140, null,
+            "Nq+", true);
+    public static final Element Nq2 = REGISTRATE.element("Naquadria", 174, 348, 140, null, "*Nq*",
             true);
-    public static final Element Nt = createAndRegister(GTCEu.id("Neutronium"), 0, 1000, -1, null, "Neutronium", "Nt",
+    public static final Element Nt = REGISTRATE.element("Neutronium", 0, 1000, -1, null, "Nt",
             false);
-    public static final Element Sp = createAndRegister(GTCEu.id("Space"), 1, 0, -1, null, "Space", "Sp", false);
-    public static final Element Ma = createAndRegister(GTCEu.id("Magic"), 1, 0, -1, null, "Magic", "Ma", false);
-
-    /**
-     * @deprecated Use
-     *             {@link GTElements#createAndRegister(ResourceLocation, long, long, long, String, String, String, boolean)}
-     */
-    @Deprecated
-    public static Element createAndRegister(long protons, long neutrons, long halfLifeSeconds, String decayTo,
-                                            String name, String symbol, boolean isIsotope) {
-        return createAndRegister(GTCEu.id(name), protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-    }
-
-    public static Element createAndRegister(ResourceLocation id, long protons, long neutrons, long halfLifeSeconds,
-                                            String decayTo,
-                                            String name, String symbol, boolean isIsotope) {
-        Element element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        GTRegistries.register(GTRegistries.ELEMENTS, GTCEu.id(name), element);
-        return element;
-    }
+    public static final Element Sp = REGISTRATE.element("Space", 1, 0, -1, null, "Sp", false);
+    public static final Element Ma = REGISTRATE.element("Magic", 1, 0, -1, null, "Ma", false);
 
     public static void init() {}
-
-    /**
-     * @deprecated Use {@code GTRegistries.ELEMENTS.get(name)} instead
-     */
-    @Deprecated(since = "8.0.0")
-    public static Element get(String name) {
-        return GTRegistries.ELEMENTS.get(GTCEu.id(name));
-    }
 }

@@ -58,8 +58,6 @@ public class GTRecipeCategoryBuilder extends BuilderBase<GTRecipeCategory> {
 
     @Override
     public GTRecipeCategory createObject() {
-        return GTRecipeCategories.register(id, recipeType)
-                .setIcon(icon)
-                .setXEIVisible(isXEIVisible);
+        return new GTRecipeCategory(id, recipeType).setIcon(icon).setXEIVisible(isXEIVisible);
     }
 }

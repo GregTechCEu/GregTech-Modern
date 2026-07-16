@@ -21,5 +21,4 @@ public class GTMobEffects {
 
     public static final DeferredHolder<MobEffect, GTPoisonEffect> WEAK_POISON = MOB_EFFECTS.register("weak_poison",
             () -> new GTPoisonEffect(MobEffectCategory.HARMFUL, 0x6D7917));
-
 }

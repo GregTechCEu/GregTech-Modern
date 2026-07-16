@@ -43,7 +43,7 @@ public class BiomeCondition extends RecipeCondition<BiomeCondition> {
 
     @Override
     public RecipeConditionType<BiomeCondition> getType() {
-        return GTRecipeConditions.BIOME;
+        return GTRecipeConditions.BIOME.get();
     }
 
     @Override

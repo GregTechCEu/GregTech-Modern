@@ -40,7 +40,7 @@ public class PositionYCondition extends RecipeCondition<PositionYCondition> {
 
     @Override
     public RecipeConditionType<PositionYCondition> getType() {
-        return GTRecipeConditions.POSITION_Y;
+        return GTRecipeConditions.POSITION_Y.get();
     }
 
     @Override

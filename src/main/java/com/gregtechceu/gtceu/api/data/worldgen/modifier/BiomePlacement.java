@@ -2,14 +2,15 @@ package com.gregtechceu.gtceu.api.data.worldgen.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.mojang.serialization.MapCodec;
 
@@ -18,8 +19,7 @@ import java.util.stream.Stream;
 
 public class BiomePlacement extends PlacementModifier {
 
-    public static final PlacementModifierType<BiomePlacement> BIOME_PLACEMENT = GTRegistries.register(
-            BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("biome_placement"), () -> BiomePlacement.CODEC);
+    public static final PlacementModifierType<BiomePlacement> BIOME_PLACEMENT = () -> BiomePlacement.CODEC;
 
     public static final MapCodec<BiomePlacement> CODEC = BiomeWeightModifier.CODEC.listOf().fieldOf("modifiers")
             .xmap(BiomePlacement::new, placement -> placement.modifiers);
@@ -41,6 +41,12 @@ public class BiomePlacement extends PlacementModifier {
             }
         }
         return positions;
+    }
+
+    public static void init(IEventBus modBus) {
+        var register = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
+        register.register(modBus);
+        register.register("biome_placement", () -> BIOME_PLACEMENT);
     }
 
     @Override

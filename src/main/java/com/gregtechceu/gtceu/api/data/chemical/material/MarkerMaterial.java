@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+
 import net.minecraft.resources.ResourceLocation;
 
 /**

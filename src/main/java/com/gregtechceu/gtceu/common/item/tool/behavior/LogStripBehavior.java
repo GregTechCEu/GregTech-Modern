@@ -105,6 +105,6 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
     @Override
     public ToolBehaviorType<LogStripBehavior> getType() {
-        return GTToolBehaviors.STRIP_LOG;
+        return GTToolBehaviors.STRIP_LOG.get();
     }
 }

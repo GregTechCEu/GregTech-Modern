@@ -6,12 +6,14 @@ import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeAdditionHandler;
 import com.gregtechceu.gtceu.api.recipe.lookup.RecipeDB;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -97,9 +99,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private GTRecipeTypeUILayout uiLayout;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
+        var registrate = GTRegistrate.createIgnoringListenerErrors(registryName.getNamespace());
+        registrate.generic(registryName.getPath(), Registries.RECIPE_TYPE, () -> this).build();
+        registrate.generic(registryName.getPath(), Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).build();
+
         this.registryName = registryName;
         this.group = group;
-        this.category = GTRecipeCategory.registerDefault(this);
+        this.category = registrate.recipeCategory(registryName.getPath(), this);
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         // must be linked to stop json contents from shuffling
         Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> map = new Object2ObjectLinkedOpenHashMap<>();

@@ -108,6 +108,6 @@ public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
 
     @Override
     public ToolBehaviorType<WaxOffBehavior> getType() {
-        return GTToolBehaviors.WAX_OFF;
+        return GTToolBehaviors.WAX_OFF.get();
     }
 }

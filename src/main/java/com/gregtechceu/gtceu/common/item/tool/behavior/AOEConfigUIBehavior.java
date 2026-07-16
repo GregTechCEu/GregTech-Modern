@@ -134,6 +134,6 @@ public class AOEConfigUIBehavior implements IToolUIBehavior<AOEConfigUIBehavior>
 
     @Override
     public ToolBehaviorType<AOEConfigUIBehavior> getType() {
-        return GTToolBehaviors.AOE_CONFIG_UI;
+        return GTToolBehaviors.AOE_CONFIG_UI.get();
     }
 }

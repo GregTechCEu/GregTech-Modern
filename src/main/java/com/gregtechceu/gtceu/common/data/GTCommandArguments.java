@@ -32,5 +32,4 @@ public class GTCommandArguments {
     private static <T extends ArgumentType<?>> Class<T> fixClassType(Class<? super T> type) {
         return (Class<T>) type;
     }
-
 }

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
+package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -33,10 +33,10 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
     public TagPrefixBuilder(ResourceLocation id) {
         super(id);
-        this.base = create(id.getPath());
+        this.base = create(id);
     }
 
-    public TagPrefix create(String id) {
+    public TagPrefix create(ResourceLocation id) {
         return new TagPrefix(id);
     }
 

@@ -22,7 +22,6 @@ public class GTIngredientTypes {
         FLUID_INGREDIENT_TYPES.register(bus);
     }
 
-
     public static final DeferredHolder<IngredientType<?>, IngredientType<IntCircuitIngredient>> INT_CIRCUIT_INGREDIENT = ITEM_INGREDIENT_TYPES
             .register("circuit", () -> new IngredientType<>(IntCircuitIngredient.CODEC));
 

@@ -40,7 +40,7 @@ public class CleanroomCondition extends RecipeCondition<CleanroomCondition> {
 
     @Override
     public RecipeConditionType<CleanroomCondition> getType() {
-        return GTRecipeConditions.CLEANROOM;
+        return GTRecipeConditions.CLEANROOM.get();
     }
 
     @Override

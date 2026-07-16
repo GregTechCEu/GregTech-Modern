@@ -63,6 +63,6 @@ public class RotateRailBehavior implements IToolBehavior<RotateRailBehavior> {
 
     @Override
     public ToolBehaviorType<RotateRailBehavior> getType() {
-        return GTToolBehaviors.ROTATE_RAIL;
+        return GTToolBehaviors.ROTATE_RAIL.get();
     }
 }

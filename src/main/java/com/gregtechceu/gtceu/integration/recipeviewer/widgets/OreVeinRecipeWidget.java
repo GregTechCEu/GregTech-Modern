@@ -175,9 +175,10 @@ public class OreVeinRecipeWidget extends ParentWidget<OreVeinRecipeWidget> {
     public static DimensionMarker[] getDimensionMarkers(Set<ResourceKey<Level>> dimensionFilter) {
         return dimensionFilter.stream()
                 .map(ResourceKey::location)
-                .map(loc -> GTRegistries.DIMENSION_MARKERS.getOptional(loc).orElse(
-                        new DimensionMarker(DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
-                                Component.literal(loc.toString()))))
+                .map(loc -> GTRegistries.DIMENSION_MARKERS.stream().filter(d -> d.getDimension().location().equals(loc))
+                        .findFirst().orElse(
+                                new DimensionMarker(Level.OVERWORLD, DimensionMarker.MAX_TIER, () -> Blocks.BARRIER,
+                                        Component.literal(loc.toString()))))
                 .sorted(Comparator.comparingInt(DimensionMarker::getTier))
                 .toArray(DimensionMarker[]::new);
     }

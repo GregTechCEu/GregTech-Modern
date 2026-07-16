@@ -18,6 +18,10 @@ public class WorldGenLayers {
 
     public static void init(IEventBus modBus) {
         WORLD_GEN_LAYERS.register(modBus);
+        WORLD_GEN_LAYERS.register("stone", () -> STONE);
+        WORLD_GEN_LAYERS.register("deepslate", () -> DEEPSLATE);
+        WORLD_GEN_LAYERS.register("netherrack", () -> NETHERRACK);
+        WORLD_GEN_LAYERS.register("endstone", () -> ENDSTONE);
     }
 
     public static final SimpleWorldGenLayer STONE = new SimpleWorldGenLayer(

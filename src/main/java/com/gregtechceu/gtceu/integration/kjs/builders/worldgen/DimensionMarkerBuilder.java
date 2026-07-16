@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.integration.kjs.builders.worldgen;
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.integration.kjs.Validator;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -33,6 +35,6 @@ public class DimensionMarkerBuilder extends BuilderBase<DimensionMarker> {
                 id,
                 Validator.errorIfNull(iconSupplier, "icon"),
                 Validator.errorIfOutOfRange(tier, "tier", 0, DimensionMarker.MAX_TIER));
-        return new DimensionMarker(tier, iconSupplier, overrideName);
+        return new DimensionMarker(ResourceKey.create(Registries.DIMENSION, id), tier, iconSupplier, overrideName);
     }
 }

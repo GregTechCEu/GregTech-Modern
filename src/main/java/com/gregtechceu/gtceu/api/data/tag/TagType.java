@@ -47,7 +47,7 @@ public class TagType {
     public static TagType withPrefixFormatter(String tagPath) {
         TagType type = new TagType(tagPath);
         type.formatter = Util.memoize((prefix, mat) -> TagUtil.createItemTag(
-                type.tagPath.formatted(prefix.getLowerCaseName(), mat.getName())));
+                type.tagPath.formatted(prefix.getName(), mat.getName())));
         return type;
     }
 
@@ -58,7 +58,7 @@ public class TagType {
     public static TagType withPrefixOnlyFormatter(String tagPath) {
         TagType type = new TagType(tagPath);
         type.formatter = Util.memoize((prefix, mat) -> TagUtil
-                .createItemTag(type.tagPath.formatted(prefix.getLowerCaseName())));
+                .createItemTag(type.tagPath.formatted(prefix.getName())));
         type.isParentTag = true;
         return type;
     }

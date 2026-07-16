@@ -19,7 +19,6 @@ public class GTAttachmentTypes {
         ATTACHMENT_TYPES.register(bus);
     }
 
-
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MedicalConditionTracker>> MEDICAL_CONDITION_TRACKER = ATTACHMENT_TYPES
             .register("hazard_tracker", () -> AttachmentType.serializable(holder -> {
                 if (holder instanceof Player player) {

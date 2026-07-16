@@ -539,6 +539,7 @@ public class GTMaterials {
     public static Material VanadiumGallium;
     public static Material WroughtIron;
     public static Material Wulfenite;
+    public static Material Limonite;
     public static Material YellowLimonite;
     public static Material YttriumBariumCuprate;
     public static Material NetherQuartz;

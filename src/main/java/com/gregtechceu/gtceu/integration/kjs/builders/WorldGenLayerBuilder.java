@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 
-import dev.latvian.mods.kubejs.registry.BuilderBase;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 
 import dev.latvian.mods.kubejs.level.ruletest.AnyMatchRuleTest;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.experimental.Accessors;
 

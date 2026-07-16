@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.recipe.category;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
@@ -49,12 +48,6 @@ public class GTRecipeCategory {
         this.name = registryKey.getPath();
         this.registryKey = registryKey;
         this.languageKey = registryKey.toLanguageKey("recipe_category");
-    }
-
-    public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(recipeType);
-        GTRegistries.register(GTRegistries.RECIPE_CATEGORIES, category.registryKey, category);
-        return category;
     }
 
     public CategoryIcon getIcon() {

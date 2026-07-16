@@ -32,7 +32,7 @@ public class DisableShieldBehavior implements IToolBehavior<DisableShieldBehavio
 
     @Override
     public ToolBehaviorType<DisableShieldBehavior> getType() {
-        return GTToolBehaviors.DISABLE_SHIELD;
+        return GTToolBehaviors.DISABLE_SHIELD.get();
     }
 
     @Override

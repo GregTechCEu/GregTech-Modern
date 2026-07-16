@@ -85,7 +85,7 @@ public class PlungerBehavior implements IToolBehavior<PlungerBehavior>, ICompone
 
     @Override
     public ToolBehaviorType<PlungerBehavior> getType() {
-        return GTToolBehaviors.PLUNGER;
+        return GTToolBehaviors.PLUNGER.get();
     }
 
     @Override

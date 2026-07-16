@@ -39,5 +39,4 @@ public class GTParticleTypes {
             });
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUFFLER_PARTICLE = PARTICLE_TYPES
             .register("muffler", () -> new SimpleParticleType(false));
-
 }

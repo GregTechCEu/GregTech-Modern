@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
@@ -19,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifiers;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -45,7 +44,6 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.*;
-import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
@@ -134,11 +132,10 @@ public class CommonProxy {
         }
         modBus.register(CommonProxy.class);
 
-
         // Initialize the model generator before any content is loaded so machine models can use the generated data
         GregTechDatagen.initPre();
 
-        GTRegistries.init(modBus);
+        GTRegistries.init();
         REGISTRATE.registerEventListeners(modBus);
 
         GTDataComponents.init(modBus);
@@ -151,6 +148,7 @@ public class CommonProxy {
         GTMobEffects.init(modBus);
         GTParticleTypes.init(modBus);
         GTFeatures.init(modBus);
+        GTPlacementModifiers.init(modBus);
         GTValueProviderTypes.init(modBus);
 
         GTPatternErrors.init(modBus);
@@ -166,32 +164,30 @@ public class CommonProxy {
 
         GTSoundEntries.init();
         GTDamageTypes.init();
-        GTPlaceholders.init();
+        GTPlaceholders.init(modBus);
 
         if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
-            GTCreateIntegration.init();
+            GTCreateIntegration.init(modBus);
         }
 
-        GTCovers.init();
         GTCreativeModeTabs.init();
 
         GTBlocks.init();
         GTFluids.init();
 
-        GTDimensionMarkers.init();
-        GTRecipeCapabilities.init();
-        GTRecipeConditions.init();
-        ChanceLogic.init();
+        GTDimensionMarkers.init(modBus);
+        GTRecipeCapabilities.init(modBus);
+        GTRecipeConditions.init(modBus);
+        ChanceLogic.init(modBus);
         GTRecipeTypes.init();
         GTRecipeCategories.init();
 
         GTFoods.init();
         GTToolTiers.init();
-        GTToolBehaviors.init();
+        GTToolBehaviors.init(modBus);
         GTItems.init();
 
-        GTMachineUtils.init();
-        GTCovers.init();
+        GTCovers.init(modBus);
         GTMachines.init();
 
         GTEntityTypes.init();
@@ -205,8 +201,7 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        ChestGenHooks.init();
-
+        ChestGenHooks.init(modBus);
 
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
@@ -236,7 +231,8 @@ public class CommonProxy {
                 var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
                 AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
                 if (accessor.getDoDatagen().get()) {
-                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
+                    List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps
+                            .asMap(accessor.getDatagens())
                             .get(ProviderType.LANG);
                     NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
                             .generate((RegistrateLangProvider) provider, namespace);

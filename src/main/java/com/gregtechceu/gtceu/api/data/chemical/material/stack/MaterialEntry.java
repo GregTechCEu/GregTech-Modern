@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,7 +58,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         }
         var tags = tagPrefix.getItemTags(material);
         if (tags.isEmpty()) {
-            return tagPrefix.name + "/" + material.getName();
+            return tagPrefix.getName() + "/" + material.getName();
         }
         return tags.getFirst().location().toString();
     }
@@ -70,7 +72,7 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
 
             var values = str.split(":", 2);
             if (values.length > 1) {
-                var prefix = TagPrefix.get(values[0]);
+                var prefix = GTRegistries.TAG_PREFIXES.get(ResourceLocation.parse(values[0]));
                 if (prefix == null) throw new IllegalArgumentException("Invalid TagPrefix: " + values[0]);
                 cached = new MaterialEntry(prefix, GTMaterials.get(values[1]));
                 PARSE_CACHE.put(str, cached);

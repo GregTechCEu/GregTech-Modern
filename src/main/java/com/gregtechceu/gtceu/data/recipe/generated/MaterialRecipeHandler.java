@@ -442,7 +442,7 @@ public final class MaterialRecipeHandler {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider,
                     String.format("gem_to_dust_%s_%s", material.getName(),
-                            FormattingUtil.toLowerCaseUnderscore(prefix.name)),
+                            FormattingUtil.toLowerCaseUnderscore(prefix.getName())),
                     crushedStack,
                     "X", "m", 'X', new MaterialEntry(prefix, material));
         }
@@ -457,14 +457,14 @@ public final class MaterialRecipeHandler {
         }
 
         VanillaRecipeHelper.addShapelessRecipe(provider,
-                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name),
+                String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnderscore(lowerPrefix.getName()),
                         material.getName()),
                 prevStack,
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.getName()) +
+                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.getName()))
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)
@@ -473,8 +473,8 @@ public final class MaterialRecipeHandler {
 
         LASER_ENGRAVER_RECIPES
                 .recipeBuilder(
-                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.name) +
-                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.name))
+                        "engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.getName()) +
+                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.getName()))
                 .inputItems(prevStack)
                 .notConsumable(lens, MarkerMaterials.Color.White)
                 .outputItems(prefix, material)

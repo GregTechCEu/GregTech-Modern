@@ -7,6 +7,8 @@ import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
 
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -115,7 +117,8 @@ public class SoundEntryBuilder {
         SoundEntry entry = wrappedEvents.isEmpty() ?
                 new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
                 new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
-        GTRegistries.register(GTRegistries.SOUNDS, entry.getId(), entry);
+        ((MappedRegistry<SoundEntry>) GTRegistries.SOUNDS).unfreeze();
+        Registry.register(GTRegistries.SOUNDS, entry.getId(), entry);
         return entry;
     }
 }

@@ -84,8 +84,9 @@ import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialBuilderWrapper;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder;
-import com.gregtechceu.gtceu.integration.kjs.builders.prefix.TagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.MaterialIconSetBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.OreTagPrefixBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.material.TagPrefixBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockFluidBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.BedrockOreBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.DimensionMarkerBuilder;
@@ -125,13 +126,14 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilder.class, ElementBuilder::new);
-        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
-                DimensionMarkerBuilder::new);
+        registry.addDefault(GTRegistries.Keys.MATERIAL_ICON_SET, MaterialIconSetBuilder.class, MaterialIconSetBuilder::new);
         registry.addDefault(GTRegistries.Keys.MATERIAL, MaterialBuilderWrapper.class, MaterialBuilderWrapper::new);
         registry.of(GTRegistries.Keys.TAG_PREFIX, reg -> {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
+        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
+                DimensionMarkerBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
@@ -161,6 +163,8 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.add(GTCEu.id("active"), ActiveBlockBuilder.class, ActiveBlockBuilder::new);
             reg.add(GTCEu.id("coil"), CoilBlockBuilder.class, CoilBlockBuilder::new);
         });
+
+        registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilder.class, WorldGenLayerBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class,
                 OreVeinDefinitionBuilder::new);

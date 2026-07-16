@@ -48,7 +48,7 @@ public class TreeFellingBehavior implements IToolBehavior<TreeFellingBehavior> {
 
     @Override
     public ToolBehaviorType<TreeFellingBehavior> getType() {
-        return GTToolBehaviors.TREE_FELLING;
+        return GTToolBehaviors.TREE_FELLING.get();
     }
 
     @Override

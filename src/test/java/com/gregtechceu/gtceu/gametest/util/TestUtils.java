@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.utils.fakeplayer.FakeServerGamePacketListenerImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertPosException;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -244,7 +245,7 @@ public class TestUtils {
                 .setEUIO(IO.IN)
                 .setMaxIOSize(maxInputs, maxOutputs, maxFluidInputs, maxFluidOutputs);
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
+        Registry.register(BuiltInRegistries.RECIPE_TYPE, type.registryName, type);
         GTRegistries.RECIPE_CATEGORIES.freeze();
         BuiltInRegistries.RECIPE_TYPE.freeze();
         return type;
@@ -277,7 +278,7 @@ public class TestUtils {
             for (IItemComponent component : componentItem.getComponents()) {
                 if (component instanceof CoverPlaceBehavior coverPlaceBehavior) {
                     helper.assertTrue(coverDefinition == null, "stack has multiple coverPlaceBehaviours");
-                    coverDefinition = coverPlaceBehavior.coverDefinition();
+                    coverDefinition = coverPlaceBehavior.coverDefinition().value();
                 }
             }
         }

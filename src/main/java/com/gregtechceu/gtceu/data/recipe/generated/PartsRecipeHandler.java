@@ -227,7 +227,7 @@ public final class PartsRecipeHandler {
         if (material.hasFluid()) {
             FluidStack fluidStack = material.getProperty(PropertyKey.FLUID).solidifiesFrom(L * (isSmall ? 1 : 4));
             if (!fluidStack.isEmpty()) {
-                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.name)
+                FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_" + material.getName() + "_" + prefix.getName())
                         .notConsumable(isSmall ? GTItems.SHAPE_MOLD_GEAR_SMALL : GTItems.SHAPE_MOLD_GEAR)
                         .inputFluids(fluidStack)
                         .outputItems(stack)
