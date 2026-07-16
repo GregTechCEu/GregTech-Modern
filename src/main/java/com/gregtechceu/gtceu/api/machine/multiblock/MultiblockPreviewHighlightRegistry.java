@@ -26,15 +26,13 @@ public final class MultiblockPreviewHighlightRegistry {
                 PartAbility.IMPORT_ITEMS,
                 PartAbility.IMPORT_FLUIDS,
                 PartAbility.IMPORT_FLUIDS_1X,
-                PartAbility.IMPORT_FLUIDS_4X,
-                PartAbility.IMPORT_FLUIDS_9X,
+                PartAbility.IMPORT_FLUIDS_MULTI,
                 PartAbility.STEAM_IMPORT_ITEMS);
         registerAbilityHighlight(OUTPUT_COLOR,
                 PartAbility.EXPORT_ITEMS,
                 PartAbility.EXPORT_FLUIDS,
                 PartAbility.EXPORT_FLUIDS_1X,
-                PartAbility.EXPORT_FLUIDS_4X,
-                PartAbility.EXPORT_FLUIDS_9X,
+                PartAbility.EXPORT_FLUIDS_MULTI,
                 PartAbility.STEAM_EXPORT_ITEMS);
         registerAbilityHighlight(POWER_COLOR,
                 PartAbility.INPUT_ENERGY,

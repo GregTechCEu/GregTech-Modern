@@ -21,10 +21,8 @@ public class PartAbility {
 
     public static final PartAbility EXPORT_FLUIDS_1X = new PartAbility("export_fluids_1x");
     public static final PartAbility IMPORT_FLUIDS_1X = new PartAbility("import_fluids_1x");
-    public static final PartAbility EXPORT_FLUIDS_4X = new PartAbility("export_fluids_4x");
-    public static final PartAbility IMPORT_FLUIDS_4X = new PartAbility("import_fluids_4x");
-    public static final PartAbility EXPORT_FLUIDS_9X = new PartAbility("export_fluids_9x");
-    public static final PartAbility IMPORT_FLUIDS_9X = new PartAbility("import_fluids_9x");
+    public static final PartAbility IMPORT_FLUIDS_MULTI = new PartAbility("import_fluids_multi");
+    public static final PartAbility EXPORT_FLUIDS_MULTI = new PartAbility("export_fluids_multi");
 
     public static final PartAbility INPUT_ENERGY = new PartAbility("input_energy");
     public static final PartAbility OUTPUT_ENERGY = new PartAbility("output_energy");

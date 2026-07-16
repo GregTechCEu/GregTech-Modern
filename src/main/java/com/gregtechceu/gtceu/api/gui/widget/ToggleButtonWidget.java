@@ -8,6 +8,8 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 
+import net.minecraft.network.FriendlyByteBuf;
+
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
 
 import java.util.List;
@@ -70,6 +72,14 @@ public class ToggleButtonWidget extends SwitchWidget {
                 setHoverTooltips(
                         List.copyOf(LangHandler.getMultiLang(tooltipText + (isPressed ? ".enabled" : ".disabled"))));
             }
+        }
+    }
+
+    @Override
+    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+        super.readUpdateInfo(id, buffer);
+        if (id == 2) {
+            updateHoverTooltips();
         }
     }
 }
