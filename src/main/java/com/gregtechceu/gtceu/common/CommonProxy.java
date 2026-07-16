@@ -126,10 +126,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 public class CommonProxy {
 
-    private static IEventBus modBus;
-
     public static void init(final IEventBus modBus) {
-        CommonProxy.modBus = modBus;
         if (GTCEu.Mods.isKubeJSLoaded()) {
             // initialize this before the class's static listeners
             // so KubeJS materials are registered before the material registry is closed.
@@ -216,12 +213,9 @@ public class CommonProxy {
         GuiManager.registerFactory(CoverUIFactory.INSTANCE);
         GTGuiTheme.registerThemes();
 
-
         FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
         FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     // Fire post material events after all other material registry events.
@@ -242,7 +236,6 @@ public class CommonProxy {
                 var registrate = GTRegistrate.createIgnoringListenerErrors(namespace);
                 AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registrate;
                 if (accessor.getDoDatagen().get()) {
-                    // noinspection UnstableApiUsage
                     List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
                             .get(ProviderType.LANG);
                     NonNullConsumer<? extends RegistrateProvider> generator = (provider) -> MaterialLangGenerator
@@ -250,7 +243,7 @@ public class CommonProxy {
                     if (providers == null) {
                         accessor.getDatagens().put(ProviderType.LANG, generator);
                     } else {
-                        providers.add(0, generator);
+                        providers.addFirst(generator);
                     }
                 }
             });

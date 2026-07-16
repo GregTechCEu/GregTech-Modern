@@ -43,7 +43,9 @@ import java.util.*;
 
 public final class GTRegistries {
 
-    private static final LinkedHashMap<ResourceLocation, Registry<?>> REGISTRIES = new LinkedHashMap<>();
+    private static final HashMap<ResourceLocation, Registry<?>> REGISTRIES = new HashMap<>();
+
+    private GTRegistries() {}
 
     // spotless:off
     public static final class Keys {

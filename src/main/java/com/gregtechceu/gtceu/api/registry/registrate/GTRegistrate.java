@@ -2,22 +2,38 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
+import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
+import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.bus.api.EventPriority;
@@ -49,6 +65,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
@@ -198,12 +216,108 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                 blockEntityFactory);
     }
 
-    public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(GTCEu.id(name));
+    // Recipe types
+
+    public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
+        var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
+        this.generic(name, GTRegistries.Keys.RECIPE_TYPE, () -> recipeType).build();
+        return recipeType;
     }
 
-    public SoundEntryBuilder sound(ResourceLocation name) {
-        return new SoundEntryBuilder(name);
+    // Recipe categories
+
+    public GTRecipeCategory recipeCategory(String categoryName, GTRecipeType recipeType) {
+        var category = new GTRecipeCategory(makeResourceLocation(categoryName), recipeType);
+        this.generic(categoryName, GTRegistries.Keys.RECIPE_CATEGORY, () -> category).build();
+        return category;
+    }
+
+    // Tag prefixes
+
+    public TagPrefix tagPrefix(String name) {
+        return tagPrefix(name, false);
+    }
+
+    public TagPrefix tagPrefix(String name, boolean invertedName) {
+        var tagPrefix = new TagPrefix(makeResourceLocation(name), invertedName);
+        this.generic(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> tagPrefix).register();
+        return tagPrefix;
+    }
+
+    public TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
+        return tagPrefix(name)
+                .defaultTagPath("ores/%s")
+                .prefixOnlyTagPath("ores_in_ground/%s")
+                .unformattedTagPath("ores")
+                .materialIconType(MaterialIconType.ore)
+                .miningToolTag(miningToolTag)
+                .unificationEnabled(true)
+                .blockConstructor(OreBlock::new)
+                .generationCondition(hasOreProperty);
+    }
+
+    // Materials
+
+    public Material.Builder material(String name) {
+        return new Material.Builder(this, makeResourceLocation(name));
+    }
+
+    // Elements
+
+    public Element element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
+                           String symbol, boolean isIsotope) {
+        var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
+        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
+        return element;
+    }
+
+    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
+                           String symbol,
+                           boolean isIsotope) {
+        return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
+    }
+
+    // Material icon sets
+
+    public MaterialIconSet materialIconSet(String id) {
+        return materialIconSet(id, MaterialIconSet.DULL);
+    }
+
+    public MaterialIconSet materialIconSet(String id, MaterialIconSet parent) {
+        return materialIconSet(id, parent, false);
+    }
+
+    public MaterialIconSet materialIconSet(String id, @Nullable MaterialIconSet parent, boolean isRoot) {
+        var iconSet = new MaterialIconSet(makeResourceLocation(id), parent, isRoot);
+        this.generic(id, GTRegistries.Keys.MATERIAL_ICON_SET, () -> iconSet).build();
+        return iconSet;
+    }
+
+    // Medical conditions
+
+    public MedicalCondition medicalCondition(String name, int color,
+                                             int maxProgression, MedicalCondition.IdleProgressionType progressionType,
+                                             float progressionRate,
+                                             boolean canBePermanent, Symptom.ConfiguredSymptom... symptoms) {
+        var medicalCondition = new MedicalCondition(makeResourceLocation(name), color, maxProgression, progressionType,
+                progressionRate, canBePermanent, symptoms);
+        this.generic(name, GTRegistries.Keys.MEDICAL_CONDITION, () -> medicalCondition).register();
+        return medicalCondition;
+    }
+
+    // Sounds
+
+    public SoundEntryBuilder sound(String name) {
+        return new SoundEntryBuilder(makeResourceLocation(name));
+    }
+
+    // World gen layers
+
+    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
+                                                   Set<ResourceKey<Level>> levels) {
+        var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
+        this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
+        return worldGenLayer;
     }
 
     // Blocks

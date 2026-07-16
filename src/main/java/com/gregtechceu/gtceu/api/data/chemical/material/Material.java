@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
@@ -145,8 +146,8 @@ public class Material {
         flags = new MaterialFlags();
     }
 
-    protected void registerMaterial() {
-        GTRegistries.MATERIALS.register(this);
+    protected void registerMaterial(GTRegistrate registrate) {
+        registrate.generic(GTRegistries.Keys.MATERIAL, () -> this).register();
     }
 
     public String getName() {
@@ -581,6 +582,7 @@ public class Material {
     @RemapPrefixForJS("kjs$")
     public static class Builder {
 
+        private final GTRegistrate registrate;
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
@@ -613,7 +615,8 @@ public class Material {
          *                         "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        public Builder(ResourceLocation resourceLocation) {
+        public Builder(GTRegistrate registrate, ResourceLocation resourceLocation) {
+            this.registrate = registrate;
             String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
@@ -1876,7 +1879,7 @@ public class Material {
                 mat.setFormula(formula, formatFormula);
             }
             materialInfo.verifyInfo(properties, averageRGB);
-            mat.registerMaterial();
+            mat.registerMaterial(registrate);
             if (ignoredTagPrefixes != null) {
                 ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
             }
