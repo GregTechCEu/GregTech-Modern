@@ -26,7 +26,7 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.comment.indent_root_tags" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.wrap_before_or_operator_multicatch" value="false"/>
-        <setting id="org.eclipse.jdt.core.formatter.enabling_tag" value="spotless:off"/>
+        <setting id="org.eclipse.jdt.core.formatter.enabling_tag" value="spotless:on"/>
         <setting id="org.eclipse.jdt.core.formatter.comment.count_line_length_from_starting_position" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_record_components" value="18"/>
         <setting id="org.eclipse.jdt.core.formatter.alignment_for_throws_clause_in_method_declaration" value="18"/>
