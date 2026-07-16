@@ -54,12 +54,12 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.logic.reset();
     }
 
-
     // this is called for each block
     /// delegates to {@link #logic} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
         return this.logic.test(ctx);
     }
+
     /// delegates to {@link #logic} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         return this.logic.testGlobalMin(ctx);
@@ -312,6 +312,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
      * what i really need to do is track passed vs failed predicates
      */
     public enum Logic {
+
         OR,
         AND,
         XOR;

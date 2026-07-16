@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
+
 import lombok.Setter;
 
 public abstract class BaseLogic {

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 
 public class AndLogic extends BaseLogic {
+
     public AndLogic(MultiPredicate rootPredicate) {
         super(rootPredicate);
     }
