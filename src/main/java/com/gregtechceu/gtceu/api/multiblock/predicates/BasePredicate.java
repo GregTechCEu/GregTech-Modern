@@ -22,10 +22,9 @@ import java.util.stream.Stream;
 
 public abstract class BasePredicate {
 
-    // should air use isAir() instead of checking for air block directly?
-    public static final MultiPredicate AIR = create("Air", ctx -> ctx.state().is(Blocks.AIR));
+    static final BasePredicate AIR = of("Air", ctx -> ctx.state().isAir(), Stream.empty(), null);
 
-    public static final MultiPredicate ANY = create("Any", ctx -> true);
+    static final BasePredicate ANY = of("Any", ctx -> true, Stream.empty(), null);
 
     private @Nullable List<BlockInfo> candidates;
 
@@ -53,8 +52,12 @@ public abstract class BasePredicate {
     @Getter
     @Setter
     private @Nullable String nbtParser; // unsure what this does
+    @Setter
+    private @Nullable MultiPredicate parent;
 
-    public abstract MultiPredicate getParent();
+    public MultiPredicate getParent() {
+        return Objects.requireNonNull(this.parent);
+    }
 
     /// the main testing method
     public abstract boolean test(PredicateContext ctx);
@@ -185,36 +188,8 @@ public abstract class BasePredicate {
         return new MultiPredicate(debugName, predicate, candidateStream, contents);
     }
 
-    static BasePredicate of(MultiPredicate parent, @Nullable String debugName, Predicate<PredicateContext> predicate,
+    static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate,
                             Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        return new BasePredicate() {
-
-            @Override
-            public MultiPredicate getParent() {
-                return parent;
-            }
-
-            @Override
-            public boolean test(PredicateContext ctx) {
-                return predicate.test(ctx);
-            }
-
-            @Override
-            public List<BlockInfo> computeCandidates() {
-                return candidateStream.toList();
-            }
-
-            @Override
-            public String getTypeName() {
-                return Objects.requireNonNullElse(debugName, "Predicate");
-            }
-
-            @Override
-            protected void appendContents(StringBuilder builder) {
-                if (contents != null) {
-                    contents.accept(builder);
-                }
-            }
-        };
+        return new SinglePredicate(predicate, candidateStream, debugName, contents);
     }
 }

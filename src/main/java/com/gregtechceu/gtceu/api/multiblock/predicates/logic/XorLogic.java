@@ -29,14 +29,16 @@ public class XorLogic extends BaseLogic {
                 return true;
             }
         }
-        return ctx.error(PatternStringError.literal("XOR error"));
+        return noneValid || ctx.error(PatternStringError.literal("XOR error"));
     }
 
     @Override
     public boolean testGlobalMin(PredicateContext ctx) {
+        if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
             return ctx.error(PatternStringError.literal("XOR error"));
         }
+        if (!global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getGlobalCount(predicate) > 0) {
                 return ctx.error(PatternStringError.literal("XOR error"));
@@ -47,9 +49,11 @@ public class XorLogic extends BaseLogic {
 
     @Override
     public boolean testSliceMin(PredicateContext ctx) {
+        if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testSliceMin(ctx)) {
             return ctx.error(PatternStringError.literal("XOR error"));
         }
+        if (global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getSliceCount(predicate) > 0) {
                 return ctx.error(PatternStringError.literal("XOR error"));

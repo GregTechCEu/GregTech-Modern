@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.logic.XorLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -22,9 +21,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     private static final Comparator<BasePredicate> PREDICATE_COMPARATOR = Comparator
             .comparingInt(BasePredicate::getPriority);
-    private static final MultiPredicate EMPTY = new MultiPredicate();
+
+    private static final MultiPredicate EMPTY = new MultiPredicate(Logic.OR, false);
+
+    public static final MultiPredicate AIR = new MultiPredicate(BasePredicate.AIR);
+
+    public static final MultiPredicate ANY = new MultiPredicate(BasePredicate.ANY);
 
     private final List<BasePredicate> predicateList = new ObjectArrayList<>();
+    @Getter
     private final BaseLogic logic;
     private final boolean hasAir;
     @Getter
@@ -32,53 +37,29 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     MultiPredicate(@Nullable String debugName, Predicate<PredicateContext> predicate,
                    Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        this();
-        addPredicate(BasePredicate.of(this, debugName, predicate, candidateStream, contents));
+        this(BasePredicate.of(debugName, predicate, candidateStream, contents));
+    }
+
+    MultiPredicate(BasePredicate predicate) {
+        this(Logic.OR, predicate == BasePredicate.AIR);
+        addPredicate(predicate);
     }
 
     private MultiPredicate(Logic type, boolean hasAir) {
         this.hasAir = hasAir;
-        this.logic = switch (type) {
-            case AND -> new AndLogic(this);
-            case XOR -> new XorLogic(this);
-            default -> new OrLogic(this);
-        };
+        this.logic = type.createLogic(this);
     }
 
-    MultiPredicate() {
-        this.logic = new OrLogic(this);
-        this.hasAir = isAir();
-    }
-
-    @ApiStatus.Internal
-    public boolean isEmpty() {
-        return this == EMPTY;
-    }
-
-    public void resetGlobal() {
+    public void reset() {
         this.logic.reset();
-        this.passedPredicates.clear();
-        resetSlice();
     }
 
-    public void resetSlice() {
-        this.passedSlicePredicates.clear();
-    }
-
-    private final Set<BasePredicate> passedPredicates = new HashSet<>();
-    private final Set<BasePredicate> passedSlicePredicates = new HashSet<>();
-
-    private void predicatePassed(BasePredicate p) {
-        this.passedPredicates.add(p);
-        this.passedSlicePredicates.add(p);
-    }
 
     // this is called for each block
     /// delegates to {@link #logic} to run {@link BasePredicate#testLimited(PredicateContext)}
     public boolean test(PredicateContext ctx) {
         return this.logic.test(ctx);
     }
-
     /// delegates to {@link #logic} to test against global min count
     public boolean testGlobalMin(PredicateContext ctx) {
         return this.logic.testGlobalMin(ctx);
@@ -90,12 +71,15 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     }
 
     protected MultiPredicate addPredicates(Iterable<BasePredicate> predicates) {
-        predicates.forEach(this::addPredicate);
+        for (BasePredicate predicate : predicates) {
+            addPredicate(predicate);
+        }
         return this;
     }
 
     protected MultiPredicate addPredicate(BasePredicate predicate) {
         this.predicateList.add(predicate);
+        predicate.setParent(this);
         return this;
     }
 
@@ -117,20 +101,25 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.logic instanceof XorLogic;
     }
 
+    @ApiStatus.Internal
+    public boolean isEmpty() {
+        return this == EMPTY;
+    }
+
     public boolean isAny() {
-        return this == BasePredicate.ANY;
+        return this == ANY;
     }
 
     public boolean isAir() {
-        return this == BasePredicate.AIR;
+        return this == AIR;
     }
 
     public boolean hasAir() {
-        return this.isAir() || this.hasAir;
+        return this.hasAir;
     }
 
     protected BasePredicate compact() {
-        return new CompactedPredicate();
+        return new CompactedPredicate(this);
     }
 
     public MultiPredicate setMinGlobalLimited(int min) {
@@ -323,25 +312,35 @@ public class MultiPredicate implements Iterable<BasePredicate> {
      * what i really need to do is track passed vs failed predicates
      */
     public enum Logic {
-        SINGLE,
         OR,
-        AND, // AND_GLOBAL
-        // AND_SLICE
-        XOR // XOR_GLOBAL
-        // XOR_SLICE
+        AND,
+        XOR;
+
+        public BaseLogic createLogic(MultiPredicate source) {
+            return switch (this) {
+                case AND -> new AndLogic(source);
+                case XOR -> new XorLogic(source);
+                default -> new OrLogic(source);
+            };
+        }
     }
 
-    private class CompactedPredicate extends BasePredicate {
+    public static class CompactedPredicate extends BasePredicate {
 
-        // this should be a different method
-        public MultiPredicate getParent() {
-            return MultiPredicate.this;
+        private final MultiPredicate root;
+
+        private CompactedPredicate(MultiPredicate root) {
+            this.root = root;
+        }
+
+        public MultiPredicate expand() {
+            return this.root;
         }
 
         @Override
         public boolean test(PredicateContext ctx) {
             // test parent predicates
-            return getParent().test(ctx);
+            return expand().test(ctx);
         }
 
         @Override
@@ -351,17 +350,17 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
         @Override
         public boolean testGlobalMin(PredicateContext ctx) {
-            return getParent().testGlobalMin(ctx);
+            return expand().testGlobalMin(ctx);
         }
 
         @Override
         public boolean testSliceMin(PredicateContext ctx) {
-            return getParent().testSliceMin(ctx);
+            return expand().testSliceMin(ctx);
         }
 
         @Override
         public List<BlockInfo> computeCandidates() {
-            return getParent().getCandidates()
+            return expand().getCandidates()
                     .stream()
                     .flatMap(Collection::stream)
                     .toList();
@@ -374,7 +373,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
         @Override
         protected void appendContents(StringBuilder builder) {
-            getParent().appendContents(builder);
+            expand().appendContents(builder);
         }
 
         @Override
