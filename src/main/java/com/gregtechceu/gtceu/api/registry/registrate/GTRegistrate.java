@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.block.OreBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -18,10 +17,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
@@ -209,9 +208,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Multiblock machines
 
     public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                               BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
+                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
         return new MultiblockMachineBuilder<>(this, name,
                 blockFactory, itemFactory, blockEntityFactory);
     }
@@ -277,7 +276,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return element;
     }
 
-    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name, String symbol,
+    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
+                           String symbol,
                            boolean isIsotope) {
         return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
     }

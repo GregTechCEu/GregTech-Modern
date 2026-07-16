@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,7 +16,7 @@ import lombok.Getter;
 
 @SuppressWarnings("unused")
 public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition>
-                                       implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
+                                       implements IMachineBuilderKJS {
 
     @HideFromJS
     @Getter
@@ -26,6 +25,7 @@ public class KJSWrappingMachineBuilder extends BuilderBase<MachineDefinition>
     public KJSWrappingMachineBuilder(ResourceLocation id, KJSTieredMachineBuilder tieredBuilder) {
         super(id);
         this.tieredBuilder = tieredBuilder;
+        this.dummyBuilder = true;
     }
 
     @Override

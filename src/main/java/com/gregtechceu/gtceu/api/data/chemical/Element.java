@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * This is some kind of Periodic Table, which can be used to determine "Properties" of the Materials.

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 

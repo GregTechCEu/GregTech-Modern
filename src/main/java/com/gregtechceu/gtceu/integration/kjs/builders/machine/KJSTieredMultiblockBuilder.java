@@ -8,8 +8,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -30,7 +29,7 @@ import static com.gregtechceu.gtceu.api.GTValues.VN;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
-                                        implements IMachineBuilderKJS, IGTDummyBuilder<MultiblockMachineDefinition> {
+                                        implements IMachineBuilderKJS {
 
     private final @Nullable MultiblockMachineBuilder<?, ?, ?>[] builders = new MultiblockMachineBuilder[TIER_COUNT];
     private final @Nullable MultiblockMachineDefinition[] machines = new MultiblockMachineDefinition[TIER_COUNT];
@@ -43,11 +42,13 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
 
     public KJSTieredMultiblockBuilder(ResourceLocation id) {
         super(id);
+        this.dummyBuilder = true;
     }
 
     public KJSTieredMultiblockBuilder(ResourceLocation id, TieredCreationFunction machine) {
         super(id);
         this.machine = machine;
+        this.dummyBuilder = true;
     }
 
     @Override

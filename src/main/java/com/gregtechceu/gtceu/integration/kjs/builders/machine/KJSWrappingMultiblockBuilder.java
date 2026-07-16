@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -16,7 +15,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 
 public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineDefinition>
-                                          implements IMachineBuilderKJS, IGTDummyBuilder<MultiblockMachineDefinition> {
+                                          implements IMachineBuilderKJS {
 
     @HideFromJS
     @Getter
@@ -25,6 +24,7 @@ public class KJSWrappingMultiblockBuilder extends BuilderBase<MultiblockMachineD
     public KJSWrappingMultiblockBuilder(ResourceLocation id) {
         super(id);
         this.tieredBuilder = new KJSTieredMultiblockBuilder(this.id);
+        this.dummyBuilder = true;
     }
 
     @Override

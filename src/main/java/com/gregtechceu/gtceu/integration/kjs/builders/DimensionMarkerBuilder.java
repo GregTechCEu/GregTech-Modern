@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.DimensionMarker;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

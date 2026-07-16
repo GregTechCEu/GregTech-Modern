@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.DimensionMarker;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -36,11 +35,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 
 import com.mojang.serialization.Lifecycle;
-import org.checkerframework.checker.units.qual.K;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Collection;
+import java.util.HashMap;
 
 @Mod.EventBusSubscriber(modid = "gtceu")
 public final class GTRegistries {
+
+    private static final HashMap<ResourceLocation, Registry<?>> REGISTRIES = new HashMap<>();
 
     private GTRegistries() {}
 
@@ -53,25 +57,32 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<Material>> MATERIAL = makeRegistryKey(GTCEu.id("material"));
         public static final ResourceKey<Registry<Element>> ELEMENT = makeRegistryKey(GTCEu.id("element"));
         public static final ResourceKey<Registry<TagPrefix>> TAG_PREFIX = makeRegistryKey(GTCEu.id("tag_prefix"));
-        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = makeRegistryKey(GTCEu.id("material_icon_set"));
+        public static final ResourceKey<Registry<MaterialIconSet>> MATERIAL_ICON_SET = makeRegistryKey(
+                GTCEu.id("material_icon_set"));
 
         // Recipe related registries
 
         public static final ResourceKey<Registry<GTRecipeType>> RECIPE_TYPE = makeRegistryKey(GTCEu.id("recipe_type"));
-        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(GTCEu.id("recipe_category"));
-        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(GTCEu.id("recipe_capability"));
-        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(GTCEu.id("recipe_condition"));
+        public static final ResourceKey<Registry<GTRecipeCategory>> RECIPE_CATEGORY = makeRegistryKey(
+                GTCEu.id("recipe_category"));
+        public static final ResourceKey<Registry<RecipeCapability<?>>> RECIPE_CAPABILITY = makeRegistryKey(
+                GTCEu.id("recipe_capability"));
+        public static final ResourceKey<Registry<RecipeConditionType<?>>> RECIPE_CONDITION = makeRegistryKey(
+                GTCEu.id("recipe_condition"));
         public static final ResourceKey<Registry<ChanceLogic>> CHANCE_LOGIC = makeRegistryKey(GTCEu.id("chance_logic"));
 
         // Datapack registries
 
-        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = makeRegistryKey(GTCEu.id("bedrock_fluid"));
-        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(GTCEu.id("bedrock_ore"));
+        public static final ResourceKey<Registry<BedrockFluidDefinition>> BEDROCK_FLUID = makeRegistryKey(
+                GTCEu.id("bedrock_fluid"));
+        public static final ResourceKey<Registry<BedrockOreDefinition>> BEDROCK_ORE = makeRegistryKey(
+                GTCEu.id("bedrock_ore"));
         public static final ResourceKey<Registry<GTOreDefinition>> ORE_VEIN = makeRegistryKey(GTCEu.id("ore_vein"));
 
         // Worldgen related registries
 
-        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(GTCEu.id("world_gen_layer"));
+        public static final ResourceKey<Registry<IWorldGenLayer>> WORLD_GEN_LAYER = makeRegistryKey(
+                GTCEu.id("world_gen_layer"));
 
         // Other registries
 
@@ -80,9 +91,12 @@ public final class GTRegistries {
 
         public static final ResourceKey<Registry<SoundEntry>> SOUND = makeRegistryKey(GTCEu.id("sound"));
 
-        public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(GTCEu.id("dimension_marker"));
-        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(GTCEu.id("medical_condition"));
-        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(GTCEu.id("pattern_error_type"));
+        public static final ResourceKey<Registry<DimensionMarker>> DIMENSION_MARKER = makeRegistryKey(
+                GTCEu.id("dimension_marker"));
+        public static final ResourceKey<Registry<MedicalCondition>> MEDICAL_CONDITION = makeRegistryKey(
+                GTCEu.id("medical_condition"));
+        public static final ResourceKey<Registry<PatternError.PatternErrorType>> PATTERN_ERROR_TYPE = makeRegistryKey(
+                GTCEu.id("pattern_error_type"));
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
     }
 
@@ -103,8 +117,10 @@ public final class GTRegistries {
 
     // Worldgen related registries
 
-    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_fluid"));
-    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_ore"));
+    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(
+            GTCEu.id("bedrock_fluid"));
+    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(
+            GTCEu.id("bedrock_ore"));
     public static final GTRegistry<GTOreDefinition> ORE_VEINS = new GTRegistry<>(GTCEu.id("ore_vein"));
     public static final MappedRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
@@ -130,7 +146,9 @@ public final class GTRegistries {
 
     @SuppressWarnings("unchecked")
     private static <T, R extends WritableRegistry<T>> R makeRegistry(ResourceKey<Registry<T>> key, R registry) {
-        BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register((ResourceKey<WritableRegistry<?>>) (Object) key, registry, Lifecycle.stable());
+        BuiltInRegistriesAccessor.gtceu$getWRITABLE_REGISTRY().register((ResourceKey<WritableRegistry<?>>) (Object) key,
+                registry, Lifecycle.stable());
+        REGISTRIES.put(key.location(), registry);
         return registry;
     }
 
@@ -162,6 +180,11 @@ public final class GTRegistries {
                 return FROZEN;
             }
         }
+    }
+
+    @UnmodifiableView
+    public static Collection<Registry<?>> getRegistries() {
+        return REGISTRIES.values();
     }
 
     public static void init() {}

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins.forge;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

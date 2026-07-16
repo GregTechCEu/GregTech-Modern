@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -32,7 +31,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
-                                     implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
+                                     implements IMachineBuilderKJS {
 
     private final @Nullable MachineBuilder<?, ?, ?>[] builders = new MachineBuilder[TIER_COUNT];
     private final @Nullable MachineDefinition[] machines = new MachineDefinition[TIER_COUNT];
@@ -56,6 +55,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition>
         super(id);
         this.addDefaultTooltips = false;
         this.addDefaultModel = false;
+        this.dummyBuilder = true;
     }
 
     @Override

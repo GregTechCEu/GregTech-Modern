@@ -439,16 +439,16 @@ public class GTPlaceholders {
     public static RegistryObject<Placeholder> MAINTENANCE = PLACEHOLDERS.register("maintenance",
             () -> new Placeholder("maintenance") {
 
-            @Override
-            public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 0);
-                if (ctx.pos() == null) throw new NoTargetException();
-                MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
-                if (machine instanceof MaintenanceHatchPartMachine maint)
-                    return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
-                throw new NotSupportedException();
-            }
+                @Override
+                public MultiLineComponent apply(PlaceholderContext ctx,
+                                                List<MultiLineComponent> args) throws PlaceholderException {
+                    PlaceholderUtils.checkArgs(args, 0);
+                    if (ctx.pos() == null) throw new NoTargetException();
+                    MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
+                    if (machine instanceof MaintenanceHatchPartMachine maint)
+                        return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
+                    throw new NotSupportedException();
+                }
 
                 @Override
                 public boolean isView() {

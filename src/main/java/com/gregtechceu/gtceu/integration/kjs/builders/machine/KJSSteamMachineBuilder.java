@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 @Accessors(fluent = true, chain = true)
 public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
-                                    implements IMachineBuilderKJS, IGTDummyBuilder<MachineDefinition> {
+                                    implements IMachineBuilderKJS {
 
     @Setter
     public transient boolean hasLowPressure = true, hasHighPressure = true;
@@ -40,6 +39,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition>
 
     public KJSSteamMachineBuilder(ResourceLocation id) {
         super(id);
+        this.dummyBuilder = true;
     }
 
     @Override

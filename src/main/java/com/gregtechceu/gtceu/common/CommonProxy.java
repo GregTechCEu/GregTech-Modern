@@ -95,6 +95,7 @@ public class CommonProxy {
     public CommonProxy() {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
         eventBus.register(this);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();

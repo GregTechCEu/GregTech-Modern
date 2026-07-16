@@ -20,8 +20,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -56,8 +55,7 @@ import java.util.function.*;
 
 @SuppressWarnings("unused")
 public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachineDefinition>
-                                             implements IMachineBuilderKJS,
-                                             IGTDummyBuilder<MultiblockMachineDefinition> {
+                                             implements IMachineBuilderKJS {
 
     private final MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal;
 
@@ -65,6 +63,7 @@ public class MultiblockMachineBuilderWrapper extends BuilderBase<MultiblockMachi
                                            MultiblockMachineBuilder<MultiblockMachineDefinition, ?, ?> internal) {
         super(id);
         this.internal = internal;
+        this.dummyBuilder = true;
     }
 
     @Override

@@ -80,6 +80,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.material.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.recipe.GTRecipeTypeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.WorldGenLayerBuilder;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;

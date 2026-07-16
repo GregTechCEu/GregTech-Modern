@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.data.chemical.material.info;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.CraftingComponentsEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialIconTypeEventJS;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -319,5 +318,4 @@ public record MaterialIconType(String name) {
             GTCEuStartupEvents.MATERIAL_ICON_TYPE.post(new MaterialIconTypeEventJS());
         }
     }
-
 }

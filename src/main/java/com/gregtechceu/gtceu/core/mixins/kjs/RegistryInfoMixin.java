@@ -1,39 +1,33 @@
 package com.gregtechceu.gtceu.core.mixins.kjs;
 
-import com.gregtechceu.gtceu.integration.kjs.helpers.IGTDummyBuilder;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.integration.kjs.helpers.GTRegistryInfo;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryCallback;
 import dev.latvian.mods.kubejs.registry.RegistryInfo;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.function.Supplier;
-
-/**
- * Some GT builders register multiple objects (e.g. machine builders registered multiple machines for different tiers),
- * or have registration behaviour that KJS cannot handle.
- * This mixin handles those builders, which implement {@link IGTDummyBuilder}
- */
 @Mixin(value = RegistryInfo.class, remap = false)
 public abstract class RegistryInfoMixin<T> {
 
-    @Redirect(
-              method = "registerObjects",
-              at = @At(
-                       value = "INVOKE",
-                       target = "Ldev/latvian/mods/kubejs/registry/RegistryCallback;accept(Lnet/minecraft/resources/ResourceLocation;Ljava/util/function/Supplier;)V"))
-    private void redirectAccept(
-                                RegistryCallback<T> function, ResourceLocation location, Supplier<T> supplier,
-                                @Local(name = "builder") BuilderBase<T> builder) {
-        if (builder instanceof IGTDummyBuilder<?> b) {
-            b.createObject();
-        } else {
-            function.accept(location, supplier);
+    @Final
+    @Shadow
+    public ResourceKey<? extends Registry<T>> key;
+
+    @Inject(method = "registerObjects", at = @At("HEAD"), cancellable = true)
+    public void gtceu$registerObjects(RegistryCallback<T> function, CallbackInfoReturnable<Integer> cir) {
+        if (key.location().getNamespace().equals(GTCEu.MOD_ID)) {
+            RegistryInfo<T> self = (RegistryInfo<T>) (Object) this;
+            var count = GTRegistryInfo.registerObjects(self, function);
+            cir.setReturnValue(count);
         }
     }
 }
