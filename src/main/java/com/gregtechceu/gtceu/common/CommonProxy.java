@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapability;
 import com.gregtechceu.gtceu.api.capability.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -75,7 +74,6 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.KubeGTRegistryEventHandler;
 import com.gregtechceu.gtceu.integration.map.WaypointManager;
 import com.gregtechceu.gtceu.utils.input.SyncedKeyMappings;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.PackType;
@@ -90,8 +88,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -120,7 +116,6 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -147,26 +142,7 @@ public class CommonProxy {
         GregTechDatagen.initPre();
 
         GTRegistries.init(modBus);
-
-        registerDeferredRegistries(modBus);
-
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-        GTGuiTheme.registerThemes();
-
-
-        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
-        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
-        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
-
-        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
-    }
-
-    // Attaches the deferred registries that hold GT content to the mod bus.
-    public static void registerDeferredRegistries(IEventBus modBus) {
-
-        // Neoforge and MC registries
+        REGISTRATE.registerEventListeners(modBus);
 
         GTDataComponents.init(modBus);
         GTArmorMaterials.init(modBus);
@@ -180,25 +156,9 @@ public class CommonProxy {
         GTFeatures.init(modBus);
         GTValueProviderTypes.init(modBus);
 
-        // GT registries
-
         GTPatternErrors.init(modBus);
 
-        // Registrate is a wrapped for deferred registries, so it should be initialised here.
-        REGISTRATE.registerEventListeners(modBus);
-
         GTCreativeModeTabs.init();
-    }
-
-    // Only register everything once.
-    private static boolean didRunRegistration = false;
-
-    @SubscribeEvent
-    public static void onRegister(RegisterEvent event) {
-        if (didRunRegistration) {
-            return;
-        }
-        didRunRegistration = true;
 
         GTElements.init();
         MaterialIconSet.init();
@@ -249,11 +209,24 @@ public class CommonProxy {
         SyncedKeyMappings.init();
         MachineOwner.init();
         ChestGenHooks.init();
+
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GTGuiTheme.registerThemes();
+
+
+        FusionReactorMachine.registerFusionTier(GTValues.LuV, "MKI");
+        FusionReactorMachine.registerFusionTier(GTValues.ZPM, "MKII");
+        FusionReactorMachine.registerFusionTier(GTValues.UV, "MKIII");
+
+        AddonFinder.getAddonList().forEach(IGTAddon::gtInitComplete);
     }
 
     // Fire post material events after all other material registry events.
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRegisterLowest(RegisterEvent event) {
+    public static void onRegisterLowest(RegisterEvent event) {
         if (event.getRegistryKey() == GTRegistries.Keys.MATERIAL) {
             // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
             // Block entirely new Materials from being added in the Post event
@@ -285,9 +258,10 @@ public class CommonProxy {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void onRegisterLate(RegisterEvent event) {
-        // Material event *should* happen before any of the others here
+    public static void registerMaterialContent(RegisterEvent event) {
         if (event.getRegistryKey() == Registries.BLOCK) {
+            GTCEu.LOGGER.info("Generating material blocks...");
+
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
             GTMaterialBlocks.generateMaterialBlocks();   // Compressed Blocks
@@ -301,14 +275,17 @@ public class CommonProxy {
             GTMaterialBlocks.generateItemPipeBlocks();     // Item Pipe Blocks
 
             GTMaterialBlocks.finaliseMaterialBlocks();
+
         } else if (event.getRegistryKey() == Registries.ITEM) {
+            GTCEu.LOGGER.info("Generating material items...");
+
             // Material Items & Tools
             GTMaterialItems.generateMaterialItems();
             GTMaterialItems.generateTools();
             GTMaterialItems.generateArmors();
-            // --spacer--
+
         } else if (event.getRegistryKey() == Registries.FLUID) {
-            GTFluids.registerMaterialFluids();
+            GTFluids.init();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
         }

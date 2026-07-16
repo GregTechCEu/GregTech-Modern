@@ -43,6 +43,8 @@ import java.util.*;
 
 public final class GTRegistries {
 
+    private static final LinkedHashMap<ResourceLocation, Registry<?>> REGISTRIES = new LinkedHashMap<>();
+
     // spotless:off
     public static final class Keys {
         private Keys() {}
@@ -83,7 +85,6 @@ public final class GTRegistries {
     }
 
     // spotless:off
-    private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
 
     // GT Registries
     public static final Registry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
@@ -121,13 +122,13 @@ public final class GTRegistries {
         MappedRegistry<T> registry = (MappedRegistry<T>) new RegistryBuilder<>(key)
                 .sync(sync)
                 .create();
-        LOAD_ORDER.put(key.location(), registry);
+        REGISTRIES.put(key.location(), registry);
         return registry;
     }
 
     private static MaterialRegistry makeMaterialRegistry() {
         MaterialRegistry registry = new MaterialRegistry(Keys.MATERIAL);
-        LOAD_ORDER.put(Keys.MATERIAL.location(), registry);
+        REGISTRIES.put(Keys.MATERIAL.location(), registry);
         return registry;
     }
 
@@ -169,12 +170,7 @@ public final class GTRegistries {
     }
 
     @UnmodifiableView
-    public static List<ResourceLocation> getRegistrationOrder() {
-        return List.copyOf(LOAD_ORDER.keySet());
-    }
-
-    @UnmodifiableView
     public static Collection<Registry<?>> getRegistries() {
-        return LOAD_ORDER.values();
+        return REGISTRIES.values();
     }
 }

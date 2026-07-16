@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins.neoforge;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.GameData;
 
@@ -17,7 +19,7 @@ public class GameDataMixin {
 
     @ModifyExpressionValue(method = "getRegistrationOrder", at = @At(value = "NEW", target = "java/util/LinkedHashSet"))
     private static LinkedHashSet<ResourceLocation> gtceu$injectGTRegistriesFirst(LinkedHashSet<ResourceLocation> ordered) {
-        ordered.addAll(GTRegistries.getRegistrationOrder());
+        ordered.addAll(BuiltInRegistries.REGISTRY.keySet().stream().filter(r -> r.getNamespace().equals(GTCEu.MOD_ID)).sorted(ResourceLocation::compareNamespaced).toList());
         return ordered;
     }
 }
