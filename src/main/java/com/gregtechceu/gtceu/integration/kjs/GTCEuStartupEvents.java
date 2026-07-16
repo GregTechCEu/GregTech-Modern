@@ -15,7 +15,6 @@ public interface GTCEuStartupEvents {
     EventGroup GROUP = EventGroup.of("GTCEuStartupEvents");
 
     EventHandler MATERIAL_ICON_INFO = GROUP.startup("materialIconInfo", () -> MaterialIconInfoEventJS.class);
-    EventHandler WORLD_GEN_LAYERS = GROUP.startup("worldGenLayers", () -> WorldGenLayerEventJS.class);
 
     TargetedEventHandler<ResourceKey<Registry<?>>> REGISTRY = GROUP.startup("registry", () -> GTRegistryKubeEvent.class)
             .requiredTarget(EventTargetType.REGISTRY);

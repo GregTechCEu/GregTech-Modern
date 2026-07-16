@@ -79,6 +79,7 @@ import com.gregtechceu.gtceu.data.recipe.GTCraftingComponents;
 import com.gregtechceu.gtceu.integration.kjs.builders.ElementBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeCategoryBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.GTRecipeTypeBuilder;
+import com.gregtechceu.gtceu.integration.kjs.builders.WorldGenLayerBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.ActiveBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.machine.*;
@@ -165,6 +166,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
                 OreVeinDefinitionBuilder::new);
         registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
         registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreBuilder.class, BedrockOreBuilder::new);
+        registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilder.class, WorldGenLayerBuilder::new);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
 
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -16,17 +17,17 @@ import java.util.List;
 import java.util.Set;
 
 @Accessors(fluent = true, chain = true)
-public class WorldGenLayerBuilder {
+public class WorldGenLayerBuilder extends BuilderBase<IWorldGenLayer> {
 
-    public transient ResourceLocation id;
     public transient List<IWorldGenLayer.RuleTestSupplier> targets = new ObjectArrayList<>();
     public transient List<ResourceKey<Level>> dimensions = new ObjectArrayList<>();
 
     public WorldGenLayerBuilder(ResourceLocation id) {
-        this.id = id;
+        super(id);
     }
 
-    public SimpleWorldGenLayer build() {
+    @Override
+    public IWorldGenLayer createObject() {
         return new SimpleWorldGenLayer(
                 this.id,
                 () -> new AnyMatchRuleTest(targets.stream().map(IWorldGenLayer.RuleTestSupplier::get).toList()),
