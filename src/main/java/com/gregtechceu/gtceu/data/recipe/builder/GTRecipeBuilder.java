@@ -1471,6 +1471,12 @@ public class GTRecipeBuilder {
                 duration, conditions, data, tier);
     }
 
+    public GTRecipe buildRuntime() {
+        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"),
+                input, output, tickInput, tickOutput, conditions,
+                data, tier, duration, recipeCategory);
+    }
+
     protected void warnTooManyIngredients(boolean isInput,
                                           ContentListMap table) {
         var recipeCapabilityMax = isInput ? recipeType.maxInputs : recipeType.maxOutputs;

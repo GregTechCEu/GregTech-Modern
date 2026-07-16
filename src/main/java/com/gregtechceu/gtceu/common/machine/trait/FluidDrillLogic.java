@@ -70,8 +70,7 @@ public class FluidDrillLogic extends RecipeLogic {
                     .EUt(EUt)
                     .outputFluids(new FluidStack(veinFluid,
                             getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
-                    .buildRawRecipe()
-                    .toRuntime();
+                    .buildRuntime();
             if (RecipeHelper.matchContents(getLastGroup(), recipe).isSuccess()) {
                 return recipe;
             }

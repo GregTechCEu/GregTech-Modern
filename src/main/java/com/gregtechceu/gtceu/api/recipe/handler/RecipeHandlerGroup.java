@@ -49,7 +49,7 @@ public class RecipeHandlerGroup {
         return group;
     }
 
-    public void addHandlers(Collection<IRecipeHandler<?>> handlers) {
+    public void addHandlers(Collection<? extends IRecipeHandler<?>> handlers) {
         for (var handler : handlers) {
             if (handler.getHandlerIO().support(IO.IN)) {
                 inputHandlerMap.add(handler);

@@ -205,7 +205,7 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
         return null;
     }
 
-    public GTRecipeDefinition findRecipe(RecipeHandlerGroup group, Predicate<GTRecipeDefinition> canHandle) {
+    public @Nullable GTRecipeDefinition findRecipe(RecipeHandlerGroup group, Predicate<GTRecipeDefinition> canHandle) {
         if (group.isEmpty()) return null;
         var iterator = db.iterator(group, canHandle);
         if (iterator == null) {
@@ -220,6 +220,12 @@ public class GTRecipeType implements RecipeType<GTRecipeDefinition> {
             if (recipe != null && canHandle.test(recipe)) return recipe;
         }
         return null;
+    }
+
+    public @Nullable RecipeDB.RecipeIterator getRecipeIterator(RecipeHandlerGroup group,
+                                                               Predicate<GTRecipeDefinition> canHandle) {
+        if (group.isEmpty()) return null;
+        return db.iterator(group, canHandle);
     }
 
     public int getMaxInputs(RecipeCapability<?> cap) {
