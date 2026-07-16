@@ -20,16 +20,20 @@ public class XorLogic extends BaseLogic {
 
     @Override
     public boolean test(PredicateContext ctx) {
-        if (passedPredicate != null) {
-            return passedPredicate.testLimited(ctx) || ctx.error(PatternStringError.literal("XOR error"));
-        }
+        int passed = 0;
         for (BasePredicate predicate : this.rootPredicate) {
-            if (predicate.testLimited(ctx) && this.passedPredicate == null) {
+            boolean result = predicate.testLimited(ctx);
+            if (result && this.passedPredicate == null) {
                 this.passedPredicate = predicate;
-                return true;
             }
+            if (result) passed++;
         }
-        return noneValid || ctx.error(PatternStringError.literal("XOR error"));
+        return passed > 0 || ctx.error(PatternStringError.literal("XOR error"));
+    }
+
+    private static boolean passedMaxCount(PredicateContext ctx, BasePredicate predicate, boolean global) {
+        int count = global ? ctx.getGlobalCount(predicate) : ctx.getSliceCount(predicate);
+        return global ? predicate.testGlobalMax(count) : predicate.testSliceMax(count);
     }
 
     @Override

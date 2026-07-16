@@ -80,6 +80,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     protected MultiPredicate addPredicate(BasePredicate predicate) {
         this.predicateList.add(predicate);
         predicate.setParent(this);
+        this.logic.onPredicateAdd(predicate);
         return this;
     }
 

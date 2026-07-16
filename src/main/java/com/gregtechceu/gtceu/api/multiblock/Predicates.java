@@ -373,7 +373,7 @@ public class Predicates {
             // TODO xor predicate matching :)
             return abilities(PartAbility.DATA_ACCESS)
                     .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
-                    .setExactLimit(1)
+                    .setGlobalMinMax(0, 1)
                     .setPriority(1);
             // return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
             // .setExactLimit(1)

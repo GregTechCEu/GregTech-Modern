@@ -13,16 +13,31 @@ public class AndLogic extends BaseLogic {
 
     @Override
     public boolean test(PredicateContext ctx) {
+        int passed = 0;
         for (BasePredicate predicate : this.rootPredicate) {
-            boolean result = predicate.testLimited(ctx);
-            if (result) continue;
-            switch (ctx.getLastFailureReason()) {
-                case SLICE_MAX, GLOBAL_MAX -> {
-                    return ctx.error(PatternStringError.literal("AND error"));
+            boolean result = predicate.test(ctx);
+            if (result) {
+                passed++;
+                result = predicate.testGlobalMax(ctx) && predicate.testSliceMax(ctx);
+                if (result) {
+                    continue; // fully passed
                 }
             }
+
+            // count manually
+            if (failedMaxCount(ctx, predicate, true) || failedMaxCount(ctx, predicate, false))
+                return ctx.error(PatternStringError.literal("AND error"));
+            // continue...
+        }
+        if (passed == 0) {
+            return ctx.error(PatternStringError.literal("AND error"));
         }
         return true;
+    }
+
+    private static boolean failedMaxCount(PredicateContext ctx, BasePredicate predicate, boolean global) {
+        int count = global ? ctx.getGlobalCount(predicate) : ctx.getSliceCount(predicate);
+        return global ? !predicate.testGlobalMax(count) : !predicate.testSliceMax(count);
     }
 
     @Override
