@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -37,9 +38,9 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
     private final float rateMultiplier;
     private final float resistanceMultiplier;
     @Getter
-    private final TagPrefix tagPrefix;
+    private final Holder<TagPrefix> tagPrefix;
 
-    ItemPipeType(String name, float thickness, TagPrefix orePrefix, float rateMultiplier, float resistanceMultiplier) {
+    ItemPipeType(String name, float thickness, Holder<TagPrefix> orePrefix, float rateMultiplier, float resistanceMultiplier) {
         this.name = name;
         this.thickness = thickness;
         this.tagPrefix = orePrefix;

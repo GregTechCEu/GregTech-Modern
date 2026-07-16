@@ -47,7 +47,7 @@ public class AlloyBlastRecipeProducer {
 
         // get the output fluid
         Fluid molten;
-        if (ingotHot.doGenerateItem(material)) {
+        if (ingotHot.value().doGenerateItem(material)) {
             molten = material.getHotFluid();
             if (molten != null) {
                 addFreezerRecipes(material, molten, property.getBlastTemperature(), provider);

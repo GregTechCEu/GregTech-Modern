@@ -70,6 +70,7 @@ public class MaterialRegistry extends DefaultedMappedRegistry<Material> {
         return this;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void unfreeze() {
         super.unfreeze();

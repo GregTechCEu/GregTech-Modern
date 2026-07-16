@@ -26,6 +26,22 @@ public record LazyMaterialStack(Supplier<Material> material, long amount) {
         return new LazyMaterialStack(material, amount);
     }
 
+    public LazyMaterialStack add(long amount) {
+        return new LazyMaterialStack(this.material, this.amount + amount);
+    }
+
+    public LazyMaterialStack multiply(float amount) {
+        return new LazyMaterialStack(this.material, (long) (this.amount * amount));
+    }
+
+    public LazyMaterialStack multiply(long amount) {
+        return new LazyMaterialStack(this.material, this.amount * amount);
+    }
+
+    public LazyMaterialStack divide(long amount) {
+        return new LazyMaterialStack(this.material, this.amount / amount);
+    }
+
     public boolean isEmpty() {
         return this.amount < 1 || this.material == null;
     }

@@ -37,6 +37,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -246,10 +247,10 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<GlassBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+    public static final ImmutableMap<Holder<Material>, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
-        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<Holder<Material>, BlockEntry<Block>> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
         builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
         builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
@@ -1170,7 +1171,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/signs/machine_casing_stripes_b"));
 
     public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
-    public static Map<TagPrefix, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
+    public static Map<Holder<TagPrefix>, Supplier<BlockState>> COBBLE_BLOCKS = new HashMap<>();
 
     public static BlockEntry<Block> RED_GRANITE;
     public static BlockEntry<Block> MARBLE;
@@ -1378,8 +1379,8 @@ public class GTBlocks {
     }
 
     public static <P, T extends Block,
-            S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull TagPrefix tagPrefix,
-                                                                                    @NotNull Material mat) {
+            S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull Holder<TagPrefix> tagPrefix,
+                                                                                    @NotNull Holder<Material> mat) {
         return builder -> {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
@@ -1391,11 +1392,11 @@ public class GTBlocks {
         };
     }
 
-    public static void registerCobbleBlock(TagPrefix orePrefix, Supplier<BlockState> state) {
+    public static void registerCobbleBlock(Holder<TagPrefix> orePrefix, Supplier<BlockState> state) {
         COBBLE_BLOCKS.put(orePrefix, state);
     }
 
-    public static void removeCobbleBlock(TagPrefix orePrefix) {
+    public static void removeCobbleBlock(Holder<TagPrefix> orePrefix) {
         COBBLE_BLOCKS.remove(orePrefix);
     }
 
@@ -1445,7 +1446,7 @@ public class GTBlocks {
 
     /**
      * kinda nasty block property copy function because one doesn't exist.
-     * 
+     *
      * @param props the props to copy
      * @return a shallow copy of the block properties like {@link BlockBehaviour.Properties#copy(BlockBehaviour)} does
      */

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -23,11 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public abstract class GTRecipeJEICategory<T extends Recipe<?>>
-                                         extends ModularUIRecipeCategory<T> {
+public abstract class GTRecipeJEICategory<T extends Recipe<?>> extends ModularUIRecipeCategory<T> {
 
-    public static final Function<GTRecipeCategory, RecipeType<GTRecipe>> TYPES = Util
-            .memoize(c -> new RecipeType<>(c.registryKey, GTRecipe.class));
+    public static final Function<Holder<GTRecipeCategory>, RecipeType<GTRecipe>> TYPES = Util
+            .memoize(c -> new RecipeType<>(c.unwrapKey().get().location(), GTRecipe.class));
 
     protected GTRecipeJEICategory(Function<T, IWidget> wrapperFunction, Function<T, ResourceLocation> recipeIdGetter) {
         super(wrapperFunction, recipeIdGetter);
@@ -46,29 +46,29 @@ public abstract class GTRecipeJEICategory<T extends Recipe<?>>
                 continue;
             }
             var wrapped = List.copyOf(type.getRecipesInCategory(category));
-            registration.addRecipes(TYPES.apply(category), wrapped);
+            registration.addRecipes(TYPES.apply(category.getHolder()), wrapped);
         }
         // run subcategories
         for (GTRecipeCategory subCategory : subCategories) {
             if (!subCategory.shouldRegisterDisplays()) continue;
             var type = subCategory.getRecipeType();
             var wrapped = List.copyOf(type.getRecipesInCategory(subCategory));
-            registration.addRecipes(TYPES.apply(subCategory), wrapped);
+            registration.addRecipes(TYPES.apply(subCategory.getHolder()), wrapped);
         }
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         for (MachineDefinition machine : GTRegistries.MACHINES) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
+                for (Holder<GTRecipeCategory> category : type.getCategories()) {
+                    if (!category.value().isXEIVisible() && !GTCEu.isDev()) continue;
                     registration.addRecipeCatalyst(machine.asStack(), machineType(category));
                 }
             }
         }
     }
 
-    public static RecipeType<?> machineType(GTRecipeCategory category) {
+    public static RecipeType<?> machineType(Holder<GTRecipeCategory> category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return RecipeTypes.SMELTING;
         return TYPES.apply(category);
     }

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvid
 import com.gregtechceu.gtceu.client.model.pipe.PipeModel;
 import com.gregtechceu.gtceu.common.data.models.GTModels;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
 import lombok.Getter;
@@ -39,13 +40,13 @@ public enum Insulation implements IMaterialPipeType<WireProperties> {
     public final int amperage;
     public final int lossMultiplier;
     @Getter
-    public final TagPrefix tagPrefix;
+    public final Holder<TagPrefix> tagPrefix;
     public final int insulationLevel;
     /// @deprecated Use {@link #isCable() Insulation.isCable()}
     @Deprecated(forRemoval = true, since = "8.0.0")
     public final boolean isCable;
 
-    Insulation(String name, float thickness, int amperage, int lossMultiplier, TagPrefix TagPrefix,
+    Insulation(String name, float thickness, int amperage, int lossMultiplier, Holder<TagPrefix> TagPrefix,
                int insulationLevel) {
         this.name = name;
         this.thickness = thickness;

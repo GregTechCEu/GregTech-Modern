@@ -74,7 +74,7 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IMuiMac
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;
-            if (!GTRecipeTypes.COKE_OVEN_RECIPES.getCategory().isXEIVisible()) return false;
+            if (!GTRecipeTypes.COKE_OVEN_RECIPES.getCategory().value().isXEIVisible()) return false;
             GTUtil.openRecipeViewerCategory(GTRecipeTypes.COKE_OVEN_RECIPES.getCategory());
             return true;
         });

@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -34,13 +36,16 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     }
 
     default Material getPartMaterial(ItemStack itemStack) {
-        var compound = getPartStatsTag(itemStack);
-        var defaultMaterial = GTMaterials.Neutronium;
-        if (compound == null || !compound.contains("Material", Tag.TAG_STRING)) {
+        CompoundTag tag = getPartStatsTag(itemStack);
+        Material defaultMaterial = GTMaterials.Neutronium.value();
+        if (tag == null || !tag.contains("Material", Tag.TAG_STRING)) {
             return defaultMaterial;
         }
-        var materialName = compound.getString("Material");
-        var material = GTMaterials.get(materialName);
+        ResourceLocation materialName = ResourceLocation.tryParse(tag.getString("Material"));
+        if (materialName == null) {
+            return defaultMaterial;
+        }
+        Material material = GTRegistries.MATERIALS.get(materialName);
         if (material.isNull() || !material.hasProperty(PropertyKey.INGOT)) {
             return defaultMaterial;
         }

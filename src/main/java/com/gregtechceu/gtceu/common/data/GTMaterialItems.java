@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.common.item.armor.GTArmorItem;
 import com.gregtechceu.gtceu.common.item.armor.GTDyeableArmorItem;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -39,27 +40,27 @@ public class GTMaterialItems {
     public static void init() {}
 
     // Reference Table Builders
-    static ImmutableTable.Builder<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<Holder<TagPrefix>, Holder<Material>, ItemEntry<? extends Item>> MATERIAL_ITEMS_BUILDER = ImmutableTable
             .builder();
 
-    static ImmutableTable.Builder<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<Holder<Material>, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS_BUILDER = ImmutableTable
             .builder();
 
-    static ImmutableTable.Builder<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS_BUILDER = ImmutableTable
+    static ImmutableTable.Builder<Holder<Material>, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS_BUILDER = ImmutableTable
             .builder();
 
     // Reference Maps
     public static final Map<MaterialEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
-    public static final Map<TagPrefix, TagPrefix> purifyMap = Util.make(new HashMap<>(), purifyMap -> {
-        purifyMap.put(TagPrefix.crushed.get(), TagPrefix.crushedPurified.get());
-        purifyMap.put(TagPrefix.dustImpure.get(), TagPrefix.dust.get());
-        purifyMap.put(TagPrefix.dustPure.get(), TagPrefix.dust.get());
+    public static final Map<Holder<TagPrefix>, Holder<TagPrefix>> purifyMap = Util.make(new HashMap<>(), purifyMap -> {
+        purifyMap.put(TagPrefix.crushed, TagPrefix.crushedPurified);
+        purifyMap.put(TagPrefix.dustImpure, TagPrefix.dust);
+        purifyMap.put(TagPrefix.dustPure, TagPrefix.dust);
     });
 
     // Reference Tables
-    public static Table<TagPrefix, Material, ItemEntry<? extends Item>> MATERIAL_ITEMS;
-    public static Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS;
-    public static Table<Material, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS;
+    public static Table<Holder<TagPrefix>, Holder<Material>, ItemEntry<? extends Item>> MATERIAL_ITEMS;
+    public static Table<Holder<Material>, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS;
+    public static Table<Holder<Material>, ArmorItem.Type, ItemEntry<? extends ArmorItem>> ARMOR_ITEMS;
 
     // Material Items
     public static void generateMaterialItems() {
@@ -78,7 +79,7 @@ public class GTMaterialItems {
     }
 
     private static void generateMaterialItem(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
-        MATERIAL_ITEMS_BUILDER.put(tagPrefix, material, registrate
+        MATERIAL_ITEMS_BUILDER.put(tagPrefix.getHolder(), material.getHolder(), registrate
                 .item(tagPrefix.idPattern().formatted(material.getName()),
                         properties -> tagPrefix.itemConstructor()
                                 .create(material.hasFlag(MaterialFlags.FIRE_RESISTANT) ? properties.fireResistant() :
@@ -112,7 +113,7 @@ public class GTMaterialItems {
     @SuppressWarnings("unchecked")
     private static void generateTool(Material material, GTToolType toolType, GTRegistrate registrate) {
         var tier = material.getToolTier();
-        TOOL_ITEMS_BUILDER.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate
+        TOOL_ITEMS_BUILDER.put(material.getHolder(), toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate
                 .item(toolType.idFormat.formatted(tier.material.getName()),
                         p -> toolType.constructor.apply(toolType, tier, material,
                                 toolType.toolDefinition, p).asItem())
@@ -139,7 +140,7 @@ public class GTMaterialItems {
     private static void generateArmor(final Material material, final ArmorItem.Type type, GTRegistrate registrate) {
         var property = material.getProperty(PropertyKey.ARMOR);
         if (property.isDyeable()) {
-            ARMOR_ITEMS_BUILDER.put(material, type, registrate
+            ARMOR_ITEMS_BUILDER.put(material.getHolder(), type, registrate
                     .item("%s_%s".formatted(material.getName(), type.getName()),
                             p -> new GTDyeableArmorItem(property.getArmorMaterial(), type, p,
                                     material, property))
@@ -148,7 +149,7 @@ public class GTMaterialItems {
                     .color(() -> GTArmorItem::tintColor)
                     .register());
         } else {
-            ARMOR_ITEMS_BUILDER.put(material, type, registrate
+            ARMOR_ITEMS_BUILDER.put(material.getHolder(), type, registrate
                     .item("%s_%s".formatted(material.getName(), type.getName()),
                             p -> new GTArmorItem(property.getArmorMaterial(), type, p,
                                     material, property))

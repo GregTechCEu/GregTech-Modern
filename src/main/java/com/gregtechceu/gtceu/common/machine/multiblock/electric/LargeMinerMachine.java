@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
@@ -69,7 +70,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         return (LargeMinerLogic) super.getRecipeLogic();
     }
 
-    public static Material getMaterial(int tier) {
+    public static Holder<Material> getMaterial(int tier) {
         if (tier == GTValues.EV) return GTMaterials.Steel;
         if (tier == GTValues.IV) return GTMaterials.Titanium;
         if (tier == GTValues.LuV) return GTMaterials.TungstenSteel;
@@ -160,10 +161,10 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
         // drain fluid
         if (inputFluidInventory != null && inputFluidInventory.handlers.length > 0) {
-            FluidStack drillingFluid = DrillingFluid
+            FluidStack drillingFluid = DrillingFluid.value()
                     .getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-            if (fluidStack != FluidStack.EMPTY && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) &&
+            if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(drillingFluid) &&
                     fluidStack.getAmount() >= drillingFluid.getAmount()) {
                 if (!simulate) {
                     GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid,

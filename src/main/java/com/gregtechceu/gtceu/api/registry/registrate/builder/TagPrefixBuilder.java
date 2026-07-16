@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -69,7 +70,7 @@ public class TagPrefixBuilder<P> extends HolderBuilder<TagPrefix, TagPrefix, P, 
     private @Nullable MaterialIconType materialIconType;
 
     @Setter
-    private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
+    private Supplier<Table<Holder<TagPrefix>, Holder<Material>, ? extends Supplier<? extends ItemLike>>> itemTable;
 
     @Setter
     private @Nullable BiConsumer<Material, List<Component>> tooltip;

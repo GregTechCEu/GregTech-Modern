@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 
 import brachy.modularui.integration.rei.recipe.ModularUIREIDisplayCategory;
@@ -26,16 +27,16 @@ import java.util.function.Function;
 
 public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDisplay> {
 
-    public static final Function<GTRecipeCategory, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util
-            .memoize(c -> CategoryIdentifier.of(c.registryKey));
+    public static final Function<Holder<GTRecipeCategory>, CategoryIdentifier<GTRecipeDisplay>> CATEGORIES = Util
+            .memoize(c -> CategoryIdentifier.of(c.unwrapKey().get().location()));
 
-    private final GTRecipeCategory category;
+    private final Holder<GTRecipeCategory> category;
     @Getter
     private final Renderer icon;
 
-    public GTRecipeREICategory(@NotNull GTRecipeCategory category) {
+    public GTRecipeREICategory(@NotNull Holder<GTRecipeCategory> category) {
         this.category = category;
-        this.icon = (Renderer) category.getIcon().get();
+        this.icon = (Renderer) category.value().getIcon().get();
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
@@ -50,7 +51,7 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
                 subCategories.add(category);
                 continue;
             }
-            var identifier = CATEGORIES.apply(category);
+            var identifier = CATEGORIES.apply(category.getHolder());
             type.getRecipesInCategory(category).stream()
                     .map(r -> new GTRecipeDisplay(r, identifier))
                     .forEach(registry::add);
@@ -59,7 +60,7 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
         for (GTRecipeCategory subCategory : subCategories) {
             if (!subCategory.shouldRegisterDisplays()) continue;
             var type = subCategory.getRecipeType();
-            var identifier = CATEGORIES.apply(subCategory);
+            var identifier = CATEGORIES.apply(subCategory.getHolder());
             type.getRecipesInCategory(subCategory).stream()
                     .map(r -> new GTRecipeDisplay(r, identifier))
                     .forEach(registry::add);
@@ -69,15 +70,15 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
     public static void registerWorkStations(CategoryRegistry registry) {
         for (MachineDefinition machine : GTRegistries.MACHINES) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
+                for (Holder<GTRecipeCategory> category : type.getCategories()) {
+                    if (!category.value().isXEIVisible() && !GTCEu.isDev()) continue;
                     registry.addWorkstations(machineCategory(category), EntryStacks.of(machine.asStack()));
                 }
             }
         }
     }
 
-    public static CategoryIdentifier<?> machineCategory(GTRecipeCategory category) {
+    public static CategoryIdentifier<?> machineCategory(Holder<GTRecipeCategory> category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return BuiltinPlugin.SMELTING;
         else return CATEGORIES.apply(category);
     }
@@ -90,6 +91,6 @@ public class GTRecipeREICategory extends ModularUIREIDisplayCategory<GTRecipeDis
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(category.getLanguageKey());
+        return Component.translatable(category.value().getLanguageKey());
     }
 }

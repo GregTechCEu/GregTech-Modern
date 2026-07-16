@@ -54,7 +54,7 @@ public class GTRecipeTypeMachineWidget extends Flow {
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;
-            if (!recipeType.getCategory().isXEIVisible()) return false;
+            if (!recipeType.getCategory().value().isXEIVisible()) return false;
             GTUtil.openRecipeViewerCategory(recipeType.getCategory());
             return true;
         });

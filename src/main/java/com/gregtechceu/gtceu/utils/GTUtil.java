@@ -755,20 +755,21 @@ public class GTUtil {
         return resourceExists(modelLocation);
     }
 
-    public static void openRecipeViewerCategory(GTRecipeCategory category) {
+    public static void openRecipeViewerCategory(Holder<GTRecipeCategory> category) {
         if (GTCEu.Mods.isEMILoaded()) {
             EmiCallWrapper.openRecipeCategory(category);
-        } else if (GTCEu.Mods.isJEILoaded()) {
-            JeiCallWrapper.openRecipeCategory(category);
         } else if (GTCEu.Mods.isREILoaded()) {
             ReiCallWrapper.openRecipeCategory(category);
+        } else if (GTCEu.Mods.isJEILoaded()) {
+            JeiCallWrapper.openRecipeCategory(category);
         }
     }
 
     private static class EmiCallWrapper {
 
-        public static void openRecipeCategory(GTRecipeCategory category) {
-            var categories = category.getRecipeType().getCategories().stream().map(GTRecipeEMICategory::machineCategory)
+        public static void openRecipeCategory(Holder<GTRecipeCategory> category) {
+            var categories = category.value().getRecipeType().getCategories().stream()
+                    .map(GTRecipeEMICategory::machineCategory)
                     .toList();
             Map<EmiRecipeCategory, List<EmiRecipe>> recipes = new HashMap<>();
             for (var cat : categories) {
@@ -780,14 +781,14 @@ public class GTUtil {
 
     private static class JeiCallWrapper {
 
-        public static void openRecipeCategory(GTRecipeCategory category) {
+        public static void openRecipeCategory(Holder<GTRecipeCategory> category) {
             GTJEIPlugin.getRuntime().getRecipesGui().showTypes(List.of(GTRecipeJEICategory.machineType(category)));
         }
     }
 
     private static class ReiCallWrapper {
 
-        public static void openRecipeCategory(GTRecipeCategory category) {
+        public static void openRecipeCategory(Holder<GTRecipeCategory> category) {
             ViewSearchBuilder.builder().addCategories(List.of(GTRecipeREICategory.machineCategory(category))).open();
         }
     }

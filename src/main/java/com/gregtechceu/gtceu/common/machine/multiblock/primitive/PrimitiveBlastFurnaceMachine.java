@@ -153,7 +153,7 @@ public class PrimitiveBlastFurnaceMachine extends PrimitiveWorkableMachine imple
 
         progressWidget.listenGuiAction((IGuiAction.MousePressed) (guiContext, i) -> {
             if (!guiContext.isMouseAbove(progressWidget)) return false;
-            if (!GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES.getCategory().isXEIVisible()) return false;
+            if (!GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES.getCategory().value().isXEIVisible()) return false;
             GTUtil.openRecipeViewerCategory(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES.getCategory());
             return true;
         });

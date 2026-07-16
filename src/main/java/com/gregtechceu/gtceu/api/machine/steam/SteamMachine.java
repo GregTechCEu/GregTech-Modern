@@ -27,7 +27,7 @@ public abstract class SteamMachine extends MetaMachine implements ITieredMachine
         super(info);
         this.isHighPressure = isHighPressure;
         this.steamTank = attachTrait(steamTank);
-        this.steamTank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.getFluidTag()));
+        this.steamTank.setFilter(f -> f.getFluid().is(GTMaterials.Steam.value().getFluidTag()));
     }
 
     public SteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {

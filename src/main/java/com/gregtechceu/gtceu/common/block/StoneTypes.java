@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
+import net.minecraft.core.Holder;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,17 +43,17 @@ public enum StoneTypes implements StringRepresentable {
     @Getter
     public final Supplier<Supplier<BlockState>> state;
     @Getter
-    public final Material material;
+    public final Holder<Material> material;
 
     public final boolean generateBlocks;
 
     StoneTypes(@Nonnull String name, @Nonnull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
-               Material material) {
+               Holder<Material> material) {
         this(name, mapColor, natural, state, material, true);
     }
 
     StoneTypes(@Nonnull String name, @Nonnull MapColor mapColor, boolean natural, Supplier<Supplier<BlockState>> state,
-               Material material, boolean generateBlocks) {
+               Holder<Material> material, boolean generateBlocks) {
         this.name = name;
         this.mapColor = mapColor;
         this.natural = natural;
@@ -67,7 +68,7 @@ public enum StoneTypes implements StringRepresentable {
         return this.name;
     }
 
-    public TagPrefix getTagPrefix() {
+    public Holder<TagPrefix> getTagPrefix() {
         return switch (this) {
             // case RED_GRANITE, MARBLE ->
             // TagPrefix.ore;

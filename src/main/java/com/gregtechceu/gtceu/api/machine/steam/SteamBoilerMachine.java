@@ -79,7 +79,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         super(info, isHighPressure, new RecipeLogic(),
                 new NotifiableFluidTank(1, 16 * FluidType.BUCKET_VOLUME, IO.OUT));
         this.waterTank = attachTrait(createWaterTank());
-        this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
+        this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.value().getFluidTag()));
     }
 
     //////////////////////////////////////
@@ -182,7 +182,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
                     filledSteam = steamTank.fillInternal(
-                            GTMaterials.Steam.getFluid(fillAmount),
+                            GTMaterials.Steam.value().getFluid(fillAmount),
                             FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {

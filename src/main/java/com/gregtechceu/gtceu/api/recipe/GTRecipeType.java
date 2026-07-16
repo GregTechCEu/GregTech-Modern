@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -68,9 +69,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
     @Getter
-    private final GTRecipeCategory category;
+    private final Holder<GTRecipeCategory> category;
     @Getter
-    private final Map<GTRecipeCategory, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
+    private final Map<Holder<GTRecipeCategory>, Set<GTRecipe>> categoryMap = new Object2ObjectOpenHashMap<>();
     private final RecipeDB db = new RecipeDB();
     @ApiStatus.Internal
     @Getter
@@ -145,7 +146,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeType setXEIVisible(boolean XEIVisible) {
-        this.category.setXEIVisible(XEIVisible);
+        this.category.value().setXEIVisible(XEIVisible);
         return this;
     }
 
@@ -291,11 +292,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         addToCategoryMap(category, recipe);
     }
 
-    public void addToCategoryMap(GTRecipeCategory category, GTRecipe recipe) {
+    public void addToCategoryMap(Holder<GTRecipeCategory> category, GTRecipe recipe) {
         categoryMap.computeIfAbsent(category, k -> new ObjectLinkedOpenHashSet<>()).add(recipe);
     }
 
-    public Set<GTRecipeCategory> getCategories() {
+    public Set<Holder<GTRecipeCategory>> getCategories() {
         return Collections.unmodifiableSet(categoryMap.keySet());
     }
 

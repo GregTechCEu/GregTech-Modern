@@ -1104,7 +1104,7 @@ public class TagPrefix {
     private MaterialIconType materialIconType;
 
     @Setter
-    private Supplier<Table<TagPrefix, Material, ? extends Supplier<? extends ItemLike>>> itemTable;
+    private Supplier<Table<Holder<TagPrefix>, Holder<Material>, ? extends Supplier<? extends ItemLike>>> itemTable;
 
     @Nullable
     @Getter

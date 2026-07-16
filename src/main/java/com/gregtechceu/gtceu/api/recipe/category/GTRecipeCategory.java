@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.integration.recipeviewer.CategoryIcon;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -72,12 +73,16 @@ public class GTRecipeCategory {
     }
 
     public void addRecipe(GTRecipe recipe) {
-        recipeType.addToCategoryMap(this, recipe);
+        recipeType.addToCategoryMap(this.getHolder(), recipe);
     }
 
     public boolean shouldRegisterDisplays() {
         return (isXEIVisible || GTCEu.isDev()) &&
                 this != GTRecipeTypes.FURNACE_RECIPES.getCategory();
+    }
+
+    public Holder<GTRecipeCategory> getHolder() {
+        return GTRegistries.RECIPE_CATEGORIES.wrapAsHolder(this);
     }
 
     @Override

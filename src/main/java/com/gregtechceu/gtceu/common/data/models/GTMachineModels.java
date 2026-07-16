@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.data.models.blockstates.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -503,8 +504,8 @@ public class GTMachineModels {
                 .setModel(provider.getExistingFile(model));
     }
 
-    public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
-        ImmutableMap.Builder<Material, ResourceLocation> builder = ImmutableMap.builder();
+    public static final ImmutableMap<Holder<Material>, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
+        ImmutableMap.Builder<Holder<Material>, ResourceLocation> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
         builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
         builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));

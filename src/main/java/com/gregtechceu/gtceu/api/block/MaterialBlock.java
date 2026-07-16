@@ -227,7 +227,7 @@ public class MaterialBlock extends Block {
         if (be instanceof PipeBlockEntity<?, ?> pipeTile) {
             Material mat = pipeTile.getFrameMaterial();
             if (!mat.isNull()) {
-                pipeTile.setFrameMaterial(GTMaterials.NULL);
+                pipeTile.setFrameMaterial(GTMaterials.nullMaterial());
                 Block.popResource(level, pos, this.asItem().getDefaultInstance());
                 ToolHelper.damageItem(stack, player);
                 ToolHelper.playToolSound(GTToolType.CROWBAR, (ServerPlayer) player);

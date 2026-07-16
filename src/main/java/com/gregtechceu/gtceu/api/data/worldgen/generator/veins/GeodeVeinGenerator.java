@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
@@ -321,7 +322,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                                      Either<BlockStateProvider, Material> middleLayerProvider,
                                      Either<BlockStateProvider, Material> outerLayerProvider,
                                      List<BlockState> innerPlacements, TagKey<Block> cannotReplace,
-                                     TagKey<Block> invalidBlocks, @NotNull TagPrefix providerMaterialPrefix) {
+                                     TagKey<Block> invalidBlocks, @NotNull Holder<TagPrefix> providerMaterialPrefix) {
 
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("filling_provider")
@@ -343,7 +344,7 @@ public class GeodeVeinGenerator extends VeinGenerator {
                         .forGetter(config -> config.cannotReplace),
                 TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks")
                         .forGetter(config -> config.invalidBlocks),
-                GTRegistries.TAG_PREFIXES.byNameCodec().optionalFieldOf("provider_material_prefix", TagPrefix.block)
+                GTRegistries.TAG_PREFIXES.holderByNameCodec().optionalFieldOf("provider_material_prefix", TagPrefix.block)
                         .forGetter(config -> config.providerMaterialPrefix))
                 .apply(instance, GeodeBlockSettings::new));
     }

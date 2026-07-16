@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 
 import dev.emi.emi.api.EmiRegistry;
@@ -24,12 +25,12 @@ import java.util.function.Function;
 
 public class GTRecipeEMICategory extends EmiRecipeCategory {
 
-    public static final Function<GTRecipeCategory, GTRecipeEMICategory> CATEGORIES = Util
+    public static final Function<Holder<GTRecipeCategory>, GTRecipeEMICategory> CATEGORIES = Util
             .memoize(GTRecipeEMICategory::new);
-    private final GTRecipeCategory category;
+    private final Holder<GTRecipeCategory> category;
 
-    private GTRecipeEMICategory(GTRecipeCategory category) {
-        super(category.registryKey, (EmiRenderable) category.getIcon().get());
+    private GTRecipeEMICategory(Holder<GTRecipeCategory> category) {
+        super(category.unwrapKey().get().location(), (EmiRenderable) category.value().getIcon().get());
         this.category = category;
     }
 
@@ -45,7 +46,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
                 subCategories.add(category);
                 continue;
             }
-            EmiRecipeCategory emiCategory = CATEGORIES.apply(category);
+            EmiRecipeCategory emiCategory = CATEGORIES.apply(category.getHolder());
             type.getRecipesInCategory(category).stream()
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
@@ -54,7 +55,7 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
         for (var subCategory : subCategories) {
             if (!subCategory.shouldRegisterDisplays()) continue;
             var type = subCategory.getRecipeType();
-            EmiRecipeCategory emiCategory = CATEGORIES.apply(subCategory);
+            EmiRecipeCategory emiCategory = CATEGORIES.apply(subCategory.getHolder());
             type.getRecipesInCategory(subCategory).stream()
                     .map(recipe -> new GTEmiRecipe(recipe, emiCategory))
                     .forEach(registry::addRecipe);
@@ -79,21 +80,21 @@ public class GTRecipeEMICategory extends EmiRecipeCategory {
                 .sorted(sortDefinition)
                 .toList()) {
             for (GTRecipeType type : machine.getRecipeTypes()) {
-                for (GTRecipeCategory category : type.getCategories()) {
-                    if (!category.isXEIVisible() && !GTCEu.isDev()) continue;
+                for (Holder<GTRecipeCategory> category : type.getCategories()) {
+                    if (!category.value().isXEIVisible() && !GTCEu.isDev()) continue;
                     registry.addWorkstation(machineCategory(category), EmiStack.of(machine.asStack()));
                 }
             }
         }
     }
 
-    public static EmiRecipeCategory machineCategory(GTRecipeCategory category) {
+    public static EmiRecipeCategory machineCategory(Holder<GTRecipeCategory> category) {
         if (category == GTRecipeTypes.FURNACE_RECIPES.getCategory()) return VanillaEmiRecipeCategories.SMELTING;
         else return CATEGORIES.apply(category);
     }
 
     @Override
     public Component getName() {
-        return Component.translatable(category.getLanguageKey());
+        return Component.translatable(category.value().getLanguageKey());
     }
 }

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -33,23 +34,23 @@ import java.util.Map;
 public class GTMaterialBlocks {
 
     // Reference Table Builders
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<Holder<TagPrefix>, Holder<Material>, BlockEntry<? extends Block>> MATERIAL_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    private static ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
+    private static ImmutableMap.Builder<Holder<Material>, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS_BUILDER = ImmutableMap
             .builder();
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<Holder<TagPrefix>, Holder<Material>, BlockEntry<CableBlock>> CABLE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<Holder<TagPrefix>, Holder<Material>, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
-    private static ImmutableTable.Builder<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
+    private static ImmutableTable.Builder<Holder<TagPrefix>, Holder<Material>, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS_BUILDER = ImmutableTable
             .builder();
 
     // Reference Tables
-    public static Table<TagPrefix, Material, BlockEntry<? extends Block>> MATERIAL_BLOCKS;
-    public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<CableBlock>> CABLE_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
-    public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
+    public static Table<Holder<TagPrefix>, Holder<Material>, BlockEntry<? extends Block>> MATERIAL_BLOCKS;
+    public static Map<Holder<Material>, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
+    public static Table<Holder<TagPrefix>, Holder<Material>, BlockEntry<CableBlock>> CABLE_BLOCKS;
+    public static Table<Holder<TagPrefix>, Holder<Material>, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
+    public static Table<Holder<TagPrefix>, Holder<Material>, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
 
     // Material Blocks
     public static void generateMaterialBlocks() {
@@ -69,12 +70,12 @@ public class GTMaterialBlocks {
     }
 
     private static void registerMaterialBlock(TagPrefix tagPrefix, Material material, GTRegistrate registrate) {
-        MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
+        MATERIAL_BLOCKS_BUILDER.put(tagPrefix.getHolder(), material.getHolder(), registrate
                 .block(tagPrefix.idPattern().formatted(material.getName()),
                         properties -> tagPrefix.blockConstructor().create(properties, tagPrefix, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
-                .transform(GTBlocks.unificationBlock(tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(tagPrefix.getHolder(), material.getHolder()))
                 .addLayer(tagPrefix.blockProperties().renderType())
                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -121,7 +122,7 @@ public class GTMaterialBlocks {
                         return oreType.stoneType().get().getBlock();
                     })
                     .properties(properties -> GTBlocks.copy(oreType.template().get(), properties).noLootTable())
-                    .transform(GTBlocks.unificationBlock(oreTag, material))
+                    .transform(GTBlocks.unificationBlock(oreTag.getHolder(), material.getHolder()))
                     .blockstate(NonNullBiConsumer.noop())
                     .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                     .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -131,7 +132,7 @@ public class GTMaterialBlocks {
                     .color(() -> () -> MaterialBlockItem.tintColor(material))
                     .build()
                     .register();
-            MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
+            MATERIAL_BLOCKS_BUILDER.put(oreTag.getHolder(), material.getHolder(), entry);
         }
     }
 
@@ -155,7 +156,7 @@ public class GTMaterialBlocks {
                 .block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
-                .transform(GTBlocks.unificationBlock(TagPrefix.surfaceRock, material))
+                .transform(GTBlocks.unificationBlock(TagPrefix.surfaceRock, material.getHolder()))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -166,7 +167,7 @@ public class GTMaterialBlocks {
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .build()
                 .register();
-        SURFACE_ROCK_BLOCKS_BUILDER.put(material, entry);
+        SURFACE_ROCK_BLOCKS_BUILDER.put(material.getHolder(), entry);
     }
 
     // Material Cable & Wire Blocks
@@ -184,7 +185,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowCableBlock(Material material, Insulation insulation) {
-        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
+        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.value().isIgnored(material) &&
                 !(insulation.isCable() && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
 
@@ -194,7 +195,7 @@ public class GTMaterialBlocks {
                         p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
-                .transform(GTBlocks.unificationBlock(insulation.tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(insulation.tagPrefix, material.getHolder()))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -206,7 +207,7 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material, entry);
+        CABLE_BLOCKS_BUILDER.put(insulation.tagPrefix, material.getHolder(), entry);
     }
 
     // Material Fluid Pipe Blocks
@@ -224,7 +225,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
-        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
+        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.value().isIgnored(material);
     }
 
     private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
@@ -239,7 +240,7 @@ public class GTMaterialBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(GTBlocks.unificationBlock(fluidPipeType.tagPrefix, material))
+                .transform(GTBlocks.unificationBlock(fluidPipeType.tagPrefix, material.getHolder()))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -251,7 +252,7 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        FLUID_PIPE_BLOCKS_BUILDER.put(fluidPipeType.tagPrefix, material, entry);
+        FLUID_PIPE_BLOCKS_BUILDER.put(fluidPipeType.tagPrefix, material.getHolder(), entry);
     }
 
     // Material Item Pipe Blocks
@@ -269,7 +270,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
-        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
+        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().value().isIgnored(material);
     }
 
     private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
@@ -283,7 +284,7 @@ public class GTMaterialBlocks {
                     }
                     return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
-                .transform(GTBlocks.unificationBlock(itemPipeType.getTagPrefix(), material))
+                .transform(GTBlocks.unificationBlock(itemPipeType.getTagPrefix(), material.getHolder()))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -295,7 +296,7 @@ public class GTMaterialBlocks {
                 .color(() -> MaterialPipeBlockItem::tintColor)
                 .build()
                 .register();
-        ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix(), material, entry);
+        ITEM_PIPE_BLOCKS_BUILDER.put(itemPipeType.getTagPrefix(), material.getHolder(), entry);
     }
 
     public static void finaliseMaterialBlocks() {

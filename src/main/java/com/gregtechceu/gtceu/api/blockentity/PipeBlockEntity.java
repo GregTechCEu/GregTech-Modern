@@ -83,7 +83,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @SyncToClient
     @SaveField
     @NotNull
-    private Material frameMaterial = GTMaterials.NULL;
+    private Material frameMaterial = GTMaterials.nullMaterial();
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -151,11 +151,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public @NotNull Material getFrameMaterial() {
+    public Material getFrameMaterial() {
         // backwards compat
         // noinspection ConstantValue
         if (frameMaterial == null) {
-            frameMaterial = GTMaterials.NULL;
+            frameMaterial = GTMaterials.nullMaterial();
         }
         return frameMaterial;
     }
@@ -380,8 +380,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (!frameMaterial.isNull()) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
-                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                frameMaterial = GTMaterials.NULL;
+                        GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial.getHolder()).asStack());
+                frameMaterial = GTMaterials.nullMaterial();
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
