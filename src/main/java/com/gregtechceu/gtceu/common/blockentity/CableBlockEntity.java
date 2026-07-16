@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -19,12 +18,11 @@ import com.gregtechceu.gtceu.client.particle.GTParticleManager;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.item.behavior.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,6 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
+import brachy.modularui.drawable.UITexture;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +60,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @OnlyIn(Dist.CLIENT)
     private GTOverheatParticle particle;
-    private static final int meltTemp = 3000;
+    public static final int meltTemp = 3000;
 
     private final EnumMap<Direction, EnergyNetHandler> handlers = new EnumMap<>(Direction.class);
     private final PerTickLongCounter maxVoltageCounter = new PerTickLongCounter();
@@ -207,7 +206,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return getNodeData().getVoltage();
     }
 
-    public int getDefaultTemp() {
+    public static int getDefaultTemp() {
         return 293;
     }
 
@@ -319,7 +318,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         syncDataHolder.markClientSyncFieldDirty("temperature");
-        level.getLightEngine().checkBlock(worldPosition);
+        getLevel().getLightEngine().checkBlock(worldPosition);
     }
 
     @ClientFieldChangeListener(fieldName = "temperature")
@@ -340,7 +339,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float yPos = Direction.UP.getStepY() * 0.76f + getBlockPos().getY() + 0.25f;
             float zPos = Direction.UP.getStepZ() * 0.76f + getBlockPos().getZ() + 0.25f;
 
-            float horizontalDirection = level.random.nextFloat() * 2 * Mth.PI;
+            float horizontalDirection = getLevel().random.nextFloat() * 2 * Mth.PI;
             float xSpd = Mth.sin(horizontalDirection) * 0.1f;
             float ySpd = Direction.UP.getStepY() * 0.1f + 0.2f + 0.1f * level.random.nextFloat();
             float zSpd = Mth.cos(horizontalDirection) * 0.1f;
@@ -360,8 +359,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     //////////////////////////////////////
 
     @Override
-    public ResourceTexture getPipeTexture(boolean isBlock) {
-        return isBlock ? GuiTextures.TOOL_WIRE_CONNECT : GuiTextures.TOOL_WIRE_BLOCK;
+    public UITexture getPipeTexture(boolean isBlock) {
+        return isBlock ? GTGuiTextures.TOOL_WIRE_CONNECT : GTGuiTextures.TOOL_WIRE_BLOCK;
     }
 
     @Override

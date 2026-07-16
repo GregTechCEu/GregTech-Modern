@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -21,7 +24,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
     public final static EURecipeCapability CAP = new EURecipeCapability();
 
     protected EURecipeCapability() {
-        super("eu", 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
+        super(GTCEu.id("eu"), 0xFFFFFF00, false, 2, SerializerEnergyStack.INSTANCE);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             int maxMultiplier = multiplier;
 
             long totalEU = 0L;
-            for (var content : outputs) totalEU += of(content.content).getTotalEU();
+            for (var content : outputs) totalEU += of(content.content()).getTotalEU();
             if (totalEU != 0 && multiplier > Long.MAX_VALUE / totalEU) {
                 maxMultiplier = multiplier = GTMath.saturatedCast(Long.MAX_VALUE / totalEU);
             }
@@ -71,9 +74,9 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
                 for (var handler : handlers) {
                     // noinspection unchecked
                     eu = (List<Long>) handler.handleRecipe(IO.OUT, recipe, eu, true);
-                    if (eu == null) break;
+                    if (eu.isEmpty()) break;
                 }
-                int[] bin = ParallelLogic.adjustMultiplier(eu == null, minMultiplier, multiplier, maxMultiplier);
+                int[] bin = ParallelLogic.adjustMultiplier(eu.isEmpty(), minMultiplier, multiplier, maxMultiplier);
                 minMultiplier = bin[0];
                 multiplier = bin[1];
                 maxMultiplier = bin[2];
@@ -104,8 +107,8 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
             long nonConsumable = 0;
             long consumable = 0;
             for (Content content : inputs) {
-                EnergyStack s = of(content.content);
-                if (content.chance == 0) nonConsumable += s.getTotalEU();
+                EnergyStack s = of(content.content());
+                if (content.chance() == 0) nonConsumable += s.getTotalEU();
                 else consumable += s.getTotalEU();
             }
 
@@ -125,6 +128,17 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
         }
     }
 
+    @Override
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine) {
+        return machine.getTraits(NotifiableEnergyContainer.TYPE);
+    }
+
+    @Override
+    public List<NotifiableEnergyContainer> getCapabilityHandlers(MetaMachine machine, IO io) {
+        return getCapabilityHandlers(machine).stream()
+                .filter(v -> v.getHandlerIO() == io).toList();
+    }
+
     /**
      * Creates a {@code List<Content>} with the specified EU
      * 
@@ -133,7 +147,7 @@ public class EURecipeCapability extends RecipeCapability<EnergyStack> {
      */
     public static List<Content> makeEUContent(EnergyStack eu) {
         return List.of(
-                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue(), 0));
+                new Content(eu, ChanceLogic.getMaxChancedValue(), ChanceLogic.getMaxChancedValue()));
     }
 
     /**

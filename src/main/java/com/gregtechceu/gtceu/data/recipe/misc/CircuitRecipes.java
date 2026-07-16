@@ -692,14 +692,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_emerald")
                 .inputItems(gemExquisite, Emerald)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_olivine")
                 .inputItems(gemExquisite, Olivine)
                 .inputFluids(Europium.getFluid(L / 9))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500, 0)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 2500)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(320).save(provider);
 
@@ -718,14 +718,14 @@ public class CircuitRecipes {
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_mutagen")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(Mutagen.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 
         AUTOCLAVE_RECIPES.recipeBuilder("raw_crystal_chip_from_part_bacterial_sludge")
                 .inputItems(RAW_CRYSTAL_CHIP_PART)
                 .inputFluids(BacterialSludge.getFluid(250))
-                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500, 0)
+                .chancedOutput(RAW_CRYSTAL_CHIP.asStack(), 8500)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(12000).EUt(VA[HV]).save(provider);
 
@@ -1460,12 +1460,12 @@ public class CircuitRecipes {
         ASSEMBLY_LINE_RECIPES.recipeBuilder("crystal_mainframe_uv").EUt(VA[LuV]).duration(800)
                 .inputItems(frameGt, HSSE, 2)
                 .inputItems(CRYSTAL_COMPUTER_ZPM, 2)
-                .inputItems(RANDOM_ACCESS_MEMORY, 32)
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireGtSingle, NiobiumTitanium, 8)
                 .inputItems(ADVANCED_SMD_INDUCTOR, 8)
                 .inputItems(ADVANCED_SMD_CAPACITOR, 16)
                 .inputItems(ADVANCED_SMD_DIODE, 8)
+                .inputItems(RANDOM_ACCESS_MEMORY, 32)
+                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
+                .inputItems(wireGtSingle, NiobiumTitanium, 8)
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(CRYSTAL_MAINFRAME_UV)
                 .stationResearch(b -> b

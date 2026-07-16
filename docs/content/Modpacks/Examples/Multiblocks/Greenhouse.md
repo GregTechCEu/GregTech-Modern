@@ -32,7 +32,7 @@ title: "Greenhouse"
 ## Multiblock
 === "JavaScript"
     ```js title="greenhouse_multiblock.js"
-    const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.RecipeLogic')
+    const $RecipeLogic = Java.loadClass('com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic')
     const $List = Java.loadClass('java.util.List')
 
     GTCEuStartupEvents.registry('gtceu:machine', event => {

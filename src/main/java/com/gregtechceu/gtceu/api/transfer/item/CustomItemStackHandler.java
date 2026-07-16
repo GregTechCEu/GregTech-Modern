@@ -56,10 +56,22 @@ public class CustomItemStackHandler extends ItemStackHandler
         onContentsChanged.run();
     }
 
+    public NonNullList<ItemStack> toList() {
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int slot = 0; slot < getSlots(); slot++) list.add(getStackInSlot(slot));
+        return list;
+    }
+
     public void dropInventoryInWorld(Level world, BlockPos pos) {
         for (ItemStack stack : stacks) {
             Block.popResource(world, pos, stack);
         }
         clear();
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        if (nbt.getInt("Size") != stacks.size()) nbt.putInt("Size", stacks.size());
+        super.deserializeNBT(nbt);
     }
 }

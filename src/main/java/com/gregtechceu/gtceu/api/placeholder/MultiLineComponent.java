@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 
 @Accessors(chain = true)
 public class MultiLineComponent extends ArrayList<MutableComponent> {
@@ -134,6 +135,17 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
         return out;
     }
 
+    public MultiLineComponent withStyle(UnaryOperator<Style> style) {
+        MultiLineComponent out = MultiLineComponent.empty();
+        for (MutableComponent c : this) {
+            out.append(MultiLineComponent.of(c.withStyle(style)));
+            out.appendNewline();
+        }
+        if (!out.isEmpty()) out.remove(out.size() - 1);
+        out.addGraphics(this.getGraphics());
+        return out;
+    }
+
     public MultiLineComponent withStyle(ChatFormatting... style) {
         MultiLineComponent out = MultiLineComponent.empty();
         for (MutableComponent c : this) {
@@ -141,6 +153,7 @@ public class MultiLineComponent extends ArrayList<MutableComponent> {
             out.appendNewline();
         }
         if (!out.isEmpty()) out.remove(out.size() - 1);
+        out.addGraphics(this.getGraphics());
         return out;
     }
 

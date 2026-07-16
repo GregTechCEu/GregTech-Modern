@@ -17,8 +17,6 @@ import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -28,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import brachy.modularui.drawable.UITexture;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,7 +53,7 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<MachineCoverContainer> getTraitType() {
         return TYPE;
     }
 
@@ -90,11 +89,11 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public @Nullable ResourceTexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
-                                                        Set<GTToolType> toolTypes, Direction side) {
+    public @Nullable UITexture getGridOverlayIcon(Player player, BlockPos pos, BlockState state,
+                                                  Set<GTToolType> toolTypes, ItemStack held, Direction side) {
         var cover = getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, pos, state, toolTypes, side);
+            return cover.sideTips(player, pos, state, toolTypes, held, side);
         }
         return null;
     }

@@ -1,40 +1,48 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.*;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.common.machine.trait.CleanroomReceiverTrait;
+import com.gregtechceu.gtceu.common.mui.GTMultiblockTextUtil;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import brachy.modularui.api.widget.IWidget;
+import brachy.modularui.value.sync.PanelSyncManager;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.longs.LongSets;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.*;
 
+/**
+ * The base class for multiblocks with recipe logic.
+ */
 public abstract class WorkableMultiblockMachine extends MultiblockControllerMachine
-                                                implements IWorkableMultiController, IMufflableMachine {
+                                                implements IRecipeLogicMachine, IMufflableMachine {
 
     @Getter
     protected final CleanroomReceiverTrait cleanroomReceiver;
@@ -74,6 +82,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.activeRecipeType = 0;
         this.cleanroomReceiver = attachTrait(new CleanroomReceiverTrait());
         this.recipeLogic = attachTrait(recipeLogic);
+        this.recipeLogic.setKeepSubscribing(false);
         this.capabilitiesProxy = new EnumMap<>(IO.class);
         this.capabilitiesFlat = new EnumMap<>(IO.class);
         this.traitSubscriptions = new ArrayList<>();
@@ -108,23 +117,26 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
     @Override
-    public void onStructureFormed() {
-        super.onStructureFormed();
+    @MustBeInvokedByOverriders
+    public void formStructure(String substructureName) {
+        super.formStructure(substructureName);
         // attach parts' traits
-        activeBlocks = getMultiblockState().getMatchContext().getOrDefault("vaBlocks", LongSets.emptySet());
+        var cache = patternStates.get(substructureName).getCache();
+        for (var entry : cache.long2ObjectEntrySet()) {
+            if (entry.getValue().getBlockState().getBlock() instanceof ActiveBlock) {
+                if (activeBlocks == null) activeBlocks = new LongOpenHashSet();
+                activeBlocks.add(entry.getLongKey());
+            }
+        }
+
         capabilitiesProxy.clear();
         capabilitiesFlat.clear();
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
-        Long2ObjectMap<IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap",
-                Long2ObjectMaps::emptyMap);
-        for (IMultiPart part : getParts()) {
-            IO io = ioMap.getOrDefault(part.self().getBlockPos().asLong(), IO.BOTH);
-            if (io == IO.NONE) continue;
+        for (MultiblockPartMachine part : getParts()) {
 
             var handlerLists = part.getRecipeHandlers();
             for (var handlerList : handlerLists) {
-                if (!handlerList.isValid(io)) continue;
                 this.addHandlerList(handlerList);
                 traitSubscriptions.add(handlerList.subscribe(recipeLogic::updateTickSubscription));
             }
@@ -132,10 +144,8 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
         // attach self traits
         Map<IO, List<IRecipeHandler<?>>> ioTraits = new EnumMap<>(IO.class);
-        for (MachineTrait trait : getAllTraits()) {
-            if (trait instanceof IRecipeHandlerTrait<?> handlerTrait) {
-                ioTraits.computeIfAbsent(handlerTrait.getHandlerIO(), i -> new ArrayList<>()).add(handlerTrait);
-            }
+        for (var trait : getTraitHolder().getTraitsByInterface(IRecipeHandlerTrait.class)) {
+            ioTraits.computeIfAbsent(trait.getHandlerIO(), i -> new ArrayList<>()).add(trait);
         }
 
         for (var entry : ioTraits.entrySet()) {
@@ -148,8 +158,9 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public void onStructureInvalid() {
-        super.onStructureInvalid();
+    @MustBeInvokedByOverriders
+    public void invalidateStructure(String name) {
+        super.invalidateStructure(name);
         updateActiveBlocks(false);
         activeBlocks = null;
         capabilitiesProxy.clear();
@@ -192,7 +203,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     @Nullable
     @Override
     public final GTRecipe doModifyRecipe(GTRecipe recipe) {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
         }
@@ -201,7 +212,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     protected GTRecipe getRealRecipe(GTRecipe recipe) {
-        return self().getDefinition().getRecipeModifier().applyModifier(self(), recipe);
+        return getDefinition().getRecipeModifier().applyModifier(this, recipe);
     }
 
     public void updateActiveBlocks(boolean active) {
@@ -220,77 +231,63 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean keepSubscribing() {
-        return false;
-    }
-
-    @Override
-    public void notifyStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
-        IWorkableMultiController.super.notifyStatusChanged(oldStatus, newStatus);
-        if (newStatus == RecipeLogic.Status.WORKING || oldStatus == RecipeLogic.Status.WORKING) {
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {
+        IRecipeLogicMachine.super.recipeLogicStatusChanged(oldStatus, newStatus);
+        if (shouldUpdateActiveBlocks()) {
             updateActiveBlocks(newStatus == RecipeLogic.Status.WORKING);
         }
-        for (IMultiPart part : getParts()) {
-            MachineRenderState state = part.self().getRenderState();
+        for (MultiblockPartMachine part : getParts()) {
+            part.recipeLogicStatusChanged(oldStatus, newStatus);
+            MachineRenderState state = part.getRenderState();
             if (state.hasProperty(GTMachineModelProperties.RECIPE_LOGIC_STATUS)) {
-                part.self().setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
+                part.setRenderState(state.setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, newStatus));
             }
         }
+    }
+
+    /**
+     * If the multiblock should update all active blocks in its structure
+     */
+    public boolean shouldUpdateActiveBlocks() {
+        return true;
     }
 
     @Override
     public boolean isRecipeLogicAvailable() {
-        return isFormed && !getMultiblockState().hasError();
+        return isFormed && !getDefaultPatternState().hasErrors();
     }
 
     @Override
     public void afterWorking() {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             part.afterWorking(this);
         }
-        IWorkableMultiController.super.afterWorking();
+        IRecipeLogicMachine.super.afterWorking();
     }
 
     @Override
     public boolean beforeWorking(@Nullable GTRecipe recipe) {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;
             }
         }
-        return IWorkableMultiController.super.beforeWorking(recipe);
+        return IRecipeLogicMachine.super.beforeWorking(recipe);
     }
 
     @Override
     public boolean onWorking() {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (!part.onWorking(this)) {
                 return false;
             }
         }
-        return IWorkableMultiController.super.onWorking();
-    }
-
-    @Override
-    public void onWaiting() {
-        for (IMultiPart part : getParts()) {
-            part.onWaiting(this);
-        }
-        IWorkableMultiController.super.onWaiting();
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if (!isWorkingAllowed) {
-            for (IMultiPart part : getParts()) {
-                part.onPaused(this);
-            }
-        }
-        IWorkableMultiController.super.setWorkingEnabled(isWorkingAllowed);
+        return IRecipeLogicMachine.super.onWorking();
     }
 
     public GTRecipeType getRecipeType() {
-        return recipeTypes[activeRecipeType];
+        int index = activeRecipeType >= 0 && activeRecipeType < recipeTypes.length ? activeRecipeType : 0;
+        return recipeTypes[index];
     }
 
     /**
@@ -310,5 +307,18 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public void setVoidingMode(VoidingMode mode) {
         voidingMode = mode;
         getRecipeLogic().updateTickSubscription();
+    }
+
+    @Override
+    public List<IWidget> getWidgetsForDisplay(PanelSyncManager syncManager) {
+        List<IWidget> widgets = super.getWidgetsForDisplay(syncManager);
+        widgets.add(GTMultiblockTextUtil.addProgressLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addWorkingStatusLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addParallelLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addBatchModeLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addSubtickParallelsLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addTotalRunsLine(this, syncManager));
+        widgets.add(GTMultiblockTextUtil.addOutputLines(this, syncManager));
+        return widgets;
     }
 }
