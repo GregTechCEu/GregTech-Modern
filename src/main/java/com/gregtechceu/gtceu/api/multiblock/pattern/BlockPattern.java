@@ -155,7 +155,7 @@ public class BlockPattern implements IBlockPattern {
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
         // reset predicates for testing
-        predicates.values().forEach(MultiPredicate::resetGlobal);
+        predicates.values().forEach(MultiPredicate::reset);
 
         // handle slices
         sliceStrategy.setPattern(this);
@@ -224,7 +224,7 @@ public class BlockPattern implements IBlockPattern {
 
         // theoretically, predicates could track their own current layer/global count
         patternState.layerCache().clear();
-        predicates.values().forEach(MultiPredicate::resetSlice);
+        predicates.values().forEach(MultiPredicate::reset);
 
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {

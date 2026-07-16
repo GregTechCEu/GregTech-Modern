@@ -196,11 +196,11 @@ public class Predicates {
     }
 
     public static MultiPredicate any() {
-        return BasePredicate.ANY;
+        return MultiPredicate.ANY;
     }
 
     public static MultiPredicate air() {
-        return BasePredicate.AIR;
+        return MultiPredicate.AIR;
     }
 
     public static MultiPredicate abilities(PartAbility ability) {

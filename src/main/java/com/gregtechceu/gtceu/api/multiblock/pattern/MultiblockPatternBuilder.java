@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
@@ -63,7 +64,7 @@ public class MultiblockPatternBuilder {
         directions[2] = charDir;
         RelativeDirection.validateFacingsArray(directions);
         // todo is this wanted?
-        this.symbolMap.put(' ', BasePredicate.ANY);
+        this.symbolMap.put(' ', Predicates.any());
     }
 
     public MultiblockPatternBuilder sliceRepeatable(int minRepeats, int maxRepeats, String... slice) {

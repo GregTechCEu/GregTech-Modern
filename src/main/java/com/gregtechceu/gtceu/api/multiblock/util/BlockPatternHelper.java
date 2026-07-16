@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
@@ -35,7 +36,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
         if (pos.getX() < 0 || pos.getX() >= dimensions.getX() ||
                 pos.getY() < 0 || pos.getY() >= dimensions.getY() ||
                 pos.getZ() < 0 || pos.getZ() >= dimensions.getZ()) {
-            return BasePredicate.AIR;
+            return Predicates.air();
         }
         char c = adjustedBlockPattern[pos.getX()][pos.getY()][pos.getZ()];
         return blockPattern.getPredicates().get(c);

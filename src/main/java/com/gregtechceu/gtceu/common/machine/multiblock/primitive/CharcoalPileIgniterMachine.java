@@ -117,7 +117,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
         return (definition) -> {
 
             var floor = Predicates.blocks(Blocks.BRICKS);
-            var logs = BasePredicate.AIR.or(logPredicate());
+            var logs = Predicates.air().or(logPredicate());
             var walls = wallPredicate();
 
             return ExpandableMultiblockPatternBuilder
@@ -139,7 +139,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
                         if (bp.getY() == -b.get(2) || bp.getY() == b.get(3)) intersects++;
                         if (bp.getZ() == b.get(4) || bp.getZ() == -b.get(5)) intersects++;
 
-                        if (intersects >= 2) return BasePredicate.ANY;
+                        if (intersects >= 2) return Predicates.any();
 
                         if (intersects == 1) {
                             if (bottomAisle) return floor;
