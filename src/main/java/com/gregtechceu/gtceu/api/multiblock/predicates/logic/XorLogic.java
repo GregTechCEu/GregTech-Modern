@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 
 public class XorLogic extends BaseLogic {
@@ -26,7 +27,7 @@ public class XorLogic extends BaseLogic {
     private static boolean isNoneValid(MultiPredicate rootPredicate) {
         boolean noneValid = false;
         for (BasePredicate predicate : rootPredicate) {
-            if (predicate instanceof MultiPredicate.CompactedPredicate cp) {
+            if (predicate instanceof CompactedPredicate cp) {
                 noneValid |= isNoneValid(cp.expand());
             } else {
                 noneValid |= predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0;
