@@ -20,7 +20,7 @@ public class GTSodiumCompat {
     @Getter(lazy = true)
     private static final TerrainRenderPass bloomRenderPass = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
     @Getter(lazy = true)
-    private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ZERO, true);
+    private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ONE_TENTH, true);
 
     public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights, boolean emissive) {
         TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(quad);

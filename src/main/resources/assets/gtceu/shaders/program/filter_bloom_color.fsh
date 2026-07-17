@@ -28,7 +28,7 @@ void main() {
     // clear bloom color fragment if the main sampler's depth isn't the same as the bloom sampler's depth
     if (abs(mainDepth - diffuseDepth) > MAX_DEPTH_DIFFERENCE) {
         fragColor = vec4(0.0);
-        //discard;
+        discard;
     } else {
         fragColor = texture(DiffuseSampler, texCoord);
     }

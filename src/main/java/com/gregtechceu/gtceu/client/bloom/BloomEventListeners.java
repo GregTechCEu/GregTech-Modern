@@ -77,7 +77,7 @@ public class BloomEventListeners {
             block = GTRenderTypes.bloom();
             entity = GTRenderTypes.entityBloomBlockSheet();
         } else {
-            // if safe mode is enabled, register the named render type as a copy of forge's 'cutout'
+            // if safe mode is enabled, register the named render type as a copy of neoforge's 'cutout'
             block = RenderType.cutoutMipped();
             entity = NeoForgeRenderTypes.ITEM_LAYERED_CUTOUT.get();
         }
