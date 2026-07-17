@@ -13,7 +13,6 @@ import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.embeddedt.embeddium.api.render.chunk.BlockRenderContext;
-import org.embeddedt.embeddium.api.util.ColorARGB;
 import org.embeddedt.embeddium.api.util.NormI8;
 import org.embeddedt.embeddium.impl.model.light.data.QuadLightData;
 import org.embeddedt.embeddium.impl.model.quad.BakedQuadView;
@@ -69,7 +68,7 @@ public class BlockRendererMixin {
         if (normal == 0) normal = quad.getComputedFaceNormal();
 
         bloomBuffer.addVertex(out.x, out.y, out.z)
-                .setColor(ColorARGB.toABGR(out.color))
+                .setColor(out.color)
                 .setUv(out.u, out.v)
                 .setLight(out.light)
                 .setNormal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));

@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.client.bloom.BloomRenderer;
 import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 import com.gregtechceu.gtceu.integration.sodium.GTSodiumCompat;
 
-import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
@@ -64,7 +63,7 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
         int normal = quad.getAccurateNormal(srcIndex);
 
         bloomBuffer.addVertex(out.x, out.y, out.z)
-                .setColor(ColorARGB.toABGR(out.color))
+                .setColor(out.color)
                 .setUv(out.u, out.v)
                 .setLight(out.light)
                 .setNormal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
