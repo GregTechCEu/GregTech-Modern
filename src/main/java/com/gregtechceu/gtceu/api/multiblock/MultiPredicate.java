@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.multiblock.predicates;
+package com.gregtechceu.gtceu.api.multiblock;
 
-import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.AndLogic;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.BaseLogic;
 import com.gregtechceu.gtceu.api.multiblock.predicates.logic.OrLogic;
@@ -12,9 +13,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 public class MultiPredicate implements Iterable<BasePredicate> {
 
@@ -35,18 +33,13 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     @Getter
     private boolean controller;
 
-    MultiPredicate(@Nullable String debugName, Predicate<PredicateContext> predicate,
-                   Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        this(BasePredicate.of(debugName, predicate, candidateStream, contents));
-    }
-
-    MultiPredicate(BasePredicate predicate) {
+    public MultiPredicate(BasePredicate predicate) {
         this.predicateList = List.of(predicate);
         this.logic = Logic.OR.createLogic(this);
         this.hasAir = predicate == BasePredicate.AIR;
     }
 
-    MultiPredicate() {
+    private MultiPredicate() {
         this.predicateList = List.of();
         this.logic = Logic.OR.createLogic(this);
         this.hasAir = false;

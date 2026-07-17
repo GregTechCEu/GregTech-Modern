@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
-import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 
 import lombok.Setter;
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
@@ -21,9 +22,9 @@ import java.util.stream.Stream;
 
 public abstract class BasePredicate {
 
-    static final BasePredicate AIR = of("Air", ctx -> ctx.state().isAir(), Stream.empty(), null);
+    public static final BasePredicate AIR = of("Air", ctx -> ctx.state().isAir());
 
-    static final BasePredicate ANY = of("Any", ctx -> true, Stream.empty(), null);
+    public static final BasePredicate ANY = of("Any", ctx -> true);
 
     private @Nullable List<BlockInfo> candidates;
 
@@ -184,11 +185,15 @@ public abstract class BasePredicate {
     // this uses stream for lazy initialization
     public static MultiPredicate create(@Nullable String debugName, Predicate<PredicateContext> predicate,
                                         Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
-        return new MultiPredicate(debugName, predicate, candidateStream, contents);
+        return new MultiPredicate(of(debugName, predicate, candidateStream, contents));
     }
 
-    static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate,
+    public static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate,
                             Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
         return new SinglePredicate(predicate, candidateStream, debugName, contents);
+    }
+
+    private static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate) {
+        return of(debugName, predicate, Stream.empty(), null);
     }
 }
