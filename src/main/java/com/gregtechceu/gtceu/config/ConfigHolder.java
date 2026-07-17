@@ -897,13 +897,13 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({ "Bloom Algorithm",
-                    "Requires reloading all chunks ",
+                    "Requires reloading all chunks",
                     "UNITY - Unity-like Bloom (rescale)",
                     "UNREAL - Unreal-like Bloom (gaussian blur)",
                     "DISABLED - No bloom",
                     "Default: UNREAL" })
             // @Configurable.Validator(BloomEventListeners.BloomTypeUpdateCallback.class) // for Configuration 4.x
-            public BloomType type = BloomType.DISABLED;
+            public BloomType type = BloomType.UNREAL;
 
             @Configurable
             @Configurable.Comment({ "Whether or not to add bloom to emissive textures", "Default: true" })
