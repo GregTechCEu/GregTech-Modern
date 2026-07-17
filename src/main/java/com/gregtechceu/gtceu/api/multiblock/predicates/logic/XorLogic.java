@@ -53,12 +53,14 @@ public class XorLogic extends BaseLogic {
     public boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
-            return ctx.error(PatternStringError.literal("XOR error"));
+            return ctx.error(PatternStringError.literal("need one of: " + rootPredicate));
         }
         if (!global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getGlobalCount(predicate) > 0) {
-                return ctx.error(PatternStringError.literal("XOR error"));
+                ctx.error(PatternStringError.literal("need one of:\n" + rootPredicate.getPredicateList()));
+                ctx.error(PatternStringError.literal(predicate + " present in multi"));
+                return false;
             }
         }
         return true;
@@ -68,12 +70,14 @@ public class XorLogic extends BaseLogic {
     public boolean testSliceMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testSliceMin(ctx)) {
-            return ctx.error(PatternStringError.literal("XOR error"));
+            return ctx.error(PatternStringError.literal("need one of: " + rootPredicate));
         }
         if (global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getSliceCount(predicate) > 0) {
-                return ctx.error(PatternStringError.literal("XOR error"));
+                ctx.error(PatternStringError.literal("need one of:\n" + rootPredicate.getPredicateList()));
+                ctx.error(PatternStringError.literal(predicate + " present in multi"));
+                return false;
             }
         }
         return true;

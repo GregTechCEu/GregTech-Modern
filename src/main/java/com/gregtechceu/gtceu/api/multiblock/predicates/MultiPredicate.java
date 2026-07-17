@@ -27,6 +27,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     public static final MultiPredicate ANY = new MultiPredicate(BasePredicate.ANY);
 
+    @Getter
     private final List<BasePredicate> predicateList;
     @Getter
     private final BaseLogic logic;
