@@ -23,7 +23,7 @@
         },
         "min_y": 10,
         "spread": {
-            "targets": "gtceu:plutonium_239"
+            "targets": "gtceu:plutonium"
         },
         "top": {
             "layers": 2,

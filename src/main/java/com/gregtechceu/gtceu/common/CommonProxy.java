@@ -173,6 +173,7 @@ public class CommonProxy {
         GTCreativeModeTabs.init();
 
         GTBlocks.init();
+        GTFluids.init();
 
         GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init(modBus);
@@ -273,7 +274,7 @@ public class CommonProxy {
             GTMaterialItems.generateArmors();
 
         } else if (event.getRegistryKey() == Registries.FLUID) {
-            GTFluids.init();
+            GTFluids.registerMaterialFluids();
         } else if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             GTBlockEntities.init();
         }

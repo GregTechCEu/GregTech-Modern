@@ -43,12 +43,6 @@ public class BiomePlacement extends PlacementModifier {
         return positions;
     }
 
-    public static void init(IEventBus modBus) {
-        var register = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
-        register.register(modBus);
-        register.register("biome_placement", () -> BIOME_PLACEMENT);
-    }
-
     @Override
     public PlacementModifierType<?> type() {
         return BIOME_PLACEMENT;

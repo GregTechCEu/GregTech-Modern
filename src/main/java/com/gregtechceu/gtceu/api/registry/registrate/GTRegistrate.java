@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -221,6 +222,9 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(GTCEu.id(name), group, proxyRecipes);
         this.generic(name, GTRegistries.Keys.RECIPE_TYPE, () -> recipeType).build();
+        this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
+        recipeType.setSerializer(this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).register());
+
         return recipeType;
     }
 
@@ -240,7 +244,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public TagPrefix tagPrefix(String name, boolean invertedName) {
         var tagPrefix = new TagPrefix(makeResourceLocation(name), invertedName);
-        this.generic(name.toLowerCase(), GTRegistries.Keys.TAG_PREFIX, () -> tagPrefix).register();
+        this.generic(name, GTRegistries.Keys.TAG_PREFIX, () -> tagPrefix).register();
         return tagPrefix;
     }
 

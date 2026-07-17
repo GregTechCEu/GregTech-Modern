@@ -1,42 +1,32 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.Set;
 
 public class WorldGenLayers {
 
-    private static final DeferredRegister<IWorldGenLayer> WORLD_GEN_LAYERS = DeferredRegister
-            .create(GTRegistries.Keys.WORLD_GEN_LAYER, GTCEu.MOD_ID);
 
     public static void init(IEventBus modBus) {
-        WORLD_GEN_LAYERS.register(modBus);
-        WORLD_GEN_LAYERS.register("stone", () -> STONE);
-        WORLD_GEN_LAYERS.register("deepslate", () -> DEEPSLATE);
-        WORLD_GEN_LAYERS.register("netherrack", () -> NETHERRACK);
-        WORLD_GEN_LAYERS.register("endstone", () -> ENDSTONE);
     }
 
-    public static final SimpleWorldGenLayer STONE = new SimpleWorldGenLayer(
-            GTCEu.id("stone"), () -> new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+    public static final SimpleWorldGenLayer STONE = GTRegistration.REGISTRATE.simpleWorldGenLayer(
+            "stone", () -> new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
             Set.of(Level.OVERWORLD));
 
-    public static final SimpleWorldGenLayer DEEPSLATE = new SimpleWorldGenLayer(
-            GTCEu.id("deepslate"), () -> new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+    public static final SimpleWorldGenLayer DEEPSLATE = GTRegistration.REGISTRATE.simpleWorldGenLayer(
+            "deepslate", () -> new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
             Set.of(Level.OVERWORLD));
 
-    public static final SimpleWorldGenLayer NETHERRACK = new SimpleWorldGenLayer(
-            GTCEu.id("netherrack"), () -> new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
+    public static final SimpleWorldGenLayer NETHERRACK = GTRegistration.REGISTRATE.simpleWorldGenLayer(
+            "netherrack", () -> new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
             Set.of(Level.NETHER));
 
-    public static final SimpleWorldGenLayer ENDSTONE = new SimpleWorldGenLayer(
-            GTCEu.id("endstone"), () -> WorldGeneratorUtils.END_ORE_REPLACEABLES,
+    public static final SimpleWorldGenLayer ENDSTONE = GTRegistration.REGISTRATE.simpleWorldGenLayer(
+            "endstone", () -> WorldGeneratorUtils.END_ORE_REPLACEABLES,
             Set.of(Level.END));
 }

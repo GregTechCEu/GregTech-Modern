@@ -52,5 +52,7 @@ public class GTToolBehaviors {
     public static final DeferredHolder<ToolBehaviorType<?>, ToolBehaviorType<ProspectingBehavior>> PROSPECTING = TOOL_BEHAVIOR_TYPE.register(
             "prospecting", () -> new ToolBehaviorType<>(ProspectingBehavior.CODEC, ProspectingBehavior.STREAM_CODEC));
     // spotless:on
-    public static void init(IEventBus modBus) {}
+    public static void init(IEventBus modBus) {
+        TOOL_BEHAVIOR_TYPE.register(modBus);
+    }
 }

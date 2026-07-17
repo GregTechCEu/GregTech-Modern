@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -40,7 +41,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     @Getter
     @Setter(onMethod_ = { @ApiStatus.Internal })
-    public GTRecipeSerializer serializer;
+    public Holder<RecipeSerializer<?>> serializer;
 
     @Getter
     public final ResourceLocation registryName;
@@ -101,7 +102,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         var registrate = GTRegistrate.createIgnoringListenerErrors(registryName.getNamespace());
         registrate.generic(registryName.getPath(), Registries.RECIPE_TYPE, () -> this).build();
-        registrate.generic(registryName.getPath(), Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).build();
+        serializer = registrate.generic(registryName.getPath(), Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).register();
 
         this.registryName = registryName;
         this.group = group;
