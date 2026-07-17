@@ -186,7 +186,6 @@ public class BlockPattern implements IBlockPattern {
         patternState.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testGlobalMin(patternState)) {
-                patternState.commitErrors();
                 return false;
             }
         }
@@ -224,7 +223,6 @@ public class BlockPattern implements IBlockPattern {
 
         // theoretically, predicates could track their own current layer/global count
         patternState.layerCache().clear();
-        predicates.values().forEach(MultiPredicate::reset);
 
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {

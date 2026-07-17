@@ -21,7 +21,7 @@ import java.util.*;
 
 public class PredicateContext {
 
-    protected final List<PatternError> errors = new ArrayList<>();
+    protected List<PatternError> errors = new ArrayList<>();
     protected final List<PatternError> commitedErrors = new ArrayList<>();
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();

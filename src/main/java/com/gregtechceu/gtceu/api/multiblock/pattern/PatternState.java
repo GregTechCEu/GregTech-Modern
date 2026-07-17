@@ -65,7 +65,7 @@ public class PatternState extends PredicateContext {
     }
 
     public void clearErrors() {
-        this.errors.clear();
+        this.errors = new ArrayList<>();
         this.lastFailureReason = FailureReason.NONE;
     }
 
@@ -74,16 +74,12 @@ public class PatternState extends PredicateContext {
     public void commitSliceErrors() {
         this.sliceErrors.remove(this.sliceErrors.size() - 1);
         this.sliceErrors.forEach(this.commitedErrors::addAll);
+        this.sliceErrors.clear();
         clearErrors();
     }
 
     public void pushSliceErrors() {
-        this.sliceErrors.add(List.copyOf(this.errors));
-        clearErrors();
-    }
-
-    public void commitErrors() {
-        this.commitedErrors.addAll(this.errors);
+        this.sliceErrors.add(this.errors);
         clearErrors();
     }
 

@@ -6,10 +6,13 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class BaseLogic {
 
     protected final MultiPredicate rootPredicate;
-    protected boolean noneValid; // used for XOR, AND
+    private Set<MultiPredicate.CompactedPredicate> compactedPredicates = new HashSet<>();
     @Setter
     protected boolean global = true; // used for XOR, AND
 
@@ -17,19 +20,19 @@ public abstract class BaseLogic {
         this.rootPredicate = rootPredicate;
     }
 
-    public void onPredicateAdd(BasePredicate predicate) {
-        boolean noneValid = true;
-        if (predicate instanceof MultiPredicate.CompactedPredicate cp) {
-            if (!cp.expand().getLogic().noneValid) {
-                noneValid = false;
+    public void onPredicateAdded() {
+        for (BasePredicate predicate : this.rootPredicate) {
+            if (predicate instanceof MultiPredicate.CompactedPredicate cp) {
+                this.compactedPredicates.add(cp);
             }
-        } else if (predicate.getMinCount() > 0 || predicate.getMinSliceCount() > 0) {
-            noneValid = false;
         }
-        this.noneValid |= noneValid;
     }
 
-    public void reset() {}
+    public void reset() {
+        for (MultiPredicate.CompactedPredicate predicate : this.compactedPredicates) {
+            predicate.expand().getLogic().reset();
+        }
+    }
 
     public abstract boolean test(PredicateContext ctx);
 

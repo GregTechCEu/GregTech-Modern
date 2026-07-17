@@ -8,6 +8,9 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 public class XorLogic extends BaseLogic {
 
     private BasePredicate passedPredicate;
+    /// {@code true} if any base predicate have a min count of 0 or -1,
+    /// meaning that it is possible that no predicates may be present in the multi.
+    protected boolean noneValid;
 
     public XorLogic(MultiPredicate rootPredicate) {
         super(rootPredicate);
@@ -15,7 +18,25 @@ public class XorLogic extends BaseLogic {
 
     @Override
     public void reset() {
+        super.reset();
         this.passedPredicate = null;
+    }
+
+    public void onPredicateAdded() {
+        super.onPredicateAdded();
+        this.noneValid = isNoneValid(this.rootPredicate);
+    }
+
+    private static boolean isNoneValid(MultiPredicate rootPredicate) {
+        boolean noneValid = false;
+        for (BasePredicate predicate : rootPredicate) {
+            if (predicate instanceof MultiPredicate.CompactedPredicate cp) {
+                noneValid |= isNoneValid(cp.expand());
+            } else {
+                noneValid |= predicate.getMinCount() <= 0 && predicate.getMinSliceCount() <= 0;
+            }
+        }
+        return noneValid;
     }
 
     @Override
@@ -29,11 +50,6 @@ public class XorLogic extends BaseLogic {
             if (result) passed++;
         }
         return passed > 0 || ctx.error(PatternStringError.literal("XOR error"));
-    }
-
-    private static boolean passedMaxCount(PredicateContext ctx, BasePredicate predicate, boolean global) {
-        int count = global ? ctx.getGlobalCount(predicate) : ctx.getSliceCount(predicate);
-        return global ? predicate.testGlobalMax(count) : predicate.testSliceMax(count);
     }
 
     @Override
