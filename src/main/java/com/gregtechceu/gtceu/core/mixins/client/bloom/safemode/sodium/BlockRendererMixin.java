@@ -30,11 +30,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = BlockRenderer.class, remap = false)
 public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
 
-    @Inject(method = "processQuad",
-            at = @At(value = "INVOKE",
-                     target = "Lnet/caffeinemc/mods/sodium/client/render/chunk/compile/pipeline/BlockRenderer;shadeQuad(Lnet/caffeinemc/mods/sodium/client/render/frapi/mesh/MutableQuadViewImpl;Lnet/caffeinemc/mods/sodium/client/model/light/LightMode;ZLnet/fabricmc/fabric/api/renderer/v1/material/ShadeMode;)V",
-                     shift = At.Shift.AFTER))
-    private void gtceu$copyBloomQuads$initLocals(MutableQuadViewImpl quad,
+    @Inject(method = "bufferQuad", at = @At(value = "HEAD"))
+    private void gtceu$copyBloomQuads$initLocals(MutableQuadViewImpl quad, float[] brightnesses, Material material,
                                                  CallbackInfo ci,
                                                  @Share("bloomBuffer") LocalRef<VertexConsumer> bloomBufferRef) {
         // Check if quad is full brightness OR we have bloom enabled for the quad
