@@ -170,7 +170,7 @@ public class BloomRenderer {
     /// Helper function for copying bloom-enabled quads drawn with non-bloom render types
     public static void copyBloomQuad(BakedQuad quad, int[] packedLights, @Nullable RenderType renderType,
                                      Consumer<VertexConsumer> drawConsumer) {
-        if (renderType == GTRenderTypes.bloom() || renderType == GTRenderTypes.entityBloomBlockSheet()) {
+        if (renderType == GTRenderTypes.bloom()) {
             return;
         }
 
