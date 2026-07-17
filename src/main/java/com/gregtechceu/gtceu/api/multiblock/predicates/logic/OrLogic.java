@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
-import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.MultiPredicate;
 

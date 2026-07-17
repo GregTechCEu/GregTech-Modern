@@ -58,8 +58,7 @@ public class CompactedPredicate extends BasePredicate {
     }
 
     @Override
-    protected void appendStats(StringBuilder builder) {
-    }
+    protected void appendStats(StringBuilder builder) {}
 
     public void reset() {
         this.root.reset();
