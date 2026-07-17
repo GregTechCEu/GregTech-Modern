@@ -101,9 +101,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         var registrate = GTRegistrate.createIgnoringListenerErrors(registryName.getNamespace());
-        registrate.generic(registryName.getPath(), Registries.RECIPE_TYPE, () -> this).build();
-        serializer = registrate.generic(registryName.getPath(), Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).register();
-
         this.registryName = registryName;
         this.group = group;
         this.category = registrate.recipeCategory(registryName.getPath(), this);
