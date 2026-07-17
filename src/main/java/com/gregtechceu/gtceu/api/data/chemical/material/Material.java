@@ -147,7 +147,7 @@ public class Material {
     }
 
     protected void registerMaterial(GTRegistrate registrate) {
-        registrate.generic(GTRegistries.Keys.MATERIAL, () -> this).register();
+        registrate.generic(this.getName(), GTRegistries.Keys.MATERIAL, () -> this).register();
     }
 
     public String getName() {

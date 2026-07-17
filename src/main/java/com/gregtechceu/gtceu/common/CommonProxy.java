@@ -173,7 +173,6 @@ public class CommonProxy {
         GTCreativeModeTabs.init();
 
         GTBlocks.init();
-        GTFluids.init();
 
         GTDimensionMarkers.init(modBus);
         GTRecipeCapabilities.init(modBus);
