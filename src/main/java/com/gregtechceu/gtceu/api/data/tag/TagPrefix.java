@@ -724,7 +724,7 @@ public class TagPrefix {
             .unformattedTagPath("stairs", true);
     public static final TagPrefix fence = REGISTRATE.tagPrefix("fence")
             .unformattedTagPath("fences");
-    public static final TagPrefix fenceGate = REGISTRATE.tagPrefix("fenceGate")
+    public static final TagPrefix fenceGate = REGISTRATE.tagPrefix("fence_gate")
             .unformattedTagPath("fence_gates");
     public static final TagPrefix door = REGISTRATE.tagPrefix("door")
             .unformattedTagPath("doors", true);
@@ -926,7 +926,7 @@ public class TagPrefix {
             .materialAmount(GTValues.M)
             .unificationEnabled(true)
             .enableRecycling();
-    public static final TagPrefix cableGtSingle = REGISTRATE.tagPrefix("cable_gt_Single")
+    public static final TagPrefix cableGtSingle = REGISTRATE.tagPrefix("cable_gt_single")
             .itemTable(() -> GTMaterialBlocks.CABLE_BLOCKS)
             .langValue("1x %s Cable")
             .miningToolTag(CustomTags.MINEABLE_WITH_CONFIG_VALID_PICKAXE_WIRE_CUTTER)

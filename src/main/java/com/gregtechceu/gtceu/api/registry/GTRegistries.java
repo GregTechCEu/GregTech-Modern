@@ -107,10 +107,8 @@ public final class GTRegistries {
 
     // Worldgen related registries
 
-    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(
-            GTCEu.id("bedrock_fluid"));
-    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(
-            GTCEu.id("bedrock_ore"));
+    public static final GTRegistry<BedrockFluidDefinition> BEDROCK_FLUID_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_fluid"));
+    public static final GTRegistry<BedrockOreDefinition> BEDROCK_ORE_DEFINITIONS = new GTRegistry<>(GTCEu.id("bedrock_ore"));
     public static final GTRegistry<GTOreDefinition> ORE_VEINS = new GTRegistry<>(GTCEu.id("ore_vein"));
     public static final MappedRegistry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
@@ -123,8 +121,7 @@ public final class GTRegistries {
     public static final MappedRegistry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);
 
     public static final MappedRegistry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
-    public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(
-            Keys.PATTERN_ERROR_TYPE);
+    public static final MappedRegistry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
 
     private static <T> ResourceKey<Registry<T>> makeRegistryKey(ResourceLocation registryId) {
         return ResourceKey.createRegistryKey(registryId);

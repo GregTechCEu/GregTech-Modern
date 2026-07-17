@@ -313,7 +313,7 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     // Sounds
 
     public SoundEntryBuilder sound(String name) {
-        return new SoundEntryBuilder(new ResourceLocation(getModid(), name));
+        return new SoundEntryBuilder(makeResourceLocation(name));
     }
 
     // World gen layers

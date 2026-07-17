@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifiers;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.mui.factory.CoverUIFactory;
@@ -37,6 +38,7 @@ import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FusionReactorMachine;
 import com.gregtechceu.gtceu.common.machine.owner.MachineOwner;
+import com.gregtechceu.gtceu.common.mui.GTGuiTheme;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
@@ -99,12 +101,6 @@ public class CommonProxy {
         eventBus.register(this);
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
-
-        // MUI stuff
-        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
-        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
-
-        // GTGuiTheme.registerThemes();
 
         if (GTCEu.isDev()) {
             ConfigHolder.INSTANCE.recipes.generateLowQualityGems = true;
@@ -169,10 +165,8 @@ public class CommonProxy {
         GTDimensionMarkers.init(modBus);
         ChanceLogic.init(modBus);
         WaypointManager.init();
-        AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         GregTechDatagen.initPost();
-        // Register all material manager registries, for materials with mod ids.
 
         WorldGenLayers.init();
         VeinGenerators.registerAddonGenerators();
@@ -182,6 +176,11 @@ public class CommonProxy {
         KeyBind.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
+
+        // MUI stuff
+        GuiManager.registerFactory(MachineUIFactory.INSTANCE);
+        GuiManager.registerFactory(CoverUIFactory.INSTANCE);
+        GTGuiTheme.registerThemes();
 
         FusionReactorMachine.registerFusionTier(GTValues.LuV, " (MKI)");
         FusionReactorMachine.registerFusionTier(GTValues.ZPM, " (MKII)");

@@ -164,9 +164,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.DIMENSION_MARKER.addType("basic", DimensionMarkerBuilder.class, DimensionMarkerBuilder::new,
                 true);
 
-        RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
-        RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);
-
         GTRegistryInfo.MACHINE.addType("simple", KJSWrappingMachineBuilder.class,
                 (id) -> new KJSWrappingMachineBuilder(id,
                         new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)),
@@ -184,12 +181,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 KJSWrappingMultiblockBuilder::new);
         GTRegistryInfo.MACHINE.addType("primitive", MultiblockMachineBuilderWrapper.class,
                 (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
-
-        /*
-         * GTRegistryInfo.MATERIAL_ICON_TYPE.addType("basic", MaterialIconTypeBuilder.class,
-         * MaterialIconTypeBuilder::new,
-         * true);
-         */
 
         RegistryInfo.BLOCK.addType("gtceu:active", ActiveBlockBuilder.class, ActiveBlockBuilder::new);
         RegistryInfo.BLOCK.addType("gtceu:coil", CoilBlockBuilder.class, CoilBlockBuilder::new);

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
+@SuppressWarnings("unused")
 public class GTElements {
 
     public static final Element H = REGISTRATE.element("Hydrogen", 1, 0, -1, null, "H", false);

@@ -52,14 +52,6 @@ public class GTRecipeCategory {
         this.languageKey = "%s.recipe.category.%s".formatted(GTCEu.MOD_ID, categoryName);
     }
 
-    public static GTRecipeCategory registerDefault(@NotNull GTRecipeType recipeType) {
-        GTRecipeCategory category = new GTRecipeCategory(recipeType);
-        GTRegistries.RECIPE_CATEGORIES.register(
-                ResourceKey.create(GTRegistries.Keys.RECIPE_CATEGORY, category.registryKey), category,
-                Lifecycle.stable());
-        return category;
-    }
-
     public CategoryIcon getIcon() {
         if (icon == null) {
             if (recipeType.getIconSupplier() != null) {
