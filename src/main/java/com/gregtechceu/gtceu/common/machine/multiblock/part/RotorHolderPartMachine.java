@@ -7,10 +7,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
@@ -160,7 +160,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     }
 
     private void updateRotorSpeed() {
-        if (isFormed() && getControllers().first() instanceof IWorkableMultiController workable) {
+        if (isFormed() && getControllers().first() instanceof WorkableMultiblockMachine workable) {
             if (workable.getRecipeLogic().isWorking()) return;
         }
         if (!hasRotor()) {
@@ -180,15 +180,19 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
     }
 
     @Override
-    public boolean onWorking(IWorkableMultiController controller) {
+    public boolean onWorking(WorkableMultiblockMachine controller) {
         if (getRotorSpeed() < getMaxRotorHolderSpeed()) {
             setRotorSpeed(getRotorSpeed() + SPEED_INCREMENT);
             updateRotorSubscription();
         }
-        if (self().getOffsetTimer() % 20 == 0) {
+        if (getOffsetTimer() % 20 == 0) {
             var numMaintenanceProblems = 0;
-            if (isFormed() && getControllers().first() instanceof IMaintenanceMachine maintenance) {
-                numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
+
+            for (var part : getControllers().first().getParts()) {
+                if (part instanceof MaintenanceHatchPartMachine maintenance) {
+                    numMaintenanceProblems = maintenance.getNumMaintenanceProblems();
+                    break;
+                }
             }
             damageRotor(1 + numMaintenanceProblems);
         }
@@ -361,10 +365,10 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMuiMac
      * @return true if the front face is unobstructed
      */
     public boolean isFrontFaceFree() {
-        final var facing = self().getFrontFacing();
+        final var facing = getFrontFacing();
         final var up = facing.getAxis() == Direction.Axis.Y ? Direction.NORTH : Direction.UP;
-        final var pos = self().getBlockPos();
-        final var level = self().getLevel();
+        final var pos = getBlockPos();
+        final var level = getLevel();
         for (int dLeft = -1; dLeft < 2; dLeft++) {
             for (int dUp = -1; dUp < 2; dUp++) {
                 final var checkPos = RelativeDirection.offsetPos(pos, facing, up, false, dUp, dLeft, 1);

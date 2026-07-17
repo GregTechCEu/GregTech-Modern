@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -40,11 +41,16 @@ import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
                                      extends ManagedSyncBlockEntity
                                      implements IPipeNode<PipeType, NodeDataType>, IToolGridHighlight,
@@ -94,6 +100,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Override
     public long getOffsetTimer() {
         return level == null ? offset : (level.getGameTime() + offset);
+    }
+
+    @Override
+    public @UnknownNullability Level getLevel() {
+        return super.getLevel();
     }
 
     @Override
@@ -374,7 +385,6 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }
-        // spotless:on
 
         return Pair.of(null, InteractionResult.PASS);
     }

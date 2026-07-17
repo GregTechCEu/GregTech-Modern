@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.client.bloom.BloomShaderManager;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -31,10 +32,11 @@ public class GTRenderTypes extends RenderType {
                     Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
                 }
             });
-    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
+    public static final RenderStateShard.ShaderStateShard RENDERTYPE_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
             BloomShaderManager::getRendertypeBloomShader);
-    protected static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
+    public static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
             BloomShaderManager::getRendertypeEntityBloomShader);
+    public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader);
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
@@ -75,6 +77,17 @@ public class GTRenderTypes extends RenderType {
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .createCompositeState(false));
 
+    private static final Function<ResourceLocation, RenderType> GUI_TEXTURE_TRIANGLE_STRIP = Util.memoize((texture) -> {
+        return create("gui_texture_triangle_strip", DefaultVertexFormat.POSITION_TEX_COLOR,
+                VertexFormat.Mode.TRIANGLE_STRIP, 256, false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(POSITION_TEX_COLOR_SHADER)
+                        .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                        .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                        .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                        .createCompositeState(false));
+    });
+
     private GTRenderTypes(String name, VertexFormat format, VertexFormat.Mode mode, int bufferSize,
                           boolean affectsCrumbling, boolean sortOnUpload, Runnable setupState, Runnable clearState) {
         super(name, format, mode, bufferSize, affectsCrumbling, sortOnUpload, setupState, clearState);
@@ -99,5 +112,9 @@ public class GTRenderTypes extends RenderType {
 
     public static RenderType getMonitor() {
         return MONITOR;
+    }
+
+    public static RenderType guiTriangleStrip(ResourceLocation texture) {
+        return GUI_TEXTURE_TRIANGLE_STRIP.apply(texture);
     }
 }

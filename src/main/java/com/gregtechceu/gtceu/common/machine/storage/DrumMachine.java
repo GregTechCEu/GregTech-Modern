@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.item.GTDataComponents;
@@ -123,7 +123,7 @@ public class DrumMachine extends MetaMachine {
 
     @Override
     protected InteractionResult onScrewdriverClick(ExtendedUseOnContext context) {
-        autoOutput.setAllowAutoOutputItems(!autoOutput.isAutoOutputItems());
+        autoOutput.setAllowAutoOutputFluids(!autoOutput.isAutoOutputFluids());
         return InteractionResult.SUCCESS;
     }
 }

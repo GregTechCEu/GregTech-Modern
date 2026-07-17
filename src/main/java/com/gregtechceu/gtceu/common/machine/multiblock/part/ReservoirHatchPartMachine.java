@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 
 import net.minecraft.core.HolderLookup;
@@ -20,18 +20,9 @@ public class ReservoirHatchPartMachine extends FluidHatchPartMachine {
     public static final int FLUID_AMOUNT = 2_000_000_000;
 
     public ReservoirHatchPartMachine(BlockEntityCreationInfo info) {
-        super(info, GTValues.EV, IO.IN, FLUID_AMOUNT, 1);
-    }
-
-    //////////////////////////////////
-    // ****** Initialization ****** //
-    //////////////////////////////////
-
-    @Override
-    protected NotifiableFluidTank createTank(int initialCapacity, int slots) {
-        this.waterTank = new InfiniteWaterTank(initialCapacity);
-        // allow both importing and exporting from the tank
-        return new NotifiableFluidTank(Collections.singletonList(waterTank), io, IO.BOTH);
+        super(info, GTValues.EV, IO.IN, new NotifiableFluidTank(
+                Collections.singletonList(new InfiniteWaterTank(FLUID_AMOUNT)), IO.IN, IO.BOTH));
+        waterTank = (InfiniteWaterTank) tank.getStorages()[0];
     }
 
     //////////////////////////////////

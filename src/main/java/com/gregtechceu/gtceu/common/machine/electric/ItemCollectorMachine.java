@@ -1,25 +1,24 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
-import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanel;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
+import com.gregtechceu.gtceu.common.machine.trait.BatterySlotTrait;
 import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 import com.gregtechceu.gtceu.common.mui.GTMuiMachineUtil;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -34,7 +33,6 @@ import net.minecraft.world.phys.Vec3;
 import brachy.modularui.api.drawable.Text;
 import brachy.modularui.factory.PosGuiData;
 import brachy.modularui.screen.UISettings;
-import brachy.modularui.utils.Alignment;
 import brachy.modularui.value.sync.PanelSyncManager;
 import brachy.modularui.value.sync.SyncHandlers;
 import brachy.modularui.widget.ParentWidget;
@@ -46,6 +44,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -62,14 +61,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @SaveField
     protected final NotifiableItemStackHandler output;
 
-    @Getter
-    @SaveField
-    protected final CustomItemStackHandler chargerInventory;
     @SaveField
     protected final CustomItemStackHandler filterInventory;
 
     @Nullable
-    protected TickableSubscription batterySubs, collectionSubs;
+    protected TickableSubscription collectionSubs;
     @Nullable
     protected ISubscription energySubs;
     private final long energyPerTick;
@@ -103,28 +99,17 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     public final AutoOutputTrait autoOutput;
 
     public ItemCollectorMachine(BlockEntityCreationInfo info, int tier) {
-        super(info, tier);
+        super(info, tier, false);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
-        this.output = attachTrait(createOutputItemHandler());
-        this.chargerInventory = createChargerItemHandler();
+        this.output = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT));
         this.filterInventory = createFilterItemHandler();
         environmentalExplosionTrait.setEnableEnvironmentalExplosions(false);
         this.autoOutput = attachTrait(AutoOutputTrait.ofItems(output));
         maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
-    }
 
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected CustomItemStackHandler createChargerItemHandler() {
-        var handler = new CustomItemStackHandler();
-        handler.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null ||
-                (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
-                        GTCapabilityHelper.getForgeEnergyItem(item) != null));
-        return handler;
+        attachPersistentTrait("batterySlot", new BatterySlotTrait(energyContainer));
     }
 
     protected CustomItemStackHandler createFilterItemHandler() {
@@ -134,10 +119,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         return handler;
     }
 
-    protected NotifiableItemStackHandler createOutputItemHandler() {
-        return new NotifiableItemStackHandler(inventorySize, IO.BOTH, IO.OUT);
-    }
-
     @Override
     public void onLoad() {
         super.onLoad();
@@ -145,11 +126,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
         scheduleForNextServerTick(this::updateCollectionSubscription);
 
-        energySubs = energyContainer.addChangedListener(() -> {
-            this.updateBatterySubscription();
-            this.updateCollectionSubscription();
-        });
-        chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
+        energySubs = energyContainer.addChangedListener(this::updateCollectionSubscription);
     }
 
     @Override
@@ -159,12 +136,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             energySubs.unsubscribe();
             energySubs = null;
         }
-    }
-
-    @Override
-    public void onMachineDestroyed() {
-        super.onMachineDestroyed();
-        chargerInventory.dropInventoryInWorld(getLevel(), getBlockPos());
     }
 
     //////////////////////////////////////
@@ -205,9 +176,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         ItemFilter filter = null;
         if (!filterInventory.getStackInSlot(0).isEmpty())
             filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
-        BlockPos centerPos = self().getBlockPos().above();
+        BlockPos centerPos = getBlockPos().above();
 
-        List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, aabb);
+        List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, Objects.requireNonNull(aabb));
         for (ItemEntity itemEntity : itemEntities) {
             if (!itemEntity.isAlive()) continue;
             if (filter != null && !filter.test(itemEntity.getItem())) continue;
@@ -262,21 +233,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         return false;
     }
 
-    protected void updateBatterySubscription() {
-        if (energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, true))
-            batterySubs = subscribeServerTick(batterySubs, this::chargeBattery);
-        else if (batterySubs != null) {
-            batterySubs.unsubscribe();
-            batterySubs = null;
-        }
-    }
-
-    protected void chargeBattery() {
-        if (!energyContainer.dischargeOrRechargeEnergyContainers(chargerInventory, 0, false)) {
-            updateBatterySubscription();
-        }
-    }
-
     @Override
     public int getProgress() {
         return 0;
@@ -307,27 +263,35 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        mainWidget.child(Flow.column()
-                .size(MachineUIPanel.DEFAULT_CONTENT_WIDTH, 150)
-                .crossAxisAlignment(Alignment.CrossAxis.START)
-                .child(Flow.row()
+        var outputItemGrid = GTMuiWidgets.createGrid(output.getSize(), (int) Math.sqrt(output.getSize()), true, 'i');
+
+        mainWidget
+                .name("content")
+                .coverChildren()
+                .child(Flow.col()
                         .coverChildren()
+                        .margin(0, 3)
                         .childPadding(2)
-                        .margin(5)
-                        .horizontalCenter()
-                        .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
-                        .child(new TextFieldWidget()
-                                .setNumbers(1, maxRange)
-                                .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
-                .child(Flow.row()
-                        .coverChildrenHeight()
-                        .widthRel(1)
-                        .child(new ItemSlot()
-                                .slot(filterInventory, 0)
-                                .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY)
-                                .margin(7))
-                        .child(GTMuiMachineUtil
-                                .createSquareSlotGroupFromInventory(output, "main_inv", syncManager)
-                                .horizontalCenter())));
+                        .child(Flow.row()
+                                .coverChildren()
+                                .childPadding(2)
+                                .horizontalCenter()
+                                .child(new TextWidget<>(Text.lang("gtceu.gui.item_collector.range")))
+                                .child(new TextFieldWidget()
+                                        .setNumbers(1, maxRange)
+                                        .value(SyncHandlers.intNumber(this::getRange, this::setRange))))
+                        .child(Flow.row()
+                                .name("mainRow")
+                                .horizontalCenter()
+                                .coverChildren()
+                                .margin(2, 3)
+                                .childPadding(3)
+                                .child(new ItemSlot()
+                                        .slot(filterInventory, 0)
+                                        .background(GTGuiTextures.SLOT, GTGuiTextures.FILTER_SLOT_OVERLAY))
+                                .child(GTMuiMachineUtil.createSlotGroupFromInventory(output,
+                                        "output_item_inv", output.getSize(), 'i',
+                                        syncManager, outputItemGrid))
+                                .padding(4, 0)));
     }
 }

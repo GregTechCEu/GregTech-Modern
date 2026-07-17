@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
-import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
+import com.gregtechceu.gtceu.common.machine.trait.FluidTankProxyTrait;
+import com.gregtechceu.gtceu.common.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 

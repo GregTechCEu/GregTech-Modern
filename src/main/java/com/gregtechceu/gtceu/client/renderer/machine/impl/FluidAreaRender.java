@@ -114,8 +114,8 @@ public class FluidAreaRender extends DynamicRender<WorkableMultiblockMachine, Fl
         for (RelativeDirection face : this.drawFaces) {
             poseStack.pushPose();
 
-            var dir = face.getRelativeFacing(machine.self().getFrontFacing(), machine.self().getUpwardsFacing(),
-                    machine.self().isFlipped());
+            var dir = face.getRelativeFacing(machine.getFrontFacing(), machine.getUpwardsFacing(),
+                    machine.isFlipped());
             if (dir.getAxis() != Direction.Axis.Y) dir = dir.getOpposite();
 
             fluidBlockRenderer.drawPlane(dir, trait.getFluidOffsets(), poseStack, consumer, cachedFluid,

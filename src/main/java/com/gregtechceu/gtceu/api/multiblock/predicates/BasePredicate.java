@@ -61,10 +61,10 @@ public class BasePredicate {
      *                       Terminal Auto-Builder},
      *                       {@link PatternPreviewRenderer#draw(PoseStack, MultiBufferSource.BufferSource, Camera, RenderLevelStageEvent.Stage, float)
      *                       In-world Preview} or
-     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition, MultiblockSchemaInfo)
+     *                       {@link MultiblockPreviewWidget#MultiblockPreviewWidget(MultiblockMachineDefinition, MultiblockSchemaInfo, int, int)
      *                       XEI Preview}
      */
-    public BasePredicate(Function<CurrentBlockInfo, PatternError> errorPredicate,
+    public BasePredicate(Function<CurrentBlockInfo, @Nullable PatternError> errorPredicate,
                          @Nullable List<BlockInfo> candidates) {
         this("Unknown", errorPredicate, candidates);
     }

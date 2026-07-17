@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
 
-    @Override
     default void addedToController(MultiblockControllerMachine controller, String name) {
         // ensure that no other stocking bus on this multiblock is configured to hold the same item.
         // that we have in our own bus.
@@ -37,7 +36,6 @@ public interface IMEStockingPart extends IAutoPullPart, IMuiMachine {
         controller.scheduleForNextServerTick(this::validateConfig);
     }
 
-    @Override
     default void removedFromController(MultiblockControllerMachine controller) {
         setAutoPullTest($ -> false);
         if (isAutoPull()) {

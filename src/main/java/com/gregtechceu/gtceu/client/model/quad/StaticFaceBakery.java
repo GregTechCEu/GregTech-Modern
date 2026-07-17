@@ -25,10 +25,9 @@ public class StaticFaceBakery {
 
     public static final AABB BLOCK = new AABB(0, 0, 0, 1, 1, 1);
 
-    public static final AABB SLIGHTLY_OVER_BLOCK = BLOCK.inflate(0.001);
-    public static final AABB OUTPUT_OVERLAY = BLOCK.inflate(0.006);
-    public static final AABB AUTO_OUTPUT_OVERLAY = BLOCK.inflate(0.008);
-    public static final AABB COVER_OVERLAY = BLOCK.inflate(0.002);
+    public static final AABB COVER_OVERLAY = BLOCK.inflate(0.014);
+    public static final AABB OUTPUT_OVERLAY = BLOCK.inflate(0.018);
+    public static final AABB AUTO_OUTPUT_OVERLAY = BLOCK.inflate(0.022);
 
     private static final int VERTEX_INT_SIZE = 8;
     private static final float RESCALE_22_5 = 1.0F / (float) Math.cos((float) (Math.PI / 8)) - 1.0F;

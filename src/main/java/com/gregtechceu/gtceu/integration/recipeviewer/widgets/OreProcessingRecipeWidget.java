@@ -128,7 +128,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
             Content chance = recipeWrapper.getChance(i / 2 + itemInputs.size());
             IDrawable overlay = null;
             if (chance != null) {
-                overlay = new ContentOverlay(chance, false, 0, 0, null);
+                overlay = new ContentOverlay(chance, false);
             }
             if (itemOutputs.get(slotIndex).isEmpty()) {
                 continue;

@@ -32,7 +32,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
@@ -62,10 +61,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Getter
     @Setter
-    private @NotNull GTRecipeType @NotNull [] recipeTypes;
+    private GTRecipeType[] recipeTypes;
     @Getter
     @Setter
-    private int tier;
+    private int tier = -1;
     @Getter
     @Setter
     private int defaultPaintingColor;
@@ -75,19 +74,15 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter
     private boolean alwaysTryModifyRecipe;
-    @NotNull
     @Getter
     @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
-    @NotNull
+    private BiPredicate<IRecipeLogicMachine, @Nullable GTRecipe> beforeWorking = (machine, recipe) -> true;
     @Getter
     @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
-    @NotNull
     @Getter
     @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
@@ -140,6 +135,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public MachineDefinition(ResourceLocation id) {
         this.id = id;
+    }
+
+    public boolean isTiered() {
+        return tier != -1;
     }
 
     public final void registerDefaultState(MachineRenderState state) {
@@ -220,5 +219,28 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
 
     public static void clearBuilt() {
         STATE.remove();
+    }
+
+    /**
+     * Gets the input size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getInputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeInputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeInputSize = Math.max(recipeType.getMaxInputs(cap), recipeTypeInputSize);
+        }
+        return recipeTypeInputSize;
+    }
+
+    /**
+     * Gets the output size for a machine for the capability with the machine having the specified recipe types
+     */
+    public int getOutputSize(RecipeCapability<?> cap, GTRecipeType... recipeTypes) {
+        int recipeTypeOutputSize = 0;
+        for (var recipeType : recipeTypes) {
+            recipeTypeOutputSize = Math.max(recipeType.getMaxOutputs(cap), recipeTypeOutputSize);
+        }
+        int machineTypeOutputLimit = this.getRecipeOutputLimits().getOrDefault(cap, recipeTypeOutputSize);
+        return Math.min(recipeTypeOutputSize, machineTypeOutputLimit);
     }
 }

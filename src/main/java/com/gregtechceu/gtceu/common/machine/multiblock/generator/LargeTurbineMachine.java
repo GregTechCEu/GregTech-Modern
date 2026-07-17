@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
@@ -36,11 +36,12 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         super(info);
         this.tier = tier;
         this.BASE_EU_OUTPUT = GTValues.V[tier] * 2;
+        recipeLogic.setRegressWhenWaiting(false);
     }
 
     @Nullable
     private RotorHolderPartMachine getRotorHolder() {
-        for (IMultiPart part : getParts()) {
+        for (MultiblockPartMachine part : getParts()) {
             if (part instanceof RotorHolderPartMachine rotorHolder) {
                 return rotorHolder;
             }
@@ -113,6 +114,43 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     //////////////////////////////////////
+    // ******* GUI ********//
+    //////////////////////////////////////
+
+    // @Override
+    // public void addDisplayText(List<Component> textList) {
+    // super.addDisplayText(textList);
+    // if (isFormed()) {
+    // var rotorHolder = getRotorHolder();
+    //
+    // if (rotorHolder != null && rotorHolder.getRotorEfficiency() > 0) {Expand commentComment on line L185
+    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+    // FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
+    // FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
+    // textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
+    // rotorHolder.getTotalEfficiency()));
+    //
+    // long maxProduction = getOverclockVoltage();
+    // long currentProduction = getCurrentProduction();
+    //
+    // if (isActive()) {
+    // textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
+    // FormattingUtil.formatNumbers(currentProduction),
+    // FormattingUtil.formatNumbers(maxProduction)));
+    // }
+    //
+    // int rotorDurability = rotorHolder.getRotorDurabilityPercent();
+    // if (rotorDurability > MIN_DURABILITY_TO_WARN) {
+    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
+    // } else {
+    // textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability)
+    // .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+    // }
+    // }
+    // }
+    // }
+
+    //////////////////////////////////////
     // ****** Recipe Logic *******//
     //////////////////////////////////////
 
@@ -162,17 +200,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     @Override
-    public boolean regressWhenWaiting() {
-        return false;
-    }
-
-    @Override
     public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
         // void both eu and fluid tick outputs
         return true;
     }
-
-    //////////////////////////////////////
-    // ******* GUI ********//
-    //////////////////////////////////////
 }

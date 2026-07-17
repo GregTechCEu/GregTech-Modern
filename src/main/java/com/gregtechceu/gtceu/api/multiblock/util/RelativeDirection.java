@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
@@ -81,18 +81,19 @@ public enum RelativeDirection implements StringRepresentable {
         };
     }
 
-    public ToIntFunction<IMultiPart> getMultiSorter(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
+    public ToIntFunction<MultiblockPartMachine> getMultiSorter(Direction frontFacing, Direction upwardsFacing,
+                                                               boolean isFlipped) {
         // get the direction to go in for the part sorter
         Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 
         // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
-            case UP -> p -> p.self().getBlockPos().getY();
-            case DOWN -> p -> -p.self().getBlockPos().getY();
-            case EAST -> p -> p.self().getBlockPos().getX();
-            case WEST -> p -> -p.self().getBlockPos().getX();
-            case NORTH -> p -> -p.self().getBlockPos().getZ();
-            case SOUTH -> p -> p.self().getBlockPos().getZ();
+            case UP -> p -> p.getBlockPos().getY();
+            case DOWN -> p -> -p.getBlockPos().getY();
+            case EAST -> p -> p.getBlockPos().getX();
+            case WEST -> p -> -p.getBlockPos().getX();
+            case NORTH -> p -> -p.getBlockPos().getZ();
+            case SOUTH -> p -> p.getBlockPos().getZ();
         };
     }
 

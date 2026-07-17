@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.SyncDataHolder;
 import com.gregtechceu.gtceu.api.sync_system.managed.ISyncManaged;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -41,6 +43,9 @@ public abstract class MachineTrait implements ISyncManaged {
     @Setter
     protected Predicate<@Nullable Direction> capabilityValidator = $ -> true;
 
+    @Getter
+    @Setter(onMethod_ = @ApiStatus.Internal)
+    private @Nullable String traitName;
     /**
      * The trait's callback priority. Traits with a higher priority will have their events fired
      * first, which may prevent traits with a lower priority from handling some events.
@@ -52,7 +57,8 @@ public abstract class MachineTrait implements ISyncManaged {
     public MachineTrait() {}
 
     public MetaMachine getMachine() {
-        if (machine == null) throw new IllegalStateException("Machine trait not attached to machine.");
+        if (machine == null) throw new IllegalStateException(
+                "Machine trait not attached to machine. Trait initialisation that depends on machine instance should run in onTraitAttached.");
         return machine;
     }
 
@@ -82,7 +88,13 @@ public abstract class MachineTrait implements ISyncManaged {
         this.machine = machine;
     }
 
-    public abstract MachineTraitType<?> getTraitType();
+    /**
+     * Gets the trait type of this the machine.
+     * Overriders should return {@code MachineTraitType<MachineTraitSubclass>} instead of {@code MachineTrait<?>}.
+     * 
+     * @return The trait type.
+     */
+    public abstract MachineTraitType<? extends MachineTrait> getTraitType();
 
     public @Nullable TickableSubscription subscribeServerTick(@Nullable TickableSubscription last, Runnable runnable) {
         return getMachine().subscribeServerTick(last, runnable);
@@ -123,6 +135,11 @@ public abstract class MachineTrait implements ISyncManaged {
     }
 
     /**
+     * Called when this trait is attached to a machine instance.
+     */
+    public void onTraitAttached() {}
+
+    /**
      * Called when the machine is loaded. The entire world is not loaded when this method is called.
      * To schedule code to run on the first full world tick, do
      * {@code getMachine().scheduleForNextServerTick(callback)}
@@ -138,6 +155,22 @@ public abstract class MachineTrait implements ISyncManaged {
      * Called when the machine is destroyed.
      */
     public void onMachineDestroyed() {}
+
+    /**
+     * Called when the machine is attached to a controller<br>
+     * Only called if this trait is attached to a multiblock part machine.
+     *
+     * @param controller The multiblock controller
+     */
+    public void addedToController(MultiblockControllerMachine controller) {}
+
+    /**
+     * Called when the machine is removed from a controller<br>
+     * Only called if this trait is attached to a multiblock part machine.
+     *
+     * @param controller The multiblock controller
+     */
+    public void removedFromController(MultiblockControllerMachine controller) {}
 
     /**
      * Called when a neighboring block is updated.

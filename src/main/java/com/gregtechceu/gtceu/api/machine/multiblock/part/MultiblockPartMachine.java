@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.IRecipeHandlerTrait;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sync_system.annotations.ClientFieldChangeListener;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
@@ -21,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
-import lombok.Getter;
 import org.jetbrains.annotations.MustBeInvokedByOverriders;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -31,12 +32,11 @@ import java.util.*;
 /**
  * The base class for all multiblock parts
  */
-public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
+public class MultiblockPartMachine extends MetaMachine {
 
     @SyncToClient
     protected final Set<BlockPos> controllerPositions = new ObjectOpenHashSet<>(8);
     protected final SortedSet<MultiblockControllerMachine> controllers = new ReferenceLinkedOpenHashSet<>(8);
-    @Getter
     protected @Nullable String substructureName;
 
     private @Nullable RecipeHandlerList handlerList;
@@ -49,14 +49,46 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    @Override
+    /**
+     * Gets all controllers this multiblock part belongs to.
+     *
+     * @return An unmodifiable set containing the controllers.
+     */
+    @UnmodifiableView
+    public SortedSet<MultiblockControllerMachine> getControllers() {
+        synchronized (controllers) {
+            // Necessary to rebuild the set of controllers on client-side
+            if (controllers.size() != controllerPositions.size()) {
+                onControllersUpdated();
+            }
+            return Collections.unmodifiableSortedSet(new ReferenceLinkedOpenHashSet<>(controllers));
+        }
+    }
+
+    /**
+     * If this multiblock part belongs to a controller at the given position
+     *
+     * @param controllerPos Controller position
+     * @return If this multiblock part belongs to a controller at the given position
+     */
     public boolean hasController(BlockPos controllerPos) {
         return controllerPositions.contains(controllerPos);
     }
 
-    @Override
+    /**
+     * @return If this multiblock part belongs to a formed multiblock.
+     */
     public boolean isFormed() {
         return !controllerPositions.isEmpty();
+    }
+
+    /**
+     * Gets the name of the main substructure this multiblock part is attached to.
+     * 
+     * @return The substructure name, or null.
+     */
+    public @Nullable String getSubstructureName() {
+        return substructureName;
     }
 
     // Not sure if necessary, but added to match the Controller class
@@ -72,18 +104,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         }
     }
 
-    @Override
-    @UnmodifiableView
-    public SortedSet<MultiblockControllerMachine> getControllers() {
-        synchronized (controllers) {
-            // Necessary to rebuild the set of controllers on client-side
-            if (controllers.size() != controllerPositions.size()) {
-                onControllersUpdated();
-            }
-            return Collections.unmodifiableSortedSet(new ReferenceLinkedOpenHashSet<>(controllers));
-        }
-    }
-
+    /**
+     * Get all available recipe handlers for recipe logic.
+     */
     public List<RecipeHandlerList> getRecipeHandlers() {
         return List.of(getHandlerList());
     }
@@ -92,11 +115,9 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (handlerList == null) {
             List<IRecipeHandler<?>> handlers = new ArrayList<>();
             IO handlerIO = null;
-            for (var trait : getAllTraits()) {
-                if (trait instanceof IRecipeHandlerTrait<?> rht) {
-                    if (handlerIO == null) handlerIO = rht.getHandlerIO();
-                    handlers.add(rht);
-                }
+            for (var rht : getTraitHolder().getTraitsByInterface(IRecipeHandlerTrait.class)) {
+                if (handlerIO == null) handlerIO = rht.getHandlerIO();
+                handlers.add(rht);
             }
 
             if (handlers.isEmpty()) {
@@ -118,7 +139,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                 toIter = new ObjectOpenHashSet<>(controllers);
             }
             for (MultiblockControllerMachine controller : toIter) {
-                if (serverLevel.isLoaded(controller.self().getBlockPos())) {
+                if (serverLevel.isLoaded(controller.getBlockPos())) {
                     removedFromController(controller);
                     controller.onPartUnload();
                 }
@@ -131,12 +152,71 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         substructureName = null;
     }
 
+    /**
+     * @return If this multiblock part can be shared between multiple multiblocks.
+     */
+    public boolean canShared(MultiblockControllerMachine controller, String substructureName) {
+        return true;
+    }
+
+    /**
+     * Called when the controller's recipe logic status changes
+     * 
+     * @param oldStatus Old recipe logic status
+     * @param newStatus New recipe logic status
+     */
+    public void recipeLogicStatusChanged(RecipeLogic.Status oldStatus, RecipeLogic.Status newStatus) {}
+
+    /**
+     * Called when a recipe is about to be run by the controller, just before inputs are consumed.
+     *
+     * @return true to cancel the recipe, false to continue
+     *
+     * @see RecipeLogic#setupRecipe(GTRecipe)
+     */
+    public boolean beforeWorking(WorkableMultiblockMachine controller) {
+        return true;
+    }
+
+    /**
+     * Called every tick while the controller's recipe logic is working.
+     *
+     * @return true to interrupt and suspend the recipe, false to continue working
+     *
+     * @see RecipeLogic#handleRecipeWorking()
+     */
+    public boolean onWorking(WorkableMultiblockMachine controller) {
+        return true;
+    }
+
+    /**
+     * Called when the controller finishes a recipe, before outputs are produced.
+     *
+     * @see RecipeLogic#onRecipeFinish()
+     */
+    public void afterWorking(WorkableMultiblockMachine controller) {}
+
+    /**
+     * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
+     *
+     * @param recipe recipe from detected from GTRecipeType
+     * @return modified recipe.
+     *         null -- this recipe is unavailable
+     */
+    public @Nullable GTRecipe modifyRecipe(GTRecipe recipe) {
+        return recipe;
+    }
+
     //////////////////////////////////////
     // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
 
+    /**
+     * Called when this part is removed from a multiblock.
+     *
+     * @param controller The controller which this part has been removed from.
+     */
     @MustBeInvokedByOverriders
-    @Override
     public void removedFromController(MultiblockControllerMachine controller) {
         controllerPositions.remove(controller.getBlockPos());
         boolean empty;
@@ -152,11 +232,18 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
                 setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, false));
             }
         }
+
+        getAllTraits().forEach(t -> t.removedFromController(controller));
+
         syncDataHolder.markClientSyncFieldDirty("controllerPositions");
     }
 
+    /**
+     * Called when this part is added to a multiblock.
+     *
+     * @param controller The controller which this part has been added to
+     */
     @MustBeInvokedByOverriders
-    @Override
     public void addedToController(MultiblockControllerMachine controller, String substructureName) {
         controllerPositions.add(controller.getBlockPos());
         synchronized (controllers) {
@@ -169,21 +256,33 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         if (renderState.hasProperty(GTMachineModelProperties.IS_FORMED)) {
             setRenderState(renderState.setValue(GTMachineModelProperties.IS_FORMED, true));
         }
+
+        getAllTraits().forEach(t -> t.addedToController(controller));
     }
 
-    @Override
+    /**
+     * If this part's base model can be replaced by controller when it is formed.
+     */
     public boolean replacePartModelWhenFormed() {
         var renderState = getRenderState();
         return renderState.hasProperty(GTMachineModelProperties.IS_FORMED) &&
                 renderState.getValue(GTMachineModelProperties.IS_FORMED);
     }
 
-    @Override
+    /**
+     * Called to get block appearance when this multi part is in a formed multiblock.
+     *
+     * @see MetaMachine#getBlockAppearance(BlockState, BlockAndTintGetter, BlockPos, Direction, BlockState, BlockPos)
+     */
     @Nullable
     public BlockState getFormedAppearance(@Nullable BlockState sourceState, @Nullable BlockPos sourcePos,
                                           Direction side) {
         if (!replacePartModelWhenFormed()) return null;
-        return IMultiPart.super.getFormedAppearance(sourceState, sourcePos, side);
+        for (MultiblockControllerMachine controller : getControllers()) {
+            var appearance = controller.getPartAppearance(this, side, sourceState, sourcePos);
+            if (appearance != null) return appearance;
+        }
+        return null;
     }
 
     @Override

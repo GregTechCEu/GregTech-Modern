@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -53,9 +52,7 @@ import java.util.function.Predicate;
 public class QuantumTankMachine extends TieredMachine implements IControllable,
                                 IMuiMachine {
 
-    public static Object2LongMap<MachineDefinition> TANK_CAPACITY = Util.make(new Object2LongArrayMap<>(), map -> {
-        map.defaultReturnValue(-1L);
-    });
+    public static Object2LongMap<MachineDefinition> TANK_CAPACITY = new Object2LongArrayMap<>();
 
     @SaveField
     @Getter

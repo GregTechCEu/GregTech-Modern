@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
@@ -37,21 +36,24 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
 public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
-        TYPE extends MultiblockMachineBuilder<DEFINITION, TYPE>> extends MachineBuilder<DEFINITION, TYPE> {
+        MACHINE extends MultiblockControllerMachine,
+        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>>
+                                     extends MachineBuilder<DEFINITION, MACHINE, SELF> {
 
     private boolean generator;
     private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
-    private Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter = (c) -> (a, b) -> 0;
-    private @Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance;
+    private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
+    private @Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
+
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
     public MultiblockMachineBuilder(GTRegistrate registrate, String name,
                                     BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    Function<BlockEntityCreationInfo, MetaMachine> blockEntityFactory) {
+                                    MachineInstanceFactory<MACHINE> blockEntityFactory) {
         super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
                 blockFactory,
                 itemFactory, blockEntityFactory);
@@ -62,54 +64,54 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public TYPE generator(boolean generator) {
+    public SELF generator(boolean generator) {
         this.generator = generator;
         return getThis();
     }
 
-    public TYPE pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public SELF pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
         return getThis();
     }
 
-    public TYPE pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public SELF pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(structureName, pattern);
         return getThis();
     }
 
-    public TYPE allowFlip(boolean allowFlip) {
+    public SELF allowFlip(boolean allowFlip) {
         this.allowFlip = allowFlip;
         return getThis();
     }
 
-    public TYPE partSorter(Function<MultiblockControllerMachine, Comparator<IMultiPart>> partSorter) {
+    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public TYPE partAppearance(@Nullable TriFunction<MultiblockControllerMachine, IMultiPart, Direction, BlockState> partAppearance) {
+    public SELF partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public TYPE additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
+    public SELF additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }
 
-    public TYPE recoveryItems(Supplier<ItemLike[]> items) {
+    public SELF recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
         return getThis();
     }
 
-    public TYPE recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public SELF recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return getThis();
     }
 
     @Tolerate
-    public TYPE partSorter(Comparator<IMultiPart> sorter) {
+    public SELF partSorter(Comparator<MultiblockPartMachine> sorter) {
         this.partSorter = $ -> sorter;
         return getThis();
     }

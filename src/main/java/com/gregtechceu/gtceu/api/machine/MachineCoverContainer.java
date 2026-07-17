@@ -53,7 +53,7 @@ public class MachineCoverContainer extends MachineTrait
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<MachineCoverContainer> getTraitType() {
         return TYPE;
     }
 

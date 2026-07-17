@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.mui.MachineUIPanelBuilder;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.RerenderOnChanged;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
@@ -54,6 +54,12 @@ public class CrateMachine extends MetaMachine implements IMuiMachine {
         this.inventorySize = inventorySize;
         this.rowLength = rowLength;
         this.inventory = attachTrait(new NotifiableItemStackHandler(inventorySize, IO.BOTH));
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        inventory.shouldDropInventoryInWorld(!isTaped);
     }
 
     @Override

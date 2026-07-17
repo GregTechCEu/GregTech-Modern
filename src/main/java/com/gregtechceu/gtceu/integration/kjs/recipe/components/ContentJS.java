@@ -39,7 +39,7 @@ public record ContentJS<T>(RecipeComponentType<T> baseComponent, RecipeCapabilit
         return new Content(
                 baseComponent.instance().replace(cx,
                         baseComponent.instance().wrap(cx, original.chance()), match, with),
-                original.chance(), original.maxChance(), original.tierChanceBoost());
+                original.chance(), original.maxChance());
     }
 
     @Override

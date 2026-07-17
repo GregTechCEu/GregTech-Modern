@@ -65,7 +65,7 @@ public abstract class SteamBoilerLogic implements GTRecipeType.ICustomRecipeLogi
                 .inputItems(input.copyWithCount(1))
                 .duration(modifyBurnTime(burnTime))
                 .build();
-        recipe.setId(recipe.getId().withPrefix("/"));
+        recipe.id = recipe.id.withPrefix("/");
         return recipe;
     }
 

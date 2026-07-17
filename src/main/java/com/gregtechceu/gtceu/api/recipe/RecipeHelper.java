@@ -2,11 +2,11 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroup;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupColor;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerGroupDistinctness;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroup;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupColor;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerGroupDistinctness;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
