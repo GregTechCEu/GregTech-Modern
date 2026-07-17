@@ -53,20 +53,20 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     private MultiPredicate(Logic type, MultiPredicate a, MultiPredicate b) {
         ArrayList<BasePredicate> builder = new ArrayList<>();
-        if (a.logic.getType() != type) {
-            builder.add(a.compact());
-        } else {
-            builder.addAll(a.predicateList);
-        }
-        if (b.logic.getType() != type) {
-            builder.add(b.compact());
-        } else {
-            builder.addAll(b.predicateList);
-        }
+        appendPredicates(type, a, builder);
+        appendPredicates(type, b, builder);
         builder.sort(PREDICATE_COMPARATOR);
         this.predicateList = Collections.unmodifiableList(builder);
         this.logic = type.createLogic(this);
         this.hasAir = a.hasAir || b.hasAir;
+    }
+
+    private static void appendPredicates(Logic type, MultiPredicate b, ArrayList<BasePredicate> builder) {
+        if (b.isSingle() || b.logic.getType() == type) {
+            builder.addAll(b.predicateList);
+        } else {
+            builder.add(b.compact());
+        }
     }
 
     public void reset() {

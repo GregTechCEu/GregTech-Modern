@@ -187,6 +187,7 @@ public class BlockPattern implements IBlockPattern {
         patternState.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
             if (!predicate.testGlobalMin(patternState)) {
+                patternState.commitErrors();
                 return false;
             }
         }
