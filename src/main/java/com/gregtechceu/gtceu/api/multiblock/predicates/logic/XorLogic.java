@@ -14,17 +14,13 @@ public class XorLogic extends BaseLogic {
 
     public XorLogic(MultiPredicate rootPredicate) {
         super(rootPredicate);
+        this.noneValid = isNoneValid(this.rootPredicate);
     }
 
     @Override
     public void reset() {
         super.reset();
         this.passedPredicate = null;
-    }
-
-    public void onPredicateAdded() {
-        super.onPredicateAdded();
-        this.noneValid = isNoneValid(this.rootPredicate);
     }
 
     private static boolean isNoneValid(MultiPredicate rootPredicate) {

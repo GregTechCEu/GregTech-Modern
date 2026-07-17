@@ -71,11 +71,12 @@ public class PatternState extends PredicateContext {
 
     List<List<PatternError>> sliceErrors = new ArrayList<>();
 
+    // it's committing errors just fine
+    // all the widgets are added to the col on server and client
+    // but nothing shows for some reason
     public void commitSliceErrors() {
-        this.sliceErrors.remove(this.sliceErrors.size() - 1);
         this.sliceErrors.forEach(this.commitedErrors::addAll);
         this.sliceErrors.clear();
-        clearErrors();
     }
 
     public void pushSliceErrors() {

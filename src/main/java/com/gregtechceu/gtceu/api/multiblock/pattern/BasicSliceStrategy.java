@@ -58,7 +58,9 @@ public class BasicSliceStrategy extends SliceStrategy {
         for (int i = 1; i <= multiblockSlice.maxRepeats; i++) {
             for (int j = multiblockSlice.startInclusive; j < multiblockSlice.endExclusive; j++) {
                 int res = checkRepeatSlice(state, j, offset + temp, flip);
+                state.pushSliceErrors();
                 if (res == -1) {
+                    state.commitSliceErrors();
                     if (i <= multiblockSlice.minRepeats) return -1;
                     multiblockSlice.actualRepeats = i - 1;
                     return sliceOffset;
@@ -76,11 +78,9 @@ public class BasicSliceStrategy extends SliceStrategy {
         PatternSlice slice = slices.get(index);
         for (int i = 1; i <= slice.maxRepeats; i++) {
             boolean res = checkSlice(state, index, offset + i - 1, flip);
-            state.pushSliceErrors();
             if (!res) {
                 if (i <= slice.minRepeats) return -1;
 
-                state.commitSliceErrors();
                 return slices.get(index).actualRepeats = i - 1;
             }
         }

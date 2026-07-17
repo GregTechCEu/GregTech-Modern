@@ -18,10 +18,7 @@ public abstract class BaseLogic {
 
     public BaseLogic(MultiPredicate rootPredicate) {
         this.rootPredicate = rootPredicate;
-    }
-
-    public void onPredicateAdded() {
-        for (BasePredicate predicate : this.rootPredicate) {
+        for (BasePredicate predicate : rootPredicate) {
             if (predicate instanceof MultiPredicate.CompactedPredicate cp) {
                 this.compactedPredicates.add(cp);
             }
