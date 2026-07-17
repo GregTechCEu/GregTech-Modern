@@ -245,6 +245,10 @@ public class MetaMachine extends ManagedSyncBlockEntity implements IGregtechBloc
      */
     public void modifyDrops(List<ItemStack> drops) {}
 
+    public void saveToItem(ItemStack stack, HolderLookup.Provider registries) {
+        stack.applyComponents(this.collectComponents());
+    }
+
     /**
      * Applies item stack component data when this machine is placed.
      *
