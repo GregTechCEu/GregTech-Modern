@@ -45,7 +45,7 @@ public class XorLogic extends BaseLogic {
             }
             if (result) passed++;
         }
-        return passed > 0 || ctx.error(PatternStringError.literal("XOR error"));
+        return passed > 0;
     }
 
     @Override

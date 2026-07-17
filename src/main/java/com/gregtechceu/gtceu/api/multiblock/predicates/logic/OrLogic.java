@@ -18,7 +18,7 @@ public class OrLogic extends BaseLogic {
                 return true;
             }
         }
-        return ctx.error(PatternStringError.literal("OR error"));
+        return false;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class OrLogic extends BaseLogic {
                 return true;
             }
         }
-        return ctx.error(PatternStringError.literal("OR error"));
+        return false;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class OrLogic extends BaseLogic {
                 return true;
             }
         }
-        return ctx.error(PatternStringError.literal("OR error"));
+        return false;
     }
 
     @Override

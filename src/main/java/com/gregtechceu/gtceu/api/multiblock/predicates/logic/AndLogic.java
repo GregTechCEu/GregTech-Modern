@@ -29,10 +29,7 @@ public class AndLogic extends BaseLogic {
                 return ctx.error(PatternStringError.literal("AND error"));
             // continue...
         }
-        if (passed == 0) {
-            return ctx.error(PatternStringError.literal("AND error"));
-        }
-        return true;
+        return passed != 0;
     }
 
     private static boolean failedMaxCount(PredicateContext ctx, BasePredicate predicate, boolean global) {
@@ -44,7 +41,7 @@ public class AndLogic extends BaseLogic {
     public boolean testGlobalMin(PredicateContext ctx) {
         for (BasePredicate predicate : this.rootPredicate) {
             if (!predicate.testGlobalMin(ctx)) {
-                return ctx.error(PatternStringError.literal("AND error"));
+                return false;
             }
         }
         return true;
@@ -54,7 +51,7 @@ public class AndLogic extends BaseLogic {
     public boolean testSliceMin(PredicateContext ctx) {
         for (BasePredicate predicate : this.rootPredicate) {
             if (!predicate.testSliceMin(ctx)) {
-                return ctx.error(PatternStringError.literal("AND error"));
+                return false;
             }
         }
         return true;

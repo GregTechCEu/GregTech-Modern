@@ -151,6 +151,7 @@ public class BlockPattern implements IBlockPattern {
         }
 
         patternState.updateLevel(level);
+        patternState.reset(); // clear any existing committed errors
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 

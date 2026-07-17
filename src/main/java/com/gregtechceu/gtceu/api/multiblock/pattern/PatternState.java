@@ -6,6 +6,10 @@ import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -61,7 +65,7 @@ public class PatternState extends PredicateContext {
     }
 
     public boolean hasErrors() {
-        return !this.errors.isEmpty();
+        return !this.commitedErrors.isEmpty();
     }
 
     public void clearErrors() {
@@ -69,20 +73,29 @@ public class PatternState extends PredicateContext {
         this.lastFailureReason = FailureReason.NONE;
     }
 
-    List<List<PatternError>> sliceErrors = new ArrayList<>();
+    public void reset() {
+        this.commitedErrors.clear();
+    }
+
+    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectArrayMap<>();
 
     // it's committing errors just fine
     // all the widgets are added to the col on server and client
     // but nothing shows for some reason
     public void commitSliceErrors() {
-        this.sliceErrors.forEach(this.commitedErrors::addAll);
+        for (Slice slice : this.sliceErrors.keySet()) {
+            this.commitedErrors.addAll(this.sliceErrors.get(slice));
+        }
         this.sliceErrors.clear();
     }
 
-    public void pushSliceErrors() {
-        this.sliceErrors.add(this.errors);
+    public void pushSliceErrors(int index, int offset) {
+        Slice slice = new Slice(index, offset);
+        this.sliceErrors.put(slice, this.errors);
         clearErrors();
     }
+
+    private record Slice(int index, int offset) {}
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
         if (!(currentBlockInfo.getLevel() instanceof ServerLevel serverLevel)) return;
