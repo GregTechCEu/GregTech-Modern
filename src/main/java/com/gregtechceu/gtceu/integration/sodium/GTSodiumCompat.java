@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.utils.TriState;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.TerrainRenderPass;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.Material;
 import net.caffeinemc.mods.sodium.client.render.chunk.terrain.material.parameters.AlphaCutoffParameter;
+import net.caffeinemc.mods.sodium.client.render.frapi.mesh.MutableQuadViewImpl;
 import net.caffeinemc.mods.sodium.client.render.texture.SpriteFinderCache;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.renderer.LightTexture;
@@ -22,8 +23,8 @@ public class GTSodiumCompat {
     @Getter(lazy = true)
     private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ONE_TENTH, true);
 
-    public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights) {
-        TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(quad);
+    public static boolean quadHasBloom(MutableQuadViewImpl quad, int[] ambientPackedLights) {
+        TextureAtlasSprite sprite = quad.sprite(SpriteFinderCache.forBlockAtlas());
         var metadata = TextureMetadataHelper.getMetadata(sprite);
         if (metadata.isPresent()) {
             TriState bloomValue = metadata.get().bloom();

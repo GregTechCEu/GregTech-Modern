@@ -52,11 +52,6 @@ public abstract class BlockRendererMixin {
             // call the same method again, this time with the bloom chunk model builder
             ChunkMeshBufferBuilder vertexBuffer = bloomBuilder.getVertexBuffer(normalFace);
             vertexBuffer.push(vertices, GTEmbeddiumCompat.getBloomMaterial());
-
-            TextureAtlasSprite atlasSprite = quad.getSprite();
-            if (atlasSprite != null) {
-                bloomBuilder.addSprite(atlasSprite);
-            }
         }
     }
 }

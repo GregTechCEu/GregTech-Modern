@@ -12,7 +12,6 @@ import net.caffeinemc.mods.sodium.client.render.chunk.vertex.builder.ChunkMeshBu
 import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexEncoder;
 import net.caffeinemc.mods.sodium.client.render.frapi.mesh.MutableQuadViewImpl;
 import net.caffeinemc.mods.sodium.client.render.frapi.render.AbstractBlockRenderContext;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +33,6 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
     private void gtceu$copyBloomQuads(MutableQuadViewImpl quad, float[] brightnesses, Material material,
                                       CallbackInfo ci,
                                       @Local(name = "vertices") ChunkVertexEncoder.Vertex[] vertices,
-                                      @Local(name = "atlasSprite") TextureAtlasSprite atlasSprite,
                                       @Local(name = "normalFace") ModelQuadFacing normalFace) {
         if (!BloomShaderManager.isBloomActive() || this.type == GTRenderTypes.bloom()) {
             return;
@@ -45,10 +43,6 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
             // call the same method again, this time with the bloom chunk model builder
             ChunkMeshBufferBuilder vertexBuffer = bloomBuilder.getVertexBuffer(normalFace);
             vertexBuffer.push(vertices, GTSodiumCompat.getBloomMaterial().bits());
-
-            if (atlasSprite != null) {
-                bloomBuilder.addSprite(atlasSprite);
-            }
         }
     }
 }
