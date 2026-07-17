@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.client.util.TextureMetadataHelper;
 import com.gregtechceu.gtceu.integration.embeddium.GTEmbeddiumCompat;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.phys.Vec3;
 
 import com.llamalad7.mixinextras.sugar.Local;

@@ -95,7 +95,7 @@ public class BloomRenderer {
     }
 
     private static void renderSpecialBloom(Camera camera, PoseStack poseStack, Frustum frustum, float partialTicks,
-                                   ProfilerFiller profilerFiller) {
+                                           ProfilerFiller profilerFiller) {
         profilerFiller.push("special");
 
         // render state is set up & cleared in calling function
@@ -275,7 +275,7 @@ public class BloomRenderer {
         }
 
         private static void finishBloomBuffer(SectionPos sectionPos, MeshData mesh, BufferBuilder builder,
-                                             VertexSorting vertexSorting) {
+                                              VertexSorting vertexSorting) {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
                 BLOOM_BUFFER_BUILDERS.remove(sectionPos);

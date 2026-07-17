@@ -36,7 +36,8 @@ public class GTRenderTypes extends RenderType {
             BloomShaderManager::getRendertypeBloomShader);
     public static final RenderStateShard.ShaderStateShard RENDERTYPE_ENTITY_BLOOM_SHADER = new RenderStateShard.ShaderStateShard(
             BloomShaderManager::getRendertypeEntityBloomShader);
-    public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getPositionTexColorShader);
+    public static final RenderStateShard.ShaderStateShard POSITION_TEX_COLOR_SHADER = new RenderStateShard.ShaderStateShard(
+            GameRenderer::getPositionTexColorShader);
 
     private static final RenderType LIGHT_RING = RenderType.create("light_ring",
             DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.TRIANGLE_STRIP,
