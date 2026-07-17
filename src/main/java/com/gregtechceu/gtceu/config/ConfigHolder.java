@@ -943,9 +943,9 @@ public class ConfigHolder {
             public float strength = 1.5f;
 
             @Configurable
-            @Configurable.Comment({ "Blur Step (bloom range)", "Default: 1" })
+            @Configurable.Comment({ "Blur Sample Step (bloom range)", "Default: 1.0" })
             @Configurable.DecimalRange(min = 0)
-            public float step = 1.0f;
+            public float blurSampleStep = 1.0f;
         }
 
         public static class RendererOptions {

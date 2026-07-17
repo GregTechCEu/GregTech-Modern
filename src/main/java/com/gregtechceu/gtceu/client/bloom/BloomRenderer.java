@@ -159,7 +159,7 @@ public class BloomRenderer {
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthNear", GameRenderer.PROJECTION_Z_NEAR);
         BloomShaderManager.BLOOM_CHAIN.setUniform("DepthFar", Minecraft.getInstance().gameRenderer.getDepthFar());
 
-        BloomShaderManager.BLOOM_CHAIN.setUniform("RadiusMultiplier", config.step);
+        BloomShaderManager.BLOOM_CHAIN.setUniform("SampleStep", config.blurSampleStep);
 
         BloomShaderManager.BLOOM_CHAIN.setUniform("BloomStrength", config.strength);
         BloomShaderManager.BLOOM_CHAIN.setUniform("BaseBrightness", config.baseBrightness);

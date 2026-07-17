@@ -5,7 +5,6 @@ const float INV_SQRT_2PI = 1 / sqrt(2 * PI);
 
 uniform sampler2D DiffuseSampler;
 uniform float Radius;
-uniform float RadiusMultiplier;
 
 in vec2 texCoord;
 in vec2 sampleStep;
@@ -25,8 +24,7 @@ void main() {
     float weightSum = gaussianPdf(0.0, Radius);
     vec4 diffuseSum = texture(DiffuseSampler, texCoord) * weightSum;
 
-    float actualRadius = round(Radius * RadiusMultiplier);
-    for(float x = 1; x < actualRadius; x += 1.0) {
+    for(float x = 1; x < Radius; x += 1.0) {
         float w = gaussianPdf(x, Radius);
         vec2 uvOffset = sampleStep * x;
 
