@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
@@ -225,7 +226,7 @@ public class RecipeLogic extends WorkLogic {
         return result;
     }
 
-    public void setupRecipe(GTRecipe recipe) {
+    public void setupRecipe(@NotNull GTRecipe recipe) {
         var failReason = machine.beforeWorking(recipe);
         if (failReason != null) {
             setStatus(Status.IDLE);

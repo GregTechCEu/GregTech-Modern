@@ -28,6 +28,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
@@ -71,15 +72,12 @@ public class AirScrubberMachine extends SimpleTieredMachine implements IEnvironm
     }
 
     @Override
-    public Component beforeWorking(@Nullable GTRecipe recipe) {
-        if (recipe != null) {
-            // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
-            var failReason = super.beforeWorking(recipe);
-            if (failReason != null) return failReason;
-            this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1);
-            return null;
-        }
-        return RecipeModifier.DEFAULT_FAILURE;
+    public Component beforeWorking(@NotNull GTRecipe recipe) {
+        // Sets the amount of hazard to clean based on the recipe tier, not the machine tier
+        var failReason = super.beforeWorking(recipe);
+        if (failReason != null) return failReason;
+        this.cleaningPerOperation = MIN_CLEANING_PER_OPERATION * (recipe.ocLevel + 1);
+        return null;
     }
 
     @Override

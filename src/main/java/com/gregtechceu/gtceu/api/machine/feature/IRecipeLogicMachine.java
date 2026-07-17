@@ -74,7 +74,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IWorkLogic
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default Component beforeWorking(@Nullable GTRecipe recipe) {
+    default @Nullable Component beforeWorking(@NotNull GTRecipe recipe) {
         return self().getDefinition().getBeforeWorking().apply(this, recipe);
     }
 

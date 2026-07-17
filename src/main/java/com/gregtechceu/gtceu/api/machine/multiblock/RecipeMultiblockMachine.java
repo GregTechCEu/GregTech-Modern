@@ -138,7 +138,7 @@ public abstract class RecipeMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public Component beforeWorking(@Nullable GTRecipe recipe) {
+    public @Nullable Component beforeWorking(GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             Component failReason = part.beforeWorking(this);
             if (failReason != null) {
