@@ -59,7 +59,7 @@ public class BlockRendererMixin {
                                       Material material, BakedQuadView quad, int[] colors, QuadLightData light,
                                       CallbackInfo ci,
                                       @Local(name = "srcIndex") int srcIndex,
-                                      @Local(name = "out") ChunkVertexEncoder.Vertex v,
+                                      @Local(name = "out") ChunkVertexEncoder.Vertex out,
                                       @Share("bloomBuffer") LocalRef<VertexConsumer> bloomBufferRef) {
         VertexConsumer bloomBuffer = bloomBufferRef.get();
         // bloomBuffer is null if bloom isn't available or the quad's texture doesn't have bloom
@@ -68,10 +68,10 @@ public class BlockRendererMixin {
         int normal = quad.getForgeNormal(srcIndex);
         if (normal == 0) normal = quad.getComputedFaceNormal();
 
-        bloomBuffer.addVertex(v.x, v.y, v.z)
-                .setColor(ColorARGB.toABGR(v.color))
-                .setUv(v.u, v.v)
-                .setLight(v.light)
+        bloomBuffer.addVertex(out.x, out.y, out.z)
+                .setColor(ColorARGB.toABGR(out.color))
+                .setUv(out.u, out.v)
+                .setLight(out.light)
                 .setNormal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
     }
 }

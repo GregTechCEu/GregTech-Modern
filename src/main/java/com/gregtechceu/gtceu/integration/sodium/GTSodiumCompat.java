@@ -22,7 +22,7 @@ public class GTSodiumCompat {
     @Getter(lazy = true)
     private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ONE_TENTH, true);
 
-    public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights, boolean emissive) {
+    public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights) {
         TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(quad);
         var metadata = TextureMetadataHelper.getMetadata(sprite);
         if (metadata.isPresent()) {
@@ -35,7 +35,7 @@ public class GTSodiumCompat {
         }
 
         if (ConfigHolder.INSTANCE.client.bloom.emissiveTexturesHaveBloom) {
-            return emissive || isEmissive(quad, ambientPackedLights);
+            return isEmissive(quad, ambientPackedLights);
         }
 
         return false;
