@@ -276,7 +276,7 @@ public class BloomRenderer {
                                              VertexSorting vertexSorting) {
             BLOOM_RENDER_LOCK.writeLock().lock();
             try {
-                BLOOM_BUFFER_BUILDERS.remove(sectionPos, builder);
+                BLOOM_BUFFER_BUILDERS.remove(sectionPos);
 
                 ByteBufferBuilder byteBuffer = BLOOM_BYTE_BUFFERS.remove(sectionPos);
                 if (byteBuffer != null) {
@@ -309,12 +309,17 @@ public class BloomRenderer {
         }
 
         public static BufferBuilder getOrStartBloomBuffer(SectionPos sectionPos) {
-            return BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos, $ -> {
-                ByteBufferBuilder byteBuffer = BLOOM_BYTE_BUFFERS.computeIfAbsent(sectionPos,
-                        unused -> new ByteBufferBuilder(GTRenderTypes.bloom().bufferSize()));
+            BLOOM_RENDER_LOCK.writeLock().lock();
+            try {
+                return BLOOM_BUFFER_BUILDERS.computeIfAbsent(sectionPos, $ -> {
+                    ByteBufferBuilder byteBuffer = BLOOM_BYTE_BUFFERS.computeIfAbsent(sectionPos,
+                            unused -> new ByteBufferBuilder(GTRenderTypes.bloom().bufferSize()));
 
-                return new BufferBuilder(byteBuffer, GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
-            });
+                    return new BufferBuilder(byteBuffer, GTRenderTypes.bloom().mode(), GTRenderTypes.bloom().format());
+                });
+            } finally {
+                BLOOM_RENDER_LOCK.writeLock().unlock();
+            }
         }
 
         public static void bakeBloomChunkBuffers(SectionPos sectionPos, VertexSorting vertexSorting) {
