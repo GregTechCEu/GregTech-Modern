@@ -141,7 +141,10 @@ public class BloomRenderer {
         mainTarget.bindWrite(false);
 
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ZERO,
+                GlStateManager.DestFactor.ONE);
 
         BLOOM_TARGET.blitToScreen(mainTarget.width, mainTarget.height, false);
         BLOOM_TARGET.unbindRead();
