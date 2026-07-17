@@ -15,11 +15,9 @@ public class AndLogic extends BaseLogic {
     public boolean test(PredicateContext ctx) {
         int passed = 0;
         for (BasePredicate predicate : this.rootPredicate) {
-            boolean result = predicate.test(ctx);
-            if (result) {
+            if (predicate.test(ctx)) {
                 passed++;
-                result = predicate.testGlobalMax(ctx) && predicate.testSliceMax(ctx);
-                if (result) {
+                if (predicate.testGlobalMax(ctx) && predicate.testSliceMax(ctx)) {
                     continue; // fully passed
                 }
             }
@@ -27,9 +25,10 @@ public class AndLogic extends BaseLogic {
             // count manually
             if (failedMaxCount(ctx, predicate, true) || failedMaxCount(ctx, predicate, false))
                 return ctx.error(PatternStringError.literal("AND error"));
+            passed++;
             // continue...
         }
-        return passed != 0;
+        return passed > 0;
     }
 
     private static boolean failedMaxCount(PredicateContext ctx, BasePredicate predicate, boolean global) {

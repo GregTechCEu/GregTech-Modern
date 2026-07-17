@@ -40,11 +40,12 @@ public class XorLogic extends BaseLogic {
     public boolean test(PredicateContext ctx) {
         int passed = 0;
         for (BasePredicate predicate : this.rootPredicate) {
-            boolean result = predicate.testLimited(ctx);
-            if (result && this.passedPredicate == null) {
-                this.passedPredicate = predicate;
+            if (predicate.testLimited(ctx)) {
+                passed++;
+                if (this.passedPredicate == null) {
+                    this.passedPredicate = predicate;
+                }
             }
-            if (result) passed++;
         }
         return passed > 0;
     }
