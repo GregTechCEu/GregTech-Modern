@@ -15,9 +15,10 @@ out vec4 fragColor;
 // gaussian probability density function
 float gaussianPdf(float x, float sigma) {
     // this is the same as (1 / sqrt(2 * PI * sigma^2)) * exp(-(x^2) / (2 * sigma^2))
-    // but it's technically more efficient, since the inverse square root is stored as a constant
+    // but it's technically more efficient, since it only uses division once
+    // and the inverse square root is stored as a constant
     float invSigma = 1 / sigma;
-    return (INV_SQRT_2PI * invSigma) * exp(-(x * x) / (2.0 * invSigma * invSigma));
+    return (INV_SQRT_2PI * invSigma) * exp(-(x * x) * (0.5 * invSigma * invSigma));
 }
 
 void main() {
