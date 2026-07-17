@@ -13,10 +13,14 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
+import lombok.Getter;
+
 public class GTSodiumCompat {
 
-    public static final TerrainRenderPass BLOOM_RENDER_PASS = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
-    public static final Material BLOOM_MATERIAL = new Material(BLOOM_RENDER_PASS, AlphaCutoffParameter.ZERO, true);
+    @Getter(lazy = true)
+    private static final TerrainRenderPass bloomRenderPass = new TerrainRenderPass(GTRenderTypes.bloom(), false, true);
+    @Getter(lazy = true)
+    private static final Material bloomMaterial = new Material(getBloomRenderPass(), AlphaCutoffParameter.ZERO, true);
 
     public static boolean quadHasBloom(QuadView quad, int[] ambientPackedLights, boolean emissive) {
         TextureAtlasSprite sprite = SpriteFinderCache.forBlockAtlas().find(quad);

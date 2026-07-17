@@ -38,11 +38,11 @@ public abstract class BlockRendererMixin extends AbstractBlockRenderContext {
                                       @Local(name = "emissive") boolean emissive,
                                       @Share("bloomBuilder") LocalRef<ChunkModelBuilder> bloomBuilderRef) {
         if (BloomShaderManager.isBloomActive() && GTSodiumCompat.quadHasBloom(quad, this.quadLightData.lm, emissive)) {
-            var bloomBuilder = this.buffers.get(GTSodiumCompat.BLOOM_RENDER_PASS);
+            var bloomBuilder = this.buffers.get(GTSodiumCompat.getBloomRenderPass());
             bloomBuilderRef.set(bloomBuilder);
 
             // call the same method again, this time with the bloom chunk model builder
-            this.bufferQuad(quad, this.quadLightData.br, GTSodiumCompat.BLOOM_MATERIAL);
+            this.bufferQuad(quad, this.quadLightData.br, GTSodiumCompat.getBloomMaterial());
         } else {
             bloomBuilderRef.set(null);
         }

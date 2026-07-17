@@ -22,7 +22,7 @@ public class DefaultMaterialsMixin {
         if (!BloomShaderManager.isBloomAvailable()) return;
 
         if (renderType == GTRenderTypes.bloom()) {
-            cir.setReturnValue(GTEmbeddiumCompat.BLOOM_MATERIAL);
+            cir.setReturnValue(GTEmbeddiumCompat.getBloomMaterial());
         }
     }
 }
