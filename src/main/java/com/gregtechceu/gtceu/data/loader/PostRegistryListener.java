@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOreVeins;
 import com.gregtechceu.gtceu.integration.map.cache.server.ServerCache;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,17 +28,17 @@ public class PostRegistryListener extends ContextAwareReloadListener implements 
     private PostRegistryListener() {}
 
     protected void apply() {
-        var registry = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)
-                .registryOrThrow(GTRegistries.Keys.ORE_VEIN);
+        HolderLookup.RegistryLookup<GTOreDefinition> holderLookup = getRegistryLookup()
+                .lookupOrThrow(GTRegistries.Keys.ORE_VEIN);
 
-        buildVeinGenerators(registry);
-        GTOreVeins.updateLargestVeinSize(registry);
-        ServerCache.instance.oreVeinDefinitionsChanged(registry);
+        buildVeinGenerators(holderLookup);
+        GTOreVeins.updateLargestVeinSize(holderLookup);
+        ServerCache.instance.oreVeinDefinitionsChanged(holderLookup);
         WorldGeneratorUtils.invalidateOreVeinCache();
     }
 
-    public static void buildVeinGenerators(Registry<GTOreDefinition> registry) {
-        var iterator = registry.holders().iterator();
+    public static void buildVeinGenerators(HolderLookup.RegistryLookup<GTOreDefinition> holderLookup) {
+        var iterator = holderLookup.listElements().iterator();
         while (iterator.hasNext()) {
             var definition = iterator.next();
             var veinGen = definition.value().veinGenerator();
