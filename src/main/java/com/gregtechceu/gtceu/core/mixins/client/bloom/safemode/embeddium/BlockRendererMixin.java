@@ -72,6 +72,7 @@ public class BlockRendererMixin {
                 .color(ColorARGB.toABGR(v.color))
                 .uv(v.u, v.v)
                 .uv2(v.light)
-                .normal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal));
+                .normal(NormI8.unpackX(normal), NormI8.unpackY(normal), NormI8.unpackZ(normal))
+                .endVertex();
     }
 }
