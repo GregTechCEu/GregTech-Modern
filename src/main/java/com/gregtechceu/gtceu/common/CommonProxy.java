@@ -263,11 +263,7 @@ public class CommonProxy {
             // "Trying to access unbound value" and/or leave unregistered intrusive holders that blow up
             // MappedRegistry#freeze. This happens for any KubeJS material whose namespace is not a loaded
             // mod (e.g. materials registered under a pack-specific namespace).
-            GTRegistries.MATERIALS.getUsedNamespaces().forEach(namespace -> GTRegistrate
-                    .create(namespace, false)
-                    .registerEventListeners(ModList.get().getModContainerById(namespace)
-                            .map(ModContainer::getEventBus)
-                            .orElse(modBus)));
+            GTRegistries.MATERIALS.getUsedNamespaces().forEach(GTRegistrate::createIgnoringListenerErrors);
         } else if (event.getRegistryKey() == Registries.BLOCK) {
             // Material Blocks
             REGISTRATE.creativeModeTab(GTCreativeModeTabs.MATERIAL_BLOCK);
