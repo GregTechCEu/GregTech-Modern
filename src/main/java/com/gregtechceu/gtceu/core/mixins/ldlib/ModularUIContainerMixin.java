@@ -34,10 +34,12 @@ public abstract class ModularUIContainerMixin extends AbstractContainerMenu {
 
     @Redirect(method = "mergeItemStack",
               at = @At(value = "INVOKE",
-                       target = "Lnet/minecraft/world/item/ItemStack;getMaxStackSize()I"),
+                       target = "Ljava/lang/Math;min(II)I",
+                       ordinal = 0,
+                       remap = false),
               remap = false)
-    private static int gtceu$getLargeStackLimit(ItemStack stack) {
-        return Integer.MAX_VALUE;
+    private static int gtceu$getLargeStackLimit(int a, int b) {
+        return b;
     }
 
     @Redirect(method = "quickMoveStack",
