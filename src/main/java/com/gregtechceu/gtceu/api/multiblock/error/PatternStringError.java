@@ -28,6 +28,10 @@ public class PatternStringError extends PatternError {
         this.component = component;
     }
 
+    public static PatternStringError component(Component component) {
+        return new PatternStringError(component);
+    }
+
     public static PatternStringError literal(String s) {
         return new PatternStringError(Component.literal(s));
     }

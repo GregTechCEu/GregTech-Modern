@@ -1,10 +1,15 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
+import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
+import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 
 public class XorLogic extends BaseLogic {
 
@@ -54,17 +59,37 @@ public class XorLogic extends BaseLogic {
     public boolean testGlobalMin(PredicateContext ctx) {
         if (passedPredicate == null && noneValid) return true;
         if (passedPredicate == null || !passedPredicate.testGlobalMin(ctx)) {
-            return ctx.error(PatternStringError.literal("need one of: " + rootPredicate));
+            return ctx.error(onError());
         }
         if (!global) return true;
         for (BasePredicate predicate : this.rootPredicate) {
             if (predicate != passedPredicate && ctx.getGlobalCount(predicate) > 0) {
-                ctx.error(PatternStringError.literal("need one of:\n" + rootPredicate.getPredicateList()));
-                ctx.error(PatternStringError.literal(predicate + " present in multi"));
+                ctx.error(onError());
+                ctx.error(PatternStringError.literal("%s present in multi", predicate));
                 return false;
             }
         }
         return true;
+    }
+
+    private PatternError onError() {
+        MutableComponent component = Component.literal("Need one of:\n")
+                .withStyle(ChatFormatting.WHITE);
+
+        for (BasePredicate predicate : this.rootPredicate) {
+            for (BlockInfo candidate : predicate.getCandidates()) {
+                component.append("  ")
+                        .append(candidate.getItemStackForm().getHoverName())
+                        .append("\n");
+            }
+        }
+
+        if (this.passedPredicate != null) {
+            component.append("\n")
+                    .append("Expected predicate: " + this.passedPredicate);
+        }
+
+        return PatternStringError.component(component);
     }
 
     @Override
