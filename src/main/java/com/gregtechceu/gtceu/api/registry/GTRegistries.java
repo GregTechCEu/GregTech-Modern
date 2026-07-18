@@ -25,7 +25,6 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -110,7 +109,7 @@ public final class GTRegistries {
         // - once for the actual recipe type registry
         addRegistryToLoadOrder(Registries.RECIPE_TYPE, null);
         // - a duplicate entry for the custom KubeJS builder type
-        addRegistryToLoadOrder(Keys.RECIPE_TYPE, BuiltInRegistries.RECIPE_TYPE);
+        addRegistryToLoadOrder(Keys.RECIPE_TYPE, null);
     }
     public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER, false);
     public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
