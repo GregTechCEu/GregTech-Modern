@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.QuadTransformers;
 
@@ -43,24 +42,6 @@ public final class GTQuadTransformers {
                 vertices[offset] = Float.floatToRawIntBits(x);
                 vertices[offset + 1] = Float.floatToRawIntBits(y);
                 vertices[offset + 2] = Float.floatToRawIntBits(z);
-            }
-        };
-    }
-
-    public static IQuadTransformer clamp(AABB bounds) {
-        return quad -> {
-            int[] vertices = quad.getVertices();
-
-            for (int i = 0; i < 4; i++) {
-                int offset = i * IQuadTransformer.STRIDE + IQuadTransformer.POSITION;
-
-                float x = Float.intBitsToFloat(vertices[offset]);
-                float y = Float.intBitsToFloat(vertices[offset + 1]);
-                float z = Float.intBitsToFloat(vertices[offset + 2]);
-                // noinspection PointlessArithmeticExpression looks nicer
-                vertices[offset + 0] = Float.floatToRawIntBits(Mth.clamp(x, (float) bounds.minX, (float) bounds.maxX));
-                vertices[offset + 1] = Float.floatToRawIntBits(Mth.clamp(y, (float) bounds.minY, (float) bounds.maxY));
-                vertices[offset + 2] = Float.floatToRawIntBits(Mth.clamp(z, (float) bounds.minZ, (float) bounds.maxZ));
             }
         };
     }

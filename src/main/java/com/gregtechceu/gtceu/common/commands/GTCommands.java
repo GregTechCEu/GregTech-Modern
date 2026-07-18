@@ -8,17 +8,15 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.commands.arguments.GTRegistryArgument;
 import com.gregtechceu.gtceu.common.network.GTNetwork;
-import com.gregtechceu.gtceu.common.network.packets.SCPacketShareProspection;
+import com.gregtechceu.gtceu.common.network.packets.SPacketStartProspectionShare;
 import com.gregtechceu.gtceu.data.loader.BedrockFluidLoader;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.GTOreLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
-import com.gregtechceu.gtceu.integration.map.ClientCacheManager;
 
 import net.minecraft.commands.*;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -31,7 +29,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
@@ -76,12 +73,6 @@ public class GTCommands {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 literal("gtceu")
-                        .then(literal("ui_editor")
-                                .requires(ctx -> ctx.hasPermission(LEVEL_ADMINS))
-                                .executes(context -> {
-                                    GTUIEditorFactory.INSTANCE.openUI(GTUIEditorFactory.INSTANCE, context.getSource().getPlayerOrException());
-                                    return 1;
-                                }))
                         .then(literal("dump_data")
                                 .requires(ctx -> ctx.hasPermission(LEVEL_OWNERS))
                                 .then(literal("bedrock_fluid_veins")
@@ -170,10 +161,12 @@ public class GTCommands {
                         .then(literal("share_prospection_data")
                                 .then(argument("player", EntityArgument.player())
                                         .executes(ctx -> {
-                                            Player player = EntityArgument.getPlayer(ctx, "player");
-                                            Thread sendThread = new Thread(new GTCommands.ProspectingShareTask(
-                                                    ctx.getSource().getPlayerOrException().getUUID(), player.getUUID()));
-                                            sendThread.start();
+                                            // resolve both players server-side (uses the server player list),
+                                            // then ask the sender's client to read its cache and send the data
+                                            ServerPlayer sender = ctx.getSource().getPlayerOrException();
+                                            ServerPlayer receiver = EntityArgument.getPlayer(ctx, "player");
+                                            GTNetwork.sendToPlayer(sender,
+                                                    new SPacketStartProspectionShare(receiver.getUUID()));
                                             return 1;
                                         }))));
     }
@@ -352,34 +345,5 @@ public class GTCommands {
         }
 
         return 1;
-    }
-
-    private static class ProspectingShareTask implements Runnable {
-
-        private final List<ClientCacheManager.ProspectionInfo> prospectionData;
-        private final UUID sender;
-        private final UUID receiver;
-
-        public ProspectingShareTask(UUID sender, UUID receiver) {
-            prospectionData = ClientCacheManager.getProspectionShareData();
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-
-        @Override
-        public void run() {
-            boolean first = true;
-            for (ClientCacheManager.ProspectionInfo info : prospectionData) {
-                GTNetwork.sendToServer(new SCPacketShareProspection(sender, receiver, info.cacheName, info.key,
-                        info.isDimCache, info.dim, info.data, first));
-                first = false;
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 }

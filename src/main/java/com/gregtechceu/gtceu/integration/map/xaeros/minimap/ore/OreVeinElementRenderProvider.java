@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.map.xaeros.minimap.ore;
 
 import com.gregtechceu.gtceu.integration.map.xaeros.XaerosRenderer;
+import com.gregtechceu.gtceu.integration.map.xaeros.common.ore.OreVeinElement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;

@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.client.model.BaseBakedModel;
 import com.gregtechceu.gtceu.client.model.GTModelProperties;
 import com.gregtechceu.gtceu.client.model.IBlockEntityRendererBakedModel;
@@ -313,7 +313,7 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
             quads.addAll(render.getRenderQuads(machine, level, pos, blockState, side, rand, modelData, renderType));
         }
         // the instanceof check also ensures it's not null
-        if (machine instanceof IMultiPart part && part.replacePartModelWhenFormed()) {
+        if (machine instanceof MultiblockPartMachine part && part.replacePartModelWhenFormed()) {
             quads = replacePartBaseModel(quads, part, machine.getFrontFacing(), side, rand, modelData, renderType);
         }
 
@@ -337,11 +337,13 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
         }
     }
 
-    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, IMultiPart part, Direction frontFacing,
+    public List<BakedQuad> replacePartBaseModel(List<BakedQuad> originalQuads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var controllers = part.getControllers();
         for (MultiblockControllerMachine controller : controllers) {
+            if (controller == null) continue;
             var state = controller.getBlockState();
             BakedModel model = RenderUtil.getModelForState(state);
             List<BakedQuad> newQuads = null;
@@ -373,7 +375,8 @@ public final class MachineModel extends BaseBakedModel implements ICoverableRend
     }
 
     private List<BakedQuad> renderPartOverrides(MachineModel controllerModel, MultiblockControllerMachine controller,
-                                                List<BakedQuad> quads, IMultiPart part, Direction frontFacing,
+                                                List<BakedQuad> quads, MultiblockPartMachine part,
+                                                Direction frontFacing,
                                                 @Nullable Direction side, RandomSource rand,
                                                 ModelData modelData, @Nullable RenderType renderType) {
         var overrides = controllerModel.textureOverrides;

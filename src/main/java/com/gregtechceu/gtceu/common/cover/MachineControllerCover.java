@@ -5,35 +5,38 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.PhantomSlotWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.machine.MachineCoverContainer;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
-import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
-
-import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
-import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
+import com.gregtechceu.gtceu.common.mui.GTMuiWidgets;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 
+import brachy.modularui.api.drawable.Text;
+import brachy.modularui.drawable.GuiTextures;
+import brachy.modularui.drawable.ItemDrawable;
+import brachy.modularui.drawable.Rectangle;
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.ModularPanel;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.DoubleSyncValue;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widget.Widget;
+import brachy.modularui.widgets.SliderWidget;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
@@ -46,10 +49,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MachineControllerCover extends CoverBehavior implements IUICover {
-
-    private CustomItemStackHandler sideCoverSlot;
-    private ButtonWidget modeButton;
+public class MachineControllerCover extends CoverBehavior implements IMuiCover {// IUICover {
 
     @SaveField
     @Getter
@@ -60,7 +60,6 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     private int minRedstoneStrength = 1;
 
     @SaveField
-    @SyncToClient
     @Getter
     @Nullable
     private ControllerMode controllerMode = ControllerMode.MACHINE;
@@ -110,24 +109,18 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         resetCurrentControllable();
 
         this.controllerMode = controllerMode;
-        syncDataHolder.markClientSyncFieldDirty("filterMode");
 
-        updateAll();
+        updateInput();
     }
 
     public void setMinRedstoneStrength(int minRedstoneStrength) {
         this.minRedstoneStrength = minRedstoneStrength;
-        updateAll();
+        updateInput();
     }
 
     public void setInverted(boolean inverted) {
         isInverted = inverted;
-        updateAll();
-    }
-
-    private void updateAll() {
         updateInput();
-        updateUI();
     }
 
     ///////////////////////////////////////////////////
@@ -200,97 +193,124 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     //////////////////////////////////////
 
     @Override
-    public Widget createUIWidget() {
-        if (controllerMode != null && getControllable(controllerMode.side) == null) {
-            setControllerMode(null);
-        }
-        WidgetGroup group = new WidgetGroup(0, 0, 176, 95);
+    public ModularPanel<?> buildUI(SidedPosGuiData data, PanelSyncManager syncManager, UISettings settings) {
+        EnumSyncValue<ControllerMode> controllerModeValue = new EnumSyncValue<>(ControllerMode.class,
+                this::getControllerMode, this::setControllerMode).allowC2S();
 
-        group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
-        group.addWidget(new IntInputWidget(10, 20, 131, 20,
-                this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
+        syncManager.syncValue("controllerMode", controllerModeValue);
 
-        modeButton = new ButtonWidget(10, 45, 131, 20,
-                new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
-                cd -> selectNextMode());
-        group.addWidget(modeButton);
+        return ModularPanel.defaultPanel(coverDefinition.getId().getPath(), 176, 245)
+                .child(GTMuiWidgets.createTitleBar(() -> this.self().getAttachItem(), 176, GTGuiTextures.BACKGROUND))
+                .child(Flow.col().top(7).margin(7, 0)
+                        .childPadding(2)
+                        .widthRel(1.0f)
+                        .coverChildrenHeight()
 
-        // Inverted Mode Toggle:
-        group.addWidget(new ToggleButtonWidget(
-                146, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted)
-                .isMultiLang()
-                .setTooltipText("cover.machine_controller.invert"));
+                        .child(coverUIRow()
+                                .child(new ToggleButton()
+                                        .size(16).left(0)
+                                        .value(new BooleanSyncValue(this::isInverted, ($) -> this.setInverted(true))
+                                                .allowC2S())
+                                        .overlay(GTGuiTextures.OVERLAY_REDSTONE_ON))
+                                .child(Text.comp(Component.translatable("cover.enable_with_redstone")).asWidget()
+                                        .heightRel(1.0f).left(20)))
+                        .child(coverUIRow()
+                                .child(new ToggleButton()
+                                        .size(16).left(0)
+                                        .value(new BooleanSyncValue(() -> !this.isInverted(),
+                                                ($) -> this.setInverted(false)).allowC2S())
+                                        .overlay(GTGuiTextures.OVERLAY_REDSTONE_OFF))
+                                .child(Text.lang("cover.disable_with_redstone").asWidget()
+                                        .heightRel(1.0f).left(20)))
+                        .child(coverUIRow()
+                                .child(new ToggleButton()
+                                        .size(16).left(0)
+                                        .value(new BooleanSyncValue(() -> preventPowerFail,
+                                                bool -> preventPowerFail = bool).allowC2S())
+                                        .overlay(GTGuiTextures.CIRCUIT_OVERLAY))
+                                .child(Text.lang("cover.machine_controller.suspend_powerfail").asWidget()
+                                        .heightRel(1.0f).left(20)))
+                        .child(coverUIRow()
+                                .child(Text
+                                        .dynamic(() -> Component.translatable("cover.machine_controller.redstone",
+                                                redstoneSignalOutput))
+                                        .asWidget()
+                                        .height(16).leftRel(0f)))
+                        .child(coverUIRow()
+                                .child(new SliderWidget()
+                                        .background(GTGuiTextures.FLUID_SLOT)
+                                        .widthRel(0.9f)
+                                        .height(16)
+                                        .leftRel(0.5f)
+                                        .bounds(0, 15)
+                                        .stopper(1.0)
+                                        .value(new DoubleSyncValue(() -> (double) redstoneSignalOutput,
+                                                v -> redstoneSignalOutput = (int) v).allowC2S())))
+                        // Separating line
+                        .child(coverUIRow().child(new Rectangle().color(UI_TEXT_COLOR).asWidget()
+                                .height(1).widthRel(0.9f).leftRel(0.5f)).margin(0, 2))
 
-        group.addWidget(new LabelWidget(10, 72, "cover.machine_controller.suspend_powerfail"));
-        group.addWidget(new ToggleButtonWidget(147, 68, 18, 18, GuiTextures.BUTTON_POWER,
-                this::preventPowerFail, (data) -> {
-                    preventPowerFail = data;
-                }));
+                        .child(coverUIRow().child(Text.lang("cover.machine_controller.control").asWidget()
+                                .height(16)))
 
-        sideCoverSlot = new CustomItemStackHandler(1);
-        group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
-
-            @Override
-            public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
-                return sideCoverSlot.getStackInSlot(0);
-            }
-        });
-
-        updateUI();
-
-        return group;
+                        // Controlling selector
+                        .child(coverUIRow()
+                                .child(modeButton(controllerModeValue, ControllerMode.MACHINE).bottom(0))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_UP, Text.str("U")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_DOWN, Text.str("D")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_NORTH, Text.str("N")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_SOUTH, Text.str("S")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_EAST, Text.str("E")))
+                                .child(modeColumn(controllerModeValue, ControllerMode.COVER_WEST, Text.str("W")))))
+                .bindPlayerInventory();
     }
 
-    private void selectNextMode() {
-        var allowedModes = getAllowedModes();
-
-        setControllerMode(allowedModes.stream()
-                .dropWhile(mode -> this.controllerMode != null && mode != this.controllerMode)
-                .skip(1)
-                .findFirst()
-                .orElse(allowedModes.isEmpty() ? null : allowedModes.get(0)));
-
-        updateAll();
+    private Flow modeColumn(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode, Text title) {
+        return Flow.column().width(18).height(28)
+                .child(title.asWidget().height(10).leftRel(0.5f))
+                .child(modeButton(syncValue, mode).bottom(0));
     }
 
-    private void updateUI() {
-        updateModeButton();
-        updateCoverSlot();
-    }
-
-    private void updateModeButton() {
-        if (modeButton == null) {
-            return;
-        }
-
-        modeButton.setButtonTexture(new GuiTextureGroup(
-                GuiTextures.VANILLA_BUTTON,
-                new TextTexture(controllerMode != null ? controllerMode.localeName : ControllerMode.nullLocaleName)));
-    }
-
-    private void updateCoverSlot() {
-        if (sideCoverSlot == null) {
-            return;
-        }
-
-        if (controllerMode == null) {
-            sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
-            sideCoverSlot.onContentsChanged(0);
-        } else {
-            var side = controllerMode.side;
-            if (side == null && coverHolder instanceof MachineCoverContainer coverContainer) {
-                sideCoverSlot.setStackInSlot(0, coverContainer.getMachine().getDefinition().asStack());
+    private Widget<?> modeButton(EnumSyncValue<ControllerMode> syncValue, ControllerMode mode) {
+        IControllable controllable = getControllable(mode.side);
+        if (controllable == null) {
+            // Nothing to control, put a placeholder widget
+            // 3 states possible here:
+            Text detail;
+            if (mode.side == attachedSide) {
+                // our own side, we can't control ourselves
+                detail = Text.lang("cover.machine_controller.this_cover");
+            } else if (mode.side != null) {
+                // some potential cover that either doesn't exist or isn't controllable
+                detail = Text.lang("cover.machine_controller.cover_not_controllable");
             } else {
-                var cover = coverHolder.getCoverAtSide(side);
-                if (cover != null) {
-                    sideCoverSlot.setStackInSlot(0, cover.getAttachItem().copy());
-                } else {
-                    sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
-                }
+                // cover holder is not controllable
+                detail = Text.lang("cover.machine_controller.machine_not_controllable");
             }
-            sideCoverSlot.onContentsChanged(0);
+
+            return GuiTextures.MC_BUTTON.asWidget().size(18)
+                    .overlay(GTGuiTextures.BUTTON_CROSS)
+                    .tooltip(t -> t.addLine(Text.lang(mode.getTooltip())).addLine(detail.getFormatted()));
         }
+
+        ItemStack stack;
+        if (controllerMode == null) {
+            stack = ItemStack.EMPTY;
+        } else {
+            if (mode == ControllerMode.MACHINE && coverHolder instanceof MachineCoverContainer coverContainer) {
+                stack = coverContainer.getMachine().getDefinition().asStack();
+            } else {
+                // this can't be null because we already checked IControllable, and it was not null
+                // noinspection ConstantConditions
+                stack = coverHolder.getCoverAtSide(mode.side).getAttachItem().copy();
+            }
+        }
+
+        return new ToggleButton().size(18)
+                .value(boolValueOf(syncValue, mode))
+                .overlay(new ItemDrawable(stack).asIcon().size(16))
+                .tooltip(t -> t.addLine(Text.lang(mode.getTooltip()))
+                        .addLine(stack.getHoverName()));
     }
 
     @Override

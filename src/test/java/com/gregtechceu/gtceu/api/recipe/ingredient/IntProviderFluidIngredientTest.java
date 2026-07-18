@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -162,7 +162,7 @@ public class IntProviderFluidIngredientTest {
     private static BusHolder getBussesAndFormLCR(GameTestHelper helper) {
         WorkableMultiblockMachine controller = (WorkableMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(LCR_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 1, 0)));
@@ -184,7 +184,7 @@ public class IntProviderFluidIngredientTest {
     private static BusHolderBatchParallel getBussesAndFormLCENT(GameTestHelper helper) {
         WorkableElectricMultiblockMachine controller = (WorkableElectricMultiblockMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(2, 2, 0)));
-        TestUtils.formMultiblock(controller);
+        TestUtils.formMultiblock(helper, controller);
         controller.setRecipeType(CENTRIFUGE_RECIPE_TYPE);
         ItemBusPartMachine inputBus1 = (ItemBusPartMachine) getMetaMachine(
                 helper.getBlockEntity(new BlockPos(1, 2, 0)));
@@ -283,7 +283,7 @@ public class IntProviderFluidIngredientTest {
 
         helper.runAfterDelay(2, () -> {
             if (machine.getRecipeLogic().getLastRecipe().getOutputContents(FluidRecipeCapability.CAP).get(0)
-                    .getContent() instanceof IntProviderFluidIngredient ingredient) {
+                    .content() instanceof IntProviderFluidIngredient ingredient) {
                 ingredient.setSampledCount(0);
 
                 if (ingredient.getSampledCount() != 0) {

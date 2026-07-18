@@ -68,6 +68,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.ModLoader;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
@@ -270,7 +271,7 @@ public class GTBlocks {
 
         MaterialCasingCollectionEvent event = new MaterialCasingCollectionEvent(builder);
         AddonFinder.getAddons().forEach(addon -> addon.collectMaterialCasings(event));
-
+        ModLoader.get().postEvent(event);
         MATERIALS_TO_CASINGS = builder.build();
     }
 
@@ -1300,6 +1301,7 @@ public class GTBlocks {
                             .initialProperties(() -> Blocks.GLASS)
                             .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
                             .addLayer(() -> RenderType::cutout)
+                            .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                             .blockstate(GTModels.lampModel(dyeColor, true))
                             .item(LampBlockItem::new)
                             .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")
@@ -1314,6 +1316,7 @@ public class GTBlocks {
                     .block("%s_borderless_lamp".formatted(dyeColor.getName()), (p) -> new LampBlock(p, dyeColor, false))
                     .initialProperties(() -> Blocks.GLASS)
                     .properties(p -> p.strength(0.3f, 8.0f).sound(SoundType.GLASS))
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE)
                     .blockstate(GTModels.lampModel(dyeColor, false))
                     .item(LampBlockItem::new)
                     .model((ctx, prov) -> prov.blockItem(ctx::get, "_on")

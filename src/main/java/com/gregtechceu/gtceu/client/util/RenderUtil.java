@@ -10,8 +10,6 @@ import com.gregtechceu.gtceu.utils.GTMatrixUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
-
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,28 +25,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.drawable.GuiDraw;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
@@ -204,12 +197,12 @@ public class RenderUtil {
         }
 
         var fluidContent = contents.stream()
-                .filter(content -> content.content instanceof FluidIngredient ingredient && !ingredient.isEmpty())
+                .filter(content -> content.content() instanceof FluidIngredient ingredient && !ingredient.isEmpty())
                 .findAny();
         if (fluidContent.isEmpty()) {
             return null;
         }
-        var ingredient = (FluidIngredient) fluidContent.get().content;
+        var ingredient = (FluidIngredient) fluidContent.get().content();
 
         var stacks = ingredient.getStacks();
         if (stacks.length == 0) {
@@ -324,33 +317,13 @@ public class RenderUtil {
                                  MultiBufferSource bufferSource, PoseStack poseStack) {
         int packedLight = LevelRenderer.getLightColor(level, state, pos);
 
-        RenderShape renderShape = state.getRenderShape();
-        if (renderShape == RenderShape.INVISIBLE) {
-            return;
-        } else if (renderShape == RenderShape.ENTITYBLOCK_ANIMATED) {
-            // if it's a block entity, use the BEWLR to render it instead of the empty block model
-            ItemStack stack = new ItemStack(state.getBlock());
-            IClientItemExtensions.of(stack).getCustomRenderer().renderByItem(stack, ItemDisplayContext.NONE,
-                    poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY);
-            return;
-        }
-
         BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = blockRenderer.getBlockModel(state);
         ModelData modelData = model.getModelData(level, pos, state, ModelData.EMPTY);
 
-        int blockColor = Minecraft.getInstance().getBlockColors().getColor(state, level, pos, 0);
-        float r = (float) (blockColor >> 16 & 0xFF) / 255.0F;
-        float g = (float) (blockColor >> 8 & 0xFF) / 255.0F;
-        float b = (float) (blockColor & 0xFF) / 255.0F;
-
-        for (RenderType renderType : model.getRenderTypes(state, RandomSource.create(42), modelData)) {
-            blockRenderer.getModelRenderer().renderModel(poseStack.last(),
-                    bufferSource.getBuffer(RenderTypeHelper.getEntityRenderType(renderType, false)),
-                    state, model, r, g, b,
-                    packedLight, OverlayTexture.NO_OVERLAY,
-                    modelData, renderType);
-        }
+        // noinspection DataFlowIssue renderType is nullable, just not marked as such
+        blockRenderer.renderSingleBlock(state, poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY,
+                modelData, null);
     }
 
     /**
@@ -400,7 +373,7 @@ public class RenderUtil {
             // check item outputs first
             List<Content> outputs = recipe.getOutputContents(ItemRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content).getItems();
+                ItemStack[] items = ItemRecipeCapability.CAP.of(outputs.get(0).content()).getItems();
                 if (items.length > 0) {
                     ItemStack output = items[0];
                     if (!output.isEmpty() && !GTUtil.isSameItemSameTags(output, stack)) {
@@ -412,15 +385,11 @@ public class RenderUtil {
             // if there are no item outputs, try to find a fluid output
             outputs = recipe.getOutputContents(FluidRecipeCapability.CAP);
             if (!outputs.isEmpty()) {
-                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content).getStacks();
+                FluidStack[] fluids = FluidRecipeCapability.CAP.of(outputs.get(0).content()).getStacks();
                 if (fluids.length != 0) {
                     FluidStack output = fluids[0];
                     if (!output.isEmpty()) {
-                        var clientExt = IClientFluidTypeExtensions.of(output.getFluid());
-                        var texture = RenderUtil.FluidTextureType.STILL.map(clientExt, output);
-                        int color = clientExt.getTintColor(output);
-
-                        DrawerHelper.drawFluidTexture(graphics, x, y, texture, 0, 0, z, color);
+                        GuiDraw.drawFluidTexture(graphics, output, x, y, 0, 0, z);
                         return true;
                     }
                 }

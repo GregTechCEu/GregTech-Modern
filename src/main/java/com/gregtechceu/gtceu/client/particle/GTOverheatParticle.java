@@ -254,7 +254,7 @@ public class GTOverheatParticle extends GTBloomParticle {
         poseStack.pushPose();
         poseStack.translate(posX, posY, posZ);
         pipeShape.forAllBoxes((x1, y1, z1, x2, y2, z2) -> {
-            RenderBufferHelper.renderColorCube(poseStack, buffer,
+            RenderBufferHelper.renderColorCube(buffer, poseStack,
                     (float) x1 - 0.001f, (float) y1 - 0.001f, (float) z1 - 0.001f,
                     (float) x2 + 0.001f, (float) y2 + 0.001f, (float) z2 + 0.001f,
                     red, green, blue, alpha, true);

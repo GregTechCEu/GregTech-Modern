@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
@@ -9,20 +11,26 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.IMonitorModuleItem;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.EntryTypes;
 import com.gregtechceu.gtceu.api.misc.virtualregistry.VirtualEnderRegistry;
 import com.gregtechceu.gtceu.api.placeholder.*;
 import com.gregtechceu.gtceu.api.placeholder.exceptions.*;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.placeholder.ModulePlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.QuadPlaceholderRenderer;
 import com.gregtechceu.gtceu.client.renderer.placeholder.RectPlaceholderRenderer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.item.modules.ImageModuleBehaviour;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.monitor.AdvancedMonitorPartMachine;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.ae2.GTAEPlaceholders;
+import com.gregtechceu.gtceu.integration.cctweaked.CCTweakedPlugin;
+import com.gregtechceu.gtceu.integration.create.GTCreateIntegration;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+import com.gregtechceu.gtceu.utils.math.ParseResult;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSource;
@@ -47,6 +55,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -56,6 +65,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class GTPlaceholders {
+
+    static {
+        GTRegistries.PLACEHOLDERS.unfreeze();
+    }
 
     public static int countItems(String id, @Nullable IItemHandler itemHandler) {
         if (itemHandler == null) return 0;
@@ -91,7 +104,7 @@ public class GTPlaceholders {
         return cnt;
     }
 
-    public static void initPlaceholders() {
+    public static void init() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> GTPlaceholders::initRenderers);
         PlaceholderHandler.addPlaceholder(new Placeholder("energy") {
 
@@ -106,6 +119,11 @@ public class GTPlaceholders {
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyStored() : 0);
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("energyCapacity") {
 
@@ -119,14 +137,27 @@ public class GTPlaceholders {
                 IEnergyContainer energy = GTCapabilityHelper.getEnergyContainer(ctx.level(), ctx.pos(), ctx.side());
                 return MultiLineComponent.literal(energy != null ? energy.getEnergyCapacity() : 0);
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("calc") {
 
             @Override
-            public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
-                List<String> stringArgs = new ArrayList<>();
-                args.forEach((components) -> stringArgs.add(GTStringUtils.componentsToString(components)));
-                return MultiLineComponent.literal(GTStringUtils.calc(stringArgs));
+            public MultiLineComponent apply(PlaceholderContext ctx,
+                                            List<MultiLineComponent> args) throws PlaceholderException {
+                String expression = args.stream().map(MultiLineComponent::toString).reduce("", (a, b) -> a + b);
+                ParseResult result = GTMath.parseExpression(expression, 0, true);
+                if (result.isFailure())
+                    throw new PlaceholderException(result.getError().toString());
+                return MultiLineComponent.literal(result.getResult().getNumberValue().toString());
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("itemCount") {
@@ -153,6 +184,11 @@ public class GTPlaceholders {
                 }
                 throw new InvalidArgsException();
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("fluidCount") {
 
@@ -168,6 +204,11 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 1);
                 return MultiLineComponent.empty(); // unreachable
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("if") {
 
@@ -182,8 +223,15 @@ public class GTPlaceholders {
                         return new MultiLineComponent(args.get(2)).setIgnoreSpaces(true);
                     } else return MultiLineComponent.empty();
                 } catch (NumberFormatException e) {
-                    return args.get(1);
+                    if (args.size() > 2 && args.get(0).equalsString(""))
+                        return args.get(2).setIgnoreSpaces(true);
+                    return args.get(1).setIgnoreSpaces(true);
                 }
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("color") {
@@ -242,12 +290,22 @@ public class GTPlaceholders {
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
                                             List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 2);
+                PlaceholderUtils.checkArgs(args, 1, true);
                 int count = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkRange("n", 0, 50000, count);
+                MultiLineComponent arg = MultiLineComponent.empty();
+                for (int i = 1; i < args.size(); i++) {
+                    arg.append(args.get(i));
+                    if (i != args.size() - 1) arg.append(" ");
+                }
                 MultiLineComponent out = MultiLineComponent.empty();
-                for (int i = 0; i < count; i++) out.append(args.get(1));
+                for (int i = 0; i < count; i++) out.append(arg);
                 return out.setIgnoreSpaces(true);
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("block") {
@@ -258,6 +316,11 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 0);
                 return MultiLineComponent.literal("█");
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("tick") {
 
@@ -266,6 +329,11 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 return MultiLineComponent.literal(ctx.level().getGameTime());
+            }
+
+            @Override
+            public boolean isView() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("select") {
@@ -277,6 +345,11 @@ public class GTPlaceholders {
                 int i = PlaceholderUtils.toInt(args.get(0));
                 PlaceholderUtils.checkArgs(args, i + 1, true);
                 return new MultiLineComponent(args.get(i + 1)).setIgnoreSpaces(true);
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("redstone") {
@@ -312,6 +385,11 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkRange("line", 1, ctx.previousText().size(), i);
                 return MultiLineComponent.of(ctx.previousText().get(i - 1)).setIgnoreSpaces(true);
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("progress") {
 
@@ -324,6 +402,11 @@ public class GTPlaceholders {
                         ctx.pos(), ctx.side());
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.getProgress());
+            }
+
+            @Override
+            public boolean isView() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("maxProgress") {
@@ -338,6 +421,11 @@ public class GTPlaceholders {
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.getMaxProgress());
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("maintenance") {
 
@@ -346,10 +434,15 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 0);
                 if (ctx.pos() == null) throw new NoTargetException();
-                IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(ctx.level(),
-                        ctx.pos(), ctx.side());
-                if (maintenance == null) throw new NotSupportedException();
-                return MultiLineComponent.literal(maintenance.hasMaintenanceProblems() ? 1 : 0);
+                MetaMachine machine = MetaMachine.getMachine(ctx.level(), ctx.pos());
+                if (machine instanceof MaintenanceHatchPartMachine maint)
+                    return MultiLineComponent.literal(maint.hasMaintenanceProblems() ? 1 : 0);
+                throw new NotSupportedException();
+            }
+
+            @Override
+            public boolean isView() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("active") {
@@ -364,6 +457,11 @@ public class GTPlaceholders {
                 if (workable == null) throw new NotSupportedException();
                 return MultiLineComponent.literal(workable.isActive() ? 1 : 0);
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("voltage") {
 
@@ -377,6 +475,11 @@ public class GTPlaceholders {
                 }
                 throw new NotSupportedException();
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("amperage") {
 
@@ -389,6 +492,11 @@ public class GTPlaceholders {
                     return MultiLineComponent.literal(cable.getAverageAmperage());
                 }
                 throw new NotSupportedException();
+            }
+
+            @Override
+            public boolean isView() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("count") {
@@ -404,6 +512,11 @@ public class GTPlaceholders {
                 }
                 return MultiLineComponent.literal(cnt);
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("data") {
 
@@ -413,6 +526,8 @@ public class GTPlaceholders {
                 PlaceholderUtils.checkArgs(args, 2, true);
                 try {
                     int slot = PlaceholderUtils.toInt(args.get(1));
+                    slot = Math.max(slot, 1);
+                    PlaceholderUtils.checkRange("slot index", 1, 8, slot);
                     if (ctx.itemStackHandler() == null) throw new NotSupportedException();
                     PlaceholderUtils.checkRange("slot index", 0, ctx.itemStackHandler().getSlots(), slot);
                     ItemStack stack;
@@ -476,6 +591,11 @@ public class GTPlaceholders {
                 }
                 return out.setIgnoreSpaces(true);
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("nbt") {
 
@@ -493,6 +613,11 @@ public class GTPlaceholders {
                 }
                 return tag == null ? MultiLineComponent.empty() : MultiLineComponent.literal(tag.toString());
             }
+
+            @Override
+            public boolean isView() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("toChars") {
 
@@ -505,6 +630,11 @@ public class GTPlaceholders {
                 for (char c : GTStringUtils.componentsToString(args.get(0)).toCharArray()) out.append(c).append(' ');
                 return MultiLineComponent.literal(out.substring(0, out.length() - 2));
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("toAscii") {
 
@@ -516,6 +646,11 @@ public class GTPlaceholders {
                 if (arg.length() != 1) throw new InvalidArgsException();
                 return MultiLineComponent.literal((int) arg.toCharArray()[0]);
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("fromAscii") {
 
@@ -524,6 +659,11 @@ public class GTPlaceholders {
                                             List<MultiLineComponent> args) throws PlaceholderException {
                 PlaceholderUtils.checkArgs(args, 1);
                 return MultiLineComponent.literal((char) PlaceholderUtils.toInt(args.get(0))).setIgnoreSpaces(true);
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("subList") {
@@ -541,6 +681,11 @@ public class GTPlaceholders {
                 out.append(args.get(r - 1));
                 out.setIgnoreSpaces(true);
                 return out;
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("cmp") {
@@ -560,6 +705,11 @@ public class GTPlaceholders {
                     case "!=" -> MultiLineComponent.literal(a != b ? 1 : 0);
                     default -> throw new InvalidArgsException();
                 };
+            }
+
+            @Override
+            public boolean isPure() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("bf") {
@@ -727,6 +877,11 @@ public class GTPlaceholders {
             public MultiLineComponent apply(PlaceholderContext ctx, List<MultiLineComponent> args) {
                 return MultiLineComponent.literal("™");
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("formatInt") {
 
@@ -748,6 +903,11 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(String.format(Locale.ROOT, "%.2f%s",
                         ((double) n) / max, suffixes.get(max)));
             }
+
+            @Override
+            public boolean isPure() {
+                return true;
+            }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("click") {
 
@@ -763,6 +923,11 @@ public class GTPlaceholders {
                 if (args.get(0).equalsString("x")) return MultiLineComponent.literal(monitor.getClickPosX());
                 if (args.get(0).equalsString("y")) return MultiLineComponent.literal(monitor.getClickPosY());
                 throw new InvalidArgsException();
+            }
+
+            @Override
+            public boolean isView() {
+                return true;
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("ender") {
@@ -782,29 +947,11 @@ public class GTPlaceholders {
                     if (stack.getOrCreateTag().contains("boundPlayerUUID"))
                         owner = UUID.fromString(stack.getOrCreateTag().getString("boundPlayerUUID"));
                 }
-                VirtualEnderRegistry ender = VirtualEnderRegistry.getInstance();
+                VirtualEnderRegistry ender = VirtualEnderRegistry.get((ServerLevel) ctx.level());
                 switch (type) {
                     case "redstone" -> {
-                        channel = "ERLink#" + channel;
                         if (!ender.hasEntry(owner, EntryTypes.ENDER_REDSTONE, channel))
                             return MultiLineComponent.literal(0);
-                        if (args.size() > 4) {
-                            if (ctx.itemStackHandler() == null) throw new NotSupportedException();
-                            int slot = PlaceholderUtils.toInt(args.get(3));
-                            PlaceholderUtils.checkRange("slot index", 1, ctx.itemStackHandler().getSlots(), slot);
-                            ItemStack stack = ctx.itemStackHandler().getStackInSlot(slot - 1);
-                            UUID uuid;
-                            if (stack.getOrCreateTag().contains("enderRedstoneLinkTransmitterUUID")) {
-                                uuid = stack.getOrCreateTag().getUUID("enderRedstoneLinkTransmitterUUID");
-                            } else {
-                                uuid = UUID.randomUUID();
-                                stack.getOrCreateTag().putUUID("enderRedstoneLinkTransmitterUUID", uuid);
-                            }
-                            int power = PlaceholderUtils.toInt(args.get(4));
-                            PlaceholderUtils.checkRange("redstone signal", 0, 15, power);
-                            ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).setSignal(uuid, power);
-                            return MultiLineComponent.empty();
-                        }
                         return MultiLineComponent
                                 .literal(ender.getEntry(owner, EntryTypes.ENDER_REDSTONE, channel).getSignal());
                     }
@@ -860,9 +1007,13 @@ public class GTPlaceholders {
 
             @Override
             public MultiLineComponent apply(PlaceholderContext ctx,
-                                            List<MultiLineComponent> args) throws PlaceholderException {
-                PlaceholderUtils.checkArgs(args, 1);
-                return PlaceholderHandler.processPlaceholders(args.get(0).toString(), ctx);
+                                            List<MultiLineComponent> args) {
+                MultiLineComponent out = MultiLineComponent.empty();
+                for (int i = 0; i < args.size(); i++) {
+                    out.append(args.get(i));
+                    if (i != args.size() - 1) out.append(" ");
+                }
+                return PlaceholderHandler.processPlaceholders(out.toString(), ctx);
             }
         });
         PlaceholderHandler.addPlaceholder(new Placeholder("module") {
@@ -1031,6 +1182,21 @@ public class GTPlaceholders {
                 return MultiLineComponent.literal(ctx.monitorGroup().getDataSlot() + 1);
             }
         });
+
+        if (GTCEu.Mods.isAE2Loaded()) {
+            GTAEPlaceholders.init();
+        }
+
+        if (GTCEu.Mods.isCCTweakedLoaded()) {
+            CCTweakedPlugin.initPlaceholders();
+        }
+
+        if (ConfigHolder.INSTANCE.compat.createCompat && GTCEu.Mods.isCreateLoaded()) {
+            GTCreateIntegration.initPlaceholders();
+        }
+
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.PLACEHOLDERS, Placeholder.class));
+        GTRegistries.PLACEHOLDERS.freeze();
     }
 
     @OnlyIn(Dist.CLIENT)

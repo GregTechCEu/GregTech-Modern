@@ -3,19 +3,14 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
-import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.FilterMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
-
-import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.mui.GTMuiCoverUtil;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -24,6 +19,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.factory.SidedPosGuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.EnumSyncValue;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.layout.Flow;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -32,26 +32,21 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FluidFilterCover extends CoverBehavior implements IUICover {
+public class FluidFilterCover extends CoverBehavior implements IMuiCover {
 
     protected FluidFilter fluidFilter;
+    @Setter
     @SaveField
-    @SyncToClient
     @Getter
     protected FilterMode filterMode = FilterMode.FILTER_INSERT;
     private FilteredFluidHandlerWrapper fluidFilterWrapper;
-    @SaveField
     @Setter
+    @SaveField
     @Getter
     protected ManualIOMode allowFlow = ManualIOMode.DISABLED;
 
     public FluidFilterCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
-    }
-
-    public void setFilterMode(FilterMode filterMode) {
-        this.filterMode = filterMode;
-        syncDataHolder.markClientSyncFieldDirty("filterMode");
     }
 
     @Override
@@ -80,14 +75,21 @@ public class FluidFilterCover extends CoverBehavior implements IUICover {
     }
 
     @Override
-    public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 178, 85);
-        group.addWidget(new LabelWidget(60, 5, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(35, 25, 18, 18,
-                FilterMode.VALUES, filterMode, this::setFilterMode));
-        group.addWidget(new EnumSelectorWidget<>(35, 45, 18, 18, ManualIOMode.VALUES, allowFlow, this::setAllowFlow));
-        group.addWidget(getFluidFilter().openConfigurator(62, 25));
-        return group;
+    public void createCoverUIRows(Flow column, SidedPosGuiData data, PanelSyncManager syncManager,
+                                  UISettings settings) {
+        EnumSyncValue<FilterMode> filterMode = new EnumSyncValue<>(FilterMode.class,
+                this::getFilterMode, this::setFilterMode).allowC2S();
+
+        EnumSyncValue<ManualIOMode> ioMode = new EnumSyncValue<>(ManualIOMode.class,
+                this::getAllowFlow, this::setAllowFlow).allowC2S();
+
+        syncManager.syncValue("filterMode", filterMode);
+        syncManager.syncValue("ioMode", ioMode);
+
+        column.child(getFluidFilter().getFilterUI(data, syncManager, settings));
+
+        GTMuiCoverUtil.addFilterModeRow(column, filterMode);
+        GTMuiCoverUtil.addManualIORow(column, ioMode);
     }
 
     private class FilteredFluidHandlerWrapper extends FluidHandlerDelegate {

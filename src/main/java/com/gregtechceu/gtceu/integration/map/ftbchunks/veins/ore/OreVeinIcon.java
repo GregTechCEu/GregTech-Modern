@@ -12,6 +12,8 @@ import com.gregtechceu.gtceu.integration.map.layer.builtin.OreRenderLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 
@@ -31,16 +33,19 @@ import dev.ftb.mods.ftblibrary.ui.ContextMenuItem;
 import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.TooltipList;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class OreVeinIcon implements MapIcon {
 
+    @Getter
+    protected final Component name;
     protected final GeneratedVeinMetadata veinMetadata;
-    protected String name = null;
 
-    public OreVeinIcon(GeneratedVeinMetadata veinMetadata) {
+    public OreVeinIcon(Component name, GeneratedVeinMetadata veinMetadata) {
+        this.name = name;
         this.veinMetadata = veinMetadata;
     }
 
@@ -53,10 +58,6 @@ public class OreVeinIcon implements MapIcon {
     public boolean isEnabled() {
         return FTBChunksOptions.showLayer("ore_veins") &&
                 !(veinMetadata.depleted() && FTBChunksOptions.hideDepleted());
-    }
-
-    public String getName() {
-        return name == null ? name = OreRenderLayer.getName(veinMetadata).getString() : name;
     }
 
     public @NotNull Material getMaterial() {
@@ -84,20 +85,22 @@ public class OreVeinIcon implements MapIcon {
     }
 
     private void openContextMenu(LargeMapScreen screen) {
-        var title = Component.literal(getName());
+        MutableComponent title = getName().copy();
         if (veinMetadata.depleted()) {
             title.append(" (").append(Component.translatable("gtceu.minimap.ore_vein.depleted")).append(")");
         }
-        var markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
+        ContextMenuItem markDepleted = new ContextMenuItem(Component.translatable("button.gtceu.mark_as_depleted.name"),
                 Icons.REMOVE,
                 b -> veinMetadata.depleted(!veinMetadata.depleted()));
-        var material = getMaterial();
-        var color = material.isNull() ? Color4I.rgba(0xFFFFFFFF) : Color4I.rgba(material.getMaterialARGB());
+
+        var color = Color4I.rgba(getMaterial().getMaterialARGB());
         var waypointIcon = WaypointType.DEFAULT.getIcon().withColor(color);
-        var toggleWaypoint = new ContextMenuItem(Component.translatable("button.gtceu.toggle_waypoint.name"),
+        ContextMenuItem toggleWaypoint = new ContextMenuItem(
+                Component.translatable("button.gtceu.toggle_waypoint.name"),
                 waypointIcon,
                 b -> toggleWaypoint(screen));
-        var contextMenu = List.of(
+
+        List<ContextMenuItem> contextMenu = List.of(
                 ContextMenuItem.title(title),
                 ContextMenuItem.SEPARATOR,
                 markDepleted,
@@ -111,14 +114,14 @@ public class OreVeinIcon implements MapIcon {
         var waypointManager = FTBChunksAPI.clientApi().getWaypointManager(dimension)
                 .orElse(null);
         if (mapManager == null || waypointManager == null) return;
-        var waypoint = new WaypointImpl(WaypointType.DEFAULT, mapManager.getDimension(dimension),
-                veinMetadata.center());
+
+        var waypoint = new WaypointImpl(WaypointType.DEFAULT,
+                mapManager.getDimension(dimension), veinMetadata.center());
         if (waypointManager.getAllWaypoints().contains(waypoint)) {
             waypointManager.removeWaypoint(waypoint);
         } else {
-            var material = getMaterial();
-            var color = material.isNull() ? 0xFFFFFFFF : material.getMaterialARGB();
-            waypointManager.addWaypointAt(veinMetadata.center(), getName())
+            int color = getMaterial().getMaterialARGB();
+            waypointManager.addWaypointAt(veinMetadata.center(), getName().getString())
                     .setColor(color)
                     .setHidden(false);
         }
@@ -148,8 +151,8 @@ public class OreVeinIcon implements MapIcon {
     }
 
     @Override
-    public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h, boolean outsideVisibleArea,
-                     int iconAlpha) {
+    public void draw(MapType mapType, GuiGraphics graphics, int x, int y, int w, int h,
+                     boolean outsideVisibleArea, int iconAlpha) {
         if (outsideVisibleArea || !isEnabled()) {
             return;
         }
@@ -160,15 +163,14 @@ public class OreVeinIcon implements MapIcon {
         var colors = RenderUtil.floats(color);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
-        var iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
-        var oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet,
-                true);
+        MaterialIconSet iconSet = material.isNull() ? MaterialIconSet.METALLIC : material.getMaterialIconSet();
+        ResourceLocation oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, true);
         if (oreTexture != null) {
-            var oreSprite = Minecraft.getInstance()
-                    .getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+            var oreSprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
                     .apply(oreTexture);
             graphics.blit(x, y, 0, w, h, oreSprite, colors[0], colors[1], colors[2], 1);
         }
+
         oreTexture = MaterialIconType.rawOre.getItemTexturePath(iconSet, "secondary", true);
         if (oreTexture != null) {
             var materialSecondaryARGB = material.isNull() ? 0xFFFFFFFF : material.getMaterialSecondaryARGB();
@@ -180,9 +182,9 @@ public class OreVeinIcon implements MapIcon {
         }
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
-        var borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(color | 0xFF000000);
+        int borderColor = ConfigHolder.INSTANCE.compat.minimap.getBorderColor(color | 0xFF000000);
         if ((borderColor & 0xFF000000) != 0) {
-            var thickness = iconSize / 16;
+            int thickness = iconSize / 16;
             graphics.fill(x, y, x + w, y + h + thickness, borderColor);
             graphics.fill(x, y - thickness, x + w, y + h + thickness, borderColor);
             graphics.fill(x, y, x + w + thickness, y + h, borderColor);

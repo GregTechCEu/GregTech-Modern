@@ -1,11 +1,8 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ScrollablePhantomFluidWidget;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.mui.GTGuiTextures;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +11,15 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
+import brachy.modularui.factory.GuiData;
+import brachy.modularui.screen.UISettings;
+import brachy.modularui.value.sync.BooleanSyncValue;
+import brachy.modularui.value.sync.FluidSlotSyncHandler;
+import brachy.modularui.value.sync.PanelSyncManager;
+import brachy.modularui.widgets.ToggleButton;
+import brachy.modularui.widgets.layout.Flow;
+import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.FluidSlot;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -38,9 +44,17 @@ public class SimpleFluidFilter implements FluidFilter {
     @Getter
     protected int maxStackSize = 1;
 
-    private CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
+    private final CustomFluidTank[] fluidStorageSlots = new CustomFluidTank[9];
 
     protected SimpleFluidFilter() {
+        for (int i = 0; i < 9; i++) {
+            int finalI = i;
+            fluidStorageSlots[i] = new CustomFluidTank(64000);
+            fluidStorageSlots[i].setOnContentsChanged(() -> {
+                matches[finalI] = fluidStorageSlots[finalI].getFluid();
+                onUpdated.accept(this);
+            });
+        }
         Arrays.fill(matches, FluidStack.EMPTY);
     }
 
@@ -56,6 +70,7 @@ public class SimpleFluidFilter implements FluidFilter {
         var list = tag.getList("matches", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             handler.matches[i] = FluidStack.loadFluidStackFromNBT((CompoundTag) list.get(i));
+            handler.fluidStorageSlots[i].setFluid(handler.matches[i]);
         }
         return handler;
     }
@@ -98,46 +113,35 @@ public class SimpleFluidFilter implements FluidFilter {
         onUpdated.accept(this);
     }
 
-    public WidgetGroup openConfigurator(int x, int y) {
-        WidgetGroup group = new WidgetGroup(x, y, 18 * 3 + 25, 18 * 3); // 80 55
-        fluidStorageSlots = new CustomFluidTank[9];
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                final int index = i * 3 + j;
+    @Override
+    public ItemStack getFilterItem() {
+        return GTItems.FLUID_FILTER.asStack();
+    }
 
-                fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
-                fluidStorageSlots[index].setFluid(matches[index]);
-
-                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
-                        () -> fluidStorageSlots[index].getFluid(),
-                        (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
-
-                    @Override
-                    public void updateScreen() {
-                        super.updateScreen();
-                        setShowAmount(maxStackSize > 1L);
-                    }
-
-                    @Override
-                    public void detectAndSendChanges() {
-                        super.detectAndSendChanges();
-                        setShowAmount(maxStackSize > 1L);
-                    }
-                };
-
-                tank.setChangeListener(() -> {
-                    matches[index] = fluidStorageSlots[index].getFluidInTank(0);
-                    onUpdated.accept(this);
-                }).setBackground(GuiTextures.SLOT);
-
-                group.addWidget(tank);
-            }
+    public Flow getFilterUI(GuiData data, PanelSyncManager syncManager, UISettings settings) {
+        for (int i = 0; i < 9; i++) {
+            syncManager.syncValue("filter_slot_" + i,
+                    new FluidSlotSyncHandler(fluidStorageSlots[i]).controlsAmount(true).phantom(true));
         }
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 0, 20, 20,
-                GuiTextures.BUTTON_BLACKLIST, this::isBlackList, this::setBlackList));
-        group.addWidget(new ToggleButtonWidget(18 * 3 + 5, 20, 20, 20,
-                GuiTextures.BUTTON_FILTER_NBT, this::isIgnoreNbt, this::setIgnoreNbt));
-        return group;
+
+        Grid filterGrid = new Grid()
+                .coverChildren()
+                .gridOfSizeWidth(9, 3, (x, y, i) -> new FluidSlot().syncHandler("filter_slot_" + i));
+
+        BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
+        syncManager.syncValue("blacklist", blacklist);
+
+        BooleanSyncValue ignoreNBT = new BooleanSyncValue(this::isIgnoreNbt, this::setIgnoreNbt).allowC2S();
+        syncManager.syncValue("ignoreNBT", ignoreNBT);
+
+        Flow filterConfigButtons = Flow.col()
+                .coverChildren()
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_BLACKLIST).syncHandler("blacklist"))
+                .child(new ToggleButton().stateBackground(GTGuiTextures.BUTTON_IGNORE_NBT).syncHandler("ignoreNBT"));
+        return Flow.row()
+                .coverChildrenHeight()
+                .child(filterGrid.horizontalCenter())
+                .child(filterConfigButtons.marginLeft(118));
     }
 
     @Override

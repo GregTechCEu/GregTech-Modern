@@ -8,8 +8,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
@@ -46,35 +44,20 @@ public class GTRegistryInfo<K, V> {
     public static final Map<ResourceLocation, List<GTRegistryInfo<?, ?>>> POST_AT = new HashMap<>();
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
-    public static final GTRegistryInfo<String, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
-    public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS,
-            Material.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES,
-            GTRecipeType.class);
-    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(
-            GTRegistries.RECIPE_CATEGORIES,
-            GTRecipeCategory.class);
-    public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES,
-            MachineDefinition.class);
-    public static final GTRegistryInfo<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"),
-            () -> MaterialIconSet.ICON_SETS, MaterialIconSet.class);
-    public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(
-            GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
-    public static final GTRegistryInfo<String, IWorldGenLayer> WORLD_GEN_LAYER = add(GTCEu.id("world_gen_layer"),
-            () -> WorldGeneratorUtils.WORLD_GEN_LAYERS, SimpleWorldGenLayer.class);
-    public static final GTRegistryInfo<String, TagPrefix> TAG_PREFIX = add(GTCEu.id("tag_prefix"),
-            () -> TagPrefix.PREFIXES, KJSTagPrefix.class);
-    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(
-            GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+    // spotless:off
 
-    /*
-     * public static final GTRegistryInfo<String, RecipeCapability<?>> RECIPE_CAPABILITY =
-     * add(GTRegistries.RECIPE_CAPABILITIES, RecipeCapability.class);
-     * public static final GTRegistryInfo<String, Class<? extends RecipeCondition>> RECIPE_CONDITION =
-     * add(GTRegistries.RECIPE_CONDITIONS, RecipeCondition.class);
-     * public static final GTRegistryInfo<ResourceLocation, SoundEntry> SOUND = add(GTRegistries.SOUNDS,
-     * SoundEntry.class);
-     */
+    public static final GTRegistryInfo<ResourceLocation, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
+    public static final GTRegistryInfo<ResourceLocation, Material> MATERIAL = add(GTRegistries.MATERIALS, Material.class);
+    public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
+    public static final GTRegistryInfo<ResourceLocation, GTRecipeCategory> RECIPE_CATEGORY = add(GTRegistries.RECIPE_CATEGORIES, GTRecipeCategory.class);
+    public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
+    public static final GTRegistryInfo<ResourceLocation, MaterialIconSet> MATERIAL_ICON_SET = add(GTRegistries.MATERIAL_ICON_SETS, MaterialIconSet.class);
+    public static final GTRegistryInfo<String, MaterialIconType> MATERIAL_ICON_TYPE = add(GTCEu.id("material_icon_type"), () -> MaterialIconType.ICON_TYPES, MaterialIconType.class);
+    public static final GTRegistryInfo<ResourceLocation, IWorldGenLayer> WORLD_GEN_LAYER = add(GTRegistries.WORLD_GEN_LAYERS, IWorldGenLayer.class);
+    public static final GTRegistryInfo<ResourceLocation, TagPrefix> TAG_PREFIX = add(GTRegistries.TAG_PREFIXES, KJSTagPrefix.class);
+    public static final GTRegistryInfo<ResourceLocation, DimensionMarker> DIMENSION_MARKER = add(GTRegistries.DIMENSION_MARKERS, DimensionMarker.class);
+
+    // spotless:on
 
     public final ResourceLocation registryKey;
     public final Class<V> objectBaseClass;

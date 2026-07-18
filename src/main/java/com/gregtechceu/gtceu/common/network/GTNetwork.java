@@ -98,6 +98,10 @@ public class GTNetwork {
         register(CPacketImageRequest.class, CPacketImageRequest::new, NetworkDirection.PLAY_TO_SERVER);
         register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
 
+        register(SCPacketMonitorGroupNBTChange.class, SCPacketMonitorGroupNBTChange::new, null);
+        register(CPacketImageRequest.class, CPacketImageRequest::new, NetworkDirection.PLAY_TO_SERVER);
+        register(SPacketImageResponse.class, SPacketImageResponse::new, NetworkDirection.PLAY_TO_CLIENT);
+
         register(CPacketKeyDown.class, CPacketKeyDown::new, NetworkDirection.PLAY_TO_SERVER);
 
         register(SPacketSyncOreVeins.class, SPacketSyncOreVeins::new, NetworkDirection.PLAY_TO_CLIENT);
@@ -115,5 +119,7 @@ public class GTNetwork {
         register(SPacketSendWorldID.class, SPacketSendWorldID::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SPacketNotifyCapeChange.class, SPacketNotifyCapeChange::new, NetworkDirection.PLAY_TO_CLIENT);
         register(SCPacketShareProspection.class, SCPacketShareProspection::new, null);
+        register(SPacketStartProspectionShare.class, SPacketStartProspectionShare::new,
+                NetworkDirection.PLAY_TO_CLIENT);
     }
 }

@@ -38,7 +38,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> capabilities = new IdentityHashMap<>();
         for (String key : json.keySet()) {
             JsonArray contentsJson = json.getAsJsonArray(key);
-            RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(key);
+            RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(key));
             if (capability != null) {
                 List<Content> contents = new ArrayList<>();
                 for (JsonElement contentJson : contentsJson) {
@@ -54,7 +54,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, ChanceLogic> chanceLogics = new IdentityHashMap<>();
         for (String key : json.keySet()) {
             String value = json.get(key).getAsString();
-            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(key), GTRegistries.CHANCE_LOGICS.get(value));
+            chanceLogics.put(GTRegistries.RECIPE_CAPABILITIES.get(GTCEu.id(value)),
+                    GTRegistries.CHANCE_LOGICS.get(GTCEu.id(value)));
         }
         return chanceLogics;
     }
@@ -68,7 +69,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(FriendlyByteBuf buf) {
-        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readUtf());
+        RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readResourceLocation());
         List<Content> contents = buf.readList(capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
@@ -76,7 +77,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public static void entryWriter(FriendlyByteBuf buf, Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
-        buf.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
+        buf.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
         buf.writeCollection(contents, capability.serializer::toNetworkContent);
     }
 
@@ -109,17 +110,17 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
                 buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
 
         Map<RecipeCapability<?>, ChanceLogic> inputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readResourceLocation()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readResourceLocation()));
         Map<RecipeCapability<?>, ChanceLogic> outputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readResourceLocation()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readResourceLocation()));
         Map<RecipeCapability<?>, ChanceLogic> tickInputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readResourceLocation()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readResourceLocation()));
         Map<RecipeCapability<?>, ChanceLogic> tickOutputChanceLogics = buf.readMap(
-                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readUtf()),
-                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readUtf()));
+                buf1 -> GTRegistries.RECIPE_CAPABILITIES.get(buf1.readResourceLocation()),
+                buf1 -> GTRegistries.CHANCE_LOGICS.get(buf1.readResourceLocation()));
 
         List<RecipeCondition<?>> conditions = buf.readCollection(c -> new ArrayList<>(),
                 GTRecipeSerializer::conditionReader);
@@ -166,17 +167,17 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
 
         buf.writeMap(recipe.inputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+                (buf1, cap) -> buf1.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic)));
         buf.writeMap(recipe.outputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+                (buf1, cap) -> buf1.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic)));
         buf.writeMap(recipe.tickInputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+                (buf1, cap) -> buf1.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic)));
         buf.writeMap(recipe.tickOutputChanceLogics,
-                (buf1, cap) -> buf1.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
-                (buf1, logic) -> buf1.writeUtf(GTRegistries.CHANCE_LOGICS.getKey(logic)));
+                (buf1, cap) -> buf1.writeResourceLocation(GTRegistries.RECIPE_CAPABILITIES.getKey(cap)),
+                (buf1, logic) -> buf1.writeResourceLocation(GTRegistries.CHANCE_LOGICS.getKey(logic)));
 
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
         if (GTCEu.Mods.isKubeJSLoaded()) {

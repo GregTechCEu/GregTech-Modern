@@ -19,6 +19,8 @@ package com.gregtechceu.gtceu.client.util.quad.transformers;
 
 import net.minecraft.util.Mth;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * @author covers1624
  */
@@ -58,6 +60,11 @@ public class InterpolationHelper {
         vec1[1] = dy1;
         vec2[1] = dy2;
         vec3[1] = dy3;
+    }
+
+    @ApiStatus.Internal
+    public float[][] getInternalPosCache() {
+        return this.posCache;
     }
 
     /**

@@ -7,7 +7,6 @@ import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4fc;
@@ -105,15 +104,6 @@ public class FormattingUtil {
             if (nextIsUpper || Character.isDigit(curChar) ^ Character.isDigit(nextChar)) result.append('_');
         }
         return result.toString();
-    }
-
-    /**
-     * @deprecated use {@link FormattingUtil#toLowerCaseUnderscore(String) toLowerCaseUnderscore} instead.
-     */
-    @ApiStatus.Obsolete(since = "7.0.0")
-    @Deprecated(since = "7.0.0")
-    public static String toLowerCaseUnder(String string) {
-        return toLowerCaseUnderscore(string);
     }
 
     /**

@@ -41,9 +41,7 @@ public class QuadReInterpolator implements QuadTransform {
     private final float[] originalSpriteV = new float[4];
     private final int[] originalSpriteLightmap = new int[4];
 
-    public QuadReInterpolator() {
-        super();
-    }
+    public QuadReInterpolator() {}
 
     public void setInputQuad(QuadView quad) {
         Direction.Axis axis = quad.nominalFace().getAxis();
@@ -63,6 +61,12 @@ public class QuadReInterpolator implements QuadTransform {
             originalSpriteV[v] = quad.v(v);
             originalSpriteLightmap[v] = quad.lightmap(v);
         }
+
+        // interpolationHelper.reset(
+        // posCache[0][0], posCache[0][1],
+        // posCache[1][0], posCache[1][1],
+        // posCache[2][0], posCache[2][1],
+        // posCache[3][0], posCache[3][1]);
     }
 
     @Override
@@ -166,7 +170,7 @@ public class QuadReInterpolator implements QuadTransform {
      * @return The x coordinate.
      */
     private static int xCoord(Direction.Axis axis) {
-        if (axis == Direction.Axis.Y) {
+        if (axis != Direction.Axis.X) {
             return 0;
         } else {
             return 2;

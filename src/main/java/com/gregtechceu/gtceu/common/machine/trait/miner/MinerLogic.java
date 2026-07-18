@@ -5,13 +5,14 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
+import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.api.transfer.item.NotifiableAccountedInvWrapper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -64,12 +65,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     private int blocksToMineOriginalCount = 0;
     @Getter
     @SaveField
+    @SyncToClient
     protected int x = Integer.MAX_VALUE;
     @Getter
     @SaveField
+    @SyncToClient
     protected int y = Integer.MAX_VALUE;
     @Getter
     @SaveField
+    @SyncToClient
     protected int z = Integer.MAX_VALUE;
     @Getter
     @SaveField
@@ -85,12 +89,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     protected int pipeY = Integer.MAX_VALUE;
     @Getter
     @SaveField
+    @SyncToClient
     protected int mineX = Integer.MAX_VALUE;
     @Getter
     @SaveField
+    @SyncToClient
     protected int mineZ = Integer.MAX_VALUE;
     @Getter
     @SaveField
+    @SyncToClient
     protected int mineY = Integer.MAX_VALUE;
     @Getter
     private int minBuildHeight = Integer.MAX_VALUE;
@@ -100,13 +107,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     @SaveField
     private int pipeLength = 0;
     @Getter
-    @Setter
     @SaveField
+    @SyncToClient
     private int currentRadius;
     @Getter
     @SaveField
+    @SyncToClient
     private boolean isDone;
     @Getter
+    @SyncToClient
     private boolean isInventoryFull;
     @Getter
     private final Map<IO, List<RecipeHandlerList>> capabilitiesProxy;
@@ -148,6 +157,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     @Override
     public void onMachineLoad() {
+        super.onMachineLoad();
+
         this.inputItemHandler = new ItemRecipeHandler(IO.IN,
                 getRLMachine().getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
         this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
@@ -276,6 +287,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 x = mineX;
                 y = mineY;
                 z = mineZ;
+                syncDataHolder.markClientSyncFieldDirty("x");
+                syncDataHolder.markClientSyncFieldDirty("y");
+                syncDataHolder.markClientSyncFieldDirty("z");
 
                 // attempt to get more blocks to mine, if there are none, the miner is done mining
                 blocksToMine.addAll(getBlocksToMine());
@@ -292,6 +306,11 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                 subscription = null;
             }
         }
+    }
+
+    public void setCurrentRadius(int currentRadius) {
+        this.currentRadius = currentRadius;
+        syncDataHolder.markClientSyncFieldDirty("currentRadius");
     }
 
     /**
@@ -439,6 +458,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
             mineX = pos.getX();
             mineZ = pos.getZ();
             mineY = pos.getY();
+            syncDataHolder.markClientSyncFieldDirty("mineX");
+            syncDataHolder.markClientSyncFieldDirty("mineY");
+            syncDataHolder.markClientSyncFieldDirty("mineZ");
             blocksToMine.removeFirst();
             onMineOperation();
 
@@ -459,11 +481,15 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public void initPos(BlockPos pos, int currentRadius) {
         x = pos.getX() - currentRadius;
         z = pos.getZ() - currentRadius;
+        syncDataHolder.markClientSyncFieldDirty("x");
+        syncDataHolder.markClientSyncFieldDirty("z");
+
         if (dir == Direction.UP) {
             y = pos.getY() + 1;
         } else {
             y = pos.getY() - 1;
         }
+        syncDataHolder.markClientSyncFieldDirty("y");
         startX = pos.getX() - currentRadius;
         startZ = pos.getZ() - currentRadius;
         startY = pos.getY();
@@ -474,12 +500,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         }
         mineX = pos.getX() - currentRadius;
         mineZ = pos.getZ() - currentRadius;
+        syncDataHolder.markClientSyncFieldDirty("mineX");
+        syncDataHolder.markClientSyncFieldDirty("mineZ");
         if (dir == Direction.UP) {
             mineY = pos.getY() + 1;
         } else {
             mineY = pos.getY() - 1;
         }
-
+        syncDataHolder.markClientSyncFieldDirty("mineY");
         removePipes();
     }
 
@@ -566,6 +594,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
                         --y;
                     }
                 }
+                syncDataHolder.markClientSyncFieldDirty("x");
+                syncDataHolder.markClientSyncFieldDirty("y");
+                syncDataHolder.markClientSyncFieldDirty("z");
             } else
                 return blocks;
 

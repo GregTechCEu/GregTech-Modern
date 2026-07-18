@@ -86,6 +86,7 @@ public class IntegrationLang {
         provider.add("gtceu.top.allow_output_input", "Allow Input");
         provider.add("gtceu.top.cable_voltage", "Voltage: ");
         provider.add("gtceu.top.cable_amperage", "Amperage: ");
+        provider.add("gtceu.top.cable_overloaded", "§4OVERHEATING: %s%%§r");
         provider.add("gtceu.top.exhaust_vent_direction", "Exhaust Vent: %s");
         provider.add("gtceu.top.exhaust_vent_blocked", "Blocked");
         provider.add("gtceu.top.machine_mode", "Machine Mode: ");
@@ -104,12 +105,13 @@ public class IntegrationLang {
         provider.add("gtceu.jade.at", " @ ");
         provider.add("gtceu.jade.remaining_charge_time", "Until charged: %s");
         provider.add("gtceu.jade.remaining_discharge_time", "Until empty: %s");
-        provider.add("gtceu.jade.changes_eu_sec", "%s EU/s");
+        provider.add("gtceu.jade.changes_eu_tick", "%s EU/t");
         provider.add("gtceu.jade.seconds", "%s seconds");
         provider.add("gtceu.jade.minutes", "%s minutes");
         provider.add("gtceu.jade.hours", "%s hours");
         provider.add("gtceu.jade.days", "%s days");
         provider.add("gtceu.jade.years", "%s years");
+        provider.add("gtceu.jade.generator.too_small", "Energy Output too small!");
 
         provider.add("gtceu.top.energy_stored", " / %d EU");
         provider.add("gtceu.top.progress_computation", " / %s CWU");
@@ -123,7 +125,7 @@ public class IntegrationLang {
     }
 
     private static void initMinimapLang(RegistrateLangProvider provider) {
-        provider.add("gtceu.minimap.ore_vein.depleted", "Depleted");
+        provider.add("gtceu.minimap.ore_vein.depleted", "Depleted Vein");
 
         provider.add("message.gtceu.new_veins.amount", "Prospected %d new veins!");
         provider.add("message.gtceu.new_veins.name", "Prospected %s!");
@@ -131,9 +133,11 @@ public class IntegrationLang {
         provider.add("button.gtceu.toggle_waypoint.name", "Toggle Waypoint");
 
         provider.add("gtceu.journeymap.options.layers", "Prospection layers");
-        provider.add("gtceu.journeymap.options.layers.ore_veins", "Show Ore Veins");
-        provider.add("gtceu.journeymap.options.layers.bedrock_fluids", "Show Bedrock Fluid Veins");
-        provider.add("gtceu.journeymap.options.layers.hide_depleted", "Hide Depleted Veins");
+
+        provider.add("gtceu.button.ore_veins", "Show Ore Veins");
+        provider.add("gtceu.button.bedrock_fluids", "Show Bedrock Fluid Veins");
+        provider.add("gtceu.button.hide_depleted", "Hide Depleted Veins");
+        provider.add("gtceu.button.show_depleted", "Show Depleted Veins");
     }
 
     private static void initOwnershipLang(RegistrateLangProvider provider) {

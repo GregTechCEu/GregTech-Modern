@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.common.capability.EnvironmentalHazardSavedData;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.CleanroomMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.MaintenanceHatchPartMachine;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -25,7 +25,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     public static final int BASE_CLEAN_AMOUNT = 2;
     @Setter
     @Nullable
-    private IMaintenanceMachine maintenanceMachine;
+    private MaintenanceHatchPartMachine maintenanceMachine;
     @Setter
     @Nullable
     private IEnergyContainer energyContainer;
@@ -66,7 +66,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
             if (maintenanceMachine == null || maintenanceMachine.getNumMaintenanceProblems() < 6 || zone != null) {
                 // drain the energy
                 if (!consumeEnergy()) {
-                    if (progress > 0 && getMachine().regressWhenWaiting()) {
+                    if (progress > 0 && regressWhenWaiting) {
                         this.progress = 1;
                     }
 
