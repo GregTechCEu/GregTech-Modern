@@ -26,7 +26,8 @@ public abstract class BasePredicate {
 
     public static final BasePredicate ANY = of("Any", ctx -> true);
 
-    private @Nullable List<BlockInfo> candidates;
+    @Getter(lazy = true)
+    private final List<BlockInfo> candidates = computeCandidates();
 
     @Getter
     @Setter
@@ -123,14 +124,6 @@ public abstract class BasePredicate {
 
     /// computes the candidates for this predicate
     public abstract List<BlockInfo> computeCandidates();
-
-    /// @return the candidate blocks for this predicate, may be empty, lazily initialized
-    public List<BlockInfo> getCandidates() {
-        if (candidates == null) {
-            candidates = computeCandidates();
-        }
-        return candidates;
-    }
 
     public List<ItemStack> getCandidateStacks() {
         return getCandidates().stream()
