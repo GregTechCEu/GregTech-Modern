@@ -55,6 +55,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -161,6 +162,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
         this.itemFactory = itemFactory;
         this.instanceFactory = instanceFactory;
         this.definition = definition;
+
+        this.defaultLang();
     }
 
     @SuppressWarnings("unchecked")
@@ -296,6 +299,14 @@ public class MachineBuilder<DEFINITION extends MachineDefinition, MACHINE extend
     public SELF ui(PanelFactory ui) {
         this.ui = ui;
         return getThis();
+    }
+
+    public SELF defaultLang() {
+        return lang(RegistrateLangProvider.toEnglishName(name));
+    }
+
+    public SELF lang(String name) {
+        return langValue(name);
     }
 
     public SELF langValue(String langValue) {
