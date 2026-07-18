@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
@@ -30,7 +29,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -768,8 +766,7 @@ public class GTRecipeBuilder {
         if (!matStack.isNull()) {
             tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
         }
-        return input(FluidRecipeCapability.CAP, FluidIngredient.of(
-                TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()),
+        return input(FluidRecipeCapability.CAP, FluidIngredient.of(input.getFluid(),
                 input.getAmount(), input.getTag()));
     }
 
@@ -785,8 +782,7 @@ public class GTRecipeBuilder {
                     tempFluidStacks.add(new MaterialStack(matStack, fluid.getAmount() * GTValues.M / GTValues.L));
                 }
 
-                TagKey<Fluid> tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(fluid.getFluid()).getPath());
-                ingredients.add(FluidIngredient.of(tag, fluid.getAmount(), fluid.getTag()));
+                ingredients.add(FluidIngredient.of(fluid.getFluid(), fluid.getAmount(), fluid.getTag()));
             }
         }
         return input(FluidRecipeCapability.CAP, ingredients.toArray(FluidIngredient[]::new));
