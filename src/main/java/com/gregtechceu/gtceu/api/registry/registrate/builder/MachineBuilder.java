@@ -89,7 +89,7 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
     protected final BiFunction<BlockBehaviour.Properties, D, MetaMachineBlock> blockFactory;
     protected final BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory;
 
-    protected boolean defaultBlock = true, defaultItem = true, defaultBlockEntity = false;
+    protected boolean defaultBlock = true, defaultItem = true, defaultBlockEntity = true;
 
     @Setter(onMethod_ = @ApiStatus.Internal)
     protected MachineInstanceFactory<M> instanceFactory;
