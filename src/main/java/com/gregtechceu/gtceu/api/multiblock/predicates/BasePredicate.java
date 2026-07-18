@@ -128,14 +128,7 @@ public abstract class BasePredicate {
     public List<ItemStack> getCandidateStacks() {
         return getCandidates().stream()
                 .filter(BlockInfo::nonAir)
-                .map(info -> {
-                    if (GTCEu.isClientSide()) {
-                        Level level = Objects.requireNonNull(Minecraft.getInstance().level);
-                        return info.getItemStackForm(level, BlockPos.ZERO);
-                    }
-
-                    return info.getItemStackForm();
-                })
+                .map(BlockInfo::getItemStackForm)
                 .toList();
     }
 

@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.multiblock.util;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.util.FakeBlockTintGetter;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -80,6 +82,10 @@ public class BlockInfo {
     }
 
     public ItemStack getItemStackForm() {
+        if (GTCEu.isClientSide()) {
+            Level level = Objects.requireNonNull(Minecraft.getInstance().level);
+            return getItemStackForm(level, BlockPos.ZERO);
+        }
         return itemStack == null ? new ItemStack(blockState.getBlock()) : itemStack;
     }
 
