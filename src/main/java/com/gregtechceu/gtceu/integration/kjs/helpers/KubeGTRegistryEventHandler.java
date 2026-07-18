@@ -15,6 +15,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
 import dev.latvian.mods.kubejs.KubeJS;
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
@@ -42,7 +43,7 @@ public class KubeGTRegistryEventHandler {
         GTCEuStartupEvents.REGISTRY.post(ScriptType.STARTUP, (ResourceKey) registryKey,
                 new GTRegistryKubeEvent<>(registryKey));
 
-        var objStorage = RegistryObjectStorage.of(registryKey);
+        RegistryObjectStorage<T> objStorage = RegistryObjectStorage.of(registryKey);
 
         if (objStorage.objects.isEmpty()) {
             if (DevProperties.get().logRegistryEventObjects) {
@@ -58,7 +59,7 @@ public class KubeGTRegistryEventHandler {
 
         int added = 0;
 
-        for (var builder : objStorage) {
+        for (BuilderBase<? extends T> builder : objStorage) {
             if (builder.dummyBuilder) {
                 // don't actually register anything here, the wrapper builders register themselves with Registrate
                 builder.createTransformedObject();
