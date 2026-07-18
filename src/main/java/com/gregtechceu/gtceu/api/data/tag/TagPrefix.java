@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -938,6 +939,14 @@ public class TagPrefix {
             .defaultTagPath("surface_rocks/%s")
             .unformattedTagPath("surface_rocks")
             .materialAmount(GTValues.M / 3);
+
+    public static TagPrefix get(String id) {
+        return GTRegistries.TAG_PREFIXES.get(GTCEu.id(id));
+    }
+
+    public static TagPrefix get(ResourceLocation id) {
+        return GTRegistries.TAG_PREFIXES.get(id);
+    }
 
     public static class Conditions {
 

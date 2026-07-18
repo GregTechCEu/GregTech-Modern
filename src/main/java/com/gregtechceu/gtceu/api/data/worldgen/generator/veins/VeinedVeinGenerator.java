@@ -56,7 +56,7 @@ import java.util.Map;
 public class VeinedVeinGenerator extends VeinGenerator {
 
     public static final Codec<Either<List<TargetBlockState>, Material>> BLOCK_ENTRY_CODEC = Codec
-            .either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec());
+            .either(TargetBlockState.CODEC.listOf(), Material.CODEC);
     // spotless:off
     public static final MapCodec<VeinedVeinGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) -> instance.group(
             VeinBlockDefinition.CODEC.listOf().fieldOf("ore_blocks").forGetter(it -> it.oreBlocks),

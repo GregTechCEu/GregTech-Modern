@@ -130,8 +130,7 @@ public class LargeMinerLogic extends MinerLogic {
             return;
         }
         ItemStack fortunePick = this.pickaxeTool.copy();
-        var registry = builder.getLevel().registryAccess().registryOrThrow(Registries.ENCHANTMENT);
-        var fortuneHolder = registry.getHolderOrThrow(Enchantments.FORTUNE);
+        var fortuneHolder = builder.getLevel().registryAccess().holderOrThrow(Enchantments.FORTUNE);
         if (dropMultiplier == null) {
             dropMultiplier = ApplyBonusCount.addOreBonusCount(fortuneHolder).build();
         }

@@ -34,9 +34,10 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public final class GTRegistries {
 
-    private static final HashMap<ResourceLocation, Registry<?>> REGISTRIES = new HashMap<>();
+    private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
 
     private GTRegistries() {}
 
@@ -79,15 +80,17 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<ToolBehaviorType<?>>> TOOL_BEHAVIOR = makeRegistryKey(GTCEu.id("tool_behavior"));
     }
 
-    // spotless:off
-
     // GT Registries
+
+    // Be careful when changing the order of these static fields, as changing the order of them also changes the order of registry load.
+
     public static final Registry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
     public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
     public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
 
     public static final Registry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND, false);
     public static final Registry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
+    public static final Registry<GTRecipeType> RECIPE_TYPE = makeRegistry(Keys.RECIPE_TYPE);
     public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
     public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
     public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
@@ -117,19 +120,23 @@ public final class GTRegistries {
         MappedRegistry<T> registry = (MappedRegistry<T>) new RegistryBuilder<>(key)
                 .sync(sync)
                 .create();
-        REGISTRIES.put(key.location(), registry);
+        LOAD_ORDER.put(key.location(), registry);
         return registry;
     }
 
     private static MaterialRegistry makeMaterialRegistry() {
         MaterialRegistry registry = new MaterialRegistry(Keys.MATERIAL);
-        REGISTRIES.put(Keys.MATERIAL.location(), registry);
+        LOAD_ORDER.put(Keys.MATERIAL.location(), registry);
         return registry;
+    }
+
+    public static List<ResourceLocation> getRegistryOrder() {
+        return List.copyOf(LOAD_ORDER.keySet());
     }
 
     @UnmodifiableView
     public static Collection<Registry<?>> getRegistries() {
-        return REGISTRIES.values();
+        return LOAD_ORDER.values();
     }
 
     public static void init() {}

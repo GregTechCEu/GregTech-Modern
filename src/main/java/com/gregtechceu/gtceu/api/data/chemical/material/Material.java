@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -49,6 +50,8 @@ import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class Material {
+
+    public static final Codec<Material> CODEC = GTRegistries.MATERIALS.byNameCodec();
 
     /**
      * Basic Info of this Material.

@@ -318,11 +318,11 @@ public class GeodeVeinGenerator extends VeinGenerator {
 
         // spotless:off
         public static final Codec<GeodeBlockSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("filling_provider").forGetter(config -> config.fillingProvider),
-                        Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("inner_layer_provider").forGetter(config -> config.innerLayerProvider),
-                        Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("alternate_inner_layer_provider").forGetter(config -> config.alternateInnerLayerProvider),
-                        Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("middle_layer_provider").forGetter(config -> config.middleLayerProvider),
-                        Codec.either(BlockStateProvider.CODEC, GTRegistries.MATERIALS.byNameCodec()).fieldOf("outer_layer_provider").forGetter(config -> config.outerLayerProvider),
+                        Codec.either(BlockStateProvider.CODEC, Material.CODEC).fieldOf("filling_provider").forGetter(config -> config.fillingProvider),
+                        Codec.either(BlockStateProvider.CODEC, Material.CODEC).fieldOf("inner_layer_provider").forGetter(config -> config.innerLayerProvider),
+                        Codec.either(BlockStateProvider.CODEC, Material.CODEC).fieldOf("alternate_inner_layer_provider").forGetter(config -> config.alternateInnerLayerProvider),
+                        Codec.either(BlockStateProvider.CODEC, Material.CODEC).fieldOf("middle_layer_provider").forGetter(config -> config.middleLayerProvider),
+                        Codec.either(BlockStateProvider.CODEC, Material.CODEC).fieldOf("outer_layer_provider").forGetter(config -> config.outerLayerProvider),
                         ExtraCodecs.nonEmptyList(BlockState.CODEC.listOf()).fieldOf("inner_placements").forGetter(config -> config.innerPlacements),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("cannot_replace").forGetter(config -> config.cannotReplace),
                         TagKey.hashedCodec(Registries.BLOCK).fieldOf("invalid_blocks").forGetter(config -> config.invalidBlocks),

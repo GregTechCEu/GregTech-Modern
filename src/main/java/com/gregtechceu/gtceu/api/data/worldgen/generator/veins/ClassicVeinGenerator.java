@@ -230,7 +230,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         // spotless:off
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec()).fieldOf("targets").forGetter(layer -> layer.target),
+                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), Material.CODEC).fieldOf("targets").forGetter(layer -> layer.target),
                 ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("layers", -1).forGetter(layer -> layer.layers)
         ).apply(instance, Layer::new));
         // spotless:on
