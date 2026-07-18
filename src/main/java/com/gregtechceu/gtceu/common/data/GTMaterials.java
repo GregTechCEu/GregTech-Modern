@@ -65,11 +65,6 @@ public class GTMaterials {
         // Gregicality Multiblocks
         GCYMMaterials.register();
 
-        /*
-         * Register info for cyclical references
-         */
-        MaterialFlagAddition.register();
-
         CHEMICAL_DYES = new MaterialEntry[] {
                 DyeWhite, DyeOrange,
                 DyeMagenta, DyeLightBlue,

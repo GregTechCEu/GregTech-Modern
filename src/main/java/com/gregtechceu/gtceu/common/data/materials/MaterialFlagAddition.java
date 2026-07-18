@@ -1,13 +1,24 @@
 package com.gregtechceu.gtceu.common.data.materials;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
+@EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class MaterialFlagAddition {
 
-    public static void register() {
+
+    /**
+     * Register info for cyclical references
+     */
+    @SubscribeEvent
+    public static void registerCyclicalDependencies(PostMaterialEvent event) {
         OreProperty oreProp = Aluminium.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Bauxite, Bauxite, Ilmenite, Rutile);
         oreProp.setWashedIn(SodiumPersulfate);
