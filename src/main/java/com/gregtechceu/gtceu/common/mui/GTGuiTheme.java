@@ -3,10 +3,6 @@ package com.gregtechceu.gtceu.common.mui;
 import com.gregtechceu.gtceu.api.cover.IMuiCover;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
-
 import brachy.modularui.api.ITheme;
 import brachy.modularui.api.IThemeApi;
 import brachy.modularui.drawable.UITexture;
@@ -22,7 +18,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@EventBusSubscriber
 public class GTGuiTheme {
 
     private static final List<GTGuiTheme> THEMES = new ArrayList<>();
@@ -76,7 +71,7 @@ public class GTGuiTheme {
     private final List<Consumer<JsonBuilder>> elementBuilder;
     private final JsonBuilder jsonBuilder;
 
-    private Supplier<UITexture> logo;
+    private @Nullable Supplier<UITexture> logo;
 
     private GTGuiTheme(String themeId) {
         this.themeId = themeId;
@@ -108,11 +103,6 @@ public class GTGuiTheme {
     }
 
     public static void registerThemes() {
-        THEMES.forEach(GTGuiTheme::register);
-    }
-
-    @SubscribeEvent
-    public static void onReloadThemes(FMLConstructModEvent event) {
         THEMES.forEach(GTGuiTheme::register);
     }
 
