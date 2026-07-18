@@ -77,8 +77,8 @@ public class ChemicalHelper {
     }
 
     public static MaterialStack getMaterialStack(@NotNull MaterialEntry entry) {
-        Material entryMaterial = entry.material();
-        if (!entryMaterial.isNull()) {
+        if (!entry.material().isNull()) {
+            com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry entryMaterial = entry.material().getEntryWrapper();
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         return MaterialStack.EMPTY;
@@ -87,7 +87,7 @@ public class ChemicalHelper {
     public static MaterialStack getMaterialStack(ItemLike itemLike) {
         var entry = getMaterialEntry(itemLike);
         if (!entry.isEmpty()) {
-            Material entryMaterial = entry.material();
+            com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry entryMaterial = entry.material().getEntryWrapper();
             return new MaterialStack(entryMaterial, entry.tagPrefix().getMaterialAmount(entryMaterial));
         }
         ItemMaterialInfo info = ITEM_MATERIAL_INFO.get(itemLike.asItem());
@@ -117,7 +117,7 @@ public class ChemicalHelper {
                 }
             }
         }
-        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL);
+        return FLUID_MATERIAL.getOrDefault(fluid, GTMaterials.NULL.get());
     }
 
     public static TagPrefix getPrefix(ItemLike itemLike) {
@@ -140,8 +140,12 @@ public class ChemicalHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack getDust(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, long materialAmount) {
+        return getDust(material.get(), materialAmount);
+    }
+
     public static ItemStack getDust(MaterialStack materialStack) {
-        return getDust(materialStack.material(), materialStack.amount());
+        return getDust(materialStack.material().get(), materialStack.amount());
     }
 
     public static ItemStack getIngot(Material material, long materialAmount) {
@@ -167,7 +171,7 @@ public class ChemicalHelper {
     }
 
     public static ItemStack getIngotOrDust(MaterialStack materialStack) {
-        return getIngotOrDust(materialStack.material(), materialStack.amount());
+        return getIngotOrDust(materialStack.material().get(), materialStack.amount());
     }
 
     public static ItemStack getGem(MaterialStack materialStack) {
@@ -257,7 +261,15 @@ public class ChemicalHelper {
         return get(new MaterialEntry(orePrefix, material), stackSize);
     }
 
+    public static ItemStack get(TagPrefix tagPrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int stackSize) {
+        return get(tagPrefix, material.get(), stackSize);
+    }
+
     public static ItemStack get(TagPrefix orePrefix, Material material) {
+        return get(orePrefix, material, 1);
+    }
+
+    public static ItemStack get(TagPrefix orePrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         return get(orePrefix, material, 1);
     }
 
@@ -309,6 +321,11 @@ public class ChemicalHelper {
             return tags.getFirst();
         }
         return null;
+    }
+
+    @Nullable
+    public static TagKey<Item> getTag(TagPrefix tagPrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return getTag(tagPrefix, material.get());
     }
 
     public static List<TagKey<Item>> getTags(TagPrefix orePrefix, @NotNull Material material) {

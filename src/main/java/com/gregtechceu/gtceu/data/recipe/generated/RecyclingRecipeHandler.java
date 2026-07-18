@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 
 import net.minecraft.core.Holder;
@@ -26,7 +27,7 @@ public final class RecyclingRecipeHandler {
 
     private RecyclingRecipeHandler() {}
 
-    public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
+    public static void run(@NotNull RecipeOutput provider, @NotNull MaterialEntry material) {
         // registers universal maceration recipes for specified ore prefixes
         GTRegistries.TAG_PREFIXES.holders()
                 .filter(h -> h != null && h.isBound())
@@ -38,7 +39,7 @@ public final class RecyclingRecipeHandler {
     }
 
     private static void processCrushing(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
-                                        @NotNull Material material) {
+                                        @NotNull MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }

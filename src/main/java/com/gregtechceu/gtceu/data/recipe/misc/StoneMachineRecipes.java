@@ -430,7 +430,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stone,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
@@ -440,7 +440,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addPolishedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.polishedStone,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
@@ -450,7 +450,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addSmeltStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.smeltStone,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
@@ -460,7 +460,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addChiselStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.chiselStone,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
@@ -470,7 +470,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addCrackedStoneMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.crackedStone,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
@@ -480,7 +480,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addSlabMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 2)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount / 2)));
             }
         }
 
@@ -490,7 +490,7 @@ public class StoneMachineRecipes {
             }
             if (entry.addStairMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stair,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, (3 * entry.materialAmount) / 4)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), (3 * entry.materialAmount) / 4)));
             }
         }
 
@@ -500,18 +500,18 @@ public class StoneMachineRecipes {
             }
             if (entry.addWallMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.wall,
-                        new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount)));
+                        new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount)));
             }
         }
 
         if (!entry.material.isNull() && entry.pressurePlate != null && entry.addPressurePlateMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.pressurePlate,
-                    new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 4)));
+                    new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount / 4)));
         }
 
         if (!entry.material.isNull() && entry.button != null && entry.addButtonMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.button,
-                    new ItemMaterialInfo(new MaterialStack(entry.material, entry.materialAmount / 6)));
+                    new ItemMaterialInfo(new MaterialStack(entry.material.getEntryWrapper(), entry.materialAmount / 6)));
         }
     }
 

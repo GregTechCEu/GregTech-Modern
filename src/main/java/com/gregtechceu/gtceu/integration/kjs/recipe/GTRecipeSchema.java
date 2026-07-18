@@ -314,7 +314,7 @@ public interface GTRecipeSchema {
         }
 
         public GTKubeRecipe inputItems(TagPrefix orePrefix, Material material, int count) {
-            itemMaterialStacks.add(new MaterialStack(material, orePrefix.getMaterialAmount(material) * count));
+            itemMaterialStacks.add(new MaterialStack(material.getEntryWrapper(), orePrefix.getMaterialAmount(material.getEntryWrapper()) * count));
             return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
         }
 

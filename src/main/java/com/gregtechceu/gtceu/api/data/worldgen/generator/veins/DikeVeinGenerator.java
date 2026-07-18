@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
 
@@ -190,6 +190,9 @@ public class DikeVeinGenerator extends VeinGenerator {
         // spotless:on
         public DikeBlockDefinition(Material block, int weight, int minY, int maxY) {
             this(Either.right(block), weight, minY, maxY);
+        }
+        public DikeBlockDefinition(MaterialEntry block, int weight, int minY, int maxY) {
+            this(block.get(), weight, minY, maxY);
         }
 
         public DikeBlockDefinition(List<TargetBlockState> block, int weight, int minY, int maxY) {

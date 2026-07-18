@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -153,13 +152,13 @@ public class ComponentRecipes {
 
         // Conveyors
         // Start-----------------------------------------------------------------------------------------------
-        final Map<String, Material> rubberMaterials = new Object2ObjectOpenHashMap<>();
+        final Map<String, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> rubberMaterials = new Object2ObjectOpenHashMap<>();
         rubberMaterials.put("rubber", Rubber);
         rubberMaterials.put("silicone_rubber", SiliconeRubber);
         rubberMaterials.put("styrene_butadiene_rubber", StyreneButadieneRubber);
 
-        for (Map.Entry<String, Material> materialEntry : rubberMaterials.entrySet()) {
-            Material material = materialEntry.getValue();
+        for (var materialEntry : rubberMaterials.entrySet()) {
+            com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material = materialEntry.getValue();
             String name = materialEntry.getKey();
 
             VanillaRecipeHelper.addShapedRecipe(provider, material.equals(Rubber),

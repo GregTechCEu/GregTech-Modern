@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.MaterialProperties;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.medicalcondition.Symptom;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -47,6 +48,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -290,23 +292,38 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Materials
 
-    public Material.Builder material(String name) {
-        return new Material.Builder(this, makeResourceLocation(name));
+    /**
+     * Constructs a {@link Material}. This Builder replaces the old constructors, and
+     * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
+     *
+     * @param name The Name of this Material. Will be formatted as "material.&lt;namespace&gt;.&lt;name&gt;" for the
+     *             translation key.
+     * @since GTCEu 2.0.0
+     */
+    public Material.Builder<GTRegistrate> material(String name) {
+        return material(this, name);
+    }
+
+    /**
+     * Constructs a {@link Material}. This Builder replaces the old constructors, and
+     * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
+     *
+     * @param parent the parent object that is returned from build() and getParent().
+     * @param name   The Name of this Material. Will be formatted as "material.&lt;namespace&gt;.&lt;name&gt;" for the
+     *               translation key.
+     * @param <P> Type of the parent object returned from build() and getParent().
+     * @since GTCEu 2.0.0
+     */
+    public <P> Material.Builder<P> material(P parent, String name) {
+        return entry(name, callback -> new Material.Builder<>(this, parent, name, callback));
     }
 
     // Elements
 
-    public Element element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
-                           String symbol, boolean isIsotope) {
-        var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
-        return element;
-    }
-
-    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
-                           String symbol,
-                           boolean isIsotope) {
-        return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
+    public PlainEntry<Element> element(String name, long protons, long neutrons, long halfLifeSeconds,
+                                       @Nullable String decayTo, String symbol, boolean isIsotope) {
+        return this.plain(name.toLowerCase(), GTRegistries.Keys.ELEMENT,
+                () -> new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope));
     }
 
     // Material icon sets
@@ -439,5 +456,11 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name,
                                                                                        Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
+    }
+
+    @ApiStatus.Internal
+    @Override
+    public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
+        super.onBuildCreativeModeTabContents(event);
     }
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.core.registries.Registries;
@@ -97,7 +98,7 @@ public final class WoodTypeEntry {
     public final Item pressurePlate;
     @Nullable
     public final String pressurePlateRecipeName;
-    public final Material material;
+    public final MaterialEntry material;
 
     public final boolean addLogTag;
     public final boolean addPlanksTag;
@@ -143,7 +144,7 @@ public final class WoodTypeEntry {
                           @Nullable Item hangingSign, @Nullable String hangingSignRecipeName,
                           @Nullable Item button, @Nullable String buttonRecipeName,
                           @Nullable Item pressurePlate, @Nullable String pressurePlateRecipeName,
-                          @NotNull Material material,
+                          @NotNull MaterialEntry material,
                           boolean addLogTag, boolean addPlanksTag, boolean addDoorsTag,
                           boolean addSlabsTag,
                           boolean addFencesTag, boolean addFenceGatesTag, boolean addStairsTag,
@@ -220,7 +221,7 @@ public final class WoodTypeEntry {
 
     @NotNull
     public TagKey<Item> getStick() {
-        if (this.material == GTMaterials.Wood) {
+        if (this.material.is(GTMaterials.Wood)) {
             return Tags.Items.RODS_WOODEN;
         } else {
             // noinspection DataFlowIssue is valid.
@@ -273,7 +274,7 @@ public final class WoodTypeEntry {
         private Item pressurePlate = null;
         private String pressurePlateRecipeName;
         @NotNull
-        private Material material = GTMaterials.NULL;
+        private MaterialEntry material = GTMaterials.NULL;
 
         private boolean addLogTag;
         private boolean addPlanksTag;
@@ -580,6 +581,16 @@ public final class WoodTypeEntry {
          * @return this
          */
         public Builder material(@NotNull Material material) {
+            return material(material.getEntryWrapper());
+        }
+
+        /**
+         * Specify material for wood entry. If not provided, {@link GTMaterials#Wood} will be used
+         *
+         * @param material material for wood entry
+         * @return this
+         */
+        public Builder material(@NotNull MaterialEntry material) {
             this.material = material;
             return this;
         }

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.addon.events;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.Event;
@@ -11,13 +11,13 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 
 public class MaterialCasingCollectionEvent extends Event implements IModBusEvent {
 
-    private final ImmutableMap.Builder<Material, BlockEntry<Block>> builder;
+    private final ImmutableMap.Builder<MaterialEntry, BlockEntry<Block>> builder;
 
-    public MaterialCasingCollectionEvent(ImmutableMap.Builder<Material, BlockEntry<Block>> builder) {
+    public MaterialCasingCollectionEvent(ImmutableMap.Builder<MaterialEntry, BlockEntry<Block>> builder) {
         this.builder = builder;
     }
 
-    public void add(Material material, BlockEntry<Block> casingBlock) {
+    public void add(MaterialEntry material, BlockEntry<Block> casingBlock) {
         builder.put(material, casingBlock);
     }
 }

@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternState;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidHandlerList;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -69,7 +70,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
         return (LargeMinerLogic) super.getRecipeLogic();
     }
 
-    public static Material getMaterial(int tier) {
+    public static MaterialEntry getMaterial(int tier) {
         if (tier == GTValues.EV) return GTMaterials.Steel;
         if (tier == GTValues.IV) return GTMaterials.Titanium;
         if (tier == GTValues.LuV) return GTMaterials.TungstenSteel;

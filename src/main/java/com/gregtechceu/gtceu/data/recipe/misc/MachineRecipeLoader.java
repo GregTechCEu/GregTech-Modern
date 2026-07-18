@@ -1163,8 +1163,10 @@ public class MachineRecipeLoader {
                 .save(provider);
     }
 
-    private static void createSulfurDioxideRecipe(RecipeOutput provider, Material inputMaterial,
-                                                  Material outputMaterial, int sulfurDioxideAmount) {
+    private static void createSulfurDioxideRecipe(RecipeOutput provider,
+                                                  com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry inputMaterial,
+                                                  com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry outputMaterial,
+                                                  int sulfurDioxideAmount) {
         BLAST_RECIPES.recipeBuilder(inputMaterial.getName() + "_metallurgy").duration(120).EUt(VA[MV])
                 .blastFurnaceTemp(1200)
                 .inputItems(dust, inputMaterial)

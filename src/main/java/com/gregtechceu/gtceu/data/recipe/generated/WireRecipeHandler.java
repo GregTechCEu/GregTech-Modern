@@ -61,7 +61,7 @@ public final class WireRecipeHandler {
 
     private WireRecipeHandler() {}
 
-    public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
+    public static void run(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         WireProperties property = material.getProperty(PropertyKey.WIRE);
         if (property == null) {
             return;
@@ -82,7 +82,7 @@ public final class WireRecipeHandler {
         generateCableCovering(provider, property, wireGtHex, material);
     }
 
-    private static void processWires(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processWires(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(wireGtSingle)) {
             return;
         }
@@ -136,7 +136,8 @@ public final class WireRecipeHandler {
 
     private static void generateCableCovering(@NotNull RecipeOutput provider,
                                               @NotNull WireProperties property,
-                                              @NotNull TagPrefix prefix, @NotNull Material material) {
+                                              @NotNull TagPrefix prefix,
+                                              @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(prefix) || property.isSuperconductor()) {
             // Superconductors have no Cables, so exit early
             return;
@@ -210,7 +211,7 @@ public final class WireRecipeHandler {
 
     private static void generateManualRecipe(@NotNull RecipeOutput provider, @NotNull TagPrefix wirePrefix,
                                              @NotNull TagPrefix cablePrefix, int cableAmount,
-                                             @NotNull Material material) {
+                                             @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         int insulationAmount = INSULATION_AMOUNT.getInt(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new MaterialEntry(wirePrefix, material);
@@ -229,7 +230,7 @@ public final class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static int getVoltageMultiplier(@NotNull Material material) {
+    private static int getVoltageMultiplier(@NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
     }
 }

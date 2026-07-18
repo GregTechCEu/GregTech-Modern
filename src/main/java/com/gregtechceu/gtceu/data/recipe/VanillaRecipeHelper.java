@@ -620,27 +620,24 @@ public class VanillaRecipeHelper {
         addShapelessRecipe(provider, regName, result, recipe);
     }
 
+    @SuppressWarnings("unchecked")
     public static void addShapelessRecipe(RecipeOutput provider, @NotNull ResourceLocation regName,
                                           @NotNull ItemStack result, @NotNull Object... recipe) {
         var builder = new ShapelessRecipeBuilder(regName).output(result);
         for (Object content : recipe) {
-            if (content instanceof Ingredient ingredient) {
-                builder.requires(ingredient);
-            } else if (content instanceof ItemStack itemStack) {
-                builder.requires(itemStack);
-            } else if (content instanceof TagKey<?> key) {
-                builder.requires((TagKey<Item>) key);
-            } else if (content instanceof ItemLike itemLike) {
-                builder.requires(itemLike);
-            } else if (content instanceof MaterialEntry entry) {
-                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix(), entry.material());
-                if (tag != null) {
-                    builder.requires(tag);
-                } else builder.requires(ChemicalHelper.get(entry.tagPrefix(), entry.material()));
-            } else if (content instanceof ItemProviderEntry<?, ?> entry) {
-                builder.requires(entry.asStack());
-            } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+            switch (content) {
+                case Ingredient ingredient -> builder.requires(ingredient);
+                case ItemStack itemStack -> builder.requires(itemStack);
+                case TagKey<?> key when key.isFor(Registries.ITEM) -> builder.requires((TagKey<Item>) key);
+                case ItemLike itemLike -> builder.requires(itemLike);
+                case MaterialEntry(TagPrefix tagPrefix, Material material) -> {
+                    TagKey<Item> tag = ChemicalHelper.getTag(tagPrefix, material);
+                    if (tag != null) {
+                        builder.requires(tag);
+                    } else builder.requires(ChemicalHelper.get(tagPrefix, material));
+                }
+                case Character c -> builder.requires(ToolHelper.getToolFromSymbol(c).craftingTags.get(0));
+                default -> {}
             }
         }
         builder.save(provider);
@@ -664,7 +661,8 @@ public class VanillaRecipeHelper {
     }
 
     public static void addToolUpgradingRecipe(@NotNull RecipeOutput provider, @NotNull GTToolType tool,
-                                              @NotNull Material upgradeMaterial, @NotNull Material baseMaterial,
+                                              @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry upgradeMaterial,
+                                              @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry baseMaterial,
                                               @NotNull ItemLike template, @NotNull ItemLike addition) {
         ItemStack upgradeToolStack = ToolHelper.get(tool, upgradeMaterial);
         ItemStack baseToolStack = ToolHelper.get(tool, baseMaterial);
@@ -688,7 +686,7 @@ public class VanillaRecipeHelper {
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @NotNull Object... recipe) {
         Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();
-        Reference2LongOpenHashMap<Material> materialStacksExploded = new Reference2LongOpenHashMap<>();
+        Reference2LongOpenHashMap<com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> materialStacksExploded = new Reference2LongOpenHashMap<>();
 
         int itr = 0;
         while (recipe[itr] instanceof String s) {
@@ -748,7 +746,7 @@ public class VanillaRecipeHelper {
             ItemMaterialInfo info = ItemMaterialData.getMaterialInfo(itemLike);
             if (info != null) {
                 for (MaterialStack ms : info.getMaterials()) {
-                    if (!(ms.material() instanceof MarkerMaterial)) {
+                    if (!(ms.material().get() instanceof MarkerMaterial)) {
                         addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, ms);
                     }
                 }
@@ -757,7 +755,7 @@ public class VanillaRecipeHelper {
 
             // Then try to get a single Material (UnificationEntry needs this, for example)
             MaterialStack materialStack = ChemicalHelper.getMaterialStack(itemLike);
-            if (!materialStack.isEmpty() && !(materialStack.material() instanceof MarkerMaterial)) {
+            if (!materialStack.isEmpty() && !(materialStack.material().get() instanceof MarkerMaterial)) {
                 addMaterialStack(materialStacksExploded, inputCountMap.get(lastChar), outputCount, materialStack);
             }
 
@@ -773,7 +771,7 @@ public class VanillaRecipeHelper {
         return new ItemMaterialInfo(materialStacksExploded);
     }
 
-    private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<Material> materialStacksExploded,
+    private static void addMaterialStack(@NotNull Reference2LongOpenHashMap<com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> materialStacksExploded,
                                          int inputCount, int outputCount, @NotNull MaterialStack ms) {
         materialStacksExploded.addTo(ms.material(), (ms.amount() * inputCount / outputCount));
     }

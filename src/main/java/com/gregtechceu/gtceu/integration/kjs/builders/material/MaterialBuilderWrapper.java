@@ -7,19 +7,25 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
+import com.gregtechceu.gtceu.utils.MaterialParser;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 
+import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
+import dev.latvian.mods.kubejs.script.SourceLine;
 import dev.latvian.mods.kubejs.typings.Info;
 import dev.latvian.mods.kubejs.typings.Param;
+import dev.latvian.mods.rhino.Context;
 
 import java.util.Collection;
 import java.util.function.UnaryOperator;
@@ -27,7 +33,7 @@ import java.util.function.UnaryOperator;
 @SuppressWarnings("unused")
 public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
-    private final Material.Builder internal;
+    private final Material.Builder<GTRegistrate> internal;
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
@@ -441,8 +447,8 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper components(MaterialStackWrapper... components) {
-        internal.kjs$components(components);
+    public MaterialBuilderWrapper components(MaterialStack... components) {
+        internal.componentStacks(components);
         return this;
     }
 
@@ -580,48 +586,88 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m) {
-        internal.washedIn(m);
+    public MaterialBuilderWrapper washedIn(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid washedIn '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.washedIn(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper washedIn(Material m, int washedAmount) {
+    public MaterialBuilderWrapper washedIn(MaterialEntry m, int washedAmount) {
         internal.washedIn(m, washedAmount);
         return this;
     }
 
-    public MaterialBuilderWrapper separatedInto(Material... m) {
-        internal.separatedInto(m);
+    @SafeVarargs
+    public final MaterialBuilderWrapper separatedInto(Context cx, Holder<Material>... m) {
+        MaterialEntry[] entries = MaterialParser.getAsEntries(index -> {
+            throw new KubeRuntimeException("Unknown/invalid separatedInto value at index '" + index + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }, m);
+        internal.separatedInto(entries);
         return this;
     }
 
-    public MaterialBuilderWrapper oreSmeltInto(Material m) {
-        internal.oreSmeltInto(m);
+    public MaterialBuilderWrapper oreSmeltInto(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid oreSmeltInto '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.oreSmeltInto(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper polarizesInto(Material m) {
-        internal.polarizesInto(m);
+    public MaterialBuilderWrapper polarizesInto(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid polarizesInto '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.polarizesInto(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper arcSmeltInto(Material m) {
-        internal.arcSmeltInto(m);
+    public MaterialBuilderWrapper arcSmeltInto(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid arcSmeltInto '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.arcSmeltInto(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper macerateInto(Material m) {
-        internal.macerateInto(m);
+    public MaterialBuilderWrapper macerateInto(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid macerateInto '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.macerateInto(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper ingotSmeltInto(Material m) {
-        internal.ingotSmeltInto(m);
+    public MaterialBuilderWrapper ingotSmeltInto(Context cx, Holder<Material> m) {
+        MaterialEntry entry = MaterialParser.getEntryFrom(m);
+        if (entry == null) {
+            throw new KubeRuntimeException("Unknown/invalid ingotSmeltInto '" + m + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }
+        internal.ingotSmeltInto(entry);
         return this;
     }
 
-    public MaterialBuilderWrapper addOreByproducts(Material... byproducts) {
-        internal.addOreByproducts(byproducts);
+    @SafeVarargs
+    public final MaterialBuilderWrapper addOreByproducts(Context cx, Holder<Material>... byproducts) {
+        MaterialEntry[] entries = MaterialParser.getAsEntries(index -> {
+            throw new KubeRuntimeException("Unknown/invalid addOreByproducts value at index '" + index + "' for material '" + id + "'!")
+                    .source(SourceLine.of(cx));
+        }, byproducts);
+        internal.addOreByproducts(entries);
         return this;
     }
 
@@ -659,7 +705,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     @Override
     public Material createObject() {
-        return internal.buildAndRegister();
+        return internal.createEntry();
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
@@ -14,6 +14,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -158,6 +159,11 @@ public class GTLayerPattern {
             public GTLayerPattern.Layer.Builder mat(Material material) {
                 this.targets.add(Either.right(material));
                 return this;
+            }
+
+            @HideFromJS
+            public GTLayerPattern.Layer.Builder mat(MaterialEntry material) {
+                return mat(material.get());
             }
 
             public GTLayerPattern.Layer.Builder weight(int weight) {

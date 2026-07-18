@@ -46,10 +46,7 @@ public class OreRenderLayer extends MapRenderLayer {
         if (!definition.indicatorGenerators().isEmpty()) {
             var blockOrMaterial = definition.indicatorGenerators().getFirst().block();
             firstMaterial = blockOrMaterial == null ? null : blockOrMaterial.map(
-                    state -> {
-                        var matStack = ChemicalHelper.getMaterialStack(state.getBlock());
-                        return matStack.isEmpty() ? GTMaterials.NULL : matStack.material();
-                    },
+                    state -> ChemicalHelper.getMaterialStack(state.getBlock()).material().get(),
                     Function.identity());
         }
         if (firstMaterial == null) {

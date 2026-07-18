@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
@@ -80,7 +81,7 @@ public class FluidDrillMachine extends WorkableElectricMultiblockMachine impleme
         return GTBlocks.CASING_STEEL_SOLID.get();
     }
 
-    public static Material getFrameMaterial(int tier) {
+    public static MaterialEntry getFrameMaterial(int tier) {
         return switch (tier) {
             case GTValues.MV -> GTMaterials.Steel;
             case GTValues.HV -> GTMaterials.Titanium;

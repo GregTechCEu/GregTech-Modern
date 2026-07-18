@@ -36,7 +36,6 @@ public class MaterialBlockItem extends BlockItem {
     }
 
     @Override
-    @NotNull
     public MaterialBlock getBlock() {
         return (MaterialBlock) super.getBlock();
     }
@@ -47,7 +46,7 @@ public class MaterialBlockItem extends BlockItem {
     }
 
     @Override
-    public @NotNull String getDescriptionId() {
+    public String getDescriptionId() {
         return getBlock().getDescriptionId();
     }
 
@@ -64,7 +63,7 @@ public class MaterialBlockItem extends BlockItem {
     public int getItemBurnTime() {
         DustProperty property = material.isNull() ? null : material.getProperty(PropertyKey.DUST);
         if (property != null) {
-            return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
+            return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material.getEntryWrapper()) / GTValues.M);
         } else {
             return 0;
         }

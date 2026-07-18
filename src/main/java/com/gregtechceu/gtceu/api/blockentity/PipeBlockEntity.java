@@ -72,7 +72,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @SaveField
     @RerenderOnChanged
     private int blockedConnections = Node.ALL_CLOSED;
-    private NodeDataType cachedNodeData;
+    private @UnknownNullability NodeDataType cachedNodeData;
 
     @SaveField
     @SyncToClient
@@ -83,7 +83,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @RerenderOnChanged
     @SyncToClient
     @SaveField
-    private Material frameMaterial = GTMaterials.NULL;
+    private Material frameMaterial = GTMaterials.NULL.get();
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
@@ -151,11 +151,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public @NotNull Material getFrameMaterial() {
+    public Material getFrameMaterial() {
         // backwards compat
         // noinspection ConstantValue
         if (frameMaterial == null) {
-            frameMaterial = GTMaterials.NULL;
+            frameMaterial = GTMaterials.NULL.get();
         }
         return frameMaterial;
     }
@@ -378,10 +378,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             }
             return Pair.of(getPipeTuneTool(), InteractionResult.sidedSuccess(isRemote()));
         } else if (toolType.contains(GTToolType.CROWBAR)) {
-            if (!frameMaterial.isNull()) {
+            if (!this.frameMaterial.isNull()) {
                 Block.popResource(context.getLevel(), this.getBlockPos(),
                         GTMaterialBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, frameMaterial).asStack());
-                frameMaterial = GTMaterials.NULL;
+                this.frameMaterial = GTMaterials.NULL.get();
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.sidedSuccess(isRemote()));
             }
         }

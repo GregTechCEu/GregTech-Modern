@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -15,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -62,7 +62,6 @@ public class CoilBlock extends ActiveBlock {
         TRINIUM("trinium", 9001, 8, 8, GTMaterials.Trinium, GTCEu.id("block/casings/coils/machine_coil_trinium")),
         TRITANIUM("tritanium", 10800, 16, 8, GTMaterials.Tritanium, GTCEu.id("block/casings/coils/machine_coil_tritanium"));
         // spotless:on
-        @NotNull
         @Getter
         private final String name;
         // electric blast furnace properties
@@ -73,14 +72,11 @@ public class CoilBlock extends ActiveBlock {
         private final int level;
         @Getter
         private final int energyDiscount;
-        @NotNull
-        @Getter
-        private final Material material;
-        @NotNull
+        private final MaterialEntry material;
         @Getter
         private final ResourceLocation texture;
 
-        CoilType(String name, int coilTemperature, int level, int energyDiscount, Material material,
+        CoilType(String name, int coilTemperature, int level, int energyDiscount, MaterialEntry material,
                  ResourceLocation texture) {
             this.name = name;
             this.coilTemperature = coilTemperature;
@@ -90,18 +86,21 @@ public class CoilBlock extends ActiveBlock {
             this.texture = texture;
         }
 
+        @Override
+        public Material getMaterial() {
+            return material.get();
+        }
+
         public int getTier() {
             return this.ordinal();
         }
 
-        @NotNull
         @Override
         public String toString() {
             return getName();
         }
 
         @Override
-        @NotNull
         public String getSerializedName() {
             return name;
         }

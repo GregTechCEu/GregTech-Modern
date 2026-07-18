@@ -331,7 +331,7 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapelessRecipe(provider, "high_pressure_to_steel_solid_casing",
                 GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
 
-        var multiHatchMaterials = new Material[] {
+        var multiHatchMaterials = new com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry[] {
                 GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
                 GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
         };
@@ -906,14 +906,15 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
                 Tags.Items.CHESTS_WOODEN, 'B', CABLE, 'C', CIRCUIT);
 
-        Material[] fluidMap = new Material[] { GTMaterials.Glue, GTMaterials.Polyethylene,
-                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole };
+        var fluidMap = new com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry[] {
+                GTMaterials.Glue, GTMaterials.Polyethylene,
+                GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
+        };
 
         for (var machine : GTMachines.FLUID_IMPORT_HATCH) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder("fluid_hatch_" + VN[tier].toLowerCase(Locale.ROOT) + "_" + fluidMap[j].getName())
@@ -931,8 +932,7 @@ public class MetaTileEntityLoader {
         for (var machine : GTMachines.FLUID_EXPORT_HATCH) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
@@ -951,8 +951,7 @@ public class MetaTileEntityLoader {
         for (var machine : GTMachines.ITEM_IMPORT_BUS) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
@@ -971,8 +970,7 @@ public class MetaTileEntityLoader {
         for (var machine : GTMachines.ITEM_EXPORT_BUS) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 2 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
@@ -991,8 +989,7 @@ public class MetaTileEntityLoader {
         for (var machine : GTMachines.DUAL_IMPORT_HATCH) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 8 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(
@@ -1013,8 +1010,7 @@ public class MetaTileEntityLoader {
         for (var machine : GTMachines.DUAL_EXPORT_HATCH) {
             if (machine == null) continue;
             int tier = machine.getTier();
-            int j = Math.min(fluidMap.length - 1, tier / 2);
-            for (; j < fluidMap.length; j++) {
+            for (int j = Math.min(fluidMap.length - 1, tier / 2); j < fluidMap.length; j++) {
                 int fluidAmount = GTValues.L * 8 * (tier + 1);
                 GTRecipeTypes.ASSEMBLER_RECIPES
                         .recipeBuilder(

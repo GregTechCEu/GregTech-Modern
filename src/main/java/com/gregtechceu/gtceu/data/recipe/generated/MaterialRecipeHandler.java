@@ -40,7 +40,7 @@ public final class MaterialRecipeHandler {
 
     private MaterialRecipeHandler() {}
 
-    public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
+    public static void run(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         processIngot(provider, material);
         processNugget(provider, material);
         processBlock(provider, material);
@@ -61,7 +61,7 @@ public final class MaterialRecipeHandler {
         generateSurfaceRockRecipe(provider, material);
     }
 
-    private static void processDust(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processDust(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(dust) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -119,7 +119,7 @@ public final class MaterialRecipeHandler {
             }
 
             if (oreProperty != null) {
-                Material smeltingResult = oreProperty.getDirectSmeltResult();
+                var smeltingResult = oreProperty.getDirectSmeltResult();
                 if (!smeltingResult.isNull()) {
                     VanillaRecipeHelper.addSmeltingRecipe(provider, id + "_ingot",
                             ChemicalHelper.getTag(dust, material), ChemicalHelper.get(ingot, smeltingResult));
@@ -129,10 +129,10 @@ public final class MaterialRecipeHandler {
         } else if (material.hasProperty(PropertyKey.INGOT)) {
             if (!material.hasAnyOfFlags(FLAMMABLE, NO_SMELTING)) {
 
-                boolean hasHotIngot = ingotHot.doGenerateItem(material);
+                boolean hasHotIngot = ingotHot.doGenerateItem(material.get());
                 ItemStack ingotStack = ChemicalHelper.get(hasHotIngot ? ingotHot : ingot, material);
                 if (ingotStack.isEmpty() && oreProperty != null) {
-                    Material smeltingResult = oreProperty.getDirectSmeltResult();
+                    var smeltingResult = oreProperty.getDirectSmeltResult();
                     if (!smeltingResult.isNull()) {
                         ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     }
@@ -167,7 +167,7 @@ public final class MaterialRecipeHandler {
 
             // Some Ores with Direct Smelting Results have neither ingot nor gem properties
             if (oreProperty != null) {
-                Material smeltingResult = oreProperty.getDirectSmeltResult();
+                var smeltingResult = oreProperty.getDirectSmeltResult();
                 if (!smeltingResult.isNull()) {
                     ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
                     if (!ingotStack.isEmpty()) {
@@ -179,8 +179,8 @@ public final class MaterialRecipeHandler {
         }
     }
 
-    private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output,
-                                         RecipeOutput provider) {
+    private static void processEBFRecipe(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material,
+                                         BlastProperty property, ItemStack output, RecipeOutput provider) {
         int blastTemp = property.getBlastTemperature();
         BlastProperty.GasTier gasTier = property.getGasTier();
         int duration = property.getDurationOverride();
@@ -211,14 +211,14 @@ public final class MaterialRecipeHandler {
                     .save(provider);
         } else {
             blastBuilder.duration(duration);
-            if (material == Silicon) {
+            if (material.is(Silicon)) {
                 blastBuilder.circuitMeta(1);
             }
             blastBuilder.save(provider);
         }
 
         // Add Vacuum Freezer recipe if required.
-        if (ingotHot.doGenerateItem(material)) {
+        if (ingotHot.doGenerateItem(material.get())) {
             int vacuumEUt = property.getVacuumEUtOverride() != -1 ? property.getVacuumEUtOverride() : VA[MV];
             int vacuumDuration = property.getVacuumDurationOverride() != -1 ? property.getVacuumDurationOverride() :
                     (int) material.getMass() * 3;
@@ -243,11 +243,11 @@ public final class MaterialRecipeHandler {
 
         AlloyBlastProperty alloyBlastProperty = material.getProperty(PropertyKey.ALLOY_BLAST);
         if (alloyBlastProperty != null) {
-            alloyBlastProperty.getRecipeProducer().produce(material, property, provider);
+            alloyBlastProperty.getRecipeProducer().produce(material.get(), property, provider);
         }
     }
 
-    private static void processSmallDust(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processSmallDust(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(dustSmall) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -278,7 +278,7 @@ public final class MaterialRecipeHandler {
                 .save(provider);
     }
 
-    private static void processTinyDust(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processTinyDust(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(dustTiny) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -309,7 +309,7 @@ public final class MaterialRecipeHandler {
                 .save(provider);
     }
 
-    private static void processIngot(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processIngot(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(ingot) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
@@ -431,7 +431,7 @@ public final class MaterialRecipeHandler {
     }
 
     private static void processGemConversion(@NotNull RecipeOutput provider, @NotNull TagPrefix prefix,
-                                             @Nullable TagPrefix lowerPrefix, @NotNull Material material) {
+                                             @Nullable TagPrefix lowerPrefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.GEM)) {
             return;
         }
@@ -483,7 +483,7 @@ public final class MaterialRecipeHandler {
                 .save(provider);
     }
 
-    private static void processNugget(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processNugget(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(nugget) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -549,7 +549,7 @@ public final class MaterialRecipeHandler {
         }
     }
 
-    private static void processFrame(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processFrame(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(frameGt) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -570,7 +570,7 @@ public final class MaterialRecipeHandler {
         }
     }
 
-    private static void processBlock(@NotNull RecipeOutput provider, @NotNull Material material) {
+    private static void processBlock(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(block) || !material.hasProperty(PropertyKey.DUST)) {
             return;
         }
@@ -650,7 +650,7 @@ public final class MaterialRecipeHandler {
                         .category(GTRecipeCategories.INGOT_MOLDING)
                         .save(provider);
 
-                Material nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
+                var nonMagneticMaterial = material.hasFlag(IS_MAGNETIC) ?
                         material.getProperty(PropertyKey.INGOT).getSmeltingInto() : material;
                 if (!nonMagneticMaterial.hasProperty(PropertyKey.BLAST)) {
                     ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_dust_to_block")
@@ -676,17 +676,17 @@ public final class MaterialRecipeHandler {
     }
 
     private static void generateSurfaceRockRecipe(@NotNull RecipeOutput provider,
-                                                  @NotNull Material material) {
+                                                  @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (material.hasProperty(PropertyKey.ORE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, "%s_surface_indicator".formatted(material.getName()),
-                    GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material).asStack(2),
+                    GTMaterialBlocks.SURFACE_ROCK_BLOCKS.get(material.get()).asStack(2),
                     "DDD", "DGD", "DDD",
                     'D', ChemicalHelper.get(dustSmall, material),
                     'G', Items.GRAVEL);
         }
     }
 
-    private static int getVoltageMultiplier(Material material) {
+    private static int getVoltageMultiplier(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         return material.getBlastTemperature() >= 2800 ? VA[LV] : VA[ULV];
     }
 }

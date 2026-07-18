@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -101,7 +102,7 @@ public class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilder setIgnored(Material material, ItemLike... items) {
+    public TagPrefixBuilder setIgnored(MaterialEntry material, ItemLike... items) {
         base.setIgnored(material, items);
         return this;
     }

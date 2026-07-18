@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionFluid;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
@@ -39,13 +39,15 @@ public class GTFluids {
         NeoForgeMod.enableMilkFluid();
     }
 
-    public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Fluid fluid) {
+    public static void handleNonMaterialFluids(@NotNull MaterialEntry material, @NotNull Fluid fluid) {
         handleNonMaterialFluids(material, () -> fluid);
     }
 
-    public static void handleNonMaterialFluids(@NotNull Material material, @NotNull Supplier<Fluid> fluid) {
-        var property = material.getProperty(PropertyKey.FLUID);
-        property.getStorage().store(FluidStorageKeys.LIQUID, fluid, null);
+    public static void handleNonMaterialFluids(@NotNull MaterialEntry material, @NotNull Supplier<Fluid> fluid) {
+        material.onRegister(mat -> {
+            var property = material.getProperty(PropertyKey.FLUID);
+            property.getStorage().store(FluidStorageKeys.LIQUID, fluid, null);
+        });
     }
 
     public static void registerMaterialFluids() {

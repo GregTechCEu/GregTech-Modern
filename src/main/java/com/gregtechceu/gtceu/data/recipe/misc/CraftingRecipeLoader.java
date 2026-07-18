@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidContainerIngredient;
@@ -287,7 +286,7 @@ public class CraftingRecipeLoader {
         SpecialRecipeBuilder.special(FacadeCoverRecipe::new).save(provider, FacadeCoverRecipe.ID);
     }
 
-    private static void addDuctRecipes(@NotNull RecipeOutput provider, @NotNull Material material,
+    private static void addDuctRecipes(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material,
                                        int outputAmount) {
         VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
                 GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",

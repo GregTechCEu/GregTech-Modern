@@ -2,13 +2,9 @@ package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.core.mixins.MappedRegistryAccessor;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.RegistrationInfo;
-import net.minecraft.core.Registry;
+import net.minecraft.core.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
@@ -18,13 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.stream.Stream;
 
-public final class MaterialRegistry extends MappedRegistry<Material> {
+public final class MaterialRegistry extends DefaultedMappedRegistry<Material> {
 
     private final Set<String> usedNamespaces = new HashSet<>();
     private boolean isRegistryClosed = false;
 
     public MaterialRegistry(ResourceKey<Registry<Material>> key) {
-        super(key, Lifecycle.stable());
+        super("gtceu:null", key, Lifecycle.stable(), false);
     }
 
     public @NotNull Set<String> getUsedNamespaces() {
@@ -57,8 +53,7 @@ public final class MaterialRegistry extends MappedRegistry<Material> {
     }
 
     public Material getMaterial(ResourceLocation name) {
-        Material value = get(name);
-        return value != null ? value : GTMaterials.NULL;
+        return this.get(name);
     }
 
     @Override

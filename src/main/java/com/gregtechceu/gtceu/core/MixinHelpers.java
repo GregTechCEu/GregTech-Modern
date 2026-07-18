@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTClientFluidTypeExtensions;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -97,7 +98,7 @@ public class MixinHelpers {
 
                 if (entry.tagPrefix() == TagPrefix.crushed && material.hasProperty(PropertyKey.ORE)) {
                     OreProperty ore = material.getProperty(PropertyKey.ORE);
-                    Material washedIn = ore.getWashedIn().first();
+                    MaterialEntry washedIn = ore.getWashedIn().first();
                     if (washedIn.isNull()) return;
                     ResourceLocation generalTag = CustomTags.CHEM_BATH_WASHABLE.location();
                     ResourceLocation specificTag = generalTag.withSuffix("/" + washedIn.getName());

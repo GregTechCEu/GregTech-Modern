@@ -37,7 +37,7 @@ public final class OreRecipeHandler {
 
     private OreRecipeHandler() {}
 
-    public static void run(@NotNull RecipeOutput provider, @NotNull Material material) {
+    public static void run(@NotNull RecipeOutput provider, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         OreProperty property = material.getProperty(PropertyKey.ORE);
         if (property == null) {
             return;
@@ -56,8 +56,8 @@ public final class OreRecipeHandler {
     }
 
     private static void processMetalSmelting(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                             @NotNull TagPrefix prefix, @NotNull Material material) {
-        Material smeltingResult = property.getDirectSmeltResult().isNull() ? material : property.getDirectSmeltResult();
+                                             @NotNull TagPrefix prefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        var smeltingResult = property.getDirectSmeltResult().isNull() ? material : property.getDirectSmeltResult();
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
@@ -72,20 +72,20 @@ public final class OreRecipeHandler {
     }
 
     private static void processOre(@NotNull RecipeOutput provider, @NotNull TagPrefix orePrefix,
-                                   @NotNull OreProperty property, @NotNull Material material) {
+                                   @NotNull OreProperty property, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(orePrefix)) {
             return;
         }
 
-        var inputStack = ChemicalHelper.get(orePrefix, material);
+        ItemStack inputStack = ChemicalHelper.get(orePrefix, material);
 
-        Material byproductMaterial = property.getOreByProduct(0, material);
+        var byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
         if (byproductStack.isEmpty()) {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        var smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -150,18 +150,18 @@ public final class OreRecipeHandler {
     }
 
     private static void processRawOre(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                      @NotNull Material material) {
+                                      @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(rawOre)) {
             return;
         }
 
-        Material byproductMaterial = property.getOreByProduct(0, material);
+        var byproductMaterial = property.getOreByProduct(0, material);
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
         if (byproductStack.isEmpty()) {
             byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         }
 
-        Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+        var smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                 property.getDirectSmeltResult();
         ItemStack ingotStack;
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
@@ -239,13 +239,13 @@ public final class OreRecipeHandler {
     }
 
     private static void processCrushedOre(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                          @NotNull Material material) {
+                                          @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(crushed)) {
             return;
         }
 
         ItemStack impureDustStack = ChemicalHelper.get(dustImpure, material);
-        Material byproductMaterial = property.getOreByProduct(0, material);
+        var byproductMaterial = property.getOreByProduct(0, material);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_crushed_ore_to_impure_dust")
                 .inputItems(crushed, material)
@@ -303,8 +303,8 @@ public final class OreRecipeHandler {
                 .save(provider);
 
         if (!property.getWashedIn().first().isNull()) {
-            Material washingByproduct = property.getOreByProduct(3, material);
-            ObjectIntPair<Material> washedInTuple = property.getWashedIn();
+            var washingByproduct = property.getOreByProduct(3, material);
+            var washedInTuple = property.getWashedIn();
             CHEMICAL_BATH_RECIPES.recipeBuilder("bathe_" + material.getName() + "_crushed_ore_to_purified_ore")
                     .inputItems(crushed, material)
                     .inputFluids(washedInTuple.first().getFluid(washedInTuple.secondInt()))
@@ -323,7 +323,8 @@ public final class OreRecipeHandler {
     }
 
     private static void processCrushedCentrifuged(@NotNull RecipeOutput provider,
-                                                  @NotNull OreProperty property, @NotNull Material material) {
+                                                  @NotNull OreProperty property,
+                                                  @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(crushedRefined)) {
             return;
         }
@@ -355,14 +356,14 @@ public final class OreRecipeHandler {
 
     private static void processCrushedPurified(@NotNull RecipeOutput provider,
                                                @NotNull OreProperty property,
-                                               @NotNull Material material) {
+                                               @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(crushedPurified)) {
             return;
         }
 
         ItemStack crushedCentrifugedStack = ChemicalHelper.get(crushedRefined, material);
         ItemStack dustStack = ChemicalHelper.get(dustPure, material);
-        Material byproductMaterial = property.getOreByProduct(1, material);
+        var byproductMaterial = property.getOreByProduct(1, material);
         ItemStack byproductStack = ChemicalHelper.get(dust, byproductMaterial);
 
         FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + material.getName() + "_crushed_ore_to_dust")
@@ -439,13 +440,13 @@ public final class OreRecipeHandler {
     }
 
     private static void processDirtyDust(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                         @NotNull Material material) {
+                                         @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(dustImpure)) {
             return;
         }
 
         ItemStack dustStack = ChemicalHelper.get(dust, material);
-        Material byproduct = property.getOreByProduct(0, material);
+        var byproduct = property.getOreByProduct(0, material);
 
         GTRecipeBuilder builder = CENTRIFUGE_RECIPES
                 .recipeBuilder("centrifuge_" + material.getName() + "_dirty_dust_to_dust")
@@ -473,16 +474,16 @@ public final class OreRecipeHandler {
     }
 
     private static void processPureDust(@NotNull RecipeOutput provider, @NotNull OreProperty property,
-                                        @NotNull Material material) {
+                                        @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(dustPure)) {
             return;
         }
 
-        Material byproductMaterial = property.getOreByProduct(1, material);
+        var byproductMaterial = property.getOreByProduct(1, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
         if (property.getSeparatedInto() != null && !property.getSeparatedInto().isEmpty()) {
-            List<Material> separatedMaterial = property.getSeparatedInto();
+            var separatedMaterial = property.getSeparatedInto();
             TagPrefix prefix = (separatedMaterial.get(separatedMaterial.size() - 1).getBlastTemperature() == 0 &&
                     separatedMaterial.get(separatedMaterial.size() - 1).hasProperty(PropertyKey.INGOT)) ? nugget : dust;
 
@@ -516,7 +517,7 @@ public final class OreRecipeHandler {
         processMetalSmelting(provider, property, dustPure, material);
     }
 
-    private static boolean doesMaterialUseNormalFurnace(@NotNull Material material) {
+    private static boolean doesMaterialUseNormalFurnace(@NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         return !material.hasProperty(PropertyKey.BLAST) && !material.hasFlag(MaterialFlags.NO_ORE_SMELTING);
     }
 }

@@ -17,6 +17,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTEnchantmentProviders;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterialItems;
@@ -73,6 +74,7 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import it.unimi.dsi.fastutil.chars.CharSets;
 import lombok.experimental.ExtensionMethod;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
@@ -90,7 +92,7 @@ public class ToolHelper {
     /**
      * @return finds the registered tool with the crafting symbol
      */
-    public static GTToolType getToolFromSymbol(char symbol) {
+    public static @UnknownNullability GTToolType getToolFromSymbol(char symbol) {
         return symbols.get(symbol);
     }
 
@@ -125,6 +127,10 @@ public class ToolHelper {
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack get(GTToolType toolType, MaterialEntry material) {
+        return get(toolType, material.get());
+    }
+
     public static ItemStack getArmor(ArmorItem.Type armorType, Material material) {
         if (material.hasProperty(PropertyKey.ARMOR)) {
             var entry = GTMaterialItems.ARMOR_ITEMS.get(material, armorType);
@@ -133,6 +139,10 @@ public class ToolHelper {
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public static ItemStack getArmor(ArmorItem.Type armorType, MaterialEntry material) {
+        return getArmor(armorType, material.get());
     }
 
     public static boolean is(ItemStack stack, GTToolType toolType) {
@@ -235,6 +245,11 @@ public class ToolHelper {
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, modifiers);
 
         return stack;
+    }
+
+    public static ItemStack getAndSetToolData(GTToolType toolType, MaterialEntry material, int maxDurability,
+                                              int harvestLevel, float toolSpeed, float attackDamage) {
+        return getAndSetToolData(toolType, material.get(), maxDurability, harvestLevel, toolSpeed, attackDamage);
     }
 
     /**

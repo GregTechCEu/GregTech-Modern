@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import it.unimi.dsi.fastutil.objects.Reference2LongMap;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
@@ -20,14 +20,14 @@ public class ItemMaterialInfo {
     }
 
     public ItemMaterialInfo(List<MaterialStack> materialStacks) {
-        var materials = new Reference2LongOpenHashMap<Material>();
+        var materials = new Reference2LongOpenHashMap<MaterialEntry>();
         for (var stack : materialStacks) {
             materials.addTo(stack.material(), stack.amount());
         }
         setSortedMaterials(materials);
     }
 
-    public ItemMaterialInfo(Reference2LongMap<Material> materialList) {
+    public ItemMaterialInfo(Reference2LongMap<MaterialEntry> materialList) {
         setSortedMaterials(materialList);
     }
 
@@ -47,13 +47,13 @@ public class ItemMaterialInfo {
     }
 
     public void addMaterialStacks(List<MaterialStack> stacks) {
-        var materials = new Reference2LongOpenHashMap<Material>();
+        var materials = new Reference2LongOpenHashMap<MaterialEntry>();
         sortedMaterials.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
         stacks.forEach(stack -> materials.addTo(stack.material(), stack.amount()));
         setSortedMaterials(materials);
     }
 
-    private void setSortedMaterials(Reference2LongMap<Material> matStacks) {
+    private void setSortedMaterials(Reference2LongMap<MaterialEntry> matStacks) {
         sortedMaterials.clear();
 
         for (var entry : matStacks.reference2LongEntrySet()) {
@@ -66,7 +66,7 @@ public class ItemMaterialInfo {
         StringBuilder ret = new StringBuilder("[ ");
         for (var matStack : sortedMaterials) {
             ret.append(matStack.amount() / (float) GTValues.M).append("x ")
-                    .append(matStack.material().getResourceLocation()).append(" ");
+                    .append(matStack.material().getId()).append(" ");
         }
         ret.append("]");
         toStringValue = ret.toString();

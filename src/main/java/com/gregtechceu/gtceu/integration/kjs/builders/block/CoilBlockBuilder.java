@@ -4,9 +4,12 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.utils.MaterialParser;
 
+import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -16,15 +19,14 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.function.Supplier;
+import java.util.Objects;
 
 @Accessors(chain = true, fluent = true)
 public class CoilBlockBuilder extends ActiveBlockBuilder {
 
     @Setter
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
-    @Setter
-    public transient Supplier<Material> material = () -> GTMaterials.NULL;
+    public transient MaterialEntry material = GTMaterials.NULL;
     @Setter
     public transient String texture = "minecraft:missingno";
 
@@ -34,6 +36,11 @@ public class CoilBlockBuilder extends ActiveBlockBuilder {
         renderType(BlockRenderType.CUTOUT_MIPPED);
         noValidSpawns(true);
         type = Type.CUSTOM;
+    }
+
+    public CoilBlockBuilder material(Holder<Material> material) {
+        this.material = Objects.requireNonNullElse(MaterialParser.getEntryFrom(material), GTMaterials.NULL);
+        return this;
     }
 
     @HideFromJS

@@ -47,6 +47,10 @@ public class CraftingComponent {
         return of(id, new MaterialEntry(prefix, material));
     }
 
+    public static CraftingComponent of(@NotNull String id, @NotNull TagPrefix prefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return of(id, prefix, material.get());
+    }
+
     public @NotNull Object get(int tier) {
         if (this == EMPTY) return ItemStack.EMPTY;
         if (tier < 0 || tier >= values.length)
@@ -64,6 +68,10 @@ public class CraftingComponent {
 
     public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull Material material) {
         return add(tier, new MaterialEntry(prefix, material));
+    }
+
+    public @NotNull CraftingComponent add(int tier, @NotNull TagPrefix prefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return add(tier, prefix, material.get());
     }
 
     public void remove(int tier) {

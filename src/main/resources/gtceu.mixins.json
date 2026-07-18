@@ -79,7 +79,8 @@
         "emi.FluidEmiStackMixin",
         "jei.FluidHelperMixin",
         "registrate.AbstractRegistrateAccessor",
-        "registrate.RegistrateDataProviderAccessor"
+        "registrate.RegistrateDataProviderAccessor",
+        "registrate.RegistryEntryAccessor"
     ],
     "injectors": {
         "defaultRequire": 1,

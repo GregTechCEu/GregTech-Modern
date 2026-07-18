@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.medicalcondition.MedicalCondition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -16,11 +18,13 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.PlainBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTMedicalConditions;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTMath;
+import com.gregtechceu.gtceu.utils.MaterialParser;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import com.mojang.serialization.Codec;
@@ -35,17 +39,20 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.tterrag.registrate.builders.BuilderCallback;
+import dev.latvian.mods.rhino.util.HideFromJS;
+import dev.latvian.mods.rhino.util.RemapForJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.*;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
@@ -97,12 +104,12 @@ public class Material {
     private String calculateChemicalFormula() {
         if (chemicalFormula != null) return this.chemicalFormula;
         if (materialInfo.element != null) {
-            String[] split = materialInfo.element.symbol().split("-");
+            String[] split = materialInfo.element.value().symbol().split("-");
             String result;
             if (split.length > 1) {
                 split[1] = FormattingUtil.toSmallUpNumbers(split[1]);
                 result = split[0] + split[1];
-            } else result = materialInfo.element.symbol();
+            } else result = materialInfo.element.value().symbol();
             return result;
         }
         if (!materialInfo.componentList.isEmpty()) {
@@ -143,15 +150,11 @@ public class Material {
     }
 
     // thou shall not call
-    protected Material(ResourceLocation resourceLocation) {
+    Material(ResourceLocation resourceLocation) {
         materialInfo = new MaterialInfo(resourceLocation);
         materialInfo.iconSet = MaterialIconSet.DULL;
         properties = new MaterialProperties();
         flags = new MaterialFlags();
-    }
-
-    protected void registerMaterial(GTRegistrate registrate) {
-        registrate.generic(this.getName(), GTRegistries.Keys.MATERIAL, () -> this).register();
     }
 
     public String getName() {
@@ -160,6 +163,13 @@ public class Material {
 
     public String getModid() {
         return materialInfo.resourceLocation.getNamespace();
+    }
+
+    /**
+     * Registrate wrapper of this material
+     */
+    public MaterialEntry getEntryWrapper() {
+        return materialInfo.entryWrapper;
     }
 
     /**
@@ -187,7 +197,7 @@ public class Material {
 
     @Nullable
     public Element getElement() {
-        return materialInfo.element;
+        return materialInfo.element.value();
     }
 
     public boolean hasFlags(MaterialFlag... flags) {
@@ -205,7 +215,7 @@ public class Material {
                 !hasFlag(MaterialFlags.DISABLE_DECOMPOSITION)) {
             boolean onlyMetalMaterials = true;
             for (MaterialStack materialStack : materialInfo.componentList) {
-                Material material = materialStack.material();
+                MaterialEntry material = materialStack.material();
                 onlyMetalMaterials &= material.hasProperty(PropertyKey.INGOT);
             }
             // allow centrifuging of alloy materials only
@@ -292,7 +302,7 @@ public class Material {
     }
 
     /**
-     * Retrieves a fluid builder from the material.
+     * Retrieves a fluid Builder<P> from the material.
      * <br>
      * NOTE: only available before the fluids are registered.
      * <br>
@@ -449,7 +459,7 @@ public class Material {
 
     public boolean isRadioactive() {
         if (materialInfo.element != null)
-            return materialInfo.element.halfLifeSeconds() >= 0;
+            return materialInfo.element.value().halfLifeSeconds() >= 0;
         for (MaterialStack material : materialInfo.componentList)
             if (material.material().isRadioactive()) return true;
         return false;
@@ -457,7 +467,7 @@ public class Material {
 
     public long getProtons() {
         if (materialInfo.element != null)
-            return materialInfo.element.protons();
+            return materialInfo.element.value().protons();
         if (materialInfo.componentList.isEmpty())
             return Math.max(1, 43);
         long totalProtons = 0, totalAmount = 0;
@@ -472,7 +482,7 @@ public class Material {
 
     public long getNeutrons() {
         if (materialInfo.element != null)
-            return materialInfo.element.neutrons();
+            return materialInfo.element.value().neutrons();
         if (materialInfo.componentList.isEmpty())
             return 55;
         long totalNeutrons = 0, totalAmount = 0;
@@ -487,7 +497,7 @@ public class Material {
 
     public long getMass() {
         if (materialInfo.element != null)
-            return materialInfo.element.mass();
+            return materialInfo.element.value().mass();
         if (materialInfo.componentList.isEmpty())
             return 98;
         long totalMass = 0, totalAmount = 0;
@@ -525,7 +535,7 @@ public class Material {
 
     // must be named multiply for GroovyScript to allow `material * quantity -> MaterialStack`
     public MaterialStack multiply(long amount) {
-        return new MaterialStack(this, amount);
+        return new MaterialStack(this.getEntryWrapper(), amount);
     }
 
     public <T extends IMaterialProperty> boolean hasProperty(PropertyKey<T> key) {
@@ -540,7 +550,7 @@ public class Material {
         properties.removeProperty(key);
     }
 
-    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, IMaterialProperty property) {
+    public <T extends IMaterialProperty> void setProperty(PropertyKey<T> key, T property) {
         if (GTRegistries.MATERIALS.isFrozen()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
@@ -564,7 +574,15 @@ public class Material {
     }
 
     public boolean isNull() {
-        return this == GTMaterials.NULL;
+        return this == GTMaterials.NULL.get();
+    }
+
+    public boolean is(Material material) {
+        return this == material;
+    }
+
+    public boolean is(MaterialEntry material) {
+        return this == material.get();
     }
 
     @Override
@@ -582,51 +600,52 @@ public class Material {
         return Objects.hashCode(this.getResourceLocation());
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    @SuppressWarnings({ "UnusedReturnValue", "UnstableApiUsage" })
     @RemapPrefixForJS("kjs$")
-    public static class Builder {
+    @NotNullByDefault
+    public static class Builder<P> extends PlainBuilder<Material, P, Builder<P>> {
 
-        private final GTRegistrate registrate;
+        /**
+         * Addons shouldn't ever touch this field. It's only public so the KubeJS builder can assign a value to
+         * {@link MaterialInfo#entryWrapper MaterialInfo.entryWrapper}.
+         */
+        @ApiStatus.Internal
+        @Getter
         private final MaterialInfo materialInfo;
         private final MaterialProperties properties;
         private final MaterialFlags flags;
 
-        private Set<TagPrefix> ignoredTagPrefixes = null;
+        private @Nullable Set<TagPrefix> ignoredTagPrefixes = null;
         private final List<TagKey<Item>> itemTags = new ArrayList<>();
 
         /*
          * Temporary data used to determine the final material formula tooltip.
          */
-        private String formula = null;
+        private @Nullable String formula = null;
         private boolean formatFormula = true;
 
         /*
          * The temporary list of components for this Material.
          */
         private List<MaterialStack> composition = new ArrayList<>();
-        private List<MaterialStackWrapper> compositionSupplier;
 
         /*
          * Temporary value to use to determine how to calculate default RGB.
          */
         private boolean averageRGB = false;
 
-        /**
-         * Constructs a {@link Material}. This Builder replaces the old constructors, and
-         * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
-         *
-         * @param resourceLocation The Name of this Material. Will be formatted as
-         *                         "material.<name>" for the Translation Key.
-         * @since GTCEu 2.0.0
-         */
-        public Builder(GTRegistrate registrate, ResourceLocation resourceLocation) {
-            this.registrate = registrate;
-            String name = resourceLocation.getPath();
+        public Builder(GTRegistrate owner, P parent, String name, BuilderCallback callback) {
+            super(owner, parent, name, callback, GTRegistries.Keys.MATERIAL);
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
-            materialInfo = new MaterialInfo(resourceLocation);
+            materialInfo = new MaterialInfo(getOwner().makeResourceLocation(name));
             properties = new MaterialProperties();
             flags = new MaterialFlags();
+        }
+
+        @Override
+        public GTRegistrate getOwner() {
+            return (GTRegistrate) super.getOwner();
         }
 
         /*
@@ -634,7 +653,7 @@ public class Material {
          */
 
         /** @see #liquid */
-        public Builder fluid() {
+        public Builder<P> fluid() {
             fluid(FluidStorageKeys.LIQUID, new FluidBuilder());
             return this;
         }
@@ -647,7 +666,7 @@ public class Material {
          * <br>
          * See {@link #fluid(FluidStorageKey, FluidBuilder)} for setting other values.
          */
-        public Builder fluid(@NotNull FluidStorageKey key, @NotNull FluidState state) {
+        public Builder<P> fluid(FluidStorageKey key, FluidState state) {
             return fluid(key, new FluidBuilder().state(state));
         }
 
@@ -657,7 +676,7 @@ public class Material {
          *
          * @see FluidBuilder
          */
-        public Builder fluid(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
+        public Builder<P> fluid(FluidStorageKey key, FluidBuilder builder) {
             properties.ensureSet(PropertyKey.FLUID);
             FluidProperty property = properties.getProperty(PropertyKey.FLUID);
             property.enqueueRegistration(key, builder);
@@ -681,7 +700,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#LIQUID LIQUID} has
          *                                  already been added to this Material.
          */
-        public Builder liquid() {
+        public Builder<P> liquid() {
             return fluid(FluidStorageKeys.LIQUID, FluidState.LIQUID);
         }
 
@@ -693,7 +712,7 @@ public class Material {
          *
          * @see FluidBuilder
          */
-        public Builder liquid(@NotNull FluidBuilder builder) {
+        public Builder<P> liquid(FluidBuilder builder) {
             return fluid(FluidStorageKeys.LIQUID, builder.state(FluidState.LIQUID));
         }
 
@@ -707,7 +726,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#LIQUID LIQUID} has
          *                                  already been added to this Material.
          */
-        public Builder liquid(int temp) {
+        public Builder<P> liquid(int temp) {
             return liquid(new FluidBuilder().temperature(temp));
         }
 
@@ -727,7 +746,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#PLASMA PLASMA} has
          *                                  already been added to this Material.
          */
-        public Builder plasma() {
+        public Builder<P> plasma() {
             return fluid(FluidStorageKeys.PLASMA, FluidState.PLASMA);
         }
 
@@ -739,7 +758,7 @@ public class Material {
          *
          * @see FluidBuilder
          */
-        public Builder plasma(@NotNull FluidBuilder builder) {
+        public Builder<P> plasma(FluidBuilder builder) {
             return fluid(FluidStorageKeys.PLASMA, builder.state(FluidState.PLASMA));
         }
 
@@ -752,7 +771,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#PLASMA PLASMA} has
          *                                  already been added to this Material.
          */
-        public Builder plasma(int temp) {
+        public Builder<P> plasma(int temp) {
             return plasma(new FluidBuilder().temperature(temp));
         }
 
@@ -771,7 +790,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#GAS GAS} has
          *                                  already been added to this Material.
          */
-        public Builder gas() {
+        public Builder<P> gas() {
             return fluid(FluidStorageKeys.GAS, FluidState.GAS);
         }
 
@@ -783,7 +802,7 @@ public class Material {
          *
          * @see FluidBuilder
          */
-        public Builder gas(@NotNull FluidBuilder builder) {
+        public Builder<P> gas(FluidBuilder builder) {
             return fluid(FluidStorageKeys.GAS, builder.state(FluidState.GAS));
         }
 
@@ -796,7 +815,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link FluidStorageKeys#GAS GAS} has
          *                                  already been added to this Material.
          */
-        public Builder gas(int temp) {
+        public Builder<P> gas(int temp) {
             return gas(new FluidBuilder().temperature(temp));
         }
 
@@ -811,7 +830,7 @@ public class Material {
          *
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder dust() {
+        public Builder<P> dust() {
             properties.ensureSet(PropertyKey.DUST);
             return this;
         }
@@ -829,7 +848,7 @@ public class Material {
          *                     also be used to determine the tool's Mining Level.
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder dust(int harvestLevel) {
+        public Builder<P> dust(int harvestLevel) {
             return dust(harvestLevel, 0);
         }
 
@@ -843,7 +862,7 @@ public class Material {
          * @param burnTime     The Burn Time (in ticks) of this Material as a Furnace Fuel.
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder dust(int harvestLevel, int burnTime) {
+        public Builder<P> dust(int harvestLevel, int burnTime) {
             properties.setProperty(PropertyKey.DUST, new DustProperty(harvestLevel, burnTime));
             return this;
         }
@@ -858,7 +877,7 @@ public class Material {
          *
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder wood() {
+        public Builder<P> wood() {
             return wood(0, 300);
         }
 
@@ -875,7 +894,7 @@ public class Material {
          *                     Diamonds.
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder wood(int harvestLevel) {
+        public Builder<P> wood(int harvestLevel) {
             return wood(harvestLevel, 300);
         }
 
@@ -889,7 +908,7 @@ public class Material {
          * @param burnTime     The Burn Time (in ticks) of this Material as a Furnace Fuel.
          * @throws IllegalArgumentException If a {@link DustProperty} has already been added to this Material.
          */
-        public Builder wood(int harvestLevel, int burnTime) {
+        public Builder<P> wood(int harvestLevel, int burnTime) {
             properties.setProperty(PropertyKey.DUST, new DustProperty(harvestLevel, burnTime));
             properties.ensureSet(PropertyKey.WOOD);
             return this;
@@ -909,7 +928,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link GemProperty} has already been added to this Material, or if
          *                                  an {@link IngotProperty} has already been added to this Material.
          */
-        public Builder ingot() {
+        public Builder<P> ingot() {
             properties.ensureSet(PropertyKey.INGOT);
             return this;
         }
@@ -932,7 +951,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link GemProperty} has already been added to this Material, or if
          *                                  an {@link IngotProperty} has already been added to this Material.
          */
-        public Builder ingot(int harvestLevel) {
+        public Builder<P> ingot(int harvestLevel) {
             return ingot(harvestLevel, 0);
         }
 
@@ -950,7 +969,7 @@ public class Material {
          * @throws IllegalArgumentException If a {@link GemProperty} has already been added to this Material, or if
          *                                  an {@link IngotProperty} has already been added to this Material.
          */
-        public Builder ingot(int harvestLevel, int burnTime) {
+        public Builder<P> ingot(int harvestLevel, int burnTime) {
             DustProperty prop = properties.getProperty(PropertyKey.DUST);
             if (prop == null) dust(harvestLevel, burnTime);
             else {
@@ -975,7 +994,7 @@ public class Material {
          * @throws IllegalArgumentException If an {@link IngotProperty} has already been added to this Material, or if
          *                                  a {@link GemProperty} has already been added to this Material.
          */
-        public Builder gem() {
+        public Builder<P> gem() {
             properties.ensureSet(PropertyKey.GEM);
             return this;
         }
@@ -998,7 +1017,7 @@ public class Material {
          * @throws IllegalArgumentException If an {@link IngotProperty} has already been added to this Material, or if
          *                                  a {@link GemProperty} has already been added to this Material.
          */
-        public Builder gem(int harvestLevel) {
+        public Builder<P> gem(int harvestLevel) {
             return gem(harvestLevel, 0);
         }
 
@@ -1015,7 +1034,7 @@ public class Material {
          * @throws IllegalArgumentException If an {@link IngotProperty} has already been added to this Material, or if
          *                                  a {@link GemProperty} has already been added to this Material.
          */
-        public Builder gem(int harvestLevel, int burnTime) {
+        public Builder<P> gem(int harvestLevel, int burnTime) {
             DustProperty prop = properties.getProperty(PropertyKey.DUST);
             if (prop == null) dust(harvestLevel, burnTime);
             else {
@@ -1039,7 +1058,7 @@ public class Material {
          *
          * @throws IllegalArgumentException If an {@link PolymerProperty} has already been added to this Material.
          */
-        public Builder polymer() {
+        public Builder<P> polymer() {
             properties.ensureSet(PropertyKey.POLYMER);
             return this;
         }
@@ -1060,7 +1079,7 @@ public class Material {
          *                     If this Material already had a Harvest Level defined, it will be overridden.
          * @throws IllegalArgumentException If an {@link PolymerProperty} has already been added to this Material.
          */
-        public Builder polymer(int harvestLevel) {
+        public Builder<P> polymer(int harvestLevel) {
             return polymer(harvestLevel, 0);
         }
 
@@ -1076,7 +1095,7 @@ public class Material {
          *                     If this Material already had a Burn Time defined, it will be overridden.
          * @throws IllegalArgumentException If an {@link PolymerProperty} has already been added to this Material.
          */
-        public Builder polymer(int harvestLevel, int burnTime) {
+        public Builder<P> polymer(int harvestLevel, int burnTime) {
             DustProperty prop = properties.getProperty(PropertyKey.DUST);
             if (prop == null) dust(harvestLevel, burnTime);
             else if (prop.getHarvestLevel() == 2) prop.setHarvestLevel(harvestLevel);
@@ -1091,7 +1110,7 @@ public class Material {
          * @param burnTime The Burn Time (in ticks) of this Material as a Furnace Fuel.<br>
          *                 If this Material already had a Burn Time defined, it will be overridden.
          */
-        public Builder burnTime(int burnTime) {
+        public Builder<P> burnTime(int burnTime) {
             DustProperty prop = properties.getProperty(PropertyKey.DUST);
             if (prop == null) {
                 dust();
@@ -1114,7 +1133,7 @@ public class Material {
          *
          * @param color The RGB-formatted Color.
          */
-        public Builder color(int color) {
+        public Builder<P> color(int color) {
             color(color, true);
             return this;
         }
@@ -1127,7 +1146,7 @@ public class Material {
          * @param color         The RGB-formatted Color.
          * @param hasFluidColor Whether the fluid should be colored or not.
          */
-        public Builder color(int color, boolean hasFluidColor) {
+        public Builder<P> color(int color, boolean hasFluidColor) {
             this.materialInfo.colors.set(0, color);
             this.materialInfo.hasFluidColor = hasFluidColor;
             return this;
@@ -1140,7 +1159,7 @@ public class Material {
          *
          * @param color The RGB-formatted Color.
          */
-        public Builder secondaryColor(int color) {
+        public Builder<P> secondaryColor(int color) {
             this.materialInfo.colors.set(1, color);
             return this;
         }
@@ -1149,7 +1168,7 @@ public class Material {
          * Set the Color of this Material to be the average of the components specified in {@link #components}.<br>
          * Will default to <strong>0xFFFFFF</strong> if a components list is not specified.
          */
-        public Builder colorAverage() {
+        public Builder<P> colorAverage() {
             this.averageRGB = true;
             return this;
         }
@@ -1168,7 +1187,7 @@ public class Material {
          *
          * @param iconSet The {@link MaterialIconSet} of this Material.
          */
-        public Builder iconSet(MaterialIconSet iconSet) {
+        public Builder<P> iconSet(MaterialIconSet iconSet) {
             materialInfo.iconSet = iconSet;
             return this;
         }
@@ -1177,24 +1196,35 @@ public class Material {
          * Set the components that make up this Material.<br>
          * This information is used for automatic decomposition, chemical formula generation, among other things.
          *
-         * @param components An Object array formed as pairs of {@link Material} and Integer, representing the
+         * @param components An Object array formed as pairs of {@link Material} and long, representing the
          *                   Material and the amount of said Material in this Material's composition.
          * @throws IllegalArgumentException if the Object array is malformed.
          */
-        public Builder components(Object... components) {
+        @HideFromJS
+        public Builder<P> components(@UnknownNullability Object... components) {
             Preconditions.checkArgument(
                     components.length % 2 == 0,
                     "Material Components list malformed!");
 
             for (int i = 0; i < components.length; i += 2) {
-                if (components[i] == null) {
-                    throw new IllegalArgumentException(
-                            "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
+                if (components[i] == null || !(components[i + 1] instanceof Number amount)) {
+                    throw new IllegalArgumentException("Material in components list is null for material " +
+                            this.materialInfo.resourceLocation);
                 }
-                composition.add(new MaterialStack(
-                        components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) :
-                                (Material) components[i],
-                        ((Number) components[i + 1]).longValue()));
+                final MaterialEntry entry;
+                Object obj = components[i];
+                if (obj instanceof MaterialEntry e) {
+                    entry = e;
+                } else {
+                    ResourceLocation id = ResourceLocation.tryParse(GTCEu.appendIdString(obj.toString()));
+                    if (id == null) {
+                        throw new IllegalArgumentException("Invalid material in components list for material " +
+                                this.materialInfo.resourceLocation + ": '" + obj + "'");
+                    }
+                    entry = MaterialParser.findMaterialEntry(id);
+                }
+
+                composition.add(new MaterialStack(entry, amount.longValue()));
             }
             return this;
         }
@@ -1206,7 +1236,8 @@ public class Material {
          * @param components An array of {@link MaterialStack}, each representing the
          *                   Material and the amount of said Material in this Material's composition.
          */
-        public Builder componentStacks(MaterialStack... components) {
+        @RemapForJS("components")
+        public Builder<P> componentStacks(MaterialStack... components) {
             composition = Arrays.asList(components);
             return this;
         }
@@ -1218,20 +1249,9 @@ public class Material {
          * @param components An {@link ImmutableList} of {@link MaterialStack}, each representing the
          *                   Material and the amount of said Material in this Material's composition.
          */
-        public Builder componentStacks(ImmutableList<MaterialStack> components) {
+        @HideFromJS
+        public Builder<P> componentStacks(ImmutableList<MaterialStack> components) {
             composition = components;
-            return this;
-        }
-
-        /** @see #componentStacks(MaterialStack...) */
-        public Builder kjs$components(MaterialStackWrapper... components) {
-            compositionSupplier = Arrays.asList(components);
-            return this;
-        }
-
-        /** @see #componentStacks(ImmutableList) componentStacks(ImmutableList&lt;MaterialStack&gt;) */
-        public Builder kjs$components(ImmutableList<MaterialStackWrapper> components) {
-            compositionSupplier = components;
             return this;
         }
 
@@ -1240,7 +1260,7 @@ public class Material {
          * Dependent Flags (for example, {@link MaterialFlags#GENERATE_LONG_ROD} requiring
          * {@link MaterialFlags#GENERATE_ROD}) will be automatically applied.
          */
-        public Builder flags(MaterialFlag... flags) {
+        public Builder<P> flags(MaterialFlag... flags) {
             this.flags.addFlags(flags);
             return this;
         }
@@ -1256,7 +1276,7 @@ public class Material {
          *           {@link Builder#flags(MaterialFlag...)}.
          */
         // rename for kjs conflicts
-        public Builder appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
+        public Builder<P> appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
             this.flags.addFlags(f1.toArray(new MaterialFlag[0]));
             this.flags.addFlags(f2);
             return this;
@@ -1267,7 +1287,7 @@ public class Material {
          *
          * @param prefixes The list of prefixes to ignore.
          */
-        public Builder ignoredTagPrefixes(TagPrefix... prefixes) {
+        public Builder<P> ignoredTagPrefixes(TagPrefix... prefixes) {
             if (this.ignoredTagPrefixes == null) {
                 this.ignoredTagPrefixes = new HashSet<>();
             }
@@ -1280,7 +1300,7 @@ public class Material {
          *
          * @param key The tag to add.
          */
-        public Builder customTags(TagKey<Item> key) {
+        public Builder<P> customTags(TagKey<Item> key) {
             this.itemTags.add(key);
             return this;
         }
@@ -1291,13 +1311,19 @@ public class Material {
          *
          * @param element The {@link Element} that this Material represents.
          */
-        public Builder element(Element element) {
-            this.materialInfo.element = element;
-            return this;
+        public Builder<P> element(Element element) {
+            return element(GTRegistries.ELEMENTS.wrapAsHolder(element));
         }
 
-        public Builder element(Holder<Element> elementHolder) {
-            return element(elementHolder.value());
+        /**
+         * Set the Element of this Material.<br>
+         * Should be effectively singleton; each element should only have 1 Material claiming to represent it.
+         *
+         * @param element The {@link Element} that this Material represents.
+         */
+        public Builder<P> element(Holder<Element> element) {
+            this.materialInfo.element = element;
+            return this;
         }
 
         /**
@@ -1309,7 +1335,7 @@ public class Material {
          *
          * @param formula The formula for this Material.
          */
-        public Builder formula(String formula) {
+        public Builder<P> formula(String formula) {
             this.formula = formula;
             return this;
         }
@@ -1323,7 +1349,7 @@ public class Material {
          * @param formula        The formula for this Material.
          * @param withFormatting Whether numbers should be formatted as subscripts.
          */
-        public Builder formula(String formula, boolean withFormatting) {
+        public Builder<P> formula(String formula, boolean withFormatting) {
             this.formula = formula;
             this.formatFormula = withFormatting;
             return this;
@@ -1336,7 +1362,7 @@ public class Material {
          *
          * @see ToolProperty.Builder
          */
-        public Builder toolStats(ToolProperty toolProperty) {
+        public Builder<P> toolStats(ToolProperty toolProperty) {
             properties.setProperty(PropertyKey.TOOL, toolProperty);
             return this;
         }
@@ -1347,7 +1373,7 @@ public class Material {
          *
          * @see ArmorProperty.Builder
          */
-        public Builder armorStats(ArmorProperty armorProperty) {
+        public Builder<P> armorStats(ArmorProperty armorProperty) {
             properties.setProperty(PropertyKey.ARMOR, armorProperty);
             return this;
         }
@@ -1365,28 +1391,28 @@ public class Material {
          * @param durability The durability of Turbine Rotors made of this Material.
          */
         // dear god please refactor me
-        public Builder rotorStats(int power, int efficiency, float damage, int durability) {
+        public Builder<P> rotorStats(int power, int efficiency, float damage, int durability) {
             properties.setProperty(PropertyKey.ROTOR, new RotorProperty(power, efficiency, damage, durability));
             return this;
         }
 
         /** @see #blast(int) */
-        public Builder blastTemp(int temp) {
+        public Builder<P> blastTemp(int temp) {
             return blast(temp);
         }
 
         /** @see #blast(int, BlastProperty.GasTier) */
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier) {
+        public Builder<P> blastTemp(int temp, BlastProperty.GasTier gasTier) {
             return blast(temp, gasTier);
         }
 
         /** @see #blast(UnaryOperator) blast(UnaryOperator&lt;BlastProperty.Builder&gt;) */
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
+        public Builder<P> blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride) {
             return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride));
         }
 
         /** @see #blast(UnaryOperator) blast(UnaryOperator&lt;BlastProperty.Builder&gt;) */
-        public Builder blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
+        public Builder<P> blastTemp(int temp, BlastProperty.GasTier gasTier, int eutOverride, int durationOverride) {
             return blast(b -> b.temp(temp, gasTier).blastStats(eutOverride, durationOverride));
         }
 
@@ -1406,7 +1432,7 @@ public class Material {
          *
          * @param temp The temperature of the recipe in the EBF.
          */
-        public Builder blast(int temp) {
+        public Builder<P> blast(int temp) {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp));
             return this;
         }
@@ -1429,7 +1455,7 @@ public class Material {
          * @param gasTier The {@link BlastProperty.GasTier} of the Recipe. Will generate a second EBF recipe
          *                using the specified gas of the tier for a speed bonus.
          */
-        public Builder blast(int temp, BlastProperty.GasTier gasTier) {
+        public Builder<P> blast(int temp, BlastProperty.GasTier gasTier) {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier));
             return this;
         }
@@ -1457,7 +1483,7 @@ public class Material {
          *      // ...
          * }</pre>
          */
-        public Builder blast(UnaryOperator<BlastProperty.Builder> b) {
+        public Builder<P> blast(UnaryOperator<BlastProperty.Builder> b) {
             properties.setProperty(PropertyKey.BLAST, b.apply(new BlastProperty.Builder()).build());
             return this;
         }
@@ -1466,7 +1492,7 @@ public class Material {
          * Remove the Hazard from this Material.<br>
          * Useful when a component of this Material would automatically apply an undesired hazard.
          */
-        public Builder removeHazard() {
+        public Builder<P> removeHazard() {
             properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(HazardProperty.HazardTrigger.NONE, GTMedicalConditions.NONE,
                             0, false));
@@ -1482,7 +1508,7 @@ public class Material {
          *
          * @param multiplier Multiplier for how quickly the condition will progress.
          */
-        public Builder radioactiveHazard(float multiplier) {
+        public Builder<P> radioactiveHazard(float multiplier) {
             properties.setProperty(PropertyKey.HAZARD, new HazardProperty(HazardProperty.HazardTrigger.ANY,
                     GTMedicalConditions.CARCINOGEN, multiplier, true));
             return this;
@@ -1499,7 +1525,7 @@ public class Material {
          * @param trigger   The trigger type for this hazard.
          * @param condition The condition applied by this hazard.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
+        public Builder<P> hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition) {
             properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, false));
             return this;
         }
@@ -1515,8 +1541,8 @@ public class Material {
          * @param condition             The condition applied by this hazard.
          * @param progressionMultiplier Multiplier for how quickly the condition will progress.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                              float progressionMultiplier) {
+        public Builder<P> hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                 float progressionMultiplier) {
             properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, false));
             return this;
@@ -1532,8 +1558,8 @@ public class Material {
          * @param applyToDerivatives    Whether the Hazard should be applied to materials with this Material in its
          *                              components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                              float progressionMultiplier, boolean applyToDerivatives) {
+        public Builder<P> hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                 float progressionMultiplier, boolean applyToDerivatives) {
             properties.setProperty(PropertyKey.HAZARD,
                     new HazardProperty(trigger, condition, progressionMultiplier, applyToDerivatives));
             return this;
@@ -1551,8 +1577,8 @@ public class Material {
          * @param applyToDerivatives Whether the Hazard should be applied to materials with this Material in its
          *                           components list.
          */
-        public Builder hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
-                              boolean applyToDerivatives) {
+        public Builder<P> hazard(HazardProperty.HazardTrigger trigger, MedicalCondition condition,
+                                 boolean applyToDerivatives) {
             properties.setProperty(PropertyKey.HAZARD, new HazardProperty(trigger, condition, 1, applyToDerivatives));
             return this;
         }
@@ -1568,7 +1594,7 @@ public class Material {
          * <br>
          * See {@link #ore(int, int, boolean)} for setting your own value(s).
          */
-        public Builder ore() {
+        public Builder<P> ore() {
             properties.ensureSet(PropertyKey.ORE);
             return this;
         }
@@ -1586,7 +1612,7 @@ public class Material {
          * @param emissive Whether this Material's Ore Block should use emissive textures on the ore-vein texture
          *                 overlay.
          */
-        public Builder ore(boolean emissive) {
+        public Builder<P> ore(boolean emissive) {
             properties.setProperty(PropertyKey.ORE, new OreProperty(1, 1, emissive));
             return this;
         }
@@ -1603,7 +1629,7 @@ public class Material {
          * @param oreMultiplier       Crushed output multiplier when the Ore Block is macerated.
          * @param byproductMultiplier Byproduct multiplier on some ore processing steps.
          */
-        public Builder ore(int oreMultiplier, int byproductMultiplier) {
+        public Builder<P> ore(int oreMultiplier, int byproductMultiplier) {
             properties.setProperty(PropertyKey.ORE, new OreProperty(oreMultiplier, byproductMultiplier));
             return this;
         }
@@ -1617,7 +1643,7 @@ public class Material {
          * @param emissive            Whether this Material's Ore Block should use emissive textures on the ore-vein
          *                            texture overlay.
          */
-        public Builder ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
+        public Builder<P> ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
             properties.setProperty(PropertyKey.ORE, new OreProperty(oreMultiplier, byproductMultiplier, emissive));
             return this;
         }
@@ -1632,7 +1658,7 @@ public class Material {
          *          This Material will be given a {@link FluidProperty} if it does not already have one,
          *          of type LIQUID and no Fluid block.
          */
-        public Builder washedIn(Material m) {
+        public Builder<P> washedIn(MaterialEntry m) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setWashedIn(m);
             return this;
@@ -1648,7 +1674,7 @@ public class Material {
          *                     of type LIQUID and no Fluid block.
          * @param washedAmount The amount of the above Fluid required to wash the Ore.
          */
-        public Builder washedIn(Material m, int washedAmount) {
+        public Builder<P> washedIn(MaterialEntry m, int washedAmount) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setWashedIn(m, washedAmount);
             return this;
@@ -1663,7 +1689,7 @@ public class Material {
          * @param m The Materials which should be output by the Electromagnetic Separator in addition to a normal Dust
          *          of this Material.
          */
-        public Builder separatedInto(Material... m) {
+        public Builder<P> separatedInto(MaterialEntry... m) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setSeparatedInto(m);
             return this;
@@ -1676,7 +1702,7 @@ public class Material {
          *
          * @param m The Material which should be output when smelting.
          */
-        public Builder oreSmeltInto(Material m) {
+        public Builder<P> oreSmeltInto(MaterialEntry m) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setDirectSmeltResult(m);
             return this;
@@ -1689,7 +1715,7 @@ public class Material {
          *
          * @param m The Material that this Material will be polarized into.
          */
-        public Builder polarizesInto(Material m) {
+        public Builder<P> polarizesInto(MaterialEntry m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setMagneticMaterial(m);
             return this;
@@ -1702,7 +1728,7 @@ public class Material {
          *
          * @param m The Material that this Material will turn into in any Arc Furnace recipes.
          */
-        public Builder arcSmeltInto(Material m) {
+        public Builder<P> arcSmeltInto(MaterialEntry m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setArcSmeltingInto(m);
             return this;
@@ -1716,7 +1742,7 @@ public class Material {
          *
          * @param m The Material that this Material's Ingot should macerate directly into.
          */
-        public Builder macerateInto(Material m) {
+        public Builder<P> macerateInto(MaterialEntry m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setMacerateInto(m);
             return this;
@@ -1730,7 +1756,7 @@ public class Material {
          *
          * @param m The Material that this Material's Ingot should smelt directly into.
          */
-        public Builder ingotSmeltInto(Material m) {
+        public Builder<P> ingotSmeltInto(MaterialEntry m) {
             properties.ensureSet(PropertyKey.INGOT);
             properties.getProperty(PropertyKey.INGOT).setSmeltingInto(m);
             return this;
@@ -1743,7 +1769,7 @@ public class Material {
          *
          * @param byproducts The list of Materials which serve as byproducts during ore processing.
          */
-        public Builder addOreByproducts(Material... byproducts) {
+        public Builder<P> addOreByproducts(MaterialEntry... byproducts) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setOreByProducts(byproducts);
             return this;
@@ -1756,7 +1782,7 @@ public class Material {
          * @param amperage The amperage of this Cable. Should be greater than zero.
          * @param loss     The loss-per-block of this Cable. A value of zero here will still have loss as wires.
          */
-        public Builder cableProperties(long voltage, int amperage, int loss) {
+        public Builder<P> cableProperties(long voltage, int amperage, int loss) {
             cableProperties(voltage, amperage, loss, false);
             return this;
         }
@@ -1770,7 +1796,7 @@ public class Material {
          * @param isSuperCon Whether this Material is a Superconductor. If so, Cables will NOT be generated and
          *                   the Wires will have zero cable loss, ignoring the loss parameter.
          */
-        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
+        public Builder<P> cableProperties(long voltage, int amperage, int loss, boolean isSuperCon) {
             properties.ensureSet(PropertyKey.DUST);
             properties.setProperty(PropertyKey.WIRE, new WireProperties(voltage, amperage, loss, isSuperCon));
             return this;
@@ -1788,7 +1814,7 @@ public class Material {
          * @param criticalTemperature The critical temperature of this Material's Wires, if it is a Superconductor.
          *                            Not currently utilized and intended for addons to use.
          */
-        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
+        public Builder<P> cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
                                        int criticalTemperature) {
             properties.ensureSet(PropertyKey.DUST);
             properties.setProperty(PropertyKey.WIRE,
@@ -1805,7 +1831,7 @@ public class Material {
          * @param gasProof   Whether this Pipe can hold Gases. If not, some Gas will be lost as it travels through the
          *                   Pipe.
          */
-        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
+        public Builder<P> fluidPipeProperties(int maxTemp, int throughput, boolean gasProof) {
             return fluidPipeProperties(maxTemp, throughput, gasProof, false, false, false);
         }
 
@@ -1822,7 +1848,7 @@ public class Material {
          *                    or cause damage.
          * @param plasmaProof Whether this Pipe can hold Plasmas. If not, the Pipe may lose fluid or cause damage.
          */
-        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
+        public Builder<P> fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
                                            boolean cryoProof, boolean plasmaProof) {
             properties.setProperty(PropertyKey.FLUID_PIPE,
                     new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
@@ -1835,7 +1861,7 @@ public class Material {
          * @param priority     Priority of this Item Pipe, used for the standard routing mode.
          * @param stacksPerSec How many stacks of items can be moved per second (20 ticks).
          */
-        public Builder itemPipeProperties(int priority, float stacksPerSec) {
+        public Builder<P> itemPipeProperties(int priority, float stacksPerSec) {
             properties.setProperty(PropertyKey.ITEM_PIPE, new ItemPipeProperties(priority, stacksPerSec));
             return this;
         }
@@ -1847,7 +1873,7 @@ public class Material {
          * @param level   The level that the enchantment starts at when created.
          */
         @Deprecated
-        public Builder addDefaultEnchant(ResourceKey<Enchantment> enchant, int level) {
+        public Builder<P> addDefaultEnchant(ResourceKey<Enchantment> enchant, int level) {
             if (!properties.hasProperty(PropertyKey.TOOL)) // cannot assign default here
                 throw new IllegalArgumentException("Material cannot have an Enchant without Tools!");
             properties.getProperty(PropertyKey.TOOL).addEnchantmentForTools(enchant, level);
@@ -1857,16 +1883,21 @@ public class Material {
         /**
          * Verify the passed information and finalize the Material.
          *
+         * <br><br>
+         * <i><h3>THIS IS INTERNAL. DO NOT USE THIS.</h3></i>
+         * Using this will most likely crash your game. If it doesn't, you'll face a bunch of other issues.
+         * <b>You have been warned.</b>
+         *
          * @return The finalized Material.
          */
-        public Material buildAndRegister() {
-            materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
-                    ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
-                            .toArray(MaterialStack[]::new)) :
-                    ImmutableList.copyOf(composition);
+        // only public so the KubeJS builder can call it
+        @ApiStatus.Internal
+        @Override
+        public Material createEntry() {
+            materialInfo.componentList = ImmutableList.copyOf(composition);
             if (!properties.hasProperty(PropertyKey.HAZARD)) {
                 for (MaterialStack materialStack : materialInfo.componentList) {
-                    Material material = materialStack.material();
+                    MaterialEntry material = materialStack.material();
                     HazardProperty property = material.getProperty(PropertyKey.HAZARD);
                     if (property != null && property.applyToDerivatives) {
                         properties.setProperty(PropertyKey.HAZARD, property);
@@ -1879,7 +1910,7 @@ public class Material {
                 properties.removeProperty(PropertyKey.HAZARD);
             }
 
-            var mat = new Material(materialInfo, properties, flags);
+            Material mat = new Material(materialInfo, properties, flags);
             if (!itemTags.isEmpty()) {
                 mat.setItemTags(itemTags);
             }
@@ -1887,11 +1918,22 @@ public class Material {
                 mat.setFormula(formula, formatFormula);
             }
             materialInfo.verifyInfo(properties, averageRGB);
-            mat.registerMaterial(registrate);
-            if (ignoredTagPrefixes != null) {
-                ignoredTagPrefixes.forEach(p -> p.setIgnored(mat));
-            }
             return mat;
+        }
+
+        @Override
+        protected MaterialEntry createEntryWrapper(DeferredHolder<Material, Material> delegate) {
+            final MaterialEntry entryWrapper = new MaterialEntry(getOwner(), delegate);
+            materialInfo.entryWrapper = entryWrapper;
+            if (ignoredTagPrefixes != null) {
+                ignoredTagPrefixes.forEach(p -> p.setIgnored(entryWrapper));
+            }
+            return entryWrapper;
+        }
+
+        @Override
+        public MaterialEntry register() {
+            return (MaterialEntry) super.register();
         }
     }
 
@@ -1908,6 +1950,13 @@ public class Material {
          * Required.
          */
         private final ResourceLocation resourceLocation;
+
+        /**
+         * Registrate wrapper of this material
+         */
+        @Getter
+        @Setter(onMethod_ = @ApiStatus.Internal)
+        private MaterialEntry entryWrapper;
 
         /**
          * The colors of this Material.
@@ -1954,7 +2003,7 @@ public class Material {
          */
         @Getter
         @Setter
-        private Element element;
+        private Holder<Element> element;
 
         private MaterialInfo(ResourceLocation resourceLocation) {
             this.resourceLocation = resourceLocation;

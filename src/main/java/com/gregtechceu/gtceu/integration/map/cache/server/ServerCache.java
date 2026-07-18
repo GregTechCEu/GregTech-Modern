@@ -73,8 +73,8 @@ public class ServerCache extends WorldCache {
                 if (block == null) continue;
                 boolean found = block.map(state -> {
                     var ms = ChemicalHelper.getMaterialStack(state.getBlock().asItem());
-                    return !ms.isEmpty() && ms.material() == material;
-                }, mat -> mat == material);
+                    return !ms.isEmpty() && ms.material().is(material);
+                }, mat -> mat.is(material));
                 if (found) {
                     foundVeins.add(nearbyVein);
                     break;

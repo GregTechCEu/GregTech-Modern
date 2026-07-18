@@ -21,26 +21,30 @@ public record MaterialEntry(@NotNull TagPrefix tagPrefix, @NotNull Material mate
         Preconditions.checkNotNull(material, "MaterialEntry Material cannot be null!");
     }
 
-    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL);
+    public MaterialEntry(TagPrefix tagPrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry materialEntry) {
+        this(tagPrefix, materialEntry.get());
+    }
+
+    public static final MaterialEntry NULL_ENTRY = new MaterialEntry(TagPrefix.NULL_PREFIX, GTMaterials.NULL.get());
 
     private static final Map<String, MaterialEntry> PARSE_CACHE = new WeakHashMap<>();
 
     public MaterialEntry(TagPrefix tagPrefix) {
-        this(tagPrefix, GTMaterials.NULL);
+        this(tagPrefix, GTMaterials.NULL.get());
     }
 
     public boolean isEmpty() {
-        return this == NULL_ENTRY || material() == GTMaterials.NULL || tagPrefix().isEmpty();
+        return this == NULL_ENTRY || material().isNull() || tagPrefix().isEmpty();
     }
 
     public boolean isIgnored() {
-        return tagPrefix().isIgnored(material());
+        return tagPrefix().isIgnored(material.getEntryWrapper());
     }
 
     public long getMaterialAmount() {
         if (!tagPrefix.isEmpty()) {
             if (!material.isNull()) {
-                return tagPrefix.getMaterialAmount(material);
+                return tagPrefix.getMaterialAmount(material.getEntryWrapper());
             }
             return tagPrefix.materialAmount();
         }

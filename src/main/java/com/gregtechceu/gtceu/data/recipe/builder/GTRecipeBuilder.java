@@ -441,6 +441,10 @@ public class GTRecipeBuilder {
         return inputItems(orePrefix, material, 1);
     }
 
+    public GTRecipeBuilder inputItems(TagPrefix orePrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return inputItems(orePrefix, material, 1);
+    }
+
     public GTRecipeBuilder inputItems(MaterialEntry input) {
         return inputItems(input, 1);
     }
@@ -449,7 +453,11 @@ public class GTRecipeBuilder {
         return inputItems(input.tagPrefix(), input.material(), count);
     }
 
-    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, @NotNull Material material, int count) {
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, Material material, int count) {
+        return inputItems(tagPrefix, material.getEntryWrapper(), count);
+    }
+
+    public GTRecipeBuilder inputItems(TagPrefix tagPrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int count) {
         if (tagPrefix.isEmpty() || material.isNull()) {
             GTCEu.LOGGER.error(
                     "Tried to set input item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
@@ -504,6 +512,10 @@ public class GTRecipeBuilder {
                     orePrefix, material);
         }
         return inputItemsRanged(item, intProvider);
+    }
+
+    public GTRecipeBuilder inputItemsRanged(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, IntProvider intProvider) {
+        return inputItemsRanged(prefix, material.get(), intProvider);
     }
 
     public GTRecipeBuilder inputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
@@ -606,7 +618,11 @@ public class GTRecipeBuilder {
         return outputItems(orePrefix, material, 1);
     }
 
-    public GTRecipeBuilder outputItems(TagPrefix orePrefix, @NotNull Material material, int count) {
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return outputItems(orePrefix, material, 1);
+    }
+
+    public GTRecipeBuilder outputItems(TagPrefix orePrefix, Material material, int count) {
         if (orePrefix.isEmpty() || material.isNull()) {
             GTCEu.LOGGER.error(
                     "Tried to set output item stack that doesn't exist, id: {}, TagPrefix: {}, Material: {}, Count: {}",
@@ -621,6 +637,10 @@ public class GTRecipeBuilder {
             return this;
         }
         return outputItems(item);
+    }
+
+    public GTRecipeBuilder outputItems(TagPrefix tagPrefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int count) {
+        return outputItems(tagPrefix, material.get(), count);
     }
 
     public GTRecipeBuilder outputItems(MaterialEntry entry) {
@@ -668,6 +688,10 @@ public class GTRecipeBuilder {
         return outputItemsRanged(item, intProvider);
     }
 
+    public GTRecipeBuilder outputItemsRanged(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, IntProvider intProvider) {
+        return outputItemsRanged(prefix, material.get(), intProvider);
+    }
+
     public GTRecipeBuilder outputItemsRanged(MachineDefinition machine, IntProvider intProvider) {
         return outputItemsRanged(machine.asStack(), intProvider);
     }
@@ -712,12 +736,20 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder notConsumable(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        return notConsumable(prefix, material.get());
+    }
+
     public GTRecipeBuilder notConsumable(TagPrefix orePrefix, Material material, int count) {
         int lastChance = this.chance;
         this.chance = 0;
         inputItems(orePrefix, material, count);
         this.chance = lastChance;
         return this;
+    }
+
+    public GTRecipeBuilder notConsumable(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int count) {
+        return notConsumable(prefix, material.get(), count);
     }
 
     public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
@@ -825,7 +857,15 @@ public class GTRecipeBuilder {
         return chancedOutput(ChemicalHelper.get(tag, mat), chance);
     }
 
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry mat, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat), chance);
+    }
+
     public GTRecipeBuilder chancedOutput(TagPrefix tag, Material mat, int count, int chance) {
+        return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
+    }
+
+    public GTRecipeBuilder chancedOutput(TagPrefix tag, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry mat, int count, int chance) {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance);
     }
 
@@ -882,7 +922,15 @@ public class GTRecipeBuilder {
         return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
     }
 
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int count, String fraction) {
+        return chancedOutput(ChemicalHelper.get(prefix, material, count), fraction);
+    }
+
     public GTRecipeBuilder chancedOutput(TagPrefix prefix, Material material, String fraction) {
+        return chancedOutput(prefix, material, 1, fraction);
+    }
+
+    public GTRecipeBuilder chancedOutput(TagPrefix prefix, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, String fraction) {
         return chancedOutput(prefix, material, 1, fraction);
     }
 
@@ -894,7 +942,7 @@ public class GTRecipeBuilder {
         return chancedOutput(item, 1, fraction);
     }
 
-    public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction, int tierChanceBoost) {
+    public GTRecipeBuilder chancedFluidOutput(FluidStack stack, String fraction) {
         if (stack.isEmpty()) {
             return this;
         }
@@ -987,8 +1035,12 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder inputFluids(@NotNull Material material, int amount) {
-        return inputFluids(material.getFluid(amount));
+    public GTRecipeBuilder inputFluids(Material material, int amount) {
+        return inputFluids(SizedFluidIngredient.of(material.getFluidTag(), amount));
+    }
+
+    public GTRecipeBuilder inputFluids(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int amount) {
+        return inputFluids(material.get(), amount);
     }
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
@@ -997,7 +1049,7 @@ public class GTRecipeBuilder {
         }
         var matStack = ChemicalHelper.getMaterial(input.getFluid());
         if (!matStack.isNull() && chance != 0 && chance == maxChance) {
-            tempFluidStacks.add(new MaterialStack(matStack, input.getAmount() * GTValues.M / GTValues.L));
+            tempFluidStacks.add(new MaterialStack(matStack.getEntryWrapper(), input.getAmount() * GTValues.M / GTValues.L));
         }
         return input(FluidRecipeCapability.CAP, RecipeHelper.makeSizedFluidIngredient(input));
     }
@@ -1012,7 +1064,7 @@ public class GTRecipeBuilder {
                 var matStack = ChemicalHelper.getMaterial(fluid.getFluid());
                 if (!matStack.isNull()) {
                     if (chance == maxChance && chance != 0) {
-                        tempFluidStacks.add(new MaterialStack(matStack, fluid.getAmount() * GTValues.M / GTValues.L));
+                        tempFluidStacks.add(new MaterialStack(matStack.getEntryWrapper(), fluid.getAmount() * GTValues.M / GTValues.L));
                     }
                 }
                 ingredients.add(RecipeHelper.makeSizedFluidIngredient(fluid));
@@ -1560,7 +1612,7 @@ public class GTRecipeBuilder {
                 return;
             }
 
-            Reference2LongOpenHashMap<Material> matStacks = new Reference2LongOpenHashMap<>();
+            Reference2LongOpenHashMap<com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> matStacks = new Reference2LongOpenHashMap<>();
             if (itemMaterialInfo) {
                 for (var input : tempItemMaterialStacks) {
                     long am = input.amount() / outputCount;

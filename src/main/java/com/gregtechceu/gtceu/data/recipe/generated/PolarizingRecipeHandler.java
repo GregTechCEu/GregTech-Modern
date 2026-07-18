@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IngotProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 
@@ -33,19 +34,20 @@ public final class PolarizingRecipeHandler {
         if (property == null) {
             return;
         }
+        MaterialEntry entryWrapper = material.getEntryWrapper();
 
         for (TagPrefix prefix : POLARIZING_PREFIXES) {
-            processPolarizing(provider, property, prefix, material);
+            processPolarizing(provider, property, prefix, entryWrapper);
         }
     }
 
     private static void processPolarizing(@NotNull RecipeOutput provider, @NotNull IngotProperty property,
-                                          @NotNull TagPrefix prefix, @NotNull Material material) {
+                                          @NotNull TagPrefix prefix, @NotNull MaterialEntry material) {
         if (!material.shouldGenerateRecipesFor(prefix) || !material.hasProperty(PropertyKey.INGOT)) {
             return;
         }
 
-        Material magneticMaterial = property.getMagneticMaterial();
+        Material magneticMaterial = property.getMagneticMaterial().get();
 
         if (!magneticMaterial.isNull() && (prefix.doGenerateBlock(magneticMaterial) ||
                 prefix.doGenerateItem(magneticMaterial))) {
@@ -64,7 +66,7 @@ public final class PolarizingRecipeHandler {
         }
     }
 
-    private static int getVoltageMultiplier(@NotNull Material material) {
+    private static int getVoltageMultiplier(@NotNull MaterialEntry material) {
         if (material == GTMaterials.Steel || material == GTMaterials.Iron) return VH[LV];
         if (material == GTMaterials.Neodymium) return VH[HV];
         if (material == GTMaterials.Samarium) return VH[IV];

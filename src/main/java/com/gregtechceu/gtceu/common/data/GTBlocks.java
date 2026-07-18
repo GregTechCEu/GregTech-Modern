@@ -9,11 +9,11 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.ItemMaterialData;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.client.model.item.CustomItemRendererWrapperModel;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
@@ -244,10 +244,10 @@ public class GTBlocks {
             GTCEu.id("block/casings/solid/machine_casing_palladium_substation"));
     public static final BlockEntry<TransparentBlock> CASING_TEMPERED_GLASS = createGlassCasingBlock("tempered_glass",
             GTCEu.id("block/casings/transparent/tempered_glass"), () -> RenderType::translucent);
-    public static final ImmutableMap<Material, BlockEntry<Block>> MATERIALS_TO_CASINGS;
+    public static final ImmutableMap<MaterialEntry, BlockEntry<Block>> MATERIALS_TO_CASINGS;
 
     static {
-        ImmutableMap.Builder<Material, BlockEntry<Block>> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<MaterialEntry, BlockEntry<Block>> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, CASING_BRONZE_BRICKS);
         builder.put(GTMaterials.Invar, CASING_INVAR_HEATPROOF);
         builder.put(GTMaterials.Aluminium, CASING_ALUMINIUM_FROSTPROOF);
@@ -1385,7 +1385,7 @@ public class GTBlocks {
         return builder -> {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
-                MaterialEntry entry = new MaterialEntry(tagPrefix, mat);
+                var entry = new com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry(tagPrefix, mat);
                 GTMaterialItems.toUnify.put(entry, blockSupplier);
                 ItemMaterialData.registerMaterialEntry(blockSupplier, entry);
             });

@@ -45,7 +45,7 @@ public final class ToolRecipeHandler {
             new ItemEntry[] { GTItems.POWER_UNIT_LV, GTItems.POWER_UNIT_MV, GTItems.POWER_UNIT_HV,
                     GTItems.POWER_UNIT_EV, GTItems.POWER_UNIT_IV });
 
-    public static final Material[] softMaterials = new Material[] {
+    public static final com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry[] softMaterials = {
             GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
             GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole,
             GTMaterials.SiliconeRubber, GTMaterials.StyreneButadieneRubber
@@ -187,7 +187,7 @@ public final class ToolRecipeHandler {
                             'T', new MaterialEntry(TagPrefix.screw, material),
                             'R', new MaterialEntry(TagPrefix.ring, material),
                             'S', stick);
-                } else if (!ArrayUtils.contains(softMaterials, material)) {
+                } else if (!ArrayUtils.contains(softMaterials, material.getEntryWrapper())) {
                     GTCEu.LOGGER
                             .info("Did not find bolt for {}, skipping wirecutter recipe", material.getName());
                 }
@@ -204,7 +204,7 @@ public final class ToolRecipeHandler {
             addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod);
-        } else if (!ArrayUtils.contains(softMaterials, material)) {
+        } else if (!ArrayUtils.contains(softMaterials, material.getEntryWrapper())) {
             GTCEu.LOGGER.warn("Did not find rod for " + material.getName() +
                     ", skipping wirecutter, butchery knife, screwdriver, crowbar recipes");
         }

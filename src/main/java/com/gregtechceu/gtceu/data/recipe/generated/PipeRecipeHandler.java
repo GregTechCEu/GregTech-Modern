@@ -320,8 +320,8 @@ public final class PipeRecipeHandler {
                 .save(provider);
     }
 
-    private static void addDuctRecipes(RecipeOutput provider, Material material, int outputAmount) {
-        if (plate.doGenerateItem(material)) {
+    private static void addDuctRecipes(RecipeOutput provider, com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material, int outputAmount) {
+        if (plate.doGenerateItem(material.get())) {
             VanillaRecipeHelper.addShapedRecipe(provider, "small_duct_%s".formatted(material.getName()),
                     GTBlocks.DUCT_PIPES[DuctPipeType.SMALL.ordinal()].asStack(outputAmount * 2), "w", "X", "h",
                     'X', new MaterialEntry(plate, material));
@@ -332,7 +332,7 @@ public final class PipeRecipeHandler {
                     GTBlocks.DUCT_PIPES[DuctPipeType.LARGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
                     'X', new MaterialEntry(plate, material));
         }
-        if (plateDouble.doGenerateItem(material)) {
+        if (plateDouble.doGenerateItem(material.get())) {
             VanillaRecipeHelper.addShapedRecipe(provider, "huge_duct_%s".formatted(material.getName()),
                     GTBlocks.DUCT_PIPES[DuctPipeType.HUGE.ordinal()].asStack(outputAmount), "XwX", "X X", "XhX",
                     'X', new MaterialEntry(plateDouble, material));

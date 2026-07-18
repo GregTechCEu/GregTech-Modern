@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -64,7 +65,7 @@ public class GTOreByProduct {
     private boolean hasSifter = false;
     private int currentSlot;
 
-    public GTOreByProduct(Material material) {
+    public GTOreByProduct(MaterialEntry material) {
         if (IN_PROCESSING_STEPS == null) {
             IN_PROCESSING_STEPS = ImmutableList.of(
                     TagPrefix.crushed,
@@ -88,7 +89,7 @@ public class GTOreByProduct {
         int oreMultiplier = property.getOreMultiplier();
         int byproductMultiplier = property.getByProductMultiplier();
         currentSlot = 0;
-        Material[] byproducts = new Material[] {
+        MaterialEntry[] byproducts = new MaterialEntry[] {
                 property.getOreByProduct(0, material),
                 property.getOreByProduct(1, material),
                 property.getOreByProduct(2, material),
@@ -97,8 +98,8 @@ public class GTOreByProduct {
 
         // "INPUTS"
 
-        ObjectIntPair<Material> washedIn = property.getWashedIn();
-        List<Material> separatedInto = property.getSeparatedInto();
+        ObjectIntPair<MaterialEntry> washedIn = property.getWashedIn();
+        List<MaterialEntry> separatedInto = property.getSeparatedInto();
 
         ItemTagList oreStacks = new ItemTagList();
         for (TagPrefix prefix : ORES) {
@@ -163,7 +164,7 @@ public class GTOreByProduct {
         // direct smelt
         if (hasDirectSmelt) {
             ItemStack smeltingResult;
-            Material smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
+            MaterialEntry smeltingMaterial = property.getDirectSmeltResult().isNull() ? material :
                     property.getDirectSmeltResult();
             if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
                 smeltingResult = ChemicalHelper.get(TagPrefix.ingot, smeltingMaterial);
@@ -329,7 +330,7 @@ public class GTOreByProduct {
         return hasDirectSmelt;
     }
 
-    private void addToOutputs(Material material, TagPrefix prefix, int size) {
+    private void addToOutputs(MaterialEntry material, TagPrefix prefix, int size) {
         addToOutputs(ChemicalHelper.get(prefix, material, size));
     }
 

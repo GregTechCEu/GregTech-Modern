@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe.configurable;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -1413,14 +1412,14 @@ public class RecipeAddition {
     }
 
     private static void createShovelRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                           Material material) {
+                                           com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "hPf", " S ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createPickaxeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                            Material material) {
+                                            com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PII", "hSf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
@@ -1429,7 +1428,7 @@ public class RecipeAddition {
     }
 
     private static void createAxeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                        Material material) {
+                                        com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "PS ", "hS ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
@@ -1438,14 +1437,14 @@ public class RecipeAddition {
     }
 
     private static void createSwordRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                          Material material) {
+                                          com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, " P ", "hPf", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'S', new MaterialEntry(TagPrefix.rod, GTMaterials.Wood));
     }
 
     private static void createHoeRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                        Material material) {
+                                        com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PIf", "hS ", " S ",
                 'P', new MaterialEntry(TagPrefix.plate, material),
                 'I',
@@ -1454,25 +1453,25 @@ public class RecipeAddition {
     }
 
     private static void createHelmetRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                           Material material) {
+                                           com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createChestplateRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                               Material material) {
+                                               com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PhP", "PPP", "PPP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createLeggingsRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                             Material material) {
+                                             com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "PPP", "PhP", "P P",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }
 
     private static void createBootsRecipe(RecipeOutput provider, String regName, ItemStack output,
-                                          Material material) {
+                                          com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
         VanillaRecipeHelper.addShapedRecipe(provider, true, regName, output, "P P", "PhP",
                 'P', new MaterialEntry(TagPrefix.plate, material));
     }

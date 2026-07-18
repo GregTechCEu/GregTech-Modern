@@ -102,7 +102,7 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         float durability = 0.75f;
         var turbineBehaviour = TurbineRotorBehaviour.getBehaviour(stack);
         assert turbineBehaviour != null : "Default Turbine Stack doesn't have Turbine Behaviour";
-        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron);
+        turbineBehaviour.setPartMaterial(stack, GTMaterials.Iron.get());
         turbineBehaviour.setPartDamage(stack, 8928);
 
         rotorRecipe = applyDurabilityRecipe("rotor_decomp", stack, turbineBehaviour.getPartMaterial(stack),
@@ -111,10 +111,10 @@ public enum MaceratorLogic implements GTRecipeType.ICustomRecipeLogic {
         rotorRecipe.setId(rotorRecipe.getId().withPrefix("/"));
 
         // noinspection DataFlowIssue
-        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.PICKAXE).asStack();
+        stack = GTMaterialItems.TOOL_ITEMS.get(GTMaterials.Iron.get(), GTToolType.PICKAXE).asStack();
         stack.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.auto_decomp.tool"));
         stack.setDamageValue(79);
-        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron,
+        pickaxeRecipe = applyDurabilityRecipe("tool_decomp", stack, GTMaterials.Iron.get(),
                 (float) (GTToolType.PICKAXE.materialAmount / GTValues.M), durability,
                 GTValues.VH[GTValues.LV], 2);
 

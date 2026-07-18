@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.world.item.Item;
@@ -119,7 +120,7 @@ public class StoneTypeEntry {
         public Item wall = null;
         public Item pressurePlate = null;
         @NotNull
-        private Material material = GTMaterials.NULL;
+        private Material material = GTMaterials.NULL.get();
         private long materialAmount = GTValues.M;
         public boolean addStoneTag = false;
         public boolean addPolishedStoneTag = false;
@@ -198,10 +199,18 @@ public class StoneTypeEntry {
             return material(material, GTValues.M);
         }
 
+        public Builder material(@NotNull MaterialEntry material) {
+            return material(material.get());
+        }
+
         public Builder material(@NotNull Material material, long materialAmount) {
             this.material = material;
             this.materialAmount = materialAmount;
             return this;
+        }
+
+        public Builder material(@NotNull MaterialEntry material, long materialAmount) {
+            return material(material.get(), materialAmount);
         }
 
         public Builder registerAllMaterialInfo() {

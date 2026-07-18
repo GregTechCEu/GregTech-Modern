@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.MaterialParser;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
-public record MaterialStack(@NotNull Material material, long amount) {
+public record MaterialStack(@NotNull MaterialEntry material, long amount) {
 
     public static final MaterialStack EMPTY = new MaterialStack(GTMaterials.NULL, 0);
 
@@ -54,7 +55,8 @@ public record MaterialStack(@NotNull Material material, long amount) {
             copy = copy.substring(spaceIndex + 1);
         }
 
-        cached = new MaterialStack(GTMaterials.get(copy), count);
+        MaterialEntry materialEntry = MaterialParser.materialEntryFromString(copy);
+        cached = new MaterialStack(materialEntry, count);
         PARSE_CACHE.put(trimmed, cached);
         return cached;
     }
@@ -67,12 +69,12 @@ public record MaterialStack(@NotNull Material material, long amount) {
     public String toString() {
         String string = "";
         if (this.isEmpty()) return "";
-        if (material.getChemicalFormula() == null || material.getChemicalFormula().isEmpty()) {
+        if (material.value().getChemicalFormula() == null || material.value().getChemicalFormula().isEmpty()) {
             string += "?";
-        } else if (material.getMaterialComponents().size() > 1) {
-            string += '(' + material.getChemicalFormula() + ')';
+        } else if (material.value().getMaterialComponents().size() > 1) {
+            string += '(' + material.value().getChemicalFormula() + ')';
         } else {
-            string += material.getChemicalFormula();
+            string += material.value().getChemicalFormula();
         }
         if (amount > 1) {
             string += FormattingUtil.toSmallDownNumbers(Long.toString(amount));

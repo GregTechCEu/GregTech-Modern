@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.WeightedEntry;
@@ -38,6 +38,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -320,6 +321,11 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
         public VeinBlockDefinition(Material block, int weight) {
             this(Either.right(block), weight);
+        }
+
+        @HideFromJS
+        public VeinBlockDefinition(MaterialEntry block, int weight) {
+            this(block.get(), weight);
         }
 
         public VeinBlockDefinition(List<TargetBlockState> block, int weight) {

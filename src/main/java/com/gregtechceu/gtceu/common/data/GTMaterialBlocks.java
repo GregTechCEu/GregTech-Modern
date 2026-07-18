@@ -105,7 +105,7 @@ public class GTMaterialBlocks {
 
     private static void registerOreBlock(Material material, GTRegistrate registrate) {
         for (var ore : TagPrefix.ORES.entrySet()) {
-            if (ore.getKey().isIgnored(material)) continue;
+            if (ore.getKey().isIgnored(material.getEntryWrapper())) continue;
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
             String typePrefix = "";
@@ -185,7 +185,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowCableBlock(Material material, Insulation insulation) {
-        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material) &&
+        return material.hasProperty(PropertyKey.WIRE) && !insulation.tagPrefix.isIgnored(material.getEntryWrapper()) &&
                 !(insulation.isCable() && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
 
@@ -225,7 +225,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
-        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material);
+        return material.hasProperty(PropertyKey.FLUID_PIPE) && !fluidPipeType.tagPrefix.isIgnored(material.getEntryWrapper());
     }
 
     private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType,
@@ -270,7 +270,7 @@ public class GTMaterialBlocks {
     }
 
     private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
-        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material);
+        return material.hasProperty(PropertyKey.ITEM_PIPE) && !itemPipeType.getTagPrefix().isIgnored(material.getEntryWrapper());
     }
 
     private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {

@@ -624,6 +624,7 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         definition.registerDefaultState(defaultState);
     }
 
+    @ApiStatus.Internal
     @HideFromJS
     public D createEntry() {
         this.getOwner().object(getName());

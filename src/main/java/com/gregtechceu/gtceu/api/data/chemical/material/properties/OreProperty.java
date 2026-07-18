@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 
 import net.minecraft.util.Mth;
@@ -23,7 +23,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none, meaning only this property's Material.
      */
     @Getter
-    private final List<Material> oreByProducts = new ArrayList<>();
+    private final List<MaterialEntry> oreByProducts = new ArrayList<>();
 
     /**
      * Crushed Ore output amount multiplier during Maceration.
@@ -61,7 +61,7 @@ public class OreProperty implements IMaterialProperty {
     @Getter
     @Setter
     @NotNull
-    private Material directSmeltResult = GTMaterials.NULL;
+    private MaterialEntry directSmeltResult = GTMaterials.NULL;
 
     /**
      * Material in which this Ore should be washed to give additional output.
@@ -71,7 +71,7 @@ public class OreProperty implements IMaterialProperty {
      */
     @Setter
     @NotNull
-    private Material washedIn = GTMaterials.NULL;
+    private MaterialEntry washedIn = GTMaterials.NULL;
 
     /**
      * The amount of Material that the ore should be washed in
@@ -90,7 +90,7 @@ public class OreProperty implements IMaterialProperty {
      * Default: none.
      */
     @Getter
-    private final List<Material> separatedInto = new ArrayList<>();
+    private final List<MaterialEntry> separatedInto = new ArrayList<>();
 
     public OreProperty(int oreMultiplier, int byProductMultiplier) {
         this.oreMultiplier = oreMultiplier;
@@ -111,16 +111,16 @@ public class OreProperty implements IMaterialProperty {
         this(1, 1);
     }
 
-    public void setWashedIn(Material m, int washedAmount) {
+    public void setWashedIn(MaterialEntry m, int washedAmount) {
         this.washedIn = m;
         this.washedAmount = washedAmount;
     }
 
-    public @NotNull ObjectIntPair<Material> getWashedIn() {
+    public @NotNull ObjectIntPair<MaterialEntry> getWashedIn() {
         return ObjectIntPair.of(this.washedIn, this.washedAmount);
     }
 
-    public void setSeparatedInto(Material... materials) {
+    public void setSeparatedInto(MaterialEntry... materials) {
         this.separatedInto.addAll(Arrays.asList(materials));
     }
 
@@ -129,7 +129,7 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to use as byproducts
      */
-    public void setOreByProducts(@NotNull Material @NotNull... materials) {
+    public void setOreByProducts(@NotNull MaterialEntry @NotNull... materials) {
         setOreByProducts(Arrays.asList(materials));
     }
 
@@ -138,7 +138,7 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to use as byproducts
      */
-    public void setOreByProducts(@NotNull Collection<@NotNull Material> materials) {
+    public void setOreByProducts(@NotNull Collection<@NotNull MaterialEntry> materials) {
         this.oreByProducts.clear();
         this.oreByProducts.addAll(materials);
     }
@@ -148,19 +148,19 @@ public class OreProperty implements IMaterialProperty {
      *
      * @param materials the materials to add as byproducts
      */
-    public void addOreByProducts(@NotNull Material @NotNull... materials) {
+    public void addOreByProducts(@NotNull MaterialEntry @NotNull... materials) {
         this.oreByProducts.addAll(Arrays.asList(materials));
     }
 
     @NotNull
-    public final Material getOreByProduct(int index) {
+    public final MaterialEntry getOreByProduct(int index) {
         if (this.oreByProducts.isEmpty()) return GTMaterials.NULL;
         return this.oreByProducts.get(Mth.clamp(index, 0, this.oreByProducts.size() - 1));
     }
 
     @NotNull
-    public final Material getOreByProduct(int index, @NotNull Material fallback) {
-        Material material = getOreByProduct(index);
+    public final MaterialEntry getOreByProduct(int index, @NotNull MaterialEntry fallback) {
+        MaterialEntry material = getOreByProduct(index);
         return !material.isNull() ? material : fallback;
     }
 

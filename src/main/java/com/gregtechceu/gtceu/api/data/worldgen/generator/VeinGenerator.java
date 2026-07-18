@@ -109,7 +109,7 @@ public abstract class VeinGenerator {
         }
 
         public Material mapToMaterial() {
-            return vein.map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material(), Function.identity());
+            return vein.map(state -> ChemicalHelper.getMaterialStack(state.getBlock()).material().get(), Function.identity());
         }
     }
 

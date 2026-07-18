@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
@@ -27,6 +27,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -301,6 +302,11 @@ public class ClassicVeinGenerator extends VeinGenerator {
             public Layer.Builder mat(Material material) {
                 this.target = Either.right(material);
                 return this;
+            }
+
+            @HideFromJS
+            public Layer.Builder mat(MaterialEntry material) {
+                return mat(material.get());
             }
 
             public Layer.Builder size(int size) {

@@ -109,9 +109,25 @@ public class ItemMaterialData {
     /**
      * @see #registerMaterialEntry(Supplier, MaterialEntry)
      */
+    public static void registerMaterialEntry(@NotNull Supplier<? extends ItemLike> item,
+                                             @NotNull TagPrefix tagPrefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        registerMaterialEntry(item, tagPrefix, material.get());
+    }
+
+    /**
+     * @see #registerMaterialEntry(Supplier, MaterialEntry)
+     */
     public static void registerMaterialEntry(@NotNull ItemLike item,
                                              @NotNull TagPrefix tagPrefix, @NotNull Material material) {
         registerMaterialEntry(() -> item, new MaterialEntry(tagPrefix, material));
+    }
+
+    /**
+     * @see #registerMaterialEntry(Supplier, MaterialEntry)
+     */
+    public static void registerMaterialEntry(@NotNull ItemLike item,
+                                             @NotNull TagPrefix tagPrefix, @NotNull com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) {
+        registerMaterialEntry(item, tagPrefix, material.get());
     }
 
     private static void registerItemEntry(@NotNull Supplier<? extends ItemLike> supplier,
@@ -161,7 +177,7 @@ public class ItemMaterialData {
                 .filter(h -> h != null && h.isBound())
                 .map(Holder::value)
                 .forEach(prefix -> prefix.getIgnored()
-                        .forEach((material, item) -> registerMaterialEntries(item, prefix, material)));
+                        .forEach((material, item) -> registerMaterialEntries(item, prefix, material.get())));
         GTMaterialItems.toUnify
                 .forEach((materialEntry, supplier) -> registerMaterialEntry(supplier, materialEntry));
         WoodMachineRecipes.registerMaterialInfo();

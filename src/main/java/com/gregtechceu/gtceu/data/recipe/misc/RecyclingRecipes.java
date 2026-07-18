@@ -79,7 +79,7 @@ public class RecyclingRecipes {
         if (ignoreArcSmelting) return;
 
         if (components.size() == 1) {
-            Material m = components.getFirst().material();
+            var m = components.getFirst().material();
 
             // skip non-ingot materials
             if (!m.hasProperty(PropertyKey.INGOT)) {
@@ -158,7 +158,7 @@ public class RecyclingRecipes {
             if (ms.isEmpty() || ms.material().isNull()) {
                 return;
             }
-            Material m = ms.material();
+            var m = ms.material();
             if (m.hasProperty(PropertyKey.INGOT) && m.getProperty(PropertyKey.INGOT).getMacerateInto() != m) {
                 m = m.getProperty(PropertyKey.INGOT).getMacerateInto();
             }
@@ -310,9 +310,9 @@ public class RecyclingRecipes {
             if (outputs.size() == 1) {
                 MaterialEntry entry = ChemicalHelper.getMaterialEntry(outputs.getFirst().getItem());
                 if (!entry.isEmpty()) {
-                    Material mat = inputStack.material();
+                    var mat = inputStack.material();
                     if (!mat.hasFlag(IS_MAGNETIC) && mat.hasProperty(PropertyKey.INGOT)) {
-                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto() != entry.material();
+                        return mat.getProperty(PropertyKey.INGOT).getArcSmeltingInto().get() != entry.material();
                     }
                 }
             }
@@ -321,7 +321,7 @@ public class RecyclingRecipes {
     }
 
     private static MaterialStack getArcSmeltingResult(MaterialStack materialStack) {
-        Material material = materialStack.material();
+        var material = materialStack.material();
         long amount = materialStack.amount();
 
         if (material.hasFlag(EXPLOSIVE)) {
@@ -346,7 +346,7 @@ public class RecyclingRecipes {
         // Else if the Material is an Ingot, return the Arc Smelting
         // result if it exists, otherwise return the Material itself.
         if (material.hasProperty(PropertyKey.INGOT)) {
-            Material arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
+            var arcSmelt = material.getProperty(PropertyKey.INGOT).getArcSmeltingInto();
             if (!arcSmelt.isNull()) {
                 return new MaterialStack(arcSmelt, amount);
             }
@@ -362,7 +362,7 @@ public class RecyclingRecipes {
     }
 
     private static MaterialStack getGemArcSmeltResult(MaterialStack materialStack) {
-        Material material = materialStack.material();
+        var material = materialStack.material();
         long amount = materialStack.amount();
 
         // If the Gem Material has Oxygen in it, return Ash
@@ -385,7 +385,7 @@ public class RecyclingRecipes {
         // Gather the highest blast temperature of any material in the list
         int highestTemp = 0;
         for (MaterialStack ms : materials) {
-            Material m = ms.material();
+            var m = ms.material();
             if (m.hasProperty(PropertyKey.BLAST)) {
                 BlastProperty prop = m.getProperty(PropertyKey.BLAST);
                 if (prop.getBlastTemperature() > highestTemp) {
@@ -430,7 +430,7 @@ public class RecyclingRecipes {
      */
     private static List<MaterialStack> combineStacks(List<MaterialStack> rawList) {
         // Combine any stacks in the List that have the same Item.
-        Object2LongOpenHashMap<Material> materialStacksExploded = new Object2LongOpenHashMap<>();
+        Object2LongOpenHashMap<com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> materialStacksExploded = new Object2LongOpenHashMap<>();
         for (MaterialStack ms : rawList) {
             materialStacksExploded.addTo(ms.material(), ms.amount());
         }
@@ -523,14 +523,15 @@ public class RecyclingRecipes {
 
     private static void splitStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
                                     MaterialEntry entry) {
+        com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material = entry.material().getEntryWrapper();
         int amount = originalStack.getCount();
         while (amount > 64) {
             list.add(new Pair<>(originalStack.copyWithCount(64),
-                    new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * 64)));
+                    new MaterialStack(material, entry.tagPrefix().getMaterialAmount(material) * 64)));
             amount -= 64;
         }
         list.add(new Pair<>(originalStack.copyWithCount(amount),
-                new MaterialStack(entry.material(), entry.tagPrefix().getMaterialAmount(entry.material()) * amount)));
+                new MaterialStack(material, entry.tagPrefix().getMaterialAmount(material) * amount)));
     }
 
     private static final List<TagPrefix> DUST_ORDER = List.of(TagPrefix.dust, TagPrefix.dustSmall,
@@ -540,7 +541,7 @@ public class RecyclingRecipes {
 
     private static void shrinkStacks(List<Pair<ItemStack, MaterialStack>> list, ItemStack originalStack,
                                      MaterialEntry entry) {
-        Material material = entry.material();
+        var material = entry.material().getEntryWrapper();
         long materialAmount = originalStack.getCount() * entry.tagPrefix().getMaterialAmount(material);
 
         // noinspection ConstantConditions

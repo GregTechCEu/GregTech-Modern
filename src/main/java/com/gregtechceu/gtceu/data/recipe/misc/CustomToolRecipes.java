@@ -40,7 +40,7 @@ import static com.gregtechceu.gtceu.data.recipe.generated.ToolRecipeHandler.*;
 public final class CustomToolRecipes {
 
     private static final Int2ReferenceMap<ItemEntry<? extends Item>> motorItems = new Int2ReferenceArrayMap<>();
-    private static final Int2ReferenceMap<Material> baseMaterials = new Int2ReferenceArrayMap<>();
+    private static final Int2ReferenceMap<com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry> baseMaterials = new Int2ReferenceArrayMap<>();
     private static final Int2ReferenceMap<List<ItemEntry<? extends Item>>> batteryItems = new Int2ReferenceArrayMap<>();
 
     private CustomToolRecipes() {}
@@ -136,37 +136,37 @@ public final class CustomToolRecipes {
         final MaterialEntry flint = new MaterialEntry(TagPrefix.gem, GTMaterials.Flint);
         final ItemStack stick = new ItemStack(Items.STICK);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.MORTAR, false,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.MORTAR, false,
                 " I ", "SIS", "SSS",
                 'I', flint,
                 'S', new ItemStack(Blocks.STONE));
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.SWORD, false,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.SWORD, false,
                 "I", "I", "S",
                 'I', flint,
                 'S', stick);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.PICKAXE, false,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.PICKAXE, false,
                 "III", " S ", " S ",
                 'I', flint,
                 'S', stick);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.SHOVEL, false,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.SHOVEL, false,
                 "I", "S", "S",
                 'I', flint,
                 'S', stick);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.AXE, true,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.AXE, true,
                 "II", "IS", " S",
                 'I', flint,
                 'S', stick);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.HOE, true,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.HOE, true,
                 "II", " S", " S",
                 'I', flint,
                 'S', stick);
 
-        addToolRecipe(provider, GTMaterials.Flint, GTToolType.KNIFE, false,
+        addToolRecipe(provider, GTMaterials.Flint.get(), GTToolType.KNIFE, false,
                 "I", "S",
                 'I', flint,
                 'S', stick);
@@ -176,7 +176,7 @@ public final class CustomToolRecipes {
         final ItemStack stick = new ItemStack(Items.STICK);
 
         for (int i = 0; i < softMaterials.length; i++) {
-            Material material = softMaterials[i];
+            com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material = softMaterials[i];
 
             if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored

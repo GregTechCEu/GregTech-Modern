@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GTMaterialBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -29,6 +29,7 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
@@ -74,6 +75,11 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
         this.block = Either.right(material);
         return this;
+    }
+
+    @HideFromJS
+    public SurfaceIndicatorGenerator surfaceRock(MaterialEntry material) {
+        return surfaceRock(material.get());
     }
 
     public SurfaceIndicatorGenerator block(Block block) {

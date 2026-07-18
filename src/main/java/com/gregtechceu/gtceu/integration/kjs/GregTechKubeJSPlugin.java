@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cosmetics.CapeRegistry;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -36,7 +35,6 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
@@ -46,7 +44,6 @@ import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.pattern.MultiblockPatternBuilder;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
@@ -88,21 +85,24 @@ import com.gregtechceu.gtceu.integration.kjs.builders.worldgen.*;
 import com.gregtechceu.gtceu.integration.kjs.helpers.GTResourceLocation;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineConstructors;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MachineModifiers;
-import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTShapedRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.KJSHelpers;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.*;
+import com.gregtechceu.gtceu.utils.MaterialParser;
 
-import dev.latvian.mods.kubejs.util.RegistryAccessContainer;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
 
+import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
 import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.ClassFilter;
@@ -115,7 +115,8 @@ import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.registry.ServerRegistryRegistry;
 import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
-import dev.latvian.mods.rhino.Wrapper;
+import dev.latvian.mods.kubejs.util.Cast;
+import dev.latvian.mods.rhino.type.TypeInfo;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
@@ -310,22 +311,27 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
+    private static final TypeInfo MATERIAL_HOLDER = TypeInfo.of(Holder.class).withParams(TypeInfo.of(Material.class));
+
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
 
+        registry.register(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry.class, (ctx, from, target) -> {
+            if (from instanceof com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry entry) return entry;
+            if (from instanceof Holder<?> holder) {
+                var result = MaterialParser.getEntryFrom(holder);
+                if (result != null) return result;
+            }
+            Holder<Material> parsedHolder = Cast.to(ctx.jsToJava(from, MATERIAL_HOLDER));
+            return MaterialParser.getEntryFrom(parsedHolder);
+        });
         registry.register(MaterialEntry.class, MaterialEntry::of);
         registry.register(MaterialStack.class, o -> {
             if (o instanceof MaterialStack stack) return stack;
-            if (o instanceof Material material) return new MaterialStack(material, 1);
+            if (o instanceof com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry material) return new MaterialStack(material, 1);
+            if (o instanceof Material material) return new MaterialStack(material.getEntryWrapper(), 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
-            return null;
-        });
-        registry.register(MaterialStackWrapper.class, o -> {
-            if (o instanceof MaterialStackWrapper wrapper) return wrapper;
-            if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
-            if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
-            if (o instanceof CharSequence chars) return MaterialStackWrapper.fromString(chars);
             return null;
         });
 

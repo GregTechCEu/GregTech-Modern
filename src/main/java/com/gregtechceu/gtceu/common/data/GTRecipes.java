@@ -69,15 +69,15 @@ public class GTRecipes {
             }
 
             DecompositionRecipeHandler.run(consumer, material);
-            MaterialRecipeHandler.run(consumer, material);
-            OreRecipeHandler.run(consumer, material);
-            PartsRecipeHandler.run(consumer, material);
+            MaterialRecipeHandler.run(consumer, material.getEntryWrapper());
+            OreRecipeHandler.run(consumer, material.getEntryWrapper());
+            PartsRecipeHandler.run(consumer, material.getEntryWrapper());
             PipeRecipeHandler.run(consumer, material);
             PolarizingRecipeHandler.run(consumer, material);
-            RecyclingRecipeHandler.run(consumer, material);
+            RecyclingRecipeHandler.run(consumer, material.getEntryWrapper());
             ToolRecipeHandler.run(consumer, material);
             WireCombiningHandler.run(consumer, material);
-            WireRecipeHandler.run(consumer, material);
+            WireRecipeHandler.run(consumer, material.getEntryWrapper());
         }
 
         CustomToolRecipes.init(consumer);

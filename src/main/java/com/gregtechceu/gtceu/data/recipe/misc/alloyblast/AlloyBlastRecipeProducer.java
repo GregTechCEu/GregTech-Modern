@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredientExtensions;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.common.data.GCYMRecipeTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -100,7 +101,7 @@ public class AlloyBlastRecipeProducer {
         int outputAmount = 0;
         int fluids = 0;
         for (MaterialStack materialStack : material.getMaterialComponents()) {
-            final Material component = materialStack.material();
+            final MaterialEntry component = materialStack.material();
             final int msAmount = (int) materialStack.amount();
 
             if (component.hasProperty(PropertyKey.DUST)) {

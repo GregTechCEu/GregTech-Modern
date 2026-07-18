@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.common.data.models;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay;
@@ -503,8 +503,8 @@ public class GTMachineModels {
                 .setModel(provider.getExistingFile(model));
     }
 
-    public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
-        ImmutableMap.Builder<Material, ResourceLocation> builder = ImmutableMap.builder();
+    public static final ImmutableMap<MaterialEntry, ResourceLocation> MATERIALS_TO_CASING_TEXTURES = Util.make(() -> {
+        ImmutableMap.Builder<MaterialEntry, ResourceLocation> builder = ImmutableMap.builder();
         builder.put(GTMaterials.Bronze, GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
         builder.put(GTMaterials.Invar, GTCEu.id("block/casings/solid/machine_casing_heatproof"));
         builder.put(GTMaterials.Aluminium, GTCEu.id("block/casings/solid/machine_casing_frost_proof"));

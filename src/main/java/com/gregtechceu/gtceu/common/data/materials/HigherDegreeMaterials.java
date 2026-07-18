@@ -19,20 +19,20 @@ public class HigherDegreeMaterials {
                 .color(0x83cbf5).secondaryColor(0x004585).iconSet(SHINY)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Redstone, 1, Electrum, 1)
-                .buildAndRegister();
+                .register();
 
         EnderEye = REGISTRATE.material("ender_eye")
                 .gem(1)
                 .color(0xb5e45a).secondaryColor(0x001430).iconSet(SHINY)
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(EnderPearl, 1, Blaze, 1)
-                .buildAndRegister();
+                .register();
 
         Diatomite = REGISTRATE.material("diatomite")
                 .dust(1).ore()
                 .color(0xfffafa)
                 .components(Flint, 8, Hematite, 1, Sapphire, 1)
-                .buildAndRegister();
+                .register();
 
         RedSteel = REGISTRATE.material("red_steel")
                 .ingot(3).fluid()
@@ -43,7 +43,7 @@ public class HigherDegreeMaterials {
                         .attackSpeed(0.1F).enchantability(21).build())
                 .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
-                .buildAndRegister();
+                .register();
 
         BlueSteel = REGISTRATE.material("blue_steel")
                 .ingot(3).fluid()
@@ -54,35 +54,35 @@ public class HigherDegreeMaterials {
                         .attackSpeed(0.1F).enchantability(33).build())
                 .blast(b -> b.temp(1813, GasTier.LOW)
                         .blastStats(VA[HV], 1000))
-                .buildAndRegister();
+                .register();
 
         Basalt = REGISTRATE.material("basalt")
                 .dust(1)
                 .color(0x5c5c5c).secondaryColor(0x1b2632).iconSet(ROUGH)
                 .flags(NO_SMASHING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Olivine, 1, Calcite, 3, Flint, 8, DarkAsh, 4)
-                .buildAndRegister();
+                .register();
 
         GraniticMineralSand = REGISTRATE.material("granitic_mineral_sand")
                 .dust(1).ore()
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(SAND)
                 .components(Magnetite, 1, Deepslate, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
-                .buildAndRegister();
+                .register();
 
         Redrock = REGISTRATE.material("redrock")
                 .dust(1)
                 .color(0xffa49e).secondaryColor(0x52362a).iconSet(ROUGH)
                 .flags(NO_SMASHING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Calcite, 2, Flint, 1)
-                .buildAndRegister();
+                .register();
 
         GarnetSand = REGISTRATE.material("garnet_sand")
                 .dust(1).ore()
                 .color(0xcc4c25).secondaryColor(0x510b04).iconSet(SAND)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Almandine, 1, Andradite, 1, Grossular, 1, Pyrope, 1, Spessartine, 1, Uvarovite, 1)
-                .buildAndRegister();
+                .register();
 
         HSSG = REGISTRATE.material("hssg")
                 .ingot(3).fluid()
@@ -95,7 +95,7 @@ public class HigherDegreeMaterials {
                 .blast(b -> b.temp(4200, GasTier.MID)
                         .blastStats(VA[GTValues.EV], 1300)
                         .vacuumStats(VA[HV]))
-                .buildAndRegister();
+                .register();
 
         RedAlloy = REGISTRATE.material("red_alloy")
                 .ingot(0)
@@ -105,14 +105,14 @@ public class HigherDegreeMaterials {
                         DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
                 .cableProperties(GTValues.V[0], 1, 0)
-                .buildAndRegister();
+                .register();
 
         BasalticMineralSand = REGISTRATE.material("basaltic_mineral_sand")
                 .dust(1).ore()
                 .color(0x5c5c5c).secondaryColor(0x283228).iconSet(SAND)
                 .components(Magnetite, 1, Basalt, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
-                .buildAndRegister();
+                .register();
 
         HSSE = REGISTRATE.material("hsse")
                 .ingot(4).fluid()
@@ -125,7 +125,7 @@ public class HigherDegreeMaterials {
                 .blast(b -> b.temp(5000, GasTier.HIGH)
                         .blastStats(VA[GTValues.EV], 1400)
                         .vacuumStats(VA[HV]))
-                .buildAndRegister();
+                .register();
 
         HSSS = REGISTRATE.material("hsss")
                 .ingot(4).fluid()
@@ -137,35 +137,35 @@ public class HigherDegreeMaterials {
                 .blast(b -> b.temp(5000, GasTier.HIGH)
                         .blastStats(VA[GTValues.EV], 1500)
                         .vacuumStats(VA[EV], 200))
-                .buildAndRegister();
+                .register();
 
         IridiumMetalResidue = REGISTRATE.material("iridium_metal_residue")
                 .dust()
                 .color(0x484a5e).secondaryColor(0x3e1c38).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Iridium, 1, Chlorine, 3, PlatinumSludgeResidue, 1)
-                .buildAndRegister();
+                .register();
 
         Granite = REGISTRATE.material("granite")
                 .dust()
                 .color(0xd69077).secondaryColor(0x71352c).iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 4, Redrock, 1)
-                .buildAndRegister();
+                .register();
 
         Brick = REGISTRATE.material("brick")
                 .dust()
                 .color(0xc76245).secondaryColor(0x2d1610).iconSet(ROUGH)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Clay, 1)
-                .buildAndRegister();
+                .register();
 
         Fireclay = REGISTRATE.material("fireclay")
                 .dust()
                 .color(0xffeab6).secondaryColor(0x84581c).iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, NO_SMELTING)
                 .components(Clay, 1, Brick, 1)
-                .buildAndRegister();
+                .register();
 
         Diorite = REGISTRATE.material("diorite")
                 .dust()
@@ -173,7 +173,7 @@ public class HigherDegreeMaterials {
                 .iconSet(ROUGH)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Mirabilite, 2, Clay, 7)
-                .buildAndRegister();
+                .register();
 
         BlueAlloy = REGISTRATE.material("blue_alloy")
                 .ingot()
@@ -182,20 +182,20 @@ public class HigherDegreeMaterials {
                 .flags(GENERATE_PLATE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Electrotine, 4, Silver, 1)
                 .cableProperties(GTValues.V[HV], 2, 1)
-                .buildAndRegister();
+                .register();
 
         RadAway = REGISTRATE.material("rad_away")
                 .dust()
                 .color(0xe3a1d7).secondaryColor(0x9845a3).iconSet(ROUGH)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(PotassiumIodide, 5, PrussianBlue, 3, DiethylenetriaminepentaaceticAcid, 5)
-                .buildAndRegister();
+                .register();
 
         Blackstone = REGISTRATE.material("blackstone")
                 .dust()
                 .color(0x3c3947).secondaryColor(0x160f10).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .components(DarkAsh, 2, Basalt, 1, Stone, 5)
-                .buildAndRegister();
+                .register();
     }
 }

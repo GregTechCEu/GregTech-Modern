@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
 
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -15,7 +15,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.BREWING_RECIPES;
 public class BrewingRecipes {
 
     public static void init(RecipeOutput provider) {
-        for (Material material : new Material[] { Talc, Soapstone, Redstone }) {
+        for (MaterialEntry material : new MaterialEntry[] { Talc, Soapstone, Redstone }) {
             BREWING_RECIPES.recipeBuilder("lubricant_from_oil_and_" + material.getName())
                     .inputItems(dust, material)
                     .inputFluids(Oil.getFluid(1000))

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-
 import net.minecraft.resources.ResourceLocation;
 
 /**
@@ -13,24 +11,10 @@ import net.minecraft.resources.ResourceLocation;
  */
 public final class MarkerMaterial extends Material {
 
-    private final ResourceLocation resourceLocation;
-
     public MarkerMaterial(ResourceLocation resourceLocation) {
         super(resourceLocation);
-        this.resourceLocation = resourceLocation;
-        // TODO
-        // OreDictUnifier.registerMarkerMaterial(this);
     }
-
-    @Override
-    protected void registerMaterial(GTRegistrate registrate) {}
 
     @Override
     public void verifyMaterial() {}
-
-    @Override
-    // since we're not registered, return overriden name
-    public String toString() {
-        return resourceLocation.toString();
-    }
 }

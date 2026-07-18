@@ -90,7 +90,7 @@ public class OreProcessingRecipeWidget extends ParentWidget<OreProcessingRecipeW
 
     public OreProcessingRecipeWidget(Material material) {
         size(176, 166);
-        setRecipe(new GTOreByProduct(material));
+        setRecipe(new GTOreByProduct(material.getEntryWrapper()));
     }
 
     public void setRecipe(GTOreByProduct recipeWrapper) {

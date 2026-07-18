@@ -355,12 +355,12 @@ public class WoodMachineRecipes {
     public static void registerWoodMaterialInfo(@NotNull WoodTypeEntry entry) {
         for (var log_ : entry.getLogs()) {
             if (log_ != null && entry.addLogTag) {
-                ItemMaterialData.registerMaterialEntry(log_, log, entry.material);
+                ItemMaterialData.registerMaterialEntry(log_, log, entry.material.get());
             }
         }
 
         if (entry.addPlanksTag) {
-            ItemMaterialData.registerMaterialEntry(entry.planks, planks, entry.material);
+            ItemMaterialData.registerMaterialEntry(entry.planks, planks, entry.material.get());
         }
         if (entry.addPlanksMaterialInfo) {
             ItemMaterialData.registerMaterialInfo(entry.planks,
@@ -369,7 +369,7 @@ public class WoodMachineRecipes {
 
         if (entry.door != null) {
             if (entry.addDoorsTag) {
-                ItemMaterialData.registerMaterialEntry(entry.door, door, entry.material);
+                ItemMaterialData.registerMaterialEntry(entry.door, door, entry.material.get());
             }
             if (entry.addDoorsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.door, ConfigHolder.INSTANCE.recipes.hardWoodRecipes ?
@@ -381,7 +381,7 @@ public class WoodMachineRecipes {
 
         if (entry.slab != null) {
             if (entry.addSlabsTag) {
-                ItemMaterialData.registerMaterialEntry(entry.slab, slab, entry.material);
+                ItemMaterialData.registerMaterialEntry(entry.slab, slab, entry.material.get());
             }
             if (entry.addSlabsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.slab,
@@ -391,7 +391,7 @@ public class WoodMachineRecipes {
 
         if (entry.fence != null) {
             if (entry.addFencesTag) {
-                ItemMaterialData.registerMaterialEntry(entry.fence, fence, entry.material);
+                ItemMaterialData.registerMaterialEntry(entry.fence, fence, entry.material.get());
             }
             if (entry.addFencesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fence,
@@ -401,7 +401,7 @@ public class WoodMachineRecipes {
 
         if (entry.fenceGate != null) {
             if (entry.addFenceGatesTag) {
-                ItemMaterialData.registerMaterialEntry(entry.fenceGate, fenceGate, entry.material);
+                ItemMaterialData.registerMaterialEntry(entry.fenceGate, fenceGate, entry.material.get());
             }
             if (entry.addFenceGatesMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.fenceGate,
@@ -411,7 +411,7 @@ public class WoodMachineRecipes {
 
         if (entry.stairs != null) {
             if (entry.addStairsTag) {
-                ItemMaterialData.registerMaterialEntry(entry.stairs, stairs, entry.material);
+                ItemMaterialData.registerMaterialEntry(entry.stairs, stairs, entry.material.get());
             }
             if (entry.addStairsMaterialInfo) {
                 ItemMaterialData.registerMaterialInfo(entry.stairs,
