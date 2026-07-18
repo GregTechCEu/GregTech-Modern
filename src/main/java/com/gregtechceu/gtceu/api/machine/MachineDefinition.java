@@ -51,10 +51,6 @@ public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
 
     @Getter
     private final ResourceLocation id;
-    // This is only stored here for KJS use.
-    @Getter
-    @Setter
-    private @Nullable String langValue;
     @Setter
     private Supplier<? extends MetaMachineBlock> blockSupplier;
     @Setter

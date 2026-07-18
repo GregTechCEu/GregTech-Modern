@@ -34,8 +34,8 @@ public class MachineBuilderWrapper<D extends MachineDefinition, B extends Machin
     @Override
     public void generateLang(LangKubeEvent lang) {
         D value = get();
-        if (value != null && value.getLangValue() != null) {
-            lang.add(id.getNamespace(), value.getDescriptionId(), value.getLangValue());
+        if (value != null && builder.langValue() != null) {
+            lang.add(id.getNamespace(), value.getDescriptionId(), builder.langValue());
         }
     }
 }

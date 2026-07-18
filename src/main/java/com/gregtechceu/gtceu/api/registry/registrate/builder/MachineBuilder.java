@@ -31,8 +31,8 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.model.builder.MachineModelBuilder;
 
-import com.tterrag.registrate.builders.AbstractBuilder;
-import com.tterrag.registrate.builders.BlockEntityBuilder;
+import com.tterrag.registrate.builders.*;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -58,8 +58,6 @@ import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.theme.ThemeAPI;
-import com.tterrag.registrate.builders.BuilderCallback;
-import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.*;
@@ -159,6 +157,8 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         this.itemFactory = itemFactory;
         this.instanceFactory = instanceFactory;
         this.definition = definition;
+
+        this.defaultLang();
     }
 
     @SuppressWarnings("unchecked")
@@ -291,8 +291,23 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         return getThis();
     }
 
+    public S defaultLang() {
+        this.langValue = RegistrateLangProvider.toEnglishName(getName());
+        return lang(MachineDefinition::getDescriptionId);
+    }
+
+    public S lang(String name) {
+        this.langValue = name;
+        return lang(MachineDefinition::getDescriptionId, name);
+    }
+
     public S langValue(@Nullable String langValue) {
         this.langValue = langValue;
+        if (langValue != null) {
+            this.lang(MachineDefinition::getDescriptionId, langValue);
+        } else {
+            this.setData(ProviderType.LANG, NonNullBiConsumer.noop());
+        }
         return getThis();
     }
 
@@ -635,7 +650,6 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         if (model == null && blockModel == null) {
             simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
         }
-        definition.setLangValue(langValue);
 
         final BlockEntry<? extends MetaMachineBlock> block;
         if (defaultBlock) {
@@ -707,7 +721,7 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
     public GTBlockBuilder<MetaMachineBlock, S> block() {
         this.defaultBlock = false;
         return getOwner().block(getThis(), getName(), p -> BlockBuilderWrapper.makeBlock(getThis(), getEntry(), p))
-                .lang(this.langValue)
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys
                 .color(() -> () -> MetaMachineBlock::colorTinted)
                 .initialProperties(() -> Blocks.DISPENSER)
                 .properties(BlockBehaviour.Properties::noLootTable)
