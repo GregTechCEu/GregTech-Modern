@@ -17,7 +17,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class ExpandablePattern implements IBlockPattern {
@@ -149,6 +151,7 @@ public class ExpandablePattern implements IBlockPattern {
 
         // SOUTH, UP, EAST means point is +z, line is +y, plane is +x. this basically means the x val of the iter is
         // aisle count, y is str count, and z is char count.
+        Set<MultiPredicate> visited = new HashSet<>();
         for (var pos : BlockPos.betweenClosed(negCorner, posCorner)) {
             BlockPos.MutableBlockPos mPos = pos.mutable();
             MultiPredicate pred = predicateProvider.apply(mPos, bounds);
@@ -165,10 +168,12 @@ public class ExpandablePattern implements IBlockPattern {
             if (!pred.test(patternState)) {
                 return false;
             }
+            visited.add(pred);
         }
 
-        for (var entry : patternState.globalCache().object2IntEntrySet()) {
-            if (!entry.getKey().testGlobalMin(patternState)) {
+        for (MultiPredicate multiPredicate : visited) {
+            if (!multiPredicate.testGlobalMin(patternState)) {
+                patternState.commitErrors();
                 return false;
             }
         }
