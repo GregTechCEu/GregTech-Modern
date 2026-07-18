@@ -77,9 +77,6 @@ public class PatternState extends PredicateContext {
 
     Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectArrayMap<>();
 
-    // it's committing errors just fine
-    // all the widgets are added to the col on server and client
-    // but nothing shows for some reason
     public void commitSliceErrors() {
         for (Slice slice : this.sliceErrors.keySet()) {
             this.commitedErrors.addAll(this.sliceErrors.get(slice));
@@ -96,6 +93,11 @@ public class PatternState extends PredicateContext {
     public void commitErrors() {
         this.commitedErrors.addAll(this.errors);
         clearErrors();
+    }
+
+    /// usage intended for outside {@link BlockPattern}
+    public void commitError(PatternError error) {
+        this.commitedErrors.add(error);
     }
 
     private record Slice(int index, int offset) {}
