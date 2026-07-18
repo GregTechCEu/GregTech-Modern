@@ -48,6 +48,7 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
 import com.gregtechceu.gtceu.api.recipe.modifier.ModifierFunction;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.client.renderer.machine.DynamicRenderHelper;
 import com.gregtechceu.gtceu.common.cosmetics.GTCapes;
 import com.gregtechceu.gtceu.common.data.GCYMBlocks;
@@ -117,8 +118,27 @@ import dev.latvian.mods.kubejs.script.BindingRegistry;
 import dev.latvian.mods.kubejs.script.TypeWrapperRegistry;
 import dev.latvian.mods.kubejs.util.Cast;
 import dev.latvian.mods.rhino.type.TypeInfo;
+import org.jetbrains.annotations.ApiStatus;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
+
+    /**
+     * Registrate instance in the KubeJS namespace with no registration event listeners.
+     */
+    @ApiStatus.Internal
+    public static final GTRegistrate KUBEJS_DUMMY_REGISTRATE = GTRegistrate.create(KubeJS.MOD_ID, false);
+    static {
+        GTRegistrate registrate = KUBEJS_DUMMY_REGISTRATE;
+
+        IEventBus kjsModBus = ModList.get().getModContainerById(KubeJS.MOD_ID)
+                .map(ModContainer::getEventBus)
+                .orElse(ModLoadingContext.get().getActiveContainer().getEventBus());
+        assert kjsModBus != null;
+
+        // manually initialize the non-registration event listeners
+        registrate.setModEventBus(kjsModBus);
+        kjsModBus.addListener(registrate::onBuildCreativeModeTabContents);
+    }
 
     // spotless:off
     @Override

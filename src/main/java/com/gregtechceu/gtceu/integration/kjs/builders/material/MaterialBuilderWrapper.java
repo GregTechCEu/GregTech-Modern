@@ -13,12 +13,15 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.utils.MaterialParser;
 
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import dev.latvian.mods.kubejs.error.KubeRuntimeException;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
@@ -37,7 +40,11 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(GTRegistrate.create(id.getNamespace(), false), id);
+        this.internal = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE.material(id.getPath());
+
+        MaterialEntry entryWrapper = new MaterialEntry(GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE,
+                DeferredHolder.create(GTRegistries.Keys.MATERIAL, this.id));
+        internal.getMaterialInfo().setEntryWrapper(entryWrapper);
     }
 
     /*

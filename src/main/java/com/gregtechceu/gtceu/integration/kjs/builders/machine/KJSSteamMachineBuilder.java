@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +44,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
     @Override
     public void createAdditionalObjects(AdditionalObjectRegistry registry) {
         if (hasLowPressure) {
-            var lowPressureBuilder = GTRegistrate.create(id.getNamespace(), false)
+            var lowPressureBuilder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                     .machine(String.format("lp_%s", this.id.getPath()),
                             holder -> machine.buildMachine(holder, false))
                     .langValue("Low Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))
@@ -58,7 +58,7 @@ public class KJSSteamMachineBuilder extends BuilderBase<MachineDefinition> {
         }
 
         if (hasHighPressure) {
-            var highPressureBuilder = GTRegistrate.create(id.getNamespace(), false)
+            var highPressureBuilder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                     .machine(String.format("hp_%s", this.id.getPath()),
                             holder -> machine.buildMachine(holder, true))
                     .langValue("High Pressure " + FormattingUtil.toEnglishName(this.id.getPath()))

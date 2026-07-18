@@ -6,9 +6,9 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -81,7 +81,7 @@ public class KJSTieredMachineBuilder extends BuilderBase<MachineDefinition> {
             final Int2IntFunction tankFunction = Objects.requireNonNullElse(tankScalingFunction,
                     GTMachineUtils.defaultTankSizeFunction);
 
-            var builder = GTRegistrate.create(this.id.getNamespace(), false)
+            var builder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                     .machine(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.create(holder, tier, tankFunction));
 

@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.machines.GTMachineUtils;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -60,8 +60,7 @@ public class KJSTieredMultiblockBuilder extends BuilderBase<MultiblockMachineDef
 
         for (final int tier : tiers) {
             String tierName = VN[tier].toLowerCase(Locale.ROOT);
-            MultiblockMachineBuilder<?, ?> builder = GTRegistrate
-                    .createIgnoringListenerErrors(this.id.getNamespace())
+            MultiblockMachineBuilder<?, ?> builder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                     .multiblock(String.format("%s_%s", tierName, this.id.getPath()),
                             holder -> machine.buildMachine(holder, tier));
 

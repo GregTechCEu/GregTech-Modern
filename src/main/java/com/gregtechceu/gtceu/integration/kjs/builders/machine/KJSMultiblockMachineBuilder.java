@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
+import com.gregtechceu.gtceu.integration.kjs.GregTechKubeJSPlugin;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -51,14 +52,14 @@ public class KJSMultiblockMachineBuilder extends MachineBuilderWrapper<Multibloc
     }
 
     public static KJSMultiblockMachineBuilder create(ResourceLocation id) {
-        var baseBuilder = GTRegistrate.create(id.getNamespace(), false)
+        var baseBuilder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                 .<MultiblockControllerMachine>multiblock(id.getPath(), WorkableElectricMultiblockMachine::new);
         return new KJSMultiblockMachineBuilder(baseBuilder);
     }
 
     public static KJSMultiblockMachineBuilder create(ResourceLocation id,
                                                      MachineInstanceFactory<MultiblockControllerMachine> instanceFactory) {
-        var baseBuilder = GTRegistrate.create(id.getNamespace(), false)
+        var baseBuilder = GregTechKubeJSPlugin.KUBEJS_DUMMY_REGISTRATE
                 .multiblock(id.getPath(), instanceFactory);
         return new KJSMultiblockMachineBuilder(baseBuilder);
     }
