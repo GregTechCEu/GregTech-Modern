@@ -310,52 +310,18 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         event.add("CapeRegistry", CapeRegistry.class);
     }
 
-    private <T> void registryObjectTypeWrapper(TypeWrapperRegistry typeWrappers, Class<T> clazz, ResourceKey<Registry<T>> registry) {
-        typeWrappers.register(clazz, (RegistryAccessContainer registries, Object o) -> {
-            o = Wrapper.unwrapped(o);
-            if (clazz.isInstance(o)) return clazz.cast(o);
-            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
-            if (wrapper == null) return null;
-            return registries.access().registryOrThrow(registry).get(wrapper.wrapped());
-        });
-    }
-
     @Override
     public void registerTypeWrappers(TypeWrapperRegistry registry) {
         registry.register(GTResourceLocation.class, GTResourceLocation::wrap);
 
-        registryObjectTypeWrapper(registry, Material.class, GTRegistries.Keys.MATERIAL);
-        registryObjectTypeWrapper(registry, Element.class, GTRegistries.Keys.ELEMENT);
-        registryObjectTypeWrapper(registry, TagPrefix.class, GTRegistries.Keys.TAG_PREFIX);
-        registryObjectTypeWrapper(registry, MaterialIconSet.class, GTRegistries.Keys.MATERIAL_ICON_SET);
-
-        registryObjectTypeWrapper(registry, GTRecipeType.class, GTRegistries.Keys.RECIPE_TYPE);
-        registryObjectTypeWrapper(registry, GTRecipeCategory.class, GTRegistries.Keys.RECIPE_CATEGORY);
-        registryObjectTypeWrapper(registry, ChanceLogic.class, GTRegistries.Keys.CHANCE_LOGIC);
-
-        registryObjectTypeWrapper(registry, MachineDefinition.class, GTRegistries.Keys.MACHINE);
-        registryObjectTypeWrapper(registry, IWorldGenLayer.class, GTRegistries.Keys.WORLD_GEN_LAYER);
-
-        registry.register(RecipeCapability.class, (RegistryAccessContainer registries, Object o) -> {
-            o = Wrapper.unwrapped(o);
-            if (o instanceof RecipeCapability<?> capability) return capability;
-            GTResourceLocation wrapper = GTResourceLocation.wrap(o);
-            if (wrapper == null) return null;
-            return registries.access().registryOrThrow(GTRegistries.Keys.RECIPE_CAPABILITY).get(wrapper.wrapped());
-        });
-
-
         registry.register(MaterialEntry.class, MaterialEntry::of);
-
         registry.register(MaterialStack.class, o -> {
-            o = Wrapper.unwrapped(o);
             if (o instanceof MaterialStack stack) return stack;
             if (o instanceof Material material) return new MaterialStack(material, 1);
             if (o instanceof CharSequence chars) return MaterialStack.fromString(chars);
             return null;
         });
         registry.register(MaterialStackWrapper.class, o -> {
-            o = Wrapper.unwrapped(o);
             if (o instanceof MaterialStackWrapper wrapper) return wrapper;
             if (o instanceof MaterialStack stack) return new MaterialStackWrapper(stack::material, stack.amount());
             if (o instanceof Material material) return new MaterialStackWrapper(() -> material, 1);
