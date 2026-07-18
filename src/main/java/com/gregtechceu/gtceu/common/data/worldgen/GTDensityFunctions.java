@@ -1,4 +1,6 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.worldgen;
+
+import com.gregtechceu.gtceu.GTCEu;
 
 import com.gregtechceu.gtceu.GTCEu;
 
@@ -12,8 +14,9 @@ import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
-public class GTWorldgen {
+public class GTDensityFunctions {
 
+    // spotless:off
     public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_TOGGLE = create("vein_toggle");
     public static final ResourceKey<DensityFunction> NEW_ORE_VEIN_RIDGED = create("vein_ridged");
 
@@ -23,7 +26,9 @@ public class GTWorldgen {
         Holder<NormalNoise.NoiseParameters> oreVeininess = noises.getOrThrow(Noises.ORE_VEININESS);
         ctx.register(NEW_ORE_VEIN_TOGGLE,
                 DensityFunctions.interpolated(
-                        DensityFunctions.noise(oreVeininess, 1.5f, 1.5f)));
+                        DensityFunctions.noise(oreVeininess, 1.5f, 1.5f)
+                )
+        );
 
         Holder<NormalNoise.NoiseParameters> oreVeinA = noises.getOrThrow(Noises.ORE_VEIN_A);
         Holder<NormalNoise.NoiseParameters> oreVeinB = noises.getOrThrow(Noises.ORE_VEIN_B);
@@ -31,11 +36,15 @@ public class GTWorldgen {
                 DensityFunctions.add(
                         DensityFunctions.constant(-0.08f),
                         DensityFunctions.max(
-                                DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinA, 4.0f, 4.0f)).abs(),
-                                DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinB, 4.0f, 4.0f)).abs())));
+                                DensityFunctions.interpolated(DensityFunctions.noise(oreVeinA, 4.0f, 4.0f))
+                                        .abs(),
+                                DensityFunctions.interpolated(DensityFunctions.noise(oreVeinB, 4.0f, 4.0f))
+                                        .abs()
+                        )
+                )
+        );
     }
+    // spotless:on
 
     private static ResourceKey<DensityFunction> create(String path) {
         return ResourceKey.create(Registries.DENSITY_FUNCTION, GTCEu.id(path));

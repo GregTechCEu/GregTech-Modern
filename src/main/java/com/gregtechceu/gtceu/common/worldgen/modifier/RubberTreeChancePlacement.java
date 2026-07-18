@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen.modifier;
 
+import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import net.minecraft.core.BlockPos;
@@ -12,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class RubberTreeChancePlacement extends RepeatingPlacement {
 
-    public static final PlacementModifierType<RubberTreeChancePlacement> RUBBER_TREE_CHANCE_PLACEMENT = () -> RubberTreeChancePlacement.CODEC;
-
     public static final RubberTreeChancePlacement INSTANCE = new RubberTreeChancePlacement();
     public static final MapCodec<RubberTreeChancePlacement> CODEC = MapCodec.unit(INSTANCE);
 
@@ -24,6 +23,6 @@ public class RubberTreeChancePlacement extends RepeatingPlacement {
 
     @Override
     public PlacementModifierType<?> type() {
-        return RUBBER_TREE_CHANCE_PLACEMENT;
+        return GTPlacementModifiers.RUBBER_TREE_CHANCE.get();
     }
 }

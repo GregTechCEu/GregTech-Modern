@@ -1,6 +1,8 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.worldgen;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.FluidSproutConfiguration;
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.StoneBlobConfiguration;
 
@@ -23,6 +25,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 public class GTConfiguredFeatures {
 
+    // spotless:off
     public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER_TREE = ResourceKey.create(
             Registries.CONFIGURED_FEATURE, GTCEu.id("rubber_tree"));
     public static final ResourceKey<ConfiguredFeature<?, ?>> RED_GRANITE_BLOB = ResourceKey
@@ -33,23 +36,36 @@ public class GTConfiguredFeatures {
             .create(Registries.CONFIGURED_FEATURE, GTCEu.id("raw_oil_sprout"));
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
-        FeatureUtils.register(ctx, RUBBER_TREE, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
-                BlockStateProvider
-                        .simple(GTBlocks.RUBBER_LOG.get().changeNatural(GTBlocks.RUBBER_LOG.getDefaultState(), true)),
-                new ForkingTrunkPlacer(5, 1, 3),
-                BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
-                new MegaJungleFoliagePlacer(ConstantInt.of(1), UniformInt.of(0, 1), 1),
-                new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build());
+        FeatureUtils.register(ctx, RUBBER_TREE, Feature.TREE,
+                new TreeConfiguration.TreeConfigurationBuilder(
+                        BlockStateProvider.simple(GTBlocks.RUBBER_LOG.get().changeNatural(GTBlocks.RUBBER_LOG.getDefaultState(), true)),
+                        new ForkingTrunkPlacer(5, 1, 3),
+                        BlockStateProvider.simple(GTBlocks.RUBBER_LEAVES.get()),
+                        new MegaJungleFoliagePlacer(ConstantInt.of(1), UniformInt.of(0, 1), 1),
+                        new TwoLayersFeatureSize(1, 0, 2)
+                ).ignoreVines().build()
+        );
 
         FeatureUtils.register(ctx, RED_GRANITE_BLOB, GTFeatures.STONE_BLOB.get(),
-                new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
-                        GTBlocks.RED_GRANITE.getDefaultState()), UniformInt.of(20, 30)));
+                new StoneBlobConfiguration(
+                        OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+                        GTBlocks.RED_GRANITE.getDefaultState()), UniformInt.of(20, 30)
+                )
+        );
         FeatureUtils.register(ctx, MARBLE_BLOB, GTFeatures.STONE_BLOB.get(),
-                new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
-                        GTBlocks.MARBLE.getDefaultState()), UniformInt.of(20, 30)));
+                new StoneBlobConfiguration(
+                        OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+                        GTBlocks.MARBLE.getDefaultState()), UniformInt.of(20, 30)
+                )
+        );
 
         FeatureUtils.register(ctx, RAW_OIL_SPROUT, GTFeatures.FLUID_SPROUT.get(),
-                new FluidSproutConfiguration(GTMaterials.RawOil.getFluid(), UniformInt.of(9, 13), UniformInt.of(6, 9),
-                        0.4f));
+                new FluidSproutConfiguration(
+                        GTMaterials.RawOil.getFluid(),
+                        UniformInt.of(9, 13), UniformInt.of(6, 9),
+                        0.4f
+                )
+        );
     }
+    // spotless:on
 }

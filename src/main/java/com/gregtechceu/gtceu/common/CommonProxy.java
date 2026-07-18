@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefiniti
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.GTPlacementModifiers;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -45,7 +44,11 @@ import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.item.*;
+import com.gregtechceu.gtceu.common.data.loot.GTLootConditions;
+import com.gregtechceu.gtceu.common.data.loot.GTLootFunctions;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
+import com.gregtechceu.gtceu.common.data.worldgen.GTFeatures;
+import com.gregtechceu.gtceu.common.data.worldgen.GTPlacementModifiers;
 import com.gregtechceu.gtceu.common.fluid.potion.BottleItemFluidHandler;
 import com.gregtechceu.gtceu.common.fluid.potion.PotionItemFluidHandler;
 import com.gregtechceu.gtceu.common.item.DrumMachineItem;
@@ -60,7 +63,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
-import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
@@ -151,6 +153,8 @@ public class CommonProxy {
         GTFeatures.init(modBus);
         GTPlacementModifiers.init(modBus);
         GTValueProviderTypes.init(modBus);
+        GTLootConditions.init(modBus);
+        GTLootFunctions.init(modBus);
 
         GTPatternErrors.init(modBus);
 
@@ -202,7 +206,6 @@ public class CommonProxy {
         CustomBlockRotations.init();
         SyncedKeyMappings.init();
         MachineOwner.init();
-        ChestGenHooks.init(modBus);
 
         // MUI stuff
         GuiManager.registerFactory(MachineUIFactory.INSTANCE);
