@@ -31,8 +31,8 @@ public class KubeGTRegistryEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void registerAll(RegisterEvent event) {
-        // only post the GT registry event for GT registries
-        if (!GTRegistries.getRegistries().contains(event.getRegistry())) {
+        // only post the GT registry event for GT registries (and the recipe type registry)
+        if (!GTRegistries.getRegistrationOrder().contains(event.getRegistryKey().location())) {
             return;
         }
 

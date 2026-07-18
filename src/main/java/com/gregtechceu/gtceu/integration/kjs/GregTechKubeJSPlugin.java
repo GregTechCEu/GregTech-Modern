@@ -136,6 +136,9 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
         registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class, DimensionMarkerBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        registry.of(Registries.RECIPE_TYPE, reg -> {
+            reg.add(GTCEu.id("machine"), GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
+        });
         registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new);
 
         registry.of(GTRegistries.Keys.MACHINE, reg -> {

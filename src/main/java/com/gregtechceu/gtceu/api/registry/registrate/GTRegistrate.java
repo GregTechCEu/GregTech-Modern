@@ -221,7 +221,6 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(makeResourceLocation(name), group, proxyRecipes);
-        this.generic(name, GTRegistries.Keys.RECIPE_TYPE, () -> recipeType).build();
         this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
         recipeType.setSerializer(this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).register());
 
