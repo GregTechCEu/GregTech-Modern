@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.api.registry.registrate.provider.GTBlockstateProvider;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.client.renderer.BlockEntityWithBERModelRenderer;
@@ -54,6 +55,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import brachy.modularui.theme.ThemeAPI;
 import com.tterrag.registrate.builders.BuilderCallback;
@@ -737,6 +739,16 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         return getOwner().<MetaMachine, S>blockEntity(getThis(), getName(), (type, pos, state) -> instanceFactory.buildMachine(new BlockEntityCreationInfo(type, pos, state)))
                 .onRegister(onBlockEntityRegister)
                 .validBlock(() -> getOwner().get(getName(), Registries.BLOCK).get());
+    }
+
+    @Override
+    protected MachineEntry<D> createEntryWrapper(DeferredHolder<MachineDefinition, D> delegate) {
+        return new MachineEntry<>(getOwner(), delegate);
+    }
+
+    @Override
+    public MachineEntry<D> register() {
+        return (MachineEntry<D>) super.register();
     }
 
     @FunctionalInterface

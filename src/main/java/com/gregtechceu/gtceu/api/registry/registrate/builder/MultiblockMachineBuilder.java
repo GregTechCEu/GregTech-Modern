@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
@@ -9,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
 import net.minecraft.core.Direction;
@@ -18,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import com.tterrag.registrate.builders.BuilderCallback;
 import dev.latvian.mods.rhino.util.HideFromJS;
@@ -132,5 +135,15 @@ public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> 
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
         return definition;
+    }
+
+    @Override
+    protected MachineEntry.Multiblock createEntryWrapper(DeferredHolder<MachineDefinition, MultiblockMachineDefinition> delegate) {
+        return new MachineEntry.Multiblock(getOwner(), delegate);
+    }
+
+    @Override
+    public MachineEntry.Multiblock register() {
+        return (MachineEntry.Multiblock) super.register();
     }
 }

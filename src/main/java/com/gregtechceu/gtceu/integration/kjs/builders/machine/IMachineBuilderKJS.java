@@ -22,7 +22,7 @@ public interface IMachineBuilderKJS {
 
         // Fake a data provider for the GT model builders
         DataGenContext<Block, MetaMachineBlock> context = new DataGenContext<>(definition::get,
-                definition.getName(), definition.getId());
+                definition.getId().getPath(), definition.getId());
         if (builder.blockModel() != null) {
             builder.blockModel().accept(context, RuntimeBlockstateProvider.INSTANCE);
         } else {
