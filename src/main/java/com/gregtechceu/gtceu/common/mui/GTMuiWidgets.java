@@ -379,10 +379,10 @@ public class GTMuiWidgets {
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings, false));
+                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false));
 
-        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+        modSlot.changeListener((oldStack, newStack, client, init) -> {
+            if (init || ItemStack.isSameItem(oldStack, newStack)) return;
             panelHandler.closePanel();
             panelHandler.deleteCachedPanel();
         });
