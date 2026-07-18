@@ -344,11 +344,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // World gen layers
 
-    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
-                                                   Set<ResourceKey<Level>> levels) {
-        var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
-        this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
-        return worldGenLayer;
+    public PlainEntry<IWorldGenLayer> worldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
+                                                    Set<ResourceKey<Level>> levels) {
+        return this.plain(id, GTRegistries.Keys.WORLD_GEN_LAYER,
+                () -> new SimpleWorldGenLayer(makeResourceLocation(id), target, levels));
     }
 
     // Blocks
