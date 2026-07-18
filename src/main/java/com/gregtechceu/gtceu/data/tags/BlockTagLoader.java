@@ -76,7 +76,7 @@ public class BlockTagLoader {
                 .addTag(BlockTags.LEAVES)
                 .addTag(BlockTags.WOOL)
                 .add(Blocks.COBWEB, Blocks.DEAD_BUSH, Blocks.FERN, Blocks.GLOW_LICHEN, Blocks.HANGING_ROOTS,
-                        Blocks.LARGE_FERN, Blocks.NETHER_SPROUTS, Blocks.SEAGRASS, Blocks.GRASS,
+                        Blocks.LARGE_FERN, Blocks.NETHER_SPROUTS, Blocks.SEAGRASS, Blocks.SHORT_GRASS,
                         Blocks.SMALL_DRIPLEAF, Blocks.TALL_GRASS, Blocks.TALL_SEAGRASS, Blocks.TRIPWIRE,
                         Blocks.TWISTING_VINES, Blocks.VINE, Blocks.WEEPING_VINES);
 
