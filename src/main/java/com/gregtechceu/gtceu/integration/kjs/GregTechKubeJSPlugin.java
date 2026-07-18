@@ -123,6 +123,7 @@ import dev.latvian.mods.rhino.Wrapper;
 
 public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
+    // spotless:off
     @Override
     public void registerBuilderTypes(BuilderTypeRegistry registry) {
         registry.addDefault(GTRegistries.Keys.ELEMENT, ElementBuilder.class, ElementBuilder::new);
@@ -132,31 +133,21 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
             reg.addDefault(TagPrefixBuilder.class, TagPrefixBuilder::new);
             reg.add(GTCEu.id("ore"), OreTagPrefixBuilder.class, OreTagPrefixBuilder::new);
         });
-        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class,
-                DimensionMarkerBuilder::new);
+        registry.addDefault(GTRegistries.Keys.DIMENSION_MARKER, DimensionMarkerBuilder.class, DimensionMarkerBuilder::new);
 
         registry.addDefault(GTRegistries.Keys.RECIPE_TYPE, GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new);
-        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class,
-                GTRecipeCategoryBuilder::new);
+        registry.addDefault(GTRegistries.Keys.RECIPE_CATEGORY, GTRecipeCategoryBuilder.class, GTRecipeCategoryBuilder::new);
 
         registry.of(GTRegistries.Keys.MACHINE, reg -> {
-            reg.addDefault(KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
+            reg.addDefault(KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id, SimpleTieredMachine::new, false)));
 
-            reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
+            reg.add(GTCEu.id("custom"), KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id)));
             reg.add(GTCEu.id("steam"), KJSSteamMachineBuilder.class, KJSSteamMachineBuilder::new);
-            reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class,
-                    (id) -> new KJSWrappingMachineBuilder(id,
-                            new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
+            reg.add(GTCEu.id("generator"), KJSWrappingMachineBuilder.class, (id) -> new KJSWrappingMachineBuilder(id, new KJSTieredMachineBuilder(id, SimpleGeneratorMachine::new, true)));
 
-            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class,
-                    MultiblockMachineBuilderWrapper::createKJSMulti);
-            reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class,
-                    KJSWrappingMultiblockBuilder::new);
-            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class,
-                    (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
+            reg.add(GTCEu.id("multiblock"), MultiblockMachineBuilderWrapper.class, MultiblockMachineBuilderWrapper::createKJSMulti);
+            reg.add(GTCEu.id("tiered_multiblock"), KJSWrappingMultiblockBuilder.class, KJSWrappingMultiblockBuilder::new);
+            reg.add(GTCEu.id("primitive"), MultiblockMachineBuilderWrapper.class, (id) -> MultiblockMachineBuilderWrapper.createKJSMulti(id, PrimitiveWorkableMachine::new));
         });
 
         registry.of(Registries.BLOCK, reg -> {
@@ -166,8 +157,7 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
 
         registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilder.class, WorldGenLayerBuilder::new);
 
-        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class,
-                OreVeinDefinitionBuilder::new);
+        registry.addDefault(GTRegistries.Keys.ORE_VEIN, OreVeinDefinitionBuilder.class, OreVeinDefinitionBuilder::new);
         registry.addDefault(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidBuilder.class, BedrockFluidBuilder::new);
         registry.addDefault(GTRegistries.Keys.BEDROCK_ORE, BedrockOreBuilder.class, BedrockOreBuilder::new);
         registry.addDefault(GTRegistries.Keys.WORLD_GEN_LAYER, WorldGenLayerBuilder.class, WorldGenLayerBuilder::new);
@@ -176,11 +166,10 @@ public class GregTechKubeJSPlugin implements KubeJSPlugin {
     @Override
     public void registerServerRegistries(ServerRegistryRegistry registry) {
         registry.register(GTRegistries.Keys.ORE_VEIN, GTOreDefinition.DIRECT_CODEC, GTOreDefinition.class);
-        registry.register(GTRegistries.Keys.BEDROCK_FLUID,
-                BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.class);
-        registry.register(GTRegistries.Keys.BEDROCK_ORE,
-                BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.class);
+        registry.register(GTRegistries.Keys.BEDROCK_FLUID, BedrockFluidDefinition.DIRECT_CODEC, BedrockFluidDefinition.class);
+        registry.register(GTRegistries.Keys.BEDROCK_ORE, BedrockOreDefinition.DIRECT_CODEC, BedrockOreDefinition.class);
     }
+    // spotless:on
 
     @Override
     public void registerEvents(EventGroupRegistry registry) {
