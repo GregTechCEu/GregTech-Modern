@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.gregtechceu.gtceu.api.registry.registrate.entry.PlainEntry;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;

@@ -51,7 +51,8 @@ public interface RecipeModifier {
      * @return {@link ModifierFunction#NULL}
      */
     static ModifierFunction nullWrongType(Class<?> type, MetaMachine actual) {
-        GTCEu.LOGGER.error("Incorrect use of modifier, expected machine of type {}, received {} (id {})", type.getSimpleName(),
+        GTCEu.LOGGER.error("Incorrect use of modifier, expected machine of type {}, received {} (id {})",
+                type.getSimpleName(),
                 actual.getClass().getSimpleName(), actual.getDefinition().getId());
         return ModifierFunction.NULL;
     }

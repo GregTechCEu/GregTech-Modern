@@ -35,7 +35,8 @@ import java.util.*;
 import java.util.function.*;
 
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> extends MachineBuilder<MultiblockMachineDefinition, M, P, MultiblockMachineBuilder<P, M>> {
+public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> extends
+                                     MachineBuilder<MultiblockMachineDefinition, M, P, MultiblockMachineBuilder<P, M>> {
 
     private boolean generator;
     private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
@@ -51,7 +52,8 @@ public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> 
                                     BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                     MachineInstanceFactory<M> instanceFactory) {
-        super(owner, parent, name, callback, MultiblockMachineDefinition::new, blockFactory, itemFactory, instanceFactory);
+        super(owner, parent, name, callback, MultiblockMachineDefinition::new, blockFactory, itemFactory,
+                instanceFactory);
         this.patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
@@ -69,7 +71,8 @@ public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> 
         return getThis();
     }
 
-    public MultiblockMachineBuilder<P, M> pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<P, M> pattern(String structureName,
+                                                  Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(structureName, pattern);
         return getThis();
     }
@@ -117,7 +120,8 @@ public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> 
         MultiblockMachineDefinition definition = super.createEntry();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
-            throw new IllegalStateException("Missing default structure pattern for " + getOwner().makeResourceLocation(getName()));
+            throw new IllegalStateException(
+                    "Missing default structure pattern for " + getOwner().makeResourceLocation(getName()));
         }
         for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : patterns.entrySet()) {
             definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));

@@ -66,7 +66,8 @@ public class MachineEntry<T extends MachineDefinition> extends ItemProviderEntry
 
     public static final class Multiblock extends MachineEntry<MultiblockMachineDefinition> {
 
-        public Multiblock(AbstractRegistrate<?> owner, DeferredHolder<MachineDefinition, MultiblockMachineDefinition> key) {
+        public Multiblock(AbstractRegistrate<?> owner,
+                          DeferredHolder<MachineDefinition, MultiblockMachineDefinition> key) {
             super(owner, key);
         }
     }

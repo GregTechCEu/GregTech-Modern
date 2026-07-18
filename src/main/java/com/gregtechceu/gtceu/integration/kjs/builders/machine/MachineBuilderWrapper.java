@@ -7,7 +7,8 @@ import dev.latvian.mods.kubejs.client.LangKubeEvent;
 import dev.latvian.mods.kubejs.generator.KubeAssetGenerator;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 
-public class MachineBuilderWrapper<D extends MachineDefinition, B extends MachineBuilder<D, ?, ?, B>> extends BuilderBase<D> implements IMachineBuilderKJS {
+public class MachineBuilderWrapper<D extends MachineDefinition, B extends MachineBuilder<D, ?, ?, B>>
+                                  extends BuilderBase<D> implements IMachineBuilderKJS {
 
     protected final B builder;
 

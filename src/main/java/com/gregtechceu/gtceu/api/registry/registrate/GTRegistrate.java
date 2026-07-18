@@ -62,7 +62,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,6 +69,8 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
@@ -208,16 +209,19 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                                               BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
                                                                               BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                               MachineInstanceFactory<M> blockEntityFactory) {
-        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback, definitionFactory, blockFactory, itemFactory, blockEntityFactory));
+        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback, definitionFactory,
+                blockFactory, itemFactory, blockEntityFactory));
     }
 
-    public <M extends MetaMachine> SingleblockMachineBuilder<GTRegistrate, M> machine(String name, MachineInstanceFactory<M> blockEntityFactory) {
+    public <M extends MetaMachine> SingleblockMachineBuilder<GTRegistrate, M> machine(String name,
+                                                                                      MachineInstanceFactory<M> blockEntityFactory) {
         return machine(this, name, blockEntityFactory);
     }
 
     public <P, M extends MetaMachine> SingleblockMachineBuilder<P, M> machine(P parent, String name,
                                                                               MachineInstanceFactory<M> blockEntityFactory) {
-        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback, MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
+        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback,
+                MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
     }
 
     // Multiblock machines
@@ -233,7 +237,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                                                                 BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                                                                                 BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
                                                                                                 MachineInstanceFactory<M> blockEntityFactory) {
-        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback, blockFactory, itemFactory, blockEntityFactory));
+        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback, blockFactory,
+                itemFactory, blockEntityFactory));
     }
 
     public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<GTRegistrate, M> multiblock(String name,
@@ -243,7 +248,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     public <P, M extends MultiblockControllerMachine> MultiblockMachineBuilder<P, M> multiblock(P parent, String name,
                                                                                                 MachineInstanceFactory<M> blockEntityFactory) {
-        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
+        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback,
+                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
     }
 
     // Recipe types
@@ -389,7 +395,8 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return plain(parent, currentName(), registryType, factory);
     }
 
-    public <R, P> PlainEntry<R> plain(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+    public <R, P> PlainEntry<R> plain(P parent, String name, ResourceKey<Registry<R>> registryType,
+                                      NonNullSupplier<R> factory) {
         return entry(name, callback -> new PlainNoConfigBuilder<>(this, parent, name, callback, registryType, factory))
                 .register();
     }

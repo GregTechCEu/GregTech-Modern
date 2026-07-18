@@ -26,7 +26,9 @@ public class GameDataMixin {
     /**
      * Injection to init the vanilla recipe type registry in place of fake GT one
      */
-    @ModifyArg(method = "postRegisterEvents", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;get(Lnet/minecraft/resources/ResourceLocation;)Ljava/lang/Object;"))
+    @ModifyArg(method = "postRegisterEvents",
+               at = @At(value = "INVOKE",
+                        target = "Lnet/minecraft/core/Registry;get(Lnet/minecraft/resources/ResourceLocation;)Ljava/lang/Object;"))
     private static ResourceLocation gtceu$loadVanillaRecipeTypeRegistryInstead(ResourceLocation registryName) {
         if (registryName.equals(GTRegistries.Keys.RECIPE_TYPE.location())) {
             return Registries.RECIPE_TYPE.location();

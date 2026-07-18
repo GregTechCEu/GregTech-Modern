@@ -126,7 +126,8 @@ public class GTMachines {
             REGISTRATE,
             "extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
 
-    public static final Pair<MachineEntry.Singleblock, MachineEntry.Singleblock> STEAM_MACERATOR = registerSteamMachines(REGISTRATE,
+    public static final Pair<MachineEntry.Singleblock, MachineEntry.Singleblock> STEAM_MACERATOR = registerSteamMachines(
+            REGISTRATE,
             "steam_macerator", SimpleSteamMachine::new, (pressure, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
@@ -153,7 +154,8 @@ public class GTMachines {
     public static final Pair<MachineEntry.Singleblock, MachineEntry.Singleblock> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines(
             REGISTRATE,
             "rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
-    public static final Pair<MachineEntry.Singleblock, MachineEntry.Singleblock> STEAM_MINER = registerSteamMachines(REGISTRATE,
+    public static final Pair<MachineEntry.Singleblock, MachineEntry.Singleblock> STEAM_MINER = registerSteamMachines(
+            REGISTRATE,
             "steam_miner",
             (holder, isHP) -> isHP ? new SteamMinerMachine(holder, true, 240, 6, 0, 32) :
                     new SteamMinerMachine(holder, false, 320, 4, 0, 16),
@@ -178,7 +180,8 @@ public class GTMachines {
     //////////////////////////////////////
     // *** SimpleTieredMachine ***//
     //////////////////////////////////////
-    public static final MachineEntry.Singleblock[] HULL = GTMachineUtils.registerTieredMachines(REGISTRATE, "machine_hull",
+    public static final MachineEntry.Singleblock[] HULL = GTMachineUtils.registerTieredMachines(REGISTRATE,
+            "machine_hull",
             HullMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
@@ -190,7 +193,8 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public static final MachineEntry.Singleblock[] ELECTRIC_FURNACE = new SimpleMachineBuilder(REGISTRATE, "electric_furnace",
+    public static final MachineEntry.Singleblock[] ELECTRIC_FURNACE = new SimpleMachineBuilder(REGISTRATE,
+            "electric_furnace",
             GTRecipeTypes.FURNACE_RECIPES).register();
     public static final MachineEntry.Singleblock[] ALLOY_SMELTER = new SimpleMachineBuilder(REGISTRATE, "alloy_smelter",
             GTRecipeTypes.ALLOY_SMELTER_RECIPES).register();
@@ -230,7 +234,8 @@ public class GTMachines {
             GTRecipeTypes.CENTRIFUGE_RECIPES).tankScalingFunction(largeTankSizeFunction).register();
     public static final MachineEntry.Singleblock[] CHEMICAL_BATH = new SimpleMachineBuilder(REGISTRATE, "chemical_bath",
             GTRecipeTypes.CHEMICAL_BATH_RECIPES).tankScalingFunction(hvCappedTankSizeFunction).register();
-    public static final MachineEntry.Singleblock[] CHEMICAL_REACTOR = new SimpleMachineBuilder(REGISTRATE, "chemical_reactor",
+    public static final MachineEntry.Singleblock[] CHEMICAL_REACTOR = new SimpleMachineBuilder(REGISTRATE,
+            "chemical_reactor",
             GTRecipeTypes.CHEMICAL_RECIPES)
             .tankScalingFunction(tier -> 16 * FluidType.BUCKET_VOLUME)
             .hasPollutionDebuff(true)
@@ -262,7 +267,8 @@ public class GTMachines {
             GTRecipeTypes.FLUID_HEATER_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
-    public static final MachineEntry.Singleblock[] FLUID_SOLIDIFIER = new SimpleMachineBuilder(REGISTRATE, "fluid_solidifier",
+    public static final MachineEntry.Singleblock[] FLUID_SOLIDIFIER = new SimpleMachineBuilder(REGISTRATE,
+            "fluid_solidifier",
             GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES)
             .tankScalingFunction(hvCappedTankSizeFunction)
             .register();
@@ -287,7 +293,8 @@ public class GTMachines {
             .register();
     public static final MachineEntry.Singleblock[] POLARIZER = new SimpleMachineBuilder(REGISTRATE, "polarizer",
             GTRecipeTypes.POLARIZER_RECIPES).register();
-    public static final MachineEntry.Singleblock[] LASER_ENGRAVER = new SimpleMachineBuilder(REGISTRATE, "laser_engraver",
+    public static final MachineEntry.Singleblock[] LASER_ENGRAVER = new SimpleMachineBuilder(REGISTRATE,
+            "laser_engraver",
             GTRecipeTypes.LASER_ENGRAVER_RECIPES)
             .tankScalingFunction(defaultTankSizeFunction)
             .hasPollutionDebuff(true)
@@ -377,7 +384,8 @@ public class GTMachines {
             "Hi-Amp (2x)", 2);
     public static final MachineEntry.Singleblock[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines(REGISTRATE,
             "Hi-Amp (4x)", 4);
-    public static final MachineEntry.Singleblock[] POWER_TRANSFORMER = registerTransformerMachines(REGISTRATE, "Power", 16);
+    public static final MachineEntry.Singleblock[] POWER_TRANSFORMER = registerTransformerMachines(REGISTRATE, "Power",
+            16);
 
     public static final MachineEntry.Singleblock[] ENERGY_CONVERTER_1A = registerConverter(REGISTRATE, 1);
     public static final MachineEntry.Singleblock[] ENERGY_CONVERTER_4A = registerConverter(REGISTRATE, 4);
@@ -445,7 +453,8 @@ public class GTMachines {
                     .register(),
             LV, MV, HV, EV);
 
-    public static final MachineEntry.Singleblock[] FISHER = registerTieredMachines(REGISTRATE, "fisher", FisherMachine::new,
+    public static final MachineEntry.Singleblock[] FISHER = registerTieredMachines(REGISTRATE, "fisher",
+            FisherMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.ALL)
                     // .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
@@ -508,7 +517,8 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
-    public static final MachineEntry.Singleblock[] WORLD_ACCELERATOR = registerTieredMachines(REGISTRATE, "world_accelerator",
+    public static final MachineEntry.Singleblock[] WORLD_ACCELERATOR = registerTieredMachines(REGISTRATE,
+            "world_accelerator",
             WorldAcceleratorMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NONE)
@@ -645,24 +655,32 @@ public class GTMachines {
             .hasBER(true)
             .register();
 
-    public static final MachineEntry.Singleblock[] SUPER_CHEST = registerQuantumChests(REGISTRATE, "super_chest", LOW_TIERS);
+    public static final MachineEntry.Singleblock[] SUPER_CHEST = registerQuantumChests(REGISTRATE, "super_chest",
+            LOW_TIERS);
     public static final MachineEntry.Singleblock[] QUANTUM_CHEST = registerQuantumChests(REGISTRATE, "quantum_chest",
             HIGH_TIERS);
 
-    public static final MachineEntry.Singleblock[] SUPER_TANK = registerQuantumTanks(REGISTRATE, "super_tank", LOW_TIERS);
-    public static final MachineEntry.Singleblock[] QUANTUM_TANK = registerQuantumTanks(REGISTRATE, "quantum_tank", HIGH_TIERS);
+    public static final MachineEntry.Singleblock[] SUPER_TANK = registerQuantumTanks(REGISTRATE, "super_tank",
+            LOW_TIERS);
+    public static final MachineEntry.Singleblock[] QUANTUM_TANK = registerQuantumTanks(REGISTRATE, "quantum_tank",
+            HIGH_TIERS);
 
-    public static MachineEntry.Singleblock WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, 27, 9, "Wooden Crate");
-    public static MachineEntry.Singleblock BRONZE_CRATE = registerCrate(REGISTRATE, GTMaterials.Bronze, 54, 9, "Bronze Crate");
-    public static MachineEntry.Singleblock STEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.Steel, 72, 9, "Steel Crate");
+    public static MachineEntry.Singleblock WOODEN_CRATE = registerCrate(REGISTRATE, GTMaterials.Wood, 27, 9,
+            "Wooden Crate");
+    public static MachineEntry.Singleblock BRONZE_CRATE = registerCrate(REGISTRATE, GTMaterials.Bronze, 54, 9,
+            "Bronze Crate");
+    public static MachineEntry.Singleblock STEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.Steel, 72, 9,
+            "Steel Crate");
     public static MachineEntry.Singleblock ALUMINIUM_CRATE = registerCrate(REGISTRATE, GTMaterials.Aluminium, 90, 10,
             "Aluminium Crate");
-    public static MachineEntry.Singleblock STAINLESS_STEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.StainlessSteel, 108,
+    public static MachineEntry.Singleblock STAINLESS_STEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.StainlessSteel,
+            108,
             12,
             "Stainless Steel Crate");
     public static MachineEntry.Singleblock TITANIUM_CRATE = registerCrate(REGISTRATE, GTMaterials.Titanium, 126, 14,
             "Titanium Crate");
-    public static MachineEntry.Singleblock TUNGSTENSTEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.TungstenSteel, 144, 16,
+    public static MachineEntry.Singleblock TUNGSTENSTEEL_CRATE = registerCrate(REGISTRATE, GTMaterials.TungstenSteel,
+            144, 16,
             "Tungstensteel Crate");
 
     public static MachineEntry.Singleblock WOODEN_DRUM = registerDrum(REGISTRATE, GTMaterials.Wood,
@@ -964,7 +982,8 @@ public class GTMachines {
             .allowCoverOnFront(true)
             .register();
 
-    public static final MachineEntry.Singleblock COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
+    public static final MachineEntry.Singleblock COKE_OVEN_HATCH = REGISTRATE
+            .machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
             .modelProperty(IS_FORMED, false)
             .tooltips(Component.translatable("gtceu.part_sharing.disabled"))
@@ -972,7 +991,8 @@ public class GTMachines {
             .themeId(GTGuiTheme.PRIMITIVE.getId())
             .register();
 
-    public static final MachineEntry.Singleblock PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
+    public static final MachineEntry.Singleblock PUMP_HATCH = REGISTRATE
+            .machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .modelProperty(IS_FORMED, false)

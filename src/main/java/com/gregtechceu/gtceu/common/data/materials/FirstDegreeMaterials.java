@@ -1409,7 +1409,7 @@ public class FirstDegreeMaterials {
                 .setFormula("URhNq2", true);
 
         EnrichedNaquadahTriniumEuropiumDuranide = REGISTRATE.material(
-                        "enriched_naquadah_trinium_europium_duranide")
+                "enriched_naquadah_trinium_europium_duranide")
                 .ingot()
                 .liquid(new FluidBuilder().temperature(5930))
                 .color(0xc6b083).secondaryColor(0x45063d).iconSet(METALLIC)

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.data.chemical.Element;
-import com.gregtechceu.gtceu.common.data.GTElements;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

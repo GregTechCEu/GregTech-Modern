@@ -8,16 +8,18 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 
-import com.tterrag.registrate.builders.BuilderCallback;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.tterrag.registrate.builders.BuilderCallback;
+
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class SingleblockMachineBuilder<P, M extends MetaMachine> extends MachineBuilder<MachineDefinition, M, P, SingleblockMachineBuilder<P, M>> {
+public class SingleblockMachineBuilder<P, M extends MetaMachine>
+                                      extends MachineBuilder<MachineDefinition, M, P, SingleblockMachineBuilder<P, M>> {
 
     public SingleblockMachineBuilder(GTRegistrate owner, P parent, String name, BuilderCallback callback,
                                      Function<ResourceLocation, MachineDefinition> definition,

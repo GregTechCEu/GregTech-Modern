@@ -13,7 +13,8 @@ public class GCYMRecipeTypes {
     //////////////////////////////////////
     // ******* Multiblock *******//
     //////////////////////////////////////
-    public final static GTRecipeType ALLOY_BLAST_RECIPES = GTRegistration.REGISTRATE.recipeType("alloy_blast_smelter", MULTIBLOCK)
+    public final static GTRecipeType ALLOY_BLAST_RECIPES = GTRegistration.REGISTRATE
+            .recipeType("alloy_blast_smelter", MULTIBLOCK)
             .setMaxIOSize(9, 0, 3, 1)
             .setEUIO(IO.IN)
             .UI(builder -> builder

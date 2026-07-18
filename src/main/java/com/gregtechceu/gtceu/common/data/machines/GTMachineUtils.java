@@ -122,11 +122,11 @@ public class GTMachineUtils {
 
     public static Object2IntMap<MachineEntry.Singleblock> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
-    public static final PartAbility[] DUAL_INPUT_HATCH_ABILITIES = new PartAbility[]{
+    public static final PartAbility[] DUAL_INPUT_HATCH_ABILITIES = new PartAbility[] {
             PartAbility.IMPORT_ITEMS, PartAbility.IMPORT_FLUIDS,
     };
 
-    public static final PartAbility[] DUAL_OUTPUT_HATCH_ABILITIES = new PartAbility[]{
+    public static final PartAbility[] DUAL_OUTPUT_HATCH_ABILITIES = new PartAbility[] {
             PartAbility.EXPORT_ITEMS, PartAbility.EXPORT_FLUIDS,
     };
 
@@ -678,7 +678,7 @@ public class GTMachineUtils {
                         .where('Y', controller(definition))
                         .build())
                 .recoveryItems(
-                        () -> new ItemLike[]{
+                        () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
@@ -730,7 +730,7 @@ public class GTMachineUtils {
                                 .or(autoAbilities(true, needsMuffler, false)))
                         .build())
                 .recoveryItems(
-                        () -> new ItemLike[]{
+                        () -> new ItemLike[] {
                                 GTMaterialItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get() })
                 .workableCasingModel(casingTexture, overlayModel)
                 .tooltips(
@@ -853,8 +853,8 @@ public class GTMachineUtils {
                     (holder, tier) -> new SimpleTieredMachine(holder, tier, tankScalingFunction), (tier, builder) -> {
                         if (hasPollutionDebuff) {
                             builder.recipeModifiers(GTRecipeModifiers.ENVIRONMENT_REQUIREMENT
-                                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
-                                            GTRecipeModifiers.OC_NON_PERFECT)
+                                    .apply(GTMedicalConditions.CARBON_MONOXIDE_POISONING, 100 * tier),
+                                    GTRecipeModifiers.OC_NON_PERFECT)
                                     .conditionalTooltip(defaultEnvironmentRequirement(),
                                             ConfigHolder.INSTANCE.gameplay.environmentalHazards);
                         } else {

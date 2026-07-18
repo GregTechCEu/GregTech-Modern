@@ -39,7 +39,8 @@ public class GTLootModifications extends GlobalLootModifierProvider {
         addAddTableModifier(BuiltInLootTables.STRONGHOLD_CORRIDOR, GTLootTables.STRONGHOLD_CORRIDOR_EXTRA);
     }
 
-    protected void addAddTableModifier(ResourceKey<LootTable> targetLootTableId, ResourceKey<LootTable> addedLootTableId) {
+    protected void addAddTableModifier(ResourceKey<LootTable> targetLootTableId,
+                                       ResourceKey<LootTable> addedLootTableId) {
         final LootItemCondition[] conditions = ArrayUtils.add(LOOT_CONFIG_ENABLED_CONDITION,
                 LootTableIdCondition.builder(targetLootTableId.location()).build());
         add(addedLootTableId.location().getPath(), new AddTableLootModifier(conditions, addedLootTableId));

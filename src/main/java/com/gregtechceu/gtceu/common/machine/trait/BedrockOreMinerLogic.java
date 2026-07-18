@@ -80,7 +80,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (wm == null) return null;
             Material material = wm.material();
             if (material.isNull()) return null;
-            ItemStack stack = ChemicalHelper.get(GTRegistries.TAG_PREFIXES.get(GTCEu.id(GTCEu.appendIdString(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))),
+            ItemStack stack = ChemicalHelper.get(
+                    GTRegistries.TAG_PREFIXES.get(
+                            GTCEu.id(GTCEu.appendIdString(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix))),
                     material, getOreToProduce());
             // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce());

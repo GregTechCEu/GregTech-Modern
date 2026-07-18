@@ -44,7 +44,8 @@ import java.util.List;
 import java.util.function.*;
 
 @SuppressWarnings("unused")
-public class KJSMultiblockMachineBuilder extends MachineBuilderWrapper<MultiblockMachineDefinition, MultiblockMachineBuilder<GTRegistrate, MultiblockControllerMachine>> {
+public class KJSMultiblockMachineBuilder extends
+                                         MachineBuilderWrapper<MultiblockMachineDefinition, MultiblockMachineBuilder<GTRegistrate, MultiblockControllerMachine>> {
 
     public KJSMultiblockMachineBuilder(MultiblockMachineBuilder<GTRegistrate, MultiblockControllerMachine> builder) {
         super(builder);

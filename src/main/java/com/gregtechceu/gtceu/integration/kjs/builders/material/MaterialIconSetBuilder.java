@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import dev.latvian.mods.kubejs.registry.BuilderBase;
+
 import net.minecraft.resources.ResourceLocation;
+
+import dev.latvian.mods.kubejs.registry.BuilderBase;
 
 public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
 

@@ -463,8 +463,9 @@ public final class MaterialRecipeHandler {
                 'h', new MaterialEntry(prefix, material));
 
         CUTTER_RECIPES
-                .recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.getName()) +
-                        "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.getName()))
+                .recipeBuilder(
+                        "cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnderscore(prefix.getName()) +
+                                "_to_" + FormattingUtil.toLowerCaseUnderscore(lowerPrefix.getName()))
                 .inputItems(prefix, material)
                 .outputItems(prevStack)
                 .duration(20)

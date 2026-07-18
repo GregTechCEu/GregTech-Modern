@@ -80,7 +80,8 @@ public class GTResearchMachines {
                     GTCEu.id("block/multiblock/research_station"))
             .register();
 
-    public static final MachineEntry.Singleblock OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderMachine::new)
+    public static final MachineEntry.Singleblock OBJECT_HOLDER = REGISTRATE
+            .machine("object_holder", ObjectHolderMachine::new)
             .langValue("Object Holder")
             .tier(ZPM)
             .rotationState(RotationState.ALL)

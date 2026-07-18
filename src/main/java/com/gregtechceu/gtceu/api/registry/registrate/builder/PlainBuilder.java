@@ -12,7 +12,8 @@ import com.tterrag.registrate.builders.BuilderCallback;
 
 public abstract class PlainBuilder<R, P, S extends PlainBuilder<R, P, S>> extends AbstractBuilder<R, R, P, S> {
 
-    public PlainBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback, ResourceKey<? extends Registry<R>> registryKey) {
+    public PlainBuilder(AbstractRegistrate<?> owner, P parent, String name, BuilderCallback callback,
+                        ResourceKey<? extends Registry<R>> registryKey) {
         super(owner, parent, name, callback, registryKey);
     }
 
