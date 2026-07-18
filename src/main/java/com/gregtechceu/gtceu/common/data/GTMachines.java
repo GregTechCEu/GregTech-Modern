@@ -50,6 +50,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import com.google.common.math.IntMath;
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import it.unimi.dsi.fastutil.Pair;
 
 import java.util.List;
@@ -76,7 +77,7 @@ public class GTMachines {
     //////////////////////////////////////
     // ****** Steam Machine ******//
     //////////////////////////////////////
-    public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines(
+    public static final Pair<RegistryEntry<MachineDefinition, MachineDefinition>, RegistryEntry<MachineDefinition, MachineDefinition>> STEAM_SOLID_BOILER = registerSteamMachines(
             REGISTRATE,
             "steam_solid_boiler",
             SteamSolidBoilerMachine::new,
