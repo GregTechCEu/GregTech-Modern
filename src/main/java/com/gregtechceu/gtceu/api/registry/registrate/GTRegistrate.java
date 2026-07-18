@@ -22,6 +22,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.PlainEntry;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -191,41 +193,63 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         });
     }
 
-    public <DEFINITION extends MachineDefinition,
-            MACHINE extends MetaMachine> MachineBuilder<DEFINITION, MACHINE, ?> machine(String name,
-                                                                                        Function<ResourceLocation, DEFINITION> definitionFactory,
-                                                                                        BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
-                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                        MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, definitionFactory,
-                blockFactory, itemFactory, blockEntityFactory);
+    // Machines
+
+    public <M extends MetaMachine> SingleblockMachineBuilder<GTRegistrate, M> machine(String name,
+                                                                                      Function<ResourceLocation, MachineDefinition> definitionFactory,
+                                                                                      BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                      MachineInstanceFactory<M> blockEntityFactory) {
+        return machine(this, name, definitionFactory, blockFactory, itemFactory, blockEntityFactory);
     }
 
-    public <MACHINE extends MetaMachine> MachineBuilder<MachineDefinition, MACHINE, ?> machine(String name,
-                                                                                               MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MachineBuilder<>(this, name, MachineDefinition::new,
-                MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory);
+    public <P, M extends MetaMachine> SingleblockMachineBuilder<P, M> machine(P parent, String name,
+                                                                              Function<ResourceLocation, MachineDefinition> definitionFactory,
+                                                                              BiFunction<BlockBehaviour.Properties, MachineDefinition, MetaMachineBlock> blockFactory,
+                                                                              BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                              MachineInstanceFactory<M> blockEntityFactory) {
+        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback, definitionFactory, blockFactory, itemFactory, blockEntityFactory));
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
-                                                                                                                                      BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name,
-                blockFactory, itemFactory, blockEntityFactory);
+    public <M extends MetaMachine> SingleblockMachineBuilder<GTRegistrate, M> machine(String name, MachineInstanceFactory<M> blockEntityFactory) {
+        return machine(this, name, blockEntityFactory);
     }
 
-    public <MACHINE extends MultiblockControllerMachine> MultiblockMachineBuilder<MultiblockMachineDefinition, MACHINE, ?> multiblock(String name,
-                                                                                                                                      MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        return new MultiblockMachineBuilder<>(this, name, MetaMachineBlock::new, MetaMachineItem::new,
-                blockEntityFactory);
+    public <P, M extends MetaMachine> SingleblockMachineBuilder<P, M> machine(P parent, String name,
+                                                                              MachineInstanceFactory<M> blockEntityFactory) {
+        return entry(name, callback -> new SingleblockMachineBuilder<>(this, parent, name, callback, MachineDefinition::new, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
+    }
+
+    // Multiblock machines
+
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<GTRegistrate, M> multiblock(String name,
+                                                                                                        BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                        BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                        MachineInstanceFactory<M> blockEntityFactory) {
+        return multiblock(this, name, blockFactory, itemFactory, blockEntityFactory);
+    }
+
+    public <P, M extends MultiblockControllerMachine> MultiblockMachineBuilder<P, M> multiblock(P parent, String name,
+                                                                                                BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
+                                                                                                BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
+                                                                                                MachineInstanceFactory<M> blockEntityFactory) {
+        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback, blockFactory, itemFactory, blockEntityFactory));
+    }
+
+    public <M extends MultiblockControllerMachine> MultiblockMachineBuilder<GTRegistrate, M> multiblock(String name,
+                                                                                                        MachineInstanceFactory<M> blockEntityFactory) {
+        return multiblock(this, name, blockEntityFactory);
+    }
+
+    public <P, M extends MultiblockControllerMachine> MultiblockMachineBuilder<P, M> multiblock(P parent, String name,
+                                                                                                MachineInstanceFactory<M> blockEntityFactory) {
+        return entry(name, callback -> new MultiblockMachineBuilder<>(this, parent, name, callback, MetaMachineBlock::new, MetaMachineItem::new, blockEntityFactory));
     }
 
     // Recipe types
 
     public GTRecipeType recipeType(String name, String group, RecipeType<?>... proxyRecipes) {
         var recipeType = new GTRecipeType(makeResourceLocation(name), group, proxyRecipes);
-        this.generic(name, GTRegistries.Keys.RECIPE_TYPE, () -> recipeType).build();
         this.generic(name, Registries.RECIPE_TYPE, () -> recipeType).build();
         recipeType.setSerializer(this.generic(name, Registries.RECIPE_SERIALIZER, GTRecipeSerializer::new).register());
 
@@ -321,11 +345,10 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // World gen layers
 
-    public SimpleWorldGenLayer simpleWorldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
-                                                   Set<ResourceKey<Level>> levels) {
-        var worldGenLayer = new SimpleWorldGenLayer(makeResourceLocation(id), target, levels);
-        this.generic(id, GTRegistries.Keys.WORLD_GEN_LAYER, () -> worldGenLayer).build();
-        return worldGenLayer;
+    public PlainEntry<IWorldGenLayer> worldGenLayer(String id, IWorldGenLayer.RuleTestSupplier target,
+                                                    Set<ResourceKey<Level>> levels) {
+        return this.plain(id, GTRegistries.Keys.WORLD_GEN_LAYER,
+                () -> new SimpleWorldGenLayer(makeResourceLocation(id), target, levels));
     }
 
     // Blocks
@@ -351,6 +374,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    }
+
+    // Plain
+    public <R> PlainEntry<R> plain(ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(currentName(), registryType, factory);
+    }
+
+    public <R> PlainEntry<R> plain(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(this, name, registryType, factory);
+    }
+
+    public <R, P> PlainEntry<R> plain(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(parent, currentName(), registryType, factory);
+    }
+
+    public <R, P> PlainEntry<R> plain(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return entry(name, callback -> new PlainNoConfigBuilder<>(this, parent, name, callback, registryType, factory))
+                .register();
     }
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;

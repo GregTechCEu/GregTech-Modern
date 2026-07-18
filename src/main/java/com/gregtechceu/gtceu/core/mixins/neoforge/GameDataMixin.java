@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.neoforge;
 
-import com.gregtechceu.gtceu.GTCEu;
-
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import net.minecraft.core.registries.BuiltInRegistries;
+
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.registries.GameData;
 

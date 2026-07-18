@@ -36,7 +36,7 @@ public class GTRecipeTypeMachineWidget extends Flow {
         if (recipeType.getUiLayout() == null) {
             GTCEu.LOGGER.error(
                     "Tried to draw a singleblock recipe type UI for {}, but it does not have a recipe type UI",
-                    machine.getDefinition().getName());
+                    machine.getDefinition().getId());
             return;
         }
 

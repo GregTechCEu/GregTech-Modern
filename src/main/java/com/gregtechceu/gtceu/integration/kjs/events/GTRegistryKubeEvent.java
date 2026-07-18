@@ -25,6 +25,7 @@ import java.util.function.Supplier;
  *
  * @param <T> The type of object to register
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class GTRegistryKubeEvent<T> implements KubeStartupEvent, AdditionalObjectRegistry {
 
     private final ResourceKey<Registry<T>> registryKey;
@@ -38,68 +39,65 @@ public class GTRegistryKubeEvent<T> implements KubeStartupEvent, AdditionalObjec
     }
 
     public BuilderBase<? extends T> create(Context cx, GTResourceLocation id, GTResourceLocation type) {
-        var sourceLine = SourceLine.of(cx);
-        var t = builderInfo.namedType(type.wrapped());
+        SourceLine sourceLine = SourceLine.of(cx);
+        BuilderType<T> builderType = this.builderInfo.namedType(type.wrapped());
 
-        if (t == null) {
+        if (builderType == null) {
             throw new KubeRuntimeException("Unknown type '" + type + "' for object '" + id + "'!").source(sourceLine);
         }
 
-        var b = t.factory().createBuilder(id.wrapped());
+        BuilderBase<? extends T> builder = builderType.factory().createBuilder(id.wrapped());
 
-        if (b == null) {
+        if (builder == null) {
             throw new KubeRuntimeException("Unknown type '" + type + "' for object '" + id + "'!").source(sourceLine);
         } else if (builderInfo.directCodec() != null) {
             throw new KubeRuntimeException("Type '" + type + "' for object '" + id + "' is a datapack registry type!")
                     .source(sourceLine);
         } else {
-            b.sourceLine = sourceLine;
-            b.registryKey = registryKey;
-            addBuilder(b);
-            created.add(b);
+            builder.sourceLine = sourceLine;
+            addBuilder(builder, this.registryKey);
+            created.add(builder);
         }
 
-        return b;
+        return builder;
     }
 
     public BuilderBase<? extends T> create(Context cx, GTResourceLocation id) {
-        var sourceLine = SourceLine.of(cx);
-        var t = builderInfo.defaultType();
+        SourceLine sourceLine = SourceLine.of(cx);
+        BuilderType<T> builderType = this.builderInfo.defaultType();
 
-        if (t == null) {
+        if (builderType == null) {
             throw new KubeRuntimeException(
-                    "Registry '" + registryKey.location() + "' doesn't have a default type registered!")
+                    "Registry '" + this.registryKey.location() + "' doesn't have a default type registered!")
                     .source(sourceLine);
         }
 
-        var b = t.factory().createBuilder(id.wrapped());
+        BuilderBase<? extends T> builder = builderType.factory().createBuilder(id.wrapped());
 
-        if (b == null) {
-            throw new KubeRuntimeException("Unknown type '" + t.type() + "' for object '" + id + "'!")
+        if (builder == null) {
+            throw new KubeRuntimeException("Unknown type '" + builderType.type() + "' for object '" + id + "'!")
                     .source(sourceLine);
         } else {
-            b.sourceLine = sourceLine;
-            b.registryKey = registryKey;
-            addBuilder(b);
-            created.add(b);
+            builder.sourceLine = sourceLine;
+            addBuilder(builder, this.registryKey);
+            created.add(builder);
         }
 
-        return b;
+        return builder;
     }
 
     public CustomBuilderObject createCustom(Context cx, GTResourceLocation id, Supplier<Object> object) {
-        var sourceLine = SourceLine.of(cx);
+        SourceLine sourceLine = SourceLine.of(cx);
 
         if (object == null) {
             throw new KubeRuntimeException("Tried to register a null object with id: " + id).source(sourceLine);
         }
 
-        var b = new CustomBuilderObject(id.wrapped(), object);
-        b.sourceLine = sourceLine;
-        b.registryKey = registryKey;
-        addBuilder(b);
-        created.add(b);
-        return b;
+        CustomBuilderObject builder = new CustomBuilderObject(id.wrapped(), object);
+        builder.sourceLine = sourceLine;
+        addBuilder(builder, this.registryKey);
+        created.add(builder);
+        return builder;
     }
 
     @Override
@@ -111,30 +109,28 @@ public class GTRegistryKubeEvent<T> implements KubeStartupEvent, AdditionalObjec
 
     @Override
     public <R> void add(ResourceKey<Registry<R>> registry, BuilderBase<? extends R> builder) {
-        builder.registryKey = (ResourceKey) registry;
-        addBuilder(builder);
+        addBuilder(builder, registry);
     }
 
-    private <R> void addBuilder(BuilderBase<? extends R> builder) {
+    private <R> void addBuilder(BuilderBase<? extends R> builder, ResourceKey<Registry<R>> registryKey) {
         if (builder == null) {
             throw new IllegalArgumentException(
-                    "Can't add null builder in registry '" + builder.registryKey.location() + "'!");
+                    "Can't add null builder in registry '" + registryKey.location() + "'!");
         }
+        builder.registryKey = (ResourceKey) registryKey;
 
         if (DevProperties.get().logRegistryEventObjects) {
             ConsoleJS.STARTUP.info("~ " + builder.registryKey.location() + " | " + builder.id);
         }
 
-        var objStorage = RegistryObjectStorage.of(builder.registryKey);
+        RegistryObjectStorage<R> objStorage = RegistryObjectStorage.of(registryKey);
 
         if (objStorage.objects.containsKey(builder.id)) {
             throw new IllegalArgumentException(
                     "Duplicate key '" + builder.id + "' in registry '" + builder.registryKey.location() + "'!");
         }
 
-        objStorage.objects.put(builder.id, (BuilderBase) builder);
+        objStorage.objects.put(builder.id, builder);
         RegistryObjectStorage.ALL_BUILDERS.add(builder);
-
-        // registry.deferredRegister.register()
     }
 }

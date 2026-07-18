@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Predicates {
@@ -85,6 +86,14 @@ public class Predicates {
 
     public static PatternPredicate machines(@Nullable MachineDefinition... definitions) {
         return blocks(Arrays.stream(definitions).filter(Objects::nonNull).map(MachineDefinition::get)
+                .toArray(MetaMachineBlock[]::new));
+    }
+
+    @SafeVarargs
+    public static PatternPredicate machines(@Nullable Supplier<? extends MachineDefinition>... definitions) {
+        return blocks(Arrays.stream(definitions).filter(Objects::nonNull)
+                .map(Supplier::get)
+                .map(MachineDefinition::get)
                 .toArray(MetaMachineBlock[]::new));
     }
 

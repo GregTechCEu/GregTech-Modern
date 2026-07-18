@@ -18,8 +18,7 @@ public interface GTCEuStartupEvents {
 
     TargetedEventHandler<ResourceKey<Registry<?>>> REGISTRY = GROUP.startup("registry", () -> GTRegistryKubeEvent.class)
             .requiredTarget(EventTargetType.REGISTRY);
-    EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification",
-            () -> MaterialModificationEventJS.class);
+    EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
     EventHandler CRAFTING_COMPONENTS = GROUP.startup("craftingComponents", () -> CraftingComponentsEventJS.class);
 
     EventHandler REGISTER_WOODS = GROUP.startup("registerWoods", () -> RegisterWoodsEventJS.class);

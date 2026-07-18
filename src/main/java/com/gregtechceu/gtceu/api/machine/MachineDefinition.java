@@ -9,15 +9,17 @@ import com.gregtechceu.gtceu.api.mui.factory.PanelFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.model.machine.MachineRenderState;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.IdMapper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,12 +39,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.*;
 
 /**
  * Representing basic information of a machine.
  */
-public class MachineDefinition implements Supplier<MetaMachineBlock> {
+public class MachineDefinition implements Supplier<MetaMachineBlock>, ItemLike {
 
     public static final IdMapper<MachineRenderState> RENDER_STATE_REGISTRY = new IdMapper<>(512);
 
@@ -51,10 +54,9 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     // This is only stored here for KJS use.
     @Getter
     @Setter
-    @Nullable
-    private String langValue;
+    private @Nullable String langValue;
     @Setter
-    private Supplier<? extends Block> blockSupplier;
+    private Supplier<? extends MetaMachineBlock> blockSupplier;
     @Setter
     private Supplier<? extends MetaMachineItem> itemSupplier;
     @Setter
@@ -117,8 +119,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     private boolean allowCoverOnFront;
     @Getter
     @Setter
-    @Nullable
-    private PanelFactory UI;
+    private @Nullable PanelFactory UI;
     @Getter
     @Setter
     private String themeId = ThemeAPI.DEFAULT_ID;
@@ -129,6 +130,7 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)
     private StateDefinition<MachineDefinition, MachineRenderState> stateDefinition;
+    @SuppressWarnings("NotNullFieldNotInitialized")
     @Accessors(fluent = true)
     @Getter
     private MachineRenderState defaultRenderState;
@@ -145,16 +147,30 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         this.defaultRenderState = state;
     }
 
-    public Block getBlock() {
+    public MetaMachineBlock getBlock() {
         return blockSupplier.get();
+    }
+
+    public MetaMachineBlock asBlock() {
+        return getBlock();
+    }
+
+    @Override
+    public MetaMachineBlock get() {
+        return getBlock();
+    }
+
+    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
+        return blockEntityTypeSupplier.get();
     }
 
     public MetaMachineItem getItem() {
         return itemSupplier.get();
     }
 
-    public BlockEntityType<? extends BlockEntity> getBlockEntityType() {
-        return blockEntityTypeSupplier.get();
+    @Override
+    public MetaMachineItem asItem() {
+        return getItem();
     }
 
     public ItemStack asStack() {
@@ -171,15 +187,6 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
     }
 
     @Override
-    public MetaMachineBlock get() {
-        return (MetaMachineBlock) blockSupplier.get();
-    }
-
-    public String getName() {
-        return id.getPath();
-    }
-
-    @Override
     public String toString() {
         return id.toString();
     }
@@ -192,8 +199,12 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return getBlock().defaultBlockState();
     }
 
+    public Holder<MachineDefinition> getHolder() {
+        return GTRegistries.MACHINES.wrapAsHolder(this);
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(@Nullable Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -207,10 +218,10 @@ public class MachineDefinition implements Supplier<MetaMachineBlock> {
         return id.hashCode();
     }
 
-    static final ThreadLocal<MachineDefinition> STATE = new ThreadLocal<>();
+    static final ThreadLocal<@Nullable MachineDefinition> STATE = new ThreadLocal<>();
 
     public static MachineDefinition getBuilt() {
-        return STATE.get();
+        return Objects.requireNonNull(STATE.get(), "Not building a machine definition currently");
     }
 
     public static void setBuilt(MachineDefinition state) {

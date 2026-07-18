@@ -41,7 +41,7 @@ public class OreVeinDefinitionBuilder extends BuilderBase<GTOreDefinition> {
     private float density;
     @Setter
     private int weight;
-    private IWorldGenLayer layer = WorldGenLayers.STONE;
+    private IWorldGenLayer layer = WorldGenLayers.STONE.get();
     @Setter
     private Set<ResourceKey<Level>> dimensionFilter = Set.of();
     @Setter

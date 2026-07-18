@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -1220,23 +1220,20 @@ public class MetaTileEntityLoader {
     // - MaterialEntry
     // - TagKey<?>
     public static void registerMachineRecipe(RecipeOutput provider, boolean setMaterialInfoData,
-                                             MachineDefinition[] machines, Object... recipe) {
-        for (MachineDefinition machine : machines) {
+                                             MachineEntry<?>[] machines, Object... recipe) {
+        for (MachineEntry<?> machine : machines) {
 
             // Needed to skip certain tiers if not enabled.
             // Leaves UHV+ machine recipes to be implemented by addons.
             if (machine != null) {
                 Object[] prepRecipe = prepareRecipe(machine.getTier(), Arrays.copyOf(recipe, recipe.length));
-                if (prepRecipe == null) {
-                    return;
-                }
-                VanillaRecipeHelper.addShapedRecipe(provider, setMaterialInfoData, machine.getName(), machine.asStack(),
+                VanillaRecipeHelper.addShapedRecipe(provider, setMaterialInfoData, machine.getId(), machine.asStack(),
                         prepRecipe);
             }
         }
     }
 
-    public static void registerMachineRecipe(RecipeOutput provider, MachineDefinition[] machines,
+    public static void registerMachineRecipe(RecipeOutput provider, MachineEntry<?>[] machines,
                                              Object... recipe) {
         registerMachineRecipe(provider, true, machines, recipe);
     }

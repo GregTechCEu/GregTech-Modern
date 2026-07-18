@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IVoidable;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.machine.trait.AutoOutputTrait;
@@ -69,8 +70,16 @@ public class GTMuiWidgets {
         return createTitleBar(definition, panelWidth, background);
     }
 
+    public static Flow createTitleBar(Supplier<? extends MachineDefinition> definition, int panelWidth) {
+        return createTitleBar(definition.get(), panelWidth);
+    }
+
     public static Flow createTitleBar(MachineDefinition definition, int panelWidth, UITexture background) {
         return createTitleBar(definition::asStack, panelWidth, background);
+    }
+
+    public static Flow createTitleBar(MachineEntry<?> definition, int panelWidth, UITexture background) {
+        return createTitleBar(definition.get(), panelWidth, background);
     }
 
     public static Flow createTitleBar(Supplier<ItemStack> stackSupplier, int panelWidth, UITexture background) {

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
 import net.minecraft.core.BlockPos;
@@ -18,7 +18,7 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
     @Override
     public boolean swapIO() {
         BlockPos blockPos = getBlockPos();
-        MachineDefinition newDefinition = null;
+        MachineEntry.Singleblock newDefinition = null;
         if (io == IO.IN) {
             newDefinition = GTMachines.STEAM_EXPORT_BUS;
         } else if (io == IO.OUT) {

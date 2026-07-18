@@ -31,8 +31,7 @@ public class MaterialBuilderWrapper extends BuilderBase<Material> {
 
     public MaterialBuilderWrapper(ResourceLocation id) {
         super(id);
-        this.internal = new Material.Builder(GTRegistrate.createIgnoringListenerErrors(id.getNamespace()), id);
-        this.dummyBuilder = true;
+        this.internal = new Material.Builder(GTRegistrate.create(id.getNamespace(), false), id);
     }
 
     /*

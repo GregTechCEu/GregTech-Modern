@@ -1,16 +1,18 @@
-package com.gregtechceu.gtceu.api.registry.registrate;
+package com.gregtechceu.gtceu.api.registry.registrate.builder;
 
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MachineInstanceFactory;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.utils.memoization.GTMemoizer;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -18,7 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.tterrag.registrate.builders.BuilderCallback;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import lombok.Getter;
@@ -30,99 +34,90 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
-public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefinition,
-        MACHINE extends MultiblockControllerMachine,
-        SELF extends MultiblockMachineBuilder<DEFINITION, MACHINE, SELF>>
-                                     extends MachineBuilder<DEFINITION, MACHINE, SELF> {
+public class MultiblockMachineBuilder<P, M extends MultiblockControllerMachine> extends MachineBuilder<MultiblockMachineDefinition, M, P, MultiblockMachineBuilder<P, M>> {
 
     private boolean generator;
     private final Map<String, Function<MultiblockMachineDefinition, IBlockPattern>> patterns;
     private boolean allowFlip = true;
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
+
     private Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter = (c) -> (a, b) -> 0;
     private @Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance;
-
     @Getter
     private BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay = (m, l) -> {};
 
-    public MultiblockMachineBuilder(GTRegistrate registrate, String name,
-                                    BiFunction<BlockBehaviour.Properties, DEFINITION, MetaMachineBlock> blockFactory,
+    public MultiblockMachineBuilder(GTRegistrate owner, P parent, String name, BuilderCallback callback,
+                                    BiFunction<BlockBehaviour.Properties, MultiblockMachineDefinition, MetaMachineBlock> blockFactory,
                                     BiFunction<MetaMachineBlock, Item.Properties, MetaMachineItem> itemFactory,
-                                    MachineInstanceFactory<MACHINE> blockEntityFactory) {
-        super(registrate, name, (loc -> (DEFINITION) new MultiblockMachineDefinition(loc)),
-                blockFactory,
-                itemFactory, blockEntityFactory);
-        patterns = new Object2ReferenceOpenHashMap<>();
+                                    MachineInstanceFactory<M> instanceFactory) {
+        super(owner, parent, name, callback, MultiblockMachineDefinition::new, blockFactory, itemFactory, instanceFactory);
+        this.patterns = new Object2ReferenceOpenHashMap<>();
         allowExtendedFacing(true);
         allowCoverOnFront(true);
         // always add the formed property to multi controllers
         modelProperty(GTMachineModelProperties.IS_FORMED, false);
     }
 
-    public SELF generator(boolean generator) {
+    public MultiblockMachineBuilder<P, M> generator(boolean generator) {
         this.generator = generator;
         return getThis();
     }
 
-    public SELF pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<P, M> pattern(Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(MultiblockControllerMachine.DEFAULT_STRUCTURE, pattern);
         return getThis();
     }
 
-    public SELF pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
+    public MultiblockMachineBuilder<P, M> pattern(String structureName, Function<MultiblockMachineDefinition, IBlockPattern> pattern) {
         this.patterns.put(structureName, pattern);
         return getThis();
     }
 
-    public SELF allowFlip(boolean allowFlip) {
+    public MultiblockMachineBuilder<P, M> allowFlip(boolean allowFlip) {
         this.allowFlip = allowFlip;
         return getThis();
     }
 
-    public SELF partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
+    public MultiblockMachineBuilder<P, M> partSorter(Function<MultiblockControllerMachine, Comparator<MultiblockPartMachine>> partSorter) {
         this.partSorter = partSorter;
         return getThis();
     }
 
-    public SELF partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
+    public MultiblockMachineBuilder<P, M> partAppearance(@Nullable TriFunction<MultiblockControllerMachine, MultiblockPartMachine, Direction, BlockState> partAppearance) {
         this.partAppearance = partAppearance;
         return getThis();
     }
 
-    public SELF additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
+    public MultiblockMachineBuilder<P, M> additionalDisplay(BiConsumer<MultiblockControllerMachine, List<Component>> additionalDisplay) {
         this.additionalDisplay = additionalDisplay;
         return getThis();
     }
 
-    public SELF recoveryItems(Supplier<ItemLike[]> items) {
+    public MultiblockMachineBuilder<P, M> recoveryItems(Supplier<ItemLike[]> items) {
         this.recoveryItems.add(() -> Arrays.stream(items.get()).map(ItemLike::asItem).map(Item::getDefaultInstance)
                 .toArray(ItemStack[]::new));
         return getThis();
     }
 
-    public SELF recoveryStacks(Supplier<ItemStack[]> stacks) {
+    public MultiblockMachineBuilder<P, M> recoveryStacks(Supplier<ItemStack[]> stacks) {
         this.recoveryItems.add(stacks);
         return getThis();
     }
 
     @Tolerate
-    public SELF partSorter(Comparator<MultiblockPartMachine> sorter) {
+    public MultiblockMachineBuilder<P, M> partSorter(Comparator<MultiblockPartMachine> sorter) {
         this.partSorter = $ -> sorter;
         return getThis();
     }
 
     @Override
     @HideFromJS
-    public DEFINITION register() {
-        var definition = super.register();
+    public MultiblockMachineDefinition createEntry() {
+        MultiblockMachineDefinition definition = super.createEntry();
         definition.setGenerator(generator);
         if (patterns.isEmpty()) {
-            throw new IllegalStateException("Missing default structure pattern for " + name);
+            throw new IllegalStateException("Missing default structure pattern for " + getOwner().makeResourceLocation(getName()));
         }
         for (Map.Entry<String, Function<MultiblockMachineDefinition, IBlockPattern>> entry : patterns.entrySet()) {
             definition.setPattern(entry.getKey(), GTMemoizer.memoize(() -> entry.getValue().apply(definition)));
@@ -140,5 +135,15 @@ public class MultiblockMachineBuilder<DEFINITION extends MultiblockMachineDefini
         definition.setPartAppearance(partAppearance);
         definition.setAdditionalDisplay(additionalDisplay);
         return definition;
+    }
+
+    @Override
+    protected MachineEntry.Multiblock createEntryWrapper(DeferredHolder<MachineDefinition, MultiblockMachineDefinition> delegate) {
+        return new MachineEntry.Multiblock(getOwner(), delegate);
+    }
+
+    @Override
+    public MachineEntry.Multiblock register() {
+        return (MachineEntry.Multiblock) super.register();
     }
 }
