@@ -369,16 +369,11 @@ public class Predicates {
     public static @Nullable MultiPredicate dataHatchPredicate() {
         // if research is enabled, require the data hatch, otherwise use a grate instead
         if (ConfigHolder.INSTANCE.machines.enableResearch) {
-            // TODO xor predicate matching :)
             return abilities(PartAbility.DATA_ACCESS)
                     .xor(abilities(PartAbility.OPTICAL_DATA_RECEPTION))
                     .setGlobalMinMax(0, 1)
                     .setPriority(1);
-            // return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
-            // .setExactLimit(1)
-            // .setPriority(1);
         }
-        // this really should not be null
         return null;
     }
 

@@ -71,7 +71,6 @@ public abstract class BasePredicate {
         if (!testGlobalMax(ctx)) return false;
         ctx.setStage(PredicateContext.PredicateStage.SLICE_MAX);
         return testSliceMax(ctx);
-        // return test(ctx) && testGlobalMax(ctx) && testSliceMax(ctx);
     }
 
     /// test against global max count

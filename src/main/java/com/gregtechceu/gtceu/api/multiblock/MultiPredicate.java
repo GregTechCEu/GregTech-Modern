@@ -9,6 +9,8 @@ import com.gregtechceu.gtceu.api.multiblock.predicates.logic.XorLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +33,8 @@ public class MultiPredicate implements Iterable<BasePredicate> {
     private final BaseLogic logic;
     private final boolean hasAir;
     @Getter
+    @Setter
+    @Accessors(chain = true)
     private boolean controller;
 
     public MultiPredicate(BasePredicate predicate) {
@@ -53,14 +57,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         this.predicateList = Collections.unmodifiableList(builder);
         this.logic = type.createLogic(this);
         this.hasAir = a.hasAir || b.hasAir;
-    }
-
-    private static void appendPredicates(Logic type, MultiPredicate b, ArrayList<BasePredicate> builder) {
-        if (b.isSingle() || b.logic.getType() == type) {
-            builder.addAll(b.predicateList);
-        } else {
-            builder.add(b.compact());
-        }
     }
 
     public void reset() {
@@ -120,6 +116,11 @@ public class MultiPredicate implements Iterable<BasePredicate> {
 
     protected BasePredicate compact() {
         return new CompactedPredicate(this);
+    }
+
+    public MultiPredicate setPriority(int priority) {
+        this.forEach(p -> p.setPriority(priority));
+        return this;
     }
 
     public MultiPredicate setMinGlobalLimited(int min) {
@@ -242,16 +243,6 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return this.predicateList.iterator();
     }
 
-    public MultiPredicate setController(boolean controller) {
-        this.controller = controller;
-        return this;
-    }
-
-    public MultiPredicate setPriority(int priority) {
-        this.forEach(p -> p.setPriority(priority));
-        return this;
-    }
-
     public static MultiPredicate empty() {
         return EMPTY;
     }
@@ -265,34 +256,14 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return new MultiPredicate(type, a, b);
     }
 
-    /*
-     * OR logic
-     * at least one of n predicates must be valid
-     * AND logic
-     * all predicates must be valid in the multiblock/slice
-     * this deals with global/slice counts
-     * AND_SLICE?
-     * XOR logic
-     * must only have one of n predicates be valid and present in multi
-     * global/slice counts of other predicates must be zero
-     *
-     * when it comes to the internal predicates
-     * any can pass, regardless of logic type
-     * since a block can only have one state
-     * and internal predicate is checked per block
-     *
-     * this may also introduce the ability
-     * to have an invalid predicate form a multiblock
-     * if predicate a has a min of two,
-     * and predicate b has min of one,
-     * and you use XOR logic
-     * the multi predicate would pass since a fails and b succeeds min checks
-     * really it should be "only one predicate can be present in multi/slice"
-     *
-     * how do i handle global/slice max?
-     * i dont think i actually need to
-     * what i really need to do is track passed vs failed predicates
-     */
+    private static void appendPredicates(Logic type, MultiPredicate multiPredicate, ArrayList<BasePredicate> builder) {
+        if (multiPredicate.isSingle() || multiPredicate.logic.getType() == type) {
+            builder.addAll(multiPredicate.predicateList);
+        } else {
+            builder.add(multiPredicate.compact());
+        }
+    }
+
     public enum Logic {
 
         OR,

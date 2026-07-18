@@ -123,7 +123,6 @@ public class BlockPattern implements IBlockPattern {
         }
 
         if (allowsFlip && patternState.shouldCheckFlip()) {
-            // this overwrites any previous errors
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
         if (!valid) {
@@ -162,26 +161,6 @@ public class BlockPattern implements IBlockPattern {
         sliceStrategy.setPattern(this);
         sliceStrategy.start(controllerPos, frontFacing, upwardsFacing);
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
-
-        /*
-         * NOTES
-         * as we iterate each slice of the multiblock
-         * check each predicates' state check
-         * each block pos can only be one predicate
-         * we need to know what logic type each predicate should uses
-         * this is only globally
-         * thought i could see a use for xor in a slice, but not globally
-         * how exactly would this work
-         * XOR_SLICE and XOR_GLOBAL?
-         * and idea i had is that if a xor multi predicate is iterated
-         * a list of "banned" base predicates could be checked
-         * so if another predicate from the same multi predicate passes, it would fail
-         *
-         * another predicament is handling the edge case of a xor predicate
-         * having two-
-         * actually i could have the xor logic to run in the state check
-         * along with the previously mentioned idea of banned predicates
-         */
 
         // global min check
         patternState.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
@@ -223,7 +202,6 @@ public class BlockPattern implements IBlockPattern {
         BlockPos.MutableBlockPos charPos = sliceStart.mutable();
         PatternSlice slice = slices[sliceIndex];
 
-        // theoretically, predicates could track their own current layer/global count
         patternState.layerCache().clear();
 
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
@@ -237,12 +215,11 @@ public class BlockPattern implements IBlockPattern {
                 // internal predicate check, global/slice max checks
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
                 if (!pred.test(patternState)) {
-                    // patternState.commitErrors();
                     return false;
                 }
+
                 visitedPredicates.add(pred);
                 charPos.move(absoluteChar);
-                patternState.clearErrors();
                 // continue...
             }
 
