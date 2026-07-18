@@ -30,9 +30,9 @@ public abstract class PatternError {
         this.candidates = candidates;
     }
 
-     public PatternError(@Nullable BlockPos pos, MultiPredicate predicate) {
+    public PatternError(@Nullable BlockPos pos, MultiPredicate predicate) {
         this(pos, predicate.getCandidates());
-     }
+    }
 
     public PatternError(@Nullable BlockPos pos, BasePredicate failingPredicate) {
         this(pos, Collections.singletonList(failingPredicate.getCandidates()));

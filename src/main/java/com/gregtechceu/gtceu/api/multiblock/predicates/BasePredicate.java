@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -174,7 +170,7 @@ public abstract class BasePredicate {
     }
 
     public static BasePredicate of(@Nullable String debugName, Predicate<PredicateContext> predicate,
-                            Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
+                                   Stream<BlockInfo> candidateStream, @Nullable Consumer<StringBuilder> contents) {
         return new SinglePredicate(predicate, candidateStream, debugName, contents);
     }
 

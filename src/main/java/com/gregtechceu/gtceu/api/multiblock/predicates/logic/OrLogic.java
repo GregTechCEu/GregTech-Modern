@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.multiblock.predicates.logic;
 
+import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
-import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 
 public class OrLogic extends BaseLogic {
 
