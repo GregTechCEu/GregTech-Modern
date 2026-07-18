@@ -4,14 +4,15 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.gui.GTRecipeTypeUILayout;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import dev.latvian.mods.kubejs.registry.AdditionalObjectRegistry;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,24 +23,27 @@ import java.util.function.Supplier;
 @Accessors(chain = true)
 public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
 
-    public transient String name, category;
+    public transient String category;
     public transient final Object2IntMap<RecipeCapability<?>> maxInputs;
     public transient final Object2IntMap<RecipeCapability<?>> maxOutputs;
-    @Nullable
-    protected SoundEntry sound;
+    @Setter
+    protected @Nullable SoundEntry sound;
+    @Setter
     protected boolean hasResearchSlot;
+    @Setter
     protected int maxTooltips;
 
-    private GTRecipeType smallRecipeMap;
-    private Supplier<ItemStack> iconSupplier;
-    private Consumer<GTRecipeTypeUILayout.Builder> layout;
+    @Setter
+    private @Nullable GTRecipeType smallRecipeMap;
+    @Setter
+    private @Nullable Supplier<ItemStack> iconSupplier;
+    private @Nullable Consumer<GTRecipeTypeUILayout.Builder> layout;
 
     public GTRecipeTypeBuilder(ResourceLocation id) {
         super(id);
-        name = this.id.getPath();
-        category = "custom";
-        maxInputs = new Object2IntOpenHashMap<>();
-        maxOutputs = new Object2IntOpenHashMap<>();
+        this.category = "custom";
+        this.maxInputs = new Object2IntOpenHashMap<>();
+        this.maxOutputs = new Object2IntOpenHashMap<>();
         this.sound = null;
         this.hasResearchSlot = false;
         this.maxTooltips = 4;
@@ -75,38 +79,18 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
     }
 
     public GTRecipeTypeBuilder setMaxSize(IO io, RecipeCapability<?> cap, int max) {
-        if (io == IO.IN || io == IO.BOTH) {
+        if (io.support(IO.IN)) {
             maxInputs.put(cap, max);
         }
-        if (io == IO.OUT || io == IO.BOTH) {
+        if (io.support(IO.OUT)) {
             maxOutputs.put(cap, max);
         }
         return this;
     }
 
-    public GTRecipeTypeBuilder setSound(SoundEntry sound) {
-        this.sound = sound;
-        return this;
-    }
-
-    public GTRecipeTypeBuilder setHasResearchSlot(boolean hasResearchSlot) {
-        this.hasResearchSlot = hasResearchSlot;
-        return this;
-    }
-
-    public GTRecipeTypeBuilder setMaxTooltips(int maxTooltips) {
-        this.maxTooltips = maxTooltips;
-        return this;
-    }
-
-    public GTRecipeTypeBuilder setSmallRecipeMap(GTRecipeType smallRecipeMap) {
-        this.smallRecipeMap = smallRecipeMap;
-        return this;
-    }
-
-    public GTRecipeTypeBuilder setIconSupplier(Supplier<ItemStack> iconSupplier) {
-        this.iconSupplier = iconSupplier;
-        return this;
+    @Override
+    public void createAdditionalObjects(AdditionalObjectRegistry registry) {
+        super.createAdditionalObjects(registry);
     }
 
     @Override
