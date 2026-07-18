@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.multiblock.error;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import net.neoforged.bus.api.IEventBus;
@@ -10,7 +11,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class GTPatternErrors {
 
     private static final DeferredRegister<PatternError.PatternErrorType> PATTERN_ERRORS = DeferredRegister
-            .create(GTRegistries.Keys.PATTERN_ERROR_TYPE, "gtceu");
+            .create(GTRegistries.Keys.PATTERN_ERROR_TYPE, GTCEu.MOD_ID);
 
     public static DeferredHolder<PatternError.PatternErrorType, PatternError.PatternErrorType> PLACEHOLDER_ERROR = register(
             PlaceholderError.TYPE);

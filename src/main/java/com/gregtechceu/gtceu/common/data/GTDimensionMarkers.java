@@ -19,7 +19,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 public class GTDimensionMarkers {
 
     static {
-        REGISTRATE.creativeModeTab(() -> null);
+        REGISTRATE.resetCreativeModeTab();
     }
 
     private static final DeferredRegister<DimensionMarker> DIMENSION_MARKER = DeferredRegister

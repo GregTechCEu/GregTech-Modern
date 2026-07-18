@@ -85,7 +85,7 @@ public class GTLayerPattern {
 
         // spotless:off
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec())).fieldOf("targets").forGetter(layer -> layer.targets),
+                Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), Material.CODEC)).fieldOf("targets").forGetter(layer -> layer.targets),
                 Codec.intRange(0, Integer.MAX_VALUE).fieldOf("min_size").forGetter(layer -> layer.minSize),
                 Codec.intRange(0, Integer.MAX_VALUE).fieldOf("max_size").forGetter(layer -> layer.maxSize),
                 Codec.intRange(0, Integer.MAX_VALUE).fieldOf("weight").forGetter(layer -> layer.weight)

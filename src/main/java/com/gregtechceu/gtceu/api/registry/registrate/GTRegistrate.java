@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.builder.SingleblockMachineB
 import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -63,6 +64,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -73,6 +75,8 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     private static final Map<String, GTRegistrate> EXISTING_REGISTRATES = new Object2ObjectOpenHashMap<>();
@@ -294,14 +298,13 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Elements
 
-    public Element element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
+    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
                            String symbol, boolean isIsotope) {
         var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
-        return element;
+        return this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
     }
 
-    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
+    public RegistryEntry<Element, Element> element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
                            String symbol,
                            boolean isIsotope) {
         return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);

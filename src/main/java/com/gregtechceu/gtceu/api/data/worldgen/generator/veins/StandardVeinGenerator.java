@@ -48,7 +48,7 @@ public class StandardVeinGenerator extends VeinGenerator {
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
                     BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
     ).apply(instance, StandardVeinGenerator::new));
-    public static final MapCodec<StandardVeinGenerator> CODEC_LIST = Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec())
+    public static final MapCodec<StandardVeinGenerator> CODEC_LIST = Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), Material.CODEC)
             .fieldOf("targets")
             .xmap(StandardVeinGenerator::new, StandardVeinGenerator::getBlocks);
     // spotless:on

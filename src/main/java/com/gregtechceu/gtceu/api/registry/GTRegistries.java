@@ -38,6 +38,7 @@ import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public final class GTRegistries {
 
     private static final SequencedSet<ResourceLocation> LOAD_ORDER = new LinkedHashSet<>();
@@ -90,9 +91,10 @@ public final class GTRegistries {
         public static final ResourceKey<Registry<Placeholder>> PLACEHOLDER = makeRegistryKey(GTCEu.id("placeholder"));
     }
 
-    // spotless:off
-
     // GT Registries
+
+    // Be careful when changing the order of these static fields, as changing the order of them also changes the order of registry load.
+
     public static final Registry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
     public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
     public static final Registry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);
@@ -154,7 +156,7 @@ public final class GTRegistries {
     }
 
     @UnmodifiableView
-    public static SequencedSet<ResourceLocation> getRegistrationOrder() {
+    public static SequencedSet<ResourceLocation> getRegistryOrder() {
         return Collections.unmodifiableSequencedSet(LOAD_ORDER);
     }
 

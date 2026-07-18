@@ -181,7 +181,7 @@ public class DikeVeinGenerator extends VeinGenerator {
 
         // spotless:off
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.byNameCodec()).fieldOf("block").forGetter(x -> x.block),
+                        Codec.either(TargetBlockState.CODEC.listOf(), Material.CODEC).fieldOf("block").forGetter(x -> x.block),
                         Codec.INT.fieldOf("weight").forGetter(x -> x.weight),
                         Codec.INT.fieldOf("min_y").orElse(320).forGetter(x -> x.minY),
                         Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY))

@@ -371,7 +371,7 @@ public class GTMachineUtils {
         final var tab = registrate.creativeModeTab();
 
         if (!ConfigHolder.INSTANCE.compat.energy.enableFEConverters) {
-            registrate.creativeModeTab(() -> null);
+            registrate.resetCreativeModeTab();
         }
 
         MachineEntry.Singleblock[] converters = registerTieredMachines(registrate, amperage + "a_energy_converter",
