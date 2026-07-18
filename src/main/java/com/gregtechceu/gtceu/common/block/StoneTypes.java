@@ -38,6 +38,7 @@ public enum StoneTypes implements StringRepresentable {
     public final boolean natural;
     @Getter
     public final Supplier<Supplier<BlockState>> state;
+    @Getter
     public final MaterialEntry material;
 
     public final boolean generateBlocks;
@@ -86,10 +87,6 @@ public enum StoneTypes implements StringRepresentable {
                 else yield TagPrefix.NULL_PREFIX;
             }
         };
-    }
-
-    public Material getMaterial() {
-        return material.get();
     }
 
     public static void init() {}

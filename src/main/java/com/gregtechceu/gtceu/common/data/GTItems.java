@@ -404,10 +404,6 @@ public class GTItems {
             .register();
 
     public static ItemEntry<ComponentItem> createFluidCell(com.gregtechceu.gtceu.api.registry.registrate.entry.MaterialEntry mat, int capacity, int matSize, int stackSize) {
-        var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
-        Preconditions.checkArgument(prop != null,
-                "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
-                mat.getName());
         return REGISTRATE
                 .item("%s_fluid_cell".formatted(mat.getName()), ComponentItem::new)
                 .lang("%s " + toEnglishName(mat.getName()) + " Cell")
@@ -415,8 +411,14 @@ public class GTItems {
                 .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
                 .properties(p -> p.stacksTo(stackSize))
                 .onRegister(attach(cellName(),
-                        ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity, prop, true),
                         new ItemFluidContainer()))
+                .onRegister(item -> {
+                    var prop = mat.getProperty(PropertyKey.FLUID_PIPE);
+                    Preconditions.checkArgument(prop != null,
+                            "Material { %s } does not have Fluid Pipe properties, but is being used to create a Fluid Cell",
+                            mat.getName());
+                    item.attachComponents(ThermalFluidStats.create(FluidType.BUCKET_VOLUME * capacity, prop, true));
+                })
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(mat, GTValues.M * matSize))))
                 .register();
     }

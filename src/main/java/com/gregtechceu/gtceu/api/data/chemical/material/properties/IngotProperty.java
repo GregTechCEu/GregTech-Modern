@@ -52,16 +52,26 @@ public class IngotProperty implements IMaterialProperty {
                             " has both Ingot and Gem Property, which is not allowed!");
         }
 
-        if (smeltingInto.isNull()) smeltingInto = properties.getMaterial().getEntryWrapper();
-        else smeltingInto.get().getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (smeltingInto.isNull()) {
+            smeltingInto = properties.getMaterial().getEntryWrapper();
+        } else if (!smeltingInto.is(properties.getMaterial())) {
+            smeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        }
 
-        if (arcSmeltingInto.isNull()) arcSmeltingInto = properties.getMaterial().getEntryWrapper();
-        else arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (arcSmeltingInto.isNull()) {
+            arcSmeltingInto = properties.getMaterial().getEntryWrapper();
+        } else if (!arcSmeltingInto.is(properties.getMaterial())) {
+            arcSmeltingInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        }
 
-        if (macerateInto.isNull()) macerateInto = properties.getMaterial().getEntryWrapper();
-        else macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        if (macerateInto.isNull()) {
+            macerateInto = properties.getMaterial().getEntryWrapper();
+        } else if (!macerateInto.is(properties.getMaterial())) {
+            macerateInto.getProperties().ensureSet(PropertyKey.INGOT, true);
+        }
 
-        if (!magneticMaterial.isNull())
+        if (!magneticMaterial.isNull() && !magneticMaterial.is(properties.getMaterial())) {
             magneticMaterial.getProperties().ensureSet(PropertyKey.INGOT, true);
+        }
     }
 }

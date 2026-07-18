@@ -428,8 +428,6 @@ public class GTMachineUtils {
 
     public static MachineEntry.Singleblock registerCrate(GTRegistrate registrate, MaterialEntry material,
                                                          int capacity, int rowLength, String lang) {
-        final boolean wooden = material.hasProperty(PropertyKey.WOOD);
-
         return registrate
                 .machine(material.getName() + "_crate",
                         info -> new CrateMachine(info, material.get(), capacity, rowLength))
@@ -437,15 +435,23 @@ public class GTMachineUtils {
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
                 .modelProperty(GTMachineModelProperties.IS_TAPED, false)
-                .model(GTMachineModels.createCrateModel(wooden))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, t) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .model(GTMachineModels.createCrateModel(() -> material.hasProperty(PropertyKey.WOOD)))
+                .onRegister(def -> {
+                    // override the painting color here so we don't need to eagerly check the material holder's value
+                    def.setDefaultPaintingColor(material.hasProperty(PropertyKey.WOOD) ? 0xFFFFFFFF : material.getMaterialARGB());
+                })
+                .item()
+                .color(() -> () -> {
+                    // do the same here instead of using MachineBuilder#itemColor
+                    final boolean wooden = material.hasProperty(PropertyKey.WOOD);
+                    return (stack, layer) -> wooden ? 0xFFFFFFFF : material.getMaterialARGB();
+                })
+                .build()
                 .register();
     }
 
     public static MachineEntry.Singleblock registerDrum(GTRegistrate registrate, MaterialEntry material,
                                                         int capacity, String lang) {
-        boolean wooden = material.hasProperty(PropertyKey.WOOD);
         var definition = registrate
                 .machine(material.getName() + "_drum", MachineDefinition::new,
                         MetaMachineBlock::new,
@@ -453,7 +459,10 @@ public class GTMachineUtils {
                         info -> new DrumMachine(info, material.get(), capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
-                .simpleModel(GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum"))
+                .simpleModel(() -> {
+                    final boolean wooden = material.hasProperty(PropertyKey.WOOD);
+                    return GTCEu.id("block/machine/template/drum/" + (wooden ? "wooden" : "metal") + "_drum");
+                })
                 .tooltipBuilder((stack, list) -> {
                     TANK_TOOLTIPS.accept(stack, list);
                     if (material.hasProperty(PropertyKey.FLUID_PIPE)) {
@@ -464,8 +473,17 @@ public class GTMachineUtils {
                 .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"),
                         Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",
                                 FormattingUtil.formatNumbers(capacity)))
-                .paintingColor(wooden ? 0xFFFFFF : material.getMaterialRGB())
-                .itemColor((s, i) -> wooden ? 0xFFFFFF : material.getMaterialRGB())
+                .onRegister(def -> {
+                    // override the painting color here so we don't need to eagerly check the material holder's value
+                    def.setDefaultPaintingColor(material.hasProperty(PropertyKey.WOOD) ? 0xFFFFFFFF : material.getMaterialARGB());
+                })
+                .item()
+                .color(() -> () -> {
+                    // do the same here instead of using MachineBuilder#itemColor
+                    final boolean wooden = material.hasProperty(PropertyKey.WOOD);
+                    return (stack, layer) -> wooden ? 0xFFFFFFFF : material.getMaterialARGB();
+                })
+                .build()
                 .register();
         DRUM_CAPACITY.put(definition, capacity);
         return definition;

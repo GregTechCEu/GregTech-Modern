@@ -146,7 +146,6 @@ public class Material {
         this.properties = properties;
         this.flags = flags;
         this.properties.setMaterial(this);
-        verifyMaterial();
     }
 
     // thou shall not call
@@ -1917,7 +1916,13 @@ public class Material {
             if (formula != null) {
                 mat.setFormula(formula, formatFormula);
             }
-            materialInfo.verifyInfo(properties, averageRGB);
+
+            // this is run after all materials are registered
+            getOwner().addRegisterCallback(getRegistryKey(), () -> {
+                mat.verifyMaterial();
+                mat.materialInfo.verifyInfo(mat.properties, averageRGB);
+            });
+
             return mat;
         }
 

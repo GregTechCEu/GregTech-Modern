@@ -126,7 +126,7 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
     private BiFunction<ItemStack, Integer, Integer> itemColor = ((itemStack, tintIndex) -> tintIndex == 2 ?
             GTValues.VC[tier == -1 ? 0 : tier] : tintIndex == 1 ? paintingColor : -1);
     private PartAbility[] abilities = new PartAbility[0];
-    private final List<Component> tooltips = new ArrayList<>();
+    private final List<Supplier<Component>> tooltips = new ArrayList<>();
     private @Nullable BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     private RecipeModifier recipeModifier = new RecipeModifierList(GTRecipeModifiers.OC_NON_PERFECT);
     private boolean alwaysTryModifyRecipe;
@@ -348,6 +348,11 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         return model(createBasicMachineModel(modelName));
     }
 
+    @HideFromJS
+    public S simpleModel(Supplier<ResourceLocation> modelName) {
+        return model(createBasicMachineModel(modelName));
+    }
+
     public S defaultModel() {
         return simpleModel(getOwner().makeResourceLocation("block/machine/template/" + getName()));
     }
@@ -476,6 +481,12 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         return getThis();
     }
 
+    @SafeVarargs
+    public final S tooltips(@Nullable Supplier<Component>... components) {
+        tooltips.addAll(Arrays.stream(components).filter(Objects::nonNull).toList());
+        return getThis();
+    }
+
     public S tooltips(@Nullable Component... components) {
         return tooltips(Arrays.asList(components));
     }
@@ -483,15 +494,24 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
     public S tooltips(List<? extends @Nullable Component> components) {
         components.stream()
                 .filter(Objects::nonNull)
+                .map(c -> (Supplier<Component>) (() -> c))
                 .forEachOrdered(tooltips::add);
         return getThis();
     }
 
     public S conditionalTooltip(Component component, BooleanSupplier condition) {
+        return conditionalTooltip(() -> component, condition);
+    }
+
+    public S conditionalTooltip(Supplier<Component> component, BooleanSupplier condition) {
         return conditionalTooltip(component, condition.getAsBoolean());
     }
 
     public S conditionalTooltip(Component component, boolean condition) {
+        return conditionalTooltip(() -> component, condition);
+    }
+
+    public S conditionalTooltip(Supplier<Component> component, boolean condition) {
         if (condition) tooltips.add(component);
         return getThis();
     }
@@ -674,7 +694,7 @@ public class MachineBuilder<D extends MachineDefinition, M extends MetaMachine, 
         definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setTooltipBuilder((itemStack, components) -> {
-            components.addAll(tooltips);
+            components.addAll(tooltips.stream().map(Supplier::get).toList());
             if (tooltipBuilder != null) tooltipBuilder.accept(itemStack, components);
         });
         definition.setRecipeModifier(recipeModifier);

@@ -1381,7 +1381,7 @@ public class GTBlocks {
 
     public static <P, T extends Block,
             S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull TagPrefix tagPrefix,
-                                                                                    @NotNull Material mat) {
+                                                                                    @NotNull MaterialEntry mat) {
         return builder -> {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = GTMemoizer.memoizeBlockSupplier(() -> block);
@@ -1391,6 +1391,12 @@ public class GTBlocks {
             });
             return builder;
         };
+    }
+
+    public static <P, T extends Block,
+            S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull TagPrefix tagPrefix,
+                                                                                    @NotNull Material mat) {
+        return unificationBlock(tagPrefix, mat.getEntryWrapper());
     }
 
     public static void registerCobbleBlock(TagPrefix orePrefix, Supplier<BlockState> state) {

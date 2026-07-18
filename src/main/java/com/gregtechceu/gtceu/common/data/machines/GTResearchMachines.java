@@ -308,10 +308,10 @@ public class GTResearchMachines {
             "hpca_active_cooler_component", "HPCA Active Cooling Component",
             GTMachineInstanceFactories.HPCA_COOLER_ADVANCED, "active_cooler", true)
             .tooltips(Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active"),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",
-                            8, GTMaterials.PCBCoolant.getLocalizedName()),
-                    Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2),
+                    Component.translatable("gtceu.machine.hpca.component_type.cooler_active"))
+            .tooltips(() -> Component.translatable("gtceu.machine.hpca.component_type.cooler_active_coolant",
+                    8, GTMaterials.PCBCoolant.getLocalizedName()))
+            .tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 2),
                     Component.translatable("gtceu.part_sharing.disabled"))
             .register();
     public static final MachineEntry.Singleblock HPCA_BRIDGE_COMPONENT = registerHPCAPart(

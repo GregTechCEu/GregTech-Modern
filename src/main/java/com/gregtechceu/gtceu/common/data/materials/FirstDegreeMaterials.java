@@ -42,7 +42,7 @@ public class FirstDegreeMaterials {
                 .components(Copper, 1)
                 .cableProperties(V[MV], 1, 1)
                 .register();
-        Copper.onRegister(mat -> mat.getProperty(PropertyKey.INGOT).setArcSmeltingInto(AnnealedCopper));
+        Copper.afterRegister(() -> Copper.getProperty(PropertyKey.INGOT).setArcSmeltingInto(AnnealedCopper));
 
         Asbestos = REGISTRATE.material("asbestos")
                 .dust(1).ore(3, 1)
@@ -729,9 +729,9 @@ public class FirstDegreeMaterials {
                         .attackSpeed(-0.2F).enchantability(5).build())
                 .rotorStats(145, 105, 3.5f, 384)
                 .register();
-        Iron.onRegister(mat -> {
-            mat.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
-            mat.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);
+        Iron.afterRegister(() -> {
+            Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
+            Iron.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);
         });
 
         Wulfenite = REGISTRATE.material("wulfenite")
@@ -1111,7 +1111,7 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(WroughtIron)
                 .macerateInto(Iron)
                 .register();
-        Iron.onRegister(mat -> mat.getProperty(PropertyKey.INGOT).setMagneticMaterial(IronMagnetic));
+        Iron.afterRegister(() -> Iron.getProperty(PropertyKey.INGOT).setMagneticMaterial(IronMagnetic));
 
         TungstenCarbide = REGISTRATE.material("tungsten_carbide")
                 .ingot(4).fluid()
@@ -1286,7 +1286,7 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(Neodymium)
                 .macerateInto(Neodymium)
                 .register();
-        Neodymium.onRegister(mat -> mat.getProperty(PropertyKey.INGOT).setMagneticMaterial(NeodymiumMagnetic));
+        Neodymium.afterRegister(() -> Neodymium.getProperty(PropertyKey.INGOT).setMagneticMaterial(NeodymiumMagnetic));
 
         HydrochloricAcid = REGISTRATE.material("hydrochloric_acid")
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
@@ -1325,7 +1325,7 @@ public class FirstDegreeMaterials {
                 .arcSmeltInto(Samarium)
                 .macerateInto(Samarium)
                 .register();
-        Samarium.onRegister(mat -> mat.getProperty(PropertyKey.INGOT).setMagneticMaterial(SamariumMagnetic));
+        Samarium.afterRegister(() -> Samarium.getProperty(PropertyKey.INGOT).setMagneticMaterial(SamariumMagnetic));
 
         ManganesePhosphide = REGISTRATE.material("manganese_phosphide")
                 .ingot()

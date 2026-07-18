@@ -24,6 +24,8 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
+// TODO rename either this or the other MaterialEntry so they don't cause constant conflicts
+//   for the record, I prefer renaming the one used for unification
 public class MaterialEntry extends PlainEntry<Material> {
 
     public MaterialEntry(GTRegistrate owner, DeferredHolder<Material, Material> key) {
@@ -51,7 +53,8 @@ public class MaterialEntry extends PlainEntry<Material> {
     }
 
     public boolean is(Material material) {
-        return this.get() == material;
+        // safer to do this this way than `this.get() == material`
+        return this.is(material.getEntryWrapper());
     }
 
     public boolean is(MaterialEntry material) {
@@ -259,6 +262,16 @@ public class MaterialEntry extends PlainEntry<Material> {
             callback.accept(this.value());
         } else {
             getOwner().addRegisterCallback(getName(), key.registryKey(), callback);
+        }
+        return this;
+    }
+
+    public MaterialEntry afterRegister(Runnable callback) {
+        if (this.isBound()) {
+            // if this is already registered, just run the callback.
+            callback.run();
+        } else {
+            getOwner().addRegisterCallback(key.registryKey(), callback);
         }
         return this;
     }

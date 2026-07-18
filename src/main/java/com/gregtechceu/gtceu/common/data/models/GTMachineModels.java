@@ -28,12 +28,15 @@ import net.neoforged.neoforge.client.model.generators.*;
 import com.google.common.collect.ImmutableMap;
 import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties.*;
 import static com.gregtechceu.gtceu.client.model.machine.overlays.EnergyIOOverlay.*;
@@ -71,6 +74,14 @@ public class GTMachineModels {
     public static MachineBuilder.ModelInitializer createBasicMachineModel(ResourceLocation baseModel) {
         return (ctx, prov, builder) -> {
             var model = prov.models().getExistingFile(baseModel);
+            builder.partialState().setModel(model);
+        };
+    }
+
+    @HideFromJS
+    public static MachineBuilder.ModelInitializer createBasicMachineModel(Supplier<ResourceLocation> baseModel) {
+        return (ctx, prov, builder) -> {
+            var model = prov.models().getExistingFile(baseModel.get());
             builder.partialState().setModel(model);
         };
     }
@@ -405,9 +416,9 @@ public class GTMachineModels {
     }
     // spotless:on
 
-    public static MachineBuilder.ModelInitializer createCrateModel(boolean wooden) {
+    public static MachineBuilder.ModelInitializer createCrateModel(BooleanSupplier wooden) {
         return (ctx, prov, builder) -> {
-            String modelPath = "block/machine/template/crate/" + (wooden ? "wooden" : "metal") + "_crate";
+            String modelPath = "block/machine/template/crate/" + (wooden.getAsBoolean() ? "wooden" : "metal") + "_crate";
             ModelFile baseModel = prov.models().getExistingFile(GTCEu.id(modelPath));
             ModelFile tapedModel = prov.models().getExistingFile(GTCEu.id(modelPath + "_taped"));
 
