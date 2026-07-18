@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.TagUtil;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -1293,6 +1294,10 @@ public class Material {
         public Builder element(Element element) {
             this.materialInfo.element = element;
             return this;
+        }
+
+        public Builder element(Holder<Element> elementHolder) {
+            return element(elementHolder.value());
         }
 
         /**
