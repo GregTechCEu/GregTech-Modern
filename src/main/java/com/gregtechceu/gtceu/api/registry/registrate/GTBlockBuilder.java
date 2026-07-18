@@ -22,9 +22,17 @@ public class GTBlockBuilder<T extends Block, P> extends BlockBuilder<T, P> {
 
     // spotless:off
     public static <T extends Block, P> GTBlockBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name,
-                                                                   BuilderCallback callback,
-                                                                   NonNullFunction<BlockBehaviour.Properties, T> factory) {
+                                                                    BuilderCallback callback,
+                                                                    NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return new GTBlockBuilder<>(owner, parent, name, callback, factory, BlockBehaviour.Properties::of)
+                .defaultBlockstate().defaultLoot().defaultLang();
+    }
+
+    public static <T extends Block, P> GTBlockBuilder<T, P> create(AbstractRegistrate<?> owner, P parent, String name,
+                                                                    BuilderCallback callback,
+                                                                    NonNullFunction<BlockBehaviour.Properties, T> factory,
+                                                                    NonNullSupplier<BlockBehaviour.Properties> initialProperties) {
+        return new GTBlockBuilder<>(owner, parent, name, callback, factory, initialProperties)
                 .defaultBlockstate().defaultLoot().defaultLang();
     }
 

@@ -126,6 +126,19 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
         return fluid(this, material, name, langKey, stillTexture, flowingTexture);
     }
 
+    public <T extends Block> GTBlockBuilder<T, GTRegistrate> block(String name,
+                                                                   NonNullFunction<BlockBehaviour.Properties, T> factory,
+                                                                   NonNullSupplier<BlockBehaviour.Properties> initialProperties) {
+        return block(this, name, factory, initialProperties);
+    }
+
+    public <T extends Block, P> GTBlockBuilder<T, P> block(P parent, String name,
+                                                           NonNullFunction<BlockBehaviour.Properties, T> factory,
+                                                           NonNullSupplier<BlockBehaviour.Properties> initialProperties) {
+        return (GTBlockBuilder<T, P>) entry(name,
+                callback -> GTBlockBuilder.create(this, parent, name, callback, factory, initialProperties));
+    }
+
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION, ?> machine(String name,
                                                                                         Function<ResourceLocation, DEFINITION> definitionFactory,
                                                                                         Function<IMachineBlockEntity, MetaMachine> metaMachine,
