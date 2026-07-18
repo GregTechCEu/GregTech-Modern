@@ -241,7 +241,7 @@ public class MetaMachineBlock extends Block implements ManagedSyncEntityBlock {
                 if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
                     CompoundTag tag = drop.getOrCreateTag();
                     machine.saveToItem(tag, false);
-                    if(tag.isEmpty()){
+                    if (tag.isEmpty()) {
                         drop.setTag(null);
                     }
                     // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
