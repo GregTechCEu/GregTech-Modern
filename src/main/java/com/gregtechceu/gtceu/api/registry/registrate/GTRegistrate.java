@@ -22,10 +22,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.GTBlockBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.SingleblockMachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.builder.SoundEntryBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.builder.*;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.PlainEntry;
 import com.gregtechceu.gtceu.core.mixins.registrate.AbstractRegistrateAccessor;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -376,6 +374,24 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
                                                            NonNullFunction<BlockBehaviour.Properties, T> factory) {
         return (GTBlockBuilder<T, P>) entry(name,
                 callback -> GTBlockBuilder.create(this, parent, name, callback, factory));
+    }
+
+    // Plain
+    public <R> PlainEntry<R> plain(ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(currentName(), registryType, factory);
+    }
+
+    public <R> PlainEntry<R> plain(String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(this, name, registryType, factory);
+    }
+
+    public <R, P> PlainEntry<R> plain(P parent, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return plain(parent, currentName(), registryType, factory);
+    }
+
+    public <R, P> PlainEntry<R> plain(P parent, String name, ResourceKey<Registry<R>> registryType, NonNullSupplier<R> factory) {
+        return entry(name, callback -> new PlainNoConfigBuilder<>(this, parent, name, callback, registryType, factory))
+                .register();
     }
 
     private @Nullable RegistryEntry<CreativeModeTab, ? extends CreativeModeTab> currentTab;
