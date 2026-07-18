@@ -272,13 +272,14 @@ public class GTRegistrate extends AbstractRegistrate<GTRegistrate> {
 
     // Elements
 
-    public RegistryEntry<Element, Element> element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
+    public Element element(String name, long protons, long neutrons, long halfLifeSeconds, @Nullable String decayTo,
                            String symbol, boolean isIsotope) {
         var element = new Element(protons, neutrons, halfLifeSeconds, decayTo, name, symbol, isIsotope);
-        return this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
+        this.generic(name.toLowerCase(), GTRegistries.Keys.ELEMENT, () -> element).register();
+        return element;
     }
 
-    public RegistryEntry<Element, Element> element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
+    public Element element(long protons, long neutrons, long halfLifeSeconds, String decayTo, String name,
                            String symbol,
                            boolean isIsotope) {
         return element(name, protons, neutrons, halfLifeSeconds, decayTo, symbol, isIsotope);
