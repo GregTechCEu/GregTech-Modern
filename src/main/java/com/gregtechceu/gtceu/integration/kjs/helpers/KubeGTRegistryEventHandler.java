@@ -14,7 +14,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import dev.latvian.mods.kubejs.DevProperties;
-import dev.latvian.mods.kubejs.KubeJS;
 import dev.latvian.mods.kubejs.registry.BuilderBase;
 import dev.latvian.mods.kubejs.registry.RegistryObjectStorage;
 import dev.latvian.mods.kubejs.script.ConsoleJS;
@@ -80,7 +79,7 @@ public class KubeGTRegistryEventHandler {
         }
 
         if (!objStorage.objects.isEmpty() && DevProperties.get().logRegistryEventObjects) {
-            KubeJS.LOGGER.info("Registered {}/{} objects of {}", added, objStorage.objects.size(),
+            GTCEu.LOGGER.info("Registered {}/{} objects of {}", added, objStorage.objects.size(),
                     registryKey.location());
         }
     }
