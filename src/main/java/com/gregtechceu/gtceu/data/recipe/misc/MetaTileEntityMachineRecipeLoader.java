@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialEntry;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTMultiMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -379,7 +379,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // Power Transformers
         for (int tier = 0; tier < POWER_TRANSFORMER.length; tier++) {
-            var hatch = POWER_TRANSFORMER[tier];
+            MachineEntry.Singleblock hatch = POWER_TRANSFORMER[tier];
             if (hatch == null) continue;
 
             ASSEMBLER_RECIPES.recipeBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_power_transformer")
@@ -397,7 +397,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 4A Energy Hatches
         for (int tier = 0; tier < ENERGY_INPUT_HATCH_4A.length; tier++) {
-            var hatch = ENERGY_INPUT_HATCH_4A[tier];
+            MachineEntry.Singleblock hatch = ENERGY_INPUT_HATCH_4A[tier];
             if (hatch == null) continue;
 
             ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
@@ -411,15 +411,16 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 16A Energy Hatches
         for (int tier = 0; tier < ENERGY_INPUT_HATCH_16A.length; tier++) {
-            var hatch = ENERGY_INPUT_HATCH_16A[tier];
+            MachineEntry.Singleblock hatch = ENERGY_INPUT_HATCH_16A[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry.Singleblock transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
             } else {
                 transformer = TRANSFORMER[tier];
             }
+            if (transformer == null) continue;
 
             ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
@@ -433,10 +434,10 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 64A Substation Energy Hatches
         for (int tier = 0; tier < SUBSTATION_ENERGY_INPUT_HATCH.length; tier++) {
-            var hatch = SUBSTATION_ENERGY_INPUT_HATCH[tier];
+            MachineEntry.Singleblock hatch = SUBSTATION_ENERGY_INPUT_HATCH[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry.Singleblock transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = POWER_TRANSFORMER[tier - 1];
             } else {
@@ -455,7 +456,7 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 4A Dynamo Hatches
         for (int tier = 0; tier < ENERGY_OUTPUT_HATCH_4A.length; tier++) {
-            var hatch = ENERGY_OUTPUT_HATCH_4A[tier];
+            MachineEntry.Singleblock hatch = ENERGY_OUTPUT_HATCH_4A[tier];
             if (hatch == null) continue;
 
             ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
@@ -469,15 +470,16 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 16A Dynamo Hatches
         for (int tier = 0; tier < ENERGY_OUTPUT_HATCH_16A.length; tier++) {
-            var hatch = ENERGY_OUTPUT_HATCH_16A[tier];
+            MachineEntry.Singleblock hatch = ENERGY_OUTPUT_HATCH_16A[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry.Singleblock transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = HI_AMP_TRANSFORMER_4A[tier - 1];
             } else {
                 transformer = TRANSFORMER[tier];
             }
+            if (transformer == null) continue;
 
             ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_" + GTValues.VN[tier].toLowerCase(Locale.ROOT))
                     .inputItems(transformer)
@@ -491,10 +493,10 @@ public class MetaTileEntityMachineRecipeLoader {
 
         // 64A Substation Dynamo Hatches
         for (int tier = 0; tier < SUBSTATION_ENERGY_OUTPUT_HATCH.length; tier++) {
-            var hatch = SUBSTATION_ENERGY_OUTPUT_HATCH[tier];
+            MachineEntry.Singleblock hatch = SUBSTATION_ENERGY_OUTPUT_HATCH[tier];
             if (hatch == null) continue;
 
-            MachineDefinition transformer;
+            MachineEntry.Singleblock transformer;
             if (tier == (GTCEuAPI.isHighTier() ? MAX : UHV)) {
                 transformer = POWER_TRANSFORMER[tier - 1];
             } else {

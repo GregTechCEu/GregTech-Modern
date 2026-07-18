@@ -325,7 +325,7 @@ public class GTMultiMachines {
             .pattern(definition -> {
                 PatternPredicate exportPredicate = abilities(PartAbility.EXPORT_FLUIDS_1X);
                 if (GTCEu.Mods.isAE2Loaded()) {
-                    exportPredicate = exportPredicate.or(blocks(GTAEMachines.FLUID_EXPORT_HATCH_ME.get()));
+                    exportPredicate = exportPredicate.or(machines(GTAEMachines.FLUID_EXPORT_HATCH_ME));
                 }
                 exportPredicate.setMaxLayerLimited(1);
                 PatternPredicate maint = autoAbilities(true, false, false)

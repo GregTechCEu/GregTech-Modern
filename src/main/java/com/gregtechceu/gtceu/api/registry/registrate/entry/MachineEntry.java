@@ -24,6 +24,10 @@ public class MachineEntry<T extends MachineDefinition> extends ItemProviderEntry
         return get().isTiered();
     }
 
+    public int getTier() {
+        return get().getTier();
+    }
+
     public MetaMachineBlock getBlock() {
         return get().getBlock();
     }

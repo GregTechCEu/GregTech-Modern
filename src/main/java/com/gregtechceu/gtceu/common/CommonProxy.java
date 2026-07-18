@@ -40,6 +40,7 @@ import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.fluid.FluidTagMapIngre
 import com.gregtechceu.gtceu.api.recipe.lookup.ingredient.item.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.registry.registrate.entry.MachineEntry;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -377,9 +378,12 @@ public class CommonProxy {
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(FluidHandler.ITEM, BottleItemFluidHandler::new, Items.GLASS_BOTTLE);
 
-        Stream<MachineDefinition> quantumTanks = Stream.of(GTMachines.SUPER_TANK, GTMachines.QUANTUM_TANK)
+        Stream<MachineEntry.Singleblock> quantumTanks = Stream.of(GTMachines.SUPER_TANK, GTMachines.QUANTUM_TANK)
                 .flatMap(Arrays::stream);
         quantumTanks = Stream.concat(quantumTanks, Stream.of(GTMachines.CREATIVE_FLUID));
+        Item[] items = quantumTanks.filter(Objects::nonNull)
+                .map(MachineEntry.Singleblock::asItem)
+                .toArray(Item[]::new);
         event.registerItem(FluidHandler.ITEM, (stack, ctx) -> {
             if (!(stack.getItem() instanceof MetaMachineItem machineItem)) {
                 return null;
@@ -389,7 +393,7 @@ public class CommonProxy {
                 return null;
             }
             return new QuantumFluidHandlerItemStack(stack, capacity);
-        }, quantumTanks.filter(Objects::nonNull).map(MachineDefinition::getItem).toArray(Item[]::new));
+        }, items);
 
         for (Block block : BuiltInRegistries.BLOCK) {
             if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE &&
