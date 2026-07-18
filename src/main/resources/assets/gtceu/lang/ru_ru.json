@@ -6105,5 +6105,12 @@
     "gtceu.gui.central_monitor.in_group_and_target": "Выбранные таким образом мониторы добавляются в группу и будут использоваться для отображения данных.",
     "gtceu.gui.central_monitor.left_click": "Выбор монитора через ЛКМ",
     "gtceu.gui.central_monitor.module_editor_button": "Редакторование модуля",
-    "gtceu.gui.central_monitor.module_editor_disabled": "Вы недавно изменили модуль; пожалуйста, откройте этот GUI, чтобы отредактировать его"
+    "gtceu.gui.central_monitor.module_editor_disabled": "Вы недавно изменили модуль; пожалуйста, откройте этот GUI, чтобы отредактировать его",
+    "config.jade.plugin_gtceu.me_grid_connected": "[GTCEu] Информация о машине, подключённой к сети",
+    "gtceu.multiblock.pattern.error.limited.min_layer_count": "§cМинимум:§r %d на слой, имеется %d",
+    "gtceu.gui.central_monitor.in_group": "Мониторы, выбранные таким образом, добавляются в группу и используются для отображения содержимого.",
+    "gtceu.gui.central_monitor.pause": "Приостановить выполнение заполнителя.\nТекст не будет обновлён, а код не будет выполнен.",
+    "gtceu.gui.central_monitor.resume": "Возобновить выполнение заполнителя.",
+    "gtceu.gui.central_monitor.right_click": "Выберите блок, щёлкнув по нему правой кнопкой мыши. В качестве цели можно выбрать только один блок.",
+    "gtceu.gui.central_monitor.target": "Выбранный таким образом блок считается целевым и используется с заполнителями в текстовом модуле."
 }
