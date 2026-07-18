@@ -119,9 +119,7 @@ public class SimpleItemFilter implements ItemFilter {
                 .gridOfSizeWidth(9, 3, (x, y, i) -> new PhantomItemSlot()
                         .size(16)
                         .syncHandler(new PhantomItemSlotSyncHandler(new ModularSlot(handler, i)
-                                .changeListener((stack, amount, client, init) -> {
-                                    handler.setStackInSlot(i, stack);
-                                }).ignoreMaxStackSize(true).accessibility(true, false))));
+                                .ignoreMaxStackSize(true).accessibility(true, false))));
 
         BooleanSyncValue blacklist = new BooleanSyncValue(this::isBlackList, this::setBlackList).allowC2S();
         syncManager.syncValue("blacklist", blacklist);
