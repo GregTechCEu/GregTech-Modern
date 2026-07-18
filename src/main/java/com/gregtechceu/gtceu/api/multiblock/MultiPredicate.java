@@ -221,7 +221,7 @@ public class MultiPredicate implements Iterable<BasePredicate> {
         return predicateList.size() == 1;
     }
 
-    protected void appendContents(StringBuilder builder) {
+    public void appendContents(StringBuilder builder) {
         StringJoiner joiner = new StringJoiner(", ");
         this.forEach(p -> joiner.add(p.toString()));
         builder.append(joiner);

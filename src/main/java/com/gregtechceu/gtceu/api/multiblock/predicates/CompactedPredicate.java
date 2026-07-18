@@ -11,7 +11,7 @@ public class CompactedPredicate extends BasePredicate {
 
     private final MultiPredicate root;
 
-    CompactedPredicate(MultiPredicate root) {
+    public CompactedPredicate(MultiPredicate root) {
         this.root = root;
     }
 

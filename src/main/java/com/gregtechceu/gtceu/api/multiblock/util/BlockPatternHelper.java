@@ -143,7 +143,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
-                toInsert = basePredicate.getCandidates().get(0);
+                toInsert = basePredicate.getFirstCandidate().orElse(BlockInfo.EMPTY);
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
@@ -172,7 +172,7 @@ public class BlockPatternHelper extends AbstractStructureHelper {
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
-                toInsert = basePredicate.getCandidates().get(0);
+                toInsert = basePredicate.getFirstCandidate().orElse(BlockInfo.EMPTY);
             }
             // TODO: is this needed? doesn't this just do what we're already doing?
             if (isValidCandidate(resultStructure, predicate, pos, toInsert, dir)) {
