@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
@@ -29,12 +29,11 @@ public class ParallelProvider extends MachineInfoProvider<MetaMachine, CompoundT
         if (machine instanceof ParallelHatchPartMachine parallelHatch) {
             compoundTag.putInt("parallel", parallelHatch.getCurrentParallel());
         } else if (machine instanceof MultiblockControllerMachine controller) {
-            if (controller instanceof IRecipeLogicMachine rlm &&
-                    rlm.getRecipeLogic().isActive() &&
-                    rlm.getRecipeLogic().getLastDisplayedRecipe() != null) {
-                compoundTag.putInt("parallel", rlm.getRecipeLogic().getLastDisplayedRecipe().parallels);
-                compoundTag.putInt("batch", rlm.getRecipeLogic().getLastDisplayedRecipe().batchParallels);
-                compoundTag.putInt("subtickParallel", rlm.getRecipeLogic().getLastDisplayedRecipe().subtickParallels);
+            var recipeLogic = controller.getTrait(RecipeLogic.TYPE);
+            if (recipeLogic != null && recipeLogic.isActive() && recipeLogic.getLastDisplayedRecipe() != null) {
+                compoundTag.putInt("parallel", recipeLogic.getLastDisplayedRecipe().parallels);
+                compoundTag.putInt("batch", recipeLogic.getLastDisplayedRecipe().batchParallels);
+                compoundTag.putInt("subtickParallel", recipeLogic.getLastDisplayedRecipe().subtickParallels);
                 compoundTag.putBoolean("exact", true);
             } else {
                 controller.getParallelHatch()

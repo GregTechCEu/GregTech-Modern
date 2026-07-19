@@ -68,7 +68,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public void saveToItem(CompoundTag tag) {
+    public void saveToItem(CompoundTag tag, boolean clone) {
         tag.putInt("itemsPerCycle", itemsPerCycle);
         tag.putInt("ticksPerCycle", ticksPerCycle);
     }

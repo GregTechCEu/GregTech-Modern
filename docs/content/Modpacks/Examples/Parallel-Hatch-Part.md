@@ -37,7 +37,7 @@ GTCEuStartupEvents.registry("gtceu:machine", (event) => {
         }
 
         const $RecipeLogic = Java.loadClass(
-            "com.gregtechceu.gtceu.api.machine.trait.RecipeLogic"
+            "com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic"
         );
         builder
             .langValue(name + " Parallel Control Hatch")

@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.block.property.GTBlockStateProperties;
 import com.gregtechceu.gtceu.api.blockentity.BlockEntityCreationInfo;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.machine.trait.multiblock.MultiblockMachineTrait;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.gregtechceu.gtceu.api.multiblock.pattern.*;
@@ -28,6 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import brachy.modularui.api.widget.IWidget;
@@ -40,20 +43,23 @@ import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
 import it.unimi.dsi.fastutil.longs.Long2ReferenceOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
+/**
+ * The base class for all multiblock controllers.
+ */
+@SuppressWarnings({ "UnusedReturnValue" })
 public class MultiblockControllerMachine extends MetaMachine {
 
     public static final String DEFAULT_STRUCTURE = "main";
 
-    private @Nullable CurrentBlockInfo controllerBlockInfo = null;
-    private final List<IMultiPart> parts = new ArrayList<>();
+    private final List<MultiblockPartMachine> parts = new ArrayList<>();
     private @Nullable ParallelHatchPartMachine parallelHatch = null;
     @Getter
     @SyncToClient
@@ -68,7 +74,7 @@ public class MultiblockControllerMachine extends MetaMachine {
     @SyncToClient
     protected boolean isFlipped;
 
-    protected static final Table<@NotNull MultiblockMachineDefinition, @NotNull String, @NotNull IBlockPattern> structurePatterns = HashBasedTable
+    protected static final Table<MultiblockMachineDefinition, String, IBlockPattern> structurePatterns = HashBasedTable
             .create();
     protected final Object2ObjectMap<String, PatternState> patternStates = new Object2ObjectOpenHashMap<>();
 
@@ -111,24 +117,54 @@ public class MultiblockControllerMachine extends MetaMachine {
     protected void onPartsUpdated() {
         parts.clear();
         for (var pos : partPositions) {
-            if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+            if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
                 parts.add(part);
             }
         }
     }
 
+    /**
+     * Gets the first trait (trait with highest priority) of a specified type from this multiblock's parts.
+     *
+     * @param type The trait type to get.
+     * @return The trait, or null if no traits of the given type are present.
+     */
+    public <T extends MachineTrait> @Nullable T getTraitFromParts(MachineTraitType<T> type) {
+        T trait = null;
+        for (var part : getParts()) {
+            T partTrait = part.getTrait(type);
+            if (partTrait != null && (trait == null || partTrait.getTraitPriority() > trait.getTraitPriority()))
+                trait = partTrait;
+        }
+        return trait;
+    }
+
+    /**
+     * Get all traits with the specified type.
+     *
+     * @param type The trait type to get
+     * @return An unmodifiable list containing all traits of the specified type.
+     */
+    public <T extends MachineTrait> List<T> getTraitsFromParts(MachineTraitType<T> type) {
+        List<T> traits = new ObjectArrayList<>();
+        for (var part : getParts()) {
+            traits.addAll(part.getTraits(type));
+        }
+        return Collections.unmodifiableList(traits);
+    }
+
     protected void updatePartPositions() {
         this.partPositions = this.parts.isEmpty() ? new BlockPos[0] :
-                this.parts.stream().map(part -> part.self().getBlockPos()).toArray(BlockPos[]::new);
+                this.parts.stream().map(BlockEntity::getBlockPos).toArray(BlockPos[]::new);
         syncDataHolder.markClientSyncFieldDirty("partPositions");
     }
 
-    public List<IMultiPart> getParts() {
+    public List<MultiblockPartMachine> getParts() {
         // for the client side, when the chunk unloaded
         if (this.parts.size() != this.partPositions.length) {
             this.parts.clear();
             for (BlockPos pos : this.partPositions) {
-                if (getMachine(getLevel(), pos) instanceof IMultiPart part) {
+                if (getMachine(getLevel(), pos) instanceof MultiblockPartMachine part) {
                     this.parts.add(part);
                 }
             }
@@ -153,7 +189,7 @@ public class MultiblockControllerMachine extends MetaMachine {
 
     public void checkAndFormStructure() {
         if (!(getLevel() instanceof ServerLevel serverLevel)) return;
-        if (self().isRemoved()) return;
+        if (isRemoved()) return;
         for (var entry : patternStates.entrySet()) {
             String name = entry.getKey();
             PatternState patternState = getPatternState(name);
@@ -175,13 +211,13 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * Whether the specific part should be added to the part list
      */
-    public boolean shouldAddPartToController(IMultiPart part) {
+    public boolean shouldAddPartToController(MultiblockPartMachine part) {
         return true;
     }
 
     /**
      * Returns a list of all substructures this multiblock has.
-     * 
+     *
      * @return set of substructures used by controller
      */
     public Set<String> getStructureNames() {
@@ -234,18 +270,14 @@ public class MultiblockControllerMachine extends MetaMachine {
         PatternState state = getPatternState(structureName);
         if (pattern == null || !state.shouldUpdate() || getLevel() == null) return state;
 
-        long time = System.nanoTime();
         state.setController(this, getBlockPos());
         pattern.checkPatternFastAt(getLevel(), state, getBlockPos(), getFrontFacing(), getUpwardsFacing(),
                 allowFlip());
 
-        // GTCEu.LOGGER.info("Structure check for {} took {} ns", self().getDefinition().getName(),
-        // (System.nanoTime() - time));
-
         return state;
     }
 
-    public void formStructure(@NotNull String substructureName) {
+    public void formStructure(String substructureName) {
         var patternState = getPatternState(substructureName);
         patternState.setFormed(true);
         if (substructureName.equals(DEFAULT_STRUCTURE)) {
@@ -299,12 +331,8 @@ public class MultiblockControllerMachine extends MetaMachine {
             return;
         }
 
-        boolean valid = forEachMultiPart(substructureName, part -> {
-            if (part.hasController(getBlockPos()) && !part.canShared(this, substructureName)) {
-                return false;
-            }
-            return true;
-        });
+        boolean valid = forEachMultiPart(substructureName,
+                part -> !part.hasController(getBlockPos()) || part.canShared(this, substructureName));
 
         if (!valid) return;
 
@@ -387,10 +415,10 @@ public class MultiblockControllerMachine extends MetaMachine {
         return structurePatterns.get(this.getDefinition(), name);
     }
 
-    protected final boolean forEachMultiPart(String name, Predicate<IMultiPart> action) {
+    protected final boolean forEachMultiPart(String name, Predicate<MultiblockPartMachine> action) {
         var cache = patternStates.get(name).getCache();
         for (BlockInfo info : cache.values()) {
-            if (info.getBlockEntity() instanceof IMultiPart part) {
+            if (info.getBlockEntity() instanceof MultiblockPartMachine part) {
                 if (!action.test(part)) return false;
             }
         }
@@ -409,11 +437,11 @@ public class MultiblockControllerMachine extends MetaMachine {
     /**
      * mark multiblockState as unload error first.
      * if it's actually cuz by block breaking.
-     * {@link #//onStructureInvalid(String)} will be called from
-     * {@link #//onBlockStateChanged(BlockPos, BlockState)}
+     * {@link #invalidateStructure()} will be called from
+     * {@link PatternState#onBlockStateChanged(BlockPos, BlockState, BlockState)}
      */
     public void onPartUnload() {
-        parts.removeIf(part -> part.self().isRemoved());
+        parts.removeIf(BlockEntity::isRemoved);
         updatePartPositions();
     }
 
@@ -434,20 +462,17 @@ public class MultiblockControllerMachine extends MetaMachine {
         return getDefinition().isAllowFlip();
     }
 
-    public @Nullable BlockState getPartAppearance(IMultiPart part, Direction side, BlockState sourceState,
-                                                  BlockPos sourcePos) {
+    public @Nullable BlockState getPartAppearance(MultiblockPartMachine part, Direction side,
+                                                  @Nullable BlockState sourceState,
+                                                  @Nullable BlockPos sourcePos) {
         if (isFormed()) {
             return getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
     }
 
-    public Comparator<IMultiPart> getPartSorter() {
-        return getDefinition().getPartSorter().apply(this);
-    }
-
     @Override
-    public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
+    public void setUpwardsFacing(Direction upwardsFacing) {
         if (getLevel() == null) return;
         if (!getDefinition().isAllowExtendedFacing()) return;
         BlockState blockState = getBlockState();

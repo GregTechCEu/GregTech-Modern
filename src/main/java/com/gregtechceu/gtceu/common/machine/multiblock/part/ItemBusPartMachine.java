@@ -8,22 +8,18 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IHasCircuitSlot;
 import com.gregtechceu.gtceu.api.machine.feature.IMuiMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDistinctPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SaveField;
 import com.gregtechceu.gtceu.api.sync_system.annotations.SyncToClient;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.item.behavior.IntCircuitBehaviour;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.common.machine.trait.ProgrammableCircuitSlotTrait;
 import com.gregtechceu.gtceu.utils.ExtendedUseOnContext;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.ISubscription;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionResult;
@@ -39,16 +35,11 @@ import brachy.modularui.widget.ParentWidget;
 import brachy.modularui.widgets.layout.Grid;
 import brachy.modularui.widgets.slot.ItemSlot;
 import brachy.modularui.widgets.slot.SlotGroup;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
 public class ItemBusPartMachine extends TieredIOPartMachine
-                                implements IDistinctPart, IHasCircuitSlot, IPaintable, IMuiMachine {
+                                implements IDistinctPart, IMuiMachine, IPaintable {
 
     @Getter
     @SaveField
@@ -57,15 +48,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription inventorySubs;
-    @Getter(AccessLevel.PROTECTED)
-    private boolean hasCircuitSlot = true;
-    @Getter
-    @SaveField
-    @SyncToClient
-    protected boolean circuitSlotEnabled;
-    @Getter
-    @SaveField
-    protected final NotifiableItemStackHandler circuitInventory;
     @Getter
     @SaveField
     @SyncToClient
@@ -75,11 +57,35 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
+    @Getter
+    @SaveField
+    protected final ProgrammableCircuitSlotTrait circuitSlot;
+
+    /**
+     * Creates an item bus with the default number of slots
+     *
+     * @param info {@link BlockEntityCreationInfo}
+     * @param tier Machine tier.
+     * @param io   IO mode of this item bus.
+     */
     public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io) {
+        this(info, tier, io,
+                new NotifiableItemStackHandler(getInventorySize(tier), io, io.support(IO.IN) ? IO.BOTH : io));
+    }
+
+    /**
+     * Creates an item bus with a custom {@link NotifiableItemStackHandler}.
+     *
+     * @param info      {@link BlockEntityCreationInfo}
+     * @param tier      Machine tier.
+     * @param io        IO mode of this item bus.
+     * @param inventory The {@link NotifiableItemStackHandler} to attach
+     */
+    public ItemBusPartMachine(BlockEntityCreationInfo info, int tier, IO io, NotifiableItemStackHandler inventory) {
         super(info, tier, io);
-        this.inventory = attachTrait(createInventory());
-        this.circuitSlotEnabled = true;
-        this.circuitInventory = attachTrait(createCircuitItemHandler(io)).shouldSearchContent(false);
+        this.inventory = attachTrait(inventory);
+        this.circuitSlot = attachTrait(new ProgrammableCircuitSlotTrait());
+        circuitSlot.setEnabled(io == IO.IN);
         filterHandler = FilterHandlers.item(this);
 
         inventory.setFilter(this::matchesFilter);
@@ -89,31 +95,15 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     // ***** Initialization ******//
     //////////////////////////////////////
 
-    protected int getInventorySize() {
-        int sizeRoot = 1 + Math.min(9, getTier());
+    protected static int getInventorySize(int tier) {
+        int sizeRoot = 1 + Math.min(9, tier);
         return sizeRoot * sizeRoot;
-    }
-
-    protected NotifiableItemStackHandler createInventory() {
-        return new NotifiableItemStackHandler(getInventorySize(), io, io.support(IO.IN) ? IO.BOTH : io);
     }
 
     protected boolean matchesFilter(ItemStack stack) {
         if (filterHandler.isFilterPresent())
             return filterHandler.getFilter().test(stack);
         return true;
-    }
-
-    protected NotifiableItemStackHandler createCircuitItemHandler(IO io) {
-        if (io == IO.IN) {
-            return new NotifiableItemStackHandler(1, IO.IN, IO.NONE)
-                    .setFilter(IntCircuitBehaviour::isIntegratedCircuit)
-                    .shouldDropInventoryInWorld(!ConfigHolder.INSTANCE.machines.ghostCircuit);
-        } else {
-            hasCircuitSlot = false;
-            setCircuitSlotEnabled(false);
-            return new NotifiableItemStackHandler(0, IO.NONE);
-        }
     }
 
     @Override
@@ -147,39 +137,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     }
 
     @Override
-    public void addedToController(MultiblockControllerMachine controller, String substructureName) {
-        if (hasCircuitSlot && !controller.allowCircuitSlots()) {
-            if (!ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                circuitInventory.dropInventoryInWorld();
-            } else {
-                circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-            }
-            setCircuitSlotEnabled(false);
-        }
-        super.addedToController(controller, substructureName);
-    }
-
-    @Override
-    public void removedFromController(MultiblockControllerMachine controller) {
-        super.removedFromController(controller);
-        if (!hasCircuitSlot) return;
-        for (var c : controllers) {
-            if (!c.allowCircuitSlots()) {
-                return;
-            }
-        }
-        setCircuitSlotEnabled(true);
+    public boolean supportsDistinct() {
+        return !io.support(IO.OUT);
     }
 
     @Override
     public int tintColor(int index) {
         if (index == 9) return getRealColor();
         return -1;
-    }
-
-    public void setCircuitSlotEnabled(boolean enabled) {
-        circuitSlotEnabled = enabled;
-        syncDataHolder.markClientSyncFieldDirty("circuitSlotEnabled");
     }
 
     //////////////////////////////////////
@@ -280,7 +245,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine
     @Override
     public void buildMainUI(ParentWidget<?> mainWidget, PosGuiData guiData, PanelSyncManager syncManager,
                             UISettings settings) {
-        int rowSize = (int) Math.sqrt(getInventorySize());
+        int rowSize = (int) Math.sqrt(getInventorySize(tier));
 
         SlotGroup group = new SlotGroup("item_inv", rowSize, 0, true);
         mainWidget.child(new Grid()
@@ -290,8 +255,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine
                 .gridOfSizeHeight(rowSize * rowSize, rowSize, (x, y, index) -> new ItemSlot()
                         .slot(SyncHandlers.itemSlot(inventory, index)
                                 .slotGroup(group)
-                                .changeListener((newItem, amount, client, init) -> {
-                                    if (amount) {
+                                .changeListener((oldStack, newStack, client, init) -> {
+                                    if (ItemStack.isSameItem(oldStack, newStack)) {
                                         inventory.onContentsChanged();
                                     }
                                 })

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.api.machine.trait.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
 import com.gregtechceu.gtceu.api.recipe.ActionResult;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -143,6 +145,30 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     protected @Nullable TickableSubscription subscription;
     protected @Nullable Object workingSound;
 
+    /**
+     * If recipe progress should decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
+     */
+    @Getter
+    @Setter
+    protected boolean regressWhenWaiting;
+
+    /**
+     * Whether the recipe logic should keep subscribing tick logic when no recipe is available after one cycle.
+     * if false. you should call {@link RecipeLogic#updateTickSubscription()} manually later to active recipe logic
+     * again.
+     */
+    @Getter
+    @Setter
+    protected boolean keepSubscribing = true;
+
+    /**
+     * If recipe modifiers should always been applied before setting up a recipe.<br>
+     * If true, recipe modifiers will always be applied, even if the previous recipe can be run again.<br>
+     * If false, the previous recipe will be run again without reapplying modifiers.<br>
+     * Defaults to true, so that recipes will always attempt to update OC, parallels, etc.
+     */
+    protected boolean alwaysTryModifyRecipe = true;
+
     public RecipeLogic() {
         super();
     }
@@ -186,6 +212,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     @Override
+    public void onTraitAttached() {
+        super.onTraitAttached();
+        regressWhenWaiting = getMachine().getDefinition().isRegressWhenWaiting();
+    }
+
+    @Override
     public void onMachineLoad() {
         super.onMachineLoad();
         updateTickSubscription();
@@ -205,6 +237,10 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     public void setProgress(int progress) {
         this.progress = progress;
         syncDataHolder.markClientSyncFieldDirty("progress");
+    }
+
+    public void setProgressDelta(int delta) {
+        setProgress(getProgress() + delta);
     }
 
     public double getProgressPercent() {
@@ -233,7 +269,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 }
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
-            } else if (!getRLMachine().keepSubscribing() || getMachine().getOffsetTimer() % 5 == 0) {
+            } else if (!keepSubscribing || getMachine().getOffsetTimer() % 5 == 0) {
                 findAndHandleRecipe();
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
@@ -246,7 +282,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         if (isSuspend()) {
             // Machine is paused and can unsubscribe
             unsubscribe = true;
-        } else if (lastRecipe == null && isIdle() && !getRLMachine().keepSubscribing() && !recipeDirty &&
+        } else if (lastRecipe == null && isIdle() && !keepSubscribing && !recipeDirty &&
                 lastFailedMatches == null) {
                     // No recipes available and the machine wants to unsubscribe until notified
                     unsubscribe = true;
@@ -342,7 +378,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
     }
 
     protected void regressRecipe() {
-        if (progress > 0 && getRLMachine().regressWhenWaiting()) {
+        if (progress > 0 && regressWhenWaiting) {
             this.progress = 1;
             syncDataHolder.markClientSyncFieldDirty("progress");
         }
@@ -453,7 +489,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 status = Status.SUSPEND;
                 suspendAfterFinish = false;
             }
-            getRLMachine().notifyStatusChanged(this.status, status);
+            getRLMachine().recipeLogicStatusChanged(this.status, status);
             this.status = status;
             syncDataHolder.markClientSyncFieldDirty("status");
             setRenderState(getRenderState().setValue(GTMachineModelProperties.RECIPE_LOGIC_STATUS, status));
@@ -562,7 +598,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                 syncDataHolder.resyncAllFields();
                 return;
             }
-            if (getRLMachine().alwaysTryModifyRecipe()) {
+            if (alwaysTryModifyRecipe) {
                 if (lastOriginRecipe != null) {
                     var modified = getRLMachine().fullModifyRecipe(lastOriginRecipe.copy());
                     if (modified == null) {

@@ -45,7 +45,7 @@ public class MultiblockFluidRendererTrait extends MultiblockMachineTrait {
     }
 
     @Override
-    public MachineTraitType<?> getTraitType() {
+    public MachineTraitType<MultiblockFluidRendererTrait> getTraitType() {
         return TYPE;
     }
 }

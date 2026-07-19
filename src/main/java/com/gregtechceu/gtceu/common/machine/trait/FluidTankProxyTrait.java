@@ -1,6 +1,10 @@
-package com.gregtechceu.gtceu.api.machine.trait;
+package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machine.trait.MachineTraitType;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 
@@ -10,7 +14,6 @@ import net.minecraftforge.fluids.FluidStack;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Accessors(chain = true)
@@ -43,14 +46,13 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
         return proxy == null ? 0 : proxy.getTanks();
     }
 
-    @NotNull
     @Override
     public FluidStack getFluidInTank(int tank) {
         return proxy == null ? FluidStack.EMPTY : proxy.getFluidInTank(tank);
     }
 
     @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
         if (proxy != null) {
             proxy.setFluidInTank(tank, fluidStack);
         }
@@ -62,7 +64,7 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
     }
 
     @Override
-    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+    public boolean isFluidValid(int tank, FluidStack stack) {
         return proxy != null && proxy.isFluidValid(tank, stack);
     }
 
@@ -88,7 +90,6 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
         return FluidStack.EMPTY;
     }
 
-    @NotNull
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         if (proxy != null && canCapOutput()) {
@@ -97,7 +98,6 @@ public class FluidTankProxyTrait extends MachineTrait implements IFluidHandlerMo
         return FluidStack.EMPTY;
     }
 
-    @NotNull
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         if (proxy != null && canCapOutput()) {

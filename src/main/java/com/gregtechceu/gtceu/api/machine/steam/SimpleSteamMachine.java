@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.notifiable.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeHandlerList;
+import com.gregtechceu.gtceu.api.machine.trait.recipe.RecipeLogic;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
@@ -37,10 +38,31 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
     @Getter
     private final ExhaustVentMachineTrait exhaustVentTrait;
 
+    /**
+     * Creates a {@link SimpleSteamMachine}.
+     *
+     * @param info        {@link BlockEntityCreationInfo}
+     * @param recipeLogic The recipe logic to use.
+     * @param importSlots The amount of item input slots this machine should have (can be 0).
+     * @param exportSlots The amount of item output slots this machine should have (can be 0).
+     */
+    public SimpleSteamMachine(BlockEntityCreationInfo info, RecipeLogic recipeLogic, boolean isHighPressure,
+                              int importSlots, int exportSlots) {
+        super(info, isHighPressure, recipeLogic);
+        this.importItems = attachTrait(new NotifiableItemStackHandler(importSlots, IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(new NotifiableItemStackHandler(exportSlots, IO.OUT));
+        this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
+    }
+
     public SimpleSteamMachine(BlockEntityCreationInfo info, boolean isHighPressure) {
         super(info, isHighPressure);
-        this.importItems = attachTrait(createImportItemHandler());
-        this.exportItems = attachTrait(createExportItemHandler());
+        this.importItems = attachTrait(
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.IN, IO.BOTH));
+        this.exportItems = attachTrait(
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
+                        IO.OUT));
 
         this.exhaustVentTrait = attachTrait(new ExhaustVentMachineTrait());
         exhaustVentTrait.setVentingDamageAmount(isHighPressure() ? 12F : 6F);
@@ -49,18 +71,6 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
             // outputFacing will always be opposite the front facing on init
             setRenderState(renderState.setValue(GTMachineModelProperties.VENT_DIRECTION, RelativeDirection.BACK));
         }
-    }
-
-    //////////////////////////////////////
-    // ***** Initialization *****//
-    //////////////////////////////////////
-
-    protected NotifiableItemStackHandler createImportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP), IO.IN, IO.BOTH);
-    }
-
-    protected NotifiableItemStackHandler createExportItemHandler() {
-        return new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP), IO.OUT);
     }
 
     @Override
@@ -147,12 +157,5 @@ public class SimpleSteamMachine extends SteamWorkableMachine {
         var builder = ModifierFunction.builder().conditions(VentCondition.INSTANCE);
         if (!steamMachine.isHighPressure) builder.durationMultiplier(2);
         return builder.build();
-    }
-
-    @Override
-    public void afterWorking() {
-        super.afterWorking();
-        exhaustVentTrait.setNeedsVenting(true);
-        exhaustVentTrait.checkVenting();
     }
 }
