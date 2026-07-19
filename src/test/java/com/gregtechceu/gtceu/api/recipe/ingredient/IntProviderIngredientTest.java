@@ -221,7 +221,7 @@ public class IntProviderIngredientTest {
         var stacks = ingredient.collapse().getItems();
         helper.assertTrue(stacks.length == 1,
                 "Replaced IntProviderIngredient should only return 1 item when made with 1 item");
-helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),
+        helper.assertTrue(stacks[0].is(new ItemStack(Items.BRICK, 1).getItem()),
                 "Replaced IntProviderIngredient should have item equal to what it was made with");
 
         helper.succeed();

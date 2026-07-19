@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -235,9 +234,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        for (var handler : inputs.values()) {
-            for (var iterator = handler.listIterator(); iterator.hasNext();) {
-                var content = iterator.next();
+        for (List<Content> input : this.inputs.values()) {
+            for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
                 if (content.content() instanceof IRangedIngredient ranged) {
                     ranged.rollSampledCount();
                     iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
