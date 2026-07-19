@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.ExpandablePattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -111,11 +112,17 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate) {
+            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
+                if (!tryMinCount(resultStructure, compactedPredicate.expand(), pos)) {
+                    continue;
+                }
+                return true;
+            }
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (minCount <= 0 || totalAlreadyPopulated >= minCount) continue;
+            if (!basePredicate.testGlobalMax(totalAlreadyPopulated)) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {
@@ -132,11 +139,17 @@ public class ExpandablePatternHelper extends AbstractStructureHelper {
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos) {
         for (BasePredicate basePredicate : predicate) {
+            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
+                if (!tryMaxCount(resultStructure, compactedPredicate.expand(), pos)) {
+                    continue;
+                }
+                return true;
+            }
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
+            if (!basePredicate.testGlobalMax(totalAlreadyPopulated)) continue;
 
             BlockInfo toInsert = null;
             if (blockPreferences.contains(predicate, basePredicate)) {

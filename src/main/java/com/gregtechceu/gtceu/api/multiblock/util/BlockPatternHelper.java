@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.pattern.IBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.pattern.PatternSlice;
 import com.gregtechceu.gtceu.api.multiblock.predicates.BasePredicate;
 
+import com.gregtechceu.gtceu.api.multiblock.predicates.CompactedPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -131,14 +132,19 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private boolean tryMinCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate) {
+            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
+                if (!tryMinCount(resultStructure, compactedPredicate.expand(), pos, dir, offset)) {
+                    continue;
+                }
+                return true;
+            }
             int minCount = getMinCount(predicate, basePredicate);
             if (minCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            boolean globalMinUnmet = minCount > 0 && totalAlreadyPopulated < minCount;
-            boolean layerMinUnmet = basePredicate.getMinSliceCount() > 0 &&
-                    layerAlreadyPopulated < basePredicate.getMinSliceCount();
+            boolean globalMinUnmet = basePredicate.testGlobalMin(totalAlreadyPopulated);
+            boolean layerMinUnmet = basePredicate.testSliceMin(layerAlreadyPopulated);
             if (!globalMinUnmet && !layerMinUnmet) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
@@ -160,15 +166,19 @@ public class BlockPatternHelper extends AbstractStructureHelper {
     private boolean tryMaxCount(Map<BlockPos, BlockInfo> resultStructure, MultiPredicate predicate,
                                 BlockPos pos, Direction dir, int offset) {
         for (BasePredicate basePredicate : predicate) {
+            if (basePredicate instanceof CompactedPredicate compactedPredicate) {
+                if (!tryMaxCount(resultStructure, compactedPredicate.expand(), pos, dir, offset)) {
+                    continue;
+                }
+                return true;
+            }
             int maxCount = getMaxCount(predicate, basePredicate);
             if (maxCount == 0) continue;
 
             int totalAlreadyPopulated = countPopulatedGlobal(resultStructure, basePredicate);
             int layerAlreadyPopulated = countPopulatedInLayer(resultStructure, basePredicate, dir, offset);
-            if (maxCount != -1 && totalAlreadyPopulated >= maxCount) continue;
-            if (basePredicate.getMaxSliceCount() != -1 && layerAlreadyPopulated >= basePredicate.getMaxSliceCount()) {
-                continue;
-            }
+            if (!basePredicate.testGlobalMax(totalAlreadyPopulated)) continue;
+            if (!basePredicate.testSliceMax(layerAlreadyPopulated)) continue;
 
             BlockInfo toInsert = blockPreferences.get(predicate, basePredicate);
             if (toInsert == null) {
