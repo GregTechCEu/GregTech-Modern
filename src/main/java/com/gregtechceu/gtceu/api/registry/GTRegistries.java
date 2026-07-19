@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.registry;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
@@ -18,16 +20,13 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternError;
 import com.gregtechceu.gtceu.api.placeholder.Placeholder;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.category.GTRecipeCategory;
 import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -40,16 +39,19 @@ import net.neoforged.neoforge.registries.IdMappingEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
 
 import java.util.*;
 
+@SuppressWarnings("unused")
 public final class GTRegistries {
 
-    private static final LinkedHashMap<ResourceLocation, Registry<?>> LOAD_ORDER = new LinkedHashMap<>();
+    private static final SequencedSet<ResourceLocation> LOAD_ORDER = new LinkedHashSet<>();
+    private static final LinkedHashMap<ResourceKey<Registry<?>>, Registry<?>> REGISTRIES = new LinkedHashMap<>();
+
+    private GTRegistries() {}
 
     // spotless:off
     public static final class Keys {
@@ -98,33 +100,36 @@ public final class GTRegistries {
 
     // GT Registries
 
-    // Material related registries
+    // Be careful when changing the order of these static fields, as changing the order of them also changes the order of registry load.
 
     public static final Registry<Element> ELEMENTS = makeRegistry(Keys.ELEMENT);
-    public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
     public static final Registry<TagPrefix> TAG_PREFIXES = makeRegistry(Keys.TAG_PREFIX);
     public static final Registry<MaterialIconSet> MATERIAL_ICON_SETS = makeRegistry(Keys.MATERIAL_ICON_SET);
+    public static final Registry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(Keys.TOOL_BEHAVIOR);
+    public static final Registry<MedicalCondition> MEDICAL_CONDITIONS = makeRegistry(Keys.MEDICAL_CONDITION);
+    public static final MaterialRegistry MATERIALS = makeMaterialRegistry();
 
-    // Recipe related registries
-
-    public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
-    public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
-    public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
+    public static final Registry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND, false);
     public static final Registry<ChanceLogic> CHANCE_LOGICS = makeRegistry(Keys.CHANCE_LOGIC);
+    public static final Registry<RecipeCapability<?>> RECIPE_CAPABILITIES = makeRegistry(Keys.RECIPE_CAPABILITY);
 
-    // Other registries
+    public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER, false);
+    /**
+     * Use {@link BuiltInRegistries#RECIPE_TYPE} instead of this. This only exists to simplify KubeJS registration.
+     *
+     * @see Registries#RECIPE_TYPE
+     */
+    @ApiStatus.Internal
+    public static final Registry<RecipeType<?>> RECIPE_TYPES = makeRegistry(Keys.RECIPE_TYPE);
+    public static final Registry<RecipeConditionType<?>> RECIPE_CONDITIONS = makeRegistry(Keys.RECIPE_CONDITION);
+    public static final Registry<GTRecipeCategory> RECIPE_CATEGORIES = makeRegistry(Keys.RECIPE_CATEGORY);
 
     public static final Registry<MachineDefinition> MACHINES = makeRegistry(Keys.MACHINE);
     public static final Registry<CoverDefinition> COVERS = makeRegistry(Keys.COVER);
 
-    public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
-
-    public static final Registry<ToolBehaviorType<?>> TOOL_BEHAVIORS = makeRegistry(Keys.TOOL_BEHAVIOR);
-    public static final Registry<DimensionMarker> DIMENSION_MARKERS = makeRegistry(Keys.DIMENSION_MARKER, false);
-    public static final Registry<MedicalCondition> MEDICAL_CONDITIONS =  makeRegistry(Keys.MEDICAL_CONDITION);
     public static final Registry<Placeholder> PLACEHOLDERS = makeRegistry(Keys.PLACEHOLDER);
-    public static final Registry<PatternError.PatternErrorType> PATTERN_ERRORS = makeRegistry(Keys.PATTERN_ERROR_TYPE);
-    public static final Registry<SoundEntry> SOUNDS = makeRegistry(Keys.SOUND, false);
+    public static final Registry<PatternError.PatternErrorType> PATTERN_ERROR_TYPES = makeRegistry(Keys.PATTERN_ERROR_TYPE);
+    public static final Registry<IWorldGenLayer> WORLD_GEN_LAYERS = makeRegistry(Keys.WORLD_GEN_LAYER);
 
     // spotless:on
 
@@ -140,13 +145,13 @@ public final class GTRegistries {
         MappedRegistry<T> registry = (MappedRegistry<T>) new RegistryBuilder<>(key)
                 .sync(sync)
                 .create();
-        LOAD_ORDER.put(key.location(), registry);
+        addRegistryToLoadOrder(key, registry);
         return registry;
     }
 
     private static MaterialRegistry makeMaterialRegistry() {
         MaterialRegistry registry = new MaterialRegistry(Keys.MATERIAL);
-        LOAD_ORDER.put(Keys.MATERIAL.location(), registry);
+        addRegistryToLoadOrder(Keys.MATERIAL, registry);
         return registry;
     }
 
@@ -187,44 +192,21 @@ public final class GTRegistries {
         NeoForge.EVENT_BUS.addListener(GTRegistries::onFreeze);
     }
 
+    @SuppressWarnings("unchecked")
+    private static void addRegistryToLoadOrder(ResourceKey<? extends Registry<?>> key, @Nullable Registry<?> registry) {
+        LOAD_ORDER.add(key.location());
+        if (registry != null) {
+            REGISTRIES.put((ResourceKey<Registry<?>>) key, registry);
+        }
+    }
+
     @UnmodifiableView
-    public static List<ResourceLocation> getRegistrationOrder() {
-        return List.copyOf(LOAD_ORDER.keySet());
+    public static SequencedSet<ResourceLocation> getRegistryOrder() {
+        return Collections.unmodifiableSequencedSet(LOAD_ORDER);
     }
 
     @UnmodifiableView
     public static Collection<Registry<?>> getRegistries() {
-        return LOAD_ORDER.values();
-    }
-
-    private static final RegistryAccess BLANK = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-    private static RegistryAccess FROZEN = BLANK;
-
-    /**
-     * You shouldn't call it, you should probably not even look at it just to be extra safe
-     *
-     * @param registryAccess the new value to set to the frozen registry access
-     */
-    @ApiStatus.Internal
-    public static void updateFrozenRegistry(RegistryAccess registryAccess) {
-        FROZEN = registryAccess;
-    }
-
-    public static RegistryAccess builtinRegistry() {
-        if (GTCEu.isClientThread()) {
-            return ClientHelpers.getClientRegistries();
-        }
-        return FROZEN;
-    }
-
-    private static class ClientHelpers {
-
-        private static RegistryAccess getClientRegistries() {
-            if (Minecraft.getInstance().getConnection() != null) {
-                return Minecraft.getInstance().getConnection().registryAccess();
-            } else {
-                return FROZEN;
-            }
-        }
+        return Collections.unmodifiableCollection(REGISTRIES.values());
     }
 }

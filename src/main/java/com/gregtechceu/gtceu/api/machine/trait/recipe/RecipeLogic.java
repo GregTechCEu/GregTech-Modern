@@ -723,7 +723,7 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
                                         for (int i = 0; i < chanceTag.size(); ++i) {
                                             CompoundTag chanceKey = chanceTag.getCompound(i);
                                             var entry = cap.serializer.fromNbt(chanceKey.get("entry"),
-                                                    GTRegistries.builtinRegistry());
+                                                    context.lookup());
                                             int value = chanceKey.getInt("cached_chance");
                                             // noinspection unchecked
                                             map.put(entry, value);

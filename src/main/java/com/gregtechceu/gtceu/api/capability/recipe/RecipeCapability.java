@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.utils.codec.DispatchedMapCodec;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -75,7 +77,7 @@ public abstract class RecipeCapability<T> {
      */
     public T copyInner(T content) {
         RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(),
-                GTRegistries.builtinRegistry(), ConnectionType.NEOFORGE);
+                RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), ConnectionType.NEOFORGE);
         serializer.toNetwork(buf, content);
         return serializer.fromNetwork(buf);
     }

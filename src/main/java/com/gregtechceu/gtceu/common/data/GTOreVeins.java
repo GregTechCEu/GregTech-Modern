@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndic
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
+import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
@@ -109,15 +107,17 @@ public class GTOreVeins {
     public static final ResourceKey<GTOreDefinition> REDSTONE_VEIN = create(GTCEu.id("redstone"));
     public static final ResourceKey<GTOreDefinition> SAPPHIRE_VEIN = create(GTCEu.id("sapphire"));
 
-    public static void updateLargestVeinSize(Registry<GTOreDefinition> registry) {
+    public static void updateLargestVeinSize(HolderLookup.RegistryLookup<GTOreDefinition> lookup) {
         // map to average of min & max values.
-        GTOreVeins.largestVeinSize = registry.stream()
+        GTOreVeins.largestVeinSize = lookup.listElements()
+                .map(Holder::value)
                 .map(GTOreDefinition::clusterSize)
                 .mapToInt(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2)
                 .max()
                 .orElse(0);
 
-        GTOreVeins.largestIndicatorOffset = registry.stream()
+        GTOreVeins.largestIndicatorOffset = lookup.listElements()
+                .map(Holder::value)
                 .flatMapToInt(definition -> definition.indicatorGenerators().stream()
                         .mapToInt(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
                                 (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))

@@ -185,14 +185,7 @@ public class GTOreDefinition {
     @HideFromJS
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         if (biomeLookup == null) {
-            GTRegistries.builtinRegistry().registry(GTRegistries.Keys.ORE_VEIN)
-                    .map(reg -> reg.getKey(this))
-                    .ifPresentOrElse(id -> {
-                        GTCEu.LOGGER.error("Tried to modify ore vein `{}`'s biomes after registry has been frozen!",
-                                id);
-                    }, () -> {
-                        GTCEu.LOGGER.error("Tried to modify an ore vein's biomes after registry has been frozen!");
-                    });
+            GTCEu.LOGGER.error("Tried to modify an ore vein's biomes after registry has been frozen!");
             return this;
         }
         this.biomes = biomeLookup.getOrThrow(biomes);
