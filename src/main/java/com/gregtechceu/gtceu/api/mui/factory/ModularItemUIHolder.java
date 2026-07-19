@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.mui.factory;
 
-import brachy.modularui.widgets.slot.ModularSlot;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.item.module.AppliedItemModule;
 import com.gregtechceu.gtceu.api.item.module.IModularItem;
@@ -30,6 +29,7 @@ import brachy.modularui.widgets.*;
 import brachy.modularui.widgets.dynamic.DynamicWidget;
 import brachy.modularui.widgets.layout.Flow;
 import brachy.modularui.widgets.layout.Grid;
+import brachy.modularui.widgets.slot.ModularSlot;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

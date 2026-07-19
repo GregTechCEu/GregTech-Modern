@@ -41,7 +41,7 @@ public class FluidStorageModule extends ItemModule implements ICapabilityModule 
                                 AppliedItemModule module) {
         super.appendHoverText(level, isAdvanced, tooltips, module);
         tooltips.add(Component.translatable("metaarmor.tooltip.modifier.fluid_storage",
-                module.getModuleItem().getDisplayName()));
+                module.getModuleItem().getHoverName()));
         IFluidHandlerItem fluidHandler = getCapability(module, ForgeCapabilities.FLUID_HANDLER_ITEM).resolve()
                 .orElse(null);
         if (fluidHandler != null) {

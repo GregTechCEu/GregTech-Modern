@@ -10,14 +10,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import brachy.modularui.integration.emi.recipe.ModularUIEmiRecipe;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 
 import java.util.List;
 
-public class GTModuleEMIRecipe extends ModularUIEmiRecipe implements EmiRecipe {
+public class GTModuleEMIRecipe extends ModularUIEmiRecipe {
 
     public static final EmiRecipeCategory CATEGORY = new EmiRecipeCategory(
             GTCEu.id("equipment_foundry"),

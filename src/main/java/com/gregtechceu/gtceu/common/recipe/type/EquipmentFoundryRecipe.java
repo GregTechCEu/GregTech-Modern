@@ -15,7 +15,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -25,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -42,13 +42,16 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
     @Getter
     private final ItemModule[] modules;
 
-    public ItemModule getModule(int tier) {
+    public @Nullable ItemModule getModule(int tier) {
         int lowestTier = (modules[0] instanceof ITieredItemModule tieredModule) ? tieredModule.getTier() :
                 GTValues.ULV;
-        return modules[Mth.clamp(tier - lowestTier, 0, modules.length - 1)];
+        if (modules.length == 1) return modules[0];
+        if (tier < lowestTier) return null;
+        if (tier - lowestTier >= modules.length) return null;
+        return modules[tier - lowestTier];
     }
 
-    public ItemModule getModule(ItemStack ingredient) {
+    public @Nullable ItemModule getModule(ItemStack ingredient) {
         int tier = GTUtil.getTier(ingredient.getItem());
         return getModule(tier);
     }
@@ -73,8 +76,8 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         if (foundIngredient == null || foundItem == null) return false;
         ItemModule module = getModule(foundIngredient);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(foundItem);
-        return modularItem != null &&
-                (slot == -1 ? modularItem.attach(module, true) : modularItem.attach(module, slot, true)) != null;
+        if (module == null || modularItem == null) return false;
+        return (slot == -1 ? modularItem.attach(module, true) : modularItem.attach(module, slot, true)) != null;
     }
 
     @Override
@@ -101,7 +104,7 @@ public class EquipmentFoundryRecipe implements Recipe<RecipeWrapper> {
         }
         ItemModule module = getModule(foundIngredient);
         IModularItem modularItem = GTCapabilityHelper.getModularItem(result);
-        if (modularItem == null) return ItemStack.EMPTY;
+        if (modularItem == null || module == null) return ItemStack.EMPTY;
         if (!module.canApplyTo(result)) return ItemStack.EMPTY;
         AppliedItemModule attachedModule = slot == -1 ? modularItem.attach(module, false) :
                 modularItem.attach(module, slot, false);
