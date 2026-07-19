@@ -190,13 +190,13 @@ public class GTMuiWidgets {
 
     public static ToggleButton createInputFromOutputItem(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsItemInputFromOutputSide,
-                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_OUTPUT,
+                autoOutput::setAllowItemInputFromOutputSide, GTGuiTextures.BUTTON_ITEM_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.item_input_from_output");
     }
 
     public static ToggleButton createInputFromOutputFluid(AutoOutputTrait autoOutput) {
         return createToggleButton(autoOutput::allowsFluidInputFromOutputSide,
-                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_OUTPUT,
+                autoOutput::setAllowFluidInputFromOutputSide, GTGuiTextures.BUTTON_FLUID_ALLOW_INPUT_OUTPUT,
                 "gtceu.gui.fluid_input_from_output");
     }
 
