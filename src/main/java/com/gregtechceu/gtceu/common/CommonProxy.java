@@ -219,6 +219,7 @@ public class CommonProxy {
         if (GTCEu.Mods.isKubeJSLoaded()) {
             KJSEventWrapper.materialModification();
         }
+        GTRegistries.MATERIALS.getUsedNamespaces().forEach(GTRegistrate::createIgnoringListenerErrors);
 
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         GTRegistries.MATERIALS.freeze();
