@@ -13,6 +13,8 @@ import net.minecraft.world.level.material.FluidState;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -21,12 +23,15 @@ import java.util.*;
 
 public class PredicateContext {
 
+    @Getter
     protected List<PatternError> errors = new ArrayList<>();
-    protected final List<PatternError> commitedErrors = new ArrayList<>();
     @Getter
     protected CurrentBlockInfo currentBlockInfo = new CurrentBlockInfo();
     protected final Object2IntMap<BasePredicate> globalCount = new Object2IntOpenHashMap<>();
     protected final Object2IntMap<BasePredicate> layerCount = new Object2IntOpenHashMap<>();
+    @Getter
+    @Setter
+    private boolean checkLayer = true;
 
     @Getter
     protected FailureReason lastFailureReason = FailureReason.NONE;
@@ -45,10 +50,6 @@ public class PredicateContext {
     private void appendError(PatternError error) {
         this.errors.add(error);
         this.lastFailureReason = this.stage.getFailureReason();
-    }
-
-    public List<PatternError> getErrors() {
-        return Collections.unmodifiableList(this.commitedErrors);
     }
 
     /// @return the current Level
@@ -84,8 +85,9 @@ public class PredicateContext {
         return this.globalCount;
     }
 
+    /// @return {@code null} if {@link #checkLayer} is false, else returns the layer cache map
     public @Nullable Object2IntMap<BasePredicate> layerCache() {
-        return this.layerCount;
+        return isCheckLayer() ? this.layerCount : null;
     }
 
     public int incrementGlobalCount(BasePredicate predicate) {
@@ -103,6 +105,36 @@ public class PredicateContext {
     public int getSliceCount(BasePredicate predicate) {
         return Objects.requireNonNull(layerCache()).getInt(predicate);
     }
+
+    public void clearErrors() {
+        this.errors = new ArrayList<>();
+        this.lastFailureReason = FailureReason.NONE;
+    }
+
+    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectArrayMap<>();
+
+    public void commitSliceErrors() {
+        for (Slice slice : this.sliceErrors.keySet()) {
+            this.errors.addAll(this.sliceErrors.get(slice));
+        }
+        this.sliceErrors.clear();
+    }
+
+    public void pushSliceErrors(int index, int offset) {
+        if (this.errors.isEmpty()) return;
+        Slice slice = new Slice(index, offset);
+        this.sliceErrors.merge(slice, this.errors, (l1, l2) -> {
+            l1.addAll(l2);
+            return l1;
+        });
+        clearErrors();
+    }
+
+    public void updateLevel(Level level) {
+        this.currentBlockInfo.setLevel(level);
+    }
+
+    private record Slice(int index, int offset) {}
 
     public enum PredicateStage {
 

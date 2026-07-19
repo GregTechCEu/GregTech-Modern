@@ -135,14 +135,14 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
         int f = bounds.get(4);
         int b = bounds.get(5);
         if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
-            pState.commitError(
+            pState.setError(
                     new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.too_small")));
             invalidateStructure();
             return;
         }
 
         if (Math.abs(l - r) > 1 || Math.abs(b - f) > 1) {
-            pState.commitError(
+            pState.setError(
                     new PatternStringError(Component.translatable("gtceu.predicate_error.cleanroom.not_centered")));
             invalidateStructure();
             return;
@@ -159,7 +159,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine
                     if (filterType == null) filterType = filter.getKey();
                     else {
                         if (filterType != filter.getKey()) {
-                            pState.commitError(new FilterMatchingError(BlockPos.of(entry.getLongKey()),
+                            pState.setError(new FilterMatchingError(BlockPos.of(entry.getLongKey()),
                                     filterType.getCleanroomType(),
                                     filter.getKey().getCleanroomType()));
                             invalidateStructure(substructureName);

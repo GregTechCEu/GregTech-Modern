@@ -100,7 +100,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                     fluidOutputs.add(VoidFluidHandler.INSTANCE);
                 } else {
                     BlockPos p = part.getBlockPos();
-                    pState.commitError(new PatternStringError(Component.translatable(
+                    pState.setError(new PatternStringError(Component.translatable(
                             "gtceu.predicate_error.distillery.unexpected_hatch", p.getX(), p.getY(), p.getZ())));
                     // GTCEu.LOGGER.error(
                     // "The Distillation Tower at {} has a fluid export hatch with an unexpected Y position",
@@ -110,7 +110,7 @@ public class DistillationTowerMachine extends WorkableElectricMultiblockMachine
                 }
             }
         } else {
-            pState.commitError(
+            pState.setError(
                     new PatternStringError(Component.translatable("gtceu.predicate_error.distillery.missing_outputs")));
             invalidateStructure(substructureName);
         }

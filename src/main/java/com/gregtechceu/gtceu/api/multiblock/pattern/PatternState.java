@@ -9,24 +9,23 @@ import com.gregtechceu.gtceu.api.multiblock.util.BlockInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /*
  * Contains vital information to an instanced version of a structure pattern.
  */
-public class PatternState extends PredicateContext {
+public class PatternState {
 
     @Getter
     protected @Nullable BlockPos controllerPos;
@@ -42,9 +41,13 @@ public class PatternState extends PredicateContext {
     protected boolean actualFlipped = false;
     @Setter
     protected boolean shouldUpdate = true;
+    @Getter
+    protected List<PatternError> errors = List.of();
     @Setter
     @Getter
     protected CheckState state = CheckState.UNINITIALIZED;
+    @Getter
+    protected final PredicateContext context = new PredicateContext();
     @Getter
     protected final Long2ObjectMap<BlockInfo> cache = new Long2ObjectOpenHashMap<>();
 
@@ -63,47 +66,32 @@ public class PatternState extends PredicateContext {
     }
 
     public boolean hasErrors() {
-        return !this.commitedErrors.isEmpty();
+        return !this.errors.isEmpty();
     }
 
     public void clearErrors() {
-        this.errors = new ArrayList<>();
-        this.lastFailureReason = FailureReason.NONE;
+        this.errors = List.of();
     }
 
-    public void reset() {
-        this.commitedErrors.clear();
-    }
-
-    Object2ObjectMap<Slice, List<PatternError>> sliceErrors = new Object2ObjectArrayMap<>();
-
-    public void commitSliceErrors() {
-        for (Slice slice : this.sliceErrors.keySet()) {
-            this.commitedErrors.addAll(this.sliceErrors.get(slice));
-        }
-        this.sliceErrors.clear();
-    }
-
-    public void pushSliceErrors(int index, int offset) {
-        Slice slice = new Slice(index, offset);
-        this.sliceErrors.put(slice, this.errors);
-        clearErrors();
-    }
-
-    public void commitErrors() {
-        this.commitedErrors.addAll(this.errors);
-        clearErrors();
+    public PredicateContext resetContext(boolean withLayer) {
+        this.context.clearErrors();
+        this.context.globalCache().clear();
+        if (withLayer) this.context.layerCache().clear();
+        this.context.setCheckLayer(withLayer);
+        return this.context;
     }
 
     /// usage intended for outside {@link BlockPattern}
-    public void commitError(PatternError error) {
-        this.commitedErrors.add(error);
+    public void setError(PatternError error) {
+        this.errors = List.of(error);
     }
 
-    private record Slice(int index, int offset) {}
+    public void setErrors(List<PatternError> errors) {
+        this.errors = Collections.unmodifiableList(errors);
+    }
 
     public void onBlockStateChanged(BlockPos pos, BlockState oldState, BlockState newState) {
-        if (!(currentBlockInfo.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(context.level() instanceof ServerLevel serverLevel)) return;
         if (pos.equals(controllerPos)) {
             if (controller != null && !newState.is(controller.getBlockState().getBlock())) {
                 controller.invalidateStructure(MultiblockControllerMachine.DEFAULT_STRUCTURE);
@@ -134,19 +122,22 @@ public class PatternState extends PredicateContext {
     }
 
     protected void updateLevel(Level level) {
-        getCurrentBlockInfo().setLevel(level);
+        context.getCurrentBlockInfo().setLevel(level);
     }
 
     public void setPos(BlockPos.MutableBlockPos charPos) {
-        getCurrentBlockInfo().setCurrentPos(charPos);
+        context.getCurrentBlockInfo().setCurrentPos(charPos);
     }
 
     protected void updateCache() {
-        getCache().put(pos().asLong(), new BlockInfo(state(), blockEntity()));
+        BlockPos pos = context.pos();
+        BlockState blockState = context.state();
+        BlockEntity blockEntity = context.blockEntity();
+        getCache().put(pos.asLong(), new BlockInfo(blockState, blockEntity));
     }
 
     public boolean shouldCheckFlip() {
-        return this.getLastFailureReason().shouldCheckFlip();
+        return context.getLastFailureReason().shouldCheckFlip();
     }
 
     @Getter

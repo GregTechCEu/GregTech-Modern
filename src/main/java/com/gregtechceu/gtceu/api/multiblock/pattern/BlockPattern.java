@@ -141,16 +141,15 @@ public class BlockPattern implements IBlockPattern {
                                   boolean isFlipped) {
         Objects.requireNonNull(patternState, "PatternState not set");
 
-        patternState.globalCache().clear();
-        patternState.layerCache().clear();
+        PredicateContext context = patternState.resetContext(true);
         // only try to clear the cache for structure checking mapping when checking the structure for unflipped
         // maybe switch to a multiblock state value instead?
         if (!isFlipped) {
             patternState.getCache().clear();
         }
 
-        patternState.updateLevel(level);
-        patternState.reset(); // clear any existing committed errors
+        context.updateLevel(level);
+        // context.reset(); // clear any existing committed errors
 
         BlockPos.MutableBlockPos controllerPos = centerPos.mutable();
 
@@ -163,10 +162,10 @@ public class BlockPattern implements IBlockPattern {
         if (!sliceStrategy.check(patternState, isFlipped)) return false;
 
         // global min check
-        patternState.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
+        context.setStage(PredicateContext.PredicateStage.GLOBAL_MIN);
         for (MultiPredicate predicate : predicates.values()) {
-            if (!predicate.testGlobalMin(patternState)) {
-                patternState.commitErrors();
+            if (!predicate.testGlobalMin(context)) {
+                patternState.setErrors(context.getErrors());
                 return false;
             }
         }
@@ -202,7 +201,8 @@ public class BlockPattern implements IBlockPattern {
         BlockPos.MutableBlockPos charPos = sliceStart.mutable();
         PatternSlice slice = slices[sliceIndex];
 
-        patternState.layerCache().clear();
+        PredicateContext context = patternState.getContext();
+        context.layerCache().clear();
 
         Set<MultiPredicate> visitedPredicates = new HashSet<>();
         for (int stringIdx = 0; stringIdx < dimensions[1]; stringIdx++) {
@@ -214,7 +214,7 @@ public class BlockPattern implements IBlockPattern {
 
                 // internal predicate check, global/slice max checks
                 // if all internal predicates pass, but global/slice max/min checks fail, then do not flip
-                if (!pred.test(patternState)) {
+                if (!pred.test(context)) {
                     return false;
                 }
 
@@ -228,9 +228,9 @@ public class BlockPattern implements IBlockPattern {
         }
 
         // slice min check
-        patternState.setStage(PredicateContext.PredicateStage.SLICE_MIN);
+        context.setStage(PredicateContext.PredicateStage.SLICE_MIN);
         for (MultiPredicate predicate : visitedPredicates) {
-            if (!predicate.testSliceMin(patternState)) {
+            if (!predicate.testSliceMin(context)) {
                 return false;
             }
         }

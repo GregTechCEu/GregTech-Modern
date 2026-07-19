@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock.pattern;
 
 import com.gregtechceu.gtceu.api.multiblock.MultiPredicate;
 import com.gregtechceu.gtceu.api.multiblock.OriginOffset;
+import com.gregtechceu.gtceu.api.multiblock.PredicateContext;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 
 import net.minecraft.core.BlockPos;
@@ -101,7 +102,7 @@ public class ExpandablePattern implements IBlockPattern {
             return;
         }
 
-        if (allowsFlip && patternState.getLastFailureReason().shouldCheckFlip()) {
+        if (allowsFlip && patternState.shouldCheckFlip()) {
             valid = checkPatternAt(level, patternState, centerPos, frontFacing, upwardsFacing, true);
         }
         if (!valid) {
@@ -121,7 +122,7 @@ public class ExpandablePattern implements IBlockPattern {
         List<Integer> bounds = boundsProvider.apply(level, centerPos.mutable(), frontFacing, upwardsFacing);
         if (bounds.isEmpty()) return false;
 
-        patternState.globalCache().clear();
+        PredicateContext context = patternState.resetContext(false);
 
         BlockPos.MutableBlockPos negCorner = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos posCorner = new BlockPos.MutableBlockPos();
@@ -165,15 +166,15 @@ public class ExpandablePattern implements IBlockPattern {
 
             if (!pred.isAny()) patternState.updateCache();
 
-            if (!pred.test(patternState)) {
+            if (!pred.test(context)) {
                 return false;
             }
             visited.add(pred);
         }
 
         for (MultiPredicate multiPredicate : visited) {
-            if (!multiPredicate.testGlobalMin(patternState)) {
-                patternState.commitErrors();
+            if (!multiPredicate.testGlobalMin(context)) {
+                patternState.setErrors(context.getErrors());
                 return false;
             }
         }

@@ -81,7 +81,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine
         this.energyUsage = calculateEnergyUsage();
 
         if (this.maintenance == null) {
-            pState.commitError(new PatternStringError(
+            pState.setError(new PatternStringError(
                     Component.translatable("gtceu.predicate_error.databank.missing_maintenance")));
             invalidateStructure(substructureName);
             return;
