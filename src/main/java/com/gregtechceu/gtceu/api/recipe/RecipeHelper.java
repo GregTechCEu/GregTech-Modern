@@ -404,4 +404,65 @@ public class RecipeHelper {
         int amount = (fluidStack instanceof IRangedIngredient ranged ? ranged.getMaxRoll() : fluidStack.getAmount());
         return amount % divisor == 0 && amount / divisor >= 25;
     }
+
+    public static GTRecipe doPrerolls(GTRecipe recipe,
+                                      IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
+        GTRecipe runningRecipe = recipe.copy();
+
+        for (List<Content> input : runningRecipe.inputs.values()) {
+            for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
+                }
+            }
+        }
+        for (List<Content> output : runningRecipe.outputs.values()) {
+            for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
+                }
+            }
+        }
+        return runningRecipe;
+    }
+
+    public static GTRecipe doTickPrerolls(GTRecipe recipe,
+                                          IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
+                                          GTRecipe lastDisplayedRecipe) {
+        if (!recipe.hasTick()) return recipe;
+
+        GTRecipe runningRecipe = recipe.copyWithoutTicks();
+
+        for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        for (var entry : lastDisplayedRecipe.tickOutputs.entrySet()) {
+            RecipeCapability<?> capability = entry.getKey();
+            List<Content> handler = entry.getValue();
+            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
+                Content content = iterator.next();
+                if (content.content() instanceof IRangedIngredient ranged) {
+                    ranged.rollSampledCount();
+                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
+                    ranged.reset();
+                }
+                runningRecipe.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
+            }
+        }
+        return runningRecipe;
+    }
 }

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.recipe.chance.logic.ChanceLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.EnergyStack;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IRangedIngredient;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
@@ -146,6 +144,21 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return copied;
     }
 
+    public GTRecipe copyWithoutTicks() {
+        var copied = new GTRecipe(recipeType, id,
+                new HashMap<>(inputs), new HashMap<>(outputs),
+                new HashMap<>(), new HashMap<>(),
+                new HashMap<>(inputChanceLogics), new HashMap<>(outputChanceLogics),
+                new HashMap<>(tickInputChanceLogics), new HashMap<>(tickOutputChanceLogics),
+                new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, recipeCategory, groupColor);
+        copied.ocLevel = ocLevel;
+        copied.parallels = parallels;
+        copied.batchParallels = batchParallels;
+        copied.subtickParallels = subtickParallels;
+        return copied;
+    }
+
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
         return GTRecipeSerializer.SERIALIZER;
@@ -231,62 +244,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             a += stack.amperage();
         }
         return new EnergyStack(v, a);
-    }
-
-    public void doPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches) {
-        for (List<Content> input : this.inputs.values()) {
-            for (ListIterator<Content> iterator = input.listIterator(); iterator.hasNext();) {
-                Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
-                }
-            }
-        }
-        for (List<Content> output : outputs.values()) {
-            for (ListIterator<Content> iterator = output.listIterator(); iterator.hasNext();) {
-                Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    iterator.set(new Content(ranged.collapse(), content.chance(), content.maxChance()));
-                }
-            }
-        }
-    }
-
-    public void doTickPrerolls(IdentityHashMap<RecipeCapability<?>, Object2IntMap<?>> chanceCaches,
-                               GTRecipe lastDisplayedRecipe) {
-        if (!this.hasTick()) return;
-
-        this.tickInputs.clear();
-        this.tickOutputs.clear();
-
-        for (var entry : lastDisplayedRecipe.tickInputs.entrySet()) {
-            RecipeCapability<?> capability = entry.getKey();
-            List<Content> handler = entry.getValue();
-            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
-                Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
-                    ranged.reset();
-                }
-                this.tickInputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
-            }
-        }
-        for (var entry : lastDisplayedRecipe.tickOutputs.entrySet()) {
-            RecipeCapability<?> capability = entry.getKey();
-            List<Content> handler = entry.getValue();
-            for (ListIterator<Content> iterator = handler.listIterator(); iterator.hasNext();) {
-                Content content = iterator.next();
-                if (content.content() instanceof IRangedIngredient ranged) {
-                    ranged.rollSampledCount();
-                    content = new Content(ranged.collapse(), content.chance(), content.maxChance());
-                    ranged.reset();
-                }
-                this.tickOutputs.computeIfAbsent(capability, c -> new ArrayList<>()).add(content);
-            }
-        }
     }
 
     public int getTotalRuns() {

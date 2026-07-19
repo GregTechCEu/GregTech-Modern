@@ -442,12 +442,12 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
             syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
             markLastRecipeDirty();
         }
-        recipe.doTickPrerolls(this.chanceCaches, this.lastDisplayedRecipe);
+        GTRecipe runningRecipe = RecipeHelper.doTickPrerolls(recipe, chanceCaches, lastDisplayedRecipe);
 
-        result = handleTickRecipeIO(recipe, IO.IN);
+        result = handleTickRecipeIO(runningRecipe, IO.IN);
         if (!result.isSuccess()) return result;
 
-        result = handleTickRecipeIO(recipe, IO.OUT);
+        result = handleTickRecipeIO(runningRecipe, IO.OUT);
         return result;
     }
 
@@ -466,18 +466,18 @@ public class RecipeLogic extends MachineTrait implements IWorkable {
         }
         lastDisplayedRecipe = recipe.copy();
         syncDataHolder.markClientSyncFieldDirty("lastDisplayedRecipe");
-        recipe.doPrerolls(this.chanceCaches);
-        var handledIO = handleRecipeIO(recipe, IO.IN);
+        GTRecipe runningRecipe = RecipeHelper.doPrerolls(recipe, chanceCaches);
+        var handledIO = handleRecipeIO(runningRecipe, IO.IN);
         if (handledIO.isSuccess()) {
-            if (lastRecipe != null && !recipe.equals(lastRecipe)) {
+            if (lastRecipe != null && !runningRecipe.equals(lastRecipe)) {
                 chanceCaches.clear();
             }
             failureReasonMap.clear();
             recipeDirty = false;
-            lastRecipe = recipe;
+            lastRecipe = runningRecipe;
             setStatus(Status.WORKING);
             progress = 0;
-            duration = recipe.duration;
+            duration = runningRecipe.duration;
             isActive = true;
             syncDataHolder.resyncAllFields();
         } else {
