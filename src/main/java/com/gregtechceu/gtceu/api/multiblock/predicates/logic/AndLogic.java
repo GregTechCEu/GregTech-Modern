@@ -25,7 +25,6 @@ public class AndLogic extends BaseLogic {
             // count manually
             if (failedMaxCount(ctx, predicate, true) || failedMaxCount(ctx, predicate, false))
                 return ctx.error(PatternStringError.literal("AND error"));
-            passed++;
             // continue...
         }
         return passed > 0;
