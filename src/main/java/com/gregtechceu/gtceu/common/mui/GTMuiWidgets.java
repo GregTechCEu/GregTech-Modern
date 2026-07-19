@@ -157,7 +157,8 @@ public class GTMuiWidgets {
     }
 
     public static ItemSlot createBatterySlot(BatterySlotTrait batterySlot, PanelSyncManager syncManager) {
-        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(new ModularSlot(batterySlot.getStorage(), 0));
+        ItemSlotSyncHandler battery = new ItemSlotSyncHandler(
+                new ModularSlot(batterySlot.getStorage(), 0).singletonSlotGroup(-10));
         syncManager.syncValue("battery", battery);
         return new ItemSlot().syncHandler("battery").background(GTGuiTextures.SLOT, GTGuiTextures.CHARGER_OVERLAY);
     }
@@ -380,10 +381,10 @@ public class GTMuiWidgets {
         syncManager.syncValue("filterSlotHandler", filterSlotHandler);
 
         IPanelHandler panelHandler = syncManager.syncedPanel("filterPanel", true,
-                (sm, sh) -> filterHandler.loadFilter(filterSlotHandler.getSlot().getItem()).getPanel(data, sm,
-                        settings, false));
+                (sm, sh) -> filterHandler.getFilter().getPanel(data, sm, settings, false));
 
-        modSlot.changeListener((newItem, onlyAmountChanged, client, init) -> {
+        modSlot.changeListener((oldStack, newStack, client, init) -> {
+            if (init || ItemStack.isSameItem(oldStack, newStack)) return;
             panelHandler.closePanel();
             panelHandler.deleteCachedPanel();
         });

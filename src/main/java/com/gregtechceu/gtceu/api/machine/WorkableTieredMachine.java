@@ -125,15 +125,17 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeLogic = attachTrait(new RecipeLogic());
         this.recipeLogic.setKeepSubscribing(false);
         this.importItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxInputs(ItemRecipeCapability.CAP),
+                new NotifiableItemStackHandler(getDefinition().getInputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
                         IO.IN, IO.BOTH));
         this.exportItems = attachTrait(
-                new NotifiableItemStackHandler(getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP),
+                new NotifiableItemStackHandler(
+                        getDefinition().getOutputSize(ItemRecipeCapability.CAP, getRecipeTypes()),
                         IO.OUT));
-        this.importFluids = attachTrait(new NotifiableFluidTank(getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
-                tankScalingFunction.applyAsInt(getTier()), IO.IN));
+        this.importFluids = attachTrait(
+                new NotifiableFluidTank(getDefinition().getInputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
+                        tankScalingFunction.applyAsInt(getTier()), IO.IN));
         this.exportFluids = attachTrait(
-                new NotifiableFluidTank(getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                new NotifiableFluidTank(getDefinition().getOutputSize(FluidRecipeCapability.CAP, getRecipeTypes()),
                         tankScalingFunction.applyAsInt(getTier()), IO.OUT));
         this.importComputation = attachTrait(new NotifiableComputationContainer(IO.IN, true));
         this.exportComputation = attachTrait(new NotifiableComputationContainer(IO.OUT, false));

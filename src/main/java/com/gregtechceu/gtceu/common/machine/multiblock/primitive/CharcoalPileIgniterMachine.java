@@ -85,7 +85,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
             int r = findWallPos(level, right, down.mutable());
             int b = findWallPos(level, back, down.mutable());
             int f = findWallPos(level, front, down.mutable());
-            int d = findFloorPos(level, up.getOpposite(), controllerPos.mutable());
+            int d = findFloorPos(level, up.getOpposite(), down.mutable());
 
             if (d < MIN_DEPTH || l < MIN_RADIUS || r < MIN_RADIUS || b < MIN_RADIUS || f < MIN_RADIUS) {
                 return new IntArrayList(new int[] { 0, MIN_DEPTH, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS, MIN_RADIUS });
@@ -131,7 +131,7 @@ public class CharcoalPileIgniterMachine extends WorkableMultiblockMachine implem
 
                         int intersects = 0;
                         boolean topAisle = bp.getX() == b.get(0);
-                        boolean bottomAisle = bp.getX() == -b.get(1);
+                        boolean bottomAisle = bp.getX() == -(b.get(1) + 1);
 
                         if (topAisle || bottomAisle) intersects++;
 
