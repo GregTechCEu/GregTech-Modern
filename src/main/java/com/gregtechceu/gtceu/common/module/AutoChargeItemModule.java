@@ -50,7 +50,7 @@ public class AutoChargeItemModule extends TieredItemModule {
             if (machine instanceof PowerSubstationMachine substation) {
                 electricItem.charge(substation.getEnergyBank().drain(energy), electricItem.getTier(), false, false);
             } else if (machine instanceof BatteryBufferMachine charger) {
-                electricItem.charge(charger.energyContainer.changeEnergy(-energy), charger.getTier(), false, false);
+                electricItem.charge(charger.energyContainer.removeEnergy(energy), charger.getTier(), false, false);
             }
         }
     }

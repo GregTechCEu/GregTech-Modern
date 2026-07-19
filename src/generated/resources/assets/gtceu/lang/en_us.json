@@ -3349,6 +3349,8 @@
   "gtceu.module.fluid_storage": "Allows the item to store liquids or increases its capacity (capacity is equal to the tank's)",
   "gtceu.module.gui.charge": "Charge:",
   "gtceu.module.gui.enabled": "Enabled:",
+  "gtceu.module.gui.energy_limit": "Energy limit:",
+  "gtceu.module.gui.hp": "HP:",
   "gtceu.module.gui.invalid_item": "This item does not accept modules",
   "gtceu.module.gui.jump_boost": "Boost:",
   "gtceu.module.gui.power": "Power:",

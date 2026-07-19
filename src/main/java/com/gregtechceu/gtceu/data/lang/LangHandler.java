@@ -468,6 +468,8 @@ public class LangHandler {
         provider.add("gtceu.module.gui.jump_boost", "Boost:");
         provider.add("gtceu.module.gui.power", "Power:");
         provider.add("gtceu.module.gui.charge", "Charge:");
+        provider.add("gtceu.module.gui.energy_limit", "Energy limit:");
+        provider.add("gtceu.module.gui.hp", "HP:");
         provider.add("gtceu.module.gui.select_an_item", "Select an item");
         provider.add("gtceu.module.gui.invalid_item", "This item does not accept modules");
         provider.add("emi.category.gtceu.equipment_foundry", "Equipment Foundry");
